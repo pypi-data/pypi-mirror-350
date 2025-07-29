@@ -1,0 +1,57 @@
+[build-system]
+# Define o sistema de build usado — setuptools no nosso caso
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "luxordb-datareader"  # nome do pacote (usado no pip install)
+version = "0.1.6"              # versão atual
+description = "Módulo para consultas e cálculos diversos utilizando dados da LuxorDB"
+authors = [
+  { name = "Sergio", email = "backoffice@luxor.com.br" }
+]
+readme = "README.md"
+license.text = "Proprietary - All rights reserved"       # ou substitua se for proprietário
+requires-python = ">=3.8"
+
+# Dependências do pacote (são instaladas com ele)
+dependencies = [
+  "pandas>=1.5.0",
+  "numpy>=1.24.0",
+  "scipy",
+  "pyarrow>=12.0.0",
+  "azure-storage-blob",
+  "python-dotenv",
+  "loguru"
+]
+
+[tool.setuptools]
+py-modules = ["luxorDB_datareader"]
+
+[tool.bumpver]
+current_version = "0.1.6"
+version_pattern = "MAJOR.MINOR.PATCH"
+version_regex = '''
+(?P<major>[0-9]+)
+\.
+(?P<minor>[0-9]+)
+\.
+(?P<patch>[0-9]+)
+'''
+commit_message = "bump version {old_version} → {new_version}"
+tag_message = "{new_version}"
+tag_scope = "default"
+tag = true
+push = false  # mantenha falso até testar
+commit = true
+
+[tool.bumpver.file_patterns]
+"pyproject.toml" = ['version = "{version}"']
+"luxorDB_datareader.py" = ['__version__ = "{version}"']
+
+
+"README.md" = [
+    "{version}",
+    "{pep440_version}",
+]
+
