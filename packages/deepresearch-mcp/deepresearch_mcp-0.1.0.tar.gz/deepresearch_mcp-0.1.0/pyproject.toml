@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "deepresearch-mcp"
+version = "0.1.0"
+description = "实现类DeepResearch功能的MCP工具"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "asyncio>=3.4.3",
+    "mep>=0.0.1",
+    "mcp>=1.6.0",
+    "openai>=1.82.0",
+    "openai-agents>=0.0.16",
+    "pydantic>=2.11.5",
+]
+
+
+[project.scripts]
+mcp-server-deepresearch = "mcp_server_deepresearch:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
