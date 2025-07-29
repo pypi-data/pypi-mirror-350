@@ -1,0 +1,154 @@
+{#
+  Copyright (C) 2020-2023 Graz University of Technology.
+
+  invenio-theme-iform is free software; you can redistribute it and/or
+  modify it under the terms of the MIT License; see LICENSE file for more
+  details.
+#}
+{%- extends config.INVENIO_THEME_IFORM_BASE_TEMPLATE %}
+
+{%- set active_dashboard_menu_item = "overview" %}
+{%- set title = "Overview" %}
+
+{% block javascript %}
+    {{ super() }}
+    {{ webpack['invenio-theme-iform-unlock.js'] }}
+{% endblock javascript %}
+
+{%- block page_body %}
+    {%- block user_dashboard_header %}
+        {% include "invenio_app_rdm/users/header.html" %}
+    {%- endblock user_dashboard_header %}
+
+    <div class="ui container rel-mt-2">
+        <h2>Overview</h2>
+
+        <div class="ui five column stackable grid overview">
+            {% if is_iform_authenticated %}
+                {# 3 columns: Research-Uploads, Communities, and Requests #}
+                <div class="column">
+                    <div class="ui segment" style="height: 480px">
+                        <h2>Research Results</h2>
+                        <a class="ui left floated image" href="/me/uploads">
+                            <img
+                                width="400px"
+                                alt="Research Results"
+                                src="{{ url_for('static', filename='images/diamond.svg') }}"
+                            />
+                        </a>
+                        <div class="ui right floated text">
+                            Overview: Description for research results
+                        </div>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="ui segment" style="height: 480px">
+                        <h2>Communities</h2>
+                        <a class="ui left floated image" href="/me/communities">
+                            <img
+                                width="400px"
+                                alt="Communities"
+                                src="{{ url_for('static', filename='images/group-discussion.svg') }}"
+                            />
+                        </a>
+                        <div>Overview: Description of Communities</div>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="ui segment" style="height: 480px">
+                        <h2>Requests</h2>
+                        <a class="ui left floated image" href="/me/requests">
+                            <img
+                                width="400px"
+                                alt="Requests"
+                                src="{{ url_for('static', filename='images/umbrella.svg') }}"
+                            />
+                        </a>
+                        <div>Overview: Description of Requests</div>
+                    </div>
+                </div>
+            {% else %}
+                {# not is_iform_authenticated #}
+                {# 1 column: greyed out Research-Uploads #}
+                <div class="column">
+                    {# a modal's HTML can be placed anywhere, so I placed it here, right before it's used #}
+                    <div class="ui small modal" id="iform-unlock-modal">
+                        <div class="header">On unlocking research uploads</div>
+                        <div class="content">
+                            <p>
+                                To ensure a well-curated repository, new users need to get unlocked
+                                before being allowed to upload. Once unlocked, you can upload your
+                                research, request its inclusion in a community, generate a DOI for
+                                it, and publish it.
+                                {# TODO: extra lines on policy about who gets accepted how for Research-Uploads #}
+                            </p>
+                            <div id="anchor-unlock-form">
+                                {# will be replaced with ZammadForm when generating it #}
+                                <button
+                                    class="ui fluid button"
+                                    onclick="
+                $('#iform-unlock-modal')
+                .modal('hide')"
+                                >
+                                    Got it!
+                                </button>
+                                <button id="generate-unlock-form" class="ui fluid button">
+                                    Request unlocking
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# actual column contents start here #}
+                    <div class="ui disabled segment" style="height: 480px">
+                        <h2>Research Results</h2>
+                        <div
+                            class="ui left floated image"
+                            style="cursor: pointer"
+                            onclick="
+            $('#iform-unlock-modal')
+            .modal('show')"
+                        >
+                            <img
+                                width="400px"
+                                alt="Research Results"
+                                src="{{ url_for('static', filename='images/diamond.svg') }}"
+                            />
+                        </div>
+                        <div class="ui right floated text">
+                            Overview: Description for research results
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% if can_view_marc21 %}
+                <div class="column">
+                    <div class="ui segment" style="height: 480px">
+                        <h2>Publications</h2>
+                        <a class="ui left floated image" href="/publications/uploads">
+                            <img
+                                width="400px"
+                                alt="Publications"
+                                src="{{ url_for('static', filename='images/library-book-svgrepo-com.svg') }}"
+                            />
+                        </a>
+                        <div>Overview: Description for publications</div>
+                    </div>
+                </div>
+            {% endif %}
+            <div class="column">
+                <div class="ui segment" style="height: 480px">
+                    <h2>Educational Resources</h2>
+                    <a class="ui left floated image" href="/oer/uploads">
+                        <img
+                            width="400px"
+                            alt="Open Educational Resources"
+                            src="{{ url_for('static', filename='images/play.svg') }}"
+                        />
+                    </a>
+                    <div>Overview: Description for open educational resources</div>
+                </div>
+            </div>
+        </div>
+    </div>
+{%- endblock %}
