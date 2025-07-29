@@ -1,0 +1,1818 @@
+"""Model for Metabolic System Representation.
+
+This module provides the core Model class and supporting functionality for representing
+metabolic models, including reactions, variables, parameters and derived quantities.
+
+"""
+
+from __future__ import annotations
+
+import copy
+import inspect
+import itertools as it
+from dataclasses import dataclass, field
+from typing import TYPE_CHECKING, Self, cast
+
+import numpy as np
+import pandas as pd
+
+from mxlpy import fns
+from mxlpy.types import (
+    AbstractSurrogate,
+    Array,
+    Derived,
+    Reaction,
+    Readout,
+)
+
+__all__ = [
+    "ArityMismatchError",
+    "CircularDependencyError",
+    "Dependency",
+    "MissingDependenciesError",
+    "Model",
+    "ModelCache",
+]
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable, Mapping
+    from inspect import FullArgSpec
+
+    from mxlpy.types import Callable, Param, RateFn, RetType
+
+
+@dataclass
+class Dependency:
+    """Container class for building dependency tree."""
+
+    name: str
+    required: set[str]
+    provided: set[str]
+
+
+class MissingDependenciesError(Exception):
+    """Raised when dependencies cannot be sorted topologically.
+
+    This typically indicates circular dependencies in model components.
+    """
+
+    def __init__(self, not_solvable: dict[str, list[str]]) -> None:
+        """Initialise exception."""
+        missing_by_module = "\n".join(f"\t{k}: {v}" for k, v in not_solvable.items())
+        msg = (
+            f"Dependencies cannot be solved. Missing dependencies:\n{missing_by_module}"
+        )
+        super().__init__(msg)
+
+
+class CircularDependencyError(Exception):
+    """Raised when dependencies cannot be sorted topologically.
+
+    This typically indicates circular dependencies in model components.
+    """
+
+    def __init__(
+        self,
+        missing: dict[str, set[str]],
+    ) -> None:
+        """Initialise exception."""
+        missing_by_module = "\n".join(f"\t{k}: {v}" for k, v in missing.items())
+        msg = (
+            f"Exceeded max iterations on sorting dependencies.\n"
+            "Check if there are circular references. "
+            "Missing dependencies:\n"
+            f"{missing_by_module}"
+        )
+        super().__init__(msg)
+
+
+def _get_all_args(argspec: FullArgSpec) -> list[str]:
+    kwonly = [] if argspec.kwonlyargs is None else argspec.kwonlyargs
+    return argspec.args + kwonly
+
+
+def _check_function_arity(function: Callable, arity: int) -> bool:
+    """Check if the amount of arguments given fits the argument count of the function."""
+    argspec = inspect.getfullargspec(function)
+    # Give up on *args functions
+    if argspec.varargs is not None:
+        return True
+
+    # The sane case
+    if len(argspec.args) == arity:
+        return True
+
+    # It might be that the user has set some args to default values,
+    # in which case they are also ok (might be kwonly as well)
+    defaults = argspec.defaults
+    if defaults is not None and len(argspec.args) + len(defaults) == arity:
+        return True
+    kwonly = argspec.kwonlyargs
+    return bool(defaults is not None and len(argspec.args) + len(kwonly) == arity)
+
+
+class ArityMismatchError(Exception):
+    """Mismatch between python function and model arguments."""
+
+    def __init__(self, name: str, fn: Callable, args: list[str]) -> None:
+        """Format message."""
+        argspec = inspect.getfullargspec(fn)
+
+        message = f"Function arity mismatch for {name}.\n"
+        message += "\n".join(
+            (
+                f"{i:<8.8} | {j:<10.10}"
+                for i, j in [
+                    ("Fn args", "Model args"),
+                    ("-------", "----------"),
+                    *it.zip_longest(argspec.args, args, fillvalue="---"),
+                ]
+            )
+        )
+        super().__init__(message)
+
+
+def _invalidate_cache(method: Callable[Param, RetType]) -> Callable[Param, RetType]:
+    """Decorator that invalidates model cache when decorated method is called.
+
+    Args:
+        method: Method to wrap with cache invalidation
+
+    Returns:
+        Wrapped method that clears cache before execution
+
+    """
+
+    def wrapper(
+        *args: Param.args,
+        **kwargs: Param.kwargs,
+    ) -> RetType:
+        self = cast(Model, args[0])
+        self._cache = None
+        return method(*args, **kwargs)
+
+    return wrapper  # type: ignore
+
+
+def _check_if_is_sortable(
+    available: set[str],
+    elements: list[Dependency],
+) -> None:
+    all_available = available.copy()
+    for dependency in elements:
+        all_available.update(dependency.provided)
+
+    # Check if it can be sorted in the first place
+    not_solvable = {}
+    for dependency in elements:
+        if not dependency.required.issubset(all_available):
+            not_solvable[dependency.name] = sorted(
+                dependency.required.difference(all_available)
+            )
+
+    if not_solvable:
+        raise MissingDependenciesError(not_solvable=not_solvable)
+
+
+def _sort_dependencies(
+    available: set[str],
+    elements: list[Dependency],
+) -> list[str]:
+    """Sort model elements topologically based on their dependencies.
+
+    Args:
+        available: Set of available component names
+        elements: List of (name, dependencies, supplier) tuples to sort
+
+    Returns:
+        List of element names in dependency order
+
+    Raises:
+        SortError: If circular dependencies are detected
+
+    """
+    from queue import Empty, SimpleQueue
+
+    _check_if_is_sortable(available, elements)
+
+    order = []
+    # FIXME: what is the worst case here?
+    max_iterations = len(elements) ** 2
+    queue: SimpleQueue[Dependency] = SimpleQueue()
+    for dependency in elements:
+        queue.put(dependency)
+
+    last_name = None
+    i = 0
+    while True:
+        try:
+            dependency = queue.get_nowait()
+        except Empty:
+            break
+        if dependency.required.issubset(available):
+            available.update(dependency.provided)
+            order.append(dependency.name)
+
+        else:
+            if last_name == dependency.name:
+                order.append(last_name)
+                break
+            queue.put(dependency)
+            last_name = dependency.name
+        i += 1
+
+        # Failure case
+        if i > max_iterations:
+            unsorted = []
+            while True:
+                try:
+                    unsorted.append(queue.get_nowait().name)
+                except Empty:
+                    break
+
+            mod_to_args: dict[str, set[str]] = {
+                dependency.name: dependency.required for dependency in elements
+            }
+            missing = {k: mod_to_args[k].difference(available) for k in unsorted}
+            raise CircularDependencyError(missing=missing)
+    return order
+
+
+@dataclass(slots=True)
+class ModelCache:
+    """ModelCache is a class that stores various model-related data structures.
+
+    Attributes:
+        var_names: A list of variable names.
+        parameter_values: A dictionary mapping parameter names to their values.
+        derived_parameters: A dictionary mapping parameter names to their derived parameter objects.
+        derived_variables: A dictionary mapping variable names to their derived variable objects.
+        stoich_by_cpds: A dictionary mapping compound names to their stoichiometric coefficients.
+        dyn_stoich_by_cpds: A dictionary mapping compound names to their dynamic stoichiometric coefficients.
+        dxdt: A pandas Series representing the rate of change of variables.
+        initial_conditions: calculated initial conditions
+
+    """
+
+    var_names: list[str]
+    dyn_order: list[str]
+    all_parameter_values: dict[str, float]
+    stoich_by_cpds: dict[str, dict[str, float]]
+    dyn_stoich_by_cpds: dict[str, dict[str, Derived]]
+    dxdt: pd.Series
+    initial_conditions: dict[str, float]
+
+
+@dataclass(slots=True)
+class Model:
+    """Represents a metabolic model.
+
+    Attributes:
+        _ids: Dictionary mapping internal IDs to names.
+        _variables: Dictionary of model variables and their initial values.
+        _parameters: Dictionary of model parameters and their values.
+        _derived: Dictionary of derived quantities.
+        _readouts: Dictionary of readout functions.
+        _reactions: Dictionary of reactions in the model.
+        _surrogates: Dictionary of surrogate models.
+        _cache: Cache for storing model-related data structures.
+        _data: Named references to data sets
+
+    """
+
+    _ids: dict[str, str] = field(default_factory=dict)
+    _variables: dict[str, float | Derived] = field(default_factory=dict)
+    _parameters: dict[str, float] = field(default_factory=dict)
+    _derived: dict[str, Derived] = field(default_factory=dict)
+    _readouts: dict[str, Readout] = field(default_factory=dict)
+    _reactions: dict[str, Reaction] = field(default_factory=dict)
+    _surrogates: dict[str, AbstractSurrogate] = field(default_factory=dict)
+    _cache: ModelCache | None = None
+    _data: dict[str, pd.Series | pd.DataFrame] = field(default_factory=dict)
+
+    ###########################################################################
+    # Cache
+    ###########################################################################
+
+    def _create_cache(self) -> ModelCache:
+        """Creates and initializes the model cache.
+
+        This method constructs a cache that includes parameter values, stoichiometry
+        by compounds, dynamic stoichiometry by compounds, derived variables, and
+        derived parameters. It processes the model's parameters, variables, derived
+        elements, reactions, and surrogates to populate the cache.
+
+        Returns:
+            ModelCache: An instance of ModelCache containing the initialized cache data.
+
+        """
+        all_parameter_values: dict[str, float] = self._parameters.copy()
+        all_parameter_names: set[str] = set(all_parameter_values)
+
+        # Sanity checks
+        for name, el in it.chain(
+            self._derived.items(),
+            self._reactions.items(),
+            self._readouts.items(),
+        ):
+            if not _check_function_arity(el.fn, len(el.args)):
+                raise ArityMismatchError(name, el.fn, el.args)
+
+        # Sort derived & reactions
+        to_sort = (
+            self._derived
+            | self._reactions
+            | self._surrogates
+            | {k: v for k, v in self._variables.items() if isinstance(v, Derived)}
+        )
+        order = _sort_dependencies(
+            available=all_parameter_names
+            | {k for k, v in self._variables.items() if not isinstance(v, Derived)}
+            | set(self._data)
+            | {"time"},
+            elements=[
+                Dependency(name=k, required=set(v.args), provided={k})
+                if not isinstance(v, AbstractSurrogate)
+                else Dependency(name=k, required=set(v.args), provided=set(v.outputs))
+                for k, v in to_sort.items()
+            ],
+        )
+
+        # Calculate all values once, including dynamic ones
+        # That way, we can make initial conditions dependent on e.g. rates
+        dependent = (
+            all_parameter_values
+            | self._data
+            | {k: v for k, v in self._variables.items() if not isinstance(v, Derived)}
+            | {"time": 0.0}
+        )
+        for name in order:
+            to_sort[name].calculate_inpl(name, dependent)
+
+        # Split derived into static and dynamic variables
+        static_order = []
+        dyn_order = []
+        for name in order:
+            if name in self._reactions or name in self._surrogates:
+                dyn_order.append(name)
+            elif name in self._variables:
+                static_order.append(name)
+            else:
+                derived = self._derived[name]
+                if all(i in all_parameter_names for i in derived.args):
+                    static_order.append(name)
+                    all_parameter_names.add(name)
+                else:
+                    dyn_order.append(name)
+
+        # Calculate dynamic and static stochiometries
+        stoich_by_compounds: dict[str, dict[str, float]] = {}
+        dyn_stoich_by_compounds: dict[str, dict[str, Derived]] = {}
+        for rxn_name, rxn in self._reactions.items():
+            for cpd_name, factor in rxn.stoichiometry.items():
+                d_static = stoich_by_compounds.setdefault(cpd_name, {})
+                if isinstance(factor, Derived):
+                    if all(i in all_parameter_names for i in factor.args):
+                        d_static[rxn_name] = factor.calculate(dependent)
+                    else:
+                        dyn_stoich_by_compounds.setdefault(cpd_name, {})[rxn_name] = (
+                            factor
+                        )
+                else:
+                    d_static[rxn_name] = factor
+
+        for surrogate in self._surrogates.values():
+            for rxn_name, rxn in surrogate.stoichiometries.items():
+                for cpd_name, factor in rxn.items():
+                    d_static = stoich_by_compounds.setdefault(cpd_name, {})
+                    if isinstance(factor, Derived):
+                        if all(i in all_parameter_names for i in factor.args):
+                            d_static[rxn_name] = factor.calculate(dependent)
+                        else:
+                            dyn_stoich_by_compounds.setdefault(cpd_name, {})[
+                                rxn_name
+                            ] = factor
+                    else:
+                        d_static[rxn_name] = factor
+
+        var_names = self.get_variable_names()
+        dxdt = pd.Series(np.zeros(len(var_names), dtype=float), index=var_names)
+
+        initial_conditions: dict[str, float] = {
+            k: v for k, v in self._variables.items() if not isinstance(v, Derived)
+        }
+        for name in static_order:
+            if name in self._variables:
+                initial_conditions[name] = cast(float, dependent[name])
+            elif name in self._derived:
+                all_parameter_values[name] = cast(float, dependent[name])
+            else:
+                msg = "Unknown target for static derived variable."
+                raise KeyError(msg)
+
+        self._cache = ModelCache(
+            var_names=var_names,
+            dyn_order=dyn_order,
+            all_parameter_values=all_parameter_values,
+            stoich_by_cpds=stoich_by_compounds,
+            dyn_stoich_by_cpds=dyn_stoich_by_compounds,
+            dxdt=dxdt,
+            initial_conditions=initial_conditions,
+        )
+        return self._cache
+
+    ###########################################################################
+    # Ids
+    ###########################################################################
+
+    @property
+    def ids(self) -> dict[str, str]:
+        """Returns a copy of the _ids dictionary.
+
+        The _ids dictionary contains key-value pairs where both keys and values are strings.
+
+        Returns:
+            dict[str, str]: A copy of the _ids dictionary.
+
+        """
+        return self._ids.copy()
+
+    def _insert_id(self, *, name: str, ctx: str) -> None:
+        """Inserts an identifier into the model's internal ID dictionary.
+
+        Args:
+            name: The name of the identifier to insert.
+            ctx: The context associated with the identifier.
+
+        Raises:
+            KeyError: If the name is "time", which is a protected variable.
+            NameError: If the name already exists in the model's ID dictionary.
+
+        """
+        if name == "time":
+            msg = "time is a protected variable for time"
+            raise KeyError(msg)
+
+        if name in self._ids:
+            msg = f"Model already contains {ctx} called '{name}'"
+            raise NameError(msg)
+        self._ids[name] = ctx
+
+    def _remove_id(self, *, name: str) -> None:
+        """Remove an ID from the internal dictionary.
+
+        Args:
+            name (str): The name of the ID to be removed.
+
+        Raises:
+            KeyError: If the specified name does not exist in the dictionary.
+
+        """
+        del self._ids[name]
+
+    ##########################################################################
+    # Parameters
+    ##########################################################################
+
+    @_invalidate_cache
+    def add_parameter(self, name: str, value: float) -> Self:
+        """Adds a parameter to the model.
+
+        Examples:
+            >>> model.add_parameter("k1", 0.1)
+
+        Args:
+            name (str): The name of the parameter.
+            value (float): The value of the parameter.
+
+        Returns:
+            Self: The instance of the model with the added parameter.
+
+        """
+        self._insert_id(name=name, ctx="parameter")
+        self._parameters[name] = value
+        return self
+
+    def add_parameters(self, parameters: dict[str, float]) -> Self:
+        """Adds multiple parameters to the model.
+
+        Examples:
+            >>> model.add_parameters({"k1": 0.1, "k2": 0.2})
+
+        Args:
+            parameters (dict[str, float]): A dictionary where the keys are parameter names
+                                           and the values are the corresponding parameter values.
+
+        Returns:
+            Self: The instance of the model with the added parameters.
+
+        """
+        for k, v in parameters.items():
+            self.add_parameter(k, v)
+        return self
+
+    @property
+    def parameters(self) -> dict[str, float]:
+        """Returns the parameters of the model.
+
+        Examples:
+            >>> model.parameters
+                {"k1": 0.1, "k2": 0.2}
+
+        Returns:
+            parameters: A dictionary where the keys are parameter names (as strings)
+                  and the values are parameter values (as floats).
+
+        """
+        return self._parameters.copy()
+
+    def get_parameter_names(self) -> list[str]:
+        """Retrieve the names of the parameters.
+
+        Examples:
+            >>> model.get_parameter_names()
+                ['k1', 'k2']
+
+        Returns:
+            parametes: A list containing the names of the parameters.
+
+        """
+        return list(self._parameters)
+
+    @_invalidate_cache
+    def remove_parameter(self, name: str) -> Self:
+        """Remove a parameter from the model.
+
+        Examples:
+            >>> model.remove_parameter("k1")
+
+        Args:
+            name: The name of the parameter to remove.
+
+        Returns:
+            Self: The instance of the model with the parameter removed.
+
+        """
+        self._remove_id(name=name)
+        self._parameters.pop(name)
+        return self
+
+    def remove_parameters(self, names: list[str]) -> Self:
+        """Remove multiple parameters from the model.
+
+        Examples:
+            >>> model.remove_parameters(["k1", "k2"])
+
+        Args:
+            names: A list of parameter names to be removed.
+
+        Returns:
+            Self: The instance of the model with the specified parameters removed.
+
+        """
+        for name in names:
+            self.remove_parameter(name)
+        return self
+
+    @_invalidate_cache
+    def update_parameter(self, name: str, value: float) -> Self:
+        """Update the value of a parameter.
+
+        Examples:
+            >>> model.update_parameter("k1", 0.2)
+
+        Args:
+            name: The name of the parameter to update.
+            value: The new value for the parameter.
+
+        Returns:
+            Self: The instance of the class with the updated parameter.
+
+        Raises:
+            NameError: If the parameter name is not found in the parameters.
+
+        """
+        if name not in self._parameters:
+            msg = f"'{name}' not found in parameters"
+            raise KeyError(msg)
+        self._parameters[name] = value
+        return self
+
+    def update_parameters(self, parameters: dict[str, float]) -> Self:
+        """Update multiple parameters of the model.
+
+        Examples:
+            >>> model.update_parameters({"k1": 0.2, "k2": 0.3})
+
+        Args:
+            parameters: A dictionary where keys are parameter names and values are the new parameter values.
+
+        Returns:
+            Self: The instance of the model with updated parameters.
+
+        """
+        for k, v in parameters.items():
+            self.update_parameter(k, v)
+        return self
+
+    def scale_parameter(self, name: str, factor: float) -> Self:
+        """Scales the value of a specified parameter by a given factor.
+
+        Examples:
+            >>> model.scale_parameter("k1", 2.0)
+
+        Args:
+            name: The name of the parameter to be scaled.
+            factor: The factor by which to scale the parameter's value.
+
+        Returns:
+            Self: The instance of the class with the updated parameter.
+
+        """
+        return self.update_parameter(name, self._parameters[name] * factor)
+
+    def scale_parameters(self, parameters: dict[str, float]) -> Self:
+        """Scales the parameters of the model.
+
+        Examples:
+            >>> model.scale_parameters({"k1": 2.0, "k2": 0.5})
+
+        Args:
+            parameters: A dictionary where the keys are parameter names
+                        and the values are the scaling factors.
+
+        Returns:
+            Self: The instance of the model with scaled parameters.
+
+        """
+        for k, v in parameters.items():
+            self.scale_parameter(k, v)
+        return self
+
+    @_invalidate_cache
+    def make_parameter_dynamic(
+        self,
+        name: str,
+        initial_value: float | None = None,
+        stoichiometries: dict[str, float] | None = None,
+    ) -> Self:
+        """Converts a parameter to a dynamic variable in the model.
+
+        Examples:
+            >>> model.make_parameter_dynamic("k1")
+            >>> model.make_parameter_dynamic("k2", initial_value=0.5)
+
+        This method removes the specified parameter from the model and adds it as a variable with an optional initial value.
+
+        Args:
+            name: The name of the parameter to be converted.
+            initial_value: The initial value for the new variable. If None, the current value of the parameter is used. Defaults to None.
+            stoichiometries: A dictionary mapping reaction names to stoichiometries for the new variable. Defaults to None.
+
+        Returns:
+            Self: The instance of the model with the parameter converted to a variable.
+
+        """
+        value = self._parameters[name] if initial_value is None else initial_value
+        self.remove_parameter(name)
+        self.add_variable(name, value)
+
+        if stoichiometries is not None:
+            for rxn_name, value in stoichiometries.items():
+                target = False
+                if rxn_name in self._reactions:
+                    target = True
+                    cast(dict, self._reactions[name].stoichiometry)[name] = value
+                else:
+                    for surrogate in self._surrogates.values():
+                        if rxn_name in surrogate.stoichiometries:
+                            target = True
+                            surrogate.stoichiometries[rxn_name][name] = value
+                if not target:
+                    msg = f"Reaction '{rxn_name}' not found in reactions or surrogates"
+                    raise KeyError(msg)
+
+        return self
+
+    ##########################################################################
+    # Variables
+    ##########################################################################
+
+    @property
+    def variables(self) -> dict[str, float | Derived]:
+        """Returns a copy of the variables dictionary.
+
+        Examples:
+            >>> model.variables
+                {"x1": 1.0, "x2": 2.0}
+
+        This method returns a copy of the internal dictionary that maps variable
+        names to their corresponding float values.
+
+        Returns:
+            dict[str, float]: A copy of the variables dictionary.
+
+        """
+        return self._variables.copy()
+
+    @_invalidate_cache
+    def add_variable(self, name: str, initial_condition: float | Derived) -> Self:
+        """Adds a variable to the model with the given name and initial condition.
+
+        Examples:
+            >>> model.add_variable("x1", 1.0)
+
+        Args:
+            name: The name of the variable to add.
+            initial_condition: The initial condition value for the variable.
+
+        Returns:
+            Self: The instance of the model with the added variable.
+
+        """
+        self._insert_id(name=name, ctx="variable")
+        self._variables[name] = initial_condition
+        return self
+
+    def add_variables(self, variables: Mapping[str, float | Derived]) -> Self:
+        """Adds multiple variables to the model with their initial conditions.
+
+        Examples:
+            >>> model.add_variables({"x1": 1.0, "x2": 2.0})
+
+        Args:
+            variables: A dictionary where the keys are variable names (str)
+                       and the values are their initial conditions (float).
+
+        Returns:
+            Self: The instance of the model with the added variables.
+
+        """
+        for name, y0 in variables.items():
+            self.add_variable(name=name, initial_condition=y0)
+        return self
+
+    @_invalidate_cache
+    def remove_variable(self, name: str) -> Self:
+        """Remove a variable from the model.
+
+        Examples:
+            >>> model.remove_variable("x1")
+
+        Args:
+            name: The name of the variable to remove.
+
+        Returns:
+            Self: The instance of the model with the variable removed.
+
+        """
+        self._remove_id(name=name)
+        del self._variables[name]
+        return self
+
+    def remove_variables(self, variables: Iterable[str]) -> Self:
+        """Remove multiple variables from the model.
+
+        Examples:
+            >>> model.remove_variables(["x1", "x2"])
+
+        Args:
+            variables: An iterable of variable names to be removed.
+
+        Returns:
+            Self: The instance of the model with the specified variables removed.
+
+        """
+        for variable in variables:
+            self.remove_variable(name=variable)
+        return self
+
+    @_invalidate_cache
+    def update_variable(self, name: str, initial_condition: float | Derived) -> Self:
+        """Updates the value of a variable in the model.
+
+        Examples:
+            >>> model.update_variable("x1", 2.0)
+
+        Args:
+            name: The name of the variable to update.
+            initial_condition: The initial condition or value to set for the variable.
+
+        Returns:
+            Self: The instance of the model with the updated variable.
+
+        """
+        if name not in self._variables:
+            msg = f"'{name}' not found in variables"
+            raise KeyError(msg)
+        self._variables[name] = initial_condition
+        return self
+
+    def update_variables(self, variables: Mapping[str, float | Derived]) -> Self:
+        """Updates multiple variables in the model.
+
+        Examples:
+            >>> model.update_variables({"x1": 2.0, "x2": 3.0})
+
+        Args:
+            variables: A dictionary where the keys are variable names and the values are their new initial conditions.
+
+        Returns:
+            Self: The instance of the model with updated variables.
+
+        """
+        for k, v in variables.items():
+            self.update_variable(k, v)
+        return self
+
+    def get_variable_names(self) -> list[str]:
+        """Retrieve the names of all variables.
+
+        Examples:
+            >>> model.get_variable_names()
+                ["x1", "x2"]
+
+        Returns:
+            variable_names: A list containing the names of all variables.
+
+        """
+        return list(self._variables)
+
+    def get_initial_conditions(self) -> dict[str, float]:
+        """Retrieve the initial conditions of the model.
+
+        Examples:
+            >>> model.get_initial_conditions()
+                {"x1": 1.0, "x2": 2.0}
+
+        Returns:
+            initial_conditions: A dictionary where the keys are variable names and the values are their initial conditions.
+
+        """
+        if (cache := self._cache) is None:
+            cache = self._create_cache()
+        return cache.initial_conditions
+
+    def make_variable_static(self, name: str, value: float | None = None) -> Self:
+        """Converts a variable to a static parameter.
+
+        This removes the variable from the stoichiometries of all reactions and surrogates.
+        It is not re-inserted if `Model.make_parameter_dynamic` is called.
+
+        Examples:
+            >>> model.make_variable_static("x1")
+            >>> model.make_variable_static("x2", value=2.0)
+
+        Args:
+            name: The name of the variable to be made static.
+            value: The value to assign to the parameter.
+                   If None, the current value of the variable is used. Defaults to None.
+
+        Returns:
+            Self: The instance of the class for method chaining.
+
+        """
+        value_or_derived = self._variables[name] if value is None else value
+        self.remove_variable(name)
+        if isinstance(value_or_derived, Derived):
+            self.add_derived(name, value_or_derived.fn, args=value_or_derived.args)
+        else:
+            self.add_parameter(name, value_or_derived)
+
+        # Remove from stoichiometries
+        for reaction in self._reactions.values():
+            if name in reaction.stoichiometry:
+                cast(dict, reaction.stoichiometry).pop(name)
+        for surrogate in self._surrogates.values():
+            surrogate.stoichiometries = {
+                k: {k2: v2 for k2, v2 in v.items() if k2 != name}
+                for k, v in surrogate.stoichiometries.items()
+                if k != name
+            }
+        return self
+
+    ##########################################################################
+    # Derived
+    ##########################################################################
+
+    @property
+    def derived(self) -> dict[str, Derived]:
+        """Returns a copy of the derived quantities.
+
+        Examples:
+            >>> model.derived
+                {"d1": Derived(fn1, ["x1", "x2"]),
+                 "d2": Derived(fn2, ["x1", "d1"])}
+
+        Returns:
+            dict[str, Derived]: A copy of the derived dictionary.
+
+        """
+        return self._derived.copy()
+
+    @property
+    def derived_variables(self) -> dict[str, Derived]:
+        """Returns a dictionary of derived variables.
+
+        Examples:
+            >>> model.derived_variables()
+                {"d1": Derived(fn1, ["x1", "x2"]),
+                 "d2": Derived(fn2, ["x1", "d1"])}
+
+        Returns:
+            derived_variables: A dictionary where the keys are strings
+            representing the names of the derived variables and the values are
+            instances of DerivedVariable.
+
+        """
+        if (cache := self._cache) is None:
+            cache = self._create_cache()
+        derived = self._derived
+
+        return {k: v for k, v in derived.items() if k not in cache.all_parameter_values}
+
+    @property
+    def derived_parameters(self) -> dict[str, Derived]:
+        """Returns a dictionary of derived parameters.
+
+        Examples:
+            >>> model.derived_parameters()
+                {"kd1": Derived(fn1, ["k1", "k2"]),
+                 "kd2": Derived(fn2, ["k1", "kd1"])}
+
+        Returns:
+            A dictionary where the keys are
+            parameter names and the values are Derived.
+
+        """
+        if (cache := self._cache) is None:
+            cache = self._create_cache()
+        derived = self._derived
+        return {k: v for k, v in derived.items() if k in cache.all_parameter_values}
+
+    @_invalidate_cache
+    def add_derived(
+        self,
+        name: str,
+        fn: RateFn,
+        *,
+        args: list[str],
+    ) -> Self:
+        """Adds a derived attribute to the model.
+
+        Examples:
+            >>> model.add_derived("d1", add, args=["x1", "x2"])
+
+        Args:
+            name: The name of the derived attribute.
+            fn: The function used to compute the derived attribute.
+            args: The list of arguments to be passed to the function.
+
+        Returns:
+            Self: The instance of the model with the added derived attribute.
+
+        """
+        self._insert_id(name=name, ctx="derived")
+        self._derived[name] = Derived(fn=fn, args=args)
+        return self
+
+    def get_derived_parameter_names(self) -> list[str]:
+        """Retrieve the names of derived parameters.
+
+        Examples:
+            >>> model.get_derived_parameter_names()
+                ["kd1", "kd2"]
+
+        Returns:
+            A list of names of the derived parameters.
+
+        """
+        return list(self.derived_parameters)
+
+    def get_derived_variable_names(self) -> list[str]:
+        """Retrieve the names of derived variables.
+
+        Examples:
+            >>> model.get_derived_variable_names()
+                ["d1", "d2"]
+
+        Returns:
+            A list of names of derived variables.
+
+        """
+        return list(self.derived_variables)
+
+    @_invalidate_cache
+    def update_derived(
+        self,
+        name: str,
+        fn: RateFn | None = None,
+        *,
+        args: list[str] | None = None,
+    ) -> Self:
+        """Updates the derived function and its arguments for a given name.
+
+        Examples:
+            >>> model.update_derived("d1", add, ["x1", "x2"])
+
+        Args:
+            name: The name of the derived function to update.
+            fn: The new derived function. If None, the existing function is retained. Defaults to None.
+            args: The new arguments for the derived function. If None, the existing arguments are retained. Defaults to None.
+
+        Returns:
+            Self: The instance of the class with the updated derived function and arguments.
+
+        """
+        der = self._derived[name]
+        der.fn = der.fn if fn is None else fn
+        der.args = der.args if args is None else args
+        return self
+
+    @_invalidate_cache
+    def remove_derived(self, name: str) -> Self:
+        """Remove a derived attribute from the model.
+
+        Examples:
+            >>> model.remove_derived("d1")
+
+        Args:
+            name: The name of the derived attribute to remove.
+
+        Returns:
+            Self: The instance of the model with the derived attribute removed.
+
+        """
+        self._remove_id(name=name)
+        self._derived.pop(name)
+        return self
+
+    ###########################################################################
+    # Reactions
+    ###########################################################################
+
+    @property
+    def reactions(self) -> dict[str, Reaction]:
+        """Retrieve the reactions in the model.
+
+        Examples:
+            >>> model.reactions
+                {"r1": Reaction(fn1, {"x1": -1, "x2": 1}, ["k1"]),
+
+        Returns:
+            dict[str, Reaction]: A deep copy of the reactions dictionary.
+
+        """
+        return copy.deepcopy(self._reactions)
+
+    def get_stoichiometries(
+        self, variables: dict[str, float] | None = None, time: float = 0.0
+    ) -> pd.DataFrame:
+        """Retrieve the stoichiometries of the model.
+
+        Examples:
+            >>> model.stoichiometries()
+                v1  v2
+            x1 -1   1
+            x2  1  -1
+
+        Returns:
+            pd.DataFrame: A DataFrame containing the stoichiometries of the model.
+
+        """
+        if (cache := self._cache) is None:
+            cache = self._create_cache()
+        args = self.get_dependent(variables=variables, time=time)
+
+        stoich_by_cpds = copy.deepcopy(cache.stoich_by_cpds)
+        for cpd, stoich in cache.dyn_stoich_by_cpds.items():
+            for rxn, derived in stoich.items():
+                stoich_by_cpds[cpd][rxn] = float(
+                    derived.fn(*(args[i] for i in derived.args))
+                )
+        return pd.DataFrame(stoich_by_cpds).T.fillna(0)
+
+    def get_stoichiometries_of_variable(
+        self,
+        variable: str,
+        variables: dict[str, float] | None = None,
+        time: float = 0.0,
+    ) -> dict[str, float]:
+        """Retrieve the stoichiometry of a specific variable.
+
+        Examples:
+            >>> model.get_stoichiometries_of_variable("x1")
+                {"v1": -1, "v2": 1}
+
+        Args:
+            variable: The name of the variable for which to retrieve the stoichiometry.
+            variables: A dictionary of variable names and their values.
+            time: The time point at which to evaluate the stoichiometry.
+
+        """
+        if (cache := self._cache) is None:
+            cache = self._create_cache()
+        args = self.get_dependent(variables=variables, time=time)
+
+        stoich = copy.deepcopy(cache.stoich_by_cpds[variable])
+        for rxn, derived in cache.dyn_stoich_by_cpds[variable].items():
+            stoich[rxn] = float(derived.fn(*(args[i] for i in derived.args)))
+        return stoich
+
+    @_invalidate_cache
+    def add_reaction(
+        self,
+        name: str,
+        fn: RateFn,
+        *,
+        args: list[str],
+        stoichiometry: Mapping[str, float | str | Derived],
+    ) -> Self:
+        """Adds a reaction to the model.
+
+        Examples:
+            >>> model.add_reaction("v1",
+            ...     fn=mass_action,
+            ...     args=["x1", "kf1"],
+            ...     stoichiometry={"x1": -1, "x2": 1},
+            ... )
+
+        Args:
+            name: The name of the reaction.
+            fn: The function representing the reaction.
+            args: A list of arguments for the reaction function.
+            stoichiometry: The stoichiometry of the reaction, mapping species to their coefficients.
+
+        Returns:
+            Self: The instance of the model with the added reaction.
+
+        """
+        self._insert_id(name=name, ctx="reaction")
+
+        stoich: dict[str, Derived | float] = {
+            k: Derived(fn=fns.constant, args=[v]) if isinstance(v, str) else v
+            for k, v in stoichiometry.items()
+        }
+        self._reactions[name] = Reaction(fn=fn, stoichiometry=stoich, args=args)
+        return self
+
+    def get_reaction_names(self) -> list[str]:
+        """Retrieve the names of all reactions.
+
+        Examples:
+            >>> model.get_reaction_names()
+                ["v1", "v2"]
+
+        Returns:
+            list[str]: A list containing the names of the reactions.
+
+        """
+        return list(self._reactions)
+
+    @_invalidate_cache
+    def update_reaction(
+        self,
+        name: str,
+        fn: RateFn | None = None,
+        *,
+        args: list[str] | None = None,
+        stoichiometry: Mapping[str, float | Derived | str] | None = None,
+    ) -> Self:
+        """Updates the properties of an existing reaction in the model.
+
+        Examples:
+            >>> model.update_reaction("v1",
+            ...     fn=mass_action,
+            ...     args=["x1", "kf1"],
+            ...     stoichiometry={"x1": -1, "x2": 1},
+            ... )
+
+        Args:
+            name: The name of the reaction to update.
+            fn: The new function for the reaction. If None, the existing function is retained.
+            args: The new arguments for the reaction. If None, the existing arguments are retained.
+            stoichiometry: The new stoichiometry for the reaction. If None, the existing stoichiometry is retained.
+
+        Returns:
+            Self: The instance of the model with the updated reaction.
+
+        """
+        rxn = self._reactions[name]
+        rxn.fn = rxn.fn if fn is None else fn
+
+        if stoichiometry is not None:
+            stoich = {
+                k: Derived(fn=fns.constant, args=[v]) if isinstance(v, str) else v
+                for k, v in stoichiometry.items()
+            }
+            rxn.stoichiometry = stoich
+        rxn.args = rxn.args if args is None else args
+        return self
+
+    @_invalidate_cache
+    def remove_reaction(self, name: str) -> Self:
+        """Remove a reaction from the model by its name.
+
+        Examples:
+            >>> model.remove_reaction("v1")
+
+        Args:
+            name: The name of the reaction to be removed.
+
+        Returns:
+            Self: The instance of the model with the reaction removed.
+
+        """
+        self._remove_id(name=name)
+        self._reactions.pop(name)
+        return self
+
+    # def update_stoichiometry_of_cpd(
+    #     self,
+    #     rate_name: str,
+    #     compound: str,
+    #     value: float,
+    # ) -> Model:
+    #     self.update_stoichiometry(
+    #         rate_name=rate_name,
+    #         stoichiometry=self.stoichiometries[rate_name] | {compound: value},
+    #     )
+    #     return self
+
+    # def scale_stoichiometry_of_cpd(
+    #     self,
+    #     rate_name: str,
+    #     compound: str,
+    #     scale: float,
+    # ) -> Model:
+    #     return self.update_stoichiometry_of_cpd(
+    #         rate_name=rate_name,
+    #         compound=compound,
+    #         value=self.stoichiometries[rate_name][compound] * scale,
+    #     )
+
+    ##########################################################################
+    # Readouts
+    # They are like derived variables, but only calculated on demand
+    # Think of something like NADPH / (NADP + NADPH) as a proxy for energy state
+    ##########################################################################
+
+    def add_readout(self, name: str, fn: RateFn, *, args: list[str]) -> Self:
+        """Adds a readout to the model.
+
+        Examples:
+            >>> model.add_readout("energy_state",
+            ...     fn=div,
+            ...     args=["NADPH", "NADP*_total"]
+            ... )
+
+        Args:
+            name: The name of the readout.
+            fn: The function to be used for the readout.
+            args: The list of arguments for the function.
+
+        Returns:
+            Self: The instance of the model with the added readout.
+
+        """
+        self._insert_id(name=name, ctx="readout")
+        self._readouts[name] = Readout(fn=fn, args=args)
+        return self
+
+    def get_readout_names(self) -> list[str]:
+        """Retrieve the names of all readouts.
+
+        Examples:
+            >>> model.get_readout_names()
+                ["energy_state", "redox_state"]
+
+        Returns:
+            list[str]: A list containing the names of the readouts.
+
+        """
+        return list(self._readouts)
+
+    def remove_readout(self, name: str) -> Self:
+        """Remove a readout by its name.
+
+        Examples:
+            >>> model.remove_readout("energy_state")
+
+        Args:
+            name (str): The name of the readout to remove.
+
+        Returns:
+            Self: The instance of the class after the readout has been removed.
+
+        """
+        self._remove_id(name=name)
+        del self._readouts[name]
+        return self
+
+    ##########################################################################
+    # Surrogates
+    ##########################################################################
+
+    @_invalidate_cache
+    def add_surrogate(
+        self,
+        name: str,
+        surrogate: AbstractSurrogate,
+        args: list[str] | None = None,
+        outputs: list[str] | None = None,
+        stoichiometries: dict[str, dict[str, float | Derived]] | None = None,
+    ) -> Self:
+        """Adds a surrogate model to the current instance.
+
+        Examples:
+            >>> model.add_surrogate("name", surrogate)
+
+        Args:
+            name (str): The name of the surrogate model.
+            surrogate (AbstractSurrogate): The surrogate model instance to be added.
+            args: Names of the values passed for the surrogate model.
+            outputs: Names of values produced by the surrogate model.
+            stoichiometries: A dictionary mapping reaction names to stoichiometries.
+
+        Returns:
+            Self: The current instance with the added surrogate model.
+
+        """
+        self._insert_id(name=name, ctx="surrogate")
+
+        if args is not None:
+            surrogate.args = args
+        if outputs is not None:
+            surrogate.outputs = outputs
+        if stoichiometries is not None:
+            surrogate.stoichiometries = stoichiometries
+
+        self._surrogates[name] = surrogate
+        return self
+
+    def update_surrogate(
+        self,
+        name: str,
+        surrogate: AbstractSurrogate | None = None,
+        args: list[str] | None = None,
+        stoichiometries: dict[str, dict[str, float | Derived]] | None = None,
+    ) -> Self:
+        """Update a surrogate model in the model.
+
+        Examples:
+            >>> model.update_surrogate("name", surrogate)
+
+        Args:
+            name (str): The name of the surrogate model to update.
+            surrogate (AbstractSurrogate): The new surrogate model instance.
+            args: A list of arguments for the surrogate model.
+            stoichiometries: A dictionary mapping reaction names to stoichiometries.
+
+        Returns:
+            Self: The instance of the model with the updated surrogate model.
+
+        """
+        if name not in self._surrogates:
+            msg = f"Surrogate '{name}' not found in model"
+            raise KeyError(msg)
+
+        if surrogate is None:
+            surrogate = self._surrogates[name]
+        if args is not None:
+            surrogate.args = args
+        if stoichiometries is not None:
+            surrogate.stoichiometries = stoichiometries
+
+        self._surrogates[name] = surrogate
+        return self
+
+    def remove_surrogate(self, name: str) -> Self:
+        """Remove a surrogate model from the model.
+
+        Examples:
+            >>> model.remove_surrogate("name")
+
+        Returns:
+            Self: The instance of the model with the specified surrogate model removed.
+
+        """
+        self._remove_id(name=name)
+        self._surrogates.pop(name)
+        return self
+
+    def get_surrogate_reaction_names(self) -> list[str]:
+        """Return reaction names by surrogates."""
+        names = []
+        for i in self._surrogates.values():
+            names.extend(i.stoichiometries)
+        return names
+
+    ##########################################################################
+    # Datasets
+    ##########################################################################
+
+    def add_data(self, name: str, data: pd.Series | pd.DataFrame) -> Self:
+        """Add named data set to model."""
+        self._insert_id(name=name, ctx="data")
+        self._data[name] = data
+        return self
+
+    def update_data(self, name: str, data: pd.Series | pd.DataFrame) -> Self:
+        """Update named data set."""
+        self._data[name] = data
+        return self
+
+    def remove_data(self, name: str) -> Self:
+        """Remove data set from model."""
+        self._remove_id(name=name)
+        self._data.pop(name)
+        return self
+
+    ##########################################################################
+    # Get dependent values. This includes
+    # - derived parameters
+    # - derived variables
+    # - fluxes
+    # - readouts
+    ##########################################################################
+
+    def _get_dependent(
+        self,
+        variables: dict[str, float],
+        time: float = 0.0,
+        *,
+        cache: ModelCache,
+    ) -> dict[str, float]:
+        """Generate a dictionary of model components dependent on other components.
+
+        Examples:
+            >>> model._get_dependent({"x1": 1.0, "x2": 2.0}, time=0.0)
+                {"x1": 1.0, "x2": 2.0, "k1": 0.1, "time": 0.0}
+
+        Args:
+            variables: A dictionary of concentrations with keys as the names of the substances
+                   and values as their respective concentrations.
+            time: The time point for the calculation
+            cache: A ModelCache object containing precomputed values and dependencies.
+            include_readouts: A flag indicating whether to include readout values in the returned dictionary.
+
+        Returns:
+            dict[str, float]
+                A dictionary containing parameter values, derived variables, and optionally readouts,
+                with their respective names as keys and their calculated values as values.
+
+        """
+        args = cache.all_parameter_values | variables | self._data
+        args["time"] = time
+
+        containers = self._derived | self._reactions | self._surrogates
+        for name in cache.dyn_order:
+            containers[name].calculate_inpl(name, args)
+
+        for k in self._data:
+            args.pop(k)
+
+        return cast(dict[str, float], args)
+
+    def get_dependent(
+        self,
+        variables: dict[str, float] | None = None,
+        time: float = 0.0,
+        *,
+        include_readouts: bool = False,
+    ) -> pd.Series:
+        """Generate a pandas Series of arguments for the model.
+
+        Examples:
+            # Using initial conditions
+            >>> model.get_args()
+                {"x1": 1.get_dependent, "x2": 2.0, "k1": 0.1, "time": 0.0}
+
+            # With custom concentrations
+            >>> model.get_dependent({"x1": 1.0, "x2": 2.0})
+                {"x1": 1.0, "x2": 2.0, "k1": 0.1, "time": 0.0}
+
+            # With custom concentrations and time
+            >>> model.get_dependent({"x1": 1.0, "x2": 2.0}, time=1.0)
+                {"x1": 1.0, "x2": 2.0, "k1": 0.1, "time": 1.0}
+
+        Args:
+            variables: A dictionary where keys are the names of the concentrations and values are their respective float values.
+            time: The time point at which the arguments are generated (default is 0.0).
+            include_readouts: Whether to include readouts in the arguments (default is False).
+
+        Returns:
+            A pandas Series containing the generated arguments with float dtype.
+
+        """
+        if (cache := self._cache) is None:
+            cache = self._create_cache()
+
+        args = self._get_dependent(
+            variables=self.get_initial_conditions() if variables is None else variables,
+            time=time,
+            cache=cache,
+        )
+
+        if include_readouts:
+            for name, ro in self._readouts.items():  # FIXME: order?
+                ro.calculate_inpl(name, args)
+
+        return pd.Series(args, dtype=float)
+
+    def get_dependent_time_course(
+        self,
+        variables: pd.DataFrame,
+        *,
+        include_readouts: bool = False,
+    ) -> pd.DataFrame:
+        """Generate a DataFrame containing time course arguments for model evaluation.
+
+        Examples:
+            >>> model.get_dependent_time_course(
+            ...     pd.DataFrame({"x1": [1.0, 2.0], "x2": [2.0, 3.0]}
+            ... )
+                pd.DataFrame({
+                    "x1": [1.0, 2.0],
+                    "x2": [2.0, 3.0],
+                    "k1": [0.1, 0.1],
+                    "time": [0.0, 1.0]},
+                )
+
+        Args:
+            variables: A DataFrame containing concentration data with time as the index.
+            include_readouts: If True, include readout variables in the resulting DataFrame.
+
+        Returns:
+            A DataFrame containing the combined concentration data, parameter values,
+            derived variables, and optionally readout variables, with time as an additional column.
+
+        """
+        args = {
+            time: self.get_dependent(
+                variables=values.to_dict(),
+                time=cast(float, time),
+                include_readouts=include_readouts,
+            )
+            for time, values in variables.iterrows()
+        }
+
+        return pd.DataFrame(args, dtype=float).T
+
+    ##########################################################################
+    # Get args
+    ##########################################################################
+
+    def get_args(
+        self,
+        variables: dict[str, float] | None = None,
+        time: float = 0.0,
+        *,
+        include_derived: bool = True,
+        include_readouts: bool = False,
+    ) -> pd.Series:
+        """Generate a pandas Series of arguments for the model.
+
+        Examples:
+            # Using initial conditions
+            >>> model.get_args()
+                {"x1": 1.0, "x2": 2.0, "k1": 0.1, "time": 0.0}
+
+            # With custom concentrations
+            >>> model.get_args({"x1": 1.0, "x2": 2.0})
+                {"x1": 1.0, "x2": 2.0, "k1": 0.1, "time": 0.0}
+
+            # With custom concentrations and time
+            >>> model.get_args({"x1": 1.0, "x2": 2.0}, time=1.0)
+                {"x1": 1.0, "x2": 2.0, "k1": 0.1, "time": 1.0}
+
+        Args:
+            variables: A dictionary where keys are the names of the concentrations and values are their respective float values.
+            time: The time point at which the arguments are generated.
+            include_derived: Whether to include derived variables in the arguments.
+            include_readouts: Whether to include readouts in the arguments.
+
+        Returns:
+            A pandas Series containing the generated arguments with float dtype.
+
+        """
+        names = self.get_variable_names()
+        if include_derived:
+            names.extend(self.get_derived_variable_names())
+        if include_readouts:
+            names.extend(self._readouts)
+
+        args = self.get_dependent(
+            variables=variables, time=time, include_readouts=include_readouts
+        )
+        return args.loc[names]
+
+    def get_args_time_course(
+        self,
+        variables: pd.DataFrame,
+        *,
+        include_derived: bool = True,
+        include_readouts: bool = False,
+    ) -> pd.DataFrame:
+        """Generate a DataFrame containing time course arguments for model evaluation.
+
+        Examples:
+            >>> model.get_args_time_course(
+            ...     pd.DataFrame({"x1": [1.0, 2.0], "x2": [2.0, 3.0]}
+            ... )
+                pd.DataFrame({
+                    "x1": [1.0, 2.0],
+                    "x2": [2.0, 3.0],
+                    "k1": [0.1, 0.1],
+                    "time": [0.0, 1.0]},
+                )
+
+        Args:
+            variables: A DataFrame containing concentration data with time as the index.
+            include_derived: Whether to include derived variables in the arguments.
+            include_readouts: If True, include readout variables in the resulting DataFrame.
+
+        Returns:
+            A DataFrame containing the combined concentration data, parameter values,
+            derived variables, and optionally readout variables, with time as an additional column.
+
+        """
+        names = self.get_variable_names()
+        if include_derived:
+            names.extend(self.get_derived_variable_names())
+
+        args = self.get_dependent_time_course(
+            variables=variables, include_readouts=include_readouts
+        )
+        return args.loc[:, names]
+
+    ##########################################################################
+    # Get fluxes
+    ##########################################################################
+
+    def get_fluxes(
+        self,
+        variables: dict[str, float] | None = None,
+        time: float = 0.0,
+    ) -> pd.Series:
+        """Calculate the fluxes for the given concentrations and time.
+
+        Examples:
+            # Using initial conditions as default
+            >>> model.get_fluxes()
+                pd.Series({"r1": 0.1, "r2": 0.2})
+
+            # Using custom concentrations
+            >>> model.get_fluxes({"x1": 1.0, "x2": 2.0})
+                pd.Series({"r1": 0.1, "r2": 0.2})
+
+            # Using custom concentrations and time
+            >>> model.get_fluxes({"x1": 1.0, "x2": 2.0}, time=0.0)
+                pd.Series({"r1": 0.1, "r2": 0.2})
+
+        Args:
+            variables: A dictionary where keys are species names and values are their concentrations.
+            time: The time at which to calculate the fluxes. Defaults to 0.0.
+
+        Returns:
+            Fluxes: A pandas Series containing the fluxes for each reaction.
+
+        """
+        names = self.get_reaction_names()
+        for surrogate in self._surrogates.values():
+            names.extend(surrogate.stoichiometries)
+
+        args = self.get_dependent(
+            variables=variables,
+            time=time,
+            include_readouts=False,
+        )
+        return args.loc[names]
+
+    def get_fluxes_time_course(self, variables: pd.DataFrame) -> pd.DataFrame:
+        """Generate a time course of fluxes for the given reactions and surrogates.
+
+        Examples:
+            >>> model.get_fluxes_time_course(args)
+                pd.DataFrame({"v1": [0.1, 0.2], "v2": [0.2, 0.3]})
+
+        This method calculates the fluxes for each reaction in the model using the provided
+        arguments and combines them with the outputs from the surrogates to create a complete
+        time course of fluxes.
+
+        Args:
+            variables: A DataFrame containing the input arguments for the reactions
+                       and surrogates. Each column corresponds to a specific input
+                       variable, and each row represents a different time point.
+
+        Returns:
+            pd.DataFrame: A DataFrame containing the calculated fluxes for each reaction and
+                          the outputs from the surrogates. The index of the DataFrame matches
+                          the index of the input arguments.
+
+        """
+        names = self.get_reaction_names()
+        for surrogate in self._surrogates.values():
+            names.extend(surrogate.stoichiometries)
+
+        variables = self.get_dependent_time_course(
+            variables=variables,
+            include_readouts=False,
+        )
+        return variables.loc[:, names]
+
+    ##########################################################################
+    # Get rhs
+    ##########################################################################
+
+    def __call__(self, /, time: float, variables: Array) -> Array:
+        """Simulation version of get_right_hand_side.
+
+        Examples:
+            >>> model(0.0, np.array([1.0, 2.0]))
+                np.array([0.1, 0.2])
+
+        Warning: Swaps t and y!
+        This can't get kw-only args, as the integrators call it with pos-only
+
+        Args:
+            time: The current time point.
+            variables: Array of concentrations
+
+
+        Returns:
+            The rate of change of each variable in the model.
+
+        """
+        if (cache := self._cache) is None:
+            cache = self._create_cache()
+        vars_d: dict[str, float] = dict(
+            zip(
+                cache.var_names,
+                variables,
+                strict=True,
+            )
+        )
+        dependent: dict[str, float] = self._get_dependent(
+            variables=vars_d,
+            time=time,
+            cache=cache,
+        )
+
+        dxdt = cache.dxdt
+        dxdt[:] = 0
+        for k, stoc in cache.stoich_by_cpds.items():
+            for flux, n in stoc.items():
+                dxdt[k] += n * dependent[flux]
+        for k, sd in cache.dyn_stoich_by_cpds.items():
+            for flux, dv in sd.items():
+                n = dv.calculate(dependent)
+                dxdt[k] += n * dependent[flux]
+        return cast(Array, dxdt.to_numpy())
+
+    def get_right_hand_side(
+        self,
+        variables: dict[str, float] | None = None,
+        time: float = 0.0,
+    ) -> pd.Series:
+        """Calculate the right-hand side of the differential equations for the model.
+
+        Examples:
+            # Using initial conditions as default
+            >>> model.get_right_hand_side()
+                pd.Series({"x1": 0.1, "x2": 0.2})
+
+            # Using custom concentrations
+            >>> model.get_right_hand_side({"x1": 1.0, "x2": 2.0})
+                pd.Series({"x1": 0.1, "x2": 0.2})
+
+            # Using custom concentrations and time
+            >>> model.get_right_hand_side({"x1": 1.0, "x2": 2.0}, time=0.0)
+                pd.Series({"x1": 0.1, "x2": 0.2})
+
+        Args:
+            variables: A dictionary mapping compound names to their concentrations.
+            time: The current time point. Defaults to 0.0.
+
+        Returns:
+            The rate of change of each variable in the model.
+
+        """
+        if (cache := self._cache) is None:
+            cache = self._create_cache()
+        var_names = self.get_variable_names()
+        dependent = self._get_dependent(
+            variables=self.get_initial_conditions() if variables is None else variables,
+            time=time,
+            cache=cache,
+        )
+        dxdt = pd.Series(np.zeros(len(var_names), dtype=float), index=var_names)
+        for k, stoc in cache.stoich_by_cpds.items():
+            for flux, n in stoc.items():
+                dxdt[k] += n * dependent[flux]
+
+        for k, sd in cache.dyn_stoich_by_cpds.items():
+            for flux, dv in sd.items():
+                n = dv.fn(*(dependent[i] for i in dv.args))
+                dxdt[k] += n * dependent[flux]
+        return dxdt
