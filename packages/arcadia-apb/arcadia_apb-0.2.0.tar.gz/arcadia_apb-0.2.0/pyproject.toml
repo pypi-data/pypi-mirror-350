@@ -1,0 +1,145 @@
+[build-system]
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
+build-backend = "poetry_dynamic_versioning.backend"
+
+[tool.poetry-dynamic-versioning]
+enable = false
+strict = false
+vcs = "git"
+# The "pep440" style appends the git commit hash to the version number when there are commits
+# on `main` since the last tag.
+style = "pep440"
+# Append a flag to the version number if there are uncommitted changes.
+dirty = true
+
+[tool.poetry]
+name = "arcadia-apb"
+# This version is a placeholder. It will be updated at build time by poetry-dynamic-versioning
+# from the latest git tag.
+version = "0.2.0"
+description = "General purpose toolkit for applied protein biology."
+authors = [
+    "Evan Kiefl <evan.kiefl@arcadiascience.com>",
+    "Keith Cheveralls <keith.cheveralls@arcadiascience.com>",
+]
+readme = "README.md"
+license = "MIT"
+packages = [{ include = "apb" }]
+homepage = "https://github.com/Arcadia-Science/applied-protein-biology-toolkit"
+repository = "https://github.com/Arcadia-Science/applied-protein-biology-toolkit"
+documentation = "https://github.com/Arcadia-Science/applied-protein-biology-toolkit"
+
+[tool.poetry.requires-plugins]
+poetry-dynamic-versioning = { version = ">=1.0.0,<2.0.0", extras = ["plugin"] }
+
+[[tool.poetry.source]]
+name = "pypi"
+priority = "primary"
+
+[[tool.poetry.source]]
+name = "pypi_test"
+# Note: poetry only support the "legacy" API.
+url = "https://test.pypi.org/legacy/"
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+sqlalchemy = ">=2.0.30"
+sqlalchemy-utils = ">=0.41.2"
+# First version compatible with Numpy 2.0
+pandera = ">=0.20"
+# v2 introduces big API changes
+pandas = ">=2.0"
+# v1 introduces big API changes
+biotite = ">=1.0"
+attrs = ">=21.3.0"
+cattrs = ">=22.1.0"
+click = ">=8.0.0"
+dask = {extras = ["distributed"], version = ">=2024.6.2"}
+bottleneck = ">=1.4.0"
+xarray = ">=2024.6.0"
+netcdf4 = ">=1.6.5"
+plotly = ">=5.22.0"
+# First version compatible with Numpy 2.0
+scipy = ">=1.13"
+rich = ">=13.7.1"
+arcadia-pycolor = ">=0.5.1"
+numpy = ">=2.0"
+aiohttp = "^3.11.18"
+python-slugify = "^8.0.4"
+typer = "^0.15.4"
+
+[tool.poetry.group.dev.dependencies]
+pyright = ">=1.1.400,<1.2"
+ipdb = ">=0.13.13,<0.14"
+pytest = ">=8.2.0,<8.3"
+pre-commit = ">=3.7.1,<3.8"
+ruff = ">=0.11.8,<0.12"
+
+[tool.poetry.group.build.dependencies]
+poetry-dynamic-versioning = { extras = ["plugin"], version = "^1.4.0" }
+
+[tool.poetry.group.docs]
+optional = true
+
+[tool.poetry.group.docs.dependencies]
+sphinx = "6.2.0"
+sphinx-copybutton = "0.5.2"
+furo = "2024.5.6"
+myst-parser = "3.0.1"
+sphinx-autoapi = "3.1.2"
+sphinx-tabs = "3.4.5"
+nbsphinx = "0.9.5"
+# Jupyterlab and matplotlib are needed for notebook rendering.
+jupyterlab = "4.2.5"
+matplotlib = "3.9.2"
+
+[tool.poetry.scripts]
+apb-fold = "apb.structure.fold_server:app"
+
+[tool.jupytext]
+formats = "ipynb,py:percent"
+
+[tool.ruff]
+# The directories to consider when resolving first- vs. third-party imports
+src = ["."]
+line-length = 100
+indent-width = 4
+extend-include = ["*.ipynb"]
+extend-exclude = ["apb/vendor/*"]
+
+[tool.ruff.lint.per-file-ignores]
+# Ignore star and unused imports.
+"__init__.py" = ["F403", "F405"]
+
+[tool.ruff.lint]
+select = [
+    "B",  # flake8-bugbear
+    "E",  # pycodestyle error
+    "F",  # pyflakes
+    "I",  # isort
+    "UP", # pyupgrade
+    "W",  # pycodestyle warning
+]
+
+# rule codes to ignore
+ignore = []
+
+# Allows fix for all enabled rules when `--fix` is provided
+fixable = ["ALL"]
+unfixable = []
+
+[tool.ruff.format]
+# Like Black, use double quotes, indent with spaces, and respect trailing commas
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.ruff.lint.isort]
+order-by-type = true
+no-lines-before = ["future", "standard-library"]
+
+[tool.pyright]
+# https://github.com/microsoft/pyright/blob/main/docs/configuration.md
+include = ["apb"]
+typeCheckingMode = "basic"
