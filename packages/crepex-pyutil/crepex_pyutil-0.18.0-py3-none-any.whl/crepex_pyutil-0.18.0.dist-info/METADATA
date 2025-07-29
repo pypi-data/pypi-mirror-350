@@ -1,0 +1,52 @@
+Metadata-Version: 2.1
+Name: crepex-pyutil
+Version: 0.18.0
+Summary: CrepeX python utilities
+Author: Hyunwoo Shim
+Author-email: hyunwoo.shim@crepe-x.com
+Requires-Python: >=3.9,<4.0
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Dist: requests (>=2.27.0,<3.0.0)
+Description-Content-Type: text/markdown
+
+# CrepeX python util
+
+## 개발환경
+- `poetry` 를 사용해서 개발
+- 가상환경은 `poetry shell`
+- 패키지 설치는 `poetry install`
+- 최조 pre-commit 셋팅 `pre-commit install`
+
+## 배포
+
+### 테스트
+- TestPypi 계정준비, API 토큰 준비
+
+```shell
+# test pypi repository 등록
+poetry config repositories.testpypi https://test.pypi.org/legacy/
+# poetry 에 토큰 등록
+poetry config http-basic.testpypi __token__ pypi-your-api-token-here
+
+# Build & Publish
+poetry build
+poetry publish -r testpypi
+
+# Get package
+pip install -i https://test.pypi.org/.../your-package-name
+```
+
+### 프로덕션
+- Pypi 계정준비, API 토큰 준비
+```shell
+# poetry 에 토큰 등록
+poetry config pypi-token.pypi pypi-your-token-here
+
+# Build & Publish
+poetry publish --build
+```
+
