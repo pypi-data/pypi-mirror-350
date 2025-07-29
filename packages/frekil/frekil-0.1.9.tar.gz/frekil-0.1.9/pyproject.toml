@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "frekil"
+version = "0.1.9"
+description = "Official Python SDK for Frekil API"
+readme = "README.md"
+authors = [
+    {name = "Notate", email = "support@notatehq.com"}
+]
+license = {text = "MIT"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+keywords = ["frekil", "sdk", "api", "notate", "medical", "imaging"]
+dependencies = [
+    "requests>=2.25.0",
+]
+requires-python = ">=3.10"
+
+[project.urls]
+Homepage = "https://notatehq.com"
+Documentation = "https://notatehq.com/docs"
+Repository = "https://github.com/notatehq/frekil-python-sdk"
+Issues = "https://github.com/notatehq/frekil-python-sdk/issues"
+
+[tool.setuptools]
+packages = ["frekil", "frekil.auth", "frekil.api", "frekil.exceptions", "frekil.utils"]
+
+[tool.black]
+line-length = 88
+target-version = ["py37", "py38", "py39", "py310"]
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.5"
+
