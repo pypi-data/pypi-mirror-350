@@ -1,0 +1,70 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mcp-python-client"
+version = "0.1.8"
+description = "Python client for interacting with MCP servers and LLMs"
+authors = [
+    {name = "Ling Li", email = "email@ling-li.com"},
+]
+
+maintainers = [
+    {name = "Ling Li", email = "email@ling-li.com"},
+]
+
+
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "anyio>=4.8.0",
+    "litellm>=1.63.14",
+    "loguru>=0.7.3",
+    "mcp>=0.0.17",
+    "mypy>=1.15.0",
+    "pydantic>=2.0.0",
+    "pytest>=8.3.5",
+    "pytest-asyncio>=0.26.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/lingster/mcp-python-client"
+"Bug Tracker" = "https://github.com/lingster/mcp-python-client/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["mcp_python_client"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+strict_optional = true
+
+[tool.black]
+line-length = 88
+target-version = ['py310']
+
+[tool.isort]
+profile = "black"
+
+[tool.pytest]
+testpaths = ["tests"]
+#addopts = "--cov=mcp_python_client"
