@@ -1,0 +1,264 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build",
+      "type": "shell",
+      "command": "rm -rf dist; hatchling build; twine check dist/*",
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "Publish [Test]",
+      "type": "shell",
+      "command": "./dist/publish.sh --test",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Publish [Prod]",
+      "type": "shell",
+      "command": "./dist/publish.sh",
+      "group": "build"
+    },
+    {
+      "label": "Run Pytest (Python 3.6)",
+      "type": "shell",
+      "command": "PYENV_VERSION=3.6",
+      "args": [
+        "python3.6",
+        "-m",
+        "pip",
+        "install",
+        "--upgrade",
+        "pip",
+        "&&",
+        "PYENV_VERSION=3.6",
+        "python3.6",
+        "-m",
+        "pip",
+        "install",
+        "-r",
+        "requirements-dev.txt",
+        "&&",
+        "PYENV_VERSION=3.6",
+        "python3.6",
+        "-m",
+        "pytest"
+      ],
+      "group": "test"
+    },
+    {
+      "label": "Run Pytest (Python 3.7)",
+      "type": "shell",
+      "command": "PYENV_VERSION=3.7",
+      "args": [
+        "python3.7",
+        "-m",
+        "pip",
+        "install",
+        "--upgrade",
+        "pip",
+        "&&",
+        "PYENV_VERSION=3.7",
+        "python3.7",
+        "-m",
+        "pip",
+        "install",
+        "-r",
+        "requirements-dev.txt",
+        "&&",
+        "PYENV_VERSION=3.7",
+        "python3.7",
+        "-m",
+        "pytest"
+      ],
+      "group": "test"
+    },
+    {
+      "label": "Run Pytest (Python 3.8)",
+      "type": "shell",
+      "command": "PYENV_VERSION=3.8",
+      "args": [
+        "python3.8",
+        "-m",
+        "pip",
+        "install",
+        "--upgrade",
+        "pip",
+        "&&",
+        "PYENV_VERSION=3.8",
+        "python3.8",
+        "-m",
+        "pip",
+        "install",
+        "-r",
+        "requirements-dev.txt",
+        "&&",
+        "PYENV_VERSION=3.8",
+        "python3.8",
+        "-m",
+        "pytest"
+      ],
+      "group": "test"
+    },
+    {
+      "label": "Run Pytest (Python 3.9)",
+      "type": "shell",
+      "command": "PYENV_VERSION=3.9",
+      "args": [
+        "python3.9",
+        "-m",
+        "pip",
+        "install",
+        "--upgrade",
+        "pip",
+        "&&",
+        "PYENV_VERSION=3.9",
+        "python3.9",
+        "-m",
+        "pip",
+        "install",
+        "-r",
+        "requirements-dev.txt",
+        "&&",
+        "PYENV_VERSION=3.9",
+        "python3.9",
+        "-m",
+        "pytest"
+      ],
+      "group": "test"
+    },
+    {
+      "label": "Run Pytest (Python 3.10)",
+      "type": "shell",
+      "command": "PYENV_VERSION=3.10",
+      "args": [
+        "python3.10",
+        "-m",
+        "pip",
+        "install",
+        "--upgrade",
+        "pip",
+        "&&",
+        "PYENV_VERSION=3.10",
+        "python3.10",
+        "-m",
+        "pip",
+        "install",
+        "-r",
+        "requirements-dev.txt",
+        "&&",
+        "PYENV_VERSION=3.10",
+        "python3.10",
+        "-m",
+        "pytest"
+      ],
+      "group": "test"
+    },
+    {
+      "label": "Run Pytest (Python 3.11)",
+      "type": "shell",
+      "command": "PYENV_VERSION=3.11",
+      "args": [
+        "python3.11",
+        "-m",
+        "pip",
+        "install",
+        "--upgrade",
+        "pip",
+        "&&",
+        "PYENV_VERSION=3.11",
+        "python3.11",
+        "-m",
+        "pip",
+        "install",
+        "-r",
+        "requirements-dev.txt",
+        "&&",
+        "PYENV_VERSION=3.11",
+        "python3.11",
+        "-m",
+        "pytest"
+      ],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "Run Pytest (Python 3.12)",
+      "type": "shell",
+      "command": "PYENV_VERSION=3.12",
+      "args": [
+        "python3.12",
+        "-m",
+        "pip",
+        "install",
+        "--upgrade",
+        "pip",
+        "&&",
+        "PYENV_VERSION=3.12",
+        "python3.12",
+        "-m",
+        "pip",
+        "install",
+        "-r",
+        "requirements-dev.txt",
+        "&&",
+        "PYENV_VERSION=3.12",
+        "python3.12",
+        "-m",
+        "pytest"
+      ],
+      "group": "test"
+    },
+    {
+      "label": "Run Pytest (Python 3.13)",
+      "type": "shell",
+      "command": "PYENV_VERSION=3.13-dev",
+      "args": [
+        "python3.13",
+        "-m",
+        "pip",
+        "install",
+        "--upgrade",
+        "pip",
+        "&&",
+        "PYENV_VERSION=3.13-dev",
+        "python3.13",
+        "-m",
+        "pip",
+        "install",
+        "-r",
+        "requirements-dev.txt",
+        "&&",
+        "PYENV_VERSION=3.13-dev",
+        "python3.13",
+        "-m",
+        "pytest"
+      ],
+      "group": "test"
+    },
+    {
+      "label": "Run All Pytest Versions",
+      "type": "shell",
+      "dependsOn": [
+        "Run Pytest (Python 3.6)",
+        "Run Pytest (Python 3.7)",
+        "Run Pytest (Python 3.8)",
+        "Run Pytest (Python 3.9)",
+        "Run Pytest (Python 3.10)",
+        "Run Pytest (Python 3.11)",
+        "Run Pytest (Python 3.12)",
+        "Run Pytest (Python 3.13)"
+      ],
+      "group": "test"
+    }
+  ]
+}

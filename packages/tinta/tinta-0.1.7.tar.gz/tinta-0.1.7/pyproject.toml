@@ -1,0 +1,193 @@
+#!/usr/bin/env python
+
+# Tinta
+# Copyright 2024 github.com/brandoncript
+
+# This program is bound to the Hippocratic License 2.1
+# Full text is available here:
+# https://firstdonoharm.dev/version/2/1/license
+
+# Further to adherence to the Hippocratic License, permission is hereby
+# granted, free of charge, to any person obtaining a copy of this software
+# and associated documentation files (the "Software") under the terms of the
+# MIT License to deal in the Software without restriction, including without
+# limitation the rights to use, copy, modify, merge, publish, distribute,
+# sublicense, and / or sell copies of the Software, and to permit persons
+# to whom the Software is furnished to do so, subject to the conditions layed
+# out in the MIT License.
+
+# Where a conflict or dispute would arise between these two licenses, HLv2.1
+# shall take precedence.
+
+[project]
+name = "tinta"
+version = "0.1.7"
+description = "Tinta, a magical console output tool."
+authors = [{ name = "Brandon Shelley", email = "brandon@pacificaviator.co" }]
+license = "MIT"
+readme = "README.md"
+dependencies = []
+keywords = [
+  "console",
+  "colors",
+  "ansi",
+  "print",
+  "term",
+  "cli",
+  "terminal",
+  "development",
+]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+  "Environment :: Console",
+  "Topic :: Utilities",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+
+[tool.poetry]
+name = "tinta"
+version = "0.1.7"
+description = "Tinta, a magical console output tool."
+authors = ["Brandon Shelley <brandon@pacificaviator.co>"]
+license = "MIT"
+readme = "README.md"
+
+[project.urls]
+homepage = "https://github.com/brandonscript/tinta"
+repository = "https://github.com/brandonscript/tinta"
+
+
+[build-system]
+requires = ["hatchling", "poetry-core"]
+build-backend = "hatchling.build"
+
+[tool.hatchling.build]
+packages = ["tinta"]
+include = ["tinta/**/*.py", "tinta/**/*.pyi", "tinta/colors.ini", "/tests"]
+exclude = [".*", "dist"]
+
+[tool.hatchling.dependencies]
+python = "^3.9 || ^3.10 || ^3.11 || ^3.12 || ^3.13"
+
+[tool.hatchling.dev-dependencies]
+pytest = "*"
+twine = "*"
+wheel = "*"
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+explicit_package_bases = true
+ignore_missing_imports = true
+check_untyped_defs = true
+
+[tool.mypy-applications]
+ignore_missing_imports = false
+
+[tool.mypy-common]
+ignore_missing_imports = false
+check_untyped_defs = true
+
+[tool.black]
+target-version = ['py312']
+preview = true
+
+[tool.isort]
+profile = "black"
+order_by_type = false
+combine_as_imports = true
+case_sensitive = false
+skip_magic_trailing_comma = true
+force_sort_within_sections = false
+
+[tool.pyright]
+# verboseOutput = true
+pythonVersion = "3.12"
+extraPaths = [".venv/lib/python3.11/site-packages", "tinta", "**/*.py"]
+reportUnusedImport = "error"
+reportUnusedClass = "error"
+reportUnusedFunction = "error"
+reportUnusedVariable = "error"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+indent-width = 4
+preview = true
+
+[tool.ruff.lint]
+fixable = ["ALL"]
+select = [
+  # PRAGMA: F401 is for unused imports, you may want to remove this when developing so you can comment/uncomment code.
+  "F401",
+  "W292",
+  "W293",
+  "W191",
+  "E101",
+  "E112",
+  "E117",
+  "I002",
+  "I001",
+  "I002",
+  # "UP035",
+]
+# To add, when supported by ruff: "W503", "E203"
+# see: https://github.com/astral-sh/ruff/issues/2402
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402", "F401"]
+"typ.py" = ["F401"]
+
+[tool.ruff.lint.isort]
+force-sort-within-sections = false
+case-sensitive = false
+combine-as-imports = true
+force-wrap-aliases = true
+order-by-type = false
+
+[tool.ruff.format]
+indent-style = "space"
+line-ending = "auto"
+skip-magic-trailing-comma = false
+quote-style = "double"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+minversion = "7.0"
+addopts = "-rP -vv --color=yes --capture=tee-sys"
+testpaths = ["tests"]
+python_files = ["*_test.py", "test_*.py"]
+python_classes = ["test_", "_test", "Test*"]
+python_functions = ["test_", "_test"]
+
+[tool.poetry.dependencies]
+python = "^3.9 || ^3.10 || ^3.11 || ^3.12 || ^3.13"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "*"
+black = "*"
+pytest = "*"
+mypy = "*"
+pipenv = "*"
+pylint = "*"
+autopep8 = "*"
+pytest-cov = "*"
+twine = "*"
+hatchling = "*"
+setuptools = "*"
+wheel = "*"
+
+[tool.hatchling.scripts]
+test = "pytest"
+build = "./dist/build.sh"
+publish-test = "./dist/publish.sh --test"
+publish-real = "./dist/publish.sh"
+lint-check = "ruff check tinta"
+lint-fix = "ruff fix tinta"
