@@ -1,0 +1,39 @@
+{% extends "cookie_consent/base.html" %}
+{% load cookie_tags i18n %}
+
+{% block body %}
+
+  <h1>{% trans 'Cookies' %}</h1>
+  <p>
+    {% trans 'This is a list of the categories of cookies used in our website and why we use them.' %}
+  </p>
+
+  <span style="margin-bottom: 16px;">
+    {% trans 'Za više informacija, molimo pročitajte:' %}
+    <a class="custom-privacy-statement-link"
+      target="_blank"
+      href=""
+    >
+      {% trans 'Izjava o privatnosti' %}<span class="link-icon-cookie">
+        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" data-icon="external-link" viewBox="0 0 32 40" x="0px" y="0px" style="margin-left: 5px;">
+          <path
+            d="M32 0l-8 1 2.438 2.438-9.5 9.5-1.063 1.063 2.125 2.125 1.063-1.063 9.5-9.5 2.438 2.438 1-8zm-30 3c-.483 0-1.047.172-1.438.563-.391.391-.563.954-.563 1.438v25c0 .483.172 1.047.563 1.438.391.391.954.563 1.438.563h25c.483 0 1.047-.172 1.438-.563.391-.391.563-.954.563-1.438v-15h-3v14h-23v-23h15v-3h-16z">
+          </path>
+        </svg>
+      </span>
+    </a>
+  </span>
+
+  <div>
+    <button onClick="acceptAllCookies()" class="bg-show"><span>{% trans 'Accept all' %}</span></button>
+    <button onClick="declineAllCookies()" class="bg-show"><span>{% trans 'Decline all' %}</span></button>
+  </div>
+
+  <hr>
+
+  {% for cookie_group in object_list  %}
+    {% include "cookie_consent/_cookie_group.html" %}
+    <hr>
+  {% endfor %}
+
+{% endblock %}

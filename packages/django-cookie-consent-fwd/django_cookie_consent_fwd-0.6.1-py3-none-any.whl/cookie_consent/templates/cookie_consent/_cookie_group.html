@@ -1,0 +1,40 @@
+{% load cookie_consent_tags i18n %}
+{% load cookie_tags %}
+
+<div class="cookie-group">
+  <div class="cookie-group-title cookie-heading-row">
+    <h3 style="margin-bottom: 0px;">{{ cookie_group.name }}</h3>
+
+    {% if not cookie_group.is_required %}
+      <div class="cookie-group-form">
+        <input style="margin: 0px;" type="checkbox" id="switch-{{ cookie_group.varname }}"
+          {% if request|cookie_group_accepted:cookie_group.varname %}checked{% endif %}
+          onchange="handleToggle(this, '{{ cookie_group.varname }}')"
+        />
+        <label for="switch-{{ cookie_group.varname }}">Toggle</label>
+      </div>
+    {% endif %}
+  </div>
+
+  <p style="margin-bottom: 0px; margin-top: 32px;">{{ cookie_group.description }}</p>
+  {% show_cookie_names_in_modal as show_cookie_names %}
+  {% if show_cookie_names and cookie_group.cookie_set.all %}
+    <table style="margin-top: 16px;">
+      {% for cookie in cookie_group.cookie_set.all %}
+        <tr>
+          <th>
+            {{ cookie.name }}
+            {% if cookie.domain %}
+              ({{ cookie.domain }})
+            {% endif %}
+          </th>
+          <td>
+            {% if cookie.description %}
+              {{ cookie.description }}
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
+  {% endif %}
+</div>

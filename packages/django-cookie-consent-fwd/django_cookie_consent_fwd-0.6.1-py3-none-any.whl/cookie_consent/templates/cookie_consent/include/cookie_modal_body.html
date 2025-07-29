@@ -1,0 +1,135 @@
+{% load static cookie_consent_tags i18n cookie_tags %}
+{% url "cookie_consent_cookie_group_list" as url_cookies %}
+
+{% load_cookie_groups as cookie_groups %}
+{% comment %} COOKIE MODAL TOGGLE BUTTON {% endcomment %}
+<button
+    tabindex="-1"
+    aria-expanded="false"
+    id="cookies-icon"
+    class="cookies-icon--left cookies-icon--light"
+    aria-label="Set cookie preferences"
+    style="width: 80px; height: 80px;"
+>
+
+    <svg
+        id="Layer_1"
+        data-name="Layer 1"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 97.0446 97.0442"
+        style="width: 50px; height: 50px;"
+        class="cookie-icon"
+    >
+        <defs>
+            <style>
+                .cls-1 {
+                    fill: #fff;
+                    stroke: #555;
+                    stroke-width: 9px;
+                }
+            </style>
+        </defs>
+        <path
+            class="cls-1"
+            d="M48.7972,6.63A2.2769,2.2769,0,0,0,46.908,4.686a19.4335,19.4335,0,0,0-11.81,2.091L21.5255,14.0218A19.4475,19.4475,0,0,0,13.1964,22.66L6.4651,36.5261A19.4625,19.4625,0,0,0,4.796,48.43l2.66,15.1865a19.4714,19.4714,0,0,0,5.6306,10.62l11.06,10.7112a19.3,19.3,0,0,0,10.767,5.2653l15.2223,2.1458a19.4344,19.4344,0,0,0,11.8119-2.0906L75.52,83.0224a19.3942,19.3942,0,0,0,8.3268-8.657l6.7329-13.8489A19.4589,19.4589,0,0,0,92.2484,48.613a2.2994,2.2994,0,0,0-1.9441-1.8525A23.527,23.527,0,0,1,71.1379,28.8952a3.528,3.528,0,0,0-2.88-2.6764A23.5147,23.5147,0,0,1,48.78,6.6305ZM36.8037,29.52a4.3757,4.3757,0,1,1-4.3752,4.3762v-.0005A4.3756,4.3756,0,0,1,36.8042,29.52h-.0005ZM64.5158,53.869a4.3757,4.3757,0,1,1-4.3752,4.3762v0a4.3756,4.3756,0,0,1,4.3757-4.3757h-.0005Zm-28.5471,3.83a4.3758,4.3758,0,1,1-4.3752,4.3762v0a4.3758,4.3758,0,0,1,4.3757-4.3758h-.0005Z"
+        />
+    </svg>
+
+</button>
+
+{% comment %} COOKIE MODAL {% endcomment %}
+<div id="cookies-backdrop" class="cookies-backdrop" style="display: none;"></div>
+<div id="cookies-modal" class="cookies-modal" style="display: none; padding: 12px; border-radius: 12px; ">
+    <iframe id="cookies-iframe" style="width: 100%; height: 100%; border: none;"></iframe>
+
+    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" aria-hidden="true"
+      id="close-modal"
+    >
+      <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path>
+    </svg>
+</div>
+
+
+{% comment %} SCRIPT FOR CONTROLING THE COOKIE MODAL {% endcomment %}
+<script>
+    const cccIcon = document.getElementById('cookies-icon');
+    const cookiesInfoDialog = document.getElementById('cookies-modal');
+    const cookiesInfoIframe = document.getElementById('cookies-iframe');
+    const closeDialogButton = document.getElementById('close-modal');
+    const backdrop = document.getElementById('cookies-backdrop');
+
+    function openModal() {
+        cookiesInfoIframe.src = '{{ url_cookies }}';
+        cookiesInfoDialog.style.display = 'block';
+        backdrop.style.display = 'block';
+        cccIcon.setAttribute('aria-expanded', 'true');
+    }
+
+    function closeModal() {
+        cookiesInfoDialog.style.display = 'none';
+        backdrop.style.display = 'none';
+        cccIcon.setAttribute('aria-expanded', 'false');
+    }
+
+    cccIcon.addEventListener('click', function () {
+        const isExpanded = cccIcon.getAttribute('aria-expanded') === 'true';
+        if (isExpanded) {
+            closeModal();
+        } else {
+            openModal();
+        }
+    });
+
+    backdrop.addEventListener('click', closeModal);
+    closeDialogButton.addEventListener('click', closeModal);
+
+    document.addEventListener('click', function (event) {
+        if (!cookiesInfoDialog.contains(event.target) && !cccIcon.contains(event.target)) {
+            closeModal();
+        }
+    });
+
+    {% not_accepted_or_declined_cookie_groups request as pending_cookie_groups %}
+    {% if pending_cookie_groups and not request|accepted_cookies %}
+        openModal();
+    {% endif %}
+</script>
+
+
+{% comment %} SCRIPT FOR ADDING AND REMOVING COOKIE SCRIPTS {% endcomment %}
+<script>
+    function handleCookies() {
+        cookiesStatusUrl = "{% url 'cookie_consent_status' %}";
+
+        fetch(cookiesStatusUrl)
+            .then(response => response.json())
+            .then(data => {
+                const head = document.head;
+
+                {% for cookie_group_varname in cookie_groups %}
+                    if (data.acceptedCookieGroups.includes("{{ cookie_group_varname }}")) {
+                        // Load cookie scripts if not already loaded
+                        if (!document.querySelector('script[data-cookie-group="{{ cookie_group_varname }}"]')) {
+                            const script = document.createElement("script");
+                            script.src = "{% static 'cookie_consent/cookies/' %}{{ cookie_group_varname }}.js";
+                            script.setAttribute("data-cookie-group", "{{ cookie_group_varname }}");
+                            script.onload = function() {
+                            };
+                            head.appendChild(script);
+                        } else {
+                            // If script is already loaded, just run checkCookie()
+                        }
+                    } else if (data.declinedCookieGroups.includes("{{ cookie_group_varname }}")) {
+                        // Remove existing cookie scripts if cookies are declined
+                        const existingScripts = document.querySelectorAll('script[data-cookie-group="{{ cookie_group_varname }}"]');
+                        existingScripts.forEach(script => script.remove());
+                    } else {
+                        // Optionally handle not set state
+                    }
+                {% endfor %}
+
+
+            })
+            .catch(error => console.error("Error fetching cookie status:", error));
+    }
+</script>
