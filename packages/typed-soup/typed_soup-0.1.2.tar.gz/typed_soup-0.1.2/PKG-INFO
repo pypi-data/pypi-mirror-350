@@ -1,0 +1,61 @@
+Metadata-Version: 2.3
+Name: typed-soup
+Version: 0.1.2
+Summary: A type-safe wrapper around BeautifulSoup and related HTML parsing utilities
+License: MIT
+Keywords: beautifulsoup,html,parsing,type-safe,scrapy
+Author: Robert Shecter
+Author-email: robert@public.law
+Requires-Python: >=3.10
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Dist: beautifulsoup4
+Requires-Dist: scrapy
+Requires-Dist: toolz
+Project-URL: Documentation, https://github.com/public-law/typed-soup#readme
+Project-URL: Homepage, https://github.com/public-law/typed-soup
+Project-URL: Issues, https://github.com/public-law/typed-soup/issues
+Project-URL: Repository, https://github.com/public-law/typed-soup.git
+Description-Content-Type: text/markdown
+
+# typed-soup
+
+A type-safe wrapper around BeautifulSoup and utilities for parsing HTML/XML with robust return types and error handling.
+
+## Installation
+
+```bash
+pip install typed-soup
+```
+
+## Usage
+
+```python
+from typed_soup import from_response
+from scrapy.http.response.html import HtmlResponse
+
+# Assume 'response' is an HtmlResponse object
+soup = from_response(response)
+
+# Find an element
+element = soup.find("div", class_="example")
+if element:
+    print(element.get_text())
+
+# Find all elements
+elements = soup.find_all("p")
+for elem in elements:
+    print(elem.get_text())
+```
+
+## License
+
+This project is licensed under the MIT License.
+
