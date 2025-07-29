@@ -1,0 +1,240 @@
+default:
+  image: "docker.io/python:3.12"
+  cache:
+    key: $CI_COMMIT_REF_NAME
+    paths:
+      - .cache/pip
+      - .midas_data
+  before_script:
+    - python -V
+    - python -m venv venv
+    - source venv/bin/activate
+    - pip install --upgrade pip
+
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+stages:
+  - lint
+  - tests
+  - source_build_base
+  - source_build_bh
+  # - scenarios_from_source
+  - docs
+  - scenarios_from_pypi
+
+ruff:
+  stage: lint
+  image: registry.gitlab.com/pipeline-components/ruff:latest
+  before_script: []
+  script:
+    - ruff check --line-length=79 --output-format=gitlab .
+  cache: []
+
+tests:
+  stage: tests
+  script:
+    - python -m pip install -e .[dev]
+    - python -m coverage run --source=src/midas -m pytest
+    - python -m coverage report
+
+midas_base_dev:
+  stage: source_build_base
+  script:
+    # - apt-get update && apt-get install -y git
+    - pip install -e .[base-dev]
+    - midasctl configure -a -d .midas_data
+    - midasctl -vv download
+    - midasctl run midasmv_der --no-db --port 55552 --end 9000
+  # rules:
+  #   - if: '$CI_COMMIT_BRANCH != "development"'
+
+midas_bh_dev:
+  stage: source_build_bh
+  script:
+    - pip install -e .[bh-dev]
+    - midasctl configure -a -d .midas_data
+    - midasctl -vv download
+    - midasctl run bremerhavenmv --no-db --port 55554 --end 9000
+    - midasctl run bhmv100res --no-db --port 55554 --end 9000
+
+midas_base_pypi:
+  stage: scenarios_from_pypi
+  script:
+    # - apt-get update && apt-get install -y git
+    # - cp -rvf /root/.config/midas tmp/.config/midas
+    - pip install -e .[base]
+    - midasctl configure -a -d .midas_data
+    - midasctl -vv download
+    - midasctl run midasmv_der --no-db --port 55553 --end 9000
+  needs: [midas_base_dev]
+  # rules:
+  #   - if: '$CI_COMMIT_BRANCH == "development"'
+
+
+midas_bh_pypi:
+  stage: scenarios_from_pypi
+  script:
+    - pip install -e .[bh]
+    - midasctl configure -a -d .midas_data
+    - midasctl -vv download
+    - midasctl run bremerhavenmv --no-db --port 55555 --end 9000
+    - midasctl run bhmv100res --no-db --port 55554 --end 9000
+  needs: [midas_bh_dev]
+
+
+pages:
+  stage: docs
+  script:
+    - apt-get update
+    - apt-get install -y make python3-sphinx
+    - cd docs
+    - make html
+    - mv _build/html ../public
+  artifacts:
+    paths:
+      - public
+  # cache:
+  #   key: "$CI_COMMIT_SHA"
+#     paths:
+#       - .cache/pip
+#       - venv/
+#   rules:
+#     - if: '$CI_COMMIT_BRANCH == "development"'
+
+# midasmv:
+#   stage: scenarios
+#   needs: ["test-3.8"]
+#   cache:
+#     key: "$CI_COMMIT_SHA"
+#     paths:
+#       - .cache/pip
+#       - venv/
+#       - tmp/.config/midas/
+#     policy: pull
+#   script:
+#     - midasctl run midasmv --no-db --port 55551 --end 9000
+
+# midasmv:
+#   stage: scenarios
+  # needs: ["midas_setup"]
+  # cache:
+  #   key: "$CI_COMMIT_SHA"
+  #   paths:
+  #     - .cache/pip
+  #     - venv/
+  #     - tmp/.config/midas/
+  #   policy: pull
+  # before_script:
+  #   - echo "Skip before script"
+  # script:
+    # - source venv/bin/activate
+    # - cp -rvf tmp/.config/midas/ /root/.config/midas
+    # - midasctl run midasmv_der --no-db --port 55552 --end 9000
+  # rules:
+  #   - if: '$CI_COMMIT_BRANCH == "development"'
+
+# midaslv:
+#   stage: scenarios
+#   needs: ["midas_setup"]
+#   cache:
+#     key: "$CI_COMMIT_SHA"
+#     paths:
+#       - .cache/pip
+#       - venv/
+#       - tmp/.config/midas/
+#     policy: pull
+#   script:
+#     - source venv/bin/activate
+#     - cp -rvf tmp/.config/midas/ /root/.config/midas
+#     - midasctl run midaslv_der --no-db --port 55553 --end 9000
+
+# four_bus:
+#   stage: scenarios
+#   needs: ["midas_setup"]
+#   cache:
+#     key: "$CI_COMMIT_SHA"
+#     paths:
+#       - .cache/pip
+#       - venv/
+#       - tmp/.config/midas/
+#     policy: pull
+#   script:
+#     - source venv/bin/activate
+#     - cp -rvf tmp/.config/midas/ /root/.config/midas
+#     - midasctl run four_bus_der --no-db --port 55554 --end 9000
+
+# four_bus:
+#   stage: scenarios
+#   needs: ["midasmv"]
+#   cache:
+#     key: "$CI_COMMIT_SHA"
+#     paths:
+#       - .cache/pip
+#       - venv/
+#       - tmp/.config/midas/
+#     policy: pull
+#   script:
+#     - midasctl run four_bus --no-db --port 55554 --end 9000
+#   rules:
+#     - if: '$CI_COMMIT_BRANCH == "development"'
+
+# sbural3:
+#   stage: scenarios
+#   needs: ["midasmv"]
+#   cache:
+#     key: "$CI_COMMIT_SHA"
+#     paths:
+#       - .cache/pip
+#       - venv/
+#       - tmp/.config/midas/
+#     policy: pull
+#   script:
+#     - midasctl run sbrural3 --no-db --port 55555 --end 9000
+#   rules:
+#     - if: '$CI_COMMIT_BRANCH == "development"'
+
+# bremerhavenmv:
+#   stage: scenarios
+#   needs: ["midasmv"]
+#   cache:
+#     key: "$CI_COMMIT_SHA"
+#     paths:
+#       - .cache/pip
+#       - venv/
+#       - tmp/.config/midas/
+#     policy: pull
+#   script:
+#     - midasctl run bremerhavenmv --no-db --port 55556 --end 9000
+#   rules:
+#     - if: '$CI_COMMIT_BRANCH == "development"'
+
+# midasmv_constr:
+#   stage: scenarios
+#   needs: ["midasmv"]
+#   cache:
+#     key: "$CI_COMMIT_SHA"
+#     paths:
+#       - .cache/pip
+#       - venv/
+#       - tmp/.config/midas/
+#     policy: pull
+#   script:
+#     - midasctl run midasmv_der_constr --no-db --port 55557 --end 9000
+#   rules:
+#     - if: '$CI_COMMIT_BRANCH == "development"'
+
+# time_weather_der:
+#   stage: scenarios
+#   needs: ["midasmv"]
+#   cache:
+#     key: "$CI_COMMIT_SHA"
+#     paths:
+#       - .cache/pip
+#       - venv/
+#       - tmp/.config/midas/
+#     policy: pull
+#   script:
+#     - midasctl run time_weather_der --no-db --port 55558
+#   rules:
+#     - if: '$CI_COMMIT_BRANCH == "development"'

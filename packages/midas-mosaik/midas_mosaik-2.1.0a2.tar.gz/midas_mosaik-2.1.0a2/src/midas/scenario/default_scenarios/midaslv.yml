@@ -1,0 +1,146 @@
+#######################################################################
+# Midas LV Base
+#######################################################################
+midaslv:
+  parent:
+  modules: [store, powergrid, sndata, comdata]
+  start_date: 2009-01-01 00:00:00+0100
+  end: 1*24*60*60
+  step_size: 15*60
+  store_params:
+    filename: midaslv.csv
+  powergrid_params:
+    midaslv:
+      gridfile: midaslv
+      include_slack_bus: true
+  sndata_params:
+    midaslv:
+      interpolate: true
+      randomize_data: true
+      randomize_cos_phi: true
+      active_mapping:
+        12: [[House_000, 1.0], [House_001, 1.0], [House_002, 1.0], [House_003, 1.0]]
+        16:
+          [
+            [House_004, 1.0],
+            [House_005, 1.0],
+            [House_006, 1.0],
+            [House_007, 1.0],
+            [House_008, 1.0],
+            [House_009, 1.0],
+            [House_010, 1.0],
+            [House_011, 1.0],
+            [House_012, 1.0],
+            [House_013, 1.0],
+            [House_014, 1.0],
+            [House_015, 1.0],
+            [House_016, 1.0],
+            [House_017, 1.0],
+            [House_018, 1.0],
+            [House_019, 1.0],
+            [House_020, 1.0],
+            [House_021, 1.0],
+            [House_022, 1.0],
+            [House_022, 1.0],
+          ]
+        17:
+          [
+            [House_023, 1.0],
+            [House_024, 1.0],
+            [House_025, 1.0],
+            [House_026, 1.0],
+            [House_027, 1.0],
+            [House_028, 1.0],
+            [House_029, 1.0],
+            [House_030, 1.0],
+            [House_031, 1.0],
+            [House_032, 1.0],
+            [House_033, 1.0],
+            [House_034, 1.0],
+            [House_035, 1.0],
+          ]
+        18: [[House_036, 1.0], [House_037, 1.0]]
+        19:
+          [
+            [House_038, 1.0],
+            [House_039, 1.0],
+            [House_040, 1.0],
+            [House_045, 1.0],
+            [House_046, 1.0],
+            [House_047, 1.0],
+            [House_048, 1.0],
+            [House_049, 1.0],
+            [House_050, 1.0],
+            [House_051, 1.0],
+            [House_052, 1.0],
+            [House_053, 1.0],
+            [House_054, 1.0],
+            [House_055, 1.0],
+            [House_056, 1.0],
+            [House_057, 1.0],
+          ]
+  comdata_params:
+    midaslv:
+      interpolate: true
+      randomize_data: true
+      randomize_cos_phi: true
+      active_mapping:
+        22: [[Hospital, 0.002]] # industrial subgrid
+        35: [[StripMall, 0.015]]
+        36: [[Warehouse, 0.015]]
+        37: [[SmallHotel, 0.0072]]
+        40: [[StandaloneRetail, 0.015]]
+        41: [[QuickServiceRestaurant, 0.0075]]
+        42: [[MidriseApartment, 0.012]]
+        43: [[SmallOffice, 0.021]]
+#######################################################################
+# Midas LV with DER
+#######################################################################
+midaslv_der:
+  parent: midaslv
+  modules: [weather, der]
+  store_params:
+    filename: midaslv_der.csv
+  weather_params:
+    bremen:
+      weather_mapping:
+        WeatherCurrent:
+          - interpolate: true
+            randomize: true
+  der_params:
+    midaslv_pv:
+      inverter_mode: capacitive
+      grid_name: midaslv
+      mapping:
+        12: [[PV, 0.00225], [CHP, 0.014], [CHP, 0.007]]
+        16: [[PV, 0.01], [CHP, 0.014], [CHP, 0.014], [HVAC, 0.06]]
+        17: [[PV, 0.014], [PV, 0.02], [HVAC, 0.06], [CHP, 0.007]]
+        18: [[PV, 0.00175]]
+        19: [[PV, 0.005], [CHP, 0.014], [HVAC, 0.06]]
+        35: [[PV, 0.007]]
+        36: [[PV, 0.02], [HVAC, 0.06]]
+        37: [[PV, 0.02], [PV, 0.02]]
+        40: [[PV, 0.01]]
+        41: [[CHP, 0.014], [CHP, 0.014]]
+        42: [[PV, 0.025]]
+        43: [[PV, 0.00225], [CHP, 0.007]]
+      weather_provider_mapping:
+        PV: [bremen, 0]
+        HVAC: [bremen, 0]
+        CHP: [bremen, 0]
+        BAT: [bremen, 0]
+#######################################################################
+# Midas LV DER with TAR constraints
+#######################################################################
+midaslv_der_tar:
+  parent: midaslv_der
+  store_params:
+    filename: midaslv_der_tar.csv
+  powergrid_params:
+    gridfile: midaslv
+    constraints:
+      - [bus, 0.04]
+      - [line, 100]
+      - [load, 0.1]
+      - [sgen, 0.1]
+      - [storage, 0.1]
