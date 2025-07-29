@@ -1,0 +1,91 @@
+[tool.poetry]
+name = "nitypes"
+version = "0.1.0-dev0"
+license = "MIT"
+description = "Data types for NI Python APIs"
+authors = ["NI <opensource@ni.com>"]
+maintainers = ["Brad Keryan <brad.keryan@ni.com>"]
+readme = "README.md"
+repository = "https://github.com/ni/nitypes-python"
+documentation = "https://nitypes.readthedocs.io/"
+keywords = ["nitypes"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Manufacturing",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+packages = [{ include = "nitypes", from = "src" }]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+numpy = [
+  { version = ">=1.22", python = ">=3.9,<3.12" },
+  { version = ">=1.26", python = ">=3.12,<3.13" },
+  { version = ">=2.1", python = "^3.13" },
+]
+hightime = ">=0.2.2"
+typing-extensions = ">=4.13.2"
+
+[tool.poetry.group.lint.dependencies]
+bandit = { version = ">=1.7", extras = ["toml"] }
+ni-python-styleguide = ">=0.4.1"
+mypy = ">=1.0"
+pyright = { version = ">=1.1.400", extras = ["nodejs"] }
+
+[tool.poetry.group.test.dependencies]
+pytest = ">=7.2"
+pytest-cov = ">=4.0"
+pytest-doctestplus = ">=1.4"
+pytest-mock = ">=3.0"
+# Use an unreleased version of hightime for testing.
+hightime = { git = "https://github.com/ni/hightime.git" }
+tomlkit = ">=0.11.0"
+
+[tool.poetry.group.docs]
+optional = true
+
+[tool.poetry.group.docs.dependencies]
+# The latest Sphinx requires a recent Python version.
+Sphinx = { version = ">=8.2", python = "^3.11" }
+sphinx-rtd-theme = ">=1.0.0"
+sphinx-autoapi = ">=1.8.4"
+m2r2 = ">=0.3.2"
+toml = ">=0.10.2"
+tomlkit = ">=0.11.0"
+
+[tool.black]
+line-length = 100
+
+[tool.pytest.ini_options]
+addopts = "--doctest-modules --doctest-plus --strict-markers"
+testpaths = ["src/nitypes", "tests"]
+
+[build-system]
+requires = ["poetry-core>=1.8"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.mypy]
+files = "examples/,scripts/,src/,tests/"
+plugins = "numpy.typing.mypy_plugin"
+namespace_packages = true
+strict = true
+
+[tool.bandit]
+skips = [
+  "B101", # assert_used
+]
+
+[tool.pyright]
+include = ["examples/", "scripts/", "src/", "tests/"]
