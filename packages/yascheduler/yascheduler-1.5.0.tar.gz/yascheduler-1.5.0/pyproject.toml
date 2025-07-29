@@ -1,0 +1,106 @@
+[build-system]
+requires = ["setuptools", "cython"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "yascheduler"
+# version should be changed by automation, not by hand - DON'T TOUCH
+version = "1.5.0"
+description = """Yet another computing scheduler and cloud orchestration engine"""
+authors = [
+    { name = "Sergei Korolev", email = "knopki@duck.com" },
+    { name = "Andrey Sobolev", email = "as@tilde.pro" },
+    { name = "Evgeny Blokhin", email = "eb@tilde.pro" },
+]
+readme = { file = "README.md", content-type = "text/markdown" }
+license = "MIT"
+license-files = ["LICENSE"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Chemistry",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Framework :: AiiDA",
+]
+requires-python = ">=3.9"
+dependencies = [
+    "aiohttp~=3.8",
+    "asyncssh~=2.11",
+    "asyncstdlib~=3.10",
+    "attrs>=22.2.0",
+    "backoff~=2.1.2",
+    "pg8000~=1.19",
+    "python-daemon~=2.3",
+    "typing-extensions >= 4.2.0; python_version < '3.11'",
+]
+
+[project.optional-dependencies]
+azure = [
+    "azure-identity~=1.10.0",
+    "azure-mgmt-compute~=27.2.0",
+    "azure-mgmt-network~=20.0.0",
+]
+hetzner = ["hcloud~=2.0"]
+upcloud = ["upcloud_api~=2.0"]
+dev = ["build", "commitizen", "pyright", "pyupgrade", "ruff", "twine"]
+
+[project.urls]
+Home = "https://github.com/tilde-lab/yascheduler"
+Changelog = "https://github.com/tilde-lab/yascheduler/blob/master/CHANGELOG.md"
+Issues = "https://github.com/tilde-lab/yascheduler/issues"
+Source = "https://github.com/tilde-lab/yascheduler"
+
+[project.scripts]
+yascheduler = "yascheduler.utils:daemonize"
+yasubmit = "yascheduler.utils:submit"
+yastatus = "yascheduler.utils:check_status"
+yanodes = "yascheduler.utils:show_nodes"
+yasetnode = "yascheduler.utils:manage_node"
+yainit = "yascheduler.utils:init"
+
+[project.entry-points."aiida.schedulers"]
+yascheduler = "yascheduler.aiida_plugin:YaScheduler"
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+tag_format = "v$version"
+version_files = ["pyproject.toml:^version"]
+version_provider = "pep621"
+update_changelog_on_bump = true
+changelog_incremental = true
+
+[tool.pyright]
+pythonVersion = "3.9"
+executionEnvironments = [
+    { root = "yascheduler/aiida_plugin.py", reportMissingImports = "warning" },
+    { root = "yascheduler/clouds", reportMissingImports = "warning" },
+]
+
+[tool.ruff]
+# Target python version
+target-version = "py39"
+
+[tool.ruff.lint]
+# Enable specific rules
+select = ["E", "F"]
+# Disable specific rules
+ignore = ["E501"]
+
+[tool.setuptools.package-data]
+"yascheduler.data" = [
+    "schema.sql",
+    "yascheduler.conf",
+    "yascheduler.service",
+    "yascheduler.sh",
+]
+
+[tool.setuptools.packages.find]
+include = ["yascheduler*"]
