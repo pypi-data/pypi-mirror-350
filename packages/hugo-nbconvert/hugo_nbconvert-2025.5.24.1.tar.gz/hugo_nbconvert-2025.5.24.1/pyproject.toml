@@ -1,0 +1,48 @@
+[project]
+name = "hugo-nbconvert"
+version = "2025.5.24.1"
+description = "[migrated to hugo-nbconvert]"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "hugo>=0.147.2",
+    "jupyter>=1.1.1",
+    "nbconvert>=7.16.6",
+    "sodatools>=2025.2.16.0",
+    "watchdog>=6.0.0",
+]
+
+[project.urls]
+Repository = "https://github.com/soda92/hugo-nbconvert"
+
+[tool.uv]
+dev-dependencies = [
+    "build>=1.2.2.post1",
+    "hatchling>=1.27.0",
+    "matplotlib>=3.10.1",
+    "twine>=6.0.1",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.sdist]
+ignore-vcs = true
+packages = ["hugo_nbconvert"]
+exclude = ["__pycache__", "*.pyc", "*.exe", "*.exe~", "*.syso"]
+
+[tool.hatch.build.targets.wheel]
+ignore-vcs = true
+packages = ["hugo_nbconvert"]
+exclude = ["__pycache__", "*.pyc", "*.exe~", "*.syso"]
+
+# [tool.hatch.build.hooks.custom]
+
+[project.scripts]
+hugo_nbconvert = "hugo_nbconvert.main:main"
+hugo_nbnew = "hugo_nbconvert.new:nbnew"
+hugo_new = "hugo_nbconvert.new:new_main"
+hugo_fix = "hugo_nbconvert.hugo_fix:fix_main"
+hugo_todir = "hugo_nbconvert.hugo_fix:to_dir_main"
+hugo_run = "hugo_nbconvert.run:run"
