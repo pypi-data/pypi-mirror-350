@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=61.0", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "publicmethod"
+dynamic = ["version"]
+authors = [
+  {name = "Zhou Yuanqi", email = "zyq1034378361@gmail.com"},
+]
+description = "通用Python组件库，提供数据读取、路径管理和日志功能"
+readme = "README.md"
+license = {text = "MIT"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.8"
+# 生产环境依赖（目前没有外部依赖）
+dependencies = []
+
+# 开发环境可选依赖
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.3",
+    "black>=23.11.0",
+    "flake8>=6.1.0", 
+    "mypy>=1.7.0",
+    "setuptools_scm>=6.2.0",
+    "pytest-cov>=4.1.0",  # 用于测试覆盖率报告
+]
+
+[project.urls]
+"Homepage" = "https://github.com/1034378361/publicmethod"
+"Bug Tracker" = "https://github.com/1034378361/publicmethod/issues"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools_scm]
+# 自动从Git标签获取版本信息
+write_to = "src/publicmethod/_version.py"
+write_to_template = """
+\"\"\"版本信息 - 由setuptools_scm自动生成，请勿手动修改\"\"\"
+__version__ = "{version}"
+"""
