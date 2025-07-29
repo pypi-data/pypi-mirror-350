@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "snowprofile"
+version = "0.1.0"
+dependencies = [
+    'pydantic>=2,<3',
+    'pandas',
+    'numpy',
+]
+requires-python = ">=3.8"
+
+description = "Tools to read, write and process punctual snow profiles. It includes tools to read and write from and to the international CAAML format."
+readme = "README.md"
+license = { file = "LICENCE.txt" }
+keywords = ["snow profile", "CAAML"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: CeCILL-C Free Software License Agreement (CECILL-C)",
+]
+
+[project.urls]
+Homepage = "https://github.com/UMR-CNRM/snowprofile"
+Repository = "https://github.com/UMR-CNRM/snowprofile"
+
+
+[project.optional-dependencies]
+doc = [
+    'sphinx',
+    'autodoc_pydantic'
+]
+tests = [
+    'pytest',
+    'lxml'
+    ]
+plots = [
+    'matplotlib'
+    ]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+
+[tool.setuptools.package-data]
+"snowprofile.plot" = ["*.*"] 
