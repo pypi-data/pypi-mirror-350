@@ -1,0 +1,83 @@
+# Polyglot TTS
+
+A Python module for translating text using OpenAI's API with optional audio generation using ElevenLabs.
+
+## Features
+
+- Text translation to any language using OpenAI's GPT-3.5 model
+- Optional audio generation of translated text using ElevenLabs API
+- Simple, easy-to-use interface
+- Supports environment variable configuration
+
+## Installation
+
+```bash
+pip install polyglot-tts
+```
+
+## Configuration
+
+Create a `.env` file in your project root with your API keys:
+
+```plaintext
+OPENAI_API_KEY=your-openai-api-key-here
+ELEVENLABS_API_KEY=your-elevenlabs-api-key-here  # Optional, for audio generation
+```
+
+Alternatively, set them as environment variables:
+
+```bash
+export OPENAI_API_KEY='your-openai-api-key-here'
+export ELEVENLABS_API_KEY='your-elevenlabs-api-key-here'  # Optional
+```
+
+## Usage
+
+### Basic Translation
+
+```python
+from polyglot-tts import translate
+
+# Basic translation
+translated_text, _ = translate("Hello, how are you?", "Spanish", generate_audio=False)
+print(translated_text)  # "¡Hola, cómo estás?"
+
+# Translation with audio generation
+translated_text, audio_path = translate("Hello, how are you?", "French")
+print(translated_text)  # "Bonjour, comment allez-vous?"
+print(audio_path)  # Path to the generated audio file
+```
+
+### Function Parameters
+
+- `message` (str): The text to translate
+- `output_lang` (str): The target language for translation
+- `generate_audio` (bool, optional): Whether to generate audio for the translation. Defaults to True.
+- `voice_id` (str, optional): The ElevenLabs voice ID to use for audio generation. Defaults to "EXAVITQu4vr4xnSDxMaL" (Bella voice).
+- `save_audio` (bool, optional): Whether to save the generated audio file. Defaults to False. If True, the audio file will be saved in the "output" directory in the current working directory.
+
+### Return Value
+
+Returns a tuple containing:
+1. The translated text (str)
+2. The path to the generated audio file (str or None if audio generation is disabled or fails)
+
+## Requirements
+
+- Python 3.7+
+- OpenAI API key (required)
+- ElevenLabs API key (optional, for audio generation)
+
+## Error Handling
+
+The module will raise:
+- `ValueError` if required API keys are not set
+- `Exception` if translation or audio generation fails
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+MIT License
