@@ -1,0 +1,47 @@
+[build-system]
+requires = [ "setuptools>=78", "wheel", "setuptools-git-versioning>=2.0,<3", ]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools-git-versioning]
+enabled = true
+
+[project]
+name="birdwatcher"
+dynamic = ["version"]
+authors = [
+  {name = "Gabriel Beckers", email = "g.j.l.beckers@uu.nl"},
+  {name = "Carien Mol", email = "c.mol@uu.nl"}
+]
+description = 'A Python computer vision library for animal behavior'
+license = "BSD-3-Clause"
+keywords = ["animal", "behavior", "computer-vision", "data-science", "ffmpeg", "opencv"]
+classifiers=[
+        "Programming Language :: Python :: 3",
+        "Operating System :: OS Independent",
+        'Development Status :: 4 - Beta',
+        'Intended Audience :: Education',
+        'Intended Audience :: Developers',
+        'Intended Audience :: Information Technology',
+        'Intended Audience :: Science/Research',
+]
+dependencies = [
+    "darr==0.6.0",
+    "numpy==2.0.2",
+    "matplotlib==3.9.2",
+    "opencv-python==4.10.0.84",
+    "opencv-contrib-python==4.10.0.84",
+    "pandas==2.2.3",
+    "seaborn==0.13.2"
+]
+
+[project.readme]
+file = "README.rst"
+content-type = "text/x-rst"
+
+[project.urls]
+Homepage = "https://github.com/gbeckers/Birdwatcher"
+Repository = "https://github.com/gbeckers/Birdwatcher.git"
+Documentation = "https://birdwatcher.readthedocs.io/en/latest/"
+
+[tool.setuptools.dynamic]
+optional-dependencies = {dev = { file = ["requirements-dev.txt"] }}
