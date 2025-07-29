@@ -1,0 +1,63 @@
+[project]
+name = "gtk-llm-chat"
+description = "A GTK graphical interface for chatting with large language models (LLMs)"
+readme = "README.md"
+authors = [{ name = "Sebastian Silva", email = "sebastian@fuentelibre.org" }]
+license = "GPL-3.0-or-later"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+keywords = ["gtk", "chat", "llm", "ai"]
+dependencies = [
+    "pygobject",
+    "llm",
+    "llm-gemini",
+    "llm-groq",
+    "llm-grok",
+    "llm-deepseek",
+    "llm-perplexity",
+    "llm-anthropic",
+    "llm-openrouter",
+    "markdown-it-py",
+    "python-ulid",
+    "pystray",
+    "watchdog"
+]
+
+requires-python = ">=3.8"
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/icarito/gtk_llm_chat"
+Issues = "https://github.com/icarito/gtk_llm_chat/issues"
+Repository = "https://github.com/icarito/gtk_llm_chat.git"
+
+[build-system]
+requires = ["build", "setuptools>=61.0", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+version_file = "gtk_llm_chat/_version.py"
+tag_regex = "^v(?P<version>[0-9]+\\.[0-9]+\\.[0-9]+(?:dev[0-9]*|alpha[0-9]*|beta[0-9]*)?)$"
+local_scheme = "no-local-version"
+version_scheme = "python-simplified-semver"
+
+[tool.flake8]
+extend-ignore = ["E402"]
+max-line-length = 95
+
+[tool.setuptools.packages.find]
+include = ["gtk_llm_chat"]
+
+[tool.setuptools.package-data]
+"gtk_llm_chat" = [
+    "../po/*/*/gtk-llm-chat.mo",
+    "../desktop/*.desktop",
+]
+
+[project.scripts]
+gtk-llm-chat = "gtk_llm_chat.main:main"
+
+[project.entry-points."llm"]
+gui = "gtk_llm_chat.llm_gui"
