@@ -1,0 +1,98 @@
+{#
+  Copyright (C) 2020-2023 Graz University of Technology.
+
+  invenio-theme-iform is free software; you can redistribute it and/or
+  modify it under the terms of the MIT License; see LICENSE file for more
+  details.
+#}
+
+{%
+    set options = [
+      {
+        "key": "records",
+        "text": "All",
+        "value": url_for("invenio_search_ui.search"),
+        "title": "repo",
+      },{
+        "key": "rdm",
+        "text": "Research Results",
+        "value": "/records/search",
+        "title": "Research Data",
+      },{
+        "key": "marc21",
+        "text": "Publications",
+        "value": url_for("invenio_records_marc21.search"),
+        "title": "publication",
+      },{
+        "key": "lom",
+        "text": "Educational Resources",
+        "value": url_for("invenio_records_lom.search"),
+        "title": "oer",
+      }
+    ]
+%}
+
+<div class="ui container">
+    <div class="short-menu" id="all-menu-top-table">
+        <div class="short-menu-left">
+            <div id="all-menu-top-left-item">
+                <div class="short-menu-left-search">
+                    <div style="display: inline-block;">
+                        <div class="item p-0 search-bar rel-mr-1">
+                            <!-- prettier-ignore-attribute data-options -->
+                            <div id="header-search-bar" data-options='{{ options | tojson }}'></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="short-menu-right">
+            {%- block navbar_right %}
+                {%- include config.THEME_HEADER_LOGIN_TEMPLATE %}
+            {%- endblock navbar_right %}
+        </div>
+    </div>
+
+    <!----END MENU------------------------------------------------------------->
+
+    <div class="ui grid" id="main-logo">
+        <!-- Left -->
+        <div class="left floated left aligned six wide column" id="repo-logo">
+            <div class="inline-elements">
+                <div class="repo-img">{%- include "invenio_theme_iform/repository_logo.svg" %}</div>
+                <div class="affiliation-text">
+                    <a
+                        title="Home"
+                        href="{{ url_for("invenio_theme_iform.index") }}"
+                        class="no-decoration"
+                    >
+                        I-FORM
+                        <br />
+                        RESEARCH DATA
+                        <br />
+                        REPOSITORY
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!-- Right -->
+        <div class="right floated right aligned six wide column">
+            <div class="affiliation-logo" id="int-header-logo">
+                <div class="affiliation-logo-claim">
+                    <div class="affiliation-logo-claim-single">Excellence</div>
+                    <div class="affiliation-logo-claim-single">Through</div>
+                    <div class="affiliation-logo-claim-single">Expertise</div>
+                </div>
+                <a
+                    href="https://www.i-form.ie"
+                    title="I-Form Home"
+                    target="_blank"
+                    class="no-decoration"
+                >
+                    {%- include "invenio_theme_iform/iform_logo.svg" %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
