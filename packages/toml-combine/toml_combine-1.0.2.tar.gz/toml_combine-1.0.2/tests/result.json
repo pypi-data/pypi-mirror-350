@@ -1,0 +1,134 @@
+{
+  "staging-service-next": {
+    "registry": { "region": "us" },
+    "project": "project-staging",
+    "containers": {
+      "telemetry": { "enabled": true },
+      "app": {
+        "service": { "min_scale": 0 },
+        "name": "frontend",
+        "env": { "NEXT_PUBLIC_FOO": "baz" }
+      }
+    }
+  },
+  "staging-service-django-api": {
+    "registry": { "region": "us" },
+    "project": "project-staging",
+    "containers": {
+      "telemetry": { "enabled": true },
+      "app": {
+        "service": { "min_scale": 0 },
+        "name": "backend",
+        "env": { "APP_FOO": "qux" }
+      }
+    },
+    "cloudsql_instance": "staging-postgres"
+  },
+  "staging-service-django-admin": {
+    "registry": { "region": "us" },
+    "project": "project-staging",
+    "containers": {
+      "telemetry": { "enabled": true },
+      "app": {
+        "service": { "min_scale": 0 },
+        "name": "admin",
+        "env": { "APP_FOO": "qux", "APP_ID": 5678, "APP_ADMIN_ENABLED": true }
+      }
+    },
+    "cloudsql_instance": "staging-postgres"
+  },
+  "staging-job-django-manage": {
+    "registry": { "region": "us" },
+    "project": "project-staging",
+    "containers": {
+      "app": {
+        "job": { "max_retries": 1 },
+        "name": "manage",
+        "env": { "APP_FOO": "qux" },
+        "command": ["./manage.py"]
+      }
+    },
+    "cloudsql_instance": "staging-postgres"
+  },
+  "staging-job-django-special-command": {
+    "registry": { "region": "us" },
+    "project": "project-staging",
+    "containers": {
+      "app": {
+        "job": { "max_retries": 1 },
+        "name": "special-command",
+        "env": { "APP_FOO": "qux" },
+        "container_cpu": 8,
+        "command": ["./manage.py"],
+        "args": ["special-command"]
+      }
+    },
+    "cloudsql_instance": "staging-postgres"
+  },
+  "production-service-next": {
+    "registry": { "region": "us" },
+    "project": "project-production",
+    "containers": {
+      "app": {
+        "name": "frontend",
+        "env": { "NEXT_PUBLIC_FOO": "bar" },
+        "service": { "min_scale": 1 }
+      },
+      "telemetry": { "enabled": true }
+    }
+  },
+  "production-service-django-api": {
+    "registry": { "region": "us" },
+    "project": "project-production",
+    "containers": {
+      "telemetry": { "enabled": true },
+      "app": {
+        "service": { "min_scale": 1 },
+        "name": "backend",
+        "env": { "APP_FOO": "bar" }
+      }
+    },
+    "cloudsql_instance": "production-postgres"
+  },
+  "production-service-django-admin": {
+    "registry": { "region": "us" },
+    "project": "project-production",
+    "containers": {
+      "telemetry": { "enabled": true },
+      "app": {
+        "service": { "min_scale": 1 },
+        "name": "admin",
+        "env": { "APP_FOO": "bar", "APP_ADMIN_ENABLED": true, "APP_ID": 1234 }
+      }
+    },
+    "cloudsql_instance": "production-postgres"
+  },
+  "production-job-django-manage": {
+    "registry": { "region": "us" },
+    "project": "project-production",
+    "containers": {
+      "app": {
+        "job": { "max_retries": 1 },
+        "name": "manage",
+        "env": { "APP_FOO": "bar" },
+        "command": ["./manage.py"]
+      }
+    },
+    "cloudsql_instance": "production-postgres"
+  },
+  "production-job-django-special-command": {
+    "registry": { "region": "us" },
+    "project": "project-production",
+    "containers": {
+      "app": {
+        "job": { "max_retries": 1 },
+        "name": "special-command",
+        "env": { "APP_FOO": "bar" },
+        "container_cpu": 8,
+        "command": ["./manage.py"],
+        "args": ["special-command"]
+      }
+    },
+    "cloudsql_instance": "production-postgres"
+  }
+}

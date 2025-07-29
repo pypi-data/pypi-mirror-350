@@ -1,0 +1,82 @@
+[dimensions]
+environment = ["staging", "production"]
+type = ["service", "job"]
+stack = ["next", "django"]
+service = ["api", "admin"]
+job = ["manage", "special-command"]
+
+[default]
+registry.region = "us"
+
+[[override]]
+when.environment = "production"
+project = "project-production"
+
+[[override]]
+when.environment = "staging"
+project = "project-staging"
+
+[[override]]
+when.type = "service"
+containers.telemetry.enabled = true
+containers.app.service.min_scale = 1
+
+[[override]]
+when.environment = "staging"
+when.type = "service"
+containers.app.service.min_scale = 0
+
+[[override]]
+when.stack = "next"
+containers.app.name = "frontend"
+containers.app.env.NEXT_PUBLIC_FOO = "bar"
+
+[[override]]
+when.stack = "next"
+when.environment = "staging"
+containers.app.env.NEXT_PUBLIC_FOO = "baz"
+
+[[override]]
+when.stack = "django"
+cloudsql_instance = "production-postgres"
+containers.app.name = "backend"
+containers.app.env.APP_FOO = "bar"
+
+[[override]]
+when.environment = "staging"
+when.stack = "django"
+cloudsql_instance = "staging-postgres"
+containers.app.env.APP_FOO = "qux"
+
+[[override]]
+when.stack = "django"
+# The following line defines when in an array. It's not useful, as there's only one
+# value,  but we want to test that arrays work too.
+when.service = ["admin"]
+containers.app.name = "admin"
+containers.app.env.APP_ADMIN_ENABLED = true
+containers.app.env.APP_ID = 1234
+
+[[override]]
+when.stack = "django"
+when.service = "admin"
+when.environment = "staging"
+containers.app.env.APP_ID = 5678
+
+[[override]]
+when.type = "job"
+containers.app.job.max_retries = 1
+
+[[override]]
+when.stack = "django"
+when.job = "manage"
+containers.app.name = "manage"
+containers.app.command = ["./manage.py"]
+
+[[override]]
+when.stack = "django"
+when.job = "special-command"
+containers.app.name = "special-command"
+containers.app.container_cpu = 8
+containers.app.command = ["./manage.py"]
+containers.app.args = ["special-command"]
