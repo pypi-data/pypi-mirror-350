@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Orionis Test Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="https://orionis-framework.com/svg/logo.svg" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+
+<body class="bg-gray-100 text-gray-800 font-sans">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+
+        <!-- Header -->
+        <header class="bg-gradient-to-r from-blue-900 to-cyan-400 text-white rounded-2xl shadow-xl p-6 mb-10">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-4">
+                    <img src="https://orionis-framework.com/svg/logo.svg" alt="Orionis Logo"
+                        class="h-10 brightness-0 invert" />
+                    <h1 class="text-2xl font-light tracking-wider">Orionis Testing Results Dashboard</h1>
+                </div>
+                <div id="timestamp" class="text-sm text-white/90"></div>
+            </header>
+
+            <!-- Execution Summary Card -->
+            <div class="w-full mb-10">
+                <div class="bg-white rounded-2xl shadow-lg p-6 border-t-4 border-indigo-500 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div>
+                        <div class="text-xs font-semibold text-gray-500 uppercase">Resumen de Ejecución</div>
+                        <div class="text-lg font-bold text-gray-800 mt-2" id="execution-summary-title">Ejecución Completa</div>
+                        <div class="text-sm text-gray-600 mt-1" id="execution-summary-desc">Todos los tests han sido ejecutados correctamente.</div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="flex items-center gap-1 text-gray-700">
+                            <i class="bi bi-clock-history text-xl text-indigo-500"></i>
+                            <span id="execution-time">Duración: 00:00:00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-10">
+
+            <div class="bg-white rounded-2xl shadow-lg p-6 border-t-4 border-green-500">
+                <div class="text-xs font-semibold text-gray-500 uppercase">Passed</div>
+                <div class="text-4xl font-bold text-gray-800 mt-2" id="passed">0</div>
+                <div class="mt-4 bg-gray-200 rounded-full h-2">
+                    <div class="bg-green-500 h-2 rounded-full" id="passed-progress" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-lg p-6 border-t-4 border-red-500">
+                <div class="text-xs font-semibold text-gray-500 uppercase">Failed</div>
+                <div class="text-4xl font-bold text-gray-800 mt-2" id="failed">0</div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-lg p-6 border-t-4 border-yellow-500">
+                <div class="text-xs font-semibold text-gray-500 uppercase">Errors</div>
+                <div class="text-4xl font-bold text-gray-800 mt-2" id="errors">0</div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-lg p-6 border-t-4 border-blue-500">
+                <div class="text-xs font-semibold text-gray-500 uppercase">Skipped</div>
+                <div class="text-4xl font-bold text-gray-800 mt-2" id="skipped">0</div>
+            </div>
+
+        </div>
+
+        <!-- Download Buttons & Select -->
+        <div class="flex flex-wrap justify-between items-center mb-10 gap-4">
+            <!-- Buttons to the left -->
+            <div class="flex flex-wrap gap-4">
+                <button id="download-json"
+                    class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow">
+                    <i class="bi bi-file-earmark-code-fill text-lg"></i>
+                    <span>Download JSON</span>
+                </button>
+                <button id="download-excel"
+                    class="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow">
+                    <i class="bi bi-file-earmark-excel-fill text-lg"></i>
+                    <span>Download Excel</span>
+                </button>
+                <button id="download-pdf"
+                    class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded shadow">
+                    <i class="bi bi-file-earmark-pdf-fill text-lg"></i>
+                    <span>Download PDF</span>
+                </button>
+            </div>
+            <!-- Elegant Select to the right -->
+            <div>
+                <select
+                    class="appearance-none bg-white border border-gray-300 text-gray-700 py-2 px-4 pr-10 rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition text-base font-medium">
+                    <option selected disabled>Selecciona una opción</option>
+                    <option>Opción 1</option>
+                    <option>Opción 2</option>
+                    <option>Opción 3</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- JSON Viewer Panel -->
+        <div class="bg-white rounded-2xl shadow-xl p-6">
+            <h2 class="text-xl font-semibold mb-4">Test Report JSON</h2>
+            <pre id="json-data"
+                class="whitespace-pre-wrap text-sm text-gray-800 bg-gray-100 p-4 rounded-xl overflow-x-auto"></pre>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 text-center text-gray-500 text-sm py-6">
+            Developed with the power of
+            <a href="https://orionis-framework.com/" target="_blank" rel="noopener"
+                class="font-semibold text-blue-700 hover:underline">
+                Orionis Framework
+            </a>
+            <i class="bi bi-stars text-yellow-400 align-middle ml-1"></i>
+        </footer>
+
+        <script>
+            // Placeholder JS logic
+            document.getElementById("timestamp").textContent = new Date().toLocaleString();
+        </script>
+</body>
+
+</html>
