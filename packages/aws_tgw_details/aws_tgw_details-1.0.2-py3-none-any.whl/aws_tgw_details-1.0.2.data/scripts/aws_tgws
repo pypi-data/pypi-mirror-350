@@ -1,0 +1,208 @@
+#!/usr/bin/env python3
+# -*- coding: latin-1 -*-
+"""Get AWS Transit Gateway details."""
+
+import argparse
+import os
+import sys
+import aws_tgw_details
+from pprint import pp
+from aws_authenticator import AWSAuthenticator
+
+
+__version__ = aws_tgw_details.__version__
+__author__ = aws_tgw_details.__author__
+__application__ = aws_tgw_details.__application__
+
+
+def login_to_aws(
+    service: str,
+    region: str
+):
+    """Login to AWS iwth IAM access key credentials in environment variables."""
+    aws_session_token = os.environ.get("TGW_AWS_SESSION_TOKEN", None)
+    if aws_session_token:
+        auth = AWSAuthenticator(
+            access_key_id=os.environ.get("TGW_AWS_ACCESS_KEY_ID"),
+            secret_access_key=os.environ.get("TGW_AWS_SECRET_ACCESS_KEY"),
+            session_token=aws_session_token
+        )
+    else:
+        auth = AWSAuthenticator(
+            access_key_id=os.environ.get("TGW_AWS_ACCESS_KEY_ID"),
+            secret_access_key=os.environ.get("TGW_AWS_SECRET_ACCESS_KEY")
+        )
+    session = auth.iam()
+    client = session.client(
+        service,
+        region
+    )
+    return client
+
+
+def get_params():
+    """Get parameters from script inputs."""
+    myparser = argparse.ArgumentParser(
+        add_help=True,
+        allow_abbrev=False,
+        description="Get AWS Transit Gateway details.",
+        usage=f"{__application__} [options]"
+    )
+    myparser.add_argument(
+        "-V", "--version", action="version", version=f"{__application__} {__version__}"
+    )
+    myparser.add_argument(
+        "-t",
+        "--tgw_id",
+        action="store",
+        help="Transit Gateway ID. Use 'ALL' to get all TGWs. Default: None.",
+        nargs="?",
+        default=None,
+        required=False,
+        type=str
+    )
+    myparser.add_argument(
+        "-r",
+        "--tgw_rt_id",
+        action="store",
+        help="Transit Gateway Route Table ID. Default: None.",
+        nargs="?",
+        default=None,
+        required=False,
+        type=str
+    )
+    myparser.add_argument(
+        "-a",
+        "--tgw_attachment_id",
+        action="store",
+        help="Transit Gateway Attachment ID. Default: None.",
+        nargs="?",
+        default=None,
+        required=False,
+        type=str
+    )
+    myparser.add_argument(
+        "-v",
+        "--tgw_vpn_connection_id",
+        action="store",
+        help="Transit Gateway VPN Connection ID. Default: None.",
+        nargs="?",
+        default=None,
+        required=False,
+        type=str
+    )
+    myparser.add_argument(
+        "-c",
+        "--cgw_id",
+        action="store",
+        help="Customer Gateway ID. Use 'ALL' to get all CGWs. Default: None.",
+        nargs="?",
+        default=None,
+        required=False,
+        type=str
+    )
+    myparser.add_argument(
+        "-w",
+        "--region",
+        action="store",
+        help="AWS Region. Default: us-east-1.",
+        nargs="?",
+        default="us-east-1",
+        required=False,
+        type=str
+    )
+    return myparser.parse_args()
+
+
+def main():
+    """Execute main function."""
+    if len(sys.argv) == 1:
+        print(f"\n{__application__} v{__version__} - Get AWS Transit Gateway details.")
+        print(
+            "\n"
+            "Environment variables:\n"
+            "  TGW_AWS_ACCESS_KEY_ID [Required]\n"
+            "  TGW_AWS_SECRET_ACCESS_KEY [Required]\n"
+            "  TGW_AWS_SESSION_TOKEN [Optional. Default: None]"
+            "\n"
+        )
+        print(
+            "Additional modules:\n"
+            "  aws_authenticator"
+            "\n"
+        )
+        print(f"usage: {__application__} [options]")
+        print("Use -h or --help for more information.\n")
+
+    # Login to AWS.
+    client = login_to_aws(
+        "ec2",
+        get_params().region
+    )
+
+    # Get specific Transit Gateway Route Table details,
+    # filtered by Transit Gateway Route Table ID.
+    if get_params().tgw_rt_id:
+        tgw_rts = aws_tgw_details.get_tgw_rts(
+            client,
+            get_params().tgw_rt_id
+        )
+        pp(tgw_rts, indent=2)
+
+    # Get specific Transit Gateway Attachment details,
+    # filtered by Transit Gateway Attachment ID.
+    if get_params().tgw_attachment_id:
+        tgw_attachments = aws_tgw_details.get_tgw_attachments(
+            client,
+            get_params().tgw_attachment_id
+        )
+        pp(tgw_attachments, indent=2)
+
+    # Get specific Transit Gateway VPN Connection details,
+    # filtered by Transit Gateway VPN Connection ID.
+    if get_params().tgw_vpn_connection_id:
+        tgw_vpn_connections = aws_tgw_details.get_tgw_vpn_connections(
+            client,
+            get_params().tgw_vpn_connection_id
+        )
+        pp(tgw_vpn_connections, indent=2)
+
+    # Get Customer Gateway details,
+    # optionally filterable by Customer Gateway ID.
+    if get_params().cgw_id:
+        cgws = aws_tgw_details.get_cgws(
+            client,
+            get_params().cgw_id
+        )
+        pp(cgws, indent=2)
+
+    # Get Transit Gateway details,
+    # optionally filterable by Transit Gateway ID.
+    if (
+        not get_params().cgw_id
+        and get_params().tgw_id == "ALL"
+        and not get_params().tgw_rt_id
+        and not get_params().tgw_attachment_id
+        and not get_params().tgw_vpn_connection_id
+    ):
+        tgws = aws_tgw_details.get_tgws(
+            client,
+            get_params().tgw_id
+        )
+        pp(tgws, indent=2)
+        for tgw in tgws:
+            tgw_id = tgw["tgw_id"]
+            tgw_rts = aws_tgw_details.get_tgw_rts(client, tgw_id)
+            pp(tgw_rts, indent=2)
+            tgw_attachments = aws_tgw_details.get_tgw_attachments(client, tgw_id)
+            pp(tgw_attachments, indent=2)
+            tgw_vpn_connections = aws_tgw_details.get_tgw_vpn_connections(client, tgw_id)
+            pp(tgw_vpn_connections, indent=2)
+            for tgw_rt in tgw_rts:
+                tgw_rt_id = tgw_rt["tgw_rt_id"]
+                routes = aws_tgw_details.get_tgw_routes(client, tgw_rt_id)
+                pp(routes, indent=2)
+
+
+if __name__ == "__main__":
+    main()
