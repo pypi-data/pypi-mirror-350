@@ -1,0 +1,60 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "stutter_string"
+dynamic = ["version"]
+description = ''
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+keywords = []
+authors = [
+  { name = "benielcapo", email = "benanmachadi@gmail.com" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = []
+
+[project.urls]
+Documentation = "https://github.com/benielcapo/stutter_string#readme"
+Issues = "https://github.com/benielcapo/stutter_string/issues"
+Source = "https://github.com/benielcapo/stutter_string"
+
+[tool.hatch.version]
+path = "src/stutter_string/__about__.py"
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+  "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/stutter_string}"
+
+[tool.coverage.run]
+source_pkgs = ["stutter_string"]
+branch = true
+parallel = true
+omit = [
+  "src/stutter_string/__about__.py",
+]
+
+[tool.coverage.paths]
+stutter_string = ["src/stutter_string", "*/stutter_string/src/stutter_string"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
