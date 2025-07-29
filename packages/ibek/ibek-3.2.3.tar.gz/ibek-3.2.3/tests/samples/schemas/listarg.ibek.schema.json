@@ -1,0 +1,183 @@
+{
+  "$defs": {
+    "RepeatEntity": {
+      "additionalProperties": false,
+      "description": "A definition of RepeatEntity for the type checker\n\nThis is not really used - instead the dynamic class is created\nby the make_entity_model function is used.",
+      "properties": {
+        "type": {
+          "const": "ibek.repeat",
+          "default": "ibek.repeat",
+          "enum": [
+            "ibek.repeat"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "entity_enabled": {
+          "default": true,
+          "description": "enable or disable this entity instance",
+          "title": "Entity Enabled",
+          "type": "boolean"
+        },
+        "values": {
+          "anyOf": [
+            {
+              "items": {},
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "The list of values to iterate over",
+          "title": "Values"
+        },
+        "variable": {
+          "default": "index",
+          "description": "The variable name to use in the entity model",
+          "title": "Variable",
+          "type": "string"
+        },
+        "entity": {
+          "description": "The entity model to repeat",
+          "title": "Entity",
+          "type": "object"
+        }
+      },
+      "required": [
+        "values",
+        "entity"
+      ],
+      "title": "RepeatEntity",
+      "type": "object"
+    },
+    "listtest_lister": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "listtest.lister",
+          "description": "The protagonist from Red Dwarf",
+          "enum": [
+            "listtest.lister"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "entity_enabled": {
+          "default": true,
+          "description": "enable or disable this entity instance",
+          "title": "Entity Enabled",
+          "type": "boolean"
+        },
+        "age": {
+          "anyOf": [
+            {
+              "description": "jinja that renders to <class 'int'>",
+              "pattern": ".*\\{\\{.*\\}\\}.*",
+              "type": "string"
+            },
+            {
+              "description": "Age of the character including cryogenic sleep",
+              "type": "integer"
+            }
+          ],
+          "default": "{{ 29 + cryo_years }}",
+          "description": "union of <class 'int'> and jinja representation of {typ}",
+          "title": "Age"
+        },
+        "quote": {
+          "default": "Smoke me a kipper, I'll be back for breakfast",
+          "description": "most hated quote",
+          "title": "Quote",
+          "type": "string"
+        },
+        "height": {
+          "anyOf": [
+            {
+              "description": "jinja that renders to <class 'float'>",
+              "pattern": ".*\\{\\{.*\\}\\}.*",
+              "type": "string"
+            },
+            {
+              "description": "height of the character in cm",
+              "type": "number"
+            }
+          ],
+          "default": 180.0,
+          "description": "union of <class 'float'> and jinja representation of {typ}",
+          "title": "Height"
+        },
+        "is_human": {
+          "anyOf": [
+            {
+              "description": "jinja that renders to <class 'bool'>",
+              "pattern": ".*\\{\\{.*\\}\\}.*",
+              "type": "string"
+            },
+            {
+              "description": "is the character human",
+              "type": "boolean"
+            }
+          ],
+          "default": "{{ name == 'Dave Lister' }}",
+          "description": "union of <class 'bool'> and jinja representation of {typ}",
+          "title": "Is Human"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "title": "listtest_lister",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "ioc_name": {
+      "description": "Name of IOC instance",
+      "title": "Ioc Name",
+      "type": "string"
+    },
+    "description": {
+      "description": "Description of what the IOC does",
+      "title": "Description",
+      "type": "string"
+    },
+    "entities": {
+      "description": "List of entities this IOC instantiates",
+      "items": {
+        "discriminator": {
+          "mapping": {
+            "ibek.repeat": "#/$defs/RepeatEntity",
+            "listtest.lister": "#/$defs/listtest_lister"
+          },
+          "propertyName": "type"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/$defs/listtest_lister"
+          },
+          {
+            "$ref": "#/$defs/RepeatEntity"
+          }
+        ]
+      },
+      "title": "Entities",
+      "type": "array"
+    },
+    "shared": {
+      "default": [],
+      "description": "A place to create any anchors required for repeating YAML",
+      "items": {},
+      "title": "Shared",
+      "type": "array"
+    }
+  },
+  "required": [
+    "ioc_name",
+    "description",
+    "entities"
+  ],
+  "title": "NewIOC",
+  "type": "object"
+}
