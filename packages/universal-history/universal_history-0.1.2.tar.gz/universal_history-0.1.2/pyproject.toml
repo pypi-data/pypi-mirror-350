@@ -1,0 +1,82 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "universal-history"
+version = "0.1.2"
+description = "A library for creating, maintaining, and utilizing Universal Histories across multiple domains"
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+authors = [
+    {name = "Original Author", email = "author@example.com"}
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Software Development :: Libraries",
+]
+dependencies = [
+    "pymongo>=4.0.0",
+    "pydantic>=2.0.0",
+    "python-dateutil>=2.8.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "mypy>=1.0.0",
+    "flake8>=6.0.0",
+]
+mongodb = [
+    "pymongo>=4.0.0",
+]
+llm = [
+    "langchain>=0.0.267",
+    "numpy>=1.20.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/universal-history"
+Issues = "https://github.com/yourusername/universal-history/issues"
+Documentation = "https://universal-history.readthedocs.io/"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+packages = {find = {include = ["universal_history*"], where = ["src"]}}
+
+[tool.black]
+line-length = 100
+target-version = ["py38", "py39", "py310", "py311"]
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+markers = [
+    "models: tests for the model classes",
+    "services: tests for the service classes",
+    "storage: tests for the storage layer",
+    "utils: tests for utility functions"
+]
+addopts = "--cov=universal_history --cov-report=term-missing --cov-report=xml"
