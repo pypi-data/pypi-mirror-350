@@ -1,0 +1,132 @@
+[project]
+name = "dev-kit-mcp-server"
+dynamic = ["version"]
+description = "A Model Context Protocol server for turning repositories into navigable MCP systems"
+authors = [
+    { name = "DanielAvdar", email = "66269169+DanielAvdar@users.noreply.github.com" },
+]
+license = { text = "MIT" }
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.10"
+
+keywords = [
+    "python",
+    "mcp",
+    "repository-navigation",
+    "code-exploration",
+    "code-structure",
+    "ast",
+    "tokenize"
+]
+dependencies = [
+
+    "mcp>=1.8.1",
+    "fastmcp>=2.3.3",
+    "gitpython>=3.1.43",
+    "toml>=0.10.2"
+
+]
+[project.optional-dependencies]
+github = [
+    "PyGithub",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=7.1.2",
+    "hypothesis>=6.23.3",
+    "pre-commit>=2.20.0",
+    "pre-commit-uv>=4",
+    "pytest-cov>=4.0.0",
+    "mypy==1.15.0",
+    "pytest-parametrization>=2022",
+    "ruff>=0.8.2",
+    "pytest-asyncio>=0.23.5",
+]
+docs = [
+    "sphinx>=8.2.0; python_version >= '3.11'",
+    "sphinx>=7.0.0; python_version < '3.11'",
+    "sphinx-rtd-theme>=3.0.2",
+]
+[project.scripts]
+dev-kit-mcp-server = "dev_kit_mcp_server:arun_server"
+dkmcp-vscode = "dkmcp_utils:create_vscode_config"
+
+[tool.hatch.build.targets.sdist]
+only-include = ["dev_kit_mcp_server","dkmcp_utils"]
+source = "."
+
+[tool.hatch.build.targets.wheel]
+only-include = ["dev_kit_mcp_server","dkmcp_utils"]
+source = "."
+
+
+[build-system]
+requires = ["hatchling", "uv-dynamic-versioning"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "uv-dynamic-versioning"
+
+
+[tool.ruff]
+line-length = 120
+include = ["pyproject.toml", "tests/**", ]
+exclude = ["tests/test_mcp_server.py", "tests/test_server.py"]
+
+[tool.ruff.lint]
+select = ["F", "B", "I", "F", "W", "E", "A", "N", "D", "DOC"]
+
+fixable = ["ALL"]
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["D", "DOC"]
+"docs/*" = ["D", "DOC"]
+"dkmcp_utils/*" = ["ALL"]
+[tool.ruff.lint.isort]
+combine-as-imports = true
+[tool.mypy]
+python_version = "3.11"
+disallow_untyped_defs = true
+check_untyped_defs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+strict_optional = false
+
+[[tool.mypy.overrides]]
+module = [
+    "fastapi",
+    "fastapi.responses",
+    "fastapi_mcp",
+    "fastmcp",
+    "pydantic",
+    "starlette",
+    "starlette.responses",
+    "uvicorn"
+]
+ignore_missing_imports = true
+
+[tool.dkmcp.commands]
+pytest = "uv run pytest"
+make = "make"
+check = "uvx pre-commit run --all-files"
+doctest = "make doctest"
+[tool.dkmcp.factory]
+include = [
+    "exec_make_target",
+    "predefined_commands",
+    "create_dir",
+    "move_dir",
+    "remove_file",
+    "rename_file"
+
+
+]
