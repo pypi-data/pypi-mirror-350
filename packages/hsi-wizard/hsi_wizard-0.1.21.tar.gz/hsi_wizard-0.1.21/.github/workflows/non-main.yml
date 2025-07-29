@@ -1,0 +1,55 @@
+name: CI - Non-main branches
+
+on:
+  push:
+    branches-ignore:
+      - main
+
+jobs:
+  style-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dev dependencies
+        run: pip install flake8 pydocstyle
+
+      - name: Run pydocstyle
+        run: |
+          pydocstyle wizard
+
+      - name: Run flake8
+        run: |
+          flake8 wizard
+
+  test-and-coverage:
+    runs-on: ubuntu-latest
+    needs: style-check
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: pip install -e '.[tests]'
+
+      - name: Run tests
+        run: |
+          pytest tests/
+
+      - name: Generate coverage report
+        run: |
+          pytest --cov --cov-report=xml
+
