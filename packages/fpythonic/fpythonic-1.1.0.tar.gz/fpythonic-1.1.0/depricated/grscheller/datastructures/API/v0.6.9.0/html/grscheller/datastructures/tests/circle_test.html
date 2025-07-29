@@ -1,0 +1,779 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>grscheller.datastructures.tests.circle_test API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>grscheller.datastructures.tests.circle_test</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python"># Copyright 2023 Geoffrey R. Scheller
+#
+# Licensed under the Apache License, Version 2.0 (the &#34;License&#34;);
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an &#34;AS IS&#34; BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+from grscheller.datastructures.circle import Circle
+from grscheller.datastructures.iterlib import mapIter
+
+class TestCircle:
+    def test_push_then_pop(self):
+        c = Circle()
+        pushed = 42; c.pushL(pushed)
+        popped = c.popL()
+        assert pushed == popped
+        assert len(c) == 0
+        assert c.popL() == None
+        pushed = 0; c.pushL(pushed)
+        popped = c.popR()
+        assert pushed == popped == 0
+        assert not c
+        pushed = 0; c.pushR(pushed)
+        popped = c.popL()
+        assert popped is not None
+        assert pushed == popped
+        assert len(c) == 0
+        pushed = &#39;&#39;; c.pushR(pushed)
+        popped = c.popR()
+        assert pushed == popped
+        assert len(c) == 0
+        c.pushR(&#39;first&#39;).pushR(&#39;second&#39;).pushR(&#39;last&#39;)
+        assert c.popL() == &#39;first&#39;
+        assert c.popR() == &#39;last&#39;
+        assert c
+        c.popL()
+        assert len(c) == 0
+
+    def test_iterators(self):
+        data = [*range(100)]
+        c = Circle(*data)
+        ii = 0
+        for item in c:
+            assert data[ii] == item
+            ii += 1
+        assert ii == 100
+
+        data.append(100)
+        c = Circle(*data)
+        data.reverse()
+        ii = 0
+        for item in reversed(c):
+            assert data[ii] == item
+            ii += 1
+        assert ii == 101
+
+        c0 = Circle()
+        for _ in c0:
+            assert False
+        for _ in reversed(c0):
+            assert False
+
+        data = ()
+        c0 = Circle(*data)
+        for _ in c0:
+            assert False
+        for _ in reversed(c0):
+            assert False
+
+    def test_capacity(self):
+        c = Circle()
+        assert c.capacity() == 2
+        c = Circle(1, 2)
+        assert c.fractionFilled() == 2/4
+        c.pushL(0)
+        assert c.fractionFilled() == 3/4
+        c.pushR(3)
+        assert c.fractionFilled() == 4/4
+        c.pushR(4).pushL(5)
+        assert c.fractionFilled() == 6/8
+        assert len(c) == 6
+        assert c.capacity() == 8
+        c.resize()
+        assert c.fractionFilled() == 6/6
+        c.resize(30)
+        assert c.fractionFilled() == 6/36
+
+    def test_equality(self):
+        c1 = Circle(1, 2, 3, &#39;Forty-Two&#39;, (7, 11, &#39;foobar&#39;))
+        c2 = Circle(2, 3, &#39;Forty-Two&#39;).pushL(1).pushR((7, 11, &#39;foobar&#39;))
+        assert c1 == c2
+
+        tup2 = c2.popR()
+        assert c1 != c2
+
+        c2.pushR((42, &#39;foofoo&#39;))
+        assert c1 != c2
+
+        c1.popR()
+        c1.pushR((42, &#39;foofoo&#39;)).pushR(tup2)
+        c2.pushR(tup2)
+        assert c1 == c2
+
+        holdA = c1.popL()
+        c1.resize(42)
+        holdB = c1.popL()
+        holdC = c1.popR()
+        c1.pushL(holdB).pushR(holdC).pushL(holdA).pushL(200)
+        c2.pushL(200)
+        assert c1 == c2
+
+    def test_map(self):
+        c1 = Circle(1,2,3,10)
+        c2 = c1.map(lambda x: x*x-1)
+        c2_answers = Circle(0,3,8,99)
+        assert c2 == c2_answers
+        assert c1 is not c2
+        assert len(c1) == len(c2) == 4
+
+    def test_mapSelf(self):
+        c1 = Circle(1,2,3,10)
+        c1.mapSelf(lambda x: x*x-1)
+        c1_answers = Circle(0,3,8,99)
+        assert c1 == c1_answers
+        assert len(c1) == 4
+
+    def test_flatMap(self):
+        c1 = Circle(1,2,3,10)
+        c2 = c1.flatMap(lambda x: Circle(1, x, x*x+1))
+        c2_answers = Circle(1, 1, 2, 1, 2, 5, 1, 3, 10, 1, 10, 101)
+        assert c2 == c2_answers
+        assert len(c2) == 3*len(c1) == 12
+#        c3 = Circle()
+#        c4 = c3.flatMap(lambda x: Circle(1, x, x*x+1))
+#        assert 3 == c4 == Circle()
+#        assert c3 is not c4
+
+    def test_flatMapSelf(self):
+        c1 = Circle(1,2,3,5,10)
+        c1.flatMapSelf(lambda x: Circle(1, x, x*x+1))
+        c1_answers = Circle(1, 1, 2, 1, 2, 5, 1, 3, 10, 1, 5, 26, 1, 10, 101)
+        assert c1 == c1_answers
+        assert len(c1) == 5*3
+
+    def test_mergeMap(self):
+        c1 = Circle(5, 4, 7)
+        assert len(c1) == 3
+        c2 = c1.mergeMap(lambda x: Circle(*([chr(0o100+x)*x]*x)))
+        assert len(c2) == 3*4
+        assert c2[0] == c2[3] == c2[6] == c2[9] == &#39;EEEEE&#39;
+        assert c2[1] == c2[4] == c2[7] == c2[10] == &#39;DDDD&#39;
+        assert c2[2] == c2[5] == c2[8] == c2[11] == &#39;GGGGGGG&#39;
+        assert c2[-1] == &#39;GGGGGGG&#39;
+        assert len(c2) == len(c1)*min(*c1) == 3*4
+        assert len(c2) == len(c1)*min(*(mapIter(iter(c1), lambda x: int(x)))) == 3*4
+
+    def test_mergeMapSelf(self):
+        c1 = Circle(5, 4, 7)
+        c1_orig_len = len(c1)
+        c1_orig_min = min(*c1)   # works but pyright complains
+        c1_orig_min = min(mapIter(iter(c1), lambda x: int(x)))
+        assert len(c1) == 3
+        c1.mergeMapSelf(lambda x: Circle(*([chr(0o100+x)*x]*x)))
+        assert len(c1) == 3*4
+        assert c1[0] == c1[3] == c1[6] == c1[9] == &#39;EEEEE&#39;
+        assert c1[1] == c1[4] == c1[7] == c1[10] == &#39;DDDD&#39;
+        assert c1[2] == c1[5] == c1[8] == c1[11] == &#39;GGGGGGG&#39;
+        assert c1[-1] == &#39;GGGGGGG&#39;
+        assert len(c1) == c1_orig_len*c1_orig_min == 3*4
+
+    def test_get_set_items(self):
+        c1 = Circle(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;)
+        c2 = c1.copy()
+        assert c1 == c2
+        c1[2] = &#39;cat&#39;
+        c1[-1] = &#39;dog&#39;
+        assert c2.popR() == &#39;d&#39;
+        assert c2.popR() == &#39;c&#39;
+        c2.pushR(&#39;cat&#39;)
+        try:
+            c2[3] = &#39;dog&#39;       # no such index
+        except IndexError:
+            assert True
+        except:
+            assert False
+        else:
+            assert False
+        assert c1 != c2
+        c2.pushR(&#39;dog&#39;)
+        assert c1 == c2
+        c2[1] = &#39;bob&#39;
+        assert c1 != c2
+        assert c1.popL() == &#39;a&#39;
+        c1[0] = c2[1]
+        assert c1 != c2
+        assert c2.popL() == &#39;a&#39;
+        assert c1 == c2</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="grscheller.datastructures.tests.circle_test.TestCircle"><code class="flex name class">
+<span>class <span class="ident">TestCircle</span></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TestCircle:
+    def test_push_then_pop(self):
+        c = Circle()
+        pushed = 42; c.pushL(pushed)
+        popped = c.popL()
+        assert pushed == popped
+        assert len(c) == 0
+        assert c.popL() == None
+        pushed = 0; c.pushL(pushed)
+        popped = c.popR()
+        assert pushed == popped == 0
+        assert not c
+        pushed = 0; c.pushR(pushed)
+        popped = c.popL()
+        assert popped is not None
+        assert pushed == popped
+        assert len(c) == 0
+        pushed = &#39;&#39;; c.pushR(pushed)
+        popped = c.popR()
+        assert pushed == popped
+        assert len(c) == 0
+        c.pushR(&#39;first&#39;).pushR(&#39;second&#39;).pushR(&#39;last&#39;)
+        assert c.popL() == &#39;first&#39;
+        assert c.popR() == &#39;last&#39;
+        assert c
+        c.popL()
+        assert len(c) == 0
+
+    def test_iterators(self):
+        data = [*range(100)]
+        c = Circle(*data)
+        ii = 0
+        for item in c:
+            assert data[ii] == item
+            ii += 1
+        assert ii == 100
+
+        data.append(100)
+        c = Circle(*data)
+        data.reverse()
+        ii = 0
+        for item in reversed(c):
+            assert data[ii] == item
+            ii += 1
+        assert ii == 101
+
+        c0 = Circle()
+        for _ in c0:
+            assert False
+        for _ in reversed(c0):
+            assert False
+
+        data = ()
+        c0 = Circle(*data)
+        for _ in c0:
+            assert False
+        for _ in reversed(c0):
+            assert False
+
+    def test_capacity(self):
+        c = Circle()
+        assert c.capacity() == 2
+        c = Circle(1, 2)
+        assert c.fractionFilled() == 2/4
+        c.pushL(0)
+        assert c.fractionFilled() == 3/4
+        c.pushR(3)
+        assert c.fractionFilled() == 4/4
+        c.pushR(4).pushL(5)
+        assert c.fractionFilled() == 6/8
+        assert len(c) == 6
+        assert c.capacity() == 8
+        c.resize()
+        assert c.fractionFilled() == 6/6
+        c.resize(30)
+        assert c.fractionFilled() == 6/36
+
+    def test_equality(self):
+        c1 = Circle(1, 2, 3, &#39;Forty-Two&#39;, (7, 11, &#39;foobar&#39;))
+        c2 = Circle(2, 3, &#39;Forty-Two&#39;).pushL(1).pushR((7, 11, &#39;foobar&#39;))
+        assert c1 == c2
+
+        tup2 = c2.popR()
+        assert c1 != c2
+
+        c2.pushR((42, &#39;foofoo&#39;))
+        assert c1 != c2
+
+        c1.popR()
+        c1.pushR((42, &#39;foofoo&#39;)).pushR(tup2)
+        c2.pushR(tup2)
+        assert c1 == c2
+
+        holdA = c1.popL()
+        c1.resize(42)
+        holdB = c1.popL()
+        holdC = c1.popR()
+        c1.pushL(holdB).pushR(holdC).pushL(holdA).pushL(200)
+        c2.pushL(200)
+        assert c1 == c2
+
+    def test_map(self):
+        c1 = Circle(1,2,3,10)
+        c2 = c1.map(lambda x: x*x-1)
+        c2_answers = Circle(0,3,8,99)
+        assert c2 == c2_answers
+        assert c1 is not c2
+        assert len(c1) == len(c2) == 4
+
+    def test_mapSelf(self):
+        c1 = Circle(1,2,3,10)
+        c1.mapSelf(lambda x: x*x-1)
+        c1_answers = Circle(0,3,8,99)
+        assert c1 == c1_answers
+        assert len(c1) == 4
+
+    def test_flatMap(self):
+        c1 = Circle(1,2,3,10)
+        c2 = c1.flatMap(lambda x: Circle(1, x, x*x+1))
+        c2_answers = Circle(1, 1, 2, 1, 2, 5, 1, 3, 10, 1, 10, 101)
+        assert c2 == c2_answers
+        assert len(c2) == 3*len(c1) == 12
+#        c3 = Circle()
+#        c4 = c3.flatMap(lambda x: Circle(1, x, x*x+1))
+#        assert 3 == c4 == Circle()
+#        assert c3 is not c4
+
+    def test_flatMapSelf(self):
+        c1 = Circle(1,2,3,5,10)
+        c1.flatMapSelf(lambda x: Circle(1, x, x*x+1))
+        c1_answers = Circle(1, 1, 2, 1, 2, 5, 1, 3, 10, 1, 5, 26, 1, 10, 101)
+        assert c1 == c1_answers
+        assert len(c1) == 5*3
+
+    def test_mergeMap(self):
+        c1 = Circle(5, 4, 7)
+        assert len(c1) == 3
+        c2 = c1.mergeMap(lambda x: Circle(*([chr(0o100+x)*x]*x)))
+        assert len(c2) == 3*4
+        assert c2[0] == c2[3] == c2[6] == c2[9] == &#39;EEEEE&#39;
+        assert c2[1] == c2[4] == c2[7] == c2[10] == &#39;DDDD&#39;
+        assert c2[2] == c2[5] == c2[8] == c2[11] == &#39;GGGGGGG&#39;
+        assert c2[-1] == &#39;GGGGGGG&#39;
+        assert len(c2) == len(c1)*min(*c1) == 3*4
+        assert len(c2) == len(c1)*min(*(mapIter(iter(c1), lambda x: int(x)))) == 3*4
+
+    def test_mergeMapSelf(self):
+        c1 = Circle(5, 4, 7)
+        c1_orig_len = len(c1)
+        c1_orig_min = min(*c1)   # works but pyright complains
+        c1_orig_min = min(mapIter(iter(c1), lambda x: int(x)))
+        assert len(c1) == 3
+        c1.mergeMapSelf(lambda x: Circle(*([chr(0o100+x)*x]*x)))
+        assert len(c1) == 3*4
+        assert c1[0] == c1[3] == c1[6] == c1[9] == &#39;EEEEE&#39;
+        assert c1[1] == c1[4] == c1[7] == c1[10] == &#39;DDDD&#39;
+        assert c1[2] == c1[5] == c1[8] == c1[11] == &#39;GGGGGGG&#39;
+        assert c1[-1] == &#39;GGGGGGG&#39;
+        assert len(c1) == c1_orig_len*c1_orig_min == 3*4
+
+    def test_get_set_items(self):
+        c1 = Circle(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;)
+        c2 = c1.copy()
+        assert c1 == c2
+        c1[2] = &#39;cat&#39;
+        c1[-1] = &#39;dog&#39;
+        assert c2.popR() == &#39;d&#39;
+        assert c2.popR() == &#39;c&#39;
+        c2.pushR(&#39;cat&#39;)
+        try:
+            c2[3] = &#39;dog&#39;       # no such index
+        except IndexError:
+            assert True
+        except:
+            assert False
+        else:
+            assert False
+        assert c1 != c2
+        c2.pushR(&#39;dog&#39;)
+        assert c1 == c2
+        c2[1] = &#39;bob&#39;
+        assert c1 != c2
+        assert c1.popL() == &#39;a&#39;
+        c1[0] = c2[1]
+        assert c1 != c2
+        assert c2.popL() == &#39;a&#39;
+        assert c1 == c2</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="grscheller.datastructures.tests.circle_test.TestCircle.test_capacity"><code class="name flex">
+<span>def <span class="ident">test_capacity</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_capacity(self):
+    c = Circle()
+    assert c.capacity() == 2
+    c = Circle(1, 2)
+    assert c.fractionFilled() == 2/4
+    c.pushL(0)
+    assert c.fractionFilled() == 3/4
+    c.pushR(3)
+    assert c.fractionFilled() == 4/4
+    c.pushR(4).pushL(5)
+    assert c.fractionFilled() == 6/8
+    assert len(c) == 6
+    assert c.capacity() == 8
+    c.resize()
+    assert c.fractionFilled() == 6/6
+    c.resize(30)
+    assert c.fractionFilled() == 6/36</code></pre>
+</details>
+</dd>
+<dt id="grscheller.datastructures.tests.circle_test.TestCircle.test_equality"><code class="name flex">
+<span>def <span class="ident">test_equality</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_equality(self):
+    c1 = Circle(1, 2, 3, &#39;Forty-Two&#39;, (7, 11, &#39;foobar&#39;))
+    c2 = Circle(2, 3, &#39;Forty-Two&#39;).pushL(1).pushR((7, 11, &#39;foobar&#39;))
+    assert c1 == c2
+
+    tup2 = c2.popR()
+    assert c1 != c2
+
+    c2.pushR((42, &#39;foofoo&#39;))
+    assert c1 != c2
+
+    c1.popR()
+    c1.pushR((42, &#39;foofoo&#39;)).pushR(tup2)
+    c2.pushR(tup2)
+    assert c1 == c2
+
+    holdA = c1.popL()
+    c1.resize(42)
+    holdB = c1.popL()
+    holdC = c1.popR()
+    c1.pushL(holdB).pushR(holdC).pushL(holdA).pushL(200)
+    c2.pushL(200)
+    assert c1 == c2</code></pre>
+</details>
+</dd>
+<dt id="grscheller.datastructures.tests.circle_test.TestCircle.test_flatMap"><code class="name flex">
+<span>def <span class="ident">test_flatMap</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_flatMap(self):
+    c1 = Circle(1,2,3,10)
+    c2 = c1.flatMap(lambda x: Circle(1, x, x*x+1))
+    c2_answers = Circle(1, 1, 2, 1, 2, 5, 1, 3, 10, 1, 10, 101)
+    assert c2 == c2_answers
+    assert len(c2) == 3*len(c1) == 12</code></pre>
+</details>
+</dd>
+<dt id="grscheller.datastructures.tests.circle_test.TestCircle.test_flatMapSelf"><code class="name flex">
+<span>def <span class="ident">test_flatMapSelf</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_flatMapSelf(self):
+    c1 = Circle(1,2,3,5,10)
+    c1.flatMapSelf(lambda x: Circle(1, x, x*x+1))
+    c1_answers = Circle(1, 1, 2, 1, 2, 5, 1, 3, 10, 1, 5, 26, 1, 10, 101)
+    assert c1 == c1_answers
+    assert len(c1) == 5*3</code></pre>
+</details>
+</dd>
+<dt id="grscheller.datastructures.tests.circle_test.TestCircle.test_get_set_items"><code class="name flex">
+<span>def <span class="ident">test_get_set_items</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_get_set_items(self):
+    c1 = Circle(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;)
+    c2 = c1.copy()
+    assert c1 == c2
+    c1[2] = &#39;cat&#39;
+    c1[-1] = &#39;dog&#39;
+    assert c2.popR() == &#39;d&#39;
+    assert c2.popR() == &#39;c&#39;
+    c2.pushR(&#39;cat&#39;)
+    try:
+        c2[3] = &#39;dog&#39;       # no such index
+    except IndexError:
+        assert True
+    except:
+        assert False
+    else:
+        assert False
+    assert c1 != c2
+    c2.pushR(&#39;dog&#39;)
+    assert c1 == c2
+    c2[1] = &#39;bob&#39;
+    assert c1 != c2
+    assert c1.popL() == &#39;a&#39;
+    c1[0] = c2[1]
+    assert c1 != c2
+    assert c2.popL() == &#39;a&#39;
+    assert c1 == c2</code></pre>
+</details>
+</dd>
+<dt id="grscheller.datastructures.tests.circle_test.TestCircle.test_iterators"><code class="name flex">
+<span>def <span class="ident">test_iterators</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_iterators(self):
+    data = [*range(100)]
+    c = Circle(*data)
+    ii = 0
+    for item in c:
+        assert data[ii] == item
+        ii += 1
+    assert ii == 100
+
+    data.append(100)
+    c = Circle(*data)
+    data.reverse()
+    ii = 0
+    for item in reversed(c):
+        assert data[ii] == item
+        ii += 1
+    assert ii == 101
+
+    c0 = Circle()
+    for _ in c0:
+        assert False
+    for _ in reversed(c0):
+        assert False
+
+    data = ()
+    c0 = Circle(*data)
+    for _ in c0:
+        assert False
+    for _ in reversed(c0):
+        assert False</code></pre>
+</details>
+</dd>
+<dt id="grscheller.datastructures.tests.circle_test.TestCircle.test_map"><code class="name flex">
+<span>def <span class="ident">test_map</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_map(self):
+    c1 = Circle(1,2,3,10)
+    c2 = c1.map(lambda x: x*x-1)
+    c2_answers = Circle(0,3,8,99)
+    assert c2 == c2_answers
+    assert c1 is not c2
+    assert len(c1) == len(c2) == 4</code></pre>
+</details>
+</dd>
+<dt id="grscheller.datastructures.tests.circle_test.TestCircle.test_mapSelf"><code class="name flex">
+<span>def <span class="ident">test_mapSelf</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_mapSelf(self):
+    c1 = Circle(1,2,3,10)
+    c1.mapSelf(lambda x: x*x-1)
+    c1_answers = Circle(0,3,8,99)
+    assert c1 == c1_answers
+    assert len(c1) == 4</code></pre>
+</details>
+</dd>
+<dt id="grscheller.datastructures.tests.circle_test.TestCircle.test_mergeMap"><code class="name flex">
+<span>def <span class="ident">test_mergeMap</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_mergeMap(self):
+    c1 = Circle(5, 4, 7)
+    assert len(c1) == 3
+    c2 = c1.mergeMap(lambda x: Circle(*([chr(0o100+x)*x]*x)))
+    assert len(c2) == 3*4
+    assert c2[0] == c2[3] == c2[6] == c2[9] == &#39;EEEEE&#39;
+    assert c2[1] == c2[4] == c2[7] == c2[10] == &#39;DDDD&#39;
+    assert c2[2] == c2[5] == c2[8] == c2[11] == &#39;GGGGGGG&#39;
+    assert c2[-1] == &#39;GGGGGGG&#39;
+    assert len(c2) == len(c1)*min(*c1) == 3*4
+    assert len(c2) == len(c1)*min(*(mapIter(iter(c1), lambda x: int(x)))) == 3*4</code></pre>
+</details>
+</dd>
+<dt id="grscheller.datastructures.tests.circle_test.TestCircle.test_mergeMapSelf"><code class="name flex">
+<span>def <span class="ident">test_mergeMapSelf</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_mergeMapSelf(self):
+    c1 = Circle(5, 4, 7)
+    c1_orig_len = len(c1)
+    c1_orig_min = min(*c1)   # works but pyright complains
+    c1_orig_min = min(mapIter(iter(c1), lambda x: int(x)))
+    assert len(c1) == 3
+    c1.mergeMapSelf(lambda x: Circle(*([chr(0o100+x)*x]*x)))
+    assert len(c1) == 3*4
+    assert c1[0] == c1[3] == c1[6] == c1[9] == &#39;EEEEE&#39;
+    assert c1[1] == c1[4] == c1[7] == c1[10] == &#39;DDDD&#39;
+    assert c1[2] == c1[5] == c1[8] == c1[11] == &#39;GGGGGGG&#39;
+    assert c1[-1] == &#39;GGGGGGG&#39;
+    assert len(c1) == c1_orig_len*c1_orig_min == 3*4</code></pre>
+</details>
+</dd>
+<dt id="grscheller.datastructures.tests.circle_test.TestCircle.test_push_then_pop"><code class="name flex">
+<span>def <span class="ident">test_push_then_pop</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_push_then_pop(self):
+    c = Circle()
+    pushed = 42; c.pushL(pushed)
+    popped = c.popL()
+    assert pushed == popped
+    assert len(c) == 0
+    assert c.popL() == None
+    pushed = 0; c.pushL(pushed)
+    popped = c.popR()
+    assert pushed == popped == 0
+    assert not c
+    pushed = 0; c.pushR(pushed)
+    popped = c.popL()
+    assert popped is not None
+    assert pushed == popped
+    assert len(c) == 0
+    pushed = &#39;&#39;; c.pushR(pushed)
+    popped = c.popR()
+    assert pushed == popped
+    assert len(c) == 0
+    c.pushR(&#39;first&#39;).pushR(&#39;second&#39;).pushR(&#39;last&#39;)
+    assert c.popL() == &#39;first&#39;
+    assert c.popR() == &#39;last&#39;
+    assert c
+    c.popL()
+    assert len(c) == 0</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="grscheller.datastructures.tests" href="index.html">grscheller.datastructures.tests</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="grscheller.datastructures.tests.circle_test.TestCircle" href="#grscheller.datastructures.tests.circle_test.TestCircle">TestCircle</a></code></h4>
+<ul class="two-column">
+<li><code><a title="grscheller.datastructures.tests.circle_test.TestCircle.test_capacity" href="#grscheller.datastructures.tests.circle_test.TestCircle.test_capacity">test_capacity</a></code></li>
+<li><code><a title="grscheller.datastructures.tests.circle_test.TestCircle.test_equality" href="#grscheller.datastructures.tests.circle_test.TestCircle.test_equality">test_equality</a></code></li>
+<li><code><a title="grscheller.datastructures.tests.circle_test.TestCircle.test_flatMap" href="#grscheller.datastructures.tests.circle_test.TestCircle.test_flatMap">test_flatMap</a></code></li>
+<li><code><a title="grscheller.datastructures.tests.circle_test.TestCircle.test_flatMapSelf" href="#grscheller.datastructures.tests.circle_test.TestCircle.test_flatMapSelf">test_flatMapSelf</a></code></li>
+<li><code><a title="grscheller.datastructures.tests.circle_test.TestCircle.test_get_set_items" href="#grscheller.datastructures.tests.circle_test.TestCircle.test_get_set_items">test_get_set_items</a></code></li>
+<li><code><a title="grscheller.datastructures.tests.circle_test.TestCircle.test_iterators" href="#grscheller.datastructures.tests.circle_test.TestCircle.test_iterators">test_iterators</a></code></li>
+<li><code><a title="grscheller.datastructures.tests.circle_test.TestCircle.test_map" href="#grscheller.datastructures.tests.circle_test.TestCircle.test_map">test_map</a></code></li>
+<li><code><a title="grscheller.datastructures.tests.circle_test.TestCircle.test_mapSelf" href="#grscheller.datastructures.tests.circle_test.TestCircle.test_mapSelf">test_mapSelf</a></code></li>
+<li><code><a title="grscheller.datastructures.tests.circle_test.TestCircle.test_mergeMap" href="#grscheller.datastructures.tests.circle_test.TestCircle.test_mergeMap">test_mergeMap</a></code></li>
+<li><code><a title="grscheller.datastructures.tests.circle_test.TestCircle.test_mergeMapSelf" href="#grscheller.datastructures.tests.circle_test.TestCircle.test_mergeMapSelf">test_mergeMapSelf</a></code></li>
+<li><code><a title="grscheller.datastructures.tests.circle_test.TestCircle.test_push_then_pop" href="#grscheller.datastructures.tests.circle_test.TestCircle.test_push_then_pop">test_push_then_pop</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

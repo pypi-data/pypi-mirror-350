@@ -1,0 +1,828 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>grscheller.datastructures.arrays API documentation</title>
+<meta name="description" content="Array-like data structures …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>grscheller.datastructures.arrays</code></h1>
+</header>
+<section id="section-intro">
+<p>Array-like data structures.</p>
+<p>Types of Arrays:</p>
+<h3 id="class-parray">Class PArray</h3>
+<p>Processing Array
+</p>
+<ul>
+<li>mutable fixed length data structure</li>
+<li>still a work in progress</li>
+<li>not sure yet its best use case</li>
+<li>I hope using it in other endeavors will guide me in refining it</li>
+</ul>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python"># Copyright 2023-2024 Geoffrey R. Scheller
+#
+# Licensed under the Apache License, Version 2.0 (the &#34;License&#34;);
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an &#34;AS IS&#34; BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+&#34;&#34;&#34;Array-like data structures.
+
+Types of Arrays:
+
+### Class PArray
+
+Processing Array  
+
+* mutable fixed length data structure
+* still a work in progress
+* not sure yet its best use case
+* I hope using it in other endeavors will guide me in refining it
+&#34;&#34;&#34;
+
+from __future__ import annotations
+
+__all__ = [&#39;PArray&#39;]
+__author__ = &#34;Geoffrey R. Scheller&#34;
+__copyright__ = &#34;Copyright (c) 2023-2024 Geoffrey R. Scheller&#34;
+__license__ = &#34;Apache License 2.0&#34;
+
+from typing import Any, Callable, Iterable
+from itertools import chain, repeat
+from .queues import DoubleQueue
+from .core.iterlib import merge, exhaust
+from .core.fp import FP, Some
+
+class PArray(FP):
+    &#34;&#34;&#34;Processing Array
+
+    * mutable fixed length array-like data structure with O(1) data access
+    * all mutating methods are guaranteed not to change the length of a PArray
+    * if size not given, None or 0 then size to the non-None data provided
+    * if size &gt; 0, pad right from back queue or send trailing data to back queue
+    * if size &lt; 0, pad left from back queue or slice initial data to back queue
+    * attempt to preserve original order of sliced data on back queue
+    * push extra non-None data from backlog to end of the back queue
+    * interating over the data structure happen via cached copies
+    * use the default value if back Queue empty, default value &#34;defaults&#34; to ()
+    * in boolean context, return `True` only if a non-default value is contained
+    * none values are not allowed in this data structures
+
+    Equality of objects is based on the array values and not on values in the
+    back log nor the default value.
+    &#34;&#34;&#34;
+    __slots__ = &#39;_arrayQueue&#39;, &#39;_backQueue&#39;, &#39;_default&#39;
+
+    def __init__(self, *data,
+                 size: int|None=None,
+                 default: Any=(),
+                 backlog: Iterable=()):
+
+        arrayQueue = DoubleQueue()
+        backQueue = DoubleQueue(*data)
+        data_size = len(backQueue)
+
+        if (size is None) or (size == 0):
+            abs_size = size = data_size
+        else:
+            abs_size = abs(size)
+
+        if size &gt;= 0:
+            if data_size &lt; abs_size:
+                # Pad PArray on right from backlog, if empty use default value
+                while backQueue:
+                    arrayQueue.pushR(backQueue.popL())
+                backQueue.pushR(*backlog)
+                for ii in range(abs_size - data_size):
+                    if backQueue:
+                        arrayQueue.pushR(backQueue.popL())
+                    else:
+                        arrayQueue.pushR(default)
+            else:
+                # slice initial data on right
+                for _ in range(abs_size):
+                    arrayQueue.pushR(backQueue.popL())
+        else:
+            if data_size &lt; abs_size:
+                # Pad PArray on left from backlog, if empty use default value
+                while backQueue:
+                    arrayQueue.pushL(backQueue.popR())
+                backQueue.pushR(*backlog)
+                for ii in range(abs_size - data_size):
+                    if backQueue:
+                        arrayQueue.pushL(backQueue.popL())
+                    else:
+                        arrayQueue.pushL(default)
+            else:
+                # slice initial data on left
+                for _ in range(abs_size):
+                    arrayQueue.pushL(backQueue.popR())
+                backQueue.reverse()
+
+        backQueue.pushR(*backlog)
+
+        self._arrayQueue = arrayQueue
+        self._backQueue = backQueue
+        self._default = default
+
+    def __iter__(self):
+        # Iterate over the current state of the PArray. Copy of the internal
+        # state is made so that the PArray can safely mutate.
+        for data in self._arrayQueue.copy():
+            yield data
+
+    def __reversed__(self):
+        # Reverse iterate over the current state of the PArray. Copy of the
+        # internal state is made so that the PArray can safely mutate.
+        for data in reversed(self._arrayQueue.copy()):
+            yield data
+
+    def __repr__(self):
+        # Representation of current state of data and default value,
+        # does not reproduce the backstore.&#34;&#34;&#34;
+        repr1 = f&#39;{self.__class__.__name__}(&#39;
+        repr2 = &#39;, &#39;.join(map(repr, self))
+        if repr2 == &#39;&#39;:
+            repr3 = f&#39;size={len(self)}, &#39;
+        else:
+            repr3 = f&#39;, size={len(self)}, &#39;
+        repr4 = f&#39;default={repr(self._default)})&#39;
+        return repr1 + repr2 + repr3 + repr4
+
+    def __str__(self):
+        return &#39;[|&#39; + &#39;, &#39;.join(map(repr, self)) + &#39;|]&#39;
+
+    def __bool__(self):
+        # Return `True` only if there exists an array value not equal to the
+        # default value which gets used in lieu of None.
+        for value in self:
+            if value != self._default:
+                return True
+        return False
+
+    def default(self) -&gt; Any:
+        &#34;&#34;&#34;Return a reference to the default value that gets used in lieu of None.&#34;&#34;&#34;
+        return self._default
+
+    def backQueue(self) -&gt; DoubleQueue:
+        &#34;&#34;&#34;Return a copy of the backQueue.&#34;&#34;&#34;
+        return self._backQueue.copy()
+
+    def __len__(self) -&gt; int:
+        return len(self._arrayQueue)
+
+    def __getitem__(self, index: int) -&gt; Any:
+        return self._arrayQueue[index]
+
+    def __setitem__(self, index: int, value: Any) -&gt; Any:
+        if value is not None:
+            self._arrayQueue[index] = value
+        else:
+            self._arrayQueue[index] = Some(self._backQueue.popL()).get(self._default)
+
+    def __eq__(self, other: Any):
+        # Returns `True` if all the data stored in both compare as equal. Worst case is
+        # O(n) behavior for the True case. The default value and the backQueue plays no
+        # role in determining equality.
+        if not isinstance(other, type(self)):
+            return False
+        return self._arrayQueue == other._arrayQueue
+
+    def copy(self, size: int|None=None, default: Any=None) -&gt; PArray:
+        &#34;&#34;&#34;Return shallow copy of the PArray in O(n) complexity. If a default value not
+        given, assign a default value the same as thw PArray being copied. If the size
+        is given, resize pushing extra data to the backlog and padding missing data with
+        the default value. Does not readign previous default values stored on the PArray
+        to the new default value.
+        &#34;&#34;&#34;
+        return self.map(lambda x: x, size, default)
+
+    def map(self, f: Callable[[Any], Any],
+            size: int|None=None,
+            default: Any|None=None,
+            mapDefault: bool=False) -&gt; PArray:
+        &#34;&#34;&#34;Apply function f over the PArray contents.
+
+        * return a new PArray with the mapped contents
+        * if size not given, size to the non-None values produced by f
+        * if default not given, use the default of the PArray being map
+        * if mapDefault is True, also map the default value with f
+        &#34;&#34;&#34;
+        if default is None:
+            if mapDefault:
+                default = f(self._default)
+            else:
+                default = self._default
+        else:
+            if mapDefault:
+                default = f(default)
+
+        def F(ff: Callable([Any], Any)) -&gt; Callable([Any], Any):
+            def FF(x: Any) -&gt; Any:
+                value = ff(x)
+                if value is None:
+                    return default
+                else:
+                    return value
+            return FF
+
+        return PArray(*map(F(f), self), size=size, default=default)
+
+    def flatMap(self,
+                f: Callable[[Any], PArray],
+                size: int|None=None,
+                default: Any=None,
+                mapDefault: bool=False) -&gt; PArray:
+        &#34;&#34;&#34;Map f across self and flatten result by concatenating the PArray elements
+        generated by f. If a default value is not given, use the default value of the
+        FLArray being flat mapped.
+
+        Any default values of the FLArrays created by f need not have anything to do
+        with the default value of the FPArray being flat mapped.
+        &#34;&#34;&#34;
+        if default is None:
+            default = self.default()
+        if mapDefault:
+            default = f(default).default()
+
+        return PArray(*chain(*self.map(f)), size=size, default=default)
+
+    def mergeMap(self, f: Callable[[Any], PArray],
+                 size: int|None=None,
+                 default: Any=None,
+                 mapDefault: bool=False) -&gt; PArray:
+        &#34;&#34;&#34;Map f across self and flatten result by merging the PArray elements
+        generated by f until the first is exhausted. If a default value is not given,
+        use the default value of the FLArray being flat mapped.
+        &#34;&#34;&#34;
+        if default is None:
+            default = self._default
+        if mapDefault:
+            default = f(default).default()
+
+        return PArray(*merge(*self.map(f)), size=size, default=default)
+
+    def exhaustMap(self, f: Callable[[Any], PArray],
+                  size: int|None=None,
+                  default: Any=None,
+                  mapDefault: bool=False) -&gt; PArray:
+        &#34;&#34;&#34;Map f across self and flatten result by merging the PArray elements
+        generated by f until all are exhausted. If a default value is not given,
+        use the default value of the FLArray being flat mapped.
+        &#34;&#34;&#34;
+        if default is None:
+            default = self._default
+        if mapDefault:
+            default = f(default).default()
+
+        return PArray(*exhaust(*self.map(f)), size=size, default=default)
+
+    def reverse(self) -&gt; None:
+        &#34;&#34;&#34;Reverse the elements of the PArray&#34;&#34;&#34;
+        self._arrayQueue = DoubleQueue(*reversed(self))</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="grscheller.datastructures.arrays.PArray"><code class="flex name class">
+<span>class <span class="ident">PArray</span></span>
+<span>(</span><span>*data, size: int | None = None, default: Any = (), backlog: Iterable = ())</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Processing Array</p>
+<ul>
+<li>mutable fixed length array-like data structure with O(1) data access</li>
+<li>all mutating methods are guaranteed not to change the length of a PArray</li>
+<li>if size not given, None or 0 then size to the non-None data provided</li>
+<li>if size &gt; 0, pad right from back queue or send trailing data to back queue</li>
+<li>if size &lt; 0, pad left from back queue or slice initial data to back queue</li>
+<li>attempt to preserve original order of sliced data on back queue</li>
+<li>push extra non-None data from backlog to end of the back queue</li>
+<li>interating over the data structure happen via cached copies</li>
+<li>use the default value if back Queue empty, default value "defaults" to ()</li>
+<li>in boolean context, return <code>True</code> only if a non-default value is contained</li>
+<li>none values are not allowed in this data structures</li>
+</ul>
+<p>Equality of objects is based on the array values and not on values in the
+back log nor the default value.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class PArray(FP):
+    &#34;&#34;&#34;Processing Array
+
+    * mutable fixed length array-like data structure with O(1) data access
+    * all mutating methods are guaranteed not to change the length of a PArray
+    * if size not given, None or 0 then size to the non-None data provided
+    * if size &gt; 0, pad right from back queue or send trailing data to back queue
+    * if size &lt; 0, pad left from back queue or slice initial data to back queue
+    * attempt to preserve original order of sliced data on back queue
+    * push extra non-None data from backlog to end of the back queue
+    * interating over the data structure happen via cached copies
+    * use the default value if back Queue empty, default value &#34;defaults&#34; to ()
+    * in boolean context, return `True` only if a non-default value is contained
+    * none values are not allowed in this data structures
+
+    Equality of objects is based on the array values and not on values in the
+    back log nor the default value.
+    &#34;&#34;&#34;
+    __slots__ = &#39;_arrayQueue&#39;, &#39;_backQueue&#39;, &#39;_default&#39;
+
+    def __init__(self, *data,
+                 size: int|None=None,
+                 default: Any=(),
+                 backlog: Iterable=()):
+
+        arrayQueue = DoubleQueue()
+        backQueue = DoubleQueue(*data)
+        data_size = len(backQueue)
+
+        if (size is None) or (size == 0):
+            abs_size = size = data_size
+        else:
+            abs_size = abs(size)
+
+        if size &gt;= 0:
+            if data_size &lt; abs_size:
+                # Pad PArray on right from backlog, if empty use default value
+                while backQueue:
+                    arrayQueue.pushR(backQueue.popL())
+                backQueue.pushR(*backlog)
+                for ii in range(abs_size - data_size):
+                    if backQueue:
+                        arrayQueue.pushR(backQueue.popL())
+                    else:
+                        arrayQueue.pushR(default)
+            else:
+                # slice initial data on right
+                for _ in range(abs_size):
+                    arrayQueue.pushR(backQueue.popL())
+        else:
+            if data_size &lt; abs_size:
+                # Pad PArray on left from backlog, if empty use default value
+                while backQueue:
+                    arrayQueue.pushL(backQueue.popR())
+                backQueue.pushR(*backlog)
+                for ii in range(abs_size - data_size):
+                    if backQueue:
+                        arrayQueue.pushL(backQueue.popL())
+                    else:
+                        arrayQueue.pushL(default)
+            else:
+                # slice initial data on left
+                for _ in range(abs_size):
+                    arrayQueue.pushL(backQueue.popR())
+                backQueue.reverse()
+
+        backQueue.pushR(*backlog)
+
+        self._arrayQueue = arrayQueue
+        self._backQueue = backQueue
+        self._default = default
+
+    def __iter__(self):
+        # Iterate over the current state of the PArray. Copy of the internal
+        # state is made so that the PArray can safely mutate.
+        for data in self._arrayQueue.copy():
+            yield data
+
+    def __reversed__(self):
+        # Reverse iterate over the current state of the PArray. Copy of the
+        # internal state is made so that the PArray can safely mutate.
+        for data in reversed(self._arrayQueue.copy()):
+            yield data
+
+    def __repr__(self):
+        # Representation of current state of data and default value,
+        # does not reproduce the backstore.&#34;&#34;&#34;
+        repr1 = f&#39;{self.__class__.__name__}(&#39;
+        repr2 = &#39;, &#39;.join(map(repr, self))
+        if repr2 == &#39;&#39;:
+            repr3 = f&#39;size={len(self)}, &#39;
+        else:
+            repr3 = f&#39;, size={len(self)}, &#39;
+        repr4 = f&#39;default={repr(self._default)})&#39;
+        return repr1 + repr2 + repr3 + repr4
+
+    def __str__(self):
+        return &#39;[|&#39; + &#39;, &#39;.join(map(repr, self)) + &#39;|]&#39;
+
+    def __bool__(self):
+        # Return `True` only if there exists an array value not equal to the
+        # default value which gets used in lieu of None.
+        for value in self:
+            if value != self._default:
+                return True
+        return False
+
+    def default(self) -&gt; Any:
+        &#34;&#34;&#34;Return a reference to the default value that gets used in lieu of None.&#34;&#34;&#34;
+        return self._default
+
+    def backQueue(self) -&gt; DoubleQueue:
+        &#34;&#34;&#34;Return a copy of the backQueue.&#34;&#34;&#34;
+        return self._backQueue.copy()
+
+    def __len__(self) -&gt; int:
+        return len(self._arrayQueue)
+
+    def __getitem__(self, index: int) -&gt; Any:
+        return self._arrayQueue[index]
+
+    def __setitem__(self, index: int, value: Any) -&gt; Any:
+        if value is not None:
+            self._arrayQueue[index] = value
+        else:
+            self._arrayQueue[index] = Some(self._backQueue.popL()).get(self._default)
+
+    def __eq__(self, other: Any):
+        # Returns `True` if all the data stored in both compare as equal. Worst case is
+        # O(n) behavior for the True case. The default value and the backQueue plays no
+        # role in determining equality.
+        if not isinstance(other, type(self)):
+            return False
+        return self._arrayQueue == other._arrayQueue
+
+    def copy(self, size: int|None=None, default: Any=None) -&gt; PArray:
+        &#34;&#34;&#34;Return shallow copy of the PArray in O(n) complexity. If a default value not
+        given, assign a default value the same as thw PArray being copied. If the size
+        is given, resize pushing extra data to the backlog and padding missing data with
+        the default value. Does not readign previous default values stored on the PArray
+        to the new default value.
+        &#34;&#34;&#34;
+        return self.map(lambda x: x, size, default)
+
+    def map(self, f: Callable[[Any], Any],
+            size: int|None=None,
+            default: Any|None=None,
+            mapDefault: bool=False) -&gt; PArray:
+        &#34;&#34;&#34;Apply function f over the PArray contents.
+
+        * return a new PArray with the mapped contents
+        * if size not given, size to the non-None values produced by f
+        * if default not given, use the default of the PArray being map
+        * if mapDefault is True, also map the default value with f
+        &#34;&#34;&#34;
+        if default is None:
+            if mapDefault:
+                default = f(self._default)
+            else:
+                default = self._default
+        else:
+            if mapDefault:
+                default = f(default)
+
+        def F(ff: Callable([Any], Any)) -&gt; Callable([Any], Any):
+            def FF(x: Any) -&gt; Any:
+                value = ff(x)
+                if value is None:
+                    return default
+                else:
+                    return value
+            return FF
+
+        return PArray(*map(F(f), self), size=size, default=default)
+
+    def flatMap(self,
+                f: Callable[[Any], PArray],
+                size: int|None=None,
+                default: Any=None,
+                mapDefault: bool=False) -&gt; PArray:
+        &#34;&#34;&#34;Map f across self and flatten result by concatenating the PArray elements
+        generated by f. If a default value is not given, use the default value of the
+        FLArray being flat mapped.
+
+        Any default values of the FLArrays created by f need not have anything to do
+        with the default value of the FPArray being flat mapped.
+        &#34;&#34;&#34;
+        if default is None:
+            default = self.default()
+        if mapDefault:
+            default = f(default).default()
+
+        return PArray(*chain(*self.map(f)), size=size, default=default)
+
+    def mergeMap(self, f: Callable[[Any], PArray],
+                 size: int|None=None,
+                 default: Any=None,
+                 mapDefault: bool=False) -&gt; PArray:
+        &#34;&#34;&#34;Map f across self and flatten result by merging the PArray elements
+        generated by f until the first is exhausted. If a default value is not given,
+        use the default value of the FLArray being flat mapped.
+        &#34;&#34;&#34;
+        if default is None:
+            default = self._default
+        if mapDefault:
+            default = f(default).default()
+
+        return PArray(*merge(*self.map(f)), size=size, default=default)
+
+    def exhaustMap(self, f: Callable[[Any], PArray],
+                  size: int|None=None,
+                  default: Any=None,
+                  mapDefault: bool=False) -&gt; PArray:
+        &#34;&#34;&#34;Map f across self and flatten result by merging the PArray elements
+        generated by f until all are exhausted. If a default value is not given,
+        use the default value of the FLArray being flat mapped.
+        &#34;&#34;&#34;
+        if default is None:
+            default = self._default
+        if mapDefault:
+            default = f(default).default()
+
+        return PArray(*exhaust(*self.map(f)), size=size, default=default)
+
+    def reverse(self) -&gt; None:
+        &#34;&#34;&#34;Reverse the elements of the PArray&#34;&#34;&#34;
+        self._arrayQueue = DoubleQueue(*reversed(self))</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="grscheller.datastructures.core.fp.FP" href="core/fp.html#grscheller.datastructures.core.fp.FP">FP</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="grscheller.datastructures.arrays.PArray.backQueue"><code class="name flex">
+<span>def <span class="ident">backQueue</span></span>(<span>self) ‑> <a title="grscheller.datastructures.queues.DoubleQueue" href="queues.html#grscheller.datastructures.queues.DoubleQueue">DoubleQueue</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return a copy of the backQueue.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def backQueue(self) -&gt; DoubleQueue:
+    &#34;&#34;&#34;Return a copy of the backQueue.&#34;&#34;&#34;
+    return self._backQueue.copy()</code></pre>
+</details>
+</dd>
+<dt id="grscheller.datastructures.arrays.PArray.copy"><code class="name flex">
+<span>def <span class="ident">copy</span></span>(<span>self, size: int | None = None, default: Any = None) ‑> <a title="grscheller.datastructures.arrays.PArray" href="#grscheller.datastructures.arrays.PArray">PArray</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return shallow copy of the PArray in O(n) complexity. If a default value not
+given, assign a default value the same as thw PArray being copied. If the size
+is given, resize pushing extra data to the backlog and padding missing data with
+the default value. Does not readign previous default values stored on the PArray
+to the new default value.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def copy(self, size: int|None=None, default: Any=None) -&gt; PArray:
+    &#34;&#34;&#34;Return shallow copy of the PArray in O(n) complexity. If a default value not
+    given, assign a default value the same as thw PArray being copied. If the size
+    is given, resize pushing extra data to the backlog and padding missing data with
+    the default value. Does not readign previous default values stored on the PArray
+    to the new default value.
+    &#34;&#34;&#34;
+    return self.map(lambda x: x, size, default)</code></pre>
+</details>
+</dd>
+<dt id="grscheller.datastructures.arrays.PArray.default"><code class="name flex">
+<span>def <span class="ident">default</span></span>(<span>self) ‑> Any</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return a reference to the default value that gets used in lieu of None.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def default(self) -&gt; Any:
+    &#34;&#34;&#34;Return a reference to the default value that gets used in lieu of None.&#34;&#34;&#34;
+    return self._default</code></pre>
+</details>
+</dd>
+<dt id="grscheller.datastructures.arrays.PArray.exhaustMap"><code class="name flex">
+<span>def <span class="ident">exhaustMap</span></span>(<span>self, f: Callable[[Any], <a title="grscheller.datastructures.arrays.PArray" href="#grscheller.datastructures.arrays.PArray">PArray</a>], size: int | None = None, default: Any = None, mapDefault: bool = False) ‑> <a title="grscheller.datastructures.arrays.PArray" href="#grscheller.datastructures.arrays.PArray">PArray</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Map f across self and flatten result by merging the PArray elements
+generated by f until all are exhausted. If a default value is not given,
+use the default value of the FLArray being flat mapped.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def exhaustMap(self, f: Callable[[Any], PArray],
+              size: int|None=None,
+              default: Any=None,
+              mapDefault: bool=False) -&gt; PArray:
+    &#34;&#34;&#34;Map f across self and flatten result by merging the PArray elements
+    generated by f until all are exhausted. If a default value is not given,
+    use the default value of the FLArray being flat mapped.
+    &#34;&#34;&#34;
+    if default is None:
+        default = self._default
+    if mapDefault:
+        default = f(default).default()
+
+    return PArray(*exhaust(*self.map(f)), size=size, default=default)</code></pre>
+</details>
+</dd>
+<dt id="grscheller.datastructures.arrays.PArray.flatMap"><code class="name flex">
+<span>def <span class="ident">flatMap</span></span>(<span>self, f: Callable[[Any], <a title="grscheller.datastructures.arrays.PArray" href="#grscheller.datastructures.arrays.PArray">PArray</a>], size: int | None = None, default: Any = None, mapDefault: bool = False) ‑> <a title="grscheller.datastructures.arrays.PArray" href="#grscheller.datastructures.arrays.PArray">PArray</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Map f across self and flatten result by concatenating the PArray elements
+generated by f. If a default value is not given, use the default value of the
+FLArray being flat mapped.</p>
+<p>Any default values of the FLArrays created by f need not have anything to do
+with the default value of the FPArray being flat mapped.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def flatMap(self,
+            f: Callable[[Any], PArray],
+            size: int|None=None,
+            default: Any=None,
+            mapDefault: bool=False) -&gt; PArray:
+    &#34;&#34;&#34;Map f across self and flatten result by concatenating the PArray elements
+    generated by f. If a default value is not given, use the default value of the
+    FLArray being flat mapped.
+
+    Any default values of the FLArrays created by f need not have anything to do
+    with the default value of the FPArray being flat mapped.
+    &#34;&#34;&#34;
+    if default is None:
+        default = self.default()
+    if mapDefault:
+        default = f(default).default()
+
+    return PArray(*chain(*self.map(f)), size=size, default=default)</code></pre>
+</details>
+</dd>
+<dt id="grscheller.datastructures.arrays.PArray.map"><code class="name flex">
+<span>def <span class="ident">map</span></span>(<span>self, f: Callable[[Any], Any], size: int | None = None, default: Any | None = None, mapDefault: bool = False) ‑> <a title="grscheller.datastructures.arrays.PArray" href="#grscheller.datastructures.arrays.PArray">PArray</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Apply function f over the PArray contents.</p>
+<ul>
+<li>return a new PArray with the mapped contents</li>
+<li>if size not given, size to the non-None values produced by f</li>
+<li>if default not given, use the default of the PArray being map</li>
+<li>if mapDefault is True, also map the default value with f</li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def map(self, f: Callable[[Any], Any],
+        size: int|None=None,
+        default: Any|None=None,
+        mapDefault: bool=False) -&gt; PArray:
+    &#34;&#34;&#34;Apply function f over the PArray contents.
+
+    * return a new PArray with the mapped contents
+    * if size not given, size to the non-None values produced by f
+    * if default not given, use the default of the PArray being map
+    * if mapDefault is True, also map the default value with f
+    &#34;&#34;&#34;
+    if default is None:
+        if mapDefault:
+            default = f(self._default)
+        else:
+            default = self._default
+    else:
+        if mapDefault:
+            default = f(default)
+
+    def F(ff: Callable([Any], Any)) -&gt; Callable([Any], Any):
+        def FF(x: Any) -&gt; Any:
+            value = ff(x)
+            if value is None:
+                return default
+            else:
+                return value
+        return FF
+
+    return PArray(*map(F(f), self), size=size, default=default)</code></pre>
+</details>
+</dd>
+<dt id="grscheller.datastructures.arrays.PArray.mergeMap"><code class="name flex">
+<span>def <span class="ident">mergeMap</span></span>(<span>self, f: Callable[[Any], <a title="grscheller.datastructures.arrays.PArray" href="#grscheller.datastructures.arrays.PArray">PArray</a>], size: int | None = None, default: Any = None, mapDefault: bool = False) ‑> <a title="grscheller.datastructures.arrays.PArray" href="#grscheller.datastructures.arrays.PArray">PArray</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Map f across self and flatten result by merging the PArray elements
+generated by f until the first is exhausted. If a default value is not given,
+use the default value of the FLArray being flat mapped.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def mergeMap(self, f: Callable[[Any], PArray],
+             size: int|None=None,
+             default: Any=None,
+             mapDefault: bool=False) -&gt; PArray:
+    &#34;&#34;&#34;Map f across self and flatten result by merging the PArray elements
+    generated by f until the first is exhausted. If a default value is not given,
+    use the default value of the FLArray being flat mapped.
+    &#34;&#34;&#34;
+    if default is None:
+        default = self._default
+    if mapDefault:
+        default = f(default).default()
+
+    return PArray(*merge(*self.map(f)), size=size, default=default)</code></pre>
+</details>
+</dd>
+<dt id="grscheller.datastructures.arrays.PArray.reverse"><code class="name flex">
+<span>def <span class="ident">reverse</span></span>(<span>self) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Reverse the elements of the PArray</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def reverse(self) -&gt; None:
+    &#34;&#34;&#34;Reverse the elements of the PArray&#34;&#34;&#34;
+    self._arrayQueue = DoubleQueue(*reversed(self))</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="grscheller.datastructures.core.fp.FP" href="core/fp.html#grscheller.datastructures.core.fp.FP">FP</a></b></code>:
+<ul class="hlist">
+<li><code><a title="grscheller.datastructures.core.fp.FP.accummulate" href="core/fp.html#grscheller.datastructures.core.fp.FP.accummulate">accummulate</a></code></li>
+<li><code><a title="grscheller.datastructures.core.fp.FP.foldL" href="core/fp.html#grscheller.datastructures.core.fp.FP.foldL">foldL</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul>
+<li><a href="#class-parray">Class PArray</a></li>
+</ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="grscheller.datastructures" href="index.html">grscheller.datastructures</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="grscheller.datastructures.arrays.PArray" href="#grscheller.datastructures.arrays.PArray">PArray</a></code></h4>
+<ul class="two-column">
+<li><code><a title="grscheller.datastructures.arrays.PArray.backQueue" href="#grscheller.datastructures.arrays.PArray.backQueue">backQueue</a></code></li>
+<li><code><a title="grscheller.datastructures.arrays.PArray.copy" href="#grscheller.datastructures.arrays.PArray.copy">copy</a></code></li>
+<li><code><a title="grscheller.datastructures.arrays.PArray.default" href="#grscheller.datastructures.arrays.PArray.default">default</a></code></li>
+<li><code><a title="grscheller.datastructures.arrays.PArray.exhaustMap" href="#grscheller.datastructures.arrays.PArray.exhaustMap">exhaustMap</a></code></li>
+<li><code><a title="grscheller.datastructures.arrays.PArray.flatMap" href="#grscheller.datastructures.arrays.PArray.flatMap">flatMap</a></code></li>
+<li><code><a title="grscheller.datastructures.arrays.PArray.map" href="#grscheller.datastructures.arrays.PArray.map">map</a></code></li>
+<li><code><a title="grscheller.datastructures.arrays.PArray.mergeMap" href="#grscheller.datastructures.arrays.PArray.mergeMap">mergeMap</a></code></li>
+<li><code><a title="grscheller.datastructures.arrays.PArray.reverse" href="#grscheller.datastructures.arrays.PArray.reverse">reverse</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

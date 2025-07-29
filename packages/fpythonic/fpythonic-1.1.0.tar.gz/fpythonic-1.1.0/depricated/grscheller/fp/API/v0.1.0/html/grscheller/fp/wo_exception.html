@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.1">
+<title>grscheller.fp.wo_exception API documentation</title>
+<meta name="description" content="Functional tools …">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+})</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>grscheller.fp.wo_exception</code></h1>
+</header>
+<section id="section-intro">
+<p>Functional tools</p>
+<ul>
+<li>class <strong>MB</strong>: Implements the Maybe Monad</li>
+<li>class <strong>XOR</strong>: Implements a left biased Either Monad (rigid right type)</li>
+</ul>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="grscheller.fp.wo_exception.mb_to_xor"><code class="name flex">
+<span>def <span class="ident">mb_to_xor</span></span>(<span>m: <a title="grscheller.fp.wo_exception.MB" href="#grscheller.fp.wo_exception.MB">MB</a>[_T], right: _R) ‑> <a title="grscheller.fp.wo_exception.XOR" href="#grscheller.fp.wo_exception.XOR">XOR</a>[_T, _R]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Convert a <code><a title="grscheller.fp.wo_exception.MB" href="#grscheller.fp.wo_exception.MB">MB</a></code> to an <code><a title="grscheller.fp.wo_exception.XOR" href="#grscheller.fp.wo_exception.XOR">XOR</a></code>.</p></div>
+</dd>
+<dt id="grscheller.fp.wo_exception.xor_to_mb"><code class="name flex">
+<span>def <span class="ident">xor_to_mb</span></span>(<span>e: <a title="grscheller.fp.wo_exception.XOR" href="#grscheller.fp.wo_exception.XOR">XOR</a>[_T, _S]) ‑> <a title="grscheller.fp.wo_exception.MB" href="#grscheller.fp.wo_exception.MB">MB</a>[_T]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Convert an <code><a title="grscheller.fp.wo_exception.XOR" href="#grscheller.fp.wo_exception.XOR">XOR</a></code> to a <code><a title="grscheller.fp.wo_exception.MB" href="#grscheller.fp.wo_exception.MB">MB</a></code>.</p></div>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="grscheller.fp.wo_exception.MB"><code class="flex name class">
+<span>class <span class="ident">MB</span></span>
+<span>(</span><span>value: Optional[_T] = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Class representing a potentially missing value.</p>
+<ul>
+<li>implements the Maybe Monad</li>
+<li>where MB(value) contains a possible value of type _T</li>
+<li>MB( ) semantically represent "Nothing"</li>
+<li>therefore None, as a value, cannot be put into a MB</li>
+<li>immutable - a MB does not change after being created</li>
+<li>immutable - map &amp; flatMap produce new instances</li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class MB(Generic[_T]):
+    &#34;&#34;&#34;Class representing a potentially missing value.
+
+    * implements the Maybe Monad
+    * where MB(value) contains a possible value of type _T
+    * MB( ) semantically represent &#34;Nothing&#34;
+    * therefore None, as a value, cannot be put into a MB
+    * immutable - a MB does not change after being created
+    * immutable - map &amp; flatMap produce new instances
+    &#34;&#34;&#34;
+    __slots__ = &#39;_value&#39;,
+
+    def __init__(self, value: Optional[_T]=None):
+        self._value = value
+
+    def __iter__(self) -&gt; Iterator[_T]:
+        &#34;&#34;&#34;Yields its value if not a &#34;Nothing&#34;.&#34;&#34;&#34;
+        if self._value is not None:
+            yield self._value
+
+    def __repr__(self) -&gt; str:
+        if self:
+            return &#39;MB(&#39; + repr(self._value) + &#39;)&#39;
+        else:
+            return &#39;MB()&#39;
+
+    def __bool__(self) -&gt; bool:
+        &#34;&#34;&#34;Determine if the `MB` contains a value.
+
+        * return `True` if the `MB` contains a value
+        * return `False` otherwise
+        &#34;&#34;&#34;
+        return self._value is not None
+
+    def __len__(self) -&gt; int:
+        if self._value is None:
+            return 0
+        else:
+            return 1
+
+    def __eq__(self, other: object) -&gt; bool:
+        &#34;&#34;&#34;Return `True` only when
+
+        * both sides are &#34;Nothings&#34;
+        * both sides contain values which compare as equal
+        &#34;&#34;&#34;
+        if not isinstance(other, type(self)):
+            return False
+        return self._value == other._value
+
+    def get(self, alt: Optional[_T]=None) -&gt; Optional[_T]:
+        &#34;&#34;&#34;Get contents if they exist
+
+        * otherwise return an alternate value of type `_T|NoneType`
+        * alternate value defaults to `None`
+        &#34;&#34;&#34;
+        if self._value is None:
+            return alt
+        else:
+            return self._value
+
+    def map(self, f: Callable[[_T], Optional[_S]]) -&gt; MB[_S]:
+        &#34;&#34;&#34;Map `f` over the 0 or 1 elements of the data structure.&#34;&#34;&#34;
+        if self._value is None:
+            return MB()
+        return MB(f(self._value))
+
+    def flatmap(self, f: Callable[[_T], MB[_S]]) -&gt; MB[_S]:
+        &#34;&#34;&#34;Map `f` and flatten.&#34;&#34;&#34;
+        if self._value is None:
+            return MB()
+        return f(self._value)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>typing.Generic</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="grscheller.fp.wo_exception.MB.flatmap"><code class="name flex">
+<span>def <span class="ident">flatmap</span></span>(<span>self, f: Callable[[_T], <a title="grscheller.fp.wo_exception.MB" href="#grscheller.fp.wo_exception.MB">MB</a>[_S]]) ‑> <a title="grscheller.fp.wo_exception.MB" href="#grscheller.fp.wo_exception.MB">MB</a>[_S]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Map <code>f</code> and flatten.</p></div>
+</dd>
+<dt id="grscheller.fp.wo_exception.MB.get"><code class="name flex">
+<span>def <span class="ident">get</span></span>(<span>self, alt: Optional[_T] = None) ‑> Optional[_T]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get contents if they exist</p>
+<ul>
+<li>otherwise return an alternate value of type <code>_T|NoneType</code></li>
+<li>alternate value defaults to <code>None</code></li>
+</ul></div>
+</dd>
+<dt id="grscheller.fp.wo_exception.MB.map"><code class="name flex">
+<span>def <span class="ident">map</span></span>(<span>self, f: Callable[[_T], Optional[_S]]) ‑> <a title="grscheller.fp.wo_exception.MB" href="#grscheller.fp.wo_exception.MB">MB</a>[_S]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Map <code>f</code> over the 0 or 1 elements of the data structure.</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="grscheller.fp.wo_exception.XOR"><code class="flex name class">
+<span>class <span class="ident">XOR</span></span>
+<span>(</span><span>potential_left: Optional[_L], default_right: _R)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Class that either contains a "left" value or "right" value, but not both.</p>
+<ul>
+<li>implements a left biased Either Monad</li>
+<li>semantically containing 1 of 2 possible types of values</li>
+<li>XOR(left: _L, right: _R) produces "left" value</li>
+<li>XOR(None, right: _R) produces a "right" value</li>
+<li>therefore None as a value, not implementation detail, can't be put into a "left"</li>
+<li>in a Boolean context, returns <code>True</code> if a "left", <code>False</code> if a "right"</li>
+<li>immutable, an <code><a title="grscheller.fp.wo_exception.XOR" href="#grscheller.fp.wo_exception.XOR">XOR</a></code> does not change after being created</li>
+<li>immutable semantics, <code>map</code> &amp; <code>flatMap</code> never mutate <code>self</code></li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class XOR(Generic[_L, _R]):
+    &#34;&#34;&#34;Class that either contains a &#34;left&#34; value or &#34;right&#34; value, but not both.
+
+    * implements a left biased Either Monad
+    * semantically containing 1 of 2 possible types of values
+    * XOR(left: _L, right: _R) produces &#34;left&#34; value
+    * XOR(None, right: _R) produces a &#34;right&#34; value
+    * therefore None as a value, not implementation detail, can&#39;t be put into a &#34;left&#34;
+    * in a Boolean context, returns `True` if a &#34;left&#34;, `False` if a &#34;right&#34;
+    * immutable, an `XOR` does not change after being created
+    * immutable semantics, `map` &amp; `flatMap` never mutate `self`
+    &#34;&#34;&#34;
+    __slots__ = &#39;_left&#39;, &#39;_right&#39;
+
+    def __init__(self, potential_left: Optional[_L], default_right: _R):
+        self._left, self._right = potential_left, default_right
+
+    def __bool__(self) -&gt; bool:
+        &#34;&#34;&#34;Predicate to determine if the `XOR` contains a &#34;left&#34; or a &#34;right&#34;.
+
+        * true if the XOR is a &#34;left&#34;
+        * false if the XOR is a &#34;right&#34;
+        &#34;&#34;&#34;
+        return self._left is not None
+
+    def __iter__(self) -&gt; Iterator[_L]:
+        &#34;&#34;&#34;Yields its value if the XOR is a &#34;left&#34;.&#34;&#34;&#34;
+        if self._left is not None:
+            yield self._left
+
+    def __repr__(self) -&gt; str:
+        return &#39;XOR(&#39; + repr(self._left) + &#39;, &#39; + repr(self._right) + &#39;)&#39;
+
+    def __len__(self) -&gt; int:
+        &#34;&#34;&#34;Semantically, an `XOR` always contains just one value.&#34;&#34;&#34;
+        return 1
+
+    def __eq__(self, other: object) -&gt; bool:
+        if not isinstance(other, type(self)):
+            return False
+
+        if self and other:
+            return self._left == other._left
+        elif not self and not other:
+            return self._right == other._right
+        else:
+            return False
+
+    def get(self, alt: Optional[_L]=None) -&gt; Optional[_L]:
+        &#34;&#34;&#34;Get value if a Left.
+
+        * if the XOR is a left, return its value
+        * otherwise, return alt if it is not None
+        * otherwise, return None
+        &#34;&#34;&#34;
+        if self._left is None:
+            return alt
+        else:
+            return self._left
+
+    def getRight(self, alt: Optional[_R]=None) -&gt; Optional[_R]:
+        &#34;&#34;&#34;Get value if a Right.
+
+        * if XOR is a right, return its value
+        * otherwise return an alternate value of type `_R|NoneType`
+        * default alternate value is None
+        &#34;&#34;&#34;
+        if self._left is None:
+            return self._right
+        else:
+            return alt
+
+    def map(self, f: Callable[[_L], Optional[_S]], right: Optional[_R]=None) -&gt; XOR[_S, _R]:
+        &#34;&#34;&#34;Map over an `XOR`.
+
+        * if a &#34;left&#34; apply f and return a &#34;left&#34; if f successful
+        * otherwise, if f unsuccessful, return a &#34;right&#34; with non-None right
+        * otherwise, if right None, return a &#34;right&#34; with the default right value
+        * if a &#34;right&#34; return a  &#34;right&#34; with non-None right
+        * otherwise, if right None, propagate the &#34;right&#34;
+        &#34;&#34;&#34;
+        if self._left is None:
+            if right is None:
+                return XOR(None, self._right)
+            else:
+                return XOR(None, right)
+        else:
+            if right is None:
+                return XOR(f(self._left), self._right)
+            else:
+                return XOR(f(self._left), right)
+
+    def mapRight(self, g: Callable[[_R], _R]) -&gt; XOR[_L, _R]:
+        &#34;&#34;&#34;Map over a &#34;right&#34; value.&#34;&#34;&#34;
+        if self._left is None:
+            return XOR(None, g(self._right))
+        return self
+
+    def flatMap(self, f: Callable[[_L], XOR[_S, _R]]) -&gt; XOR[_S, _R]:
+        &#34;&#34;&#34;Map and flatten a `Left` value, propagate `Right` values.&#34;&#34;&#34;
+        if self._left is None:
+            return XOR(None, self._right)
+        else:
+            return f(self._left)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>typing.Generic</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="grscheller.fp.wo_exception.XOR.flatMap"><code class="name flex">
+<span>def <span class="ident">flatMap</span></span>(<span>self, f: Callable[[_L], <a title="grscheller.fp.wo_exception.XOR" href="#grscheller.fp.wo_exception.XOR">XOR</a>[_S, _R]]) ‑> <a title="grscheller.fp.wo_exception.XOR" href="#grscheller.fp.wo_exception.XOR">XOR</a>[_S, _R]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Map and flatten a <code>Left</code> value, propagate <code>Right</code> values.</p></div>
+</dd>
+<dt id="grscheller.fp.wo_exception.XOR.get"><code class="name flex">
+<span>def <span class="ident">get</span></span>(<span>self, alt: Optional[_L] = None) ‑> Optional[_L]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get value if a Left.</p>
+<ul>
+<li>if the XOR is a left, return its value</li>
+<li>otherwise, return alt if it is not None</li>
+<li>otherwise, return None</li>
+</ul></div>
+</dd>
+<dt id="grscheller.fp.wo_exception.XOR.getRight"><code class="name flex">
+<span>def <span class="ident">getRight</span></span>(<span>self, alt: Optional[_R] = None) ‑> Optional[_R]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get value if a Right.</p>
+<ul>
+<li>if XOR is a right, return its value</li>
+<li>otherwise return an alternate value of type <code>_R|NoneType</code></li>
+<li>default alternate value is None</li>
+</ul></div>
+</dd>
+<dt id="grscheller.fp.wo_exception.XOR.map"><code class="name flex">
+<span>def <span class="ident">map</span></span>(<span>self, f: Callable[[_L], Optional[_S]], right: Optional[_R] = None) ‑> <a title="grscheller.fp.wo_exception.XOR" href="#grscheller.fp.wo_exception.XOR">XOR</a>[_S, _R]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Map over an <code><a title="grscheller.fp.wo_exception.XOR" href="#grscheller.fp.wo_exception.XOR">XOR</a></code>.</p>
+<ul>
+<li>if a "left" apply f and return a "left" if f successful</li>
+<li>otherwise, if f unsuccessful, return a "right" with non-None right</li>
+<li>otherwise, if right None, return a "right" with the default right value</li>
+<li>if a "right" return a
+"right" with non-None right</li>
+<li>otherwise, if right None, propagate the "right"</li>
+</ul></div>
+</dd>
+<dt id="grscheller.fp.wo_exception.XOR.mapRight"><code class="name flex">
+<span>def <span class="ident">mapRight</span></span>(<span>self, g: Callable[[_R], _R]) ‑> <a title="grscheller.fp.wo_exception.XOR" href="#grscheller.fp.wo_exception.XOR">XOR</a>[_L, _R]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Map over a "right" value.</p></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="grscheller.fp" href="index.html">grscheller.fp</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="grscheller.fp.wo_exception.mb_to_xor" href="#grscheller.fp.wo_exception.mb_to_xor">mb_to_xor</a></code></li>
+<li><code><a title="grscheller.fp.wo_exception.xor_to_mb" href="#grscheller.fp.wo_exception.xor_to_mb">xor_to_mb</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="grscheller.fp.wo_exception.MB" href="#grscheller.fp.wo_exception.MB">MB</a></code></h4>
+<ul class="">
+<li><code><a title="grscheller.fp.wo_exception.MB.flatmap" href="#grscheller.fp.wo_exception.MB.flatmap">flatmap</a></code></li>
+<li><code><a title="grscheller.fp.wo_exception.MB.get" href="#grscheller.fp.wo_exception.MB.get">get</a></code></li>
+<li><code><a title="grscheller.fp.wo_exception.MB.map" href="#grscheller.fp.wo_exception.MB.map">map</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="grscheller.fp.wo_exception.XOR" href="#grscheller.fp.wo_exception.XOR">XOR</a></code></h4>
+<ul class="">
+<li><code><a title="grscheller.fp.wo_exception.XOR.flatMap" href="#grscheller.fp.wo_exception.XOR.flatMap">flatMap</a></code></li>
+<li><code><a title="grscheller.fp.wo_exception.XOR.get" href="#grscheller.fp.wo_exception.XOR.get">get</a></code></li>
+<li><code><a title="grscheller.fp.wo_exception.XOR.getRight" href="#grscheller.fp.wo_exception.XOR.getRight">getRight</a></code></li>
+<li><code><a title="grscheller.fp.wo_exception.XOR.map" href="#grscheller.fp.wo_exception.XOR.map">map</a></code></li>
+<li><code><a title="grscheller.fp.wo_exception.XOR.mapRight" href="#grscheller.fp.wo_exception.XOR.mapRight">mapRight</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.1</a>.</p>
+</footer>
+</body>
+</html>

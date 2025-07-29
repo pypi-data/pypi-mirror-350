@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.1">
+<title>grscheller.circular_array.ca API documentation</title>
+<meta name="description" content="Module for an indexable circular array data structure.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+})</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>grscheller.circular_array.ca</code></h1>
+</header>
+<section id="section-intro">
+<p>Module for an indexable circular array data structure.</p>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="grscheller.circular_array.ca.CircularArray"><code class="flex name class">
+<span>class <span class="ident">CircularArray</span></span>
+<span>(</span><span>*data: _T)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Class implementing an indexable circular array</p>
+<ul>
+<li>stateful data structure</li>
+<li>amortized O(1) pushing and popping from either end</li>
+<li>O(1) random access any element</li>
+<li>generic class with one type parameter</li>
+<li>will resize itself as needed</li>
+<li>not sliceable</li>
+<li>in a boolean context returned False if empty, True otherwise</li>
+<li>iterators caches current content</li>
+<li>raises: IndexError</li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class CircularArray(Generic[_T]):
+    &#34;&#34;&#34;Class implementing an indexable circular array
+
+    * stateful data structure
+    * amortized O(1) pushing and popping from either end
+    * O(1) random access any element
+    * generic class with one type parameter
+    * will resize itself as needed
+    * not sliceable
+    * in a boolean context returned False if empty, True otherwise
+    * iterators caches current content
+    * raises: IndexError
+
+    &#34;&#34;&#34;
+    __slots__ = &#39;_count&#39;, &#39;_capacity&#39;, &#39;_front&#39;, &#39;_rear&#39;, &#39;_list&#39;
+
+    def __init__(self, *data: _T):
+        match len(data):
+            case 0:
+                self._list: list[Optional[_T]] = [None, None]
+                self._count = 0
+                self._capacity = 2
+                self._front = 0
+                self._rear = 1
+            case count:
+                self._list = list(data)
+                self._count = count
+                self._capacity = count
+                self._front = 0
+                self._rear = count - 1
+
+    def __iter__(self) -&gt; Iterator[_T]:
+        if self._count &gt; 0:
+            capacity,       rear,       position,    currentState = \
+            self._capacity, self._rear, self._front, self._list.copy()
+
+            while position != rear:
+                yield currentState[position]            # type: ignore
+                position = (position + 1) % capacity
+            yield currentState[position]                # type: ignore
+
+    def __reversed__(self) -&gt; Iterator[_T]:
+        if self._count &gt; 0:
+            capacity,       front,       position,   currentState = \
+            self._capacity, self._front, self._rear, self._list.copy()
+
+            while position != front:
+                yield currentState[position]         # type: ignore
+                position = (position - 1) % capacity
+            yield currentState[position]             # type: ignore
+
+    def __repr__(self) -&gt; str:
+        return f&#39;{self.__class__.__name__}(&#39; + &#39;, &#39;.join(map(repr, self)) + &#39;)&#39;
+
+    def __str__(self) -&gt; str:
+        return &#34;(|&#34; + &#34;, &#34;.join(map(repr, self)) + &#34;|)&#34;
+
+    def __bool__(self) -&gt; bool:
+        return self._count &gt; 0
+
+    def __len__(self) -&gt; int:
+        return self._count
+
+    def __getitem__(self, index: int) -&gt; _T:
+        cnt = self._count
+        if 0 &lt;= index &lt; cnt:
+            return self._list[(self._front + index) % self._capacity]        # type: ignore
+        elif -cnt &lt;= index &lt; 0:
+            return self._list[(self._front + cnt + index) % self._capacity]  # type: ignore
+        else:
+            if cnt &gt; 0:
+                msg1 = &#39;Out of bounds: &#39;
+                msg2 = f&#39;index = {index} not between {-cnt} and {cnt-1} &#39;
+                msg3 = &#39;while getting value from a CircularArray.&#39;
+                raise IndexError(msg1 + msg2 + msg3)
+            else:
+                msg0 = &#39;Trying to get value from an empty CircularArray.&#39;
+                raise IndexError(msg0)
+
+    def __setitem__(self, index: int, value: _T) -&gt; None:
+        cnt = self._count
+        if 0 &lt;= index &lt; cnt:
+            self._list[(self._front + index) % self._capacity] = value
+        elif -cnt &lt;= index &lt; 0:
+            self._list[(self._front + cnt + index) % self._capacity] = value
+        else:
+            if cnt &gt; 0:
+                msg1 = &#39;Out of bounds: &#39;
+                msg2 = f&#39;index = {index} not between {-cnt} and {cnt-1} &#39;
+                msg3 = &#39;while setting value from a CircularArray.&#39;
+                raise IndexError(msg1 + msg2 + msg3)
+            else:
+                msg0 = &#39;Trying to set value from an empty CircularArray.&#39;
+                raise IndexError(msg0)
+
+    def __eq__(self, other: object) -&gt; bool:
+        &#34;&#34;&#34;Returns True if all the data stored in both compare as equal.
+
+        * worst case is O(n) behavior for the true case
+        &#34;&#34;&#34;
+        if not isinstance(other, type(self)):
+            return False
+
+        frontL,      capacityL,      countL,      frontR,       capacityR,       countR = \
+        self._front, self._capacity, self._count, other._front, other._capacity, other._count
+
+        if countL != countR:
+            return False
+
+        for nn in range(countL):
+            if self._list[(frontL+nn)%capacityL] != other._list[(frontR+nn)%capacityR]:
+                return False
+        return True
+
+    def copy(self) -&gt; CircularArray[_T]:
+        &#34;&#34;&#34;Return a shallow copy of the CircularArray.&#34;&#34;&#34;
+        return CircularArray(*self)
+
+    def pushR(self, *ds: _T) -&gt; None:
+        &#34;&#34;&#34;Push data onto the rear of the CircularArray.&#34;&#34;&#34;
+        for d in ds:
+            if self._count == self._capacity:
+                self.double()
+            self._rear = (self._rear + 1) % self._capacity
+            self._list[self._rear] = d
+            self._count += 1
+
+    def pushL(self, *ds: _T) -&gt; None:
+        &#34;&#34;&#34;Push data onto the front of the CircularArray.&#34;&#34;&#34;
+        for d in ds:
+            if self._count == self._capacity:
+                self.double()
+            self._front = (self._front - 1) % self._capacity
+            self._list[self._front] = d
+            self._count += 1
+
+    def popR(self) -&gt; Optional[_T]:
+        &#34;&#34;&#34;Pop data off the rear of the CircularArray.
+
+        * returns None if empty
+        * use in a boolean context to determine if empty
+        &#34;&#34;&#34;
+        if self._count == 0:
+            return None
+        else:
+            d, self._count, self._list[self._rear], self._rear = \
+                self._list[self._rear], self._count-1, None, (self._rear - 1) % self._capacity
+            return d
+
+    def popL(self) -&gt; Optional[_T]:
+        &#34;&#34;&#34;Pop data off the front of the CircularArray.
+
+        * returns None if empty
+        * use in a boolean context to determine if empty
+        &#34;&#34;&#34;
+        if self._count == 0:
+            return None
+        else:
+            d, self._count, self._list[self._front], self._front = \
+                self._list[self._front], self._count-1, None, (self._front+1) % self._capacity
+            return d
+
+    def map(self, f: Callable[[_T], _S]) -&gt; CircularArray[_S]:
+        &#34;&#34;&#34;Apply function f over the CircularArray&#39;s contents.
+
+        * return the results in a new CircularArray
+        &#34;&#34;&#34;
+        return CircularArray(*map(f, self))
+
+    def foldL(self, f: Callable[[_T, _T], _T]) -&gt; Optional[_T]:
+        &#34;&#34;&#34;Fold CircularArray left.
+
+        * first argument of `f` is for the accumulated value
+        * if CircularArray is empty, return `None`
+        &#34;&#34;&#34;
+        if self._count == 0:
+            return None
+
+        iter_self = iter(self)
+        value = next(iter_self)
+
+        for v in iter_self:
+            value = f(value, v)
+
+        return value
+
+    def foldR(self, f: Callable[[_T, _T], _T]) -&gt; Optional[_T]:
+        &#34;&#34;&#34;Fold CircularArray right.
+
+        * second argument of `f` is for the accumulated value
+        * if CircularArray is empty, return `None`
+        &#34;&#34;&#34;
+        if self._count == 0:
+            return None
+
+        rev_self = reversed(self)
+        value = next(rev_self)
+        for v in rev_self:
+            value = f(v, value)
+
+        return value
+
+    def foldL1(self, f: Callable[[_S, _T], _S], init: _S) -&gt; _S:
+        &#34;&#34;&#34;Fold CircularArray left with an initial value.
+
+        * first argument of `f` is for the accumulated value
+        * if CircularArray is empty, return the initial value
+        &#34;&#34;&#34;
+        value: _S = init
+        for v in iter(self):
+            value = f(value, v)
+        return value
+
+    def foldR1(self, f: Callable[[_T, _S], _S], init: _S) -&gt; _S:
+        &#34;&#34;&#34;Fold CircularArray right with an initial value.
+
+        * second argument of `f` is for the accumulated value
+        * if CircularArray is empty, return the initial value
+        &#34;&#34;&#34;
+        value: _S = init
+        for v in reversed(self):
+            value = f(v, value)
+        return value
+
+    def capacity(self) -&gt; int:
+        &#34;&#34;&#34;Returns current capacity of the CircularArray.&#34;&#34;&#34;
+        return self._capacity
+
+    def compact(self) -&gt; None:
+        &#34;&#34;&#34;Compact the CircularArray as much as possible.&#34;&#34;&#34;
+        match self._count:
+            case 0:
+                self._capacity, self._front, self._rear, self._list = 2, 0, 1, [None]*2 
+            case 1:
+                self._capacity, self._front, self._rear, self._list = 1, 0, 0, [self._list[self._front]] 
+            case _:
+                if self._front &lt;= self._rear:
+                    self._capacity, self._front, self._rear,    self._list = \
+                    self._count,    0,           self._count-1, self._list[self._front:self._rear+1]
+                else:
+                    self._capacity, self._front, self._rear,    self._list = \
+                    self._count,    0,           self._count-1, self._list[self._front:] + self._list[:self._rear+1]
+
+    def double(self) -&gt; None:
+        &#34;&#34;&#34;Double the capacity of the CircularArray.&#34;&#34;&#34;
+        if self._front &lt;= self._rear:
+            self._list += [None]*self._capacity
+            self._capacity *= 2
+        else:
+            self._list = self._list[:self._front] + [None]*self._capacity + self._list[self._front:]
+            self._front += self._capacity
+            self._capacity *= 2
+
+    def empty(self) -&gt; None:
+        &#34;&#34;&#34;Empty the CircularArray, keep current capacity.&#34;&#34;&#34;
+        self._list, self._front, self._rear = [None]*self._capacity, 0, self._capacity-1
+
+    def fractionFilled(self) -&gt; float:
+        &#34;&#34;&#34;Returns fractional capacity of the CircularArray.&#34;&#34;&#34;
+        return self._count/self._capacity
+
+    def resize(self, newSize: int= 0) -&gt; None:
+        &#34;&#34;&#34;Compact CircularArray and resize to newSize if less than newSize.&#34;&#34;&#34;
+        self.compact()
+        capacity = self._capacity
+        if newSize &gt; capacity:
+            self._list, self._capacity = self._list+[None]*(newSize-capacity), newSize
+            if self._count == 0:
+                self._rear = capacity - 1</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>typing.Generic</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="grscheller.circular_array.ca.CircularArray.capacity"><code class="name flex">
+<span>def <span class="ident">capacity</span></span>(<span>self) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns current capacity of the CircularArray.</p></div>
+</dd>
+<dt id="grscheller.circular_array.ca.CircularArray.compact"><code class="name flex">
+<span>def <span class="ident">compact</span></span>(<span>self) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Compact the CircularArray as much as possible.</p></div>
+</dd>
+<dt id="grscheller.circular_array.ca.CircularArray.copy"><code class="name flex">
+<span>def <span class="ident">copy</span></span>(<span>self) ‑> <a title="grscheller.circular_array.ca.CircularArray" href="#grscheller.circular_array.ca.CircularArray">CircularArray</a>[_T]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return a shallow copy of the CircularArray.</p></div>
+</dd>
+<dt id="grscheller.circular_array.ca.CircularArray.double"><code class="name flex">
+<span>def <span class="ident">double</span></span>(<span>self) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Double the capacity of the CircularArray.</p></div>
+</dd>
+<dt id="grscheller.circular_array.ca.CircularArray.empty"><code class="name flex">
+<span>def <span class="ident">empty</span></span>(<span>self) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Empty the CircularArray, keep current capacity.</p></div>
+</dd>
+<dt id="grscheller.circular_array.ca.CircularArray.foldL"><code class="name flex">
+<span>def <span class="ident">foldL</span></span>(<span>self, f: Callable[[_T, _T], _T]) ‑> Optional[_T]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Fold CircularArray left.</p>
+<ul>
+<li>first argument of <code>f</code> is for the accumulated value</li>
+<li>if CircularArray is empty, return <code>None</code></li>
+</ul></div>
+</dd>
+<dt id="grscheller.circular_array.ca.CircularArray.foldL1"><code class="name flex">
+<span>def <span class="ident">foldL1</span></span>(<span>self, f: Callable[[_S, _T], _S], init: _S) ‑> _S</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Fold CircularArray left with an initial value.</p>
+<ul>
+<li>first argument of <code>f</code> is for the accumulated value</li>
+<li>if CircularArray is empty, return the initial value</li>
+</ul></div>
+</dd>
+<dt id="grscheller.circular_array.ca.CircularArray.foldR"><code class="name flex">
+<span>def <span class="ident">foldR</span></span>(<span>self, f: Callable[[_T, _T], _T]) ‑> Optional[_T]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Fold CircularArray right.</p>
+<ul>
+<li>second argument of <code>f</code> is for the accumulated value</li>
+<li>if CircularArray is empty, return <code>None</code></li>
+</ul></div>
+</dd>
+<dt id="grscheller.circular_array.ca.CircularArray.foldR1"><code class="name flex">
+<span>def <span class="ident">foldR1</span></span>(<span>self, f: Callable[[_T, _S], _S], init: _S) ‑> _S</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Fold CircularArray right with an initial value.</p>
+<ul>
+<li>second argument of <code>f</code> is for the accumulated value</li>
+<li>if CircularArray is empty, return the initial value</li>
+</ul></div>
+</dd>
+<dt id="grscheller.circular_array.ca.CircularArray.fractionFilled"><code class="name flex">
+<span>def <span class="ident">fractionFilled</span></span>(<span>self) ‑> float</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns fractional capacity of the CircularArray.</p></div>
+</dd>
+<dt id="grscheller.circular_array.ca.CircularArray.map"><code class="name flex">
+<span>def <span class="ident">map</span></span>(<span>self, f: Callable[[_T], _S]) ‑> <a title="grscheller.circular_array.ca.CircularArray" href="#grscheller.circular_array.ca.CircularArray">CircularArray</a>[_S]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Apply function f over the CircularArray's contents.</p>
+<ul>
+<li>return the results in a new CircularArray</li>
+</ul></div>
+</dd>
+<dt id="grscheller.circular_array.ca.CircularArray.popL"><code class="name flex">
+<span>def <span class="ident">popL</span></span>(<span>self) ‑> Optional[_T]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Pop data off the front of the CircularArray.</p>
+<ul>
+<li>returns None if empty</li>
+<li>use in a boolean context to determine if empty</li>
+</ul></div>
+</dd>
+<dt id="grscheller.circular_array.ca.CircularArray.popR"><code class="name flex">
+<span>def <span class="ident">popR</span></span>(<span>self) ‑> Optional[_T]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Pop data off the rear of the CircularArray.</p>
+<ul>
+<li>returns None if empty</li>
+<li>use in a boolean context to determine if empty</li>
+</ul></div>
+</dd>
+<dt id="grscheller.circular_array.ca.CircularArray.pushL"><code class="name flex">
+<span>def <span class="ident">pushL</span></span>(<span>self, *ds: _T) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Push data onto the front of the CircularArray.</p></div>
+</dd>
+<dt id="grscheller.circular_array.ca.CircularArray.pushR"><code class="name flex">
+<span>def <span class="ident">pushR</span></span>(<span>self, *ds: _T) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Push data onto the rear of the CircularArray.</p></div>
+</dd>
+<dt id="grscheller.circular_array.ca.CircularArray.resize"><code class="name flex">
+<span>def <span class="ident">resize</span></span>(<span>self, newSize: int = 0) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Compact CircularArray and resize to newSize if less than newSize.</p></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="grscheller.circular_array" href="index.html">grscheller.circular_array</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="grscheller.circular_array.ca.CircularArray" href="#grscheller.circular_array.ca.CircularArray">CircularArray</a></code></h4>
+<ul class="two-column">
+<li><code><a title="grscheller.circular_array.ca.CircularArray.capacity" href="#grscheller.circular_array.ca.CircularArray.capacity">capacity</a></code></li>
+<li><code><a title="grscheller.circular_array.ca.CircularArray.compact" href="#grscheller.circular_array.ca.CircularArray.compact">compact</a></code></li>
+<li><code><a title="grscheller.circular_array.ca.CircularArray.copy" href="#grscheller.circular_array.ca.CircularArray.copy">copy</a></code></li>
+<li><code><a title="grscheller.circular_array.ca.CircularArray.double" href="#grscheller.circular_array.ca.CircularArray.double">double</a></code></li>
+<li><code><a title="grscheller.circular_array.ca.CircularArray.empty" href="#grscheller.circular_array.ca.CircularArray.empty">empty</a></code></li>
+<li><code><a title="grscheller.circular_array.ca.CircularArray.foldL" href="#grscheller.circular_array.ca.CircularArray.foldL">foldL</a></code></li>
+<li><code><a title="grscheller.circular_array.ca.CircularArray.foldL1" href="#grscheller.circular_array.ca.CircularArray.foldL1">foldL1</a></code></li>
+<li><code><a title="grscheller.circular_array.ca.CircularArray.foldR" href="#grscheller.circular_array.ca.CircularArray.foldR">foldR</a></code></li>
+<li><code><a title="grscheller.circular_array.ca.CircularArray.foldR1" href="#grscheller.circular_array.ca.CircularArray.foldR1">foldR1</a></code></li>
+<li><code><a title="grscheller.circular_array.ca.CircularArray.fractionFilled" href="#grscheller.circular_array.ca.CircularArray.fractionFilled">fractionFilled</a></code></li>
+<li><code><a title="grscheller.circular_array.ca.CircularArray.map" href="#grscheller.circular_array.ca.CircularArray.map">map</a></code></li>
+<li><code><a title="grscheller.circular_array.ca.CircularArray.popL" href="#grscheller.circular_array.ca.CircularArray.popL">popL</a></code></li>
+<li><code><a title="grscheller.circular_array.ca.CircularArray.popR" href="#grscheller.circular_array.ca.CircularArray.popR">popR</a></code></li>
+<li><code><a title="grscheller.circular_array.ca.CircularArray.pushL" href="#grscheller.circular_array.ca.CircularArray.pushL">pushL</a></code></li>
+<li><code><a title="grscheller.circular_array.ca.CircularArray.pushR" href="#grscheller.circular_array.ca.CircularArray.pushR">pushR</a></code></li>
+<li><code><a title="grscheller.circular_array.ca.CircularArray.resize" href="#grscheller.circular_array.ca.CircularArray.resize">resize</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.1</a>.</p>
+</footer>
+</body>
+</html>
