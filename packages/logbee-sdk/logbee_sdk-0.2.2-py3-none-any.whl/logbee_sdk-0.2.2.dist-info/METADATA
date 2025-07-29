@@ -1,0 +1,290 @@
+Metadata-Version: 2.4
+Name: logbee-sdk
+Version: 0.2.2
+Summary: SDK for integrating Python applications with Logbee
+Home-page: https://github.com/logbee/logbee-sdk-py
+Author: Logbee
+Author-email: info@logbee.dev
+License: MIT
+Keywords: logbee,logging,monitoring,errors,api
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Natural Language :: English
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests>=2.25.0
+Provides-Extra: flask
+Requires-Dist: flask>=2.0.0; extra == "flask"
+Provides-Extra: fastapi
+Requires-Dist: fastapi>=0.68.0; extra == "fastapi"
+Provides-Extra: django
+Requires-Dist: django>=3.2.0; extra == "django"
+Provides-Extra: all
+Requires-Dist: flask>=2.0.0; extra == "all"
+Requires-Dist: fastapi>=0.68.0; extra == "all"
+Requires-Dist: django>=3.2.0; extra == "all"
+Provides-Extra: dev
+Requires-Dist: pytest>=6.2.0; extra == "dev"
+Requires-Dist: pytest-cov>=2.12.0; extra == "dev"
+Requires-Dist: flake8>=3.9.0; extra == "dev"
+Requires-Dist: black>=21.5b2; extra == "dev"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license
+Dynamic: license-file
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# Logbee SDK for Python
+
+Official SDK for integrating Python applications with Logbee, an error monitoring and logging platform.
+
+## Installation
+
+```bash
+pip install logbee-sdk
+```
+
+### Optional dependencies
+
+To use the SDK with specific frameworks, you can install the corresponding dependencies:
+
+```bash
+# For Flask
+pip install logbee-sdk[flask]
+
+# For FastAPI
+pip install logbee-sdk[fastapi]
+
+# For Django
+pip install logbee-sdk[django]
+
+# For all frameworks
+pip install logbee-sdk[all]
+```
+
+## Usage
+
+### Flask Integration
+
+```python
+from flask import Flask
+from logbee import init_logbee_flask
+
+app = Flask(__name__)
+
+# Initialize Logbee with required and optional parameters
+init_logbee_flask(
+    app,
+    client_id="your-client-id",          # Required
+    client_secret="your-client-secret",  # Required
+    environment="production",
+    service_name="my-flask-app",
+    timeout=30,
+    retry_attempts=3,
+    retry_delay=1.0,
+    send_to_api=True,
+    capture_body=True,
+    capture_headers=True,
+    capture_query_params=True,
+    mask_sensitive_data=True,
+    sensitive_fields=["password", "token", "credit_card"],
+    min_status_code_to_capture=400,  # Only capture detailed data for errors
+    capture_all_requests=False,      # Only capture errors by default
+)
+
+@app.route('/')
+def hello():
+    return "Hello World!"
+```
+
+### FastAPI Integration
+
+```python
+from fastapi import FastAPI
+from logbee import init_logbee_fastapi
+
+app = FastAPI()
+
+# Initialize Logbee with required and optional parameters
+init_logbee_fastapi(
+    app,
+    client_id="your-client-id",          # Required
+    client_secret="your-client-secret",  # Required
+    environment="production",
+    service_name="my-fastapi-app",
+    timeout=30,
+    retry_attempts=3,
+    retry_delay=1.0,
+    send_to_api=True,
+    capture_body=True,
+    capture_headers=True,
+    capture_query_params=True,
+    mask_sensitive_data=True,
+    sensitive_fields=["password", "token", "credit_card"],
+    min_status_code_to_capture=400,  # Only capture detailed data for errors
+    capture_all_requests=False,      # Only capture errors by default
+)
+
+@app.get('/')
+def hello():
+    return {"message": "Hello World!"}
+```
+
+### Django Integration
+
+In your `settings.py` file:
+
+```python
+MIDDLEWARE = [
+    # ... other middlewares
+    'logbee.LogbeeDjangoMiddleware',
+]
+
+# Logbee configuration
+LOGBEE = {
+    'client_id': 'your-client-id',
+    'client_secret': 'your-client-secret',
+    'environment': 'production',
+    'service_name': 'my-django-app',
+    'timeout': 30,
+}
+```
+
+### Manual error reporting
+
+```python
+from logbee import send_error_to_logbee
+
+try:
+    # Code that might raise exceptions
+    result = 1 / 0
+except Exception as e:
+    # Send error to Logbee
+    send_error_to_logbee(
+        error=e,
+        context={
+            "service_name": "my-service",
+            "environment": "production",
+            "custom": {"operation": "division"}
+        },
+        client_id="your-client-id",
+        client_secret="your-client-secret"
+    )
+    # You can re-raise the exception or handle it according to your logic
+    raise
+```
+
+### Using the decorator to catch errors
+
+```python
+from logbee import catch_and_log_errors
+
+@catch_and_log_errors(
+    service_name="my-service",
+    environment="production",
+    client_id="your-client-id",
+    client_secret="your-client-secret"
+)
+def function_with_possible_errors():
+    # If an exception occurs here, it will be automatically sent to Logbee
+    result = 1 / 0
+    return result
+```
+
+## Configuration options
+
+The Logbee SDK supports the following options:
+
+**Required parameters:**
+- `client_id`: Your Logbee client ID (required)
+- `client_secret`: Your Logbee client secret (required)
+
+**Optional parameters:**
+- `environment`: Runtime environment (e.g. "development", "production")
+- `service_name`: Name of your service or application
+- `timeout`: Request timeout in seconds (default: 30)
+- `retry_attempts`: Number of retry attempts for failed requests (default: 3)
+- `retry_delay`: Delay between retries in seconds (default: 1.0)
+- `send_to_api`: Whether to send logs to Logbee API (default: True)
+- `capture_body`: Whether to capture request bodies (default: True)
+- `capture_headers`: Whether to capture request headers (default: True)
+- `capture_query_params`: Whether to capture query parameters (default: True)
+- `mask_sensitive_data`: Whether to mask sensitive data (default: True)
+- `sensitive_fields`: List of fields to be masked (default: ["password", "token", "secret", "credit_card", "card_number"])
+- `min_status_code_to_capture`: Minimum HTTP status code to capture detailed data (default: 0)
+- `capture_all_requests`: Whether to capture all requests regardless of status code (default: True)
+
+## API Reference
+
+### Core Functions
+
+#### `send_error_to_logbee(error, context=None, client_id=None, client_secret=None, timeout=30, retry_attempts=3, retry_delay=1.0)`
+
+Sends an error to the Logbee API.
+
+**Parameters:**
+- `error` (Exception): The exception to be sent
+- `context` (dict, optional): Additional context information
+- `client_id` (str, optional): Client ID for authentication
+- `client_secret` (str, optional): Client secret for authentication
+- `timeout` (int, optional): Request timeout in seconds (default: 30)
+- `retry_attempts` (int, optional): Number of retry attempts (default: 3)
+- `retry_delay` (float, optional): Delay between retries in seconds (default: 1.0)
+
+**Returns:**
+- `bool`: True if successful, False otherwise
+
+#### `send_log_to_api(log_data, client_id=None, client_secret=None, timeout=30, retry_attempts=3, retry_delay=1.0)`
+
+Sends log data to the Logbee API.
+
+**Parameters:**
+- `log_data` (LogData): Log data object
+- `client_id` (str, optional): Client ID for authentication
+- `client_secret` (str, optional): Client secret for authentication
+- `timeout` (int, optional): Request timeout in seconds (default: 30)
+- `retry_attempts` (int, optional): Number of retry attempts (default: 3)
+- `retry_delay` (float, optional): Delay between retries in seconds (default: 1.0)
+
+**Returns:**
+- `bool`: True if successful, False otherwise
+
+### Decorators
+
+#### `@catch_and_log_errors(**kwargs)`
+
+Decorator that automatically catches and sends exceptions to Logbee.
+
+**Parameters:**
+- `service_name` (str, optional): Service name
+- `environment` (str, optional): Environment name
+- `client_id` (str, optional): Client ID for authentication
+- `client_secret` (str, optional): Client secret for authentication
+- `timeout` (int, optional): Request timeout in seconds (default: 30)
+- `custom_context` (dict, optional): Additional context
+
+## Requirements
+
+- Python 3.7+
+- requests >= 2.25.0
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
