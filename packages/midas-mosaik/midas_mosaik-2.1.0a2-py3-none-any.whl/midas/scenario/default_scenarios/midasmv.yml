@@ -1,0 +1,87 @@
+#######################################################################
+# Midas MV Base
+#######################################################################
+midasmv:
+  parent:
+  modules: [store, powergrid, sndata, comdata]
+  start_date: 2009-01-01 00:00:00+0100
+  end: 1*24*60*60
+  step_size: 15*60
+  store_params:
+    filename: midasmv.csv
+  powergrid_params:
+    midasmv:
+      gridfile: midasmv
+  sndata_params:
+    midasmv:
+      interpolate: true
+      randomize_data: true
+      randomize_cos_phi: true
+      active_mapping:
+        1: [[Land_0, 1.0], [Land_2, 1.0], [Land_3, 2.0], [Land_6, 2.0], [Land_7, 1.0]]
+        3: [[Land_2, 1.0], [Land_3, 1.0], [Land_6, 1.0], [Land_7, 1.0]]
+        4: [[Land_0, 2.0], [Land_3, 2.0], [Land_7, 1.0]]
+        5: [[Land_3, 2.0], [Land_7, 1.0]]
+        6: [[Land_0, 2.0], [Land_3, 1.0]]
+        7: [[Land_0, 2.0], [Land_2, 1.0], [Land_3, 2.0], [Land_7, 1.0]]
+        8: [[Land_0, 1.0], [Land_3, 1.0], [Land_6, 1.0]]
+        9: [[Land_2, 1.0], [Land_3, 1.0], [Land_6, 2.0], [Land_7, 1.0]]
+        10: [[Land_0, 2.0], [Land_2, 1.0], [Land_3, 1.0], [Land_6, 2.0], [Land_7, 1.0]]
+        11: [[Land_0, 1.0], [Land_2, 1.0], [Land_3, 1.0], [Land_6, 2.0], [Land_7, 1.0]]
+  comdata_params:
+    midasmv:
+      interpolate: true
+      randomize_data: true
+      randomize_cos_phi: true
+      active_mapping:
+        13: [[SuperMarket, 3.0]]
+        14: [[SmallHotel, 2.0]]
+#######################################################################
+# Midas MV with DER
+#######################################################################
+midasmv_der:
+  parent: midasmv
+  modules: [weather, der]
+  store_params:
+    filename: midasmv_der.csv
+  weather_params:
+    bremen:
+      weather_mapping:
+        WeatherCurrent:
+          - interpolate: true
+            randomize: true
+  der_params:
+    midasmv:
+      grid_name: midasmv
+      mapping:
+        3: [[PV, 1], [HVAC, 1.279], [HVAC, 0.343]]
+        4: [[CHP, 0.4], [HVAC, 0.343]]
+        7: [[DIESEL, 1], [Wind, 0.008]]
+        8: [[CHP, 0.4], [PV, 1]]
+        9: [[HVAC, 0.23], [BAT, 0.08]]
+        11: [[Biogas, 2.05], [BAT, 0.555], [PV, 2]]
+        13: [[HVAC, 0.23], [Wind, 0.015], [Wind, 0.015]]
+        14: [[Wind, 0.015], [HVAC, 1.279], [Wind, 0.015]]
+      weather_provider_mapping:
+        PV: [bremen, 0]
+        HVAC: [bremen, 0]
+        BAT: [bremen, 0]
+        CHP: [bremen, 0]
+        Biogas: [bremen, 0]
+        DIESEL: [bremen, 0]
+        Wind: [bremen, 0]
+#######################################################################
+# Midas MV DER with TAR constraints
+#######################################################################
+midasmv_der_tar:
+  parent: midasmv_der
+  store_params:
+    filename: midasmv_der_tar.csv
+  powergrid_params:
+    gridfile: midasmv
+    constraints: 
+      - [bus, 0.1]
+      - [line, 100]
+      - [load, 0.02]
+      - [sgen, 0.05]
+      - [storage, 0.02]
