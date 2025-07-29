@@ -1,0 +1,117 @@
+Metadata-Version: 2.4
+Name: x-transformers-rl
+Version: 0.0.8
+Summary: X-Transformer for RL
+Project-URL: Homepage, https://pypi.org/project/x-transformers-rl/
+Project-URL: Repository, https://github.com/lucidrains/x-transformers-rl
+Author-email: Phil Wang <lucidrains@gmail.com>
+License: MIT License
+        
+        Copyright (c) 2025 Phil Wang
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+License-File: LICENSE
+Keywords: artificial intelligence,deep learning,reinforcement learning,transformers
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: >=3.8
+Requires-Dist: accelerate
+Requires-Dist: adam-atan2-pytorch
+Requires-Dist: assoc-scan
+Requires-Dist: einops>=0.8.0
+Requires-Dist: einx>=0.3.0
+Requires-Dist: ema-pytorch
+Requires-Dist: hl-gauss-pytorch
+Requires-Dist: torch>=2.4
+Requires-Dist: tqdm
+Requires-Dist: x-transformers>=2.3.5
+Provides-Extra: test
+Requires-Dist: pytest; extra == 'test'
+Description-Content-Type: text/markdown
+
+## x-transformers-rl (wip)
+
+Implementation of a transformer for reinforcement learning using `x-transformers`
+
+## Install
+
+```bash
+$ pip install x-transformers-rl
+```
+
+## Usage
+
+```python
+import numpy as np
+
+class Sim:
+    def reset(self, seed = None):
+        return np.random.randn(5) # state
+
+    def step(self, actions):
+        return np.random.randn(5), np.random.randn(1), False # state, reward, done
+
+sim = Sim()
+
+# learning
+
+from x_transformers_rl import Learner
+
+learner = Learner(
+    state_dim = 5,
+    num_actions = 2,
+    reward_range = (-1., 1.),
+    max_timesteps = 10,
+    world_model = dict(
+        attn_dim_head = 16,
+        heads = 4,
+        depth = 1,
+    )
+)
+
+learner(sim, 100)
+```
+
+## Example
+
+### Lunar Lander
+
+```bash
+$ pip install -r requirements.txt
+```
+
+Then
+
+```python
+$ python train_lander.py
+```
+
+## Citation
+
+```bibtex
+@inproceedings{Wang2025EvolutionaryPO,
+    title = {Evolutionary Policy Optimization},
+    author = {Jianren Wang and Yifan Su and Abhinav Gupta and Deepak Pathak},
+    year  = {2025},
+    url   = {https://api.semanticscholar.org/CorpusID:277313729}
+}
+```
