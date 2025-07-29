@@ -1,0 +1,39 @@
+[tool.poetry]
+name = "coveo-testing"
+version = "3.0"
+description = "Lightweight testing helpers"
+license = "Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/coveooss/coveo-python-oss/tree/main/coveo-testing"
+authors = ["Jonathan Piché <tools@coveo.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.9,<4"
+
+attrs = "*"
+coveo-ref = "*"
+pytest = "*"
+
+
+[tool.poetry.group.dev.dependencies]
+bandit = "*"
+black = "*"
+coveo-ref = { path = "../coveo-ref/", develop = true }
+mypy = "1.9.0"
+pytest = "*"
+typing_extensions = "*"
+
+
+[tool.stew.ci]
+pytest = true
+offline-build = true
+black = true
+
+
+[tool.black]
+line-length = 100
+
+
+[build-system]
+requires = ["poetry_core>=2.0.0"]
+build-backend = "poetry.core.masonry.api"
