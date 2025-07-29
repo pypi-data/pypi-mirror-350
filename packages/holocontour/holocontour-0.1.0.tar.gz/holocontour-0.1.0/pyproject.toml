@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "holocontour"
+version = "0.1.0"
+description = "A minimalist toolkit for holographic plankton image segmentation"
+authors = [
+    { name = "Mojtaba Masoudi", email = "mojmas@noc.ac.uk" }
+]
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "numpy",
+    "opencv-contrib-python",
+    "matplotlib",
+    "scikit-image",
+    "pyyaml",
+    "tqdm",
+    "morphocut"
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"holocontour" = ["configs/*.yaml", "data/*", "model/model.yml"]
+
