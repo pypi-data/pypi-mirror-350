@@ -1,0 +1,120 @@
+#!/bin/bash
+
+# This script is a variant from TangoScripts/tango_pyds
+# srubio@cells.es, 2016
+
+## The instance argument can be used to override the server name
+if [ $(echo $1 | grep "/" ) ] ; then
+ IFS='/' read -r DS INSTANCE <<< "$1"
+else
+ DS=$(basename $0)
+ INSTANCE=$1
+fi
+if [ ! "$INSTANCE" ] ; then
+ INSTANCE="-?"
+fi
+
+VPYTHON=$(fandango get_device_property dserver/$DS/$INSTANCE python)
+echo "dserver/$DS/$INSTANCE.VPYTHON = $VPYTHON"
+if [ "$VPYTHON" = "2" ] || [ "$VPYTHON" = "python2" ] ; then
+  VPYTHON=python2
+elif [ "$VPYTHON" = "3" ] || [ ! "$VPYTHON" ] ; then
+  VPYTHON=python3
+fi
+
+ARGS="$2 $3 $4"
+DSlw=$(echo "$DS" | tr '[:upper:]' '[:lower:]')
+
+echo "############## DynamicDS($DS/$INSTANCE) ###############"
+
+DebianLIBS=/usr/lib/$VPYTHON/dist-packages/
+TangodsPATH=/usr/share/tangods-$DSlw/
+#SusePATH=/homelocal/sicilia/ds/python/$DS/
+#SuseLIBS=/homelocal/sicilia/lib/python/
+
+## Get all related paths in a single fandango to DB call
+DSPROPS=$(tango_property -e \
+          DSORB=ORBEndPoint.$DS/$INSTANCE \
+          StPATH=Starter/$HOST.StartDSPath \
+          LcPATH=Starter/$HOST.PYTHON_CLASSPATH \
+          DvPATH=PYTHON_CLASSPATH.DeviceClasses \
+          ClPATH=PYTHON_CLASSPATH.$DS \
+          LcLAUNCHER=dserver/$DS/$INSTANCE.Launcher \
+          ClLAUNCHER=$DS.Launcher
+          )
+#LcPATH=Starter/$HOST.StartDSPath \ #It may jump to this same launcher
+
+#echo "Tango properties for $DS/$INSTANCE: $DSPROPS"
+for p in $DSPROPS; do 
+  export $p;
+done
+
+if [ "$LcLAUNCHER" ] && [ -e "$LcLAUNCHER" ] ; then
+  CMD="$(LcLAUNCHER) $ARGS"
+else
+ if [ "$ClLAUNCHER" ] && [ -e "$ClLAUNCHER" ] ; then
+  CMD="$ClLAUNCHER $INSTANCE $ARGS"
+ else
+  # Getting the launcher from a python module
+  export PYTHONPATH=$PYTHONPATH:$ClPATH:$DvPATH:$TangodsPATH
+  echo PYTHONPATH=${PYTHONPATH}
+
+  # Find the folder for the DS.py file
+  DSPATH=$(fandango find_module $DS)
+
+  # Try to find devices within fandango
+  if [ ! "$DSPATH" ] ; then   
+   FnPATH=$($VPYTHON -c "import imp;print(imp.find_module('fandango')[1])")
+   if [ -e "$FnPATH/device/$DS.py" ] ; then
+    DSPATH=$FnPATH/device
+    DSLIB=fandango.device
+   elif [ -e "$FnPATH/interface/$DS.py" ] ; then
+    DSPATH=$FnPATH/interface
+    DSLIB=fandango.interface
+   fi
+  else
+   DSLIB=$DS
+  fi
+
+  # Convert DSPATH to an absolute path
+  if [ "$DSPATH" ] ; then
+   DSPATH=$(readlink -f $DSPATH)
+  fi
+
+#  if [ ! -e "${DSPATH}/$DS.py" ] ; then
+#   echo "############## ERROR ###############"
+#   echo "Module $DS not found in PYTHONPATH!?"
+#  else
+   echo "Launching ${DSPATH}/$DS $INSTANCE at $DSORB"
+   HASSCREEN=$(which screen 2>/dev/null)
+   if [ ! "$( echo $1 | grep '\?' )" ] && [ "$HASSCREEN" ] ; then
+    if [ ! "$(echo $* | grep 'attach')" ] ; then
+     echo "run detached"
+     CMD="screen -dm -S $DS-$INSTANCE "
+    else
+     #CMD="screen -S $DS-$INSTANCE "
+     CMD=""
+    fi
+   else
+    CMD=""
+   fi
+
+   CMD="$VPYTHON -m $DSLIB.$DS $INSTANCE $ARGS"
+ # End of generic launcher
+ fi
+ 
+ if [ "$DSORB" ] ; then
+  #-ORBendPoint giop:tcp:10.0.5.120:50129
+  DSORB="-ORBendPoint $DSORB"
+  CMD="${CMD} $DSORB"
+ fi
+
+# End of non-local launcher
+fi
+
+echo "-------------------------------------------"
+echo $CMD
+$CMD
+
+
+

@@ -1,0 +1,692 @@
+#!/usr/bin/env python
+
+""" @if gnuheader
+#############################################################################
+##
+## file :       device.py
+##
+## description : CLASS FOR Enhanced TANGO DEVICE SERVERs
+##
+## project :     Tango Control System
+##
+## $Author: Sergi Rubio Manrique, srubio@cells.es $
+##
+## $Revision: 2008 $
+##
+## copyleft :    ALBA Synchrotron Controls Section, CELLS
+##               Bellaterra
+##               Spain
+##
+#############################################################################
+##
+## This file is part of Tango Control System
+##
+## Tango Control System is free software; you can redistribute it and/or
+## modify it under the terms of the GNU General Public License as published
+## by the Free Software Foundation; either version 3 of the License, or
+## (at your option) any later version.
+##
+## Tango Control System is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, see <http://www.gnu.org/licenses/>.
+###########################################################################
+@endif
+@package device
+@brief provides Dev4Tango, StateQueue, DevChild
+@todo @warning IMPORTING THIS MODULE IS CAUSING SOME ERRORS WHEN CLOSING PYTHON DEVICE SERVERS,  BE CAREFUL!
+
+This module is used to have all those classes used inside DeviceServers or to control/configure them 
+and are not part of the Astor api (ServersDict)
+"""
+from __future__ import division
+from __future__ import print_function
+
+# pytango imports
+#from builtins import str
+from past.utils import old_div
+import tango
+import types
+
+# fandango imports
+import fandango as fun
+import fandango.objects as objects
+from fandango.log import Logger, except2str, printf
+from fandango.excepts import *
+from fandango.threads import get_tango_thread_context
+from fandango.callbacks import *
+import fandango.tango as ftango  # Double import to avoid ambiguous naming of some methods
+from fandango.tango import *  # USE_TAU imported here, get_polled_attrs and other useful methods
+from fandango.dicts import CaselessDefaultDict, CaselessDict
+from fandango.arrays import TimedQueue
+from fandango.dynamic import DynamicDS, USE_STATIC_METHODS
+
+# EventThread.DEFAULT_PERIOD_ms = 1000 #0.1
+
+########################################################################################
+## Device servers template
+
+
+class Dev4Tango(tango.LatestDeviceImpl, log.Logger):
+    """
+    See documentation at doc/devices/Dev4Tango.rst
+
+    This class provides several new features to TangoDevice implementations.
+    By including log.Logger it also includes objects.Object as parent class.
+    It allows to use call__init__(self, klass, *args, **kw) to avoid multiple inheritance from same parent problems.
+    Therefore, use self.call__init__(tango.LatestDeviceImpl,cl,name) instead of tango.LatestDeviceImpl.__init__(self,cl,name)
+
+    It also allows to connect several devices within the same server or not
+    """
+
+    def __init__(self, cl, name, use_tango_logs = False):
+        self.call__init__(tango.LatestDeviceImpl, cl, name)
+        self.init_logger(use_tango_logs = use_tango_logs)
+        
+        self.MaxEventStream = 350
+        self._events_paused = False
+        self._events_queue = objects.Queue.Queue()
+        self._events_lock = threading.Lock()
+        self._events_last = []
+        
+ 
+    def init_logger(self, name=None, use_tango_logs=False,
+                    use_print=False, level=None):
+        """
+        A default initialization for the Logger class
+
+        :use_tango_logs: Use internal tango streams (-v) or not.
+        """
+        name = name or self.get_name()
+        level = level or getattr(self,'LogLevel','INFO')
+        print("In %s.init_logger(...%s)" % (name,level))
+        try:
+            # Check if this class inherits from Logger
+            if isinstance(self, log.Logger):
+                self.call__init__(
+                    log.Logger,
+                    name,
+                    use_tango_logs=use_tango_logs,
+                    use_print=use_print,
+                    level=level,
+                    format="%(levelname)-8s %(asctime)s %(name)s: %(message)s",
+                )
+                if hasattr(self, "LogLevel"):
+                    self.setLogLevel(self.LogLevel)
+                self.info("Logger streams initialized (error,warning,info,debug)")
+            else:
+                print("Using Tango Loggging Streams")
+                try:
+                    self.error, self.warning, self.info, self.debug = (
+                        self.error_stream,
+                        self.warn_stream,
+                        self.info_stream,
+                        self.debug_stream,
+                    )
+                except:
+                    raise Exception("LoggerNotInBaseClasses")
+                
+        except Exception as e:
+            print("*" * 80)
+            print("Exception at init_my_Logger!!!!")
+            print(str(e))
+            print("*" * 80)
+            # so, this class is not a new style class and doesn't have __bases__
+            self.error = lambda s: sys.stderr.write("ERROR:\t%s\n" % s)
+            self.warning = lambda s: sys.stdout.write("WARNING:\t%s\n" % s)
+            self.info = lambda s: sys.stdout.write("INFO:\t%s\n" % s)
+            self.debug = lambda s: sys.stdout.write("DEBUG:\t%s\n" % s)
+            pass
+         
+        
+    def set_log_level(self, level):
+        import sys
+        level = 'INFO' if '-v2' in sys.argv else (
+            'DEBUG' if ('-v4' in sys.argv or '-v3' in sys.argv) else
+            level)
+        log.Logger.setLogLevel(self, level)
+        return self.getLogLevel()
+
+    init_my_Logger = init_logger  # For backwards compatibility
+    setLogLevel = set_log_level        
+
+    def trace(self, prio, s):
+        """
+        Forced override of standard logging, just for testing purposes
+        """
+        printf(
+            "4T.%s %s %s: %s"
+            % (
+                prio.upper(),
+                time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
+                self.get_name(),
+                s,
+            )
+        )
+
+    ##@name State Machine methods
+    # @{
+
+    def is_attr_allowed(self, req_type):
+        """This method is a template for any Attribute allowed control."""
+        self.info("In is_Attr_allowed ...")
+        return bool(
+            self.get_state() not in [tango.DevState.UNKNOWN, tango.DevState.INIT]
+        )
+
+    is_Attr_allowed = is_attr_allowed  # For backwards compatibility
+
+    def set_state(self, state):
+        self._state = state
+        # type(self).mro()[type(self).mro().index(Dev4Tango)+1].set_state(self,state)
+        tango.LatestDeviceImpl.set_state(self, state)
+
+    def get_state(self):
+        # @Tango6
+        # This have been overriden as it seemed not well managed when connecting devices in a same server
+        if not hasattr(self, "_state"):
+            self._state = tango.DevState.INIT
+        if getattr(self, "UpdateAttributesThread", None) and 0 < getattr(
+            self, "last_update", 0
+        ) < (time.time() - old_div(10 * self.PollingCycle, 1e3)):
+            # raise Exception('PollingThreadIsDead')
+            self.set_state(tango.DevState.UNKNOWN)
+            msg = "Dev4Tango.PollingThreadIsDead!, last updated at %s" % time.ctime(
+                getattr(self, "last_update", 0)
+            )
+            self.error(msg)
+            self.set_status(msg)
+        return self._state
+
+    def dev_state(self):
+        # @Tango7
+        # This have been overriden to avoid device servers with states managed by qualities
+        return self.get_state()
+    
+    def get_name(self,name=''):
+        try:
+            name =  tango.LatestDeviceImpl.get_name(self)
+            return str(name)
+        except:
+            self.error('Unparsable name!: %s' % name)
+            return '_/_/_'
+
+    def State(self):
+        """State redefinition is required to keep independency between
+        attribute configuration (max/min alarms) and the device State"""
+        # return self.get_state()
+        return self.get_state()
+
+    # DON'T TRY TO OVERLOAD STATUS(), It doesn't work that way.
+    # def Status(self):
+    #    print '... IN ',str(self.__class__.__bases__),'.STATUS ...'
+    #    # BE CAREFUL!: dev_status() executes Status() in a recursive way!!!!
+    #    return str(self.get_status())
+
+    def default_status(self):
+        """Default status"""
+        return "Device is in %s State" % str(self.get_state())
+
+    def read_ShortStatus(self):
+        """This reduced Status allows Status attribute to be archived (a ShortStatus attribute must exist)"""
+        return self.get_status()[:128]
+
+    ##@}
+
+    ##@name Attribute hacking methods
+    # @{
+
+    attr_list = {
+        "MemUsage": [[tango.DevDouble, tango.SCALAR, tango.READ]],
+        "LastUpdate": [[tango.DevDouble, tango.SCALAR, tango.READ]],
+    }
+
+    def getAttributeTime(self, attr_value):
+        """AttributeValue.time is of Type TimeVal={tv_sec,tv_usec,...}, not accepted by set_attribute_value_date_quality method of DeviceImpl"""
+        if type(attr_value) is float:
+            return attr_value
+        elif type(attr_value.time) is float:
+            return attr_value.time
+        else:
+            return float(attr_value.time.tv_sec) + 1e-6 * float(attr_value.time.tv_usec)
+
+    def getAttributeTemplate(
+        self,
+        name,
+        type_=tango.DevDouble,
+        rw=tango.AttrWriteType.READ,
+        unit="",
+        frmt="",
+    ):
+        """
+        Returns an Attr object ready to be inserted with self.add_attribute(&Attr,&reader,&writer,&allowed)
+        """
+        attrib = tango.Attr(name, type_, rw)
+        props = tango.UserDefaultAttrProp()
+        props.set_format(frmt), props.set_unit(unit)
+        attrib.set_default_properties(props)
+        return attrib
+
+    def getMemUsage(self):
+        return old_div(fandango.linos.get_memory(), 1e3)
+
+    def read_MemUsage(self, attr):
+        self.debug("In read_MemUsage()")
+        attr.set_value(self.getMemUsage())
+
+    def read_LastUpdate(self, attr):
+        self.debug("In read_LastUpdate()")
+        attr.set_value(self.last_update)
+
+    ##@}
+
+    ##@name Device management methods
+    # @{
+
+ 
+    def check_properties(self, props_list):
+        """It verifies that all properties has been initialized"""
+        return all([getattr(self, p, None) for p in props_list])
+
+    check_Properties = check_properties  # For backwards compatibility
+
+    def get_device_properties(self, myclass):
+        self.info("In Dev4Tango.get_device_properties(%s) ..." % str(myclass))
+
+        tango.LatestDeviceImpl.get_device_properties(self, myclass)
+        if hasattr(self, "LogLevel"):
+            self.setLogLevel(self.LogLevel)
+
+        missing_properties = {}
+        for k in list(myclass.device_property_list.keys()):
+            default = myclass.device_property_list[k][2]
+            if k not in dir(self):
+                missing_properties[k] = default
+            else:
+                value = self.__dict__[k]
+                if not fun.isSequence(value):
+                    value = [value]
+                elif not isinstance(value, list):
+                    value = list(value)
+                if value == default:
+                    missing_properties[k] = value
+
+        if missing_properties:
+            try:
+                self.info(
+                    "In Dev4Tango.get_device_properties(%s): initializing default property values: %s"
+                    % (self.get_name(), missing_properties)
+                )
+                get_database().put_device_property(self.get_name(), missing_properties)
+            except Exception as e:
+                print("Exception in Dev4Tango.get_device_properties():\n" + str(e))
+
+    def update_properties(self, property_list=[]):
+        property_list = property_list or list(
+            self.get_device_class().device_property_list.keys()
+        )
+        self.debug("In Dev4Tango.update_properties(%s) ..." % property_list)
+        # self.db = self.prop_util.db
+        if not hasattr(self, "db") or not self.db:
+            self.db = tango.Database()
+        props = dict(
+            [(key, getattr(self, key)) for key in property_list if hasattr(self, key)]
+        )
+        for key, value in list(props.items()):
+            print("Updating Property %s = %s" % (key, value))
+            if fun.isSequence(value) and not isinstance(value, list):
+                value = list(value)
+            self.db.put_device_property(
+                self.get_name(), {key: isinstance(value, list) and value or [value]}
+            )
+
+    ##@}
+
+    ##@name Advanced tools
+    # @{
+    def get_devs_in_server(self, MyClass=None):
+        """
+        Method for getting a dictionary with all the devices running in this server
+        """
+        MyClass = MyClass or self.get_device_class()
+        if not hasattr(MyClass, "_devs_in_server"):
+            MyClass._devs_in_server = get_internal_devices()
+        return MyClass._devs_in_server
+
+    def get_admin_device(self):
+        U = tango.Util.instance()
+        return U.get_dserver_device()
+
+    def get_polled_attrs(self):
+        """
+        Returns a dictionary like {attr_name:period}
+        @TODO: Tango8 has its own get_polled_attr method; check for incompatibilities
+        """
+        return get_polled_attrs(self)
+
+    def set_polled_attribute(self, name, period, type_="attribute"):
+        args = [[period], [self.get_name(), type_, name]]
+        admin = self.get_admin_device()
+        if name in self.get_polled_attrs():
+            if period:
+                admin.upd_obj_polling_period(args)
+            else:
+                admin.rem_obj_polling([self.get_name(), type_, name])
+        else:
+            admin.add_obj_polling(args)
+
+    def set_polled_command(self, command, period):
+        self.set_polled_attribute(command, period, type_="command")
+
+    ##@}
+
+    ##@name DevChild like methods
+    # @{
+
+    def subscribe_external_attributes(self, device, attributes, **kw):
+        neighbours = self.get_devs_in_server()
+        self.info(
+            (
+                "In subscribe_external_attributes(%s,%s): "
+                "Devices in the same server are: %s"
+            )
+            % (device, attributes, list(neighbours.keys()))
+        )
+        if not hasattr(self, "ExternalAttributes"):
+            self.ExternalAttributes = CaselessDict()
+        if not hasattr(self, "PollingCycle"):
+            self.PollingCycle = 3000
+        if not hasattr(self, "last_event_received"):
+            self.last_event_received = 0
+        if not hasattr(self, "_state"):
+            self._state = tango.DevState.INIT
+        if not hasattr(self, "events_error"):
+            self.events_error = ""
+        if not hasattr(self, "last_update"):
+            self.last_update = 0
+
+        device = device.lower()
+        deviceObj = neighbours.get(device, None)
+
+        if deviceObj is None:
+            # Done in two loops to ensure that all Cache objects are available
+            for attribute in attributes:
+                self.info(
+                    "::init_device(%s): Configuring callback for %s"
+                    % (self.get_name(), device + "/" + attribute)
+                )
+                aname = (device + "/" + attribute).lower()
+                at = fandango.callbacks.EventSource(
+                    aname,
+                    log_level=self.getLogLevel(),
+                    keeptime=250,
+                    polling_period=self.PollingCycle,
+                )
+                self.info("Adding Listener to %s(%s)" % (type(at), aname))
+                at.addListener(self.event_received)
+                self.debug("Changing polling period ...")
+                at.changePollingPeriod(self.PollingCycle)
+                self.ExternalAttributes[aname] = at
+
+        else:  # Managing attributes from internal devices
+            self.info("==> Subscribing to an internal device")
+            for attribute in attributes:
+                self.ExternalAttributes[
+                    (device + "/" + attribute).lower()
+                ] = fakeAttributeValue(attribute, None, parent=deviceObj, device=device)
+
+            import threading
+
+            if not hasattr(self, "Event"):
+                self.Event = threading.Event()
+            if not hasattr(self, "UpdateAttributesThread"):
+                self.UpdateAttributesThread = threading.Thread(
+                    target=self.update_external_attributes
+                )
+                self.UpdateAttributesThread.setDaemon(True)
+                self.UpdateAttributesThread.start()
+            pass
+        self.info(
+            "Registered attributes are: %s" % list(self.ExternalAttributes.keys())
+        )
+
+    def unsubscribe_external_attributes(self):
+        try:
+            if hasattr(self, "Event"):
+                self.Event.set()
+            if hasattr(self, "UpdateAttributesThread"):
+                self.UpdateAttributesThread.join(getattr(self, "PollingCycle", 3000.0))
+            if getattr(self, "use_tau", False):
+                from taurus import Attribute
+
+                for at in list(self.ExternalAttributes.values()):
+                    if isinstance(at, Attribute):
+                        at.removeListener(self.event_received)
+        except Exception as e:
+            self.error("Dev4Tango.unsubscribe_external_attributes() failed: %s" % e)
+        return
+
+    def write_external_attribute(self, device, attribute, data):
+        self.info(
+            "===================> In write_external_attribute(%s,%s,%s)"
+            % (device, attribute, str(data)[:40])
+        )
+        device, attribute = device.lower(), attribute.lower()
+        deviceObj = self.get_devs_in_server().get(device, None)
+        if deviceObj is None:
+            if getattr(self, "use_tau", False):
+                from taurus import Device
+
+                Device(device).write_attribute(attribute, data)
+            else:
+                aname = str(device + "/" + attribute).lower()
+                attr = self.ExternalAttributes[aname]
+                if attr.parent is None:
+                    attr.parent = tango.DeviceProxy(device)
+                attr.parent.write_attribute(attribute, data)
+        else:
+            if isinstance(deviceObj, DynamicDS):
+                method = "write_dyn_attr"
+                deviceObj.myClass.DynDev = deviceObj
+            else:
+                method = "write_%s" % attribute
+            alloweds = [
+                c for c in dir(deviceObj) if c.lower() == "is_%s_allowed" % attribute
+            ]
+            is_allowed = not alloweds or getattr(deviceObj, alloweds[0])(
+                tango.AttReqType.WRITE_REQ
+            )
+            if is_allowed:
+                aname = (device + "/" + attribute).lower()
+                attr = self.ExternalAttributes.get(aname, fakeAttributeValue(attribute))
+                attr.set_write_value(data)
+                methods = [c for c in dir(deviceObj) if c.lower() == method]
+                if methods:
+                    method = getattr(deviceObj, methods[0])
+                    # if isinstance(deviceObj,DynamicDS) and USE_STATIC_METHODS:
+                    if isinstance(method, types.FunctionType):
+                        # method is staticmethod
+                        method(deviceObj, attr)
+                    else:
+                        method(attr)
+                else:
+                    raise Exception(
+                        "AttributeNotFound_%s!" % (device + "/" + attribute)
+                    )
+            else:
+                raise Exception("WriteNotAllowed_%s!" % (device + "/" + attribute))
+
+    def launch_external_command(self, device, target, argin=None):
+        self.info(
+            "===================> In launch_external_command(%s,%s,%s)"
+            % (device, target, argin)
+        )
+        device, target = device.lower(), target.lower()
+        deviceObj = self.get_devs_in_server().get(device, None)
+        if deviceObj is None:
+            if getattr(self, "use_tau", False):
+                from taurus import Device
+
+                return Device(device).command_inout(target, argin)
+            else:
+                tango.DeviceProxy(device).command_inout(target, argin)
+        else:
+            alloweds = [
+                c for c in dir(deviceObj) if c.lower() == "is_%s_allowed" % target
+            ]
+            is_allowed = not alloweds or getattr(deviceObj, alloweds[0])()
+            if is_allowed:
+                command = [c for c in dir(deviceObj) if c.lower() == target]
+                if command:
+                    getattr(deviceObj, command[0])(argin)
+                else:
+                    raise Exception("CommandNotFound_%s/%s!" % (device, target))
+            else:
+                raise Exception("CommandNotAllowed_%s!" % (device + "/" + target))
+
+    def update_external_attributes(self):
+        """This thread replaces TauEvent generation in case that the attributes are read from a device within the same server."""
+        with get_tango_thread_context():
+            while not self.Event.isSet():
+                waittime = 3.0
+                try:
+                    serverAttributes = [
+                        a
+                        for a, v in list(self.ExternalAttributes.items())
+                        if isinstance(v, fakeAttributeValue)
+                    ]
+                    waittime = old_div(
+                        1e-3 * self.PollingCycle, (len(serverAttributes) + 1)
+                    )
+
+                    for ii, aname in enumerate(sorted(serverAttributes)):
+                        self.Event.wait(waittime)
+                        self.debug(
+                            "ExternalAttributes %d/%d: %s"
+                            % (ii, len(serverAttributes), aname)
+                        )
+                        self.last_update = time.time()
+                        try:
+                            if self.Event.isSet():
+                                self.events_error = "Thread finished by Event.set()"
+                                break
+                            attr = self.ExternalAttributes[aname]
+                            device, attribute = aname.rsplit("/", 1)
+                            self.debug(
+                                "====> updating values from %s(%s.%s) "
+                                "after %s s"
+                                % (type(attr.parent), device, attribute, waittime)
+                            )
+                            event_type = fakeEventType.lookup["Periodic"]
+
+                            try:
+                                attr.read(cache=False)
+
+                            except Exception as e:
+                                event_type = fakeEventType.lookup["Error"]
+                                self.events_error = except2str(e)  # traceback.format_exc()
+                                if 'allowed' in str(self.events_error).lower():
+                                    self.info(str(e))
+                                else:
+                                    self.warning(str(self.events_error))
+
+                            self.info(
+                                "Sending fake event: %s/%s = %s(%s)"
+                                % (device, attr.name, event_type, attr.value)
+                            )
+                            self.event_received(device + "/" + attr.name, event_type, attr)
+
+                        except:
+                            self.events_error = traceback.format_exc()
+                            self.warning(
+                                "Exception in %s.update_attributes(%s): \n%s"
+                                % (self.get_name(), attr.name, self.events_error)
+                            )
+
+                        # End of for
+                    self.Event.wait(waittime)
+                except:
+                    self.events_error = traceback.format_exc()
+                    self.Event.wait(3.0)
+                    self.warning(self.events_error)
+                    self.warning("Exception in %s.update_attributes()" % (self.get_name()))
+                # End of while
+
+            self.info("%s.update_attributes finished")
+            if not self.events_error.replace("None", "").strip():
+                self.events_error = traceback.format_exc()
+            return
+
+    def event_received(self, source, type_, attr_value):
+        """
+        This method manages the events received from external attributes.
+        This method must be overriden in child classes.
+        """
+        # self.info,debug,error,warning should not be used here to avoid conflicts with taurus.core logging
+
+        self.last_event_received = time.time()
+        etype = fakeEventType.get(type_, type_)
+        #_log(
+            #"info",
+        self.debug("In Dev4Tango.event_received(%s(%s),%s,%s) at %s"
+            % (
+                type(source).__name__,
+                source,
+                etype,
+                type(attr_value).__name__,
+                self.last_event_received,
+            ),
+        )
+        return
+
+    def push_queued_event(self,attr,value,date,quality):
+        self._events_queue.put((attr, value, date, quality))
+            
+    def ProcessEvents(self, c=0):
+        """
+        Polled command to process the internal event queue
+        MaxEventStream must be configured
+        use push_queued_event to add attributes to the queue
+        """
+        self.MaxEventStream = getattr(self,'MaxEventStream',0)
+        while c < self.MaxEventStream:
+            try:
+                self.log.info('In ProcessEvents()')
+                attr, value, date, quality = self._events_queue.get(False)
+                prev = self._events_values.get(attr)
+                changed = ((value,quality) != prev 
+                    and (None in (value,prev and prev[0])
+                    or abs(value-prev) > 1e-11))
+                if changed:
+                    self.info('push_change_event(%s,%s,%s,%s)' 
+                              % (attr, value, date, quality))
+                    if attr.lower() in ("state", "status"):
+                        self.push_change_event(attr)
+                    else:
+                        self.push_change_event(attr, value, date, quality)
+                        
+                self._events_values[attr] = (value,quality)
+            except fn.objects.Queue.Empty:
+                break
+            except Exception as e:
+                self.warning("push(%s) failed!:\n%s" 
+                    % (str((attr, value, date, quality)),
+                       traceback.format_exc()))
+            finally:
+                c += 1
+        return c
+
+    ##@}
+    
+    
+
+
+##############################################################################################################
+## DevChild ... DEPRECATED and replaced by Dev4Tango + TAU
+
+
+class DevChild(Dev4Tango):
+    pass

@@ -1,0 +1,231 @@
+#!/usr/bin/env python3
+
+#############################################################################
+##
+## $Author: Sergi Rubio Manrique, srubio@cells.es $
+##
+## $Revision: 2008 $
+##
+## copyleft :    ALBA Synchrotron Controls Section, CELLS
+##               Bellaterra
+##               Spain
+##
+#############################################################################
+##
+## This file is part of Tango Control System
+##
+## Tango Control System is free software; you can redistribute it and/or
+## modify it under the terms of the GNU General Public License as published
+## by the Free Software Foundation; either version 3 of the License, or
+## (at your option) any later version.
+##
+## Tango Control System is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, see <http://www.gnu.org/licenses/>.
+###########################################################################
+
+import inspect
+import sys
+import fandango
+import fandango.log as log
+
+from fandango.functional import *
+try:
+    from fandango.tango import *
+    from fandango.servers import *
+except:
+    print('Unable to import Tango modules')
+
+from fandango.linos import *
+from fandango.objects import *
+from fandango.objects import getCode
+
+
+__doc__ = """
+Usage:
+
+  fandango [qt] [-v] [-e] [-l/--list] [-h/--help] [-x/--extra] [-n/--new-line] \
+     [fandango_method_0] [fandango_method_1/argument_0] [key:=argument_key] 
+  
+  Execute python and fandango methods from shell
+  Use "-h" to print(version and commands available)
+  Exceptions are not shown unless "-v" argument is added
+
+  Objects and Generators will not be allowed as arguments, \
+     only python primitives, lists and tuples
+  
+  The --extra option will load PyTangoArchiving and Panic methods
+  
+  The -e option will try to eval a single string call with fandango imports
+  Same applies when the first argument contains parenthesis
+  
+Examples:
+
+  fandango --help [method] # prints this help or method documentation
+  
+  fandango --help regexp # prints available methods matching regexp
+ 
+  fandango --quiet # do not print(results)
+  
+  fandango -v / --verbose # print(exceptions and additional info)
+  
+  fandango -l / --list # return results as a single column list  
+
+  fandango findModule fandango
+
+  python $(fandango findModule fandango)/interface/CopyCatDS.py 1
+  
+  fandango get_tango_host
+  
+  fandango qt #Launch interactive Qt console
+  
+  fandango --help get_matching_devices | less
+  
+  fandango get_matching_devices "tango/admin/*"
+  
+  fandango get_matching_attributes "lab/ct/plctest16/*_af"
+  
+  fandango --help| grep propert
+  
+  fandango get_matching_device_properties "lab/ct/plctest16" "*modbus*"
+  
+  fandango read_attribute "tango/admin/pctest/status"
+  
+  for attr in $(fandango get_matching_attributes "tango/admin/pctest/*"); \
+    do echo "$attr : $(fandango read_attribute ${attr})" ; done
+  
+"""
+
+"""
+A launcher like this can't be created as a function, because generic imports 
+with wildcards are allowed only at module level.
+
+If it is problem is solved in the future, then will be moved to fandango.linos
+"""
+
+if __name__ == '__main__' :
+    try:
+        cmd, r = '', None  
+        import fandango
+        comms,opts = fandango.sysargs_to_dict(split=True,cast=False,lazy=False)
+        verbose = not comms or 'v' in opts or 'verbose' in opts
+
+        if verbose:
+            print('running fandango {} on python {}'.format(
+                fandango.RELEASE,sys.version.split()[0].strip()))
+
+        if len(comms) and comms[0] == 'help':
+            #enables help option, shifts commands
+            opts[comms[0]],comms = 'help', comms[1:]
+
+        if opts.get('x',opts.get('extra',0)):
+            try: 
+                import PyTangoArchiving
+                from PyTangoArchiving import Reader
+                from PyTangoArchiving.files import LoadArchivingConfiguration
+                locals()['pta'] = locals()['PyTangoArchiving'] = PyTangoArchiving
+            except: pass
+            try: 
+                import panic
+            except: pass
+        
+        if verbose and (opts or comms):
+            print('options:',opts)
+            print('commands:',comms)
+        
+        if ('h' in opts or 'help' in opts):
+            target = (comms[0] if len(comms) else '').strip()
+
+            if target:
+                cmd = ("kmap(getModuleName,(o for k,o in locals().items() "
+                        "if hasattr(o,'__call__') and not k.startswith('_')"
+                        " and not k.startswith('<')),sort=False)")
+                r = evalX(cmd,_locals=locals())
+                r = sorted(set('{}.{}'.format(m,o.__name__).strip('.') for 
+                        o,m in r if not m.startswith('_')))
+            
+                if target not in r and '*' not in target:
+                    # Searching for a method
+                    target = '.*'+target+'.*'
+
+                if verbose: print('target:',target)
+                match = [k for k in r if fn.clmatch(target,k)]
+                #if verbose: print('matches:',match)
+                
+                if len(match) == 1:
+                    # Unique match, prints code
+                    from fandango.objects import getCode
+                    code = evalX('getCode('+match[0]+')',_locals=locals())
+                    r = '%s\n\n%s' % (code.header,code.source)
+                else:
+                    # Lists multiple matches
+                    r = list2str(match,'\n')
+                    if verbose: r = '\nMatching methods:\n\n' + r
+            else:
+                #just print(help)
+                r = __doc__
+                
+        ###########################################################################  
+        elif len(comms):
+            if 'qt' in comms[:1] or opts.get('qt'):
+                # LAUNCHING QT SHELL
+                args = comms['qt' in comms:]
+                print('Launching the interactive Qt console ... %s' % args)
+                import fandango.qt
+                fandango.qt.QEvaluator.main(args)
+            
+            elif '(' in comms[0] or 'e' in opts:
+                ## SINGLE STRING COMMAND
+                cmd = ' '.join(comms) #for cmd in comms:
+                if verbose: print('single-lined: {}'.format(cmd))
+                r = evalX(cmd,_locals=locals())
+                #if verbose: print(r)
+            
+        ###########################################################################
+            else:
+                ## MULTIPLE ARGS COMMAND
+                str2evalstr = lambda c: (
+                    str(c) if isNumber(c) or isBool(c) 
+                    else ("'%s'" if "'" not in c else '"%s"')%c)
+                
+                kwargs = [c for c in comms[1:] if c.count(':=')==1]
+                args = [c for c in comms[1:] if c not in kwargs]
+                
+                kwargs = ','.join("'%s':%s"%(k,str2evalstr(v)) for k,v in 
+                                (c.split(':=') for c in kwargs))
+                args = ','.join(str2evalstr(c) for c in args)
+                cmd = '%s(*[%s],**{%s})'%(comms[0],args,kwargs)
+
+                if verbose: print('multi-arg: {}'.format(cmd))
+                r = evalX(cmd,_locals=locals())
+            
+        elif not opts:
+            print(__doc__)
+            
+        if r is not None:
+            linesep = '\n' if opts.get('l') else ';'
+            s = obj2str(r,sep=' ',linesep=linesep)
+            #if verbose: 
+                #print('result raw: ',r)
+                #print('result str: ',s)
+            if opts.get('l') and '\n' not in s:
+                s = '\n'.join(s.split())
+            if not opts.get('quiet'):
+                print(s)
+    except:
+        if 'v' in opts or 'verbose' in opts:
+            print(cmd)
+            import traceback
+            traceback.print_exc()
+
+        sys.exit(1)
+    
+    sys.exit(0)
+    
+    
+# @DONT! Using def main() would break local imports
+#if __name__ == '__main__' : main()
