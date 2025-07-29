@@ -1,0 +1,75 @@
+Metadata-Version: 2.1
+Name: coveo-testing-extras
+Version: 3.0
+Summary: Dependency-hungry testing helpers
+Home-page: https://github.com/coveooss/coveo-python-oss/tree/main/coveo-testing-extras
+License: Apache-2.0
+Author: Jonathan Piché
+Author-email: tools@coveo.com
+Requires-Python: >=3.9,<4
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Requires-Dist: coveo-functools
+Requires-Dist: coveo-settings
+Requires-Dist: coveo-systools
+Requires-Dist: coveo-testing
+Requires-Dist: docker
+Project-URL: Repository, https://github.com/coveooss/coveo-python-oss/tree/main/coveo-testing-extras
+Description-Content-Type: text/markdown
+
+# coveo-testing-extras
+
+Contains extra testing tools without dependency restrictions.
+
+
+## temporary resource implementation: Docker Container
+
+The docker container temporary resource can be used to prepare short-lived containers.
+
+- Supports building from a dockerfile
+- Supports pulling images
+- Can signal on AWS ECR logout
+- Dynamic port mapping retrieval
+- Saves log output before removing the container
+
+
+### Automatic AWS ECR login example
+
+Here's how you can enhance `TemporaryDockerContainerResource` with automatic ECR login:
+
+```python
+from base64 import b64decode
+
+import boto3
+from coveo_testing_extras.temporary_resource.docker_container import (
+    TemporaryDockerContainerResource, 
+    ECRLogoutException,
+    get_docker_client
+)
+
+class WithECR(TemporaryDockerContainerResource):
+    def obtain_image(self) -> None:
+        try:
+            super().obtain_image()
+        except ECRLogoutException:
+            self._do_ecr_login()
+            super().obtain_image()
+
+    def _do_ecr_login(self) -> None:
+        """ Performs an ecr login through awscli. """
+        assert self.ecr_region
+        ecr = boto3.client('ecr')
+        account_id, *_ = self.image_name.split('.')
+        assert account_id.isdigit()
+        authorization_data = ecr.get_authorization_token(registryIds=[account_id])['authorizationData'][0]
+        username, password = b64decode(authorization_data['authorizationToken']).decode().split(':')
+        with get_docker_client() as client:
+            login = client.login(username=username, password=password, registry=authorization_data['proxyEndpoint'])
+        assert login['Status'] == 'Login Succeeded'
+```
+
+
+
