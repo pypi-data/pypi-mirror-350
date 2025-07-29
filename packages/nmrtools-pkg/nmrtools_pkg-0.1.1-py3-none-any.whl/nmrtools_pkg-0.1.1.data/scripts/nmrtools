@@ -1,0 +1,113 @@
+#!python
+#
+import argparse
+import sys
+#
+from pybasics import ok, warn
+#
+from nmrtools.peaks2dat import peaks2dat
+from nmrtools.dat2comp import dat2comp
+from nmrtools.comp2plot import comp2plot
+from nmrtools.comp2pse import comp2pse
+from nmrtools.dat2series import dat2series
+from nmrtools.series2plot import series2plot
+from nmrtools.ccpcsv2dat import ccpcsv2dat
+
+
+def peaks2comp(args):
+
+    warn('Start Pipeline: peaks2comp')
+
+    args.input = args.reference + ' ' + args.target
+
+    peaks2dat(args)
+
+    args.reference = args.reference.split('.')[0] + '.dat'
+    args.target = args.target.split('.')[0] + '.dat'
+
+    dat2comp(args)
+
+    args.data = 'd2D_' + args.reference.split('.')[0] + '_x_' + args.target.split('.')[0] + '.dat'
+
+    comp2plot(args)
+
+    if args.pdb:
+
+        comp2pse(args)
+
+    warn('End Pipeline: peaks2comp')
+
+    return None
+
+
+def argparser():
+
+    #### ARGUMENT PARSER
+    parser = argparse.ArgumentParser(
+        description='https://github.com/synthaze/nmrtools <florian.malard@gmail.com>',
+        # formatter_class=lambda prog: argparse.HelpFormatter(prog,max_help_position=27)
+    )
+
+    subparsers = parser.add_subparsers()
+
+    parser_ccpcsv2dat = subparsers.add_parser('ccpcsv2dat', help='Convert CCP CSV to .dat table')
+    parser_ccpcsv2dat.add_argument('-i', '--input', required=False, type=str, help='input data', default=True)
+    parser_ccpcsv2dat.set_defaults(func=ccpcsv2dat)
+
+    parser_peaks2dat = subparsers.add_parser('peaks2dat', help='Convert Xeasy to .dat table')
+    parser_peaks2dat.add_argument('-i', '--input', required=False, type=str, help='input data', default=True)
+    parser_peaks2dat.set_defaults(func=peaks2dat)
+
+    parser_dat2comp = subparsers.add_parser('dat2comp', help='Compare two .dat table peaklists')
+    parser_dat2comp.add_argument('-r', '--reference', required=True, type=str, help='reference data', default=None)
+    parser_dat2comp.add_argument('-t', '--target', required=True, type=str, help='target data', default=None)
+    parser_dat2comp.add_argument('--noise', required=False, type=int, help='noise level', default=20000000)
+    parser_dat2comp.add_argument('-o', '--output', required=False, type=str, help='output name', default=False)
+    parser_dat2comp.set_defaults(func=dat2comp)
+
+    parser_comp2plot = subparsers.add_parser('comp2plot', help='Plot differences from dat2comp d2D file')
+    parser_comp2plot.add_argument('-d', '--data', required=True, type=str, help='d2D data file from dat2comp', default=None)
+    parser_comp2plot.add_argument('-p', '--plot', required=False, type=str, help='What to plot: value, dis, app, nd', default='value,dis,app,nd')
+    parser_comp2plot.add_argument('-o', '--output', required=False, type=str, help='output name', default=False)
+    parser_comp2plot.set_defaults(func=comp2plot)
+
+    parser_comp2pse = subparsers.add_parser('comp2pse', help='Encode differences from dat2comp d2D file in pymol sessions')
+    parser_comp2pse.add_argument('-d', '--data', required=True, type=str, help='d2D data file from dat2comp', default=None)
+    parser_comp2pse.add_argument('-p', '--pdb', required=True, type=str, help='minimal .pdb file', default=None)
+    parser_comp2pse.set_defaults(func=comp2pse)
+
+    parser_pipe1 = subparsers.add_parser('peaks2comp', help='peaks2dat-dat2comp-comp2plot in a row')
+    parser_pipe1.add_argument('-r', '--reference', required=True, type=str, help='reference data Xeasy', default=None)
+    parser_pipe1.add_argument('-t', '--target', required=True, type=str, help='target data Xeasy', default=None)
+    parser_pipe1.add_argument('-p', '--pdb', required=False, type=str, help='minimal .pdb file (comp2pse)', default=None)
+    parser_pipe1.add_argument('-o', '--output', required=False, type=str, help='output name', default=False)
+    parser_pipe1.set_defaults(func=peaks2comp)
+
+    parser_dat2series = subparsers.add_parser('dat2series', help='Compare two .dat table peaklists')
+    parser_dat2series.add_argument('-i', '--input', required=True, type=str, help='List of peaklists', default=False)
+    parser_dat2series.add_argument('-c', '--concentration', required=False, type=float, help='Base concentration', default=1e-04)
+    parser_dat2series.add_argument('-o', '--output', required=False, type=str, help='output directory name', default=False)
+    parser_dat2series.set_defaults(func=dat2series)
+
+    parser_series2plot = subparsers.add_parser('series2plot', help='Plot series from dat2series')
+    parser_series2plot.add_argument('-i', '--input', required=True, type=str, help='input directory name', default=False)
+    parser_series2plot.add_argument('-s', '--show', required=False, type=str, help='background plot series', default='True')
+    parser_series2plot.add_argument('-o', '--output', required=False, type=str, help='output name', default=False)
+    parser_series2plot.set_defaults(func=series2plot)
+
+    args = parser.parse_args()
+
+    if len(sys.argv) == 1:
+        parser.print_help()
+        sys.exit(1)
+
+    return args
+
+
+ok('Start: nmrtools')
+
+args = argparser()
+
+args.func(args)
+
+ok('End: nmrtools')
