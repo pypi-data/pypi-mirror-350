@@ -1,0 +1,67 @@
+[project]
+name = "spikedata"
+dynamic = ["version"]
+description = "Toolkit for processing spiking neural time series"
+authors = [
+  { name = "UCSC Braingeneers", email = "ucscgi@ucsc.edu" },
+]
+maintainers = [
+  { name = "Alex", email = "atspaeth@ucsc.edu" },
+  { name = "Lon", email = "lblauvel@ucsc.edu" },
+]
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Topic :: Scientific/Engineering",
+  "Typing :: Typed",
+]
+dependencies = [
+    "numpy",
+    "scipy>=1.10.0",
+]
+
+[project.optional-dependencies]
+all = [
+    "powerlaw>=1.5",
+]
+
+[project.urls]
+Homepage = "https://github.com/braingeneers/SpikeData"
+
+[dependency-groups]
+dev = [
+    "neo>=0.14.1",
+    "pytest>=8.3.5",
+    "pytest-cov>=6.1.1",
+    "scipy-stubs>=1.15.2.2",
+    "spikedata[all]",
+]
+
+[tool.basedpyright]
+typeCheckingMode = "standard"
+
+[tool.uv.sources]
+spikedata = { workspace = true }
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.hatch]
+version.source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "spikedata/_version.py"
+
+[tool.hatch.version.raw-options]
+local_scheme = "no-local-version"
