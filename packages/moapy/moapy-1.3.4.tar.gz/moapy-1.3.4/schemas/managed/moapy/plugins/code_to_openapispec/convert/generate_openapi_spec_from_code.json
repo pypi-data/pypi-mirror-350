@@ -1,0 +1,134 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.2.5"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-plugins-code_to_openapispec-convert-generate_openapi_spec_from_code": {
+      "post": {
+        "summary": "python to openapi spec",
+        "description": "This tool generates OpenAPI spec from Python code",
+        "operationId": "generate openapi spec from code",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/generate_openapi_spec_from_code"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "title": "Response Generate Openapi Spec From Code"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "x-content-info": {
+          "title": "python to openapi spec",
+          "description": "This tool generates OpenAPI spec from Python code"
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "InputCode": {
+        "properties": {
+          "scriptCode": {
+            "type": "string",
+            "title": "Python Script Code",
+            "description": "Python script code to generate OpenAPI spec",
+            "default": "from fastapi import APIRouter\n\nrouter = APIRouter()\n@auto_schema(title=\"python to openapi spec\", description=\"This tool generates OpenAPI spec from Python code\")\ndef hello_world():\n    return {\"message\": \"Hello, World!\"}\n"
+          }
+        },
+        "type": "object",
+        "title": "Python Script Code Input",
+        "dataclassname": "moapy.plugins.code_to_openapispec.convert.InputCode"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "generate_openapi_spec_from_code": {
+        "properties": {
+          "inp": {
+            "$ref": "#/components/schemas/InputCode"
+          }
+        },
+        "type": "object",
+        "required": [
+          "inp"
+        ],
+        "title": "generate openapi spec from code"
+      }
+    }
+  }
+}

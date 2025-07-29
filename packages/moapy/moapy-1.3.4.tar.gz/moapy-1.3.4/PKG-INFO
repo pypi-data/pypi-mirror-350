@@ -1,0 +1,151 @@
+Metadata-Version: 2.1
+Name: moapy
+Version: 1.3.4
+Summary: Midas Open API for Python
+Home-page: https://github.com/MIDASIT-Co-Ltd/engineers-api-python
+Author: bschoi
+License: MIT
+Description-Content-Type: text/markdown
+Provides-Extra: full
+
+
+![banner](https://patch.midasit.com/00_MODS/kr/80_WebResource/engineers/moapy_banner.png)
+
+[![made-with-python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+
+## Midas API: Revolutionizing Engineering 🚀
+Welcome to the future of engineering with Midas API! 🌟 This cutting-edge repository is designed to transcend traditional engineering methodologies. A goldmine of innovation, Midas API eagerly awaits your contributions. Let's push the boundaries of possibility together! 😊
+
+## Table of Contents
+- [Introduction](#introduction)
+- [Getting Started](#getting-started)
+- [Coding Conventions](#coding-conventions)
+- [Rules](#rules)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
+
+## Introduction
+Midas API is a state-of-the-art tool designed to revolutionize the field of engineering. By providing robust, scalable, and efficient solutions, Midas API empowers engineers to tackle complex challenges with ease. Whether you're a seasoned professional or a newcomer, Midas API is here to support your engineering journey.
+
+## Getting Started
+### Prerequisites
+1. **Install VSCode**: Download and install Visual Studio Code from the [official Visual Studio Code website](https://code.visualstudio.com/download).
+2. **Install Python**: Download and install Python 3.12.1 from the [official Python website](https://www.python.org/downloads/release/python-3121/). Ensure Python is added to your PATH during installation.
+3. **Install Pipenv**: Use pip to install Pipenv, a tool that helps manage dependencies.
+    ```bash
+    pip install pipenv
+    ```
+    - Documentation: [Pipenv: Python Dev Workflow for Humans](https://pipenv.pypa.io/en/latest/)
+4. **Install Project Dependencies**: Navigate to your project directory and install the necessary modules using Pipenv.
+    - For running environment:
+    ```bash
+    pipenv install
+    ```
+    - For development environment:
+    ```bash
+    pipenv install --dev
+    ```
+5. **Prepare to Use Midas API**: Visit the [Midas API Documentation](https://midas-support.atlassian.net/wiki/spaces/MAW/overview) for more details.
+
+## Coding Conventions
+### Project Structure
+- **project/**: Develop each plugin within this folder.
+- **base/**: Contains shared utility functions and base modules like MidasAPI. Use this folder for any calculation base functions.
+- **tests/**: Contains test files for regression testing.
+- **rod/**: Extract JSON schema from this repository.
+- **docs/**: Sphinx document folder.
+
+### Style Guide
+Adhere to the [Google Python Style Guide](https://yosseulsin-job.github.io/styleguide/pyguide.html) for comprehensive coding conventions.
+
+- **Using Flake8**: Install `flake8` to automatically check and enforce coding conventions during development.
+    ```bash
+    pip install flake8
+    ```
+    ![flake8 Visual Studio Code extension](./resources/flake8_install.png)
+- **Development Environment**: Configure your development environment to use `flake8`. Ensure any issues flagged by `flake8` are corrected promptly.
+
+### Documentation Guide
+Proper documentation is key to maintainability. Ensure that all functions, especially those in the `base` module, are well-documented.
+
+- **Using autoDocstring**: Install `autoDocstring` to assist with writing docstrings. (ctrl + shift + 2)
+    ![autoDocstring Visual Studio Code extension](./resources/autoDocstring_install.png)
+- **Docstrings**: Use Google-style docstrings. Install the necessary extensions to assist with writing docstrings.
+    - **Example**: Data class with docstring:
+        ```python
+        from dataclasses import dataclass, field as dataclass_field
+
+        @dataclass
+        class Person:
+            """
+            Person details.
+            """
+            name: str = dataclass_field(default="", metadata={"description": "The person's full name."})
+            age: int = dataclass_field(default=0, metadata={"description": "The person's age."})
+            email: str = dataclass_field(default='', metadata={"description": "The person's email address."})
+        ```
+
+    - **Example**: Pydantic model with docstring:
+        ```python
+        from pydantic import BaseModel, Field
+        from typing import List, Dict, Union
+
+        class Contact(BaseModel):
+            """
+            Contact details.
+            """
+            phone: str = Field(default="", description="The contact's phone number.")
+            address: str = Field(default='', description="The contact's address.")
+
+        def my_function(person: Person, contacts: List[Contact], settings: Dict[str, Union[int, str]] = {}) -> bool:
+            """
+            Processes person and their contacts with given settings.
+
+            Args:
+                person: The person details.
+                contacts: List of contact details.
+                settings: Miscellaneous settings.
+
+            Returns:
+                bool: True if successful, False otherwise.
+            """
+            return True
+        ```
+
+### Testing
+Ensure the reliability of new code by writing comprehensive tests.
+
+- **Regression Tests**: For any additions to the `base` module, add corresponding regression tests using `pytest`.
+- **Test Files**: Save test files in the `tests` folder with the `test_*.py` naming convention.
+  
+  - **Example Test**:
+    ```python
+    import json
+    import pytest
+    import moapy.plugins.baseplate_KDS41_30_2022.baseplate_KDS41_30_2022_calc
+
+    def test_baseplate_KDS41_30_2022_calc():
+        input = {  
+            'B' : 240, 'H' : 240, 'Fc' : 24, 'Fy' : 400,  
+            'Ec' : 25811.006260943130, 'Es' : 210000,  
+            'bolt' : [  
+              { 'X' : 90, 'Y' : 0, 'Area' : 314.15926535897933 },  
+              { 'X' : -90, 'Y' : 0, 'Area' : 314.15926535897933 } ],  
+            'P' : -3349.9999999999964, 'Mx' : 0, 'My' : 51009999.999999985 
+        }
+
+        JsonData = json.dumps(input)
+        result = moapy.plugins.baseplate_KDS41_30_2022.baseplate_KDS41_30_2022_calc.calc_ground_pressure(JsonData)
+        
+        assert pytest.approx(result['bolt'][0]['Load']) == 0.0
+        assert pytest.approx(result['bolt'][1]['Load']) == -269182.84245616524
+    ```
+
+### Summary
+- **Coding Conventions**: Follow the Google Python Style Guide and use `flake8` for enforcement.
+- **Documentation**: Write and maintain proper docstrings for all functions.
+- **Testing**: Develop test cases for new functions to enable regression testing.
+
+By adhering to these rules and conventions, we can ensure our codebase remains high-quality, consistent, and reliable.

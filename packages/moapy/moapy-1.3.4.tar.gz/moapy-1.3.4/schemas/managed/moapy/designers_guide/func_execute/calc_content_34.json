@@ -1,0 +1,839 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.2.5"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    },
+    {
+      "url": "https://moa.rpm.kr-st-midasit.com/backend/function-executor/python-execute/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-designers_guide-func_execute-calc_content_34": {
+      "post": {
+        "summary": "Confinement Design for Concrete Piers and Pile Foundations",
+        "description": "[EN1998-2] This guide provides step-by-step instructions for accurately designing confinement in concrete piers and pile foundations. It covers essential calculations for determining the reinforcement ratio for different section types, such as rectangular and circular sections, and helps you calculate the confining reinforcement requirement to ensure structural integrity under seismic conditions. Whether you're working on piers, columns, or any critical structural element, this guide will help you achieve the right balance of strength and ductility.",
+        "x-content-info": {
+          "standardType": "EUROCODE",
+          "codeName": "EN1998-2",
+          "codeTitle": "Eurocode 8 \u2014 Design of structures for earthquake resistance \u2014 Part 2: Bridges",
+          "title": "Confinement Design for Concrete Piers and Pile Foundations",
+          "description": "[EN1998-2] This guide provides step-by-step instructions for accurately designing confinement in concrete piers and pile foundations. It covers essential calculations for determining the reinforcement ratio for different section types, such as rectangular and circular sections, and helps you calculate the confining reinforcement requirement to ensure structural integrity under seismic conditions. Whether you're working on piers, columns, or any critical structural element, this guide will help you achieve the right balance of strength and ductility.",
+          "edition": "2005+A2:2011 Incorporating corrigenda February 2010 and February 2012",
+          "figurePath": "https://moa.rpm.kr-dv-midasit.com/design-guide/figures/detail_content_34.png"
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "G14_COMP_3": {
+                    "title": "Design situations",
+                    "type": "string",
+                    "description": "This table outlines different design situations, categorized into persistent, transient, and accidental conditions. Each category represents a specific scenario that may affect the design and safety considerations of a structure.",
+                    "default": "Persistent",
+                    "enum": [
+                      "Persistent",
+                      "Transient",
+                      "Accidental"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "2.4.2.4(Table2.1N)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "designsitu"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G14_COMP_4": {
+                    "title": "Compressive strength classes",
+                    "type": "string",
+                    "description": "Compressive strength classes categorize concrete based on its compressive strength, typically indicated by a standard notation such as C30/37, where the first number represents the cylinder strength and the second the cube strength. For more detailed information, refer toEN 206-1 (Table 7).",
+                    "default": "C12/15",
+                    "enum": [
+                      "C12/15",
+                      "C16/20",
+                      "C20/25",
+                      "C25/30",
+                      "C30/37",
+                      "C35/45",
+                      "C40/50",
+                      "C45/55",
+                      "C50/60",
+                      "C55/67",
+                      "C60/75",
+                      "C70/85",
+                      "C80/95",
+                      "C90/105"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.1.3(Table 3.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "C"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G18_COMP_1": {
+                    "title": "Characteristic yield strength of reinforcement",
+                    "type": "number",
+                    "description": "Characteristic Yield Strength is the stress level at which a material has a specified probability of yielding, typically 95%. It represents the strength below which not more than 5% of the material's test results are expected to fall, ensuring a high level of reliability in structural design.",
+                    "default": 500.0,
+                    "minimum": 400,
+                    "maximum": 600,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "AnnexC(Table C.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "f_{yk}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "MPa"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 0
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G33_COMP_1": {
+                    "title": "Ductility behavior selection",
+                    "type": "string",
+                    "description": "This selection allows the user to choose between ductile structures, which dissipate significant seismic energy through plastic deformations, and limited ductile structures, which have reduced energy dissipation capabilities during seismic events.",
+                    "default": "Limited Ductile",
+                    "enum": [
+                      "Limited Ductile",
+                      "Ductile"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-2"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "4.1.6(Table4.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "ducbehav"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$ducbehav$$",
+                            "Description"
+                          ],
+                          [
+                            "Limited Ductile",
+                            "The seismic behavior of bridges with limited energy dissipation, where plastic hinges do not form significantly under design seismic action."
+                          ],
+                          [
+                            "Ductile",
+                            "structure designed to dissipate significant amounts of seismic energy through plastic hinges or other mechanisms during strong seismic motions."
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G34_COMP_1": {
+                    "title": "Section type selection for confining reinforcement",
+                    "type": "string",
+                    "description": "In rectangular sections, the transverse reinforcement ratio is defined based on the area of hoops or ties. In circular sections, the volumetric ratio of the spiral reinforcement relative to the concrete core is used. Users must select the section type to apply the appropriate formula for calculating the reinforcement ratio.",
+                    "default": "In rectangular sections",
+                    "enum": [
+                      "In rectangular sections",
+                      "In circular sections"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-2"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.2.1.1(5)P"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "sectype"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G34_COMP_2": {
+                    "title": "Diameter of spiral or hoop bar",
+                    "type": "number",
+                    "description": "The diameter of the spiral or hoop reinforcement used in circular sections is an important parameter in determining the volumetric reinforcement ratio and the confinement effectiveness in the structural element.",
+                    "default": 16.0,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-2"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.2.1.1(5)P"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "d_{bT}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "mm"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 1
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G34_COMP_3": {
+                    "title": "Longitudinal spacing of hoops or ties",
+                    "type": "number",
+                    "description": "The longitudinal spacing refers to the center-to-center distance between hoops or ties in the longitudinal direction of the structure. In rectangular sections, it must not exceed 6 times the diameter of the longitudinal bar or 1/5 of the smallest dimension of the confined concrete core to the hoop center line. In circular sections, it must not exceed 6 times the diameter of the longitudinal bar or 1/5 of the diameter of the confined concrete core to the hoop center line.",
+                    "default": 100.0,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-2"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.2.1.1(5)P"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "s_{L}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "mm"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G34_COMP_4": {
+                    "title": "Leg of spiral or ties in the one direction",
+                    "type": "number",
+                    "description": "A leg refers to the number of hoops or ties arranged in one direction within a rectangular section, representing how many are present to provide reinforcement in that specific direction.",
+                    "default": 4.0,
+                    "minimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-2"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.2.1.1(5)P"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "leg"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "ea"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 0
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G34_COMP_7": {
+                    "title": "Diameter of longitudinal bar",
+                    "type": "number",
+                    "description": "The diameter of the longitudinal bar refers to the thickness of the reinforcement bars placed along the length of the structural element, which plays a key role in determining the spacing and amount of reinforcement needed.",
+                    "default": 32.0,
+                    "minimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-2"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.2.1.2(3)P"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "d_{bL}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "mm"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 1
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G34_COMP_8": {
+                    "title": "Number of longitudinal bars",
+                    "type": "number",
+                    "description": "The number of longitudinal bars refers to how many reinforcement bars are placed along the length of the structural element, which, along with the bar diameter, is necessary for calculating the longitudinal reinforcement ratio.",
+                    "default": 24.0,
+                    "minimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-2"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.2.1.4(2)P"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "n_{d,bL}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "ea"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 0
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G34_COMP_9": {
+                    "title": "Diameter for circular sections",
+                    "type": "number",
+                    "description": "The diameter for circular sections refers to the total width across the circular section, measured from one edge to the opposite edge, passing through the center.",
+                    "default": 1200.0,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-2"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.2.1.4(2)P"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "D"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "mm"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 1
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G34_COMP_10": {
+                    "title": "Width for rectangular sections",
+                    "type": "number",
+                    "description": "The width for rectangular sections is the horizontal distance across the rectangular cross-section, measured perpendicular to the height.",
+                    "default": 800.0,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-2"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.2.1.4(2)P"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "b"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "mm"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 1
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G34_COMP_11": {
+                    "title": "Height for rectangular sections",
+                    "type": "number",
+                    "description": "The height for rectangular sections refers to the vertical distance of the rectangular cross-section, measured perpendicular to the width.",
+                    "default": 1000.0,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-2"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.2.1.4(2)P"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "h"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "mm"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 1
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G34_COMP_12": {
+                    "title": "Concrete cover(distance to outermost reinforcement surface)",
+                    "type": "number",
+                    "description": "Concrete cover is the distance between the surface of the reinforcement closest to the nearest concrete surface, including links, stirrups, and surface reinforcement where applicable.",
+                    "default": 50.0,
+                    "minimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-2"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.2.1.4(2)P"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "c"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "mm"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 1
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G34_COMP_24": {
+                    "title": "Axial force in seismic design situation",
+                    "type": "number",
+                    "description": "The axial force in the seismic design situation refers to the force acting on a pier during a seismic event at the plastic hinge. It is considered positive when the force is compressive.",
+                    "default": 7600.0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-2"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "5.3(4)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "N_{Ed}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "kN"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "G14_COMP_3",
+                  "G14_COMP_4",
+                  "G18_COMP_1",
+                  "G33_COMP_1",
+                  "G34_COMP_1",
+                  "G34_COMP_2",
+                  "G34_COMP_3",
+                  "G34_COMP_4",
+                  "G34_COMP_7",
+                  "G34_COMP_8",
+                  "G34_COMP_9",
+                  "G34_COMP_10",
+                  "G34_COMP_11",
+                  "G34_COMP_12",
+                  "G34_COMP_24"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "isInput": false,
+                    "codeName": "",
+                    "reference": [
+                      ""
+                    ],
+                    "title": "",
+                    "description": "",
+                    "figurePath": "",
+                    "descriptTable": [],
+                    "compType": "",
+                    "symbol": "",
+                    "result": {
+                      "value": "0.0",
+                      "table": [],
+                      "formula": [],
+                      "variables": {}
+                    },
+                    "refStd": "",
+                    "unit": "",
+                    "notation": "standard",
+                    "decimal": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

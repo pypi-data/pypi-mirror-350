@@ -1,0 +1,151 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.1.3"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    },
+    {
+      "url": "https://moa.rpm.kr-st-midasit.com/backend/function-executor/python-execute/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-plugins-Extrude_frame_offset-calc-extrude_frame_offset": {
+      "post": {
+        "summary": "Extrude Frame Offset",
+        "description": "Extrude Frame Offset",
+        "operationId": "extrude frame offset",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/extrude_frame_offset"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "title": "Response Extrude Frame Offset"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ExtrudeFrameOffset": {
+        "properties": {
+          "local_axis": {
+            "type": "string",
+            "title": "Local Axis",
+            "description": "local axis",
+            "default": "+y"
+          },
+          "extrude_length": {
+            "type": "string",
+            "title": "Extrude Length",
+            "description": "extrude length",
+            "default": "4@1"
+          },
+          "matl_id": {
+            "type": "integer",
+            "title": "Matl Id",
+            "description": "matl_id",
+            "default": 1
+          },
+          "sect_id": {
+            "type": "integer",
+            "title": "Sect Id",
+            "description": "sect_id",
+            "default": 1
+          }
+        },
+        "type": "object",
+        "title": "ExtrudeFrameOffset",
+        "description": "Extrude Frame Offset Input Class\n\nArgs:\n    local_axis (str): local axis\n    extrude_length (str): extrude length\n    matl_id (int): matl_id\n    sect_id (int): sect_id"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "extrude_frame_offset": {
+        "properties": {
+          "Input": {
+            "$ref": "#/components/schemas/ExtrudeFrameOffset"
+          }
+        },
+        "type": "object",
+        "required": [
+          "Input"
+        ],
+        "title": "extrude frame offset"
+      }
+    }
+  }
+}

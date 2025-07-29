@@ -1,0 +1,501 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.2.5"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    },
+    {
+      "url": "https://moa.rpm.kr-st-midasit.com/backend/function-executor/python-execute/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-designers_guide-func_execute-calc_content_38": {
+      "post": {
+        "summary": "Total Mean Creep Coefficient Calculation Guide",
+        "description": "[2G:EN1992-1-1] This guide provides a detailed procedure for calculating the total mean creep coefficient of concrete based on Eurocode 2nd Generation standards. It explains how to calculate the basic creep coefficient and drying creep coefficient, and then combine them to determine the total mean creep coefficient. The guide offers step-by-step instructions on how to calculate the creep coefficient, considering factors like concrete age, temperature, and humidity, using specific formulas and parameters defined by Eurocode.",
+        "x-content-info": {
+          "standardType": "2G:EUROCODE",
+          "codeName": "2G:EN1992-1-1",
+          "codeTitle": "Eurocode 2 \u2014 Design of concrete structures - Part 1-1: General rules and rules for buildings, bridges and civil engineering structures",
+          "title": "Total Mean Creep Coefficient Calculation Guide",
+          "description": "[2G:EN1992-1-1] This guide provides a detailed procedure for calculating the total mean creep coefficient of concrete based on Eurocode 2nd Generation standards. It explains how to calculate the basic creep coefficient and drying creep coefficient, and then combine them to determine the total mean creep coefficient. The guide offers step-by-step instructions on how to calculate the creep coefficient, considering factors like concrete age, temperature, and humidity, using specific formulas and parameters defined by Eurocode.",
+          "edition": "2023",
+          "figurePath": null
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "G37_COMP_4": {
+                    "title": "Strength classes for concrete",
+                    "type": "string",
+                    "description": "This term refers to the classification of concrete based on its compressive strength, allowing for standardized strength categories used in design. These classes help engineers select appropriate concrete strength levels for various structural applications.",
+                    "default": "C12/15",
+                    "enum": [
+                      "C12/15",
+                      "C16/20",
+                      "C20/25",
+                      "C25/30",
+                      "C30/37",
+                      "C35/45",
+                      "C40/50",
+                      "C45/55",
+                      "C50/60",
+                      "C55/67",
+                      "C60/75",
+                      "C70/85",
+                      "C80/95",
+                      "C90/105",
+                      "C100/115"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "2G:EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "5.1.3(Table5.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "f"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G37_COMP_27": {
+                    "title": "Concrete strength class selection",
+                    "type": "string",
+                    "description": "Select the appropriate concrete strength class based on the type of cement, cement strength, and binder composition. Each class defines specific material properties used in design calculations for time-dependent behavior and durability.",
+                    "default": "CS",
+                    "enum": [
+                      "CS",
+                      "CN",
+                      "CR"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "2G:EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "B.3(TableB.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "concclass"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$concclass$$",
+                            "Description"
+                          ],
+                          [
+                            "CS",
+                            "Type: CEM III, CEM II/B; Cement Strength Class: 32,5 N; 42,5 N; Binder Composition: Portland cement clinker with more than 65% ggbs or more than 35% fly ash (fa)"
+                          ],
+                          [
+                            "CN",
+                            "Type: CEM II, CEM I; Cement Strength Class: 42,5 N; 32,5 R; Binder Composition: Portland cement clinker with 35-65% ggbs or 20-35% fly ash (fa)"
+                          ],
+                          [
+                            "CR",
+                            "Type: CEM I; Cement Strength Class: 42,5 R; 52,5 N; 52,5 R; Binder Composition: -"
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G38_COMP_2": {
+                    "title": "Age of concrete at time of consideration",
+                    "type": "number",
+                    "description": "The age of concrete at time of consideration refers to the number of days since the concrete was cast, at which specific properties or behaviors (e.g., strength, creep) are evaluated. This value helps assess the time-dependent characteristics of concrete.",
+                    "default": 36500.0,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "2G:EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "B.5(1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "t"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "days"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 0
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G38_COMP_3": {
+                    "title": "Age of concrete at loading in days",
+                    "type": "number",
+                    "description": "The age of concrete at loading in days refers to the number of days since casting when a load is first applied, adjusted using specific formulae to account for factors like early strength development.",
+                    "default": 7.0,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "2G:EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "B.5(1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "t_{0}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "days"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 0
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G38_COMP_16": {
+                    "title": "Relative humidity of the ambient environment",
+                    "type": "number",
+                    "description": "Relative humidity of the ambient environment refers to the percentage of moisture present in the surrounding air relative to the air's maximum moisture-holding capacity at a given temperature. This humidity level directly influences concrete\u2019s drying behavior.",
+                    "default": 80.0,
+                    "minimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "2G:EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "B.5(3)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "RH"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "%"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 0
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G38_COMP_18": {
+                    "title": "Cross-sectional area of concrete member",
+                    "type": "number",
+                    "description": "The cross-sectional area of a concrete member refers to the surface area of a section cut perpendicular to its length, representing the size of the concrete\u2019s cross-section.",
+                    "default": 534694.0,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "2G:EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "B.5(3)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "A_{c}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "mm^2"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G38_COMP_19": {
+                    "title": "Perimeter of concrete member exposed to atmosphere",
+                    "type": "number",
+                    "description": "The perimeter of a concrete member exposed to the atmosphere represents the length around the surface area of the section that is in direct contact with the surrounding environment. This measurement is used to assess the exposure of the concrete to drying conditions.",
+                    "default": 5921.89,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "2G:EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "B.5(3)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "u"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "mm"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G38_COMP_24": {
+                    "title": "Mean concrete temperature during exposure period",
+                    "type": "number",
+                    "description": "The mean concrete temperature during the exposure period refers to the average temperature of the concrete during a specific time period of curing. This temperature is used to adjust the concrete\u2019s age for the effects of temperature on its maturity.",
+                    "default": 10.0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "2G:EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "B.5(5)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "T(\\Delta{t_{i}})"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "\u00b0C"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 1
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "G37_COMP_4",
+                  "G37_COMP_27",
+                  "G38_COMP_2",
+                  "G38_COMP_3",
+                  "G38_COMP_16",
+                  "G38_COMP_18",
+                  "G38_COMP_19",
+                  "G38_COMP_24"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "isInput": false,
+                    "codeName": "",
+                    "reference": [
+                      ""
+                    ],
+                    "title": "",
+                    "description": "",
+                    "figurePath": "",
+                    "descriptTable": [],
+                    "compType": "",
+                    "symbol": "",
+                    "result": {
+                      "value": "0.0",
+                      "table": [],
+                      "formula": [],
+                      "variables": {}
+                    },
+                    "refStd": "",
+                    "unit": "",
+                    "notation": "standard",
+                    "decimal": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,337 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.2.5"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    },
+    {
+      "url": "https://moa.rpm.kr-st-midasit.com/backend/function-executor/python-execute/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-designers_guide-func_execute-calc_content_29": {
+      "post": {
+        "summary": "Passive and Active Earth Pressure Calculation Using Annex C",
+        "description": "[EN1997-1] This guide provides a step-by-step procedure for calculating passive and active earth pressures based on the numerical method described in Annex C of Eurocode 1997-1. It includes instructions on applying the formulas for different conditions, such as varying soil properties, wall inclinations, and slope angles, to determine earth pressure coefficients accurately. Although the design standards provide formulas and graphs for calculating these values, discrepancies can occur between the values calculated using the formulas and those obtained from the graphs. For instance, while the results are similar for the condition where \u03b2 = 0, they do not exactly match. Under other conditions, the calculated values may further diverge from the graph values, making it necessary for engineers to use their judgment in selecting the appropriate values for design purposes.",
+        "x-content-info": {
+          "standardType": "EUROCODE",
+          "codeName": "EN1997-1",
+          "codeTitle": "Eurocode 7: Geotechnical design \u2014 Part 1: General rules",
+          "title": "Passive and Active Earth Pressure Calculation Using Annex C",
+          "description": "[EN1997-1] This guide provides a step-by-step procedure for calculating passive and active earth pressures based on the numerical method described in Annex C of Eurocode 1997-1. It includes instructions on applying the formulas for different conditions, such as varying soil properties, wall inclinations, and slope angles, to determine earth pressure coefficients accurately. Although the design standards provide formulas and graphs for calculating these values, discrepancies can occur between the values calculated using the formulas and those obtained from the graphs. For instance, while the results are similar for the condition where \u03b2 = 0, they do not exactly match. Under other conditions, the calculated values may further diverge from the graph values, making it necessary for engineers to use their judgment in selecting the appropriate values for design purposes.",
+          "edition": "2004",
+          "figurePath": "https://moa.rpm.kr-dv-midasit.com/design-guide/figures/detail_content_29.png"
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "G29_COMP_1": {
+                    "title": "Selection of earth pressure state",
+                    "type": "string",
+                    "description": "Choose the earth pressure state to determine the appropriate calculations for the retaining wall. Selecting \"Active\" will calculate pressures when the wall moves away from the soil, while \"Passive\" will calculate pressures when the wall moves towards the soil.",
+                    "default": "Active",
+                    "enum": [
+                      "Active",
+                      "Passive"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1997-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "AnnexC(2)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "earthpress"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$earthpress$$",
+                            "Description"
+                          ],
+                          [
+                            "Active",
+                            "Calculates earth pressure when the retaining wall moves away from the soil, reducing pressure."
+                          ],
+                          [
+                            "Passive",
+                            "Calculates earth pressure when the retaining wall moves towards the soil, increasing pressure."
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G29_COMP_3": {
+                    "title": "Angle of shearing resistance in terms of effective stress",
+                    "type": "number",
+                    "description": "The angle of shearing resistance in terms of effective stress represents the shear strength of soil calculated based on the effective stress, which is the total stress minus pore water pressure. It is a crucial parameter in geotechnical engineering used to assess soil stability and design retaining structures.",
+                    "default": 35.0,
+                    "exclusiveMinimum": 0,
+                    "exclusiveMaximum": 90,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1997-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "AnnexC(2)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "\\phi"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "degree"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G29_COMP_5": {
+                    "title": "Angle of shearing resistance between soil and wall",
+                    "type": "number",
+                    "description": "The angle of shearing resistance between soil and wall represents the frictional interaction angle at the interface where the soil contacts the retaining wall. It affects the amount of lateral earth pressure exerted on the wall and is a key factor in calculating earth pressure coefficients.",
+                    "default": 20.0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1997-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "AnnexC(2)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "\\delta"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "degree"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G29_COMP_7": {
+                    "title": "Slope angle of the ground behind the wall",
+                    "type": "number",
+                    "description": "The slope angle of the ground behind the wall is the angle of inclination of the soil surface located behind the retaining wall. It measures the steepness of the ground and is positive when the slope rises upward away from the wall.",
+                    "default": 15.0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1997-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "AnnexC(1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "\\beta"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "degree"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G29_COMP_9": {
+                    "title": "Wall inclination angle",
+                    "type": "number",
+                    "description": "The wall inclination angle is the angle between the vertical line and the direction of the wall. It is considered positive when the wall overhangs, leaning away from the soil.",
+                    "default": 10.0,
+                    "minimum": 0,
+                    "exclusiveMaximum": 90,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1997-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "AnnexC(FigureC.4)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "\\theta"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "degree"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "G29_COMP_1",
+                  "G29_COMP_3",
+                  "G29_COMP_5",
+                  "G29_COMP_7",
+                  "G29_COMP_9"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "isInput": false,
+                    "codeName": "",
+                    "reference": [
+                      ""
+                    ],
+                    "title": "",
+                    "description": "",
+                    "figurePath": "",
+                    "descriptTable": [],
+                    "compType": "",
+                    "symbol": "",
+                    "result": {
+                      "value": "0.0",
+                      "table": [],
+                      "formula": [],
+                      "variables": {}
+                    },
+                    "refStd": "",
+                    "unit": "",
+                    "notation": "standard",
+                    "decimal": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

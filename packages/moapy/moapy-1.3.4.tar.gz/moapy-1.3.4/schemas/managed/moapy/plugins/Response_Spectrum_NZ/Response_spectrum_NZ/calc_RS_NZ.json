@@ -1,0 +1,170 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.1.3"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    },
+    {
+      "url": "https://moa.rpm.kr-st-midasit.com/backend/function-executor/python-execute/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-plugins-Response_Spectrum_NZ-Response_spectrum_NZ-calc_RS_NZ": {
+      "post": {
+        "summary": "calc RS_NZ",
+        "description": "RS_NZ",
+        "operationId": "calc RS NZ",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/calc_RS_NZ"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {},
+                  "type": "array",
+                  "title": "Response Calc Rs Nz"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "RS_NZ_input": {
+        "properties": {
+          "func_name": {
+            "type": "string",
+            "title": "Func Name",
+            "description": "Input Function Name",
+            "default": "RS_NZ"
+          },
+          "soilClass": {
+            "type": "string",
+            "title": "Soilclass",
+            "description": "Site sub soil class name",
+            "default": "A"
+          },
+          "rf": {
+            "type": "number",
+            "title": "Rf",
+            "description": "return period factor",
+            "default": 1.0
+          },
+          "hf": {
+            "type": "number",
+            "title": "Hf",
+            "description": "hazard factor",
+            "default": 1.0
+          },
+          "dist": {
+            "type": "number",
+            "title": "Dist",
+            "description": "distance from nearest major fault",
+            "default": 0.0
+          },
+          "df": {
+            "type": "number",
+            "title": "Df",
+            "description": "ductility factor",
+            "default": 1.0
+          },
+          "max_period": {
+            "type": "number",
+            "title": "Max Period",
+            "description": "max_period(sec)",
+            "default": 1.0
+          }
+        },
+        "type": "object",
+        "title": "RS_NZ_input",
+        "description": "RS_NZ_input\n\nArgs:\n    func_name (str): Input Function Name\n    soilClass (str): Site sub soil class name \"A~E\"\n    rf (float): return period factor\n    hf (float): hazard factor\n    dist (float): distance from nearest major fault\n    df (float): ductility factor\n    max_period (float): max_period(sec)"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "calc_RS_NZ": {
+        "properties": {
+          "input": {
+            "$ref": "#/components/schemas/RS_NZ_input"
+          }
+        },
+        "type": "object",
+        "required": [
+          "input"
+        ],
+        "title": "calc RS NZ"
+      }
+    }
+  }
+}

@@ -1,0 +1,673 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.2.5"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-wgsd-wgsd_flow-rebar_properties_design": {
+      "post": {
+        "summary": "Rebar properties",
+        "description": "Rebar properties",
+        "operationId": "rebar properties design",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "general": {
+                    "properties": {
+                      "strength": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0.0,
+                        "title": "Strength",
+                        "description": "Grade of the rebar",
+                        "default": 420
+                      },
+                      "elasticModulus": {
+                        "type": "number",
+                        "exclusiveMinimum": 0.0,
+                        "title": "Elasticmodulus",
+                        "description": "Elastic modulus of the rebar",
+                        "default": 200000
+                      },
+                      "density": {
+                        "type": "number",
+                        "exclusiveMinimum": 0.0,
+                        "title": "Density",
+                        "description": "Density of the rebar",
+                        "default": 7850
+                      },
+                      "thermalExpansionCoefficient": {
+                        "type": "number",
+                        "title": "Thermalexpansioncoefficient",
+                        "description": "Thermal expansion coefficient of the rebar",
+                        "default": 1e-05
+                      },
+                      "poissonRatio": {
+                        "type": "number",
+                        "minimum": 0.0,
+                        "title": "Poissonratio",
+                        "description": "Poisson ratio of the rebar",
+                        "default": 0.3
+                      }
+                    },
+                    "type": "object",
+                    "title": "Rebar General Properties",
+                    "description": "GSD rebar general properties for calculation\n\nArgs:\n    strength (int): Grade of the rebar\n    elastic_modulus (float): Elastic modulus of the rebar\n    density (float): Density of the rebar\n    thermal_expansion_coefficient (float): Thermal expansion coefficient of the rebar\n    poisson_ratio (float): Poisson ratio of the rebar",
+                    "x-component-detail": {
+                      "id": "moapy.rc_pre.Rebar_General_Properties"
+                    }
+                  },
+                  "uls": {
+                    "properties": {
+                      "materialModel": {
+                        "type": "string",
+                        "title": "Materialmodel",
+                        "description": "Material model for ULS",
+                        "default": "Elastic-Plastic"
+                      },
+                      "failureStrain": {
+                        "type": "number",
+                        "title": "Failurestrain",
+                        "description": "Failure strain limit for ULS",
+                        "default": 0.7
+                      }
+                    },
+                    "type": "object",
+                    "title": "Rebar Stress Options for ULS",
+                    "description": "GSD rebar stress options for ULS\n\nArgs:\n    material_model (str): Material model for ULS\n    failure_strain (float): Failure strain limit for ULS",
+                    "x-component-detail": {
+                      "id": "moapy.rc_pre.Rebar_Stress_ULS_Options_ACI"
+                    }
+                  },
+                  "sls": {
+                    "properties": {
+                      "materialModel": {
+                        "type": "string",
+                        "title": "Materialmodel",
+                        "description": "Material model for SLS",
+                        "default": "Elastic-Plastic"
+                      },
+                      "failureStrain": {
+                        "type": "number",
+                        "title": "Failurestrain",
+                        "default": 0.7,
+                        "metadata": {
+                          "default": 0.7,
+                          "description": "Failure strain limit for SLS"
+                        }
+                      }
+                    },
+                    "type": "object",
+                    "title": "Rebar Stress Options for SLS",
+                    "description": "GSD rebar stress options for SLS\n\nArgs:\n    material_model (str): Material model for SLS\n    failure_strain (float): Failure strain limit for SLS",
+                    "x-component-detail": {
+                      "id": "moapy.rc_pre.Rebar_Stress_SLS_Options"
+                    }
+                  }
+                },
+                "type": "object",
+                "required": [
+                  "general",
+                  "uls",
+                  "sls"
+                ],
+                "title": "rebar properties design"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "curveUls": {
+                      "items": {
+                        "properties": {
+                          "stress": {
+                            "type": "number",
+                            "title": "Stress",
+                            "description": "Stress",
+                            "default": 0.0
+                          },
+                          "strain": {
+                            "type": "number",
+                            "title": "Strain",
+                            "description": "Strain",
+                            "default": 0.0
+                          }
+                        },
+                        "type": "object",
+                        "title": "Stress Strain Component",
+                        "description": "Stress Strain Component class\n\nArgs:\n    stress (Length): Stress\n    strain (Length): Strain",
+                        "x-component-detail": {
+                          "id": "moapy.data_pre.Stress_Strain_Component"
+                        }
+                      },
+                      "type": "array",
+                      "title": "Curveuls",
+                      "description": "Stress strain curve",
+                      "default": [
+                        {
+                          "stress": 0.0,
+                          "strain": 0.0
+                        },
+                        {
+                          "stress": 500.0,
+                          "strain": 0.0025
+                        },
+                        {
+                          "stress": 500.0,
+                          "strain": 0.05
+                        }
+                      ]
+                    },
+                    "curveSls": {
+                      "items": {
+                        "properties": {
+                          "stress": {
+                            "type": "number",
+                            "title": "Stress",
+                            "description": "Stress",
+                            "default": 0.0
+                          },
+                          "strain": {
+                            "type": "number",
+                            "title": "Strain",
+                            "description": "Strain",
+                            "default": 0.0
+                          }
+                        },
+                        "type": "object",
+                        "title": "Stress Strain Component",
+                        "description": "Stress Strain Component class\n\nArgs:\n    stress (Length): Stress\n    strain (Length): Strain",
+                        "x-component-detail": {
+                          "id": "moapy.data_pre.Stress_Strain_Component"
+                        }
+                      },
+                      "type": "array",
+                      "title": "Curvesls",
+                      "description": "Stress strain curve",
+                      "default": [
+                        {
+                          "stress": 0.0,
+                          "strain": 0.0
+                        },
+                        {
+                          "stress": 500.0,
+                          "strain": 0.0025
+                        },
+                        {
+                          "stress": 500.0,
+                          "strain": 0.05
+                        }
+                      ]
+                    }
+                  },
+                  "type": "object",
+                  "title": "Material Rebar",
+                  "description": "GSD rebar class\n\nArgs:\n    grade (RebarGrade): Grade of the rebar\n    curve_uls (list[Stress_Strain_Component]): Stress strain curve for ULS\n    curve_sls (list[Stress_Strain_Component]): Stress strain curve for SLS",
+                  "x-component-detail": {
+                    "id": "moapy.rc_pre.MaterialConcrete"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "detail": {
+                      "items": {
+                        "properties": {
+                          "loc": {
+                            "items": {
+                              "anyOf": [
+                                {
+                                  "type": "string"
+                                },
+                                {
+                                  "type": "integer"
+                                }
+                              ]
+                            },
+                            "type": "array",
+                            "title": "Location"
+                          },
+                          "msg": {
+                            "type": "string",
+                            "title": "Message"
+                          },
+                          "type": {
+                            "type": "string",
+                            "title": "Error Type"
+                          }
+                        },
+                        "type": "object",
+                        "required": [
+                          "loc",
+                          "msg",
+                          "type"
+                        ],
+                        "title": "ValidationError"
+                      },
+                      "type": "array",
+                      "title": "Detail"
+                    }
+                  },
+                  "type": "object",
+                  "title": "HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "x-content-info": {
+          "title": "Rebar properties",
+          "description": "Rebar properties"
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "properties": {
+                "loc": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "integer"
+                      }
+                    ]
+                  },
+                  "type": "array",
+                  "title": "Location"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "Message"
+                },
+                "type": {
+                  "type": "string",
+                  "title": "Error Type"
+                }
+              },
+              "type": "object",
+              "required": [
+                "loc",
+                "msg",
+                "type"
+              ],
+              "title": "ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "MaterialRebar": {
+        "properties": {
+          "curveUls": {
+            "items": {
+              "properties": {
+                "stress": {
+                  "type": "number",
+                  "title": "Stress",
+                  "description": "Stress",
+                  "default": 0.0
+                },
+                "strain": {
+                  "type": "number",
+                  "title": "Strain",
+                  "description": "Strain",
+                  "default": 0.0
+                }
+              },
+              "type": "object",
+              "title": "Stress Strain Component",
+              "description": "Stress Strain Component class\n\nArgs:\n    stress (Length): Stress\n    strain (Length): Strain",
+              "x-component-detail": {
+                "id": "moapy.data_pre.Stress_Strain_Component"
+              }
+            },
+            "type": "array",
+            "title": "Curveuls",
+            "description": "Stress strain curve",
+            "default": [
+              {
+                "stress": 0.0,
+                "strain": 0.0
+              },
+              {
+                "stress": 500.0,
+                "strain": 0.0025
+              },
+              {
+                "stress": 500.0,
+                "strain": 0.05
+              }
+            ]
+          },
+          "curveSls": {
+            "items": {
+              "properties": {
+                "stress": {
+                  "type": "number",
+                  "title": "Stress",
+                  "description": "Stress",
+                  "default": 0.0
+                },
+                "strain": {
+                  "type": "number",
+                  "title": "Strain",
+                  "description": "Strain",
+                  "default": 0.0
+                }
+              },
+              "type": "object",
+              "title": "Stress Strain Component",
+              "description": "Stress Strain Component class\n\nArgs:\n    stress (Length): Stress\n    strain (Length): Strain",
+              "x-component-detail": {
+                "id": "moapy.data_pre.Stress_Strain_Component"
+              }
+            },
+            "type": "array",
+            "title": "Curvesls",
+            "description": "Stress strain curve",
+            "default": [
+              {
+                "stress": 0.0,
+                "strain": 0.0
+              },
+              {
+                "stress": 500.0,
+                "strain": 0.0025
+              },
+              {
+                "stress": 500.0,
+                "strain": 0.05
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "Material Rebar",
+        "description": "GSD rebar class\n\nArgs:\n    grade (RebarGrade): Grade of the rebar\n    curve_uls (list[Stress_Strain_Component]): Stress strain curve for ULS\n    curve_sls (list[Stress_Strain_Component]): Stress strain curve for SLS",
+        "x-component-detail": {
+          "id": "moapy.rc_pre.MaterialConcrete"
+        }
+      },
+      "Rebar_General_Properties": {
+        "properties": {
+          "strength": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Strength",
+            "description": "Grade of the rebar",
+            "default": 420
+          },
+          "elasticModulus": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Elasticmodulus",
+            "description": "Elastic modulus of the rebar",
+            "default": 200000
+          },
+          "density": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Density",
+            "description": "Density of the rebar",
+            "default": 7850
+          },
+          "thermalExpansionCoefficient": {
+            "type": "number",
+            "title": "Thermalexpansioncoefficient",
+            "description": "Thermal expansion coefficient of the rebar",
+            "default": 1e-05
+          },
+          "poissonRatio": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Poissonratio",
+            "description": "Poisson ratio of the rebar",
+            "default": 0.3
+          }
+        },
+        "type": "object",
+        "title": "Rebar General Properties",
+        "description": "GSD rebar general properties for calculation\n\nArgs:\n    strength (int): Grade of the rebar\n    elastic_modulus (float): Elastic modulus of the rebar\n    density (float): Density of the rebar\n    thermal_expansion_coefficient (float): Thermal expansion coefficient of the rebar\n    poisson_ratio (float): Poisson ratio of the rebar",
+        "x-component-detail": {
+          "id": "moapy.rc_pre.Rebar_General_Properties"
+        }
+      },
+      "Rebar_Stress_SLS_Options": {
+        "properties": {
+          "materialModel": {
+            "type": "string",
+            "title": "Materialmodel",
+            "description": "Material model for SLS",
+            "default": "Elastic-Plastic"
+          },
+          "failureStrain": {
+            "type": "number",
+            "title": "Failurestrain",
+            "default": 0.7,
+            "metadata": {
+              "default": 0.7,
+              "description": "Failure strain limit for SLS"
+            }
+          }
+        },
+        "type": "object",
+        "title": "Rebar Stress Options for SLS",
+        "description": "GSD rebar stress options for SLS\n\nArgs:\n    material_model (str): Material model for SLS\n    failure_strain (float): Failure strain limit for SLS",
+        "x-component-detail": {
+          "id": "moapy.rc_pre.Rebar_Stress_SLS_Options"
+        }
+      },
+      "Rebar_Stress_ULS_Options_ACI": {
+        "properties": {
+          "materialModel": {
+            "type": "string",
+            "title": "Materialmodel",
+            "description": "Material model for ULS",
+            "default": "Elastic-Plastic"
+          },
+          "failureStrain": {
+            "type": "number",
+            "title": "Failurestrain",
+            "description": "Failure strain limit for ULS",
+            "default": 0.7
+          }
+        },
+        "type": "object",
+        "title": "Rebar Stress Options for ULS",
+        "description": "GSD rebar stress options for ULS\n\nArgs:\n    material_model (str): Material model for ULS\n    failure_strain (float): Failure strain limit for ULS",
+        "x-component-detail": {
+          "id": "moapy.rc_pre.Rebar_Stress_ULS_Options_ACI"
+        }
+      },
+      "Stress_Strain_Component": {
+        "properties": {
+          "stress": {
+            "type": "number",
+            "title": "Stress",
+            "description": "Stress",
+            "default": 0.0
+          },
+          "strain": {
+            "type": "number",
+            "title": "Strain",
+            "description": "Strain",
+            "default": 0.0
+          }
+        },
+        "type": "object",
+        "title": "Stress Strain Component",
+        "description": "Stress Strain Component class\n\nArgs:\n    stress (Length): Stress\n    strain (Length): Strain",
+        "x-component-detail": {
+          "id": "moapy.data_pre.Stress_Strain_Component"
+        }
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "rebar_properties_design": {
+        "properties": {
+          "general": {
+            "properties": {
+              "strength": {
+                "type": "integer",
+                "exclusiveMinimum": 0.0,
+                "title": "Strength",
+                "description": "Grade of the rebar",
+                "default": 420
+              },
+              "elasticModulus": {
+                "type": "number",
+                "exclusiveMinimum": 0.0,
+                "title": "Elasticmodulus",
+                "description": "Elastic modulus of the rebar",
+                "default": 200000
+              },
+              "density": {
+                "type": "number",
+                "exclusiveMinimum": 0.0,
+                "title": "Density",
+                "description": "Density of the rebar",
+                "default": 7850
+              },
+              "thermalExpansionCoefficient": {
+                "type": "number",
+                "title": "Thermalexpansioncoefficient",
+                "description": "Thermal expansion coefficient of the rebar",
+                "default": 1e-05
+              },
+              "poissonRatio": {
+                "type": "number",
+                "minimum": 0.0,
+                "title": "Poissonratio",
+                "description": "Poisson ratio of the rebar",
+                "default": 0.3
+              }
+            },
+            "type": "object",
+            "title": "Rebar General Properties",
+            "description": "GSD rebar general properties for calculation\n\nArgs:\n    strength (int): Grade of the rebar\n    elastic_modulus (float): Elastic modulus of the rebar\n    density (float): Density of the rebar\n    thermal_expansion_coefficient (float): Thermal expansion coefficient of the rebar\n    poisson_ratio (float): Poisson ratio of the rebar",
+            "x-component-detail": {
+              "id": "moapy.rc_pre.Rebar_General_Properties"
+            }
+          },
+          "uls": {
+            "properties": {
+              "materialModel": {
+                "type": "string",
+                "title": "Materialmodel",
+                "description": "Material model for ULS",
+                "default": "Elastic-Plastic"
+              },
+              "failureStrain": {
+                "type": "number",
+                "title": "Failurestrain",
+                "description": "Failure strain limit for ULS",
+                "default": 0.7
+              }
+            },
+            "type": "object",
+            "title": "Rebar Stress Options for ULS",
+            "description": "GSD rebar stress options for ULS\n\nArgs:\n    material_model (str): Material model for ULS\n    failure_strain (float): Failure strain limit for ULS",
+            "x-component-detail": {
+              "id": "moapy.rc_pre.Rebar_Stress_ULS_Options_ACI"
+            }
+          },
+          "sls": {
+            "properties": {
+              "materialModel": {
+                "type": "string",
+                "title": "Materialmodel",
+                "description": "Material model for SLS",
+                "default": "Elastic-Plastic"
+              },
+              "failureStrain": {
+                "type": "number",
+                "title": "Failurestrain",
+                "default": 0.7,
+                "metadata": {
+                  "default": 0.7,
+                  "description": "Failure strain limit for SLS"
+                }
+              }
+            },
+            "type": "object",
+            "title": "Rebar Stress Options for SLS",
+            "description": "GSD rebar stress options for SLS\n\nArgs:\n    material_model (str): Material model for SLS\n    failure_strain (float): Failure strain limit for SLS",
+            "x-component-detail": {
+              "id": "moapy.rc_pre.Rebar_Stress_SLS_Options"
+            }
+          }
+        },
+        "type": "object",
+        "required": [
+          "general",
+          "uls",
+          "sls"
+        ],
+        "title": "rebar properties design"
+      }
+    }
+  }
+}

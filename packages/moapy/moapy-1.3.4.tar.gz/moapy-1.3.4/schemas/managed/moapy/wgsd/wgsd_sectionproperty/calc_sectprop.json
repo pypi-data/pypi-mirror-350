@@ -1,0 +1,2022 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.2.5"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-wgsd-wgsd_sectionproperty-calc_sectprop": {
+      "post": {
+        "summary": "Calculate Section Property",
+        "description": "Calculate Section Property",
+        "operationId": "calc sectprop",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "polygon": {
+                    "properties": {
+                      "points": {
+                        "items": {
+                          "properties": {
+                            "x": {
+                              "properties": {
+                                "value": {
+                                  "type": "number",
+                                  "title": "Value",
+                                  "description": "Length"
+                                },
+                                "unit": {
+                                  "type": "string",
+                                  "enum": [
+                                    "mm",
+                                    "cm",
+                                    "m",
+                                    "in",
+                                    "ft"
+                                  ],
+                                  "title": "enUnitLength"
+                                }
+                              },
+                              "type": "object",
+                              "title": "Length",
+                              "description": "x-coordinate",
+                              "x-component-detail": {
+                                "id": "moapy.data_pre.Length"
+                              }
+                            },
+                            "y": {
+                              "properties": {
+                                "value": {
+                                  "type": "number",
+                                  "title": "Value",
+                                  "description": "Length"
+                                },
+                                "unit": {
+                                  "type": "string",
+                                  "enum": [
+                                    "mm",
+                                    "cm",
+                                    "m",
+                                    "in",
+                                    "ft"
+                                  ],
+                                  "title": "enUnitLength"
+                                }
+                              },
+                              "type": "object",
+                              "title": "Length",
+                              "description": "y-coordinate",
+                              "x-component-detail": {
+                                "id": "moapy.data_pre.Length"
+                              }
+                            }
+                          },
+                          "type": "object",
+                          "title": "Point",
+                          "description": "Point class\n\nArgs:\n    x (Length): x-coordinate\n    y (Length): y-coordinate",
+                          "x-component-detail": {
+                            "id": "moapy.data_pre.Point"
+                          }
+                        },
+                        "type": "array",
+                        "title": "Points",
+                        "description": "List of points defining the corners of the outer polygon.",
+                        "default": [
+                          {
+                            "x": {
+                              "unit": "mm",
+                              "value": 0.0
+                            },
+                            "y": {
+                              "unit": "mm",
+                              "value": 0.0
+                            }
+                          },
+                          {
+                            "x": {
+                              "unit": "mm",
+                              "value": 400.0
+                            },
+                            "y": {
+                              "unit": "mm",
+                              "value": 0.0
+                            }
+                          },
+                          {
+                            "x": {
+                              "unit": "mm",
+                              "value": 400.0
+                            },
+                            "y": {
+                              "unit": "mm",
+                              "value": 600.0
+                            }
+                          },
+                          {
+                            "x": {
+                              "unit": "mm",
+                              "value": 0.0
+                            },
+                            "y": {
+                              "unit": "mm",
+                              "value": 600.0
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "type": "object",
+                    "title": "Outer Polygon",
+                    "description": "Represents a polygon defined by four corner points in a two-dimensional space. The polygon is used to define the outer boundary in various design applications.",
+                    "x-component-detail": {
+                      "id": "moapy.data_pre.OuterPolygon"
+                    }
+                  }
+                },
+                "type": "object",
+                "required": [
+                  "polygon"
+                ],
+                "title": "calc sectprop"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "area": {
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0.0,
+                          "title": "Value",
+                          "description": "Area"
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "mm^{2}",
+                            "m^{2}",
+                            "in^{2}",
+                            "ft^{2}"
+                          ],
+                          "title": "enUnitArea"
+                        }
+                      },
+                      "type": "object",
+                      "title": "Area",
+                      "description": "the cross-section area",
+                      "x-component-detail": {
+                        "id": "moapy.data_pre.Area"
+                      }
+                    },
+                    "asy": {
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0.0,
+                          "title": "Value",
+                          "description": "Area"
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "mm^{2}",
+                            "m^{2}",
+                            "in^{2}",
+                            "ft^{2}"
+                          ],
+                          "title": "enUnitArea"
+                        }
+                      },
+                      "type": "object",
+                      "title": "Area",
+                      "description": "y-dir. the cross-section centroidal axis shear area",
+                      "x-component-detail": {
+                        "id": "moapy.data_pre.Area"
+                      }
+                    },
+                    "asz": {
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0.0,
+                          "title": "Value",
+                          "description": "Area"
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "mm^{2}",
+                            "m^{2}",
+                            "in^{2}",
+                            "ft^{2}"
+                          ],
+                          "title": "enUnitArea"
+                        }
+                      },
+                      "type": "object",
+                      "title": "Area",
+                      "description": "z-dir. the cross-section centroidal axis shear area",
+                      "x-component-detail": {
+                        "id": "moapy.data_pre.Area"
+                      }
+                    },
+                    "ixx": {
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0.0,
+                          "title": "Value",
+                          "description": "Inertia"
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "mm^{4}",
+                            "m^{4}",
+                            "in^{4}",
+                            "ft^{4}"
+                          ],
+                          "title": "enUnitInertia"
+                        }
+                      },
+                      "type": "object",
+                      "title": "Inertia",
+                      "description": "x-dir. Torsional Resistance",
+                      "x-component-detail": {
+                        "id": "moapy.data_pre.Inertia"
+                      }
+                    },
+                    "iyy": {
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0.0,
+                          "title": "Value",
+                          "description": "Inertia"
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "mm^{4}",
+                            "m^{4}",
+                            "in^{4}",
+                            "ft^{4}"
+                          ],
+                          "title": "enUnitInertia"
+                        }
+                      },
+                      "type": "object",
+                      "title": "Inertia",
+                      "description": "y-dir. Moment of Inertia",
+                      "x-component-detail": {
+                        "id": "moapy.data_pre.Inertia"
+                      }
+                    },
+                    "izz": {
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0.0,
+                          "title": "Value",
+                          "description": "Inertia"
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "mm^{4}",
+                            "m^{4}",
+                            "in^{4}",
+                            "ft^{4}"
+                          ],
+                          "title": "enUnitInertia"
+                        }
+                      },
+                      "type": "object",
+                      "title": "Inertia",
+                      "description": "z-dir. Moment of Inertia",
+                      "x-component-detail": {
+                        "id": "moapy.data_pre.Inertia"
+                      }
+                    },
+                    "cyp": {
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "title": "Value",
+                          "description": "Length"
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "mm",
+                            "cm",
+                            "m",
+                            "in",
+                            "ft"
+                          ],
+                          "title": "enUnitLength"
+                        }
+                      },
+                      "type": "object",
+                      "title": "Length",
+                      "description": "(+)y-dir. Neutral Axis",
+                      "x-component-detail": {
+                        "id": "moapy.data_pre.Length"
+                      }
+                    },
+                    "cym": {
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "title": "Value",
+                          "description": "Length"
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "mm",
+                            "cm",
+                            "m",
+                            "in",
+                            "ft"
+                          ],
+                          "title": "enUnitLength"
+                        }
+                      },
+                      "type": "object",
+                      "title": "Length",
+                      "description": "(-)y-dir. Neutral Axis",
+                      "x-component-detail": {
+                        "id": "moapy.data_pre.Length"
+                      }
+                    },
+                    "czp": {
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "title": "Value",
+                          "description": "Length"
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "mm",
+                            "cm",
+                            "m",
+                            "in",
+                            "ft"
+                          ],
+                          "title": "enUnitLength"
+                        }
+                      },
+                      "type": "object",
+                      "title": "Length",
+                      "description": "(+)z-dir. Neutral Axis",
+                      "x-component-detail": {
+                        "id": "moapy.data_pre.Length"
+                      }
+                    },
+                    "czm": {
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "title": "Value",
+                          "description": "Length"
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "mm",
+                            "cm",
+                            "m",
+                            "in",
+                            "ft"
+                          ],
+                          "title": "enUnitLength"
+                        }
+                      },
+                      "type": "object",
+                      "title": "Length",
+                      "description": "(-)z-dir. Neutral Axis",
+                      "x-component-detail": {
+                        "id": "moapy.data_pre.Length"
+                      }
+                    },
+                    "qyb": {
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0.0,
+                          "title": "Value",
+                          "description": "Area"
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "mm^{2}",
+                            "m^{2}",
+                            "in^{2}",
+                            "ft^{2}"
+                          ],
+                          "title": "enUnitArea"
+                        }
+                      },
+                      "type": "object",
+                      "title": "Area",
+                      "description": "y-dir. Shear Factor for Shear Stress",
+                      "x-component-detail": {
+                        "id": "moapy.data_pre.Area"
+                      }
+                    },
+                    "qzb": {
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0.0,
+                          "title": "Value",
+                          "description": "Area"
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "mm^{2}",
+                            "m^{2}",
+                            "in^{2}",
+                            "ft^{2}"
+                          ],
+                          "title": "enUnitArea"
+                        }
+                      },
+                      "type": "object",
+                      "title": "Area",
+                      "description": "z-dir. Shear Factor for Shear Stress",
+                      "x-component-detail": {
+                        "id": "moapy.data_pre.Area"
+                      }
+                    },
+                    "periO": {
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "title": "Value",
+                          "description": "Length"
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "mm",
+                            "cm",
+                            "m",
+                            "in",
+                            "ft"
+                          ],
+                          "title": "enUnitLength"
+                        }
+                      },
+                      "type": "object",
+                      "title": "Length",
+                      "description": "Outer Perimeter",
+                      "x-component-detail": {
+                        "id": "moapy.data_pre.Length"
+                      }
+                    },
+                    "periI": {
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "title": "Value",
+                          "description": "Length"
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "mm",
+                            "cm",
+                            "m",
+                            "in",
+                            "ft"
+                          ],
+                          "title": "enUnitLength"
+                        }
+                      },
+                      "type": "object",
+                      "title": "Length",
+                      "description": "Inner Perimeter",
+                      "x-component-detail": {
+                        "id": "moapy.data_pre.Length"
+                      }
+                    },
+                    "syp": {
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0.0,
+                          "title": "Value",
+                          "description": "Volumne"
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "mm^{3}",
+                            "m^{3}",
+                            "in^{3}",
+                            "ft^{3}"
+                          ],
+                          "title": "enUnitVolume"
+                        }
+                      },
+                      "type": "object",
+                      "title": "Volume",
+                      "description": "(+)y-dir. the cross-section centroidal elastic section moduli",
+                      "x-component-detail": {
+                        "id": "moapy.data_pre.Volume"
+                      }
+                    },
+                    "sym": {
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0.0,
+                          "title": "Value",
+                          "description": "Volumne"
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "mm^{3}",
+                            "m^{3}",
+                            "in^{3}",
+                            "ft^{3}"
+                          ],
+                          "title": "enUnitVolume"
+                        }
+                      },
+                      "type": "object",
+                      "title": "Volume",
+                      "description": "(-)y-dir. the cross-section centroidal elastic section moduli",
+                      "x-component-detail": {
+                        "id": "moapy.data_pre.Volume"
+                      }
+                    },
+                    "szp": {
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0.0,
+                          "title": "Value",
+                          "description": "Volumne"
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "mm^{3}",
+                            "m^{3}",
+                            "in^{3}",
+                            "ft^{3}"
+                          ],
+                          "title": "enUnitVolume"
+                        }
+                      },
+                      "type": "object",
+                      "title": "Volume",
+                      "description": "(+)z-dir. the cross-section centroidal elastic section moduli",
+                      "x-component-detail": {
+                        "id": "moapy.data_pre.Volume"
+                      }
+                    },
+                    "szm": {
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0.0,
+                          "title": "Value",
+                          "description": "Volumne"
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "mm^{3}",
+                            "m^{3}",
+                            "in^{3}",
+                            "ft^{3}"
+                          ],
+                          "title": "enUnitVolume"
+                        }
+                      },
+                      "type": "object",
+                      "title": "Volume",
+                      "description": "(-)z-dir. the cross-section centroidal elastic section moduli",
+                      "x-component-detail": {
+                        "id": "moapy.data_pre.Volume"
+                      }
+                    },
+                    "ipyy": {
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0.0,
+                          "title": "Value",
+                          "description": "Inertia"
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "mm^{4}",
+                            "m^{4}",
+                            "in^{4}",
+                            "ft^{4}"
+                          ],
+                          "title": "enUnitInertia"
+                        }
+                      },
+                      "type": "object",
+                      "title": "Inertia",
+                      "description": "y-dir. the cross-section principal second moments of area",
+                      "x-component-detail": {
+                        "id": "moapy.data_pre.Inertia"
+                      }
+                    },
+                    "ipzz": {
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0.0,
+                          "title": "Value",
+                          "description": "Inertia"
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "mm^{4}",
+                            "m^{4}",
+                            "in^{4}",
+                            "ft^{4}"
+                          ],
+                          "title": "enUnitInertia"
+                        }
+                      },
+                      "type": "object",
+                      "title": "Inertia",
+                      "description": "z-dir. the cross-section principal second moments of area",
+                      "x-component-detail": {
+                        "id": "moapy.data_pre.Inertia"
+                      }
+                    },
+                    "zy": {
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0.0,
+                          "title": "Value",
+                          "description": "Volumne"
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "mm^{3}",
+                            "m^{3}",
+                            "in^{3}",
+                            "ft^{3}"
+                          ],
+                          "title": "enUnitVolume"
+                        }
+                      },
+                      "type": "object",
+                      "title": "Volume",
+                      "description": "y-dir. the cross-section centroidal plastic section moduli",
+                      "x-component-detail": {
+                        "id": "moapy.data_pre.Volume"
+                      }
+                    },
+                    "zz": {
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0.0,
+                          "title": "Value",
+                          "description": "Volumne"
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "mm^{3}",
+                            "m^{3}",
+                            "in^{3}",
+                            "ft^{3}"
+                          ],
+                          "title": "enUnitVolume"
+                        }
+                      },
+                      "type": "object",
+                      "title": "Volume",
+                      "description": "z-dir. the cross-section centroidal plastic section moduli",
+                      "x-component-detail": {
+                        "id": "moapy.data_pre.Volume"
+                      }
+                    },
+                    "ry": {
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "title": "Value",
+                          "description": "Length"
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "mm",
+                            "cm",
+                            "m",
+                            "in",
+                            "ft"
+                          ],
+                          "title": "enUnitLength"
+                        }
+                      },
+                      "type": "object",
+                      "title": "Length",
+                      "description": "y-dir. the cross-section centroidal radii of gyration",
+                      "x-component-detail": {
+                        "id": "moapy.data_pre.Length"
+                      }
+                    },
+                    "rz": {
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "title": "Value",
+                          "description": "Length"
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "mm",
+                            "cm",
+                            "m",
+                            "in",
+                            "ft"
+                          ],
+                          "title": "enUnitLength"
+                        }
+                      },
+                      "type": "object",
+                      "title": "Length",
+                      "description": "z-dir. the cross-section centroidal radii of gyration",
+                      "x-component-detail": {
+                        "id": "moapy.data_pre.Length"
+                      }
+                    }
+                  },
+                  "type": "object",
+                  "title": "Section Property",
+                  "description": "Section Property",
+                  "x-component-detail": {
+                    "id": "moapy.data_post.SectionProperty"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "detail": {
+                      "items": {
+                        "properties": {
+                          "loc": {
+                            "items": {
+                              "anyOf": [
+                                {
+                                  "type": "string"
+                                },
+                                {
+                                  "type": "integer"
+                                }
+                              ]
+                            },
+                            "type": "array",
+                            "title": "Location"
+                          },
+                          "msg": {
+                            "type": "string",
+                            "title": "Message"
+                          },
+                          "type": {
+                            "type": "string",
+                            "title": "Error Type"
+                          }
+                        },
+                        "type": "object",
+                        "required": [
+                          "loc",
+                          "msg",
+                          "type"
+                        ],
+                        "title": "ValidationError"
+                      },
+                      "type": "array",
+                      "title": "Detail"
+                    }
+                  },
+                  "type": "object",
+                  "title": "HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "x-content-info": {
+          "title": "Calculate Section Property",
+          "description": "Calculate Section Property"
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Area": {
+        "properties": {
+          "value": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Value",
+            "description": "Area"
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "mm^{2}",
+              "m^{2}",
+              "in^{2}",
+              "ft^{2}"
+            ],
+            "title": "enUnitArea"
+          }
+        },
+        "type": "object",
+        "title": "Area",
+        "description": "Area",
+        "x-component-detail": {
+          "id": "moapy.data_pre.Area"
+        }
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "properties": {
+                "loc": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "integer"
+                      }
+                    ]
+                  },
+                  "type": "array",
+                  "title": "Location"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "Message"
+                },
+                "type": {
+                  "type": "string",
+                  "title": "Error Type"
+                }
+              },
+              "type": "object",
+              "required": [
+                "loc",
+                "msg",
+                "type"
+              ],
+              "title": "ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Inertia": {
+        "properties": {
+          "value": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Value",
+            "description": "Inertia"
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "mm^{4}",
+              "m^{4}",
+              "in^{4}",
+              "ft^{4}"
+            ],
+            "title": "enUnitInertia"
+          }
+        },
+        "type": "object",
+        "title": "Inertia",
+        "description": "Inertia",
+        "x-component-detail": {
+          "id": "moapy.data_pre.Inertia"
+        }
+      },
+      "Length": {
+        "properties": {
+          "value": {
+            "type": "number",
+            "title": "Value",
+            "description": "Length"
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "mm",
+              "cm",
+              "m",
+              "in",
+              "ft"
+            ],
+            "title": "enUnitLength"
+          }
+        },
+        "type": "object",
+        "title": "Length",
+        "description": "Length",
+        "x-component-detail": {
+          "id": "moapy.data_pre.Length"
+        }
+      },
+      "OuterPolygon": {
+        "properties": {
+          "points": {
+            "items": {
+              "properties": {
+                "x": {
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "title": "Value",
+                      "description": "Length"
+                    },
+                    "unit": {
+                      "type": "string",
+                      "enum": [
+                        "mm",
+                        "cm",
+                        "m",
+                        "in",
+                        "ft"
+                      ],
+                      "title": "enUnitLength"
+                    }
+                  },
+                  "type": "object",
+                  "title": "Length",
+                  "description": "x-coordinate",
+                  "x-component-detail": {
+                    "id": "moapy.data_pre.Length"
+                  }
+                },
+                "y": {
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "title": "Value",
+                      "description": "Length"
+                    },
+                    "unit": {
+                      "type": "string",
+                      "enum": [
+                        "mm",
+                        "cm",
+                        "m",
+                        "in",
+                        "ft"
+                      ],
+                      "title": "enUnitLength"
+                    }
+                  },
+                  "type": "object",
+                  "title": "Length",
+                  "description": "y-coordinate",
+                  "x-component-detail": {
+                    "id": "moapy.data_pre.Length"
+                  }
+                }
+              },
+              "type": "object",
+              "title": "Point",
+              "description": "Point class\n\nArgs:\n    x (Length): x-coordinate\n    y (Length): y-coordinate",
+              "x-component-detail": {
+                "id": "moapy.data_pre.Point"
+              }
+            },
+            "type": "array",
+            "title": "Points",
+            "description": "List of points defining the corners of the outer polygon.",
+            "default": [
+              {
+                "x": {
+                  "unit": "mm",
+                  "value": 0.0
+                },
+                "y": {
+                  "unit": "mm",
+                  "value": 0.0
+                }
+              },
+              {
+                "x": {
+                  "unit": "mm",
+                  "value": 400.0
+                },
+                "y": {
+                  "unit": "mm",
+                  "value": 0.0
+                }
+              },
+              {
+                "x": {
+                  "unit": "mm",
+                  "value": 400.0
+                },
+                "y": {
+                  "unit": "mm",
+                  "value": 600.0
+                }
+              },
+              {
+                "x": {
+                  "unit": "mm",
+                  "value": 0.0
+                },
+                "y": {
+                  "unit": "mm",
+                  "value": 600.0
+                }
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "Outer Polygon",
+        "description": "Represents a polygon defined by four corner points in a two-dimensional space. The polygon is used to define the outer boundary in various design applications.",
+        "x-component-detail": {
+          "id": "moapy.data_pre.OuterPolygon"
+        }
+      },
+      "Point": {
+        "properties": {
+          "x": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "title": "Value",
+                "description": "Length"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm",
+                  "cm",
+                  "m",
+                  "in",
+                  "ft"
+                ],
+                "title": "enUnitLength"
+              }
+            },
+            "type": "object",
+            "title": "Length",
+            "description": "x-coordinate",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Length"
+            }
+          },
+          "y": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "title": "Value",
+                "description": "Length"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm",
+                  "cm",
+                  "m",
+                  "in",
+                  "ft"
+                ],
+                "title": "enUnitLength"
+              }
+            },
+            "type": "object",
+            "title": "Length",
+            "description": "y-coordinate",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Length"
+            }
+          }
+        },
+        "type": "object",
+        "title": "Point",
+        "description": "Point class\n\nArgs:\n    x (Length): x-coordinate\n    y (Length): y-coordinate",
+        "x-component-detail": {
+          "id": "moapy.data_pre.Point"
+        }
+      },
+      "SectionProperty": {
+        "properties": {
+          "area": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "minimum": 0.0,
+                "title": "Value",
+                "description": "Area"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm^{2}",
+                  "m^{2}",
+                  "in^{2}",
+                  "ft^{2}"
+                ],
+                "title": "enUnitArea"
+              }
+            },
+            "type": "object",
+            "title": "Area",
+            "description": "the cross-section area",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Area"
+            }
+          },
+          "asy": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "minimum": 0.0,
+                "title": "Value",
+                "description": "Area"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm^{2}",
+                  "m^{2}",
+                  "in^{2}",
+                  "ft^{2}"
+                ],
+                "title": "enUnitArea"
+              }
+            },
+            "type": "object",
+            "title": "Area",
+            "description": "y-dir. the cross-section centroidal axis shear area",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Area"
+            }
+          },
+          "asz": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "minimum": 0.0,
+                "title": "Value",
+                "description": "Area"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm^{2}",
+                  "m^{2}",
+                  "in^{2}",
+                  "ft^{2}"
+                ],
+                "title": "enUnitArea"
+              }
+            },
+            "type": "object",
+            "title": "Area",
+            "description": "z-dir. the cross-section centroidal axis shear area",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Area"
+            }
+          },
+          "ixx": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "minimum": 0.0,
+                "title": "Value",
+                "description": "Inertia"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm^{4}",
+                  "m^{4}",
+                  "in^{4}",
+                  "ft^{4}"
+                ],
+                "title": "enUnitInertia"
+              }
+            },
+            "type": "object",
+            "title": "Inertia",
+            "description": "x-dir. Torsional Resistance",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Inertia"
+            }
+          },
+          "iyy": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "minimum": 0.0,
+                "title": "Value",
+                "description": "Inertia"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm^{4}",
+                  "m^{4}",
+                  "in^{4}",
+                  "ft^{4}"
+                ],
+                "title": "enUnitInertia"
+              }
+            },
+            "type": "object",
+            "title": "Inertia",
+            "description": "y-dir. Moment of Inertia",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Inertia"
+            }
+          },
+          "izz": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "minimum": 0.0,
+                "title": "Value",
+                "description": "Inertia"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm^{4}",
+                  "m^{4}",
+                  "in^{4}",
+                  "ft^{4}"
+                ],
+                "title": "enUnitInertia"
+              }
+            },
+            "type": "object",
+            "title": "Inertia",
+            "description": "z-dir. Moment of Inertia",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Inertia"
+            }
+          },
+          "cyp": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "title": "Value",
+                "description": "Length"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm",
+                  "cm",
+                  "m",
+                  "in",
+                  "ft"
+                ],
+                "title": "enUnitLength"
+              }
+            },
+            "type": "object",
+            "title": "Length",
+            "description": "(+)y-dir. Neutral Axis",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Length"
+            }
+          },
+          "cym": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "title": "Value",
+                "description": "Length"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm",
+                  "cm",
+                  "m",
+                  "in",
+                  "ft"
+                ],
+                "title": "enUnitLength"
+              }
+            },
+            "type": "object",
+            "title": "Length",
+            "description": "(-)y-dir. Neutral Axis",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Length"
+            }
+          },
+          "czp": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "title": "Value",
+                "description": "Length"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm",
+                  "cm",
+                  "m",
+                  "in",
+                  "ft"
+                ],
+                "title": "enUnitLength"
+              }
+            },
+            "type": "object",
+            "title": "Length",
+            "description": "(+)z-dir. Neutral Axis",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Length"
+            }
+          },
+          "czm": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "title": "Value",
+                "description": "Length"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm",
+                  "cm",
+                  "m",
+                  "in",
+                  "ft"
+                ],
+                "title": "enUnitLength"
+              }
+            },
+            "type": "object",
+            "title": "Length",
+            "description": "(-)z-dir. Neutral Axis",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Length"
+            }
+          },
+          "qyb": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "minimum": 0.0,
+                "title": "Value",
+                "description": "Area"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm^{2}",
+                  "m^{2}",
+                  "in^{2}",
+                  "ft^{2}"
+                ],
+                "title": "enUnitArea"
+              }
+            },
+            "type": "object",
+            "title": "Area",
+            "description": "y-dir. Shear Factor for Shear Stress",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Area"
+            }
+          },
+          "qzb": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "minimum": 0.0,
+                "title": "Value",
+                "description": "Area"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm^{2}",
+                  "m^{2}",
+                  "in^{2}",
+                  "ft^{2}"
+                ],
+                "title": "enUnitArea"
+              }
+            },
+            "type": "object",
+            "title": "Area",
+            "description": "z-dir. Shear Factor for Shear Stress",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Area"
+            }
+          },
+          "periO": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "title": "Value",
+                "description": "Length"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm",
+                  "cm",
+                  "m",
+                  "in",
+                  "ft"
+                ],
+                "title": "enUnitLength"
+              }
+            },
+            "type": "object",
+            "title": "Length",
+            "description": "Outer Perimeter",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Length"
+            }
+          },
+          "periI": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "title": "Value",
+                "description": "Length"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm",
+                  "cm",
+                  "m",
+                  "in",
+                  "ft"
+                ],
+                "title": "enUnitLength"
+              }
+            },
+            "type": "object",
+            "title": "Length",
+            "description": "Inner Perimeter",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Length"
+            }
+          },
+          "syp": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "minimum": 0.0,
+                "title": "Value",
+                "description": "Volumne"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm^{3}",
+                  "m^{3}",
+                  "in^{3}",
+                  "ft^{3}"
+                ],
+                "title": "enUnitVolume"
+              }
+            },
+            "type": "object",
+            "title": "Volume",
+            "description": "(+)y-dir. the cross-section centroidal elastic section moduli",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Volume"
+            }
+          },
+          "sym": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "minimum": 0.0,
+                "title": "Value",
+                "description": "Volumne"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm^{3}",
+                  "m^{3}",
+                  "in^{3}",
+                  "ft^{3}"
+                ],
+                "title": "enUnitVolume"
+              }
+            },
+            "type": "object",
+            "title": "Volume",
+            "description": "(-)y-dir. the cross-section centroidal elastic section moduli",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Volume"
+            }
+          },
+          "szp": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "minimum": 0.0,
+                "title": "Value",
+                "description": "Volumne"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm^{3}",
+                  "m^{3}",
+                  "in^{3}",
+                  "ft^{3}"
+                ],
+                "title": "enUnitVolume"
+              }
+            },
+            "type": "object",
+            "title": "Volume",
+            "description": "(+)z-dir. the cross-section centroidal elastic section moduli",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Volume"
+            }
+          },
+          "szm": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "minimum": 0.0,
+                "title": "Value",
+                "description": "Volumne"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm^{3}",
+                  "m^{3}",
+                  "in^{3}",
+                  "ft^{3}"
+                ],
+                "title": "enUnitVolume"
+              }
+            },
+            "type": "object",
+            "title": "Volume",
+            "description": "(-)z-dir. the cross-section centroidal elastic section moduli",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Volume"
+            }
+          },
+          "ipyy": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "minimum": 0.0,
+                "title": "Value",
+                "description": "Inertia"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm^{4}",
+                  "m^{4}",
+                  "in^{4}",
+                  "ft^{4}"
+                ],
+                "title": "enUnitInertia"
+              }
+            },
+            "type": "object",
+            "title": "Inertia",
+            "description": "y-dir. the cross-section principal second moments of area",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Inertia"
+            }
+          },
+          "ipzz": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "minimum": 0.0,
+                "title": "Value",
+                "description": "Inertia"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm^{4}",
+                  "m^{4}",
+                  "in^{4}",
+                  "ft^{4}"
+                ],
+                "title": "enUnitInertia"
+              }
+            },
+            "type": "object",
+            "title": "Inertia",
+            "description": "z-dir. the cross-section principal second moments of area",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Inertia"
+            }
+          },
+          "zy": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "minimum": 0.0,
+                "title": "Value",
+                "description": "Volumne"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm^{3}",
+                  "m^{3}",
+                  "in^{3}",
+                  "ft^{3}"
+                ],
+                "title": "enUnitVolume"
+              }
+            },
+            "type": "object",
+            "title": "Volume",
+            "description": "y-dir. the cross-section centroidal plastic section moduli",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Volume"
+            }
+          },
+          "zz": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "minimum": 0.0,
+                "title": "Value",
+                "description": "Volumne"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm^{3}",
+                  "m^{3}",
+                  "in^{3}",
+                  "ft^{3}"
+                ],
+                "title": "enUnitVolume"
+              }
+            },
+            "type": "object",
+            "title": "Volume",
+            "description": "z-dir. the cross-section centroidal plastic section moduli",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Volume"
+            }
+          },
+          "ry": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "title": "Value",
+                "description": "Length"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm",
+                  "cm",
+                  "m",
+                  "in",
+                  "ft"
+                ],
+                "title": "enUnitLength"
+              }
+            },
+            "type": "object",
+            "title": "Length",
+            "description": "y-dir. the cross-section centroidal radii of gyration",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Length"
+            }
+          },
+          "rz": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "title": "Value",
+                "description": "Length"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm",
+                  "cm",
+                  "m",
+                  "in",
+                  "ft"
+                ],
+                "title": "enUnitLength"
+              }
+            },
+            "type": "object",
+            "title": "Length",
+            "description": "z-dir. the cross-section centroidal radii of gyration",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Length"
+            }
+          }
+        },
+        "type": "object",
+        "title": "Section Property",
+        "description": "Section Property",
+        "x-component-detail": {
+          "id": "moapy.data_post.SectionProperty"
+        }
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "Volume": {
+        "properties": {
+          "value": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Value",
+            "description": "Volumne"
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "mm^{3}",
+              "m^{3}",
+              "in^{3}",
+              "ft^{3}"
+            ],
+            "title": "enUnitVolume"
+          }
+        },
+        "type": "object",
+        "title": "Volume",
+        "description": "Volumne",
+        "x-component-detail": {
+          "id": "moapy.data_pre.Volume"
+        }
+      },
+      "calc_sectprop": {
+        "properties": {
+          "polygon": {
+            "properties": {
+              "points": {
+                "items": {
+                  "properties": {
+                    "x": {
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "title": "Value",
+                          "description": "Length"
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "mm",
+                            "cm",
+                            "m",
+                            "in",
+                            "ft"
+                          ],
+                          "title": "enUnitLength"
+                        }
+                      },
+                      "type": "object",
+                      "title": "Length",
+                      "description": "x-coordinate",
+                      "x-component-detail": {
+                        "id": "moapy.data_pre.Length"
+                      }
+                    },
+                    "y": {
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "title": "Value",
+                          "description": "Length"
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "mm",
+                            "cm",
+                            "m",
+                            "in",
+                            "ft"
+                          ],
+                          "title": "enUnitLength"
+                        }
+                      },
+                      "type": "object",
+                      "title": "Length",
+                      "description": "y-coordinate",
+                      "x-component-detail": {
+                        "id": "moapy.data_pre.Length"
+                      }
+                    }
+                  },
+                  "type": "object",
+                  "title": "Point",
+                  "description": "Point class\n\nArgs:\n    x (Length): x-coordinate\n    y (Length): y-coordinate",
+                  "x-component-detail": {
+                    "id": "moapy.data_pre.Point"
+                  }
+                },
+                "type": "array",
+                "title": "Points",
+                "description": "List of points defining the corners of the outer polygon.",
+                "default": [
+                  {
+                    "x": {
+                      "unit": "mm",
+                      "value": 0.0
+                    },
+                    "y": {
+                      "unit": "mm",
+                      "value": 0.0
+                    }
+                  },
+                  {
+                    "x": {
+                      "unit": "mm",
+                      "value": 400.0
+                    },
+                    "y": {
+                      "unit": "mm",
+                      "value": 0.0
+                    }
+                  },
+                  {
+                    "x": {
+                      "unit": "mm",
+                      "value": 400.0
+                    },
+                    "y": {
+                      "unit": "mm",
+                      "value": 600.0
+                    }
+                  },
+                  {
+                    "x": {
+                      "unit": "mm",
+                      "value": 0.0
+                    },
+                    "y": {
+                      "unit": "mm",
+                      "value": 600.0
+                    }
+                  }
+                ]
+              }
+            },
+            "type": "object",
+            "title": "Outer Polygon",
+            "description": "Represents a polygon defined by four corner points in a two-dimensional space. The polygon is used to define the outer boundary in various design applications.",
+            "x-component-detail": {
+              "id": "moapy.data_pre.OuterPolygon"
+            }
+          }
+        },
+        "type": "object",
+        "required": [
+          "polygon"
+        ],
+        "title": "calc sectprop"
+      },
+      "enUnitArea": {
+        "type": "string",
+        "enum": [
+          "mm^{2}",
+          "m^{2}",
+          "in^{2}",
+          "ft^{2}"
+        ],
+        "title": "enUnitArea"
+      },
+      "enUnitInertia": {
+        "type": "string",
+        "enum": [
+          "mm^{4}",
+          "m^{4}",
+          "in^{4}",
+          "ft^{4}"
+        ],
+        "title": "enUnitInertia"
+      },
+      "enUnitLength": {
+        "type": "string",
+        "enum": [
+          "mm",
+          "cm",
+          "m",
+          "in",
+          "ft"
+        ],
+        "title": "enUnitLength"
+      },
+      "enUnitVolume": {
+        "type": "string",
+        "enum": [
+          "mm^{3}",
+          "m^{3}",
+          "in^{3}",
+          "ft^{3}"
+        ],
+        "title": "enUnitVolume"
+      }
+    }
+  }
+}

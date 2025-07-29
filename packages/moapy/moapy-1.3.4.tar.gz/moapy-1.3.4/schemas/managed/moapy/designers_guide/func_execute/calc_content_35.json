@@ -1,0 +1,583 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.2.5"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    },
+    {
+      "url": "https://moa.rpm.kr-st-midasit.com/backend/function-executor/python-execute/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-designers_guide-func_execute-calc_content_35": {
+      "post": {
+        "summary": "Minimum Overlap Length Calculation under Seismic Conditions",
+        "description": "[EN1998-2] This guide provides a step-by-step approach to calculating the minimum overlap length required at supports during seismic events. It covers essential factors, including the minimum support length, effective ground displacement, and structural deformation, to ensure structural stability and safety. By following this guide, users can accurately determine the necessary overlap to accommodate seismic movement.",
+        "x-content-info": {
+          "standardType": "EUROCODE",
+          "codeName": "EN1998-2",
+          "codeTitle": "Eurocode 8 \u2014 Design of structures for earthquake resistance \u2014 Part 2: Bridges",
+          "title": "Minimum Overlap Length Calculation under Seismic Conditions",
+          "description": "[EN1998-2] This guide provides a step-by-step approach to calculating the minimum overlap length required at supports during seismic events. It covers essential factors, including the minimum support length, effective ground displacement, and structural deformation, to ensure structural stability and safety. By following this guide, users can accurately determine the necessary overlap to accommodate seismic movement.",
+          "edition": "2005+A2:2011 Incorporating corrigenda February 2010 and February 2012",
+          "figurePath": "https://moa.rpm.kr-dv-midasit.com/design-guide/figures/detail_content_35.png"
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "G31_COMP_1": {
+                    "title": "Selection of ground type",
+                    "type": "string",
+                    "description": "Choose the appropriate ground type based on the geotechnical properties of the site. The available types range from rock-like formations (Type A) to soft soils (Type D and E), each influencing the seismic response of the structure.",
+                    "default": "A",
+                    "enum": [
+                      "A",
+                      "B",
+                      "C",
+                      "D",
+                      "E"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.1.2(Table3.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "groundtype"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$groundtype$$",
+                            "Description"
+                          ],
+                          [
+                            "A",
+                            "Rock or rock-like geological formations with a maximum of 5 meters of weaker material at the surface. The shear wave velocity $$v_{s,30}$$ exceeds 800 m/s."
+                          ],
+                          [
+                            "B",
+                            "Deposits of very dense sand, gravel, or very stiff clay, extending at least several tens of meters in thickness, characterized by a gradual increase in mechanical properties with depth. The shear wave velocity $$v_{s,30}$$ ranges between 360 and 800 m/s."
+                          ],
+                          [
+                            "C",
+                            "Deep deposits of dense or medium-dense sand, gravel, or stiff clay, with a thickness ranging from several tens to many hundreds of meters. The shear wave velocity $$v_{s,30}$$ ranges between 180 and 360 m/s."
+                          ],
+                          [
+                            "D",
+                            "Deposits of loose-to-medium cohesionless soil (with or without soft cohesive layers) or predominantly soft-to-firm cohesive soil. The shear wave velocity $$v_{s,30}$$ is less than 180 m/s."
+                          ],
+                          [
+                            "E",
+                            "A soil profile consisting of a surface alluvium layer, with shear wave velocities typical of Type C or D (between 5 m and 20 m thick), underlain by stiffer material with a shear wave velocity greater than 800 m/s."
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G31_COMP_2": {
+                    "title": "Reference peak ground acceleration",
+                    "type": "number",
+                    "description": "The reference peak ground acceleration represents the maximum expected ground acceleration for a specific location during an earthquake, assuming it occurs on Type A ground (rock or very stiff soil). It is typically based on a 475-year return period, corresponding to an approximately 10% probability of exceedance over 50 years.",
+                    "default": 2.35,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.2.1(2)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "a_{gR}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "m/s^2"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G31_COMP_3": {
+                    "title": "Selection of importance class",
+                    "type": "string",
+                    "description": "Select the importance class for the bridge based on its criticality. Class I applies to less critical bridges, Class II to standard bridges, and Class III to essential bridges that require higher safety standards. Detailed information can be found in Eurocode 1998-2, section 2.1.",
+                    "default": "Class I",
+                    "enum": [
+                      "Class I",
+                      "Class II",
+                      "Class III"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.2.1(3)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "impoclass"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G31_COMP_6": {
+                    "title": "Selection of response spectrum type",
+                    "type": "string",
+                    "description": "The values for the periods and soil factor that define the shape of the elastic response spectrum depend on the ground type. Generally, Type 1 is recommended for areas where large earthquakes occur, with surface-wave magnitudes exceeding 5.5, while Type 2 is suitable for regions with smaller earthquakes, where the surface-wave magnitude is 5.5 or less.",
+                    "default": "Type 1 (For large earthquakes)",
+                    "enum": [
+                      "Type 1 (For large earthquakes)",
+                      "Type 2 (For smaller earthquakes)"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.2.2.2(2)P"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "spectype"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G35_COMP_1": {
+                    "title": "Seismic condition based on proximity to active fault",
+                    "type": "string",
+                    "description": "This option allows the user to select the seismic condition based on the distance of the bridge site from an active fault. It determines how the effective displacement due to seismic ground movement is calculated for seismic design.",
+                    "default": "Condition A",
+                    "enum": [
+                      "Condition A",
+                      "Condition B"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-2"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.6.4(3)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "seiscond"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$seiscond$$",
+                            "Description"
+                          ],
+                          [
+                            "Condition A",
+                            "5 km or more from an active fault"
+                          ],
+                          [
+                            "Condition B",
+                            "Less than 5 km from an active fault capable of producing a magnitude 6.5 or greater earthquake"
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G35_COMP_5": {
+                    "title": "Effective length of the deck",
+                    "type": "number",
+                    "description": "The effective length of the deck refers to the distance from a specific deck joint to the nearest point where the deck is fully connected to the substructure. If the deck is fully connected to a group of piers, it is taken as the distance between the support and the center of the pier group. A 'full connection' means a solid connection to the substructure, either monolithically or through fixed bearings, seismic links, or shock transmission units, without any force-limiting function.",
+                    "default": 50.0,
+                    "minimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-2"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.6.4(3)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "L_{eff}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "m"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G35_COMP_8": {
+                    "title": "Selecting deck connection option",
+                    "type": "string",
+                    "description": "This option allows the user to choose the appropriate method for calculating the effective seismic displacement based on how the deck is connected to the piers or abutments. Selecting the correct connection type ensures accurate calculation of displacement during seismic events.",
+                    "default": "Monolithic or fixed bearing connection",
+                    "enum": [
+                      "Monolithic or fixed bearing connection",
+                      "Seismic link with slack connection"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-2"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.6.4(3)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "deckconn"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$deckconn$$",
+                            "Description"
+                          ],
+                          [
+                            "Monolithic or fixed bearing connection",
+                            "Deck connected monolithically or through fixed bearings acting as full seismic links"
+                          ],
+                          [
+                            "Seismic link with slack connection",
+                            "Deck connected to piers or abutments through seismic links with slack"
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G35_COMP_10": {
+                    "title": "Slack of the seismic link",
+                    "type": "number",
+                    "description": "The slack of the seismic link refers to the additional movement allowed in the connection between the deck and the piers or abutment. It represents the extra displacement capacity due to looseness or flexibility in the seismic link, which must be considered when calculating the effective seismic displacement.",
+                    "default": 25.0,
+                    "minimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-2"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.6.1(Figure6.2)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "s"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "mm"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G35_COMP_11": {
+                    "title": "Total design displacement in the seismic design situation",
+                    "type": "number",
+                    "description": "The total design displacement accounts for the combined effects of seismic displacement, long-term deformations from permanent actions, and thermal movements. It includes a combination factor for thermal action to assess the maximum displacement the structure must accommodate under seismic conditions.",
+                    "default": 100.0,
+                    "minimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-2"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "2.3.6.3(2.7)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "d_{Ed}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "mm"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "G31_COMP_1",
+                  "G31_COMP_2",
+                  "G31_COMP_3",
+                  "G31_COMP_6",
+                  "G35_COMP_1",
+                  "G35_COMP_5",
+                  "G35_COMP_8",
+                  "G35_COMP_10",
+                  "G35_COMP_11"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "isInput": false,
+                    "codeName": "",
+                    "reference": [
+                      ""
+                    ],
+                    "title": "",
+                    "description": "",
+                    "figurePath": "",
+                    "descriptTable": [],
+                    "compType": "",
+                    "symbol": "",
+                    "result": {
+                      "value": "0.0",
+                      "table": [],
+                      "formula": [],
+                      "variables": {}
+                    },
+                    "refStd": "",
+                    "unit": "",
+                    "notation": "standard",
+                    "decimal": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

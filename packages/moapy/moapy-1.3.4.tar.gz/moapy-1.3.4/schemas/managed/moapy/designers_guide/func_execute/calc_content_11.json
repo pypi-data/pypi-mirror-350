@@ -1,0 +1,759 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.2.5"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    },
+    {
+      "url": "https://moa.rpm.kr-st-midasit.com/backend/function-executor/python-execute/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-designers_guide-func_execute-calc_content_11": {
+      "post": {
+        "summary": "Peak Velocity Pressure for Wind and Traffic Leading Combinations",
+        "description": "[HK.SDM-2013] This guide provides comprehensive instructions for calculating the peak velocity pressure for wind leading and traffic leading combinations on highway and railway structures. It covers the General, Simplified, and Full procedures as outlined in the Structures Design Manual for Highways and Railways (2013 Edition) by the Highways Department of the Government of the Hong Kong Special Administrative Region. The guide includes methods for determining wind pressure, assessing upwind slope impacts, and applying terrain adjustments necessary for safe and effective structural design.",
+        "x-content-info": {
+          "standardType": "HK.SDM",
+          "codeName": "HK.SDM2013",
+          "codeTitle": "Structures Design Manual for Highways and Railways",
+          "title": "Peak Velocity Pressure for Wind and Traffic Leading Combinations",
+          "description": "[HK.SDM-2013] This guide provides comprehensive instructions for calculating the peak velocity pressure for wind leading and traffic leading combinations on highway and railway structures. It covers the General, Simplified, and Full procedures as outlined in the Structures Design Manual for Highways and Railways (2013 Edition) by the Highways Department of the Government of the Hong Kong Special Administrative Region. The guide includes methods for determining wind pressure, assessing upwind slope impacts, and applying terrain adjustments necessary for safe and effective structural design.",
+          "edition": "5th revision of 2023",
+          "figurePath": null
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "G11_COMP_1": {
+                    "title": "Selection of wind action calculation procedure",
+                    "type": "string",
+                    "description": "The choice of wind action calculation procedure can be categorized into General, Simplified Procedure, or Full Procedure. The General approach is applied broadly, the Simplified Procedure is used for most highway and railway bridges for straightforward calculations, while the Full Procedure is for structures requiring higher structural reliability against wind loading, applied to bridges that meet specific safety criteria.",
+                    "default": "General",
+                    "enum": [
+                      "General",
+                      "Simplified",
+                      "Full"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "HK.SDM2013"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.4.1(5)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "windproce"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$windproce$$",
+                            "Description"
+                          ],
+                          [
+                            "General",
+                            "A general procedure for calculating wind actions, involving a measured location selection and calculations based on the return period."
+                          ],
+                          [
+                            "Simplified",
+                            "Suitable for most highway and railway bridges, following Clause 3.4.2 for simpler requirements for wind action calculations."
+                          ],
+                          [
+                            "Full",
+                            "Required for structures needing enhanced structural reliability against wind loading, following Clause 3.4.3 and applied to bridges meeting specific safety criteria."
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G11_COMP_4": {
+                    "title": "Selection of primary wind measurement location",
+                    "type": "string",
+                    "description": "Waglan Island provides wind data that reflects extreme, open-sea wind conditions ideal for conservative design. In contrast, the Hong Kong Observatory offers urban wind data typical of pre-development conditions, suitable for urban-focused structural considerations.",
+                    "default": "Waglan Island",
+                    "enum": [
+                      "Waglan Island",
+                      "Hong Kong Observatory"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "HK.SDM2013"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.4.1(Table3.6)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "windloca"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$windloca$$",
+                            "Description"
+                          ],
+                          [
+                            "Waglan Island",
+                            "Exposed site providing data based on long-fetch southeasterly winds over open sea, suitable for conservative design considerations."
+                          ],
+                          [
+                            "Hong Kong Observatory",
+                            "Urban location data representative of typical conditions before urban development, offering insights into an exposed urban area."
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G11_COMP_5": {
+                    "title": "Return period in years",
+                    "type": "number",
+                    "description": "The return period is the estimated interval of time between occurrences of a specific event, such as extreme weather or natural phenomena, at a given location. It represents the average frequency with which a particular intensity or magnitude of an event is expected to be equaled or exceeded, aiding in risk assessment and planning.",
+                    "default": 120,
+                    "minimum": 50,
+                    "maximum": 200,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "HK.SDM2013"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.4.1(Table3.6)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "T"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "years"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 0
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      },
+                      "refStd": {
+                        "type": "string",
+                        "default": "NDPs",
+                        "description": "Nationally Determined Parameters"
+                      }
+                    }
+                  },
+                  "G11_COMP_11": {
+                    "title": "Selection of degree of exposure",
+                    "type": "string",
+                    "description": "The degree of exposure refers to the extent to which a structure is affected by surrounding conditions such as buildings, topography, or open areas. Selecting the appropriate exposure level is crucial for accurately calculating wind pressures on structures.",
+                    "default": "1",
+                    "enum": [
+                      "1",
+                      "2",
+                      "3",
+                      "4"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "HK.SDM2013"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.4.2.1(Table3.8)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "degexpo"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": "https://moa.rpm.kr-dv-midasit.com/design-guide/figures/detail_g11_comp_11.png"
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$degexpo$$",
+                            "Description"
+                          ],
+                          [
+                            "1",
+                            "[Sheltered Location] Sheltered by surrounding buildings and/or topography (e.g., Kowloon Park Drive Flyover)"
+                          ],
+                          [
+                            "2",
+                            "Normal exposure (e.g., Castle Road Flyover)"
+                          ],
+                          [
+                            "3",
+                            "Elevated situation; not sheltered by buildings or topography (e.g., Tai Po Road Interchange)"
+                          ],
+                          [
+                            "4",
+                            "[Exposed Location] Exposed to north-easterly or south-easterly winds across open sea (e.g., Ap Lei Chau Bridge)"
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G11_COMP_14": {
+                    "title": "Selection of orography significance for site",
+                    "type": "string",
+                    "description": "Orography significance for a site refers to whether the location has terrain features, such as hills or cliffs, that increase wind velocities by more than 5%, necessitating the use of an orography factor in wind calculations. If the average slope of the upwind terrain is less than 3\u00b0, orographic effects can be disregarded.",
+                    "default": "Non-Significant Orography Site",
+                    "enum": [
+                      "Non-Significant Orography Site",
+                      "Significant Orography Site"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "HK.SDM2013"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.4.3(Table3.9)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "orosigsite"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": "https://moa.rpm.kr-dv-midasit.com/design-guide/figures/detail_g11_comp_14.png"
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$orosigsite$$",
+                            "Description"
+                          ],
+                          [
+                            "Non-Significant Orography Site",
+                            "The site does not have significant terrain features, so the topographical factor is not applied."
+                          ],
+                          [
+                            "Significant Orography Site",
+                            "The site has notable terrain features that require applying the topographical factor to wind pressure calculations."
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G11_COMP_18": {
+                    "title": "Height above ground level",
+                    "type": "number",
+                    "description": "The height above ground level refers to the vertical distance from the ground surface to the topmost part of the bridge structure, such as the deck or any point exposed to wind.",
+                    "default": 40,
+                    "minimum": 10,
+                    "maximum": 100,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "HK.SDM2013"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.4.3(Table3.9)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "z"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "m"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G11_COMP_19": {
+                    "title": "Horizontal wind loaded lengths",
+                    "type": "number",
+                    "description": "The horizontal wind loaded length is the section of the bridge exposed to wind, producing the most severe effect. It can refer to the base length of a single adverse area or a combined length of multiple adverse areas in continuous structures.",
+                    "default": 100,
+                    "minimum": 20,
+                    "maximum": 2000,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "HK.SDM2013"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.4.3(Table3.9)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "L"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "m"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G11_COMP_25": {
+                    "title": "Height of orographic features",
+                    "type": "number",
+                    "description": "Height refers to the vertical distance from the base level of flat terrain to the top of an orographic feature, such as a hill, ridge, or cliff. This measurement is essential for calculating the upwind slope and determining its effect on wind velocity as illustrated in Figure A.1 of EN 1991-1-4.",
+                    "default": 80,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "HK.SDM2013"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.4.3(Table3.9)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "H"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "m"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G11_COMP_26": {
+                    "title": "Actual length of the upwind slope in the wind direction",
+                    "type": "number",
+                    "description": "Length refers to the horizontal distance from the start of an incline to the point where it reaches the maximum height of an orographic feature. This distance helps in defining the upwind slope, which influences how wind velocity changes as it passes over the terrain, as shown in Figure A.1 of EN 1991-1-4.",
+                    "default": 650,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "HK.SDM2013"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.4.3(Table3.9)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "L_{u}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "m"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G11_COMP_30": {
+                    "title": "Selection of terrain type for s factor",
+                    "type": "string",
+                    "description": "The calculation for the s factor differs based on whether the terrain type is classified as cliffs and escarpments or hills and ridges. Selecting the appropriate terrain type is essential for applying the correct method in wind pressure assessments. Refer to Figure A.2 and Figure A.3 of BS EN 1991-1-4 for detailed guidance.",
+                    "default": "Cliffs and Escarpments",
+                    "enum": [
+                      "Cliffs and Escarpments",
+                      "Hills and Ridges"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "HK.SDM2013"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.4.3(Table3.9)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "terrtype"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": "https://moa.rpm.kr-dv-midasit.com/design-guide/figures/detail_g11_comp_30.png"
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$terrtype$$",
+                            "Description"
+                          ],
+                          [
+                            "Cliffs and Escarpments",
+                            "Evaluates the impact of wind over steep and abrupt slopes where wind decreases sharply beyond the crest."
+                          ],
+                          [
+                            "Hills and Ridges",
+                            "Represents terrain with gradual or rolling slopes, where wind gradually decreases after crossing the crest."
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G11_COMP_33": {
+                    "title": "Length of downwind slope for hills and ridges",
+                    "type": "number",
+                    "description": "The length of the downwind slope is the horizontal distance from the crest of a hill or ridge to the end of the slope in the wind direction. This measurement is crucial for assessing how wind velocity and pressure change as the wind moves beyond the crest and is specifically applied in Figure A.3 of BS EN 1991-1-4 for calculating the s factor for hills and ridges.",
+                    "default": 400,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "HK.SDM2013"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.4.3(Table3.9)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "L_{d}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "m"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G11_COMP_34": {
+                    "title": "Horizontal distance from the top of the crest",
+                    "type": "number",
+                    "description": "The horizontal distance from the top of the crest refers to the measurement from the highest point of a hill or ridge to the structure's location on the ground. This distance is important for assessing how wind behaves as it travels over and beyond the crest. The distance is considered negative (-) to the left of the crest and positive (+) to the right of the crest.",
+                    "default": -150,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "HK.SDM2013"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.4.3(Table3.9)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "x"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "m"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "G11_COMP_1",
+                  "G11_COMP_4",
+                  "G11_COMP_5",
+                  "G11_COMP_11",
+                  "G11_COMP_14",
+                  "G11_COMP_18",
+                  "G11_COMP_19",
+                  "G11_COMP_25",
+                  "G11_COMP_26",
+                  "G11_COMP_30",
+                  "G11_COMP_33",
+                  "G11_COMP_34"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "isInput": false,
+                    "codeName": "",
+                    "reference": [
+                      ""
+                    ],
+                    "title": "",
+                    "description": "",
+                    "figurePath": "",
+                    "descriptTable": [],
+                    "compType": "",
+                    "symbol": "",
+                    "result": {
+                      "value": "0.0",
+                      "table": [],
+                      "formula": [],
+                      "variables": {}
+                    },
+                    "refStd": "",
+                    "unit": "",
+                    "notation": "standard",
+                    "decimal": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

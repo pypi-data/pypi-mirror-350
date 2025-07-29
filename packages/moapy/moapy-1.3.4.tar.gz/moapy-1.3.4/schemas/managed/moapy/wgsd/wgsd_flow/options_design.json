@@ -1,0 +1,310 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.2.5"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-wgsd-wgsd_flow-options_design": {
+      "post": {
+        "summary": "3d pm option",
+        "description": "3d pm option",
+        "operationId": "options design",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "opt": {
+                    "properties": {
+                      "dgncode": {
+                        "type": "string",
+                        "enum": [
+                          "ACI318M-19",
+                          "Eurocode2-04"
+                        ],
+                        "title": "Dgncode",
+                        "description": "Design code",
+                        "default": "Eurocode2-04"
+                      },
+                      "byEccPu": {
+                        "type": "string",
+                        "enum": [
+                          "ecc",
+                          "P-U"
+                        ],
+                        "title": "Byeccpu",
+                        "description": "ecc or P-U",
+                        "default": "ecc"
+                      }
+                    },
+                    "type": "object",
+                    "title": "Options",
+                    "description": "GSD options class\n\nArgs:\n    dgncode (str): Design code\n    by_ecc_pu (str): ecc",
+                    "x-component-detail": {
+                      "id": "moapy.data_pre.PMOptions"
+                    }
+                  }
+                },
+                "type": "object",
+                "required": [
+                  "opt"
+                ],
+                "title": "options design"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "dgncode": {
+                      "type": "string",
+                      "enum": [
+                        "ACI318M-19",
+                        "Eurocode2-04"
+                      ],
+                      "title": "Dgncode",
+                      "description": "Design code",
+                      "default": "Eurocode2-04"
+                    },
+                    "byEccPu": {
+                      "type": "string",
+                      "enum": [
+                        "ecc",
+                        "P-U"
+                      ],
+                      "title": "Byeccpu",
+                      "description": "ecc or P-U",
+                      "default": "ecc"
+                    }
+                  },
+                  "type": "object",
+                  "title": "Options",
+                  "description": "GSD options class\n\nArgs:\n    dgncode (str): Design code\n    by_ecc_pu (str): ecc",
+                  "x-component-detail": {
+                    "id": "moapy.data_pre.PMOptions"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "detail": {
+                      "items": {
+                        "properties": {
+                          "loc": {
+                            "items": {
+                              "anyOf": [
+                                {
+                                  "type": "string"
+                                },
+                                {
+                                  "type": "integer"
+                                }
+                              ]
+                            },
+                            "type": "array",
+                            "title": "Location"
+                          },
+                          "msg": {
+                            "type": "string",
+                            "title": "Message"
+                          },
+                          "type": {
+                            "type": "string",
+                            "title": "Error Type"
+                          }
+                        },
+                        "type": "object",
+                        "required": [
+                          "loc",
+                          "msg",
+                          "type"
+                        ],
+                        "title": "ValidationError"
+                      },
+                      "type": "array",
+                      "title": "Detail"
+                    }
+                  },
+                  "type": "object",
+                  "title": "HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "x-content-info": {
+          "title": "3d pm option",
+          "description": "3d pm option"
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "properties": {
+                "loc": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "integer"
+                      }
+                    ]
+                  },
+                  "type": "array",
+                  "title": "Location"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "Message"
+                },
+                "type": {
+                  "type": "string",
+                  "title": "Error Type"
+                }
+              },
+              "type": "object",
+              "required": [
+                "loc",
+                "msg",
+                "type"
+              ],
+              "title": "ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "PMOptions": {
+        "properties": {
+          "dgncode": {
+            "type": "string",
+            "enum": [
+              "ACI318M-19",
+              "Eurocode2-04"
+            ],
+            "title": "Dgncode",
+            "description": "Design code",
+            "default": "Eurocode2-04"
+          },
+          "byEccPu": {
+            "type": "string",
+            "enum": [
+              "ecc",
+              "P-U"
+            ],
+            "title": "Byeccpu",
+            "description": "ecc or P-U",
+            "default": "ecc"
+          }
+        },
+        "type": "object",
+        "title": "Options",
+        "description": "GSD options class\n\nArgs:\n    dgncode (str): Design code\n    by_ecc_pu (str): ecc",
+        "x-component-detail": {
+          "id": "moapy.data_pre.PMOptions"
+        }
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "options_design": {
+        "properties": {
+          "opt": {
+            "properties": {
+              "dgncode": {
+                "type": "string",
+                "enum": [
+                  "ACI318M-19",
+                  "Eurocode2-04"
+                ],
+                "title": "Dgncode",
+                "description": "Design code",
+                "default": "Eurocode2-04"
+              },
+              "byEccPu": {
+                "type": "string",
+                "enum": [
+                  "ecc",
+                  "P-U"
+                ],
+                "title": "Byeccpu",
+                "description": "ecc or P-U",
+                "default": "ecc"
+              }
+            },
+            "type": "object",
+            "title": "Options",
+            "description": "GSD options class\n\nArgs:\n    dgncode (str): Design code\n    by_ecc_pu (str): ecc",
+            "x-component-detail": {
+              "id": "moapy.data_pre.PMOptions"
+            }
+          }
+        },
+        "type": "object",
+        "required": [
+          "opt"
+        ],
+        "title": "options design"
+      }
+    }
+  }
+}

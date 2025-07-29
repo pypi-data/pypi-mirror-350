@@ -1,0 +1,326 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.2.5"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    },
+    {
+      "url": "https://moa.rpm.kr-st-midasit.com/backend/function-executor/python-execute/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-designers_guide-func_execute-calc_content_9": {
+      "post": {
+        "summary": "Horizontal Force Calculation on Railway Bridges",
+        "description": "[EN1991-2] This guide provides detailed steps for calculating horizontal forces acting on railway bridges. It covers the evaluation of centrifugal forces, nosing force, and traction and braking forces, which are critical in assessing the structural stability and performance of railway bridges. These horizontal forces must be considered to ensure the safety and durability of bridges under various rail traffic conditions.",
+        "x-content-info": {
+          "standardType": "EUROCODE",
+          "codeName": "EN1991-2",
+          "codeTitle": "Eurocode 1: Actions on structures \u2014 Part 2: Traffic loads on bridges",
+          "title": "Horizontal Force Calculation on Railway Bridges",
+          "description": "[EN1991-2] This guide provides detailed steps for calculating horizontal forces acting on railway bridges. It covers the evaluation of centrifugal forces, nosing force, and traction and braking forces, which are critical in assessing the structural stability and performance of railway bridges. These horizontal forces must be considered to ensure the safety and durability of bridges under various rail traffic conditions.",
+          "edition": "2003 Incorporating Corrigendum No. 1",
+          "figurePath": null
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "G8_COMP_8": {
+                    "title": "Maximum line speed at the site",
+                    "type": "number",
+                    "description": "The maximum line speed at the site refers to the highest speed allowed for trains on a specific section of the railway track. It is crucial for evaluating dynamic effects on structures like bridges, ensuring they are designed to handle the expected train speeds safely.",
+                    "default": 350,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1991-2"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.4.4(1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "V"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "km/h"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 1
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G9_COMP_4": {
+                    "title": "Radius of curvature for railway bridges",
+                    "type": "number",
+                    "description": "The radius of curvature for railway bridges refers to the radius of the curve along which a railway track is laid on a bridge. It is a key factor in calculating centrifugal forces, as tighter curves (smaller radii) result in higher centrifugal forces on the bridge.",
+                    "default": 1500,
+                    "minimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1991-2"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.5.1(4)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "r"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "m"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G9_COMP_5": {
+                    "title": "Selection of railway traffic load models",
+                    "type": "string",
+                    "description": "This section outlines the selection criteria for railway traffic load models used in bridge analysis. Load Model LM71 (and SW/0 for continuous bridges) is used to represent normal rail traffic, while Load Model SW/2 is for heavy loads. The 'unloaded train' model represents the effects of an unloaded train.",
+                    "default": "Load Model 71",
+                    "enum": [
+                      "Load Model 71",
+                      "Load Model SW/0",
+                      "Load Model SW/2",
+                      "Unloaded Train"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1991-2"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.3.1(1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "rtmodel"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G9_COMP_8": {
+                    "title": "Influence length of the loaded part of curved track",
+                    "type": "number",
+                    "description": "The influence length refers to the length of the curved track on a railway bridge that is directly affected by the train load. It plays a crucial role in determining the horizontal forces, such as centrifugal forces, acting on the structure. A shorter influence length generally leads to higher localized forces, making it essential for accurately calculating load effects on the bridge.",
+                    "default": 115,
+                    "minimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1991-2"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.5.1(8)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "L_{f}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "m"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G9_COMP_17": {
+                    "title": "Influence length of the loaded part of curved track",
+                    "type": "number",
+                    "description": "For Load Model 71, the influence length for traction and braking forces refers specifically to the part of the structure subjected to these forces, applied as a uniformly distributed load. This length is typically defined based on the bridge's geometry and the portion of the track directly affected by the braking and traction efforts of the train under Load Model 71 conditions.",
+                    "default": 25.4,
+                    "minimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1991-2"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.5.3(1)P"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "L_{LM71}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "m"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "G8_COMP_8",
+                  "G9_COMP_4",
+                  "G9_COMP_5",
+                  "G9_COMP_8",
+                  "G9_COMP_17"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "isInput": false,
+                    "codeName": "",
+                    "reference": [
+                      ""
+                    ],
+                    "title": "",
+                    "description": "",
+                    "figurePath": "",
+                    "descriptTable": [],
+                    "compType": "",
+                    "symbol": "",
+                    "result": {
+                      "value": "0.0",
+                      "table": [],
+                      "formula": [],
+                      "variables": {}
+                    },
+                    "refStd": "",
+                    "unit": "",
+                    "notation": "standard",
+                    "decimal": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,534 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.2.5"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    },
+    {
+      "url": "https://moa.rpm.kr-st-midasit.com/backend/function-executor/python-execute/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-designers_guide-func_execute-calc_content_28": {
+      "post": {
+        "summary": "Required Shear Reinforcement Area Calculation",
+        "description": "[EN1992-1-1] This guide explains how to calculate the required shear reinforcement area using the design shear force, lever arm, and yield strength of the reinforcement. It includes the process to calculate the required shear reinforcement area divided by spacing and, based on the user-provided spacing, determine the final required shear reinforcement area. The guide also explains how to apply the appropriate formulas for vertical or inclined shear reinforcement, depending on the inclination angle, ensuring accurate determination of the reinforcement needed for structural design.",
+        "x-content-info": {
+          "standardType": "EUROCODE",
+          "codeName": "EN1992-1-1",
+          "codeTitle": "Eurocode 2: Design of concrete structures \u2014 Part 1-1: General rules and rules for buildings",
+          "title": "Required Shear Reinforcement Area Calculation",
+          "description": "[EN1992-1-1] This guide explains how to calculate the required shear reinforcement area using the design shear force, lever arm, and yield strength of the reinforcement. It includes the process to calculate the required shear reinforcement area divided by spacing and, based on the user-provided spacing, determine the final required shear reinforcement area. The guide also explains how to apply the appropriate formulas for vertical or inclined shear reinforcement, depending on the inclination angle, ensuring accurate determination of the reinforcement needed for structural design.",
+          "edition": "2004",
+          "figurePath": null
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "G14_COMP_3": {
+                    "title": "Design situations",
+                    "type": "string",
+                    "description": "This table outlines different design situations, categorized into persistent, transient, and accidental conditions. Each category represents a specific scenario that may affect the design and safety considerations of a structure.",
+                    "default": "Persistent",
+                    "enum": [
+                      "Persistent",
+                      "Transient",
+                      "Accidental"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "2.4.2.4(Table2.1N)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "designsitu"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G14_COMP_4": {
+                    "title": "Compressive strength classes",
+                    "type": "string",
+                    "description": "Compressive strength classes categorize concrete based on its compressive strength, typically indicated by a standard notation such as C30/37, where the first number represents the cylinder strength and the second the cube strength. For more detailed information, refer toEN 206-1 (Table 7).",
+                    "default": "C12/15",
+                    "enum": [
+                      "C12/15",
+                      "C16/20",
+                      "C20/25",
+                      "C25/30",
+                      "C30/37",
+                      "C35/45",
+                      "C40/50",
+                      "C45/55",
+                      "C50/60",
+                      "C55/67",
+                      "C60/75",
+                      "C70/85",
+                      "C80/95",
+                      "C90/105"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.1.3(Table 3.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "C"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G27_COMP_2": {
+                    "title": "Design shear force",
+                    "type": "number",
+                    "description": "The design shear force is the calculated value of the applied shear force acting on a concrete section due to external loading and prestressing. It is used to assess whether the section's resistance is sufficient to withstand the applied shear.",
+                    "default": 350.0,
+                    "minimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.2.1(3)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "V_{Ed}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "kN"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G27_COMP_6": {
+                    "title": "Smallest cross-sectional width in tensile area",
+                    "type": "number",
+                    "description": "The smallest cross-sectional width in the tensile area refers to the narrowest part of a concrete section where tensile stresses occur. This dimension is crucial in shear resistance calculations, as it directly impacts the section's ability to handle shear forces.",
+                    "default": 600.0,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.2.2(1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "b_{w}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "mm"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G27_COMP_7": {
+                    "title": "Effective depth of cross section",
+                    "type": "number",
+                    "description": "The effective depth of cross section is the distance from the extreme compression fiber to the centroid of the tensile reinforcement. It is a key parameter in determining the shear and flexural resistance of a concrete section.",
+                    "default": 429.0,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.2.2(Figure6.3)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "d"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "mm"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G28_COMP_1": {
+                    "title": "Inclination angle of shear reinforcement",
+                    "type": "number",
+                    "description": "The angle of shear reinforcement refers to the inclination of the shear reinforcement relative to the beam axis perpendicular to the shear force. It is used in the design of shear resistance, with vertical reinforcement having an angle of 90 degrees, while inclined reinforcement may have a smaller angle to enhance shear resistance efficiency.",
+                    "default": 90.0,
+                    "minimum": 45,
+                    "maximum": 90,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.2.3(1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "\\alpha_{D}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "degree"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G28_COMP_3": {
+                    "title": "Angle of the concrete compression strut",
+                    "type": "number",
+                    "description": "The angle of the concrete compression strut represents the inclination of the internal compressive forces in the concrete relative to the beam axis perpendicular to the shear force. It is a critical parameter in the truss model for shear design and typically ranges between 21.8degrees (cot theta equals two point five) and 45degrees (cot theta equals one) as specified in design codes.",
+                    "default": 45.0,
+                    "minimum": 21.8,
+                    "maximum": 45,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.2.3(6.7N)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "\\theta_{D}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "degree"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G28_COMP_8": {
+                    "title": "Spacing of shear reinforcement",
+                    "type": "number",
+                    "description": "The spacing of shear reinforcement refers to the distance between consecutive stirrups or shear reinforcement elements along the length of a structural member. It is a critical parameter in ensuring uniform distribution of reinforcement to resist shear forces effectively.",
+                    "default": 200.0,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.2.3(3)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "s"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "mm"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G28_COMP_11": {
+                    "title": "Characteristic yield strength of shear reinforcement",
+                    "type": "number",
+                    "description": "The characteristic yield strength of shear reinforcement refers to the specified yield strength of the reinforcement material, representing the stress level at which the material begins to deform plastically. It is used as a baseline value in structural design calculations.",
+                    "default": 400.0,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.2.3(3)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "f_{ywk}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "MPa"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 0
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "G14_COMP_3",
+                  "G14_COMP_4",
+                  "G27_COMP_2",
+                  "G27_COMP_6",
+                  "G27_COMP_7",
+                  "G28_COMP_1",
+                  "G28_COMP_3",
+                  "G28_COMP_8",
+                  "G28_COMP_11"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "isInput": false,
+                    "codeName": "",
+                    "reference": [
+                      ""
+                    ],
+                    "title": "",
+                    "description": "",
+                    "figurePath": "",
+                    "descriptTable": [],
+                    "compType": "",
+                    "symbol": "",
+                    "result": {
+                      "value": "0.0",
+                      "table": [],
+                      "formula": [],
+                      "variables": {}
+                    },
+                    "refStd": "",
+                    "unit": "",
+                    "notation": "standard",
+                    "decimal": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,927 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.2.5"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    },
+    {
+      "url": "https://moa.rpm.kr-st-midasit.com/backend/function-executor/python-execute/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-designers_guide-func_execute-calc_content_24": {
+      "post": {
+        "summary": "Design Anchorage Length Calculation for Reinforcement Bars",
+        "description": "[EN1992-1-1] This guide provides step-by-step instructions for calculating the design anchorage length to ensure that reinforcement bars are securely anchored within concrete structures. It details how to apply various coefficients, such as those related to bar shape, concrete cover, and confinement, to determine the required length. The guide also explains how these factors influence the anchorage performance and ensure the overall safety and durability of the structure.",
+        "x-content-info": {
+          "standardType": "EUROCODE",
+          "codeName": "EN1992-1-1",
+          "codeTitle": "Eurocode 2: Design of concrete structures \u2014 Part 1-1: General rules and rules for buildings",
+          "title": "Design Anchorage Length Calculation for Reinforcement Bars",
+          "description": "[EN1992-1-1] This guide provides step-by-step instructions for calculating the design anchorage length to ensure that reinforcement bars are securely anchored within concrete structures. It details how to apply various coefficients, such as those related to bar shape, concrete cover, and confinement, to determine the required length. The guide also explains how these factors influence the anchorage performance and ensure the overall safety and durability of the structure.",
+          "edition": "2004",
+          "figurePath": "https://moa.rpm.kr-dv-midasit.com/design-guide/figures/detail_content_24.png"
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "G14_COMP_3": {
+                    "title": "Design situations",
+                    "type": "string",
+                    "description": "This table outlines different design situations, categorized into persistent, transient, and accidental conditions. Each category represents a specific scenario that may affect the design and safety considerations of a structure.",
+                    "default": "Persistent",
+                    "enum": [
+                      "Persistent",
+                      "Transient",
+                      "Accidental"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "2.4.2.4(Table2.1N)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "designsitu"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G14_COMP_4": {
+                    "title": "Compressive strength classes",
+                    "type": "string",
+                    "description": "Compressive strength classes categorize concrete based on its compressive strength, typically indicated by a standard notation such as C30/37, where the first number represents the cylinder strength and the second the cube strength. For more detailed information, refer toEN 206-1 (Table 7).",
+                    "default": "C12/15",
+                    "enum": [
+                      "C12/15",
+                      "C16/20",
+                      "C20/25",
+                      "C25/30",
+                      "C30/37",
+                      "C35/45",
+                      "C40/50",
+                      "C45/55",
+                      "C50/60",
+                      "C55/67",
+                      "C60/75",
+                      "C70/85",
+                      "C80/95",
+                      "C90/105"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.1.3(Table 3.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "C"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G18_COMP_1": {
+                    "title": "Characteristic yield strength of reinforcement",
+                    "type": "number",
+                    "description": "Characteristic Yield Strength is the stress level at which a material has a specified probability of yielding, typically 95%. It represents the strength below which not more than 5% of the material's test results are expected to fall, ensuring a high level of reliability in structural design.",
+                    "default": 500.0,
+                    "minimum": 400,
+                    "maximum": 600,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "AnnexC(Table C.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "f_{yk}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "MPa"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 0
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G24_COMP_2": {
+                    "title": "Bar diameter",
+                    "type": "number",
+                    "description": "Bar diameter refers to the thickness of a reinforcement bar, usually measured in millimeters. It is a critical parameter used in calculating anchorage and lap lengths, as the size of the bar directly impacts the bond strength between the reinforcement and the surrounding concrete.",
+                    "default": 20.0,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "8.4.1(Figure8.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "\\phi"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "mm"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 1
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G24_COMP_5": {
+                    "title": "Bond condition selection",
+                    "type": "string",
+                    "description": "Bond conditions are a crucial factor in determining the anchorage length of reinforcement. The conditions vary based on the placement of the reinforcement, the thickness of the concrete element, and the direction of concrete pouring.",
+                    "default": "Good",
+                    "enum": [
+                      "Good",
+                      "Poor"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "8.4.2(Figure8.2)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "bondcon"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$bondcon$$",
+                            "Description"
+                          ],
+                          [
+                            "Good",
+                            "Applies when the height of the concrete element is 250mm or less, or the reinforcement bar placement angle is between 45\u00b0 and 90\u00b0. In this case, the bond quality between the reinforcement and concrete is optimal."
+                          ],
+                          [
+                            "Poor",
+                            "When the height of the concrete element exceeds 250mm, reinforcement located in the upper region, excluding the bottom 250mm, is subject to poor bond conditions. If the height exceeds 600mm, reinforcement in the top 300mm region is also considered to have poor bond conditions."
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G24_COMP_8": {
+                    "title": "Select anchorage condition",
+                    "type": "string",
+                    "description": "Choose the appropriate anchorage condition to determine the minimum anchorage length. This selection is crucial as the anchorage requirement differs based on whether the reinforcement is under tension or compression.",
+                    "default": "For anchorages in tension",
+                    "enum": [
+                      "For anchorages in tension",
+                      "For anchorages in compression"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "8.4.4(1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "anchcond"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$anchcond$$",
+                            "Description"
+                          ],
+                          [
+                            "For anchorages in tension",
+                            "Use when the reinforcement is subjected to pulling forces, such as in the bottom reinforcement of a simply supported beam, where the bar experiences tension as the beam bends downward."
+                          ],
+                          [
+                            "For anchorages in compression",
+                            "Use when the reinforcement is subjected to pushing forces, such as in the top reinforcement of a column, where the bar is compressed due to the weight of the structure above."
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G24_COMP_11": {
+                    "title": "Select bar configuration",
+                    "type": "string",
+                    "description": "Choose the configuration of the reinforcement bars to determine the appropriate effective concrete cover for anchorage and bond calculations. The configuration impacts how the effective cover is measured and applied.",
+                    "default": "Straight bars",
+                    "enum": [
+                      "Straight bars",
+                      "Bent or hooked bars",
+                      "Looped bars"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "8.4.4(Figure8.3)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "barconfig"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$barconfig$$",
+                            "Description"
+                          ],
+                          [
+                            "Straight bars",
+                            "Bars placed in a straight line, with cover determined by the smallest distance from the bar to the concrete surface."
+                          ],
+                          [
+                            "Bent or hooked bars",
+                            "Bars that are bent or have hooks, with cover determined based on the distance from the bar to the side of the concrete."
+                          ],
+                          [
+                            "Looped bars",
+                            "Bars formed into a loop, with cover measured from the bar to the concrete bottom surface."
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G24_COMP_13": {
+                    "title": "Bar spacing",
+                    "type": "number",
+                    "description": "Bar spacing distance refers to the distance between two parallel reinforcement bars. This spacing is important for ensuring proper concrete placement and adequate bond strength between the bars and the surrounding concrete.",
+                    "default": 125.0,
+                    "minimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "8.4.4(Figure8.3)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "a"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "mm"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G24_COMP_16": {
+                    "title": "Nominal concrete cover",
+                    "type": "number",
+                    "description": "Nominal concrete cover is the distance from the surface of the reinforcement, including links, stirrups, or surface reinforcement if applicable, to the nearest concrete surface. This cover ensures protection of the reinforcement and contributes to the overall structural integrity.",
+                    "default": 55.0,
+                    "minimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "8.4.4(Figure8.3)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "c_{nom}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "mm"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G24_COMP_17": {
+                    "title": "Diameter of transverse reinforcement",
+                    "type": "number",
+                    "description": "The diameter of transverse reinforcement refers to the thickness of the transverse reinforcement bars, such as ties or stirrups, used along the design anchorage length.",
+                    "default": 12.0,
+                    "minimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "8.4.4(Figure8.4)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "\\phi_{t}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "mm"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 1
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G24_COMP_22": {
+                    "title": "Select welded transverse reinforcement option",
+                    "type": "string",
+                    "description": "Choose whether welded transverse reinforcement is present along the design anchorage length. This selection will determine the appropriate coefficient for the level of confinement provided.",
+                    "default": "Welded",
+                    "enum": [
+                      "Welded",
+                      "Not Welded"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "8.4.4(Table8.2)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "weldtrans"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$weldtrans$$",
+                            "Description"
+                          ],
+                          [
+                            "Welded",
+                            "Welded transverse reinforcement is present."
+                          ],
+                          [
+                            "Not Welded",
+                            "No welded transverse reinforcement is present."
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G24_COMP_25": {
+                    "title": "Transverse pressure",
+                    "type": "number",
+                    "description": "Transverse pressure refers to the external pressure applied perpendicularly to the splitting plane along the design anchorage length at the ultimate limit state. This pressure can provide additional confinement to the reinforcement, potentially enhancing bond strength and affecting the anchorage length requirements.",
+                    "default": 0.0,
+                    "minimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "8.4.4(Table8.2)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "p"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "MPa"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G24_COMP_26": {
+                    "title": "Placement option for confinement",
+                    "type": "string",
+                    "description": "Choose one of the placement options to determine the level of confinement provided by the transverse reinforcement. This selection impacts how the anchorage length is adjusted based on the position of the anchored bar.",
+                    "default": "Bent Anchorage",
+                    "enum": [
+                      "Bent Anchorage",
+                      "Partial Confinement",
+                      "No Confinement"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "8.4.4(Figure8.4)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "conplace"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$conplace$$",
+                            "Description"
+                          ],
+                          [
+                            "Bent Anchorage",
+                            "When the transverse bar is positioned around a bent anchored bar for full confinement."
+                          ],
+                          [
+                            "Partial Confinement",
+                            "When the anchored bar is placed inside the transverse reinforcement, offering partial confinement."
+                          ],
+                          [
+                            "No Confinement",
+                            "When the anchored bar is placed outside the transverse reinforcement, providing no confinement."
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G24_COMP_29": {
+                    "title": "Select structure type for tension anchorage",
+                    "type": "string",
+                    "description": "For anchorages in tension, select the structure type to determine the minimum cross-sectional area of transverse reinforcement.",
+                    "default": "Beam",
+                    "enum": [
+                      "Beam",
+                      "Slab"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "8.4.4(Table8.2)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "tenstruc"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$tenstruc$$",
+                            "Description"
+                          ],
+                          [
+                            "Beam",
+                            "Used for horizontal structural elements that carry loads primarily in bending."
+                          ],
+                          [
+                            "Slab",
+                            "Used for flat, horizontal surfaces that distribute loads over a wide area."
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G24_COMP_33": {
+                    "title": "Transverse reinforcement leg",
+                    "type": "number",
+                    "description": "In transverse reinforcement, a leg refers to the segment of a stirrup or tie that is placed parallel to the layer of reinforcement it is meant to confine. When calculating the anchorage length, these legs are considered along the design anchorage length. For lap length calculations, they are accounted for within the lap length region.",
+                    "default": 3.0,
+                    "minimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "8.7.4.1(3)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "leg"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "ea"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 0
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "G14_COMP_3",
+                  "G14_COMP_4",
+                  "G18_COMP_1",
+                  "G24_COMP_2",
+                  "G24_COMP_5",
+                  "G24_COMP_8",
+                  "G24_COMP_11",
+                  "G24_COMP_13",
+                  "G24_COMP_16",
+                  "G24_COMP_17",
+                  "G24_COMP_22",
+                  "G24_COMP_25",
+                  "G24_COMP_26",
+                  "G24_COMP_29",
+                  "G24_COMP_33"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "isInput": false,
+                    "codeName": "",
+                    "reference": [
+                      ""
+                    ],
+                    "title": "",
+                    "description": "",
+                    "figurePath": "",
+                    "descriptTable": [],
+                    "compType": "",
+                    "symbol": "",
+                    "result": {
+                      "value": "0.0",
+                      "table": [],
+                      "formula": [],
+                      "variables": {}
+                    },
+                    "refStd": "",
+                    "unit": "",
+                    "notation": "standard",
+                    "decimal": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

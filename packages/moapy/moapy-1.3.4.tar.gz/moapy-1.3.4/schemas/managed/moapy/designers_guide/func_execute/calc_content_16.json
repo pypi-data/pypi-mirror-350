@@ -1,0 +1,499 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.2.5"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    },
+    {
+      "url": "https://moa.rpm.kr-st-midasit.com/backend/function-executor/python-execute/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-designers_guide-func_execute-calc_content_16": {
+      "post": {
+        "summary": "Creep Coefficient Calculation According to Eurocode",
+        "description": "[EN1992-1-1] The creep coefficient measures the time-dependent deformation (creep) of concrete under sustained load. It is essential for predicting the long-term performance of concrete structures, particularly under constant compressive stress. This guide provides instructions for calculating the creep coefficient, understanding its relationship with the tangent modulus, and adjusting for non-linear effects when stress levels are high. Proper calculation of the creep coefficient ensures the durability and safety of concrete structures over time.",
+        "x-content-info": {
+          "standardType": "EUROCODE",
+          "codeName": "EN1992-1-1",
+          "codeTitle": "Eurocode 2: Design of concrete structures \u2014 Part 1-1: General rules and rules for buildings",
+          "title": "Creep Coefficient Calculation According to Eurocode",
+          "description": "[EN1992-1-1] The creep coefficient measures the time-dependent deformation (creep) of concrete under sustained load. It is essential for predicting the long-term performance of concrete structures, particularly under constant compressive stress. This guide provides instructions for calculating the creep coefficient, understanding its relationship with the tangent modulus, and adjusting for non-linear effects when stress levels are high. Proper calculation of the creep coefficient ensures the durability and safety of concrete structures over time.",
+          "edition": "2004",
+          "figurePath": null
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "G14_COMP_4": {
+                    "title": "Compressive strength classes",
+                    "type": "string",
+                    "description": "Compressive strength classes categorize concrete based on its compressive strength, typically indicated by a standard notation such as C30/37, where the first number represents the cylinder strength and the second the cube strength. For more detailed information, refer toEN 206-1 (Table 7).",
+                    "default": "C12/15",
+                    "enum": [
+                      "C12/15",
+                      "C16/20",
+                      "C20/25",
+                      "C25/30",
+                      "C30/37",
+                      "C35/45",
+                      "C40/50",
+                      "C45/55",
+                      "C50/60",
+                      "C55/67",
+                      "C60/75",
+                      "C70/85",
+                      "C80/95",
+                      "C90/105"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.1.3(Table 3.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "C"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G15_COMP_2": {
+                    "title": "Cement type selection",
+                    "type": "string",
+                    "description": "This menu allows users to select the type of cement, including Class S, Class N, and Class R, each of which represents different strength and curing properties tailored for specific construction needs.",
+                    "default": "Class S",
+                    "enum": [
+                      "Class S",
+                      "Class N",
+                      "Class R"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.1.2 (6)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "cementype"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G16_COMP_5": {
+                    "title": "Temperature during time period",
+                    "type": "number",
+                    "description": "This term refers to the temperature, measured in degrees Celsius, during a specific time period. It is used to calculate the effect of temperature on the maturity and aging process of concrete over that period.",
+                    "default": 10,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "AnnexB.1(3)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "T(\\Delta{t_{i}})"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "\u00b0C"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 1
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      },
+                      "refStd": {
+                        "type": "string",
+                        "default": "NDPs",
+                        "description": "Nationally Determined Parameters"
+                      }
+                    }
+                  },
+                  "G16_COMP_6": {
+                    "title": "Duration of temperature exposure",
+                    "type": "number",
+                    "description": "This represents the number of days during which a specific temperature is maintained. It accounts for the influence of consistent temperature conditions on material properties over time.",
+                    "default": 3,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "AnnexB.1(1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "\\Delta{t_{i}}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "days"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 0
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      },
+                      "refStd": {
+                        "type": "string",
+                        "default": "NDPs",
+                        "description": "Nationally Determined Parameters"
+                      }
+                    }
+                  },
+                  "G16_COMP_11": {
+                    "title": "Concrete cross-sectional area",
+                    "type": "number",
+                    "description": "The concrete cross-sectional area represents the total area of the concrete member's cross-section, typically measured in square millimeters. It is used in various structural calculations, including determining the notional size of the member for creep and shrinkage analysis.",
+                    "default": 534694.0,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "AnnexB.1(1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "A_{c}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "mm^2"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 1
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G16_COMP_12": {
+                    "title": "Perimeter in contact with the atmosphere",
+                    "type": "number",
+                    "description": "The perimeter in contact with the atmosphere is the length of the boundary of the concrete member that is exposed to the surrounding air. This perimeter is crucial for calculating the notional size of the member, which influences how environmental factors like humidity affect the concrete.",
+                    "default": 5921.8,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "AnnexB.1(1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "u"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "mm"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 1
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G16_COMP_14": {
+                    "title": "Selecting relative humidity type",
+                    "type": "string",
+                    "description": "This option allows you to choose the appropriate relative humidity condition based on the environment. Available options include user input, inside conditions, or outside conditions.",
+                    "default": "User Input",
+                    "enum": [
+                      "User Input",
+                      "inside conditions",
+                      "outside conditions"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.1.4(Figure 3.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "rhtype"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G16_COMP_23": {
+                    "title": "User-defined relative humidity of the environment",
+                    "type": "number",
+                    "description": "This parameter allows users to manually define and input relative humidity values based on specific project requirements or environmental conditions, aside from the inside or outside conditions suggested by Eurocode.",
+                    "default": 70,
+                    "minimum": 40,
+                    "maximum": 100,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.1.4(Figure 3.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "RH_{user}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "%"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 0
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "G14_COMP_4",
+                  "G15_COMP_2",
+                  "G16_COMP_5",
+                  "G16_COMP_6",
+                  "G16_COMP_11",
+                  "G16_COMP_12",
+                  "G16_COMP_14",
+                  "G16_COMP_23"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "isInput": false,
+                    "codeName": "",
+                    "reference": [
+                      ""
+                    ],
+                    "title": "",
+                    "description": "",
+                    "figurePath": "",
+                    "descriptTable": [],
+                    "compType": "",
+                    "symbol": "",
+                    "result": {
+                      "value": "0.0",
+                      "table": [],
+                      "formula": [],
+                      "variables": {}
+                    },
+                    "refStd": "",
+                    "unit": "",
+                    "notation": "standard",
+                    "decimal": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

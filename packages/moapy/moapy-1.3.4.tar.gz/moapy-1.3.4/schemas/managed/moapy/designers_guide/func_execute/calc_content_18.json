@@ -1,0 +1,235 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.2.5"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    },
+    {
+      "url": "https://moa.rpm.kr-st-midasit.com/backend/function-executor/python-execute/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-designers_guide-func_execute-calc_content_18": {
+      "post": {
+        "summary": "Reinforcing Steel Design Parameters",
+        "description": "[EN1992-1-1] This guide outlines the process for calculating the necessary reinforcing steel parameters based on Eurocode standards. It details the steps to determine design yield strength, ultimate design strain, and characteristic strain limits for reinforcing steel, ensuring compliance with structural safety and performance requirements.",
+        "x-content-info": {
+          "standardType": "EUROCODE",
+          "codeName": "EN1992-1-1",
+          "codeTitle": "Eurocode 2: Design of concrete structures \u2014 Part 1-1: General rules and rules for buildings",
+          "title": "Reinforcing Steel Design Parameters",
+          "description": "[EN1992-1-1] This guide outlines the process for calculating the necessary reinforcing steel parameters based on Eurocode standards. It details the steps to determine design yield strength, ultimate design strain, and characteristic strain limits for reinforcing steel, ensuring compliance with structural safety and performance requirements.",
+          "edition": "2004",
+          "figurePath": null
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "G14_COMP_3": {
+                    "title": "Design situations",
+                    "type": "string",
+                    "description": "This table outlines different design situations, categorized into persistent, transient, and accidental conditions. Each category represents a specific scenario that may affect the design and safety considerations of a structure.",
+                    "default": "Persistent",
+                    "enum": [
+                      "Persistent",
+                      "Transient",
+                      "Accidental"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "2.4.2.4(Table2.1N)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "designsitu"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G18_COMP_1": {
+                    "title": "Characteristic yield strength of reinforcement",
+                    "type": "number",
+                    "description": "Characteristic Yield Strength is the stress level at which a material has a specified probability of yielding, typically 95%. It represents the strength below which not more than 5% of the material's test results are expected to fall, ensuring a high level of reliability in structural design.",
+                    "default": 500.0,
+                    "minimum": 400,
+                    "maximum": 600,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "AnnexC(Table C.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "f_{yk}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "MPa"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 0
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G18_COMP_7": {
+                    "title": "Normal design stress-strain model selection",
+                    "type": "string",
+                    "description": "This menu allows users to select the appropriate stress-strain model for normal design conditions of reinforcing steel according to Eurocode guidelines. It offers options for both inclined and horizontal top branch models, ensuring that the chosen model aligns with the specific reinforcing steel class and design requirements.",
+                    "default": "Elastic-Perfectly Plastic (horizontal top branch)",
+                    "enum": [
+                      "Elastic-Perfectly Plastic (horizontal top branch)",
+                      "(Class A) Elastic-Plastic with Hardening",
+                      "(Class B) Elastic-Plastic with Hardening",
+                      "(Class C) Elastic-Plastic with Hardening"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.2.4(2)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "rebarss"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "G14_COMP_3",
+                  "G18_COMP_1",
+                  "G18_COMP_7"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "isInput": false,
+                    "codeName": "",
+                    "reference": [
+                      ""
+                    ],
+                    "title": "",
+                    "description": "",
+                    "figurePath": "",
+                    "descriptTable": [],
+                    "compType": "",
+                    "symbol": "",
+                    "result": {
+                      "value": "0.0",
+                      "table": [],
+                      "formula": [],
+                      "variables": {}
+                    },
+                    "refStd": "",
+                    "unit": "",
+                    "notation": "standard",
+                    "decimal": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

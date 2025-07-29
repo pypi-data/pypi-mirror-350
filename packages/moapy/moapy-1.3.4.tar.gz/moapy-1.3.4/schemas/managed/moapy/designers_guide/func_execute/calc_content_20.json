@@ -1,0 +1,236 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.2.5"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    },
+    {
+      "url": "https://moa.rpm.kr-st-midasit.com/backend/function-executor/python-execute/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-designers_guide-func_execute-calc_content_20": {
+      "post": {
+        "summary": "Maximum Prestressing Force and Initial Prestress Force",
+        "description": "[EN1992-1-1] This guide provides a step-by-step approach to calculating the maximum prestressing force and the initial prestress force in prestressed concrete structures. The maximum prestressing force is determined by considering the allowable stress limits based on the ultimate tensile strength and the 0.1% proof strength of the prestressing steel, applying the appropriate coefficients. The initial prestress force is then calculated by subtracting the immediate losses from the maximum prestressing force, ensuring that the force applied to the concrete does not exceed the specified limits at the initial stage of prestressing.",
+        "x-content-info": {
+          "standardType": "EUROCODE",
+          "codeName": "EN1992-1-1",
+          "codeTitle": "Eurocode 2: Design of concrete structures \u2014 Part 1-1: General rules and rules for buildings",
+          "title": "Maximum Prestressing Force and Initial Prestress Force",
+          "description": "[EN1992-1-1] This guide provides a step-by-step approach to calculating the maximum prestressing force and the initial prestress force in prestressed concrete structures. The maximum prestressing force is determined by considering the allowable stress limits based on the ultimate tensile strength and the 0.1% proof strength of the prestressing steel, applying the appropriate coefficients. The initial prestress force is then calculated by subtracting the immediate losses from the maximum prestressing force, ensuring that the force applied to the concrete does not exceed the specified limits at the initial stage of prestressing.",
+          "edition": "2004",
+          "figurePath": "https://moa.rpm.kr-dv-midasit.com/design-guide/figures/detail_content_20.png"
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "G20_COMP_12": {
+                    "title": "Select design standard for mass calculation",
+                    "type": "string",
+                    "description": "Choose the design standard to calculate the mass of the selected strand. You can apply either EN 10138-3, which uses a density of 7.81 kg/dm\u00b3 for prestressing steel strands, or EN 1992-1-1, which uses a density of 7850 kg/m\u00b3 for steel reinforcement in concrete structures. Select the appropriate standard to calculate the mass based on the specific material characteristics.",
+                    "default": "Based on EN 10138-3 (7.81kg/dm^{3})",
+                    "enum": [
+                      "Based on EN 10138-3 (7.81kg/dm^{3})",
+                      "Based on EN 1992-1-1 3.3.6 (7,850kg/m^{3})"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.3.6(4)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "standmass"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G20_COMP_14": {
+                    "title": "Select strand type for high tensile steel wire",
+                    "type": "string",
+                    "description": "This table allows users to select strand grades, listing a variety of strand options based on the number of wires and their respective tensile strengths. The grades are categorized by wire count (2-wire, 3-wire, 7-wire, and 7G-wire) and tensile strength values, making it easy to choose the appropriate strand for specific construction needs. For more detailed information, refer to EN 10138-3 (Table 3).",
+                    "default": "(2-Wire)Y1770S2-5.6",
+                    "enum": [
+                      "(2-Wire)Y1770S2-5.6",
+                      "(2-Wire)Y1770S2-6.0",
+                      "(2-Wire)Y1860S2-4.5",
+                      "(3-Wire)Y1770S3-7.5",
+                      "(3-Wire)Y1860S3-4.85",
+                      "(3-Wire)Y1860S3-6.5",
+                      "(3-Wire)Y1860S3-6.9",
+                      "(3-Wire)Y1860S3-7.5",
+                      "(3-Wire)Y1860S3-8.6",
+                      "(3-Wire)Y1920S3-6.3",
+                      "(3-Wire)Y1920S3-6.5",
+                      "(3-Wire)Y1960S3-6.8",
+                      "(3-Wire)Y1960S3-5.2",
+                      "(3-Wire)Y1960S3-6.5",
+                      "(3-Wire)Y1960S3-6.85",
+                      "(3-Wire)Y2060S3-5.2",
+                      "(3-Wire)Y2160S3-5.2",
+                      "(7-Wire)Y1670S7-15.2",
+                      "(7-Wire)Y1770S7-6.9",
+                      "(7-Wire)Y1770S7-9.0",
+                      "(7-Wire)Y1770S7-9.3",
+                      "(7-Wire)Y1770S7-9.6",
+                      "(7-Wire)Y1770S7-11.0",
+                      "(7-Wire)Y1770S7-12.5",
+                      "(7-Wire)Y1770S7-12.9",
+                      "(7-Wire)Y1770S7-15.2",
+                      "(7-Wire)Y1770S7-15.3",
+                      "(7-Wire)Y1770S7-15.7",
+                      "(7-Wire)Y1770S7-18.0",
+                      "(7-Wire)Y1860S7-6.9",
+                      "(7-Wire)Y1860S7-7.0",
+                      "(7-Wire)Y1860S7-8.0",
+                      "(7-Wire)Y1860S7-9.0",
+                      "(7-Wire)Y1860S7-9.3",
+                      "(7-Wire)Y1860S7-9.6",
+                      "(7-Wire)Y1860S7-11.0",
+                      "(7-Wire)Y1860S7-11.3",
+                      "(7-Wire)Y1860S7-12.5",
+                      "(7-Wire)Y1860S7-12.9",
+                      "(7-Wire)Y1860S7-13.0",
+                      "(7-Wire)Y1860S7-15.2",
+                      "(7-Wire)Y1860S7-15.3",
+                      "(7-Wire)Y1860S7-15.7",
+                      "(7-Wire)Y1960S7-9.0",
+                      "(7-Wire)Y1960S7-9.3",
+                      "(7-Wire)Y2060S7-6.4",
+                      "(7-Wire)Y2060S7-6.85",
+                      "(7-Wire)Y2060S7-7.0",
+                      "(7-Wire)Y2060S7-8.6",
+                      "(7-Wire)Y2060S7-11.3",
+                      "(7-Wire)Y2160S7-6.85",
+                      "(7G-Wire)Y1700S7G-18.0",
+                      "(7G-Wire)Y1820S7G-15.2",
+                      "(7G-Wire)Y1860S7G-12.7",
+                      "(7G-Wire)Y1860S7G-15.2"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.3.1(5)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "strandgrade"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "G20_COMP_12",
+                  "G20_COMP_14"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "isInput": false,
+                    "codeName": "",
+                    "reference": [
+                      ""
+                    ],
+                    "title": "",
+                    "description": "",
+                    "figurePath": "",
+                    "descriptTable": [],
+                    "compType": "",
+                    "symbol": "",
+                    "result": {
+                      "value": "0.0",
+                      "table": [],
+                      "formula": [],
+                      "variables": {}
+                    },
+                    "refStd": "",
+                    "unit": "",
+                    "notation": "standard",
+                    "decimal": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

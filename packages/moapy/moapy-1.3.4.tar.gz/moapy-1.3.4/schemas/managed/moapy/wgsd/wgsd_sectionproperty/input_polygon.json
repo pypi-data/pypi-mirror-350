@@ -1,0 +1,946 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.2.5"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-wgsd-wgsd_sectionproperty-input_polygon": {
+      "post": {
+        "summary": "Input Polygon",
+        "description": "Input Polygon",
+        "operationId": "input polygon",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "points": {
+                    "properties": {
+                      "points": {
+                        "items": {
+                          "properties": {
+                            "x": {
+                              "properties": {
+                                "value": {
+                                  "type": "number",
+                                  "title": "Value",
+                                  "description": "Length"
+                                },
+                                "unit": {
+                                  "type": "string",
+                                  "enum": [
+                                    "mm",
+                                    "cm",
+                                    "m",
+                                    "in",
+                                    "ft"
+                                  ],
+                                  "title": "enUnitLength"
+                                }
+                              },
+                              "type": "object",
+                              "title": "Length",
+                              "description": "x-coordinate",
+                              "x-component-detail": {
+                                "id": "moapy.data_pre.Length"
+                              }
+                            },
+                            "y": {
+                              "properties": {
+                                "value": {
+                                  "type": "number",
+                                  "title": "Value",
+                                  "description": "Length"
+                                },
+                                "unit": {
+                                  "type": "string",
+                                  "enum": [
+                                    "mm",
+                                    "cm",
+                                    "m",
+                                    "in",
+                                    "ft"
+                                  ],
+                                  "title": "enUnitLength"
+                                }
+                              },
+                              "type": "object",
+                              "title": "Length",
+                              "description": "y-coordinate",
+                              "x-component-detail": {
+                                "id": "moapy.data_pre.Length"
+                              }
+                            }
+                          },
+                          "type": "object",
+                          "title": "Point",
+                          "description": "Point class\n\nArgs:\n    x (Length): x-coordinate\n    y (Length): y-coordinate",
+                          "x-component-detail": {
+                            "id": "moapy.data_pre.Point"
+                          }
+                        },
+                        "type": "array",
+                        "title": "Points",
+                        "description": "Points",
+                        "default": [
+                          {
+                            "x": {
+                              "unit": "mm",
+                              "value": 0.0
+                            },
+                            "y": {
+                              "unit": "mm",
+                              "value": 0.0
+                            }
+                          },
+                          {
+                            "x": {
+                              "unit": "mm",
+                              "value": 400.0
+                            },
+                            "y": {
+                              "unit": "mm",
+                              "value": 0.0
+                            }
+                          },
+                          {
+                            "x": {
+                              "unit": "mm",
+                              "value": 400.0
+                            },
+                            "y": {
+                              "unit": "mm",
+                              "value": 600.0
+                            }
+                          },
+                          {
+                            "x": {
+                              "unit": "mm",
+                              "value": 0.0
+                            },
+                            "y": {
+                              "unit": "mm",
+                              "value": 600.0
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "type": "object",
+                    "title": "Points",
+                    "description": "GSD Points class\n\nArgs:\n    points (list[Point]): Points",
+                    "x-component-detail": {
+                      "id": "moapy.data_pre.Points"
+                    }
+                  }
+                },
+                "type": "object",
+                "required": [
+                  "points"
+                ],
+                "title": "input polygon"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "points": {
+                      "items": {
+                        "properties": {
+                          "x": {
+                            "properties": {
+                              "value": {
+                                "type": "number",
+                                "title": "Value",
+                                "description": "Length"
+                              },
+                              "unit": {
+                                "type": "string",
+                                "enum": [
+                                  "mm",
+                                  "cm",
+                                  "m",
+                                  "in",
+                                  "ft"
+                                ],
+                                "title": "enUnitLength"
+                              }
+                            },
+                            "type": "object",
+                            "title": "Length",
+                            "description": "x-coordinate",
+                            "x-component-detail": {
+                              "id": "moapy.data_pre.Length"
+                            }
+                          },
+                          "y": {
+                            "properties": {
+                              "value": {
+                                "type": "number",
+                                "title": "Value",
+                                "description": "Length"
+                              },
+                              "unit": {
+                                "type": "string",
+                                "enum": [
+                                  "mm",
+                                  "cm",
+                                  "m",
+                                  "in",
+                                  "ft"
+                                ],
+                                "title": "enUnitLength"
+                              }
+                            },
+                            "type": "object",
+                            "title": "Length",
+                            "description": "y-coordinate",
+                            "x-component-detail": {
+                              "id": "moapy.data_pre.Length"
+                            }
+                          }
+                        },
+                        "type": "object",
+                        "title": "Point",
+                        "description": "Point class\n\nArgs:\n    x (Length): x-coordinate\n    y (Length): y-coordinate",
+                        "x-component-detail": {
+                          "id": "moapy.data_pre.Point"
+                        }
+                      },
+                      "type": "array",
+                      "title": "Points",
+                      "description": "List of points defining the corners of the outer polygon.",
+                      "default": [
+                        {
+                          "x": {
+                            "unit": "mm",
+                            "value": 0.0
+                          },
+                          "y": {
+                            "unit": "mm",
+                            "value": 0.0
+                          }
+                        },
+                        {
+                          "x": {
+                            "unit": "mm",
+                            "value": 400.0
+                          },
+                          "y": {
+                            "unit": "mm",
+                            "value": 0.0
+                          }
+                        },
+                        {
+                          "x": {
+                            "unit": "mm",
+                            "value": 400.0
+                          },
+                          "y": {
+                            "unit": "mm",
+                            "value": 600.0
+                          }
+                        },
+                        {
+                          "x": {
+                            "unit": "mm",
+                            "value": 0.0
+                          },
+                          "y": {
+                            "unit": "mm",
+                            "value": 600.0
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "type": "object",
+                  "title": "Outer Polygon",
+                  "description": "Represents a polygon defined by four corner points in a two-dimensional space. The polygon is used to define the outer boundary in various design applications.",
+                  "x-component-detail": {
+                    "id": "moapy.data_pre.OuterPolygon"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "detail": {
+                      "items": {
+                        "properties": {
+                          "loc": {
+                            "items": {
+                              "anyOf": [
+                                {
+                                  "type": "string"
+                                },
+                                {
+                                  "type": "integer"
+                                }
+                              ]
+                            },
+                            "type": "array",
+                            "title": "Location"
+                          },
+                          "msg": {
+                            "type": "string",
+                            "title": "Message"
+                          },
+                          "type": {
+                            "type": "string",
+                            "title": "Error Type"
+                          }
+                        },
+                        "type": "object",
+                        "required": [
+                          "loc",
+                          "msg",
+                          "type"
+                        ],
+                        "title": "ValidationError"
+                      },
+                      "type": "array",
+                      "title": "Detail"
+                    }
+                  },
+                  "type": "object",
+                  "title": "HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "x-content-info": {
+          "title": "Input Polygon",
+          "description": "Input Polygon"
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "properties": {
+                "loc": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "integer"
+                      }
+                    ]
+                  },
+                  "type": "array",
+                  "title": "Location"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "Message"
+                },
+                "type": {
+                  "type": "string",
+                  "title": "Error Type"
+                }
+              },
+              "type": "object",
+              "required": [
+                "loc",
+                "msg",
+                "type"
+              ],
+              "title": "ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Length": {
+        "properties": {
+          "value": {
+            "type": "number",
+            "title": "Value",
+            "description": "Length"
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "mm",
+              "cm",
+              "m",
+              "in",
+              "ft"
+            ],
+            "title": "enUnitLength"
+          }
+        },
+        "type": "object",
+        "title": "Length",
+        "description": "Length",
+        "x-component-detail": {
+          "id": "moapy.data_pre.Length"
+        }
+      },
+      "OuterPolygon": {
+        "properties": {
+          "points": {
+            "items": {
+              "properties": {
+                "x": {
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "title": "Value",
+                      "description": "Length"
+                    },
+                    "unit": {
+                      "type": "string",
+                      "enum": [
+                        "mm",
+                        "cm",
+                        "m",
+                        "in",
+                        "ft"
+                      ],
+                      "title": "enUnitLength"
+                    }
+                  },
+                  "type": "object",
+                  "title": "Length",
+                  "description": "x-coordinate",
+                  "x-component-detail": {
+                    "id": "moapy.data_pre.Length"
+                  }
+                },
+                "y": {
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "title": "Value",
+                      "description": "Length"
+                    },
+                    "unit": {
+                      "type": "string",
+                      "enum": [
+                        "mm",
+                        "cm",
+                        "m",
+                        "in",
+                        "ft"
+                      ],
+                      "title": "enUnitLength"
+                    }
+                  },
+                  "type": "object",
+                  "title": "Length",
+                  "description": "y-coordinate",
+                  "x-component-detail": {
+                    "id": "moapy.data_pre.Length"
+                  }
+                }
+              },
+              "type": "object",
+              "title": "Point",
+              "description": "Point class\n\nArgs:\n    x (Length): x-coordinate\n    y (Length): y-coordinate",
+              "x-component-detail": {
+                "id": "moapy.data_pre.Point"
+              }
+            },
+            "type": "array",
+            "title": "Points",
+            "description": "List of points defining the corners of the outer polygon.",
+            "default": [
+              {
+                "x": {
+                  "unit": "mm",
+                  "value": 0.0
+                },
+                "y": {
+                  "unit": "mm",
+                  "value": 0.0
+                }
+              },
+              {
+                "x": {
+                  "unit": "mm",
+                  "value": 400.0
+                },
+                "y": {
+                  "unit": "mm",
+                  "value": 0.0
+                }
+              },
+              {
+                "x": {
+                  "unit": "mm",
+                  "value": 400.0
+                },
+                "y": {
+                  "unit": "mm",
+                  "value": 600.0
+                }
+              },
+              {
+                "x": {
+                  "unit": "mm",
+                  "value": 0.0
+                },
+                "y": {
+                  "unit": "mm",
+                  "value": 600.0
+                }
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "Outer Polygon",
+        "description": "Represents a polygon defined by four corner points in a two-dimensional space. The polygon is used to define the outer boundary in various design applications.",
+        "x-component-detail": {
+          "id": "moapy.data_pre.OuterPolygon"
+        }
+      },
+      "Point-Input": {
+        "properties": {
+          "x": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "title": "Value",
+                "description": "Length"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm",
+                  "cm",
+                  "m",
+                  "in",
+                  "ft"
+                ],
+                "title": "enUnitLength"
+              }
+            },
+            "type": "object",
+            "title": "Length",
+            "description": "x-coordinate",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Length"
+            }
+          },
+          "y": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "title": "Value",
+                "description": "Length"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm",
+                  "cm",
+                  "m",
+                  "in",
+                  "ft"
+                ],
+                "title": "enUnitLength"
+              }
+            },
+            "type": "object",
+            "title": "Length",
+            "description": "y-coordinate",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Length"
+            }
+          }
+        },
+        "type": "object",
+        "title": "Point",
+        "description": "Point class\n\nArgs:\n    x (Length): x-coordinate\n    y (Length): y-coordinate",
+        "x-component-detail": {
+          "id": "moapy.data_pre.Point"
+        }
+      },
+      "Point-Output": {
+        "properties": {
+          "x": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "title": "Value",
+                "description": "Length"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm",
+                  "cm",
+                  "m",
+                  "in",
+                  "ft"
+                ],
+                "title": "enUnitLength"
+              }
+            },
+            "type": "object",
+            "title": "Length",
+            "description": "x-coordinate",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Length"
+            }
+          },
+          "y": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "title": "Value",
+                "description": "Length"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm",
+                  "cm",
+                  "m",
+                  "in",
+                  "ft"
+                ],
+                "title": "enUnitLength"
+              }
+            },
+            "type": "object",
+            "title": "Length",
+            "description": "y-coordinate",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Length"
+            }
+          }
+        },
+        "type": "object",
+        "title": "Point",
+        "description": "Point class\n\nArgs:\n    x (Length): x-coordinate\n    y (Length): y-coordinate",
+        "x-component-detail": {
+          "id": "moapy.data_pre.Point"
+        }
+      },
+      "Points": {
+        "properties": {
+          "points": {
+            "items": {
+              "properties": {
+                "x": {
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "title": "Value",
+                      "description": "Length"
+                    },
+                    "unit": {
+                      "type": "string",
+                      "enum": [
+                        "mm",
+                        "cm",
+                        "m",
+                        "in",
+                        "ft"
+                      ],
+                      "title": "enUnitLength"
+                    }
+                  },
+                  "type": "object",
+                  "title": "Length",
+                  "description": "x-coordinate",
+                  "x-component-detail": {
+                    "id": "moapy.data_pre.Length"
+                  }
+                },
+                "y": {
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "title": "Value",
+                      "description": "Length"
+                    },
+                    "unit": {
+                      "type": "string",
+                      "enum": [
+                        "mm",
+                        "cm",
+                        "m",
+                        "in",
+                        "ft"
+                      ],
+                      "title": "enUnitLength"
+                    }
+                  },
+                  "type": "object",
+                  "title": "Length",
+                  "description": "y-coordinate",
+                  "x-component-detail": {
+                    "id": "moapy.data_pre.Length"
+                  }
+                }
+              },
+              "type": "object",
+              "title": "Point",
+              "description": "Point class\n\nArgs:\n    x (Length): x-coordinate\n    y (Length): y-coordinate",
+              "x-component-detail": {
+                "id": "moapy.data_pre.Point"
+              }
+            },
+            "type": "array",
+            "title": "Points",
+            "description": "Points",
+            "default": [
+              {
+                "x": {
+                  "unit": "mm",
+                  "value": 0.0
+                },
+                "y": {
+                  "unit": "mm",
+                  "value": 0.0
+                }
+              },
+              {
+                "x": {
+                  "unit": "mm",
+                  "value": 400.0
+                },
+                "y": {
+                  "unit": "mm",
+                  "value": 0.0
+                }
+              },
+              {
+                "x": {
+                  "unit": "mm",
+                  "value": 400.0
+                },
+                "y": {
+                  "unit": "mm",
+                  "value": 600.0
+                }
+              },
+              {
+                "x": {
+                  "unit": "mm",
+                  "value": 0.0
+                },
+                "y": {
+                  "unit": "mm",
+                  "value": 600.0
+                }
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "Points",
+        "description": "GSD Points class\n\nArgs:\n    points (list[Point]): Points",
+        "x-component-detail": {
+          "id": "moapy.data_pre.Points"
+        }
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "enUnitLength": {
+        "type": "string",
+        "enum": [
+          "mm",
+          "cm",
+          "m",
+          "in",
+          "ft"
+        ],
+        "title": "enUnitLength"
+      },
+      "input_polygon": {
+        "properties": {
+          "points": {
+            "properties": {
+              "points": {
+                "items": {
+                  "properties": {
+                    "x": {
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "title": "Value",
+                          "description": "Length"
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "mm",
+                            "cm",
+                            "m",
+                            "in",
+                            "ft"
+                          ],
+                          "title": "enUnitLength"
+                        }
+                      },
+                      "type": "object",
+                      "title": "Length",
+                      "description": "x-coordinate",
+                      "x-component-detail": {
+                        "id": "moapy.data_pre.Length"
+                      }
+                    },
+                    "y": {
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "title": "Value",
+                          "description": "Length"
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "mm",
+                            "cm",
+                            "m",
+                            "in",
+                            "ft"
+                          ],
+                          "title": "enUnitLength"
+                        }
+                      },
+                      "type": "object",
+                      "title": "Length",
+                      "description": "y-coordinate",
+                      "x-component-detail": {
+                        "id": "moapy.data_pre.Length"
+                      }
+                    }
+                  },
+                  "type": "object",
+                  "title": "Point",
+                  "description": "Point class\n\nArgs:\n    x (Length): x-coordinate\n    y (Length): y-coordinate",
+                  "x-component-detail": {
+                    "id": "moapy.data_pre.Point"
+                  }
+                },
+                "type": "array",
+                "title": "Points",
+                "description": "Points",
+                "default": [
+                  {
+                    "x": {
+                      "unit": "mm",
+                      "value": 0.0
+                    },
+                    "y": {
+                      "unit": "mm",
+                      "value": 0.0
+                    }
+                  },
+                  {
+                    "x": {
+                      "unit": "mm",
+                      "value": 400.0
+                    },
+                    "y": {
+                      "unit": "mm",
+                      "value": 0.0
+                    }
+                  },
+                  {
+                    "x": {
+                      "unit": "mm",
+                      "value": 400.0
+                    },
+                    "y": {
+                      "unit": "mm",
+                      "value": 600.0
+                    }
+                  },
+                  {
+                    "x": {
+                      "unit": "mm",
+                      "value": 0.0
+                    },
+                    "y": {
+                      "unit": "mm",
+                      "value": 600.0
+                    }
+                  }
+                ]
+              }
+            },
+            "type": "object",
+            "title": "Points",
+            "description": "GSD Points class\n\nArgs:\n    points (list[Point]): Points",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Points"
+            }
+          }
+        },
+        "type": "object",
+        "required": [
+          "points"
+        ],
+        "title": "input polygon"
+      }
+    }
+  }
+}

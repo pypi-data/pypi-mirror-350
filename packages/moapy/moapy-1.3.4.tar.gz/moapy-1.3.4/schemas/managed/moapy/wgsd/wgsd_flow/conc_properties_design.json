@@ -1,0 +1,742 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.2.5"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-wgsd-wgsd_flow-conc_properties_design": {
+      "post": {
+        "summary": "Concrete Coordinate",
+        "description": "Concrete Coordinate",
+        "operationId": "conc properties design",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "general": {
+                    "properties": {
+                      "strength": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0.0,
+                        "title": "Strength",
+                        "description": "Grade of the concrete",
+                        "default": 12
+                      },
+                      "elasticModulus": {
+                        "type": "number",
+                        "exclusiveMinimum": 0.0,
+                        "title": "Elasticmodulus",
+                        "description": "Elastic modulus of the concrete",
+                        "default": 30000
+                      },
+                      "density": {
+                        "type": "number",
+                        "exclusiveMinimum": 0.0,
+                        "title": "Density",
+                        "description": "Density of the concrete",
+                        "default": 2400
+                      },
+                      "thermalExpansionCoefficient": {
+                        "type": "number",
+                        "exclusiveMinimum": 0.0,
+                        "title": "Thermalexpansioncoefficient",
+                        "description": "Thermal expansion coefficient of the concrete",
+                        "default": 1e-05
+                      },
+                      "poissonRatio": {
+                        "type": "number",
+                        "exclusiveMinimum": 0.0,
+                        "title": "Poissonratio",
+                        "description": "Poisson ratio of the concrete",
+                        "default": 0.2
+                      }
+                    },
+                    "type": "object",
+                    "title": "Concrete General Properties",
+                    "description": "GSD concrete general properties for calculation\n\nArgs:\n    strength (int): Grade of the concrete\n    elastic_modulus (float): Elastic modulus of the concrete\n    density (float): Density of the concrete\n    thermal_expansion_coefficient (float): Thermal expansion coefficient of the concrete\n    poisson_ratio (float): Poisson ratio of the concrete",
+                    "x-component-detail": {
+                      "id": "moapy.rc_pre.Concrete_General_Properties"
+                    }
+                  },
+                  "uls": {
+                    "properties": {
+                      "materialModel": {
+                        "type": "string",
+                        "title": "Materialmodel",
+                        "description": "Material model for ULS",
+                        "default": "Rectangle"
+                      },
+                      "factorB1": {
+                        "type": "number",
+                        "exclusiveMinimum": 0.0,
+                        "title": "Factorb1",
+                        "description": "Plastic strain limit for ULS",
+                        "default": 0.85
+                      },
+                      "compressiveFailureStrain": {
+                        "type": "number",
+                        "title": "Compressivefailurestrain",
+                        "description": "Failure strain limit for ULS",
+                        "default": 0.003
+                      }
+                    },
+                    "type": "object",
+                    "title": "Concrete Stress Options for ULS",
+                    "description": "GSD concrete stress options for ULS\n\nArgs:\n    material_model (str): Material model for ULS\n    factor_b1 (float): Plastic strain limit for ULS\n    compressive_failure_strain (float): Failure strain limit for ULS",
+                    "x-component-detail": {
+                      "id": "moapy.rc_pre.Concrete_Stress_ULS_Options_ACI"
+                    }
+                  },
+                  "sls": {
+                    "properties": {
+                      "materialModel": {
+                        "type": "string",
+                        "title": "Materialmodel",
+                        "description": "Material model for SLS",
+                        "default": "Linear"
+                      },
+                      "plasticStrainLimit": {
+                        "type": "number",
+                        "title": "Plasticstrainlimit",
+                        "description": "Plastic strain limit for SLS",
+                        "default": 0.002
+                      },
+                      "failureCompressionLimit": {
+                        "type": "number",
+                        "title": "Failurecompressionlimit",
+                        "description": "Failure compression limit for SLS",
+                        "default": 0.003
+                      },
+                      "materialModelTension": {
+                        "type": "string",
+                        "title": "Materialmodeltension",
+                        "description": "Material model for SLS tension",
+                        "default": "interpolated"
+                      },
+                      "failureTensionLimit": {
+                        "type": "number",
+                        "title": "Failuretensionlimit",
+                        "description": "Failure tension limit for SLS",
+                        "default": 0.003
+                      }
+                    },
+                    "type": "object",
+                    "title": "Concrete Stress Options for SLS",
+                    "description": "GSD concrete stress options for SLS\n\nArgs:\n    material_model (str): Material model for SLS\n    plastic_strain_limit (float): Plastic strain limit for SLS\n    failure_compression_limit (float): Failure compression limit for SLS\n    material_model_tension (str): Material model for SLS tension\n    failure_tension_limit (float): Failure tension limit for SLS",
+                    "x-component-detail": {
+                      "id": "moapy.rc_pre.Concrete_SLS_Options"
+                    }
+                  }
+                },
+                "type": "object",
+                "required": [
+                  "general",
+                  "uls",
+                  "sls"
+                ],
+                "title": "conc properties design"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "curveUls": {
+                      "items": {
+                        "properties": {
+                          "stress": {
+                            "type": "number",
+                            "title": "Stress",
+                            "description": "Stress",
+                            "default": 0.0
+                          },
+                          "strain": {
+                            "type": "number",
+                            "title": "Strain",
+                            "description": "Strain",
+                            "default": 0.0
+                          }
+                        },
+                        "type": "object",
+                        "title": "Stress Strain Component",
+                        "description": "Stress Strain Component class\n\nArgs:\n    stress (Length): Stress\n    strain (Length): Strain",
+                        "x-component-detail": {
+                          "id": "moapy.data_pre.Stress_Strain_Component"
+                        }
+                      },
+                      "type": "array",
+                      "title": "Curveuls",
+                      "description": "Stress strain curve concrete ULS",
+                      "default": [
+                        {
+                          "stress": 0.0,
+                          "strain": 0.0
+                        },
+                        {
+                          "stress": 0.0,
+                          "strain": 0.0006
+                        },
+                        {
+                          "stress": 34.0,
+                          "strain": 0.0006
+                        },
+                        {
+                          "stress": 34.0,
+                          "strain": 0.003
+                        }
+                      ]
+                    },
+                    "curveSls": {
+                      "items": {
+                        "properties": {
+                          "stress": {
+                            "type": "number",
+                            "title": "Stress",
+                            "description": "Stress",
+                            "default": 0.0
+                          },
+                          "strain": {
+                            "type": "number",
+                            "title": "Strain",
+                            "description": "Strain",
+                            "default": 0.0
+                          }
+                        },
+                        "type": "object",
+                        "title": "Stress Strain Component",
+                        "description": "Stress Strain Component class\n\nArgs:\n    stress (Length): Stress\n    strain (Length): Strain",
+                        "x-component-detail": {
+                          "id": "moapy.data_pre.Stress_Strain_Component"
+                        }
+                      },
+                      "type": "array",
+                      "title": "Curvesls",
+                      "description": "Stress strain curve",
+                      "default": [
+                        {
+                          "stress": 0.0,
+                          "strain": 0.0
+                        },
+                        {
+                          "stress": 32.8,
+                          "strain": 0.001
+                        }
+                      ]
+                    }
+                  },
+                  "type": "object",
+                  "title": "Material Concrete",
+                  "description": "GSD material for Concrete class\n\nArgs:\n    curve_uls (list[Stress_Strain_Component]): Stress strain curve concrete ULS\n    curve_sls (list[Stress_Strain_Component]): Stress strain curve",
+                  "x-component-detail": {
+                    "id": "moapy.rc_pre.MaterialConcrete"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "detail": {
+                      "items": {
+                        "properties": {
+                          "loc": {
+                            "items": {
+                              "anyOf": [
+                                {
+                                  "type": "string"
+                                },
+                                {
+                                  "type": "integer"
+                                }
+                              ]
+                            },
+                            "type": "array",
+                            "title": "Location"
+                          },
+                          "msg": {
+                            "type": "string",
+                            "title": "Message"
+                          },
+                          "type": {
+                            "type": "string",
+                            "title": "Error Type"
+                          }
+                        },
+                        "type": "object",
+                        "required": [
+                          "loc",
+                          "msg",
+                          "type"
+                        ],
+                        "title": "ValidationError"
+                      },
+                      "type": "array",
+                      "title": "Detail"
+                    }
+                  },
+                  "type": "object",
+                  "title": "HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "x-content-info": {
+          "title": "Concrete Coordinate",
+          "description": "Concrete Coordinate"
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Concrete_General_Properties": {
+        "properties": {
+          "strength": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Strength",
+            "description": "Grade of the concrete",
+            "default": 12
+          },
+          "elasticModulus": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Elasticmodulus",
+            "description": "Elastic modulus of the concrete",
+            "default": 30000
+          },
+          "density": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Density",
+            "description": "Density of the concrete",
+            "default": 2400
+          },
+          "thermalExpansionCoefficient": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Thermalexpansioncoefficient",
+            "description": "Thermal expansion coefficient of the concrete",
+            "default": 1e-05
+          },
+          "poissonRatio": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Poissonratio",
+            "description": "Poisson ratio of the concrete",
+            "default": 0.2
+          }
+        },
+        "type": "object",
+        "title": "Concrete General Properties",
+        "description": "GSD concrete general properties for calculation\n\nArgs:\n    strength (int): Grade of the concrete\n    elastic_modulus (float): Elastic modulus of the concrete\n    density (float): Density of the concrete\n    thermal_expansion_coefficient (float): Thermal expansion coefficient of the concrete\n    poisson_ratio (float): Poisson ratio of the concrete",
+        "x-component-detail": {
+          "id": "moapy.rc_pre.Concrete_General_Properties"
+        }
+      },
+      "Concrete_SLS_Options": {
+        "properties": {
+          "materialModel": {
+            "type": "string",
+            "title": "Materialmodel",
+            "description": "Material model for SLS",
+            "default": "Linear"
+          },
+          "plasticStrainLimit": {
+            "type": "number",
+            "title": "Plasticstrainlimit",
+            "description": "Plastic strain limit for SLS",
+            "default": 0.002
+          },
+          "failureCompressionLimit": {
+            "type": "number",
+            "title": "Failurecompressionlimit",
+            "description": "Failure compression limit for SLS",
+            "default": 0.003
+          },
+          "materialModelTension": {
+            "type": "string",
+            "title": "Materialmodeltension",
+            "description": "Material model for SLS tension",
+            "default": "interpolated"
+          },
+          "failureTensionLimit": {
+            "type": "number",
+            "title": "Failuretensionlimit",
+            "description": "Failure tension limit for SLS",
+            "default": 0.003
+          }
+        },
+        "type": "object",
+        "title": "Concrete Stress Options for SLS",
+        "description": "GSD concrete stress options for SLS\n\nArgs:\n    material_model (str): Material model for SLS\n    plastic_strain_limit (float): Plastic strain limit for SLS\n    failure_compression_limit (float): Failure compression limit for SLS\n    material_model_tension (str): Material model for SLS tension\n    failure_tension_limit (float): Failure tension limit for SLS",
+        "x-component-detail": {
+          "id": "moapy.rc_pre.Concrete_SLS_Options"
+        }
+      },
+      "Concrete_Stress_ULS_Options_ACI": {
+        "properties": {
+          "materialModel": {
+            "type": "string",
+            "title": "Materialmodel",
+            "description": "Material model for ULS",
+            "default": "Rectangle"
+          },
+          "factorB1": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Factorb1",
+            "description": "Plastic strain limit for ULS",
+            "default": 0.85
+          },
+          "compressiveFailureStrain": {
+            "type": "number",
+            "title": "Compressivefailurestrain",
+            "description": "Failure strain limit for ULS",
+            "default": 0.003
+          }
+        },
+        "type": "object",
+        "title": "Concrete Stress Options for ULS",
+        "description": "GSD concrete stress options for ULS\n\nArgs:\n    material_model (str): Material model for ULS\n    factor_b1 (float): Plastic strain limit for ULS\n    compressive_failure_strain (float): Failure strain limit for ULS",
+        "x-component-detail": {
+          "id": "moapy.rc_pre.Concrete_Stress_ULS_Options_ACI"
+        }
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "properties": {
+                "loc": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "integer"
+                      }
+                    ]
+                  },
+                  "type": "array",
+                  "title": "Location"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "Message"
+                },
+                "type": {
+                  "type": "string",
+                  "title": "Error Type"
+                }
+              },
+              "type": "object",
+              "required": [
+                "loc",
+                "msg",
+                "type"
+              ],
+              "title": "ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "MaterialConcrete": {
+        "properties": {
+          "curveUls": {
+            "items": {
+              "properties": {
+                "stress": {
+                  "type": "number",
+                  "title": "Stress",
+                  "description": "Stress",
+                  "default": 0.0
+                },
+                "strain": {
+                  "type": "number",
+                  "title": "Strain",
+                  "description": "Strain",
+                  "default": 0.0
+                }
+              },
+              "type": "object",
+              "title": "Stress Strain Component",
+              "description": "Stress Strain Component class\n\nArgs:\n    stress (Length): Stress\n    strain (Length): Strain",
+              "x-component-detail": {
+                "id": "moapy.data_pre.Stress_Strain_Component"
+              }
+            },
+            "type": "array",
+            "title": "Curveuls",
+            "description": "Stress strain curve concrete ULS",
+            "default": [
+              {
+                "stress": 0.0,
+                "strain": 0.0
+              },
+              {
+                "stress": 0.0,
+                "strain": 0.0006
+              },
+              {
+                "stress": 34.0,
+                "strain": 0.0006
+              },
+              {
+                "stress": 34.0,
+                "strain": 0.003
+              }
+            ]
+          },
+          "curveSls": {
+            "items": {
+              "properties": {
+                "stress": {
+                  "type": "number",
+                  "title": "Stress",
+                  "description": "Stress",
+                  "default": 0.0
+                },
+                "strain": {
+                  "type": "number",
+                  "title": "Strain",
+                  "description": "Strain",
+                  "default": 0.0
+                }
+              },
+              "type": "object",
+              "title": "Stress Strain Component",
+              "description": "Stress Strain Component class\n\nArgs:\n    stress (Length): Stress\n    strain (Length): Strain",
+              "x-component-detail": {
+                "id": "moapy.data_pre.Stress_Strain_Component"
+              }
+            },
+            "type": "array",
+            "title": "Curvesls",
+            "description": "Stress strain curve",
+            "default": [
+              {
+                "stress": 0.0,
+                "strain": 0.0
+              },
+              {
+                "stress": 32.8,
+                "strain": 0.001
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "Material Concrete",
+        "description": "GSD material for Concrete class\n\nArgs:\n    curve_uls (list[Stress_Strain_Component]): Stress strain curve concrete ULS\n    curve_sls (list[Stress_Strain_Component]): Stress strain curve",
+        "x-component-detail": {
+          "id": "moapy.rc_pre.MaterialConcrete"
+        }
+      },
+      "Stress_Strain_Component": {
+        "properties": {
+          "stress": {
+            "type": "number",
+            "title": "Stress",
+            "description": "Stress",
+            "default": 0.0
+          },
+          "strain": {
+            "type": "number",
+            "title": "Strain",
+            "description": "Strain",
+            "default": 0.0
+          }
+        },
+        "type": "object",
+        "title": "Stress Strain Component",
+        "description": "Stress Strain Component class\n\nArgs:\n    stress (Length): Stress\n    strain (Length): Strain",
+        "x-component-detail": {
+          "id": "moapy.data_pre.Stress_Strain_Component"
+        }
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "conc_properties_design": {
+        "properties": {
+          "general": {
+            "properties": {
+              "strength": {
+                "type": "integer",
+                "exclusiveMinimum": 0.0,
+                "title": "Strength",
+                "description": "Grade of the concrete",
+                "default": 12
+              },
+              "elasticModulus": {
+                "type": "number",
+                "exclusiveMinimum": 0.0,
+                "title": "Elasticmodulus",
+                "description": "Elastic modulus of the concrete",
+                "default": 30000
+              },
+              "density": {
+                "type": "number",
+                "exclusiveMinimum": 0.0,
+                "title": "Density",
+                "description": "Density of the concrete",
+                "default": 2400
+              },
+              "thermalExpansionCoefficient": {
+                "type": "number",
+                "exclusiveMinimum": 0.0,
+                "title": "Thermalexpansioncoefficient",
+                "description": "Thermal expansion coefficient of the concrete",
+                "default": 1e-05
+              },
+              "poissonRatio": {
+                "type": "number",
+                "exclusiveMinimum": 0.0,
+                "title": "Poissonratio",
+                "description": "Poisson ratio of the concrete",
+                "default": 0.2
+              }
+            },
+            "type": "object",
+            "title": "Concrete General Properties",
+            "description": "GSD concrete general properties for calculation\n\nArgs:\n    strength (int): Grade of the concrete\n    elastic_modulus (float): Elastic modulus of the concrete\n    density (float): Density of the concrete\n    thermal_expansion_coefficient (float): Thermal expansion coefficient of the concrete\n    poisson_ratio (float): Poisson ratio of the concrete",
+            "x-component-detail": {
+              "id": "moapy.rc_pre.Concrete_General_Properties"
+            }
+          },
+          "uls": {
+            "properties": {
+              "materialModel": {
+                "type": "string",
+                "title": "Materialmodel",
+                "description": "Material model for ULS",
+                "default": "Rectangle"
+              },
+              "factorB1": {
+                "type": "number",
+                "exclusiveMinimum": 0.0,
+                "title": "Factorb1",
+                "description": "Plastic strain limit for ULS",
+                "default": 0.85
+              },
+              "compressiveFailureStrain": {
+                "type": "number",
+                "title": "Compressivefailurestrain",
+                "description": "Failure strain limit for ULS",
+                "default": 0.003
+              }
+            },
+            "type": "object",
+            "title": "Concrete Stress Options for ULS",
+            "description": "GSD concrete stress options for ULS\n\nArgs:\n    material_model (str): Material model for ULS\n    factor_b1 (float): Plastic strain limit for ULS\n    compressive_failure_strain (float): Failure strain limit for ULS",
+            "x-component-detail": {
+              "id": "moapy.rc_pre.Concrete_Stress_ULS_Options_ACI"
+            }
+          },
+          "sls": {
+            "properties": {
+              "materialModel": {
+                "type": "string",
+                "title": "Materialmodel",
+                "description": "Material model for SLS",
+                "default": "Linear"
+              },
+              "plasticStrainLimit": {
+                "type": "number",
+                "title": "Plasticstrainlimit",
+                "description": "Plastic strain limit for SLS",
+                "default": 0.002
+              },
+              "failureCompressionLimit": {
+                "type": "number",
+                "title": "Failurecompressionlimit",
+                "description": "Failure compression limit for SLS",
+                "default": 0.003
+              },
+              "materialModelTension": {
+                "type": "string",
+                "title": "Materialmodeltension",
+                "description": "Material model for SLS tension",
+                "default": "interpolated"
+              },
+              "failureTensionLimit": {
+                "type": "number",
+                "title": "Failuretensionlimit",
+                "description": "Failure tension limit for SLS",
+                "default": 0.003
+              }
+            },
+            "type": "object",
+            "title": "Concrete Stress Options for SLS",
+            "description": "GSD concrete stress options for SLS\n\nArgs:\n    material_model (str): Material model for SLS\n    plastic_strain_limit (float): Plastic strain limit for SLS\n    failure_compression_limit (float): Failure compression limit for SLS\n    material_model_tension (str): Material model for SLS tension\n    failure_tension_limit (float): Failure tension limit for SLS",
+            "x-component-detail": {
+              "id": "moapy.rc_pre.Concrete_SLS_Options"
+            }
+          }
+        },
+        "type": "object",
+        "required": [
+          "general",
+          "uls",
+          "sls"
+        ],
+        "title": "conc properties design"
+      }
+    }
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.2.5"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    },
+    {
+      "url": "https://moa.rpm.kr-st-midasit.com/backend/function-executor/python-execute/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-designers_guide-func_execute-calc_content_1": {
+      "post": {
+        "summary": "Nominal Density Guide for Construction Materials in Bridge Structures",
+        "description": "[EN1991-1-1] This guide provides a comprehensive overview of the nominal density values for various construction materials commonly used in bridge structures. It is designed to assist engineers and designers in selecting appropriate materials based on their density characteristics, ensuring the structural integrity and longevity of bridge projects.",
+        "x-content-info": {
+          "standardType": "EUROCODE",
+          "codeName": "EN1991-1-1",
+          "codeTitle": "Eurocode 1: Actions on structures \u2014 Part 1-1: General actions \u2014 Densities, self-weight, imposed loads for buildings",
+          "title": "Nominal Density Guide for Construction Materials in Bridge Structures",
+          "description": "[EN1991-1-1] This guide provides a comprehensive overview of the nominal density values for various construction materials commonly used in bridge structures. It is designed to assist engineers and designers in selecting appropriate materials based on their density characteristics, ensuring the structural integrity and longevity of bridge projects.",
+          "edition": "2002 Incorporating Corrigendum No. 1",
+          "figurePath": null
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "G4_COMP_1": {
+                    "title": "Density Type",
+                    "type": "string",
+                    "description": "'Density Type' clearly categorizes the different forms of density, such as 'Mass Density' and 'Weight Density.' This title helps distinguish between how density is expressed, whether as mass per unit volume (kg/m\u00b3) or weight per unit volume (kN/m\u00b3), ensuring clarity in the table.",
+                    "default": "Weight density (kN/m^{3})",
+                    "enum": [
+                      "Weight density (kN/m^{3})",
+                      "Mass density (kg/m^{3})"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1991-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "AnnexA"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "densitytype"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "G4_COMP_1"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "isInput": false,
+                    "codeName": "",
+                    "reference": [
+                      ""
+                    ],
+                    "title": "",
+                    "description": "",
+                    "figurePath": "",
+                    "descriptTable": [],
+                    "compType": "",
+                    "symbol": "",
+                    "result": {
+                      "value": "0.0",
+                      "table": [],
+                      "formula": [],
+                      "variables": {}
+                    },
+                    "refStd": "",
+                    "unit": "",
+                    "notation": "standard",
+                    "decimal": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

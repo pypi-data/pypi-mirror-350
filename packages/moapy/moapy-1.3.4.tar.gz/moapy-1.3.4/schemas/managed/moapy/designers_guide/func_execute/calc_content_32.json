@@ -1,0 +1,364 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.2.5"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    },
+    {
+      "url": "https://moa.rpm.kr-st-midasit.com/backend/function-executor/python-execute/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-designers_guide-func_execute-calc_content_32": {
+      "post": {
+        "summary": "Vertical Elastic Response and Design Spectrum Calculation",
+        "description": "[EN1998-1] This guide provides detailed instructions for calculating both the vertical elastic response spectrum and the design spectrum for elastic analysis. The elastic response spectrum represents the maximum elastic response of a structure under vertical seismic forces, while the design spectrum incorporates the behavior factor to account for inelastic deformation. The guide explains how to use vertical ground acceleration, soil factors, and vibration periods to determine the structure\u2019s vertical response under both elastic and inelastic conditions. This guide is primarily used in the initial analysis phase to assess the vertical performance of a structure during an earthquake.",
+        "x-content-info": {
+          "standardType": "EUROCODE",
+          "codeName": "EN1998-1",
+          "codeTitle": "Eurocode 8 \u2014 Design of structures for earthquake resistance \u2014 Part 1: General rules, seismic actions and rules for buildings",
+          "title": "Vertical Elastic Response and Design Spectrum Calculation",
+          "description": "[EN1998-1] This guide provides detailed instructions for calculating both the vertical elastic response spectrum and the design spectrum for elastic analysis. The elastic response spectrum represents the maximum elastic response of a structure under vertical seismic forces, while the design spectrum incorporates the behavior factor to account for inelastic deformation. The guide explains how to use vertical ground acceleration, soil factors, and vibration periods to determine the structure\u2019s vertical response under both elastic and inelastic conditions. This guide is primarily used in the initial analysis phase to assess the vertical performance of a structure during an earthquake.",
+          "edition": "2004",
+          "figurePath": null
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "G31_COMP_2": {
+                    "title": "Reference peak ground acceleration",
+                    "type": "number",
+                    "description": "The reference peak ground acceleration represents the maximum expected ground acceleration for a specific location during an earthquake, assuming it occurs on Type A ground (rock or very stiff soil). It is typically based on a 475-year return period, corresponding to an approximately 10% probability of exceedance over 50 years.",
+                    "default": 2.35,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.2.1(2)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "a_{gR}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "m/s^2"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G31_COMP_3": {
+                    "title": "Selection of importance class",
+                    "type": "string",
+                    "description": "Select the importance class for the bridge based on its criticality. Class I applies to less critical bridges, Class II to standard bridges, and Class III to essential bridges that require higher safety standards. Detailed information can be found in Eurocode 1998-2, section 2.1.",
+                    "default": "Class I",
+                    "enum": [
+                      "Class I",
+                      "Class II",
+                      "Class III"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.2.1(3)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "impoclass"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G31_COMP_6": {
+                    "title": "Selection of response spectrum type",
+                    "type": "string",
+                    "description": "The values for the periods and soil factor that define the shape of the elastic response spectrum depend on the ground type. Generally, Type 1 is recommended for areas where large earthquakes occur, with surface-wave magnitudes exceeding 5.5, while Type 2 is suitable for regions with smaller earthquakes, where the surface-wave magnitude is 5.5 or less.",
+                    "default": "Type 1 (For large earthquakes)",
+                    "enum": [
+                      "Type 1 (For large earthquakes)",
+                      "Type 2 (For smaller earthquakes)"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.2.2.2(2)P"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "spectype"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G31_COMP_11": {
+                    "title": "Viscous damping ratio of the structure",
+                    "type": "number",
+                    "description": "The viscous damping ratio represents the amount of energy dissipated by a structure during dynamic motion, such as during an earthquake. It is expressed as a percentage of critical damping, where 100% would mean no oscillations after the initial displacement. In most structural applications, the viscous damping ratio is typically around 5%, meaning the structure dissipates 5% of the critical damping energy.",
+                    "default": 5.0,
+                    "minimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.2.2.2(3)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "\\xi"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "%"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 1
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      },
+                      "refStd": {
+                        "type": "string",
+                        "default": "NDPs",
+                        "description": "Nationally Determined Parameters"
+                      }
+                    }
+                  },
+                  "G32_COMP_8": {
+                    "title": "Vibration period type for vertical response",
+                    "type": "string",
+                    "description": "This parameter allows users to select the type of vertical vibration period from predefined options, including the starting point, the limits of the constant spectral acceleration branch, and the beginning of the constant displacement response range for vertical seismic actions.",
+                    "default": "Start point(0.0s)",
+                    "enum": [
+                      "Start point(0.0s)",
+                      "Lower limit",
+                      "Upper limit",
+                      "Constant range",
+                      "End point(4.0s)"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.2.2.3(1)P"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "T_{V,type}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$T_{V,type}$$",
+                            "Description"
+                          ],
+                          [
+                            "Start point(0.0s)",
+                            "Represents the initial state with no vertical vibration period, used as a reference point."
+                          ],
+                          [
+                            "Lower limit",
+                            "($$T_{B,V}$$) The lower limit of the period where the constant spectral acceleration branch for vertical response begins."
+                          ],
+                          [
+                            "Upper limit",
+                            "($$T_{C,V}$$) The upper limit of the period where the constant spectral acceleration branch for vertical response ends."
+                          ],
+                          [
+                            "Constant range",
+                            "($$T_{D,V}$$) The point where the constant displacement response range for vertical response starts."
+                          ],
+                          [
+                            "End point(4.0s)",
+                            "Represents the maximum vertical vibration period considered in this spectrum."
+                          ]
+                        ]
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "G31_COMP_2",
+                  "G31_COMP_3",
+                  "G31_COMP_6",
+                  "G31_COMP_11",
+                  "G32_COMP_8"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "isInput": false,
+                    "codeName": "",
+                    "reference": [
+                      ""
+                    ],
+                    "title": "",
+                    "description": "",
+                    "figurePath": "",
+                    "descriptTable": [],
+                    "compType": "",
+                    "symbol": "",
+                    "result": {
+                      "value": "0.0",
+                      "table": [],
+                      "formula": [],
+                      "variables": {}
+                    },
+                    "refStd": "",
+                    "unit": "",
+                    "notation": "standard",
+                    "decimal": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
