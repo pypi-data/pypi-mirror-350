@@ -1,0 +1,19 @@
+PYTHON := "python"
+
+default:
+    just --list --unsorted
+
+clean:
+    rm -rf build/ dist/
+    find . -name '*.pyc' -delete
+    find . -name '__pycache__' -delete
+
+build:
+    {{PYTHON}} -m build
+
+twine:
+    {{PYTHON}} -m twine upload dist/*
+
+test *flags:
+    python -m pytest tests/ {{flags}} -v
+

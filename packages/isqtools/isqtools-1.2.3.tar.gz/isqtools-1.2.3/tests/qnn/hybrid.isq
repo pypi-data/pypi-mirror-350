@@ -1,0 +1,52 @@
+import std;
+
+
+param inputs[], weights[];
+qbit q[2];
+
+procedure single_h(qbit q[]) {
+    for i in 0:q.length {
+        H(q[i]);
+    }
+}
+
+procedure adjacent_cz(qbit q[]) {
+    for i in 0:q.length-1 {
+        CZ(q[i], q[i+1]);
+    }
+}
+
+procedure encode_inputs(qbit q[], int start_idx) {
+    for i in 0:q.length {
+        Rz(inputs[i+start_idx], q[i]);
+    }
+}
+
+procedure encode_weights(qbit q[], int start_idx) {
+    for i in 0:q.length {
+        Rx(weights[i+start_idx], q[i]);
+    }
+    for i in 0:q.length {
+        Ry(weights[i+start_idx+q.length], q[i]);
+    }
+    for i in 0:q.length {
+        Rz(weights[i+start_idx+q.length*2], q[i]);
+    }
+}
+
+
+procedure main() {
+
+    single_h(q);
+    encode_inputs(q, 0);
+    adjacent_cz(q);
+
+    encode_weights(q, 0);
+    adjacent_cz(q);
+
+    encode_weights(q, 6);
+    adjacent_cz(q);
+
+    M(q[0]);
+    M(q[1]);
+}

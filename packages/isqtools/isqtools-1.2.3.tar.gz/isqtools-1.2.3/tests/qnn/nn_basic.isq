@@ -1,0 +1,73 @@
+import std;
+
+
+param inputs[], weights[];
+qbit q[4];
+int pauli_inx[] = [2, 2, 3, 3]; // this means Z0Z1I2I3
+
+// using arrays for pauli measurement, 
+// X:0, Y:1, Z:2, I:3
+
+procedure single_h(qbit q[]) {
+    for i in 0:q.length {
+        H(q[i]);
+    }
+}
+
+procedure adjacent_cz(qbit q[]) {
+    for i in 0:q.length-1 {
+        CZ(q[i], q[i+1]);
+    }
+}
+
+procedure encode_inputs(qbit q[], int start_idx) {
+    for i in 0:q.length {
+        Rz(inputs[i+start_idx], q[i]);
+    }
+}
+
+procedure encode_weights(qbit q[], int start_idx) {
+    for i in 0:q.length {
+        Ry(weights[i+start_idx], q[i]);
+    }
+    for i in 0:q.length {
+        Rx(weights[i+start_idx+4], q[i]);
+    }
+}
+
+procedure pauli(int puali_idx[], qbit q[]) {
+    for i in 0:q.length {
+        if (puali_idx[i] == 0) {
+            H(q[i]);
+            M(q[i]);
+        }
+        if (puali_idx[i] == 1) {
+            X2P(q[i]);
+            M(q[i]);
+        }
+        if (puali_idx[i] == 2) {
+            M(q[i]);
+        }
+        if (puali_idx[i] == 3) {
+            continue;
+        }
+    }
+}
+
+procedure main() {
+
+    single_h(q);
+    encode_inputs(q, 0);
+    adjacent_cz(q);
+
+    encode_weights(q, 0);
+    adjacent_cz(q);
+
+    encode_weights(q, 8);
+    adjacent_cz(q);
+
+    encode_weights(q, 16);
+    adjacent_cz(q);
+
+    pauli(pauli_inx, q);
+}
