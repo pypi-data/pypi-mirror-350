@@ -1,0 +1,46 @@
+[flask.commands]
+lom = invenio_records_lom.cli:lom
+
+[invenio_assets.webpack]
+invenio_records_lom_theme = invenio_records_lom.ui.theme.webpack:theme
+
+[invenio_base.api_apps]
+invenio_records_lom = invenio_records_lom:InvenioRecordsLOM
+
+[invenio_base.api_blueprints]
+invenio_records_lom_draft_files = invenio_records_lom.views:create_draft_files_bp
+invenio_records_lom_iiif = invenio_records_lom.views:create_iiif_bp
+invenio_records_lom_record_files = invenio_records_lom.views:create_record_files_bp
+invenio_records_lom_records = invenio_records_lom.views:create_records_bp
+invenio_records_lom_resource_registerer = invenio_records_lom.views:blueprint
+
+[invenio_base.api_finalize_app]
+invenio_records_lom = invenio_records_lom.ext:api_finalize_app
+
+[invenio_base.apps]
+invenio_records_lom = invenio_records_lom:InvenioRecordsLOM
+
+[invenio_base.blueprints]
+invenio_records_lom_resource_registerer = invenio_records_lom.views:blueprint
+invenio_records_lom_ui = invenio_records_lom.ui:create_blueprint
+
+[invenio_base.finalize_app]
+invenio_records_lom = invenio_records_lom.ext:finalize_app
+
+[invenio_celery.tasks]
+invenio_records_lom_tasks = invenio_records_lom.fixtures.tasks
+
+[invenio_db.alembic]
+invenio_records_lom = invenio_records_lom:alembic
+
+[invenio_db.models]
+invenio_records_lom = invenio_records_lom.records.models
+
+[invenio_i18n.translations]
+messages = invenio_records_lom
+
+[invenio_jsonschemas.schemas]
+invenio_records_lom = invenio_records_lom.records.jsonschemas
+
+[invenio_search.mappings]
+lomrecords = invenio_records_lom.records.mappings
