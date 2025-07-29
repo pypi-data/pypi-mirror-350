@@ -1,0 +1,16 @@
+segments:
+  type: sysinfo
+  style: diamond
+  properties:
+    precision: 0
+  invert_powerline: true
+  leading_diamond: >-
+    [inc: shared.omp.leading_diamond.sysinfo_left_divider]
+  template: " [icons: prompt.memory] {{ round .PhysicalPercentUsed .Precision }}% [{{ (div ((sub .PhysicalTotalMemory 
+              .PhysicalAvailableMemory) | float64) 1073741824.0) }}/{{ (div .PhysicalTotalMemory 1073741824.0) }}GB]"
+  trailing_diamond: >-
+    [inc: shared.omp.trailing_diamond.sysinfo_right_divider]
+  foreground: >-
+    [palette: roles.seg_sys_os_fg]
+  background: >-
+    [palette: roles.seg_sys_os_bg]

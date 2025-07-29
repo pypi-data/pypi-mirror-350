@@ -1,0 +1,26 @@
+segments:
+  type: status
+  style: diamond
+  properties:
+    always_enabled: true
+  leading_diamond: >-
+    [inc: shared.omp.leading_diamond.status_code_left_divider]
+  template: "[inc: shared.omp.template.status_code_left_divider] [icons: prompt.heartbeat.code] "
+  trailing_diamond: >-
+    [inc: shared.omp.trailing_diamond.status_code_right_divider]
+  foreground: >-
+    [palette: roles.background]
+  foreground_templates:
+    - >-
+      [if .Code > 0]
+        [palette: roles.foreground]
+      [else]
+        [palette: roles.success]
+      [end]
+  background_templates:
+    - >-
+      [if .Code > 0]
+        [palette: roles.critical]
+      [else]
+        [palette: roles.background]
+      [end]
