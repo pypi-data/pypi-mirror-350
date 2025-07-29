@@ -1,0 +1,124 @@
+{
+  "name": "sqlmesh",
+  "displayName": "SQLMesh",
+  "description": "Official SQLMesh extension for VSCode",
+  "publisher": "tobikodata",
+  "version": "0.0.7",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tobikodata/sqlmesh"
+  },
+  "main": "./dist/extension.js",
+  "icon": "assets/logo.png",
+  "engines": {
+    "vscode": "^1.96.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:sql",
+    "onLanguage:python"
+  ],
+  "extensionKind": [
+    "workspace"
+  ],
+  "extensionDependencies": [
+    "ms-python.python"
+  ],
+  "contributes": {
+    "viewsContainers": {
+      "panel": [
+        {
+          "id": "lineage_view",
+          "title": "Lineage",
+          "icon": "./assets/images/dag.svg"
+        }
+      ]
+    },
+    "views": {
+      "lineage_view": [
+        {
+          "id": "sqlmesh.lineage",
+          "name": "",
+          "type": "webview"
+        }
+      ]
+    },
+    "authentication": [
+      {
+        "id": "tobikodata",
+        "label": "Tobiko"
+      }
+    ],
+    "commands": [
+      {
+        "command": "sqlmesh.format",
+        "title": "Format SQLMesh Project",
+        "description": "SQLMesh"
+      },
+      {
+        "command": "sqlmesh.restart",
+        "title": "Restart SQLMesh Servers",
+        "description": "SQLMesh"
+      },
+      {
+        "command": "sqlmesh.signin",
+        "title": "Sign in to Tobiko Cloud",
+        "description": "SQLMesh"
+      },
+      {
+        "command": "sqlmesh.signinSpecifyFlow",
+        "title": "Sign in to Tobiko Cloud (Specify Auth Flow)",
+        "description": "SQLMesh"
+      },
+      {
+        "command": "sqlmesh.signout",
+        "title": "Sign out from Tobiko Cloud",
+        "description": "SQLMesh"
+      }
+    ]
+  },
+  "scripts": {
+    "ci": "pnpm run lint && pnpm run compile",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "fetch-vscode": "tsx scripts/fetch-vscode.ts",
+    "compile": "pnpm run check-types && node esbuild.js",
+    "check-types": "tsc --noEmit",
+    "watch": "node esbuild.js --watch",
+    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+    "vscode:package": "vsce package --no-dependencies",
+    "vscode:prepublish": "cp ../../LICENSE . && pnpm run package",
+    "package": "rm -rf ./src_react && mkdir -p ./src_react && cd ../react && pnpm run build && cd ../extension && cp -r ../react/dist/* ./src_react && pnpm run check-types && node esbuild.js --production"
+  },
+  "dependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@vscode/python-extension": "^1.0.5",
+    "fs-extra": "^11.3.0",
+    "vscode-jsonrpc": "^8.2.1",
+    "vscode-languageclient": "^9.0.1",
+    "zod": "^3.25.4"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.25.1",
+    "@playwright/test": "^1.48.2",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "20.11.25",
+    "@types/vscode": "1.96.0",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1",
+    "@vscode/vsce": "^3.3.2",
+    "esbuild": "^0.25.2",
+    "eslint": "^9.23.0",
+    "ts-loader": "^9.5.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.31.1"
+  }
+}
