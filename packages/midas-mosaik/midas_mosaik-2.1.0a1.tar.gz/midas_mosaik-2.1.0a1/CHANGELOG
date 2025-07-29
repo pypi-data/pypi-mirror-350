@@ -1,0 +1,683 @@
+# Patch-Notes
+
+## Version 2.1.0a1 (2025-05-23)
+
+- [CHANGE] The analysis now uses csv files instead of hdf5. Analysis will not work with version <2.1, everything else should not be affected
+- [FIX] Cleanup of most of the files.
+- [NEW] Added a few more unit tests
+
+## Version 2.0.2 (2025-03-27)
+
+- [FIX] The async mosaik world is now shutdowned properly.
+
+## Version 2.0.1 (2025-03-19)
+
+- [NEW] Added support for async mosaik worlds
+
+## Version 2.0.0 (2024-12-20)
+
+- [CHANGE] Change version to release
+
+## Version 2.0.0rc2 (2024-12-19)
+
+- [CHANGE] Removed `if_necessary` flag from download function
+- [NEW] Command line function `show` to print available sensor and actuators
+
+## Version 2.0.0rc1 (2024-12-16)
+
+- [CHANGE] Preparing for release
+
+## Version 2.0.0a7 (2024-11-27)
+
+- [NEW] Scenario configuration is now stored as parameter in the scenario object to make it accessible via API
+- [CHANGE] Converting values to basic types now includes None values and will not change them to a string containing 'None'
+- [FIX] Converting 0-d arrays will now be handled separately
+
+## Version 2.0.0a6 (2024-10-14)
+
+- [FIX] Changed runtime config for pwdata
+- [NEW] Added pwdata into base requirements
+- [FIX] Added another compatibility file for palaestrai
+
+## Version 2.0.0a5 (2024-09-26)
+
+- [FIX] Dependency for midas dlp was misspelled
+
+## Version 2.0.0a4 (2024-09-26)
+
+- [FIX] Added backwards compatibility for midas_palaestrai imports
+- [NEW] Added configuration recreation when old version is detected
+
+## Version 2.0.0a3 (2024-09-20)
+
+- [CHANGE] Default configurations are no longer loaded implicitly; they will be copied to the scenario directory and only be loaded if no other configuration file was found.
+- [CHANGE] Added entries for dlp data and com data in the runtime config again
+- [NEW] The scenario now supports using a world state
+
+## Version 2.0.0a2 (2024-07-10)
+
+* [CHANGE] Updated some midas-related dependencies
+
+## Version 2.0.0a1 (2024-07-09)
+
+- [CHANGE] Refactored the midas module.py for midas2
+- [CHANGE] Integrated the midas.util package into this one
+- [CHANGE] Refactored the whole package structure 
+
+## Version 1.2.2 (2024-05-13)
+
+* [FIX] Removed dependency to distutils for python3.12 compatibility
+
+## Version 1.2.1 (2024-04-16)
+
+* [CHANGE] Version requirement for pysimmods
+
+## Version 1.2.0 (2024-04-16)
+
+* [CHANGE] Update to support mosaik 3.3
+
+## Version 1.1.0 (2023-10-17)
+
+* [FIX] There were some typos in the scenario python file.
+* [NEW] Added wind turbine model to midasmv default scenario
+
+## Version 1.0.6 (2022-10-19)
+
+* [NEW] Added a powergrid mapping where modules can register models that are connected to a certain powergrid
+
+## Version 1.0.5 (2022-08-16)
+
+* [NEW] Added documentation for the comdata module.
+* [CHANGE] Updated the configure command. 
+  + Scenario and output path can now be created with the command as well
+
+## Version 1.0.4 (2022-06-15)
+
+* [CHANGE] Updated requirements to use the latest version of the sub packages.
+
+## Version 1.0.3 (2022-06-14)
+
+* [NEW] Start date can now be set randomly if `start_date: random` is provided.
+
+## Version 1.0.2 (2022-06-14)
+
+* [CHANGE] Allowed to specify module and scope name in the `get_shared_mappings` function of the scenario
+* [NEW] Created ict mappings and a function to get those mappings in the scenario.
+
+## Version 1.0.1 (2022-05-13)
+
+* [FIX] Default scenarios where missing in the pypi release.
+
+## Version 1.0.0 (2022-05-12)
+
+* [CHANGE] Download function now calls the download member function of modules.
+* [CHANGE] Updated Dockerfile.
+* [NEW] Added docker build script.
+* [CHANGE] Adapted version requirements.
+* [NEW] An additional log file can now be specified with the CLI.
+  + `midasctl -l my-custom.log ...`.
+* [CHANGE] Refactored `cli.py` to `midasctl.py` and the `cli` function is now named `main`.
+  + This will require to re-install midas.
+* [NEW] Added benchmark scenario which uses almost all components and features MIDAS provides. Will be further improved in future updates.
+* [NEW] All modules can now started via cmd. This make the simulation a little bit slower.
+  
+
+## Version 1.0.0rc4 (2022-05-03)
+
+* [CHANGE] Externalized the analysis functionality to the modules.
+* [NEW] Added new example scenario with two grids.
+* [NEW] Added example and plots to powergrid module documentation.
+
+## Version 1.0.0rc3 (2022-04-29)
+
+* [NEW] Started documenting individual modules
+  + Store
+  + Timesim
+  + Powergrid
+  + Sndata
+* [CHANGE] Updated Readme
+* [CHANGE] Updated Installation instructions
+
+## Version 1.0.0rc2 (2022-04-27)
+
+* [NEW] Added documentation for scenario configuration
+* [NEW] Added documentation for store, timesim, and powergrid module.
+
+## Version 1.0.0rc1 (2022-04-08)
+
+* [CHANGE] New package structure
+  + Each module is now a separate package
+  + Util is a separate package
+  + Analysis is a separate package (this might change)
+* [CHANGE] Configurator passes path to the config loader function
+* [CHANGE] Adapted scenario files
+* [NEW] Added additional scenario file examples
+
+## Version 0.5.14 (2022-04-22)
+
+* Added a command to update the runtime config to the latest version
+  + [midasctl configure -u]{.title-ref}
+  + Does not preserve all of the users config
+  + The old runtime config will be backed up, some manually
+        restoring might be required.
+
+* Integrated the 100 percent renewable energy version of the
+    bremerhaven grid
+
+  + This does not mean an energy sufficiency of 100 percent.
+* Overhauled the four bus scenario. This is now a little more
+    balanced.
+
+* Added a simple but extendable infrastructure for grid constraints
+* Pysimmods are now able to receive time information from the time
+    simulator.
+
+* Integrated a few bugfixes for pyrate.
+
+## Version 0.5.13 (2022-03-09)
+
+* The analysis function will now include the best and the worst bus in
+    the report file. The buses are rated according to the number of
+    voltage violations, voltage deviations, and the amplitude of the
+    voltage deviation.
+
+* Gitlab pages is now used to host the latest documentation for MIDAS.
+    The logs can be found at <https://midas-mosaik.gitlab.io/midas>.
+
+* The latest pysimmods package 0.7.1 is supported.
+* Some smaller changes/bugfixes
+  + Removed pandas deprecation warnings
+  + Development only: fixed version of black is now required.
+        Currently 22.1.0.
+
+## Version 0.5.12 (2021-12-03)
+
+* Update to latest pysimmods API changes
+
+## Version 0.5.11 (2021-12-01)
+
+* GridOperator passed the wrong arguments to read_json.
+
+## Version 0.5.10 (2021-11-25)
+
+* Added more tests and fixed several smaller bugs
+* Improved the DLP simulator
+  + Can now be used like the other data simulators
+* Added downloader and simulator for PV and wind data
+* Added Bremerhaven MV grid developed by a student\'s group at the
+    University of Oldenburg
+
+## Version 0.5.9 (2021-11-15)
+
+* Improved TimeGenerator:
+  + Now can be date giver to any other simulator
+  + Currently only implemented for weather data
+  + TimeGenerator\'s start now depends on the start date
+
+## Version 0.5.8 (2021-10-22)
+
+* Hotfix: GridOperator needs to deserialize schedules as well.
+
+## Version 0.5.7 (2021-10-22)
+
+* Introduced an improved analysis function
+  + Is started with [midasctl analyze
+        \<path/to/db.hdf5\>]{.title-ref}
+
+  + This will create a more extensive report of the powergrid
+  + A report for pysimmods will also be created if pysimmods were
+        used.
+
+  + If pandoc is installed on you system, the report will
+        automatically converted to a .odt document, including the most
+        important plots.
+
+  + Requires MidasHdf to be used in the scenario (which is now the
+        default database for all scenarios.)
+
+## Version 0.5.6 (2021-10-18)
+
+* Fixed an error in the download of weather data
+* Added gitlab ci pipeline
+
+## Version 0.5.5 (2021-10-12)
+
+* Changed the [get_data_info()]{.title-ref} function of the data
+    simulators
+
+  + The full info dict is returned now and can be search manually
+* Added a new actuator for [tap_pos]{.title-ref} in supported grids.
+* Added a general scaling flag for simbench data.
+  + The scaling is applied automatically and additionally to all
+        loads/sgens of the simbench data.
+
+* The [start_date]{.title-ref} of weather data is now read from the
+    runtime config
+
+  + This allows more flexibility when using different weather
+        sources
+
+  + It is still required to fetch the data from the DWD.
+
+## Version 0.5.4 (2021-09-30)
+
+* Improved the MidasHdf5 store
+  + Created a buffer size. Once the buffer is full, the data is
+        written to disk and the buffer is cleared.
+
+  + Threads are used to write the database to disk to avoid lags
+        during buffer clearing.
+
+* Added a [list_scenarios]{.title-ref} command to
+    [midasctl]{.title-ref}
+
+  + The [list_scenarios]{.title-ref} command looks for all scenario
+        files in the default and user paths
+
+  + Custom scenarios can be passed like to the [run]{.title-ref}
+        command.
+
+## Version 0.5.3 (2021-09-09)
+
+* Bugfix: Removing temporary files may fail on Windows
+
+## Version 0.5.2 (2021-09-08)
+
+* Small Bugfixes:
+  + Used os.sep instead of \"/\" at some place
+  + Fixed missing noise_factor parameter
+
+## Version 0.5.1 (2021-09-07)
+
+* Created a tutorial for a basic scenario.
+* Fixed some bugs that appeared during the tutorial.
+
+## Version 0.5.0 (2021-09-03)
+
+* Updated all simulators to mosaik_api 3.0
+* Added print format option to have the log outputs in a more readable
+    way.
+
+## Version 0.4.9 (2021-09-03)
+
+* Refactored the CLI
+* Updated README
+* Refactored palaestrAI descriptor to use midas.run
+
+## Version 0.4.8 (2021-08-24)
+
+* Added time simulator to track cyclic time information depending on
+    the current date.
+
+* Added reward and grid health reward (only relevant for palaestrAI
+    users)
+
+## Version 0.4.7 (2021-06-02)
+
+* Removed rettij, qmarket, and marketagents (they will returned
+    later).
+
+* Palaestrai Reward implementation
+* Some small bug fixes
+
+## Version 0.4.6 (2021-05-26)
+
+* OpenEI changed their website and as consequence, the data crawler is
+    now broken. As long as you have already downloaded the dataset into
+    your midas data folder, you shouldn\'t have any problems. If you
+    have to download the datasets again, you won\'t be able to use
+    commercial data models for now.
+
+## Version 0.4.5 (2021-05-04)
+
+* Fixed a bug in the palaestrAI descriptor.
+
+## Version 0.4.4 (2021-04-19)
+
+* Fixed autocfg bug
+* Updated link for weather data
+
+## Version 0.4.3 (2021-04-01)
+
+* Using the RNG master switch now does not end the scenario prepartion
+    anymore.
+
+## Version 0.4.2 (2021-03-23)
+
+* Filename of the weather database can now be passed via scenario
+    config.
+
+## Version 0.4.1 (2021-02-23)
+
+* Added support for the biogas model
+* Added support for the diesel generator
+* Changed the unit type of the battery from \'load\' to \'storage\'
+
+## Version 0.4.0 (2021-01-29)
+
+* Introduced midasctl, the new CLI
+  + \'midasctl run\' gives access to normal functionalities
+* Integrated basic grid analysis
+  + Can be accessed with \'midasctl analysis\'
+* See the \--help command for more information
+
+## Version 0.3.8 (2021-01-27)
+
+* Integration of CHP and Battery models from pysimmods
+
+## Version 0.3.7 (2020-01-19)
+
+* Enabled custom config for palaestrai
+
+## Version 0.3.6 (2021-01-13)
+
+* Added autocfg to CLI
+
+## Version 0.3.5 (2021-01-06)
+
+* Fixed failing tests
+
+## Version 0.3.4 (2020-12-11)
+
+* Bugfixes for grid plotting of simbench grids
+* Tested other simbench codes
+
+## Version 0.3.3 (2020-12-09)
+
+* Database now accepts a None filename.
+  + The default database mosaikHDF5 will throw an error if filename
+        is not set.
+
+  + The ARLCollector can be initialized with a None filename.
+* tmp directory will automatically be removed.
+* Added ssl exception case for Mac OS
+* Changed requirements of numpy from == to \<= 1.19.3
+* Added pysimmods to the default requirements.
+
+## Version 0.3.2 (2020-12-07)
+
+* Now included:
+  + Grid plotting
+* New:
+  + grid_json as output from Powergrid simulator
+* The ARLCollector is an optional replacement for the mosaikhdf
+    database.
+
+## Version 0.3.1 (2020-12-03)
+
+* Bugfix in market agents
+* GridForecaster now used *der_mapping* instead of *unit_mapping*.
+
+## Version 0.3.0 (2020-11-25)
+
+* Included palaestrai adapter
+* Included market agents
+* Included qmarket
+
+## Version 0.2.14 (2020-11-18)
+
+* Bugfixes for errors that emerged during integration of qmarket
+* Updated setup and readme.
+
+## Version 0.2.13 (2020-11-13)
+
+* Bugfixes for errors that emerged during integration of mango
+* Integration of the HVAC model in pysimmods
+
+## Version 0.2.12 (2020-11-11)
+
+* Custom modules can now be loaded
+  + In the yaml, provide a key custom_modules that is a list
+  + Each item of the list is a list with the first item beeing the
+        module name and the second item die full import path of the
+        module e.g.: \[blackstart,
+        midas.adapter.mango.blackstart:BlackstartModule\]
+
+* Custom grids can now be loaded
+  + In the yaml, provide as gridfile the full import path to the
+        function that creates and returns the grid. Does not support
+        parameters (yet, maybe in the future if necessary)
+
+## Version 0.2.11 (2020-11-11)
+
+* New
+  + Downloading of the households profiles
+  + Extracting households profiles to the correct folder
+* Several bugfixes for windows
+
+## Version 0.2.10 (2020-11-09)
+
+* Mainly some bugfixes
+* Small progress on documentation
+
+## Version 0.2.9 (2020-10-23)
+
+* New:
+  + Command line dialog for initial configuration
+  + Automatically download the datasets
+  + Sphinx docu WIP
+
+## Version 0.2.8 (2020-10-22)
+
+* Now included
+  + Support for the flexibility simulator
+  + Four Bus minimal example
+* Tested the current setup
+* Fixed some small bugs
+
+## Version 0.2.7 (2020-10-21)
+
+* Now included:
+  + GridOperator module
+  + DefaultLoadProfile simulator (used by the GridOperator)
+* New:
+  + Scraper for default load profiles
+* For each grid, a grid operator can be created
+
+## Version 0.2.6 (2020-10-20)
+
+* Now included:
+  + Pysimmods module (formerly named der)
+  + Basic Pysimmods Simulator with PV plants
+* Overhaul of nearly all upgrade modules and improved readability
+* Extended the benchmark scenario configuration
+
+## Version 0.2.5 (2020-10-09)
+
+* Now included:
+  + Commercial module (renamed to comdata)
+* New:
+  + Scraper for commercial data (located in midas.tools).
+
+## Version 0.2.4 (2020-10-08)
+
+* Now included:
+  + Weather module
+* New:
+  + Scraper for weather data (located in midas.tools).
+
+## Version 0.2.3 (2020-10-07)
+
+* Now included:
+  + Households module, renamed to SmartNordData
+
+* New:
+  + Added builder for SmartNordData
+  + Benchmark scenario using more than one grid. In the
+        benchmark.yml every configurable aspect is configured manually.
+
+* 
+
+    Slightly reworked module config system. Now there is a
+
+    :   upgrade_model class.
+
+* Added LICENSE for upcoming OS release.
+
+* Revised doc strings to be sphinx compliant. Still a lot of
+    documentation is missing.
+
+## Version 0.2.2 (2020-09-25)
+
+* New:
+  + Tool to read profiles from a simbench scenario into a hdf
+        database
+
+  + Simulator for the newly created hdf database with simbench data
+
+## Version 0.2.1 (2020-09-21)
+
+* Now included:
+  + Base config module
+  + Database config module
+  + Powergrid
+* New:
+  + Powergrid simulator was redone from scratch
+  + Use multiple grid models in one simulation
+  + Custom config files can be used. Pass them to the CLI with -c
+        flag
+
+## Version 0.2.0 (2020-09-15)
+
+* Created new repository for open source release
+  + Older versions of midas are not accessable anymore
+* Existing components will be reviewed individually and integrated one
+    by one
+
+* Now included:
+  + midas CLI
+  + configurator
+* New
+  + Logging
+  + Configurator is now a class
+
+## Version 0.1.16 (2020-07-16)
+
+* Changed pysimmods configs due to changes of pysimmods.
+
+## Version 0.1.15 (2020-07-09)
+
+* Added functionality to the WeatherSimulator
+  + Interpolation of data, enabling to use an arbitrary step_size
+        between 1 and 3599. Not tested for larger step sizes
+
+  + Randomization of data with normal distributed noise
+  + Implemented WeatherForecast with additional features
+  + WeatherForecast allows to define forecast horizon and forecast
+        error (which will be applied as normal-distributed noise)
+
+* Added functionality to the HouseholdSimulator
+  + Interpolation and randomization of data (see above)
+  + Randomization of the phase angle
+* Added DefaultLoadProfileSimulator
+  + Provides data from the BDEW default load profiles
+  + Interpolation and randomization (see above)
+  + Randomization of the phase angle
+  + Mainly for the use with the goa (no module, yet)
+* Added functionality to the goa:
+  + Analyze the grid regarding voltage violations
+  + Make a forecast for the next step using forecasts of unit models
+  + Optionally use default load profiles (however, the errors are
+        currently too large to be usable).
+
+  + Analyze the forecast and conclude simple actions, e.g., 
+        overvoltage -\> reduce generation and increase consumption.
+
+  + Send the simple actions back to the unit models over an ict
+        network (requires at least the new MessagesSimulator)
+
+## Version 0.1.14 (2020-06-18)
+
+* Added a grid operator, which calculates a grid health
+* Added a simple message-based communication
+* Adapted the midasmv.yml to support both new models
+
+## Version 0.1.13 (2020-05-22)
+
+* Mainly bugfixes and compatibility fixes for ARL
+
+## Version 0.1.12 (2020-04-27)
+
+* Added simbench rural3
+* Added cli
+* Moved data files from data to src/midas/data
+
+## Version 0.1.11 (2020-04-23)
+
+* Added midas lv
+* Further improvements of the config system
+
+## Version 0.1.10 (2020-04-22)
+
+* Clean up code
+* Remove the old \<0.1.7 config system
+
+## Version 0.1.9 (2020-04-22)
+
+* Extend the new config system to midas mv
+
+## Version 0.1.8 (2020-04-20)
+
+* Created a preconfiguration system for pysimmods
+
+## Version 0.1.7 (2020-04-03)
+
+* Changed the config system
+* Configs are now located in midas.scenario.base and
+    midas.scenario.der (currently only four bus system)
+
+* These files have a *configure* method which returns a scenario
+    dictionary: scenario\[\'world\'\] returns the world object which can
+    be run
+
+* 
+
+## Version 0.1.6 (2020-02-19)
+
+* Grid plotting
+* Extension for ARL Simulator (performance of ARL Agents)
+* ARL with better strategies (i.e. with reward function) (currently
+    requires a specific branch of ARL since in the development branch is
+    no strategy with reward)
+
+* Grid health: the average voltage p.u. of all buses
+
+## Version 0.1.5 (2020-02-18)
+
+* ARL simple example with RandomActionStrategy
+* ARL in the four bus system
+* ARL in MIDAS MV
+
+## Version 0.1.4 (2020-02-17)
+
+* A new version of the weather data simulator
+* Included the pysimmods simulator
+* Improved CIGRE MV with DER
+
+## Version 0.1.3 (2020-02-05)
+
+* A new commercial load simulator
+* CIGRE MV without DER as in MIDAS 0.1.0
+
+## Version 0.1.2 (2020-02-04)
+
+* MIDAS includes a yaml extractor for pandapower. It is still required
+    to merge the output manually (i.e. adding references and
+    associations).
+
+## Version 0.1.1 (2020-01-30)
+
+* MIDAS is coded totally new
+* MIDAS now uses the mosaik-hdf5 for data logging
+* MIDAS features the pandapower simulator developed by Rami
+* A new household data simulator was developed
+* MIDAS scenarios are no longer built in the code directly. Instead
+    the scenario_builder.py is used to create a scenario based on a
+    scenario file in the yaml format
+
+* A scenario file for the pandapower simple_four_bus_system is
+    included.
+
+## Version 0.1.0 (2019-07-16)
+
+* Legacy MIDAS
