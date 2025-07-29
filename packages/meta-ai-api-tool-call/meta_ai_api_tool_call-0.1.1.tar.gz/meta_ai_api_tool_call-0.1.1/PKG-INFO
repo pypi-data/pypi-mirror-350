@@ -1,0 +1,101 @@
+Metadata-Version: 2.4
+Name: meta_ai_api_tool_call
+Version: 0.1.1
+Summary: A Python package for interacting with Meta AI API (reverse engineered) with tool calls.
+Home-page: https://github.com/mr-destructive/meta_ai_api_tool_call
+Author: Meet Gor
+Author-email: gormeet711@gmail.com
+Project-URL: Source, https://github.com/mr-destructive/meta_ai_api_tool_call
+Project-URL: Tracker, https://github.com/mr-destructive/meta_ai_api_tool_call/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Intended Audience :: Developers
+Classifier: Development Status :: 3 - Alpha
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: requests-html
+Requires-Dist: beautifulsoup4
+Requires-Dist: requests
+Requires-Dist: lxml
+Requires-Dist: lxml_html_clean
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: project-url
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# Meta AI API 
+
+> Fork of [meta-ai-api](https://github.com/Strvm/meta-ai-api) with support for tool-calling
+
+A Python package for interacting with the Meta AI API, including authentication, messaging, and tool-call capabilities.
+
+---
+
+## Features
+- Normal Text based chat
+- Tool-call support for advanced integrations
+
+---
+
+## Installation
+
+```bash
+pip install meta_ai_api_tool_call
+```
+
+---
+
+## Usage
+
+### Basic Example
+```python
+from meta_ai_api_tool_call import MetaAI
+
+# For unauthenticated (public) access
+ai = MetaAI()
+response = ai.prompt("Hello Meta!")
+print(response)
+
+# For authenticated access (recommended for full features)
+ai = MetaAI(fb_email="your_fb_email", fb_password="your_fb_password")
+response = ai.prompt("Hello with login!")
+print(response)
+```
+
+### Tool Call Example
+```python
+from meta_ai_api_tool_call import MetaAI
+
+def add(a: int, b: int) -> int:
+    """Adds two numbers."""
+    return a + b
+
+ai = MetaAI()
+tools = [add]
+response = ai.prompt("Use the add tool to add 2 and 3", tools=tools)
+print(response)
+```
+
+---
+
+
+## Contributing
+Contributions are welcome! Please open issues or pull requests on [GitHub](https://github.com/mr-destructive/meta_ai_api_tool_call).
+
+---
+
+## License
+
+Follow the [meta-ai](https://www.meta.ai/) and Meta's [terms and policies](https://www.facebook.com/policies_center/) for usage.
+---
+
+## Disclaimer
+This project is not affiliated with Meta, Facebook, or their partners. Use at your own risk and comply with all applicable terms of service.
