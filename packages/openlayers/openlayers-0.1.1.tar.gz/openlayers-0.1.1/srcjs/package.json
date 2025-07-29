@@ -1,0 +1,31 @@
+{
+  "name": "openlayers-widget",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+    "prettier": "prettier ipywidget --write",
+    "start-ipywidget": "vite ipywidget",
+    "build-ipywidget": "vite build ipywidget",
+    "serve-ipywidget": "vite preview ipywidget",
+    "build-anywidget-bindings": "esbuild ipywidget/anywidget.js --bundle --minify --format=esm --outfile=anywidget-bindings/openlayers.anywidget.js",
+    "build-anywidget-bindings-dev": "node ./esbuild-build-bindings.mjs",
+    "build-anywidget-bindings-ts": "tsc --build && esbuild build/anywidget.js --bundle --minify --format=esm --outfile=anywidget-bindings/openlayers.anywidget.js",
+    "build-standalone-bindings-ts": "tsc --build && esbuild build/standalone.js --bundle --minify --outfile=anywidget-bindings/openlayers.standalone.js"
+  },
+  "devDependencies": {
+    "@anywidget/types": "^0.2.0",
+    "@types/mustache": "^4.2.5",
+    "esbuild": "^0.25.2",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.3",
+    "vite": "^6.2.4"
+  },
+  "dependencies": {
+    "@maptiler/geocoding-control": "^2.1.6",
+    "mustache": "^4.2.0",
+    "ol": "^10.5.0",
+    "ol-pmtiles": "^2.0.2"
+  }
+}
