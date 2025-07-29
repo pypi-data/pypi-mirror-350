@@ -1,0 +1,29 @@
+[build-system]
+# 可以选择setuptools、Poetry或者flit，这里选择setuptools
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "elfinTerminal"
+dynamic = ["version"]
+description = "终端配置工具."
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+]
+dependencies = [
+    "prettytable", "loguru"
+]
+
+[tool.setuptools.dynamic]
+version = { attr = "elfinTerminal.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["elfinTerminal.*"]
+
+[project.scripts]
+# 命令 = "包名.模块:函数"
+elfinTerminal = "elfinTerminal.scripts.terminal:elfin_terminal"
