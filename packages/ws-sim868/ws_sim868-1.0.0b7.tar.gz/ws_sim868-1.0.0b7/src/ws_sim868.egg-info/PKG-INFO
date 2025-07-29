@@ -1,0 +1,68 @@
+Metadata-Version: 2.4
+Name: ws_sim868
+Version: 1.0.0b7
+Summary: Python package to control the Waveshare GSM/GPRS/GNSS Pi HAT
+Home-page: https://github.com/matthewnaruzny/ws_sim868
+Author: Matthew Naruzny
+Author-email: software@mnaruzny.com
+Project-URL: Bug Tracker, https://github.com/matthewnaruzny/ws_sim868/issues
+Project-URL: Repository, https://github.com/matthewnaruzny/ws_sim868
+Project-URL: Documentation, https://matthewnaruzny.github.io/ws_sim868/ws_sim868/modemUnit.html
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Operating System :: OS Independent
+Classifier: Development Status :: 4 - Beta
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE.txt
+Dynamic: license-file
+
+# ws_sim868
+## Interface module for the Waveshare GSM/GPRS/GNSS Pi Hat
+
+![PyPI - License](https://img.shields.io/pypi/l/ws-sim868)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/matthewnaruzny/ws_sim868/python-publish.yml)
+![PyPI - Version](https://img.shields.io/pypi/v/ws_sim868)
+
+## Features
+- HTTP GET and POST requests
+- Automatically start Modem if turned off
+- Receive GNSS Location
+
+## Instalation
+```
+pip install ws-sim868
+```
+
+## Overview
+
+## Examples:
+### HTTP Get Request
+
+```python
+from ws_sim868.modemUnit import ModemUnit
+import time
+
+if __name__ == "__main__":
+    m = ModemUnit()
+    m.apn_config('super', '', '')
+    m.network_start()
+    res = m.http_get("http://example.com")
+    print(res)
+
+    while True:
+        time.sleep(0.5)
+```
+
+### Get Location
+```python
+from ws_sim868.modemUnit import ModemUnit
+import time
+
+if __name__ == "__main__":
+    m = ModemUnit()
+    m.gnss_start()
+
+    while True:
+        time.sleep(3)
+        print(m.get_gnss_loc())
+```
