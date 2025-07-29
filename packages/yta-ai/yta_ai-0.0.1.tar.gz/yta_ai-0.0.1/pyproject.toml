@@ -1,0 +1,42 @@
+[project]
+name = "yta-ai"
+version = "0.0.1"
+description = "Youtube Autónomo AI add-on."
+authors = [
+    {name = "danialcala94",email = "danielalcalavalera@gmail.com"}
+]
+readme = "README.md"
+requires-python = "==3.9"
+dependencies = [
+    "yta_general_utils (>=0.0.250,<1.0.0)",
+    "yta_validation (>=0.0.1,<1.0.0)",
+    "yta_programming (>=0.0.1,<1.0.0)",
+    "yta_file_downloader (>=0.0.1,<1.0.0)",
+    "yta_constants (>=0.0.1,<1.0.0)",
+    "google-generativeai (>=0.6.0,<1.0.0)",
+    "transformers (>=4.0.0,<5.0.0)",
+    "ollama (>=0.3.1,<1.0.0)",
+    "openai (>=1.3.8,<2.0.0)",
+    "requests (>=2.32.3,<3.0.0)",
+    # This 'tqdm' library is just to show a progress bar...
+    # it is very useless
+    "tqdm (>=4.66.1,<5.0.0)",
+    # The code is interesting but the 'whisper_timestamped'
+    # is implemented in another library to get transcriptions
+    # so, if reused, it must be adapted
+    #"whisper_timestamped (>=1.14.2,<2.0.0)",
+    # Commented because experimental and old
+    #"re_gpt (>=3.0.1,<4.0.0)",
+    # Commented because experimental and old
+    #"ai21 (>=2.1.2,<3.0.0)"
+]
+
+[tool.poetry]
+packages = [{include = "yta_ai", from = "src"}]
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.5"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
