@@ -1,0 +1,77 @@
+[project]
+name = "imaging-server-kit"
+dynamic = ["version"]
+description = "Deploy image processing algorithms in FastAPI servers. "
+readme = "README.md"
+requires-python = ">=3.9"
+license = { file = "LICENSE" }
+authors = [{ name = "Mallory Wittwer", email = "mallory.wittwer@epfl.ch" }]
+
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Image Processing",
+]
+
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "python-multipart",
+    "httpx",
+    "tifffile",
+    "numpy",
+    "scikit-image",
+    "imantics",
+    "geojson",
+    "jinja2",
+    "PyYAML",
+    "pydantic>=2.0",
+    "cookiecutter",
+    "opencv-contrib-python-headless",
+]
+
+[project.optional-dependencies]
+docs = ["jupyter-book", "jupytext"]
+test = ["pytest"]
+users = ["fastapi-users[sqlalchemy]", "aiosqlite"]
+all = ["imaging-server-kit[docs,test,users]"]
+
+[project.scripts]
+serverkit = "imaging_server_kit.cli:main"
+
+[project.urls]
+repository = "https://github.com/Imaging-Server-Kit/imaging-server-kit"
+documentation = "https://imaging-server-kit.github.io/imaging-server-kit"
+
+[build-system]
+requires = ["setuptools>=42.0.0", "wheel", "setuptools_scm"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"*" = ["*.yaml"]
+"imaging_server_kit.core" = [
+    "templates/*.html",
+    "static/css/*",
+    "static/js/*",
+    "static/*",
+]
+
+[tool.setuptools_scm]
+write_to = "src/imaging_server_kit/_version.py"
+version_scheme = "guess-next-dev"
+local_scheme = "no-local-version"
