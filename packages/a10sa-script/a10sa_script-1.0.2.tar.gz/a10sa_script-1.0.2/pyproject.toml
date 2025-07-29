@@ -1,0 +1,130 @@
+[project]
+name = "a10sa-script"
+description = "A10SA Script"
+authors = [
+    { name = "byeonhyeok", email = "bhrevol@gmail.com" },
+]
+dependencies = [
+    "click>=8.1.8",
+    "sortedcontainers>=2.4.0",
+    "loguru>=0.7.3",
+    "buttplug-py>=0.2.0",
+]
+requires-python = "<4.0,>=3.10"
+readme = "README.rst"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+]
+dynamic = []
+version = "1.0.2"
+
+[project.license]
+text = "MIT"
+
+[project.urls]
+Changelog = "https://github.com/bhrevol/a10sa-script/releases"
+homepage = "https://github.com/bhrevol/a10sa-script"
+repository = "https://github.com/bhrevol/a10sa-script"
+documentation = "https://a10sa-script.readthedocs.io"
+
+[project.scripts]
+a10sa-script = "a10sa_script.__main__:main"
+
+[project.optional-dependencies]
+ble = [
+    "bleak>=0.22.3; python_version < \"3.14\"",
+]
+
+[tool.coverage.paths]
+source = [
+    "src",
+    "*/site-packages",
+]
+tests = [
+    "tests",
+    "*/tests",
+]
+
+[tool.coverage.run]
+branch = true
+source = [
+    "a10sa_script",
+    "tests",
+]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 100
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "@overload",
+]
+
+[tool.isort]
+profile = "black"
+force_single_line = true
+lines_after_imports = 2
+
+[tool.mypy]
+strict = true
+warn_unreachable = true
+pretty = true
+show_column_numbers = true
+show_error_codes = true
+show_error_context = true
+overrides = [
+    { module = "buttplug.*", ignore_errors = true },
+]
+
+[tool.pdm]
+distribution = true
+
+[tool.pdm.build]
+includes = []
+
+[tool.pdm.version]
+source = "scm"
+
+[tool.ruff.lint.per-file-ignores]
+"stubs/**.pyi" = [
+    "F403",
+    "F405",
+]
+
+[build-system]
+requires = [
+    "pdm-backend",
+]
+build-backend = "pdm.backend"
+
+[dependency-groups]
+coverage = [
+    "coverage[toml]>=7.6.10",
+]
+docs = [
+    "furo>=2024.8.6",
+    "sphinx>=7.1.2",
+    "sphinx-autobuild>=2021.3.14",
+    "sphinx-click>=6.0.0",
+]
+lint = [
+    "pre-commit>=4.1.0",
+    "pyupgrade>=3.19.1",
+]
+mypy = [
+    "mypy>=1.14.1",
+]
+safety = [
+    "safety>=3.2.14",
+]
+tests = [
+    "pytest>=8.3.4",
+    "pygments>=2.19.1",
+]
+typeguard = [
+    "typeguard>=4.4.1",
+]
+xdoctest = [
+    "xdoctest[colors]>=1.2.0",
+]
