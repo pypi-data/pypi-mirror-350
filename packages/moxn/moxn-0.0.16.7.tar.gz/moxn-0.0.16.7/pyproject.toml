@@ -1,0 +1,71 @@
+[project]
+name = "moxn"
+version = "0.0.16.7"
+description = "Moxn SDK for Python"
+authors = [{name = "Mark Weiss", email = "mark@moxn.dev"}]
+requires-python = ">=3.11"
+license = {text = "MIT"}  # Add license info
+classifiers = [  # Add classifiers for better PyPI presentation
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+# Core dependencies only needed for the moxn package
+dependencies = [
+    "httpx>=0.24.0",
+    "pydantic>=2.0.0",
+    "pydantic-settings>=2.0.0",
+    "anthropic==0.50.0",
+    "python-dotenv>=1.0.1",
+    "tenacity>=9.0.0",
+    "typer>=0.12.5",
+    "structlog>=24.4.0",
+    "openai>=1.76.2",
+    "google-genai>=1.13.0",
+    "moxn-types==0.0.0.5",
+]
+
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+# Explicitly specify ONLY the moxn package for building
+[tool.hatch.build.targets.wheel]
+packages = ["src/moxn"]
+exclude = ["src/moxn_api"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src/moxn",
+    "/README.md",
+    "/LICENSE",
+]
+exclude = [
+    "/src/moxn_api",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+asyncio_mode = "auto"
+
+
+[tool.hatchling.package-data]
+moxn = ["py.typed"]
+
+[dependency-groups]
+dev = [
+    "ipdb>=0.13.13",
+    "ipython>=8.36.0",
+    "mypy>=1.15.0",
+    "pytest>=8.3.5",
+    "pytest-asyncio>=0.26.0",
+    "ruff>=0.11.9",
+    "pdbpp>=0.11.6",
+    "hypothesis>=6.131.21",
+]
+
