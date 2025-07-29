@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "greeum"
+version = "0.6.0rc1"
+description = "Universal memory module for LLMs"
+authors = [ {name = "DryRainEnt", email="kachirjsdn@gmail.com"} ]
+readme = {file = "README.md", content-type = "text/markdown"}
+requires-python = ">=3.10"
+license = {text = "MIT"}
+keywords = ["memory", "LLM", "RAG"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+dependencies = [
+    "rich>=13.4.0",
+    "click>=8.1.0"
+]
+
+[project.optional-dependencies]
+faiss = ["faiss-cpu>=1.7.4"]
+openai = ["openai>=1.0.0"]
+transformers = ["transformers>=4.40.0", "sentence-transformers>=2.2.0", "keybert>=0.7.0"]
+all = ["faiss-cpu>=1.7.4", "openai>=1.0.0", "transformers>=4.40.0", "sentence-transformers>=2.2.0", "keybert>=0.7.0"]
+
+[tool.setuptools.packages.find]
+include = ["greeum*"]
+
+[tool.setuptools.package-data]
+"greeum" = ["py.typed"]
+
+[tool.ruff]
+line-length = 120
+# Ignore some low-priority or legacy issues temporarily
+extend-ignore = [
+    "F401", # unused imports
+    "F841", # unused variables
+    "F541", # extraneous f-string
+    "E402", # module level import not at top
+    "E722", # bare except
+    "F811"  # redefinition of variable
+] 
