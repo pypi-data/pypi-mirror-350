@@ -1,0 +1,51 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "qmm-core"
+version = "0.4.2"
+authors = [
+  { name="Jayden Hyman", email="j.hyman@uq.edu.au" },
+]
+description = "A software platform for analysing the structure and function of complex systems"
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "numpy>=1.24.3,<2.0.0",
+    "sympy>=1.12.0",
+    "networkx>=3.1",
+    "pandas>=2.0.3",
+    "thewalrus>=0.21.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "sphinx",
+    "sphinx-rtd-theme",
+    "sphinx-copybutton",
+    "sphinx-autodoc-typehints",
+    "pytest",
+    "ruff",
+    "build",
+    "twine"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/jaydenhyman/qmm"
+"Bug Tracker" = "https://github.com/jaydenhyman/qmm/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["qmm"]
+
+[tool.setuptools.package-data]
+qmm = ["py.typed"]
