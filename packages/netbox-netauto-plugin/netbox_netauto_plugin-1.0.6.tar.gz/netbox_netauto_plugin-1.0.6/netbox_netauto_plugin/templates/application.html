@@ -1,0 +1,98 @@
+
+{% extends 'generic/object.html' %}
+{% load render_table from django_tables2 %}
+{% load buttons %}
+
+{% block page-header %}
+  {% if object.status != "success" and object.status != "failed" and object.status != "merge" %}
+    <meta http-equiv="refresh" content="5">
+  {% endif %}
+  <!-- Page header content -->
+  {{ block.super }}
+{% endblock %}
+
+
+{% block content %}
+  <div class="row mb-3">
+    <div class="col col-md-6">
+      <div class="card">
+        <h5 class="card-header">GitLab Status</h5>
+        <table class="table table-hover attr-table">
+          <tr>
+            <th scope="row">Status</th>
+            <td>{% badge object.get_status_display bg_color=object.get_status_color %}</td>
+          </tr>
+          <tr>
+            <th scope="row">Open Merge Request</th>
+            <td><a href="{{ object.merge_request_url }}" target="_blank">Merge Request</a></td>
+          </tr>
+          <tr>
+            <th scope="row">Running Pipelines</th>
+            <td><a href="{{ object.pipeline_url }}" target="_blank">Triggered Pipelines</a></td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <h5 class="card-header">Application</h5>
+        <table class="table table-hover attr-table">
+          <tr>
+            <th scope="row">Name</th>
+            <td>{{ object.name }}</td>
+          </tr>
+          <tr>
+            <th scope="row">RITM</th>
+            <td>{{ object.ritm }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Description</th>
+            <td>{{ object.description }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Tenant</th>
+            <td>{{ object.tenant|linkify|placeholder }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Cluster</th>
+            <td>{{ object.cluster|linkify|placeholder }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Virtual IP Address</th>
+            <td>{{ object.virtual_ip_address|linkify|placeholder }}{% if object.virtual_port %} :{{ object.virtual_port }}{% endif %}</td>
+          </tr>
+          <tr>
+            <th scope="row">Member IP Addresses</th>
+            <td>{{ object.member_ip_addresses_string }}</td>
+          </tr>
+        </table>
+      </div>
+      {% include 'inc/panels/custom_fields.html' %}
+    </div>
+    <div class="col col-md-6">
+      <div class="card">
+        <h5 class="card-header">Profiles</h5>
+        <table class="table table-hover attr-table">
+          <tr>
+            <th scope="row">TCP LAN</th>
+            <td>{{ object.tcp_lan|placeholder }}</td>
+          </tr>
+          <tr>
+            <th scope="row">TCP WAN</th>
+            <td>{{ object.tcp_wan|placeholder }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Persistence Profile</th>
+            <td>{{ object.persistence_profile|placeholder }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Health Monitor Profile</th>
+            <td>{{ object.health_monitor_profile|placeholder }}</td>
+          </tr>
+        </table>
+      </div>
+      {% include 'inc/panels/tags.html' %}
+      {% include 'inc/panels/comments.html' %}
+    </div>
+  </div>
+{% endblock content %}
+
