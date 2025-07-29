@@ -1,0 +1,63 @@
+Metadata-Version: 2.4
+Name: pyfamilysafety
+Version: 2.0.0b1
+Summary: Microsoft Family Safety API library
+Home-page: http://github.com/pantherale0/pyfamilysafety
+Author: pantherale0
+License: MIT
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8, <4
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: aiohttp>=3.7.0
+Requires-Dist: python-dateutil>=2.7.0
+Provides-Extra: dev
+Requires-Dist: bandit<1.9,>=1.7; extra == "dev"
+Requires-Dist: black==23.*; extra == "dev"
+Requires-Dist: build==0.10.*; extra == "dev"
+Requires-Dist: flake8<8,>=6; extra == "dev"
+Requires-Dist: isort<7,>=5; extra == "dev"
+Requires-Dist: mypy==1.5.*; extra == "dev"
+Requires-Dist: pytest<9,>=7; extra == "dev"
+Requires-Dist: pytest-cov<7,>=4; extra == "dev"
+Requires-Dist: twine<7,>=4; extra == "dev"
+Dynamic: author
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license
+Dynamic: license-file
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# Microsoft Family Safety Python Module
+A Microsoft Family Safety implementation written in Python
+
+## Getting started
+
+**Looking for the Home Assistant integration?** [Navigate here](https://github.com/pantherale0/ha-familysafety)
+
+Full API docs to follow at a later date as part of #1
+
+### Log in
+
+This module won't handle authentication via OAuth and instead you'll need to navigate to the following URL:
+
+https://login.live.com/oauth20_authorize.srf?cobrandid=b5d15d4b-695a-4cd5-93c6-13f551b310df&client_id=000000000004893A&response_type=code&redirect_uri=https%3A%2F%2Flogin.live.com%2Foauth20_desktop.srf&response_mode=query&scope=service%3A%3Afamilymobile.microsoft.com%3A%3AMBI_SSL&lw=1&fl=easi2&login_hint=
+
+After login this should redirect you to a blank page, you'll need to copy the whole URL of this page which will be used to initiate a session.
+
+## Privacy questions
+
+1) Can this access other services within my Microsoft account? No, using the above link has its scope restricted to purely the Family Safety app which will only allow applications using generated tokens to use Family Safety API and no other APIs (such as OneDrive / Outlook).
+
+## Sources / tools used
+
+- https://www.reddit.com/r/learnpython/comments/4d4wpf/microsoft_web_login_with_requests/
+- Microsoft Family Safety Android
+- mitmproxy
