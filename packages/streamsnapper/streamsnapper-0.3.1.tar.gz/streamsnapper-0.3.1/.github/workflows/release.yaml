@@ -1,0 +1,125 @@
+name: Auto Release Creation and PyPI Publishing
+
+on:
+  push:
+    branches: ["main"]
+
+permissions:
+  contents: write
+  id-token: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  create-release-and-publish:
+    name: 🏷️ Create Release and Publish to PyPI
+    runs-on: ubuntu-22.04
+    if: startsWith(github.event.head_commit.message, 'Bump version to')
+    timeout-minutes: 10
+
+    steps:
+      - name: 🔒 Security Scan Dependencies
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 📚 Load Release Config
+        id: release_config
+        run: |
+          PACKAGE_NAME=$(yq '.package.name' .github/release-config.yaml)
+          PACKAGE_TITLE=$(yq '.package.title' .github/release-config.yaml)
+          PACKAGE_DESC=$(yq '.package.description' .github/release-config.yaml)
+
+          echo "pkg_name=$PACKAGE_NAME" >> $GITHUB_OUTPUT
+          echo "pkg_title=$PACKAGE_TITLE" >> $GITHUB_OUTPUT
+          echo "pkg_desc=$PACKAGE_DESC" >> $GITHUB_OUTPUT
+
+      - name: 📝 Extract Version and Text
+        id: version_info
+        run: |
+          COMMIT_MSG="${{ github.event.head_commit.message }}"
+          VERSION=$(echo "$COMMIT_MSG" | grep -oP 'Bump version to \K[^ )]+')
+          EXTRA_TEXT=$(echo "$COMMIT_MSG" | grep -oP '\(.*\)' | sed 's/[()]//g' || echo "")
+
+          echo "Version detected: $VERSION"
+          echo "Extra text: $EXTRA_TEXT"
+
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "extra_text=$EXTRA_TEXT" >> $GITHUB_OUTPUT
+
+      - name: 🏷️ Get Previous Tag
+        id: previoustag
+        run: |
+          PREV_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          echo "Previous tag: $PREV_TAG"
+          echo "tag=$PREV_TAG" >> $GITHUB_OUTPUT
+
+      - name: 📝 Generate Commit List
+        id: commit_list
+        run: |
+          COMMITS=$(git log --pretty=format:"- [%s](https://github.com/${{ github.repository }}/commit/%H)" ${{ steps.previoustag.outputs.tag }}..HEAD | grep -v "^- \[Bump version to" || echo "- No significant changes in this release")
+          echo "commits<<EOF" >> $GITHUB_OUTPUT
+          echo "$COMMITS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          check-latest: true
+
+      - name: 🔧 Install Build Tools
+        run: |
+          python -m pip install --upgrade pip build twine yq
+
+      - name: 🏗️ Build Package
+        run: python -m build --sdist --wheel
+
+      - name: ✅ Validate Metadata
+        run: twine check dist/*
+
+      - name: 🌍 Set Timezone
+        uses: szenius/set-timezone@v2.0
+        with:
+          timezoneLinux: "UTC"
+
+      - name: 🚀 Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version_info.outputs.version }}
+          name: ${{ steps.version_info.outputs.extra_text != '' && format('🎉 {0} {1} - {2}', steps.release_config.outputs.pkg_title, steps.version_info.outputs.version, steps.version_info.outputs.extra_text) || format('🎉 {0} {1}', steps.release_config.outputs.pkg_title, steps.version_info.outputs.version) }}
+          body: |
+            ## 📦 Summary
+
+            > _${{ steps.release_config.outputs.pkg_desc }}_
+
+            ❇️ Available for automatic installation at [PyPI](https://pypi.org/project/${{ steps.release_config.outputs.pkg_name }}) and manual installation at [GitHub](https://github.com/${{ github.repository }}).
+
+            ### 📋 Changelog:
+
+            ${{ steps.commit_list.outputs.commits }}
+
+            ### 📊 Compare Changes
+
+            [View all changes](https://github.com/${{ github.repository }}/compare/${{ steps.previoustag.outputs.tag }}...v${{ steps.version_info.outputs.version }})
+          draft: false
+          prerelease: false
+          files: |
+            dist/*.whl
+            dist/*.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🚀 Upload to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          # password: ${{ secrets.PYPI_API_TOKEN }}
+          verbose: true
