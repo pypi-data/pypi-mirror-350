@@ -1,0 +1,225 @@
+[project]
+name = "physrisk-lib"
+# Could test changing the below to be sourced "dynamically"
+# dynamic = ['version']
+version = "1.0.3"
+description = "OS-Climate Physical Risk Library"
+authors = [
+    {name = "Joe Moorhouse",email = "5102656+joemoorhouse@users.noreply.github.com"},
+]
+requires-python = ">=3.9,<3.11"
+readme = "README.md"
+license = {file = "LICENSE"}
+keywords = ["Physical", "Climate", "Risk", "Finance"]
+
+classifiers = [
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: MacOS",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: Unix",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.8",
+  "Topic :: Office/Business :: Financial",
+  "Topic :: Scientific/Engineering",
+  "Topic :: Software Development",
+]
+
+dependencies = [
+    "affine>=2.4.0",
+    "dependency-injector>=4.41.0",
+    "numba>=0.56.4",
+    "numpy>=1.22.0",
+    "pint",
+    "pillow>=10.2.0",
+    "pydantic>=2.4.2",
+    "pyproj>=3.5.0",
+    "python-dotenv>=0.19.2",
+    "requests>=2.27.1",
+    "scipy>=1.7.3",
+    "shapely>=2.0.1",
+    "s3fs>=2022.1.0",
+    "zarr>=2.10.3",
+    "geopandas>=0.14.4",
+    "h3>=3.7.7",
+    "lmdbm>=0.0.6",
+]
+
+[project.urls]
+Homepage = "https://github.com/os-climate/physrisk"
+Repository = "https://github.com/os-climate/physrisk"
+Downloads = "https://github.com/os-climate/physrisk/releases"
+"Bug Tracker" = "https://github.com/os-climate/physrisk/issues"
+Documentation = "https://github.com/os-climate/physrisk/tree/main/docs"
+"Source Code" = "https://github.com/os-climate/physrisk"
+
+[metadata]
+license-files = ["LICENSE"]
+
+[build-system]
+requires = [
+    "setuptools>=42",
+    "wheel",
+    "pdm"
+]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["physrisk*"]
+
+[tool.setuptools.package-data]
+physrisk = [
+    "data/ne_110m_admin_0_countries/ne_*.*",
+    "data/ne_110m_admin_0_countries/country_codes.tsv",
+    "data/static/*.json",
+    "data/static/example_portfolios/*.json",
+    "data/static/hazard/*.json",
+    "data/static/vulnerability/*.json"
+]
+
+[tool.pdm.dev-dependencies]
+test = [
+    "pdm[pytest]",
+    "pytest",
+    "pytest-cov",
+    "openpyxl>=3.1.5",
+]
+doc = [
+    "numpydoc",
+    "nbsphinx",
+    "myst-nb",
+    "pandoc",
+    "pydata-sphinx-theme",
+    "sphinx",
+    "sphinxcontrib-details-directive",
+    "sphinxcontrib-bibtex",
+    "sphinx-copybutton",
+    "sphinx-simplepdf",
+    "sphinx-toolbox",
+    "sphinx_toggleprompt",
+    "sphinx_design",
+    "sphinx_rtd_theme",
+    "graphviz",
+    "plotly>=5.24.1",
+]
+dev = [
+    "mypy",
+    "pre-commit",
+    "ruff",
+    "tox"
+]
+
+[tool.pdm.scripts]
+pre_release = "scripts/dev-versioning.sh"
+release = "scripts/release-versioning.sh"
+test = "pytest"
+tox = "tox"
+docs_requirements = { shell = "pdm export -o docs/requirements-docs.txt --no-hashes", help = "Update requirements-docs.txt" }
+docs = { shell = "cd docs && make html", help = "Start the dev server for doc preview" }
+open_docs = { shell = "open ./docs/_build/html/index.html", help = "Start the dev server for doc preview" }
+lint = "pre-commit run --all-files"
+complete = { call = "tasks.complete:main", help = "Create autocomplete files for bash and fish" }
+all = {composite = ["pytest", "lint"]}
+
+[tool.pytest.ini_options]
+testpaths = "tests"
+addopts = "-v"
+log_cli = true
+log_cli_level = "INFO"
+log_cli_format = "%(asctime)s [%(levelname)s] %(message)s (%(filename)s:%(lineno)s)"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
+#addopts = "--cov --cov-report html --cov-report term-missing --cov-fail-under 95"
+
+[tool.mypy]
+warn_unreachable = true
+ignore_missing_imports = true
+
+[tool.coverage.run]
+source = "src"
+omit = "tests/*"
+relative_files = true
+
+[tool.ruff]
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+]
+
+[tool.ruff.lint]
+extend-fixable = [
+    # Instead of trailing-whitespace
+    "W291", "W293"
+    ]
+
+extend-select = [
+    # Instead of pydocstyle
+    "D",
+    #Instead of flake8
+    "E", "F","B",
+    # Instead of pep8-naming
+    "N",
+    # Instead of flake8-debugger or debug-statements
+    "T10",
+]
+
+ignore = [
+    "E203",
+    "E501",
+    # Avoid incompatible rules
+    "D203",
+    "D213",
+
+    # Ignore this rules so that precommit passes. Uncomment to start fixing them
+    "B006", "B008", "B904", "B012", "B024",
+    "D",
+]
+
+[tool.ruff.lint.extend-per-file-ignores]
+# Ignore `D` rules everywhere except for the `src/` directory.
+"!src/**.py" = ["D"]
+
+[tool.ruff.lint.pycodestyle]
+max-line-length = 120
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
