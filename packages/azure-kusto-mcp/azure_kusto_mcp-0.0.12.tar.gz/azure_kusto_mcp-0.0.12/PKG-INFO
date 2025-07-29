@@ -1,0 +1,235 @@
+Metadata-Version: 2.4
+Name: azure-kusto-mcp
+Version: 0.0.12
+Summary: Kusto MCP
+License-Expression: MIT
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Operating System :: OS Independent
+Classifier: Development Status :: 2 - Pre-Alpha
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: httpx>=0.28.1
+Requires-Dist: mcp[cli]>=1.6.0
+Requires-Dist: azure-kusto-data
+Requires-Dist: azure-identity
+Requires-Dist: azure.kusto.ingest
+Provides-Extra: dev
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: isort>=5.12.0; extra == "dev"
+Requires-Dist: flake8>=6.0.0; extra == "dev"
+Requires-Dist: mypy>=1.0.0; extra == "dev"
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Dynamic: license-file
+
+[![Install with UVX in VS Code](https://img.shields.io/badge/VS_Code-Install_Kusto_MCP_Server-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=kusto-mcp&config=%7B%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22azure-kusto-mcp%22%5D%2C%22env%22%3A%7B%22KUSTO_SERVICE_URI%22%3A%22%22%7D%7D) [![PyPI Downloads](https://static.pepy.tech/badge/azure-kusto-mcp)](https://pepy.tech/projects/azure-kusto-mcp)
+## 🎯 Overview
+
+A Model Context Protocol (MCP) server implementation for Kusto aka. Eventhouse in Microsoft Fabric and Azure Data Explorer. This server enables AI agents to interact with Kusto databases by providing tools and resources through the MCP interface, allowing for seamless data querying and analysis capabilities.
+
+### 🔍 How It Works
+
+The Kusto MCP Server creates a seamless integration between AI agents and Kusto services through:
+
+- 🔄 Smart JSON communication that AI agents understand
+- 🏗️ Natural language commands that get translated to Kql operations
+- 💡 Intelligent parameter suggestions and auto-completion!
+- ⚡ Consistent error handling that makes sense
+
+### ✨ What can you do with the Kusto (Eventhouse or Azure Data Explorer) MCP Server?
+Here are some cool prompts you can try:
+
+### 🔍 Explore your data
+
+- "Get databases in Eventhouse/ADX'"
+- "Sample 10 rows from table 'StormEvents' in Eventhouse/ADX"
+- "What can you tell me about StormEvents data?"
+- "Analyze the StormEvents to come up with trend analysis ocross past 10 years of data"
+- "Analyze the commands in 'CommandExecution' table and categorize them as low/medium/high risks"
+
+
+### Available tools 
+- List databases
+- List tables
+- Get schema for a table
+- Sample rows from a table
+- Execute query
+- Ingest a csv
+
+## Getting Started
+![kusto-mcp](https://github.com/user-attachments/assets/05f0ebbe-c64f-4961-83e4-f3d5f3a9a388)
+
+### Prerequisites
+1. Install either the stable or Insiders release of VS Code:
+   * [💫 Stable release](https://code.visualstudio.com/download)
+   * [🔮 Insiders release](https://code.visualstudio.com/insiders)
+2. Install the [GitHub Copilot](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot) and [GitHub Copilot Chat](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot-chat) extensions
+3. Install `uv`  
+```ps
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```  
+or, check here for [other install options](https://docs.astral.sh/uv/getting-started/installation/#__tabbed_1_2)
+
+4. Open VS Code in an empty folder
+
+
+### Install from PyPI (Pip)
+The Kusto MCP Server is available on [PyPI](https://pypi.org/project/kusto-mcp/), so you can install it using pip. This is the easiest way to install the server.
+
+#### From VS Code
+    1. Open the command palette (Ctrl+Shift+P) and run the command `MCP: Add Server`
+    2. Select install from Pip
+    3. When prompted, enter the package name `kusto-mcp`
+    4. Follow the prompts to install the package and add it to your settings.json file
+
+The process should end with the below settings in your `settings.json` file.
+
+#### settings.json
+```json
+{
+    "mcp": {
+        "server": {
+            "kusto-mcp": {
+                "command": "uvx",
+                "args": [
+                    "azure-kusto-mcp"
+                ],
+                "env": {
+                    "KUSTO_SERVICE_URI": "https://<your-kusto-cluster>.kusto.windows.net",
+                    //"KUSTO_DATABASE": "<default db>" // Optional
+                }
+            }
+        }
+    }
+}
+```
+
+### 🔧 Manual Install (Install from source)  
+
+1. Make sure you have Python 3.10+ installed properly and added to your PATH.
+2. Clone the repository
+3. Install the dependencies (`pip install .` or `uv tool install .`)
+4. Add the settings below into your vscode `settings.json` file. 
+5. Change the path to match the repo location on your machine.
+6. Change the cluster uri in the settings to match your cluster.
+
+```json
+{
+    "mcp": {
+        "servers": {
+            "kusto-mcp": {
+                "command": "uv",
+                "args": [
+                    "--directory",
+                    "C:/path/kusto-mcp/",
+                    "run",
+                    "-m",
+                    "kusto_mcp.server"
+                ],
+                "env": {
+                    "KUSTO_SERVICE_URI": "https://<your-kusto-cluster>.kusto.windows.net",
+                }
+            }
+        }
+    }
+}
+```
+
+## 🐛 Debugging the MCP Server locally
+Assuming you have python installed and the repo cloned:
+
+### Install locally
+```bash
+pip install -e ".[dev]"
+```
+
+### Configure
+
+Add the server to your
+```
+{
+    "mcp": {
+        "servers": {
+            "local-kusto-mcp": {
+                "command": "python",
+                "args": [
+                    "-m",
+                    "kusto_mcp.server"
+                ],
+                "env": {
+                    "KUSTO_SERVICE_URI": "https://help.kusto.windows.net"
+                }
+            }
+        }
+    }
+}
+```
+
+### Attach the debugger
+Use the `Python: Attach` configuration in your `launch.json` to attach to the running server. 
+Once VS Code picks up the server and starts it, navigate to it's output: 
+1. Open command palette (Ctrl+Shift+P) and run the command `MCP: List Servers`
+2. Navigate to `local-kusto-mcp` and select `Show Output`
+3. Pick up the process id (PID) of the server from the output
+4. Run the `Python: Attach` configuration in your `launch.json` file, and paste the PID of the server in the prompt
+5. The debugger will attach to the server process, and you can start debugging
+
+
+## 🧪 Test the MCP Server
+
+1. Open GitHub Copilot in VS Code and [switch to Agent mode](https://code.visualstudio.com/docs/copilot/chat/chat-agent-mode)
+2. You should see the Kusto MCP Server in the list of tools
+3. Try a prompt that tells the agent to use the Kusto MCP Server, such as "List my Kusto tables"
+4. The agent should be able to use the Kusto MCP Server tools to complete your query
+
+
+## 🔑 Authentication
+
+The  MCP Server seamlessly integrates with your host operating system's authentication mechanisms, making it super easy to get started! We use Azure Identity under the hood via [`DefaultAzureCredential`](https://learn.microsoft.com/en-us/azure/developer/python/sdk/authentication/credential-chains?tabs=dac), which tries these credentials in order:
+
+1. **Environment Variables** (`EnvironmentCredential`) - Perfect for CI/CD pipelines
+1. **Visual Studio** (`VisualStudioCredential`) - Uses your Visual Studio credentials
+1. **Azure CLI** (`AzureCliCredential`) - Uses your existing Azure CLI login
+1. **Azure PowerShell** (`AzurePowerShellCredential`) - Uses your Az PowerShell login
+1. **Azure Developer CLI** (`AzureDeveloperCliCredential`) - Uses your azd login
+1. **Interactive Browser** (`InteractiveBrowserCredential`) - Falls back to browser-based login if needed
+
+If you're already logged in through any of these methods, the Kusto MCP Server will automatically use those credentials.
+
+## 🛡️ Security Note
+
+Your credentials are always handled securely through the official [Azure Identity SDK](https://github.com/Azure/azure-sdk-for-net/blob/main/sdk/identity/Azure.Identity/README.md) - **we never store or manage tokens directly**.
+
+MCP as a phenomenon is very novel and cutting-edge. As with all new technology standards, consider doing a security review to ensure any systems that integrate with MCP servers follow all regulations and standards your system is expected to adhere to. This includes not only the Azure MCP Server, but any MCP client/agent that you choose to implement down to the model provider.
+
+
+## 👥 Contributing
+
+This project welcomes contributions and suggestions.  Most contributions require you to agree to a
+Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
+the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
+
+When you submit a pull request, a CLA bot will automatically determine whether you need to provide
+a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions
+provided by the bot. You will only need to do this once across all repos using our CLA.
+
+## 🤝 Code of Conduct
+
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
+For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
+contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the repository. There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at https://go.microsoft.com/fwlink/?LinkID=824704. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+
+
+## Trademarks
+
+This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft 
+trademarks or logos is subject to and must follow 
+[Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/usage/general).
+Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship.
+Any use of third-party trademarks or logos are subject to those third-party's policies.
