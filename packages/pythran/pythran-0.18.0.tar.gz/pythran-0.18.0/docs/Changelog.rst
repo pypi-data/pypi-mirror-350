@@ -1,0 +1,855 @@
+=========
+Changelog
+=========
+
+2025-04-23 Serge Guelton <sergesanspaille@free.fr>
+
+    * Support type annotation, including iteractions with type(...)
+
+    * Generation of free-threaded code by default
+
+    * Fix support of float128
+
+    * Rework passmanager model for cleaner code
+
+    * Lazy loading of fast-gexpr optimization dependencies for faster
+      compilation
+
+    * Improve pythran-config for build system integration through
+      --cflags-pythran-only
+
+    * Fix ipython magic portability
+
+    * Improve python 3.13 compatibility
+
+    * Remove python2 clutter
+
+    * Improve and test C++ code generation reproducibility
+
+    * Significantly improve nested function support
+
+    * Improve generation of cxx types
+
+    * Support the nonlocal keyword
+
+    * Improve CI
+
+    * And of coursez the usual minor bugfixes in pythonic, the c++ backend
+
+2024-05-14 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* Support numpy.vectorize, numpy.argsort's kind keyword, real/imag on
+	  numpy_iexpr
+
+	* Add missing omp.set_num_thread descriptor
+
+	* Provide --trace-allocations switch
+
+	* Support empty PYTHRANRC for reproducible builds
+
+	* Improve compilation time
+
+	* Support ufunc creation through #pythran export ufunc func_name(arg_types...)
+
+	* Fix memory leak when returing numpy_gexpr to Python
+
+	* Numpy 2.x support
+
+	* Upgrade xsimd to 13.0.0
+
+	* Improve detection of non-overlapping memory area during gexpr assignment
+
+	* Improve python 3.12 support (distutils removal)
+
+	* Support imatmul
+
+	* Only link blas when needed
+
+2023-12-29 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* Use pyproject.toml to store setup and build configuration
+
+	* Upgrade xsimd to a48ab430d4b84ecd5449180ee1c6d2eed67c4191
+
+	* Improve detection of non-overlapping memory area during gexpr assignment
+
+	* Support python 3.12
+
+	* Support list.clear
+
+	* Improve detection of methods uses as functions
+
+2023-08-31 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* Numpy compatibility - update signatures, complex number handling, long
+	  double support
+
+	* Lazyly import top-level modules and submodules
+
+	* Improve array indexing by an array
+
+	* Require at least clang 7 or gcc 8
+
+	* Make pythran compilation reproducible
+
+	* Support np.roll with multiple axis
+
+	* Support numpy.ndarray.view
+
+	* Improve documentation about using Pythran in a Python package
+
+	* Improve list resizing speed
+
+	* Fix bug when filtering an empty sequence
+
+2023-05-02 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* Bump xsimd dependency to 11.0.0, with a backported patch.
+
+2023-04-29 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* Improve performance of functions revieving scalar arguments. This changes
+	  the internal function call API.
+
+	* Improve performance of fix-stride slicing, using a new slice
+	  representation.
+
+	* Improve numpy.copyto performance, and detect copyto pattern usage.
+
+	* Force internal linkage of generated functions, which gives more
+	  optimization room to the C++ compiler.
+
+	* Provide entry points pythran.import_pythrancode and
+	  pythran.import_pythranfile, as a poor man JIT option.
+
+	* Optimize numpy.argmax(cst * val) into numpy.argmax(val) when cst is
+	  positive.
+
+	* Avoid copies upon numpy.array_split
+
+	* Get rid of unused functions C++ warnings
+
+	* Avoid generating a loop footer when the loop index is not used outside of
+	  the loop.
+
+2023-01-05 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* Bump xsimd depdency to 10.0.0
+
+	* Correctly raise KeyError when getting an unset dict item
+
+	* Fix negative binomial implementation
+
+	* Correctly convert strided array with offset
+
+	* Support np.clip(v, None, x) and np.clip(v, x, None)
+
+	* Support scipy.special.ndtr, scipy.special.ndtri, scipy.special.gammaincinv
+
+	* Fix set intersection
+
+	* Support numpy.fft.fftn
+
+	* Support axis parameter in numpy.argsort
+
+2022-09-20 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* Improve numpy expression computation speed
+
+	* Decent ICC support (fixing an issue from 2018!)
+
+	* Much faster C++ code generation
+
+	* Complete rework of constant folder
+
+	* Support C++-time evaluation of numpy.ndarray.ndim
+
+	* Improved omp declare reduction support
+
+	* Allow indexing of ndarray by integers of mixed types
+
+	* A lot of small pesty bug fixes in the C++ headers
+
+2021-12-08 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* Upgrade xsimd version to 8.0.5
+
+	* Performance fix on np.dot with transposed parameters
+
+	* Raise an error when no specs are given and we want to generate a native module
+
+	* Support more complex transpose expression
+
+	* Honor quotes in config files for cflags, ldflags etc
+
+	* Add pythran option -ftime-report to print out the time spent on optimizations
+	* Support isinstance when second argument is a tuple
+
+2021-09-08 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* Fix performance issue with assert handling
+
+	* Fix issue in libomp detection
+
+	* Support immediate value for some keyword parameters, esp; keep_dims
+	  parameter
+
+	* Better detection of generalized expression overlap
+
+	* And extra minor fixes :-)
+
+2021-07-06 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* Remove six, networkx and decorator dependency
+
+	* Bump gast and Beniget requirements to support python 3.10
+
+	* Bump xsimd to 7.5.0
+
+	* Minimal default support for non-linux, non-osx, now-windows platform
+
+	* Numpy improvements for np.bincount, np.transpose, np.searchsorted
+
+	* Restore (and test) cython compatibility
+
+	* Expose pythran.get_include for toolchain integration
+
+	* Improve error message on invalid spec
+
+	* Handle static dispatching based on keyword signature
+
+	* Raise Memory Error upon (too) large numpy alloc
+
+	* Support scalar case of scipy.special.binom
+
+	* Trim the number of warnings in pythonic codebase
+
+2021-05-23 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* Fix compatibility issue with python 3.10
+
+2021-05-09 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* Honor CXXFLAGS and LDFLAGS
+
+	* Generalize numpy.dot to higher dimenson (partial support)
+
+	* Fix important memory leak in handling of transposed matrices
+
+	* Fix several string interaction (str.split, f-string)
+
+	* Fix interaction with numpy.dtype.type
+
+	* Improve OpenMP detection
+
+	* Optimize some matrix transpose cases
+
+2021-03-30 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* Always honor $HOME for user configuration lookup (even on Windows)
+
+	* Default to clang-cl on windows 
+
+	* Honor CFLAGS environment variable
+
+	* Correctly type tuples that are not bound to a variable
+
+	* Move to pocketfft for fft related operations
+
+	* Support numpy.vdot, numpy.dot between array of different dtype, improve
+	  numpy.copyto, numpy.ndarray constructor, numpy.ihfft, numpy.hfft,
+	  numpy.full and numpy.full_like
+
+	* Return a floating point type when computing builtins.pow, unless the
+	  exponenent is a positive integer literal
+
+	* Optimize shared reference of array expressions (not you again!)
+
+	* Introduce a specific type for strings of one element, aka chr
+
+	* Fix implementation of str.lstrip and str.rstrip, harden str.join
+
+	* Improve quality of the error report
+
+	* Detect divide by zero in debug mode
+
+	* Improve PythranBuildExt to support base class customization
+
+
+2020-11-09 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* Basic f-string support
+
+	* Optimize shared reference of array expressions (again)
+
+	* np.nan{min,max}, np.around, np.wrap implementation fixes
+
+	* PYTHONOPTIMIZE={1,2} compatibility
+
+	* Support list.sort with key argument
+
+2020-09-22 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* Improve computation of contiguous slices when bounds are positive
+
+	* Optimize shared reference of array expressions
+
+	* Speedup complex combined types computation
+
+	* Fix pythran-config with cl.exe or clang-cl.exe
+
+	* Support Python 3.9
+
+2020-08-01 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* First release only supporting Python3
+
+	* Allow to disable blas usage through blas=none setting
+
+	* Improve range value analysis
+
+	* Change numpy expression evaluator
+
+	* Change sorting algorithm from std::sort to pdqsort
+
+	* Bug fixes in various numpy.* implementation
+
+	* Freeze gast and beniget version
+
+	* Diligently use and document assert behavior
+
+	* Many fix related to static conditions
+
+	* Improve np.sort and np.median argument support
+
+	* Improve scope computation in presence of if/else
+
+	* Refuse assert with side effect
+
+	* Provide sane default for OpenMP reduction on complex
+
+	* Upgrade boost version to 1.72
+
+	* Allow %{ext} substitution in output filename
+
+	* Prettier pythran syntax error
+
+	* Faster compilation (in some cases!)
+
+	* Partial np.tofile implementation
+
+	* Allow to specify --config 'pythran.optimizations=' on the CLI
+
+	* Fix interaction between OpenMP collapse and pythran-generated loops
+
+2019-12-31 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* Last release supporting both Python2 and Python3
+
+	* Vectorized version of numpy.arange
+
+	* Support more numpy type conversion operators
+
+	* Improve translation time
+
+	* Version bump for xsimd dependency
+
+	* Fix compile without ENABLE_PYTHON_MODULE
+
+	* Various fixes for bug introduced in previous revision ^^!
+
+2019-10-30 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* Support Python up to 3.8 (included)
+
+	* clang-cl on Windows support
+
+	* PyPy3.6 support
+
+	* Fix bug involving is None and loops
+
+	* Support numpy.heaviside, numpy.cross	
+
+	* Significant improvement of numpy.random.* support
+
+	* Fix memory leak when converting a dict to python
+
+	* New optimization: dead function elimination
+
+	* Support for kwonly arguments
+
+	* More pattern transformations: numpy.cbrt, numpy.sqrt and variant of abssqr
+
+	* Support dtype argument for numpy.linspace
+
+	* Improve constant folding & forward substitution
+
+	* Extend range analysis to tuples
+
+	* Basic support for scipy.special.spherical_jn and scipy.special.spherical_yn
+
+	* Support isinstance builtin
+
+	* Support the type() builtin
+
+	* New command line parameter: --config= as an alternative to .pythranrc
+
+	* Various fixes and doc upgrade I'm too lazy to list here ;-)
+
+
+2019-08-19 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* Warn users about deprecation of python2
+
+	* Fix incompatibility with numpy 1.17.0
+
+	* Allow pythran-openblas as a fallback dependency for openblas
+
+	* Better 32bit arch support
+
+	* Better support of OpenMP collapse clause
+
+	* Upgrade boost dep to 1.68 and xsimd dep to 7.2.2
+
+	* Use static shape information for more efficient broadcasting
+
+	* Allow / options on Windows platform in addition to Unix-style options
+
+	* Fix typing issue for r-value dict/set/list
+
+	* Allow to pass slice to pythran-exported functions
+
+	* Fix np.arange for integral numbers
+
+	* Fix static if support
+
+	* Support tuple arguments for np.concatenate
+
+	* Support default arguments for np.randint
+
+	* Support kind argument for np.sort
+
+2019-05-05 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* Better support for `is None` pattern
+
+	* Support numpy.byte in code and annotation
+
+	* Fix string slice assignment
+
+	* Support numpy.interp
+
+	* Improved Windows support
+
+	* Fix numpy.fft in presence of threading
+
+	* Better error message upon type mismatch
+
+	* Extended support for numpy.append
+
+	* Fix ndarray printing
+
+	* Property report error on Elippsis
+
+	* Optimize away some uses of np.array
+
+	* Properly support keyword-only arguments from Python3
+
+	* Improved fixed-size array broadcasting
+
+	* New annotation syntax for default argument through the '?' qualifier
+
+	* Stricter type checking between Python and Pythran result type
+
+	* Rely on beniget <https://github.com/serge-sans-paille/beniget> for some
+	  analyses
+
+	* Fix dtype inference for OSX and Windows, wrt 32/64 bits
+
+	* Generate code compatible with OpenMP collapse clause
+
+	* Fix np.bincount, np.angle, np.fromiter  implementation
+
+	* Improved (but still incomplete) support of slicing of an array through
+	  an array
+
+	* Allow specification of memory layout for 2D array parameters in
+	  annotations
+
+	* Avoid useless copies for some dict operations
+
+	* Support np.expand_dims, np.correlate, np.convolve, np.setdiff1d
+
+	* Detect and specialize code for fixed-size list
+
+	* Support more dot-idiom-to-blas forwarding
+
+	* Fix important memory leak in numpy_gexpr to_python
+
+2019-01-29 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* Fix np.transpose regression
+
+	* Upgrade xsimd to 7.1.2
+
+	* Fix setup.py test target
+
+2019-01-18 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* Honor PYTHRANRC environment variable for config file lookup
+
+	* Stricter type checking for export parameters
+
+	* Allow some kind of list to tuple conversion
+
+	* Lazy slicing of broadcasted expression and transposed expression
+
+	* Support numpy.stack, numpy.rollaxis, numpy.broadcast_to,
+	  numpy.ndarray.dtype.type
+
+	* Better support of array of complex numbers
+
+	* Verbose mode in pythran-config to debug compiler backend issues
+
+	* Config file linting
+
+	* Evaluate numpy.arange lazily when valid
+
+	* Faster PRNG, namely pcg
+
+	* Favor Python3 support in various places
+
+	* Fix Numpy.remainder implementation
+
+	* Better support for importing user modules
+
+	* More vectorized operations support
+
+2018-11-06 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* Moving to xsimd as vectorization engine, requires -DUSE_XSIMD
+
+	* Better support of view conversion from Python to Pythran
+
+	* Improved Cython integration
+
+	* Improved documentation, add example section
+
+	* Updated ArchLinux Packaging
+
+	* Remove useless warnings during compilation
+
+	* Faster ``abs(x**2)`` for complex numbers
+
+	* IPython magic now accepts most optimization flags
+
+	* Automatic detection of partially (or fully) constant shape for arrays
+
+	* Add ignoreflags settings to .pythranrc to skip some compiler flags
+
+	* Quad number (aka long double) basic support
+
+	* And many minor bugfixes, as usual :-)
+
+
+2018-09-16 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* Decent support for ``is None`` pattern
+
+	* Bessel functions, aka scipy.special.stuff
+
+	* ``__builtin__.slice`` support
+
+	* ``np.unravel_index``, ``np.(u)intc`` support
+
+	* Cleanup and fix issues around sdist / build_ext and stuff
+
+	* O(1) View conversion to Python
+
+	* Dropped big int support
+
+	* Speed improvement for ``np.argmin``, ``np.argmax`` and square of complex
+
+	* Allow partially (or fully) constant shape for arrays
+
+	* Deterministic header inclusion (toward reproducible build?)
+
+	* Better error report on argument mismatch
+
+	* Better support for view arguments (but still lotta missing :-/)
+
+	* Better Windows support (fix compiler-specific bugs) including OpenMP
+
+
+2018-06-06 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* Much better support of fancy indexing, still not 100% support though
+
+	* Better distutils integration (extra_compile_args)
+
+	* Better support for np.unique, functor, np.Inf, np.arange, it.repeat
+
+	* Better support of user import from pythranized module (still no globals)
+
+	* Better OSX support (fix compiler-specific bugs)
+
+	* Most tests now work on Python 2 and Python 3
+
+	* Many bugfixes triggered by the bug report of Yann Diorcet, Jean Laroche
+	  and David Menéndez Hurtado, Fabien Rozar, C. Claus
+
+
+2018-04-23 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* numpy.fft support (thanks to Jean Laroche)
+
+	* Faster generalized expression
+
+	* Faster numpy.transpose, numpy.argmax, numpy reduction
+
+	* Sphinx-compatible generated docstring (thanks to Pierre Augier)
+
+	* Python output through ``-P`` (thanks to Pierre Augier)
+
+	* Many bugfixes and numpy improvements (thanks to Yann Diorecet and Jean Laroche)
+
+2018-02-05 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* Slimmer generated binaries
+
+	* Preliminary native Windows support for Python3
+
+	* Several numpy-related function improvements
+
+	* @ operator support
+
+	* Better negative index support and range detection
+
+	* Glimpses of OpenMP4 support, min/max support in OpenMP reductions
+
+	* Python Capsule support
+
+	* Work around GCC-7 parsing bug
+
+2017-10-14 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* Moving to networkx 2.0
+
+	* List/Tuple partial constant folding
+
+	* Minor notebook integration fixes
+
+	* Minor cython integration fixes
+
+	* Memory leak removal
+
+	* Support out field in numpy.sum
+
+2017-09-12 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* Significant compilation time improvements (again)
+
+	* Improved cython cooperation
+
+	* Many OSX and Python3 integration fixes
+
+	* Revive pure C++ mode
+
+	* Exported functions now support keyword passing style
+
+2017-07-04 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* Significant compilation time improvements
+
+	* Support for separated .pythran files
+
+	* Many bug fixes and perf improvement
+
+2017-01-05 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* Python 3 support
+
+	* (unsound) Type Checker
+
+	* Various bug fixes and perf improvement, as usual
+
+2016-07-05 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* Fix install / setup minor issues
+
+	* Restore OpenMP support
+
+	* Fix GMP installation issue
+
+2016-06-13 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* Better Jupyter Note book integration
+
+	* Numpy Broadcasting support
+
+	* Improved value binding analysis
+
+	* Simple inlining optimization
+
+	* Type engine improvement
+
+	* Less fat in the generated modules
+
+	* More and better support for various Numpy functions
+
+	* Various performance improvement
+
+	* Global variable handling, as constants only though
+
+2016-01-05 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* IPython's magic for pythran now supports extra compile flags
+
+	* Pythran's C++ output is compatible with Python3 and pythran3 can compile it!
+
+	* More syntax checks (and less template traceback)
+
+	* Improved UI (multiline pythran exports, better setup.py...)
+
+	* Pythonic leaning / bugfixing (this tends to be a permanent item)
+
+	* More generic support for numpy's dtype
+
+	* Simpler install (no more boost.python deps, nor nt2 configuration)
+
+	* Faster compilation (no more boost.python deps, smarter pass manager)
+
+	* Better testing (gcc + clang)
+
+2015-10-13 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* Significantly decrease compilation time
+
+	* Faster execution of numpy generalized slicing
+
+	* Tentative conda support
+
+	* Tentative Windows support (using Win Python)
+
+	* Preserve original docstrings
+
+	* Add __pythran__ global variable to pythran generated modules
+
+	* Faster implementation of various itertools functions
+
+	* Rely on distutils for module code compilation
+
+	* Support most of numpy.random
+
+	* Remove git and make dependency to install nt2
+
+	* Proper pip support instead of distuils
+
+	* Remove dependency to boost.python
+
+	* Remove dependency to tcmalloc
+
+	* Pythonic library cleaning (less dependencies / header / splitting / mrpropering)
+
+	* More lazy computations
+
+	* More numpy function support (including dot on matrices, linalg.norm, mean)
+
+	* Lot of code cleaning / refactoring (both in Python and C++)
+
+	* Many bugfixes, thanks to all the bug reporters!
+
+2015-04-06 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* Various numpy.* function implementation improvement (incl. concatenate,
+	  str.join, itertools.combinations)
+
+	* Better error detection during install step
+
+	* 32 bit compatibility
+
+	* Complete rewrite of the expression engine
+
+	* Improved support of numpy extended expression
+
+	* Better user feedback on invalid pythran spec
+
+	* More efficient support of string literals
+
+	* Faster exponentiation when index is an integer
+
+	* NT2 revision bump
+
+	* No-copy list as numpy expression parameters
+
+	* Accept C and fortran layout for input arrays
+
+	* Range value analysis and boundcheck removal
+
+	* Newaxis style indexing
+
+	* Better array-of-complex support
+
+	* Glimpses of python3 support
+
+	* Support for importing user defined modules
+
+	* Archlinux support
+
+	* Accept strided array as exported function input
+
+2014-10-22 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* Full SIMD support! Almost all numpy expressions are vectorized
+
+	* Better memory management at the Python/C++ layer, esp. when sharing
+
+	* Support named parameters
+
+	* Better complex numbers support
+
+	* A lot of internal code cleaning
+
+	* Better code generation for regular loops
+
+	* MacOS install guide & ArchLinux packages
+
+	* Travis run the test suite, w and w/ SIMD, w and w/ OpenMP
+
+	* Many performance improvements at the numpy expression level
+
+	* Faster array copies, including slices
+
+	* Much better constant folding
+
+	* Distutils support through a PythranExtension
+
+	* Improve implementation of many numpy functions
+
+	* Improve forward substitution
+
+	* Use most recent nt2 version
+
+	* Make dependency on libgomp optional
+
+2014-05-17 Serge Guelton <serge.guelton@telecom-bretagne.eu>
+
+	* Improved C++ compilation time (twice as fast)
+
+	* Efficient extended slicing
+
+	* Support most numpy dtype ([u]int8,..., [u]int64, float32, float64)
+
+	* Support indexing array through boolean array
+
+	* Add a nice Pythran logo :-)
+
+	* Improve validation *a lot*
+
+	* Reduce native module loading overhead
+
+	* Forward substitution implementation
+
+	* More numpy support and *many* bug fixes!
+
+	* Remove array auto vectorization/parallelization
