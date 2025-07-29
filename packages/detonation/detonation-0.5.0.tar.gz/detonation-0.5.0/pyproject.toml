@@ -1,0 +1,44 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "detonation"
+version = "0.5.0"
+authors = [
+  { name = "Peter Schneider-Kamp" },
+  { name = "Mogens Henrik From" }
+]
+
+description = "Decouple Torch Network-Aware Training on Interlinked Online Nodes (DeToNATION)"
+readme = "README.md"
+requires-python = ">=3.11"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    'einops',
+    'numpy',
+    'torch',
+]
+
+[project.optional-dependencies]
+benchmarks = ["aimrun", "click", "datasets", "mltiming", "protobuf", "sentencepiece", "transformers"]
+examples = ["click", "datasets", "protobuf", "sentencepiece", "transformers"]
+dev = ["libcst"]
+all = ["aimrun", "click", "datasets", "libcst", "mltiming", "protobuf", "sentencepiece", "transformers"]
+
+[project.urls]
+"Homepage" = "https://github.com/schneiderkamplab/DeToNATION"
+"Bug Tracker" = "https://github.com/schneiderkamplab/DeToNATION/issues"
+
+[tool.hatch.build]
+include = [
+    'benchmarks',
+    'detonation',
+    'examples',
+    'README.md',
+]
