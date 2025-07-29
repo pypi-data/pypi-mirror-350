@@ -1,0 +1,140 @@
+name: Lint
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - converted_to_draft
+      - ready_for_review
+    branches:
+      - main
+    paths:
+      - 'benchmark_server/**.py'
+      - 'docs/**.py'
+      - 'micro_benchmarks/**.py'
+      - 'src/**.pyi?'
+      - 'tests/**.pyi?'
+      - 'tox.ini'
+      - 'pyproject.toml'
+      - 'pdm.lock'
+      - '.github/actions/setup-tox/**'
+      - '.github/actions/freebsd-vm/**'
+      - '.github/actions/pdm.conf'
+      - '.github/workflows/lint.yml'
+  push:
+    branches:
+      - main
+    tags-ignore:
+      - '*'
+    paths:
+      - 'benchmark_server/**.py'
+      - 'docs/**.py'
+      - 'micro_benchmarks/**.py'
+      - 'src/**.pyi?'
+      - 'tests/**.pyi?'
+      - 'tox.ini'
+      - 'pyproject.toml'
+      - 'pdm.lock'
+      - '.github/actions/setup-tox/**'
+      - '.github/actions/freebsd-vm/**'
+      - '.github/actions/pdm.conf'
+      - '.github/workflows/lint.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  type-hinting:
+    if: |
+      (github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'Bump version:'))
+      && (github.event_name != 'pull_request' || github.event.pull_request.draft != true)
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022, macos-14]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup tox
+        uses: ./.github/actions/setup-tox
+        with:
+          python-version: '3.11'
+      - name: Launch checks
+        run: tox run -f mypy
+
+  type-hinting-freebsd:
+    if: |
+      (github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'Bump version:'))
+      && (github.event_name != 'pull_request' || github.event.pull_request.draft != true)
+    runs-on: ubuntu-24.04
+
+    name: type-hinting (freebsd-14.1)
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Launch checks
+        timeout-minutes: 10
+        uses: ./.github/actions/freebsd-vm
+        with:
+          release: '14.1'
+          python-version: '3.11'
+          run: |
+            export TOX_WORK_DIR=/tmp/.tox
+            tox run -e mypy-full
+
+  type-hinting-openbsd:
+    if: |
+      (github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'Bump version:'))
+      && (github.event_name != 'pull_request' || github.event.pull_request.draft != true)
+    runs-on: ubuntu-24.04
+
+    name: type-hinting (openbsd-7.6)
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Launch checks
+        timeout-minutes: 10
+        uses: ./.github/actions/openbsd-vm
+        with:
+          release: '7.6'
+          python-version: '3.11'
+          # FIXME: Cannot run tox (which uses tox-pdm) on OpenBSD: PDM crashes when installing packages
+          # c.f. https://github.com/pdm-project/dep-logic/issues/7
+          run: |
+            export PYTHONUNBUFFERED=1
+            export MYPY_CACHE_DIR=/tmp/.mypy_cache
+
+            python3.11 -m venv /tmp/.venv
+            . /tmp/.venv/bin/activate
+            pip install -r .github/requirements-mypy.txt -e .
+
+            mypy --config-file=pyproject.toml -p easynetwork
+
+  type-hinting-netbsd:
+    if: |
+      (github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'Bump version:'))
+      && (github.event_name != 'pull_request' || github.event.pull_request.draft != true)
+    runs-on: ubuntu-24.04
+
+    name: type-hinting (netbsd-10.0)
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Launch checks
+        timeout-minutes: 10
+        uses: ./.github/actions/netbsd-vm
+        with:
+          release: '10.0'
+          python-version: '3.11'
+          run: |
+            export TOX_WORK_DIR=/tmp/.tox
+            tox run -e mypy-full

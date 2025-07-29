@@ -1,0 +1,14 @@
+exclude_dirs: [
+  'benchmark_server',
+  'micro_benchmarks',
+  'tests'
+]
+skips: [
+  'B403',  # Imports of "pickle"
+  'B610',  # This project does not use Django :)
+]
+
+assert_used:
+  # Since v1.7.7 it is mandatory to add a "./" prefix
+  # (c.f. https://github.com/PyCQA/bandit/issues/1106)
+  skips: ['./docs/**/*.py']

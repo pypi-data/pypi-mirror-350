@@ -1,0 +1,92 @@
+name: Build
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - converted_to_draft
+      - ready_for_review
+    branches:
+      - main
+    paths-ignore:
+      - '**.pyi'
+      - '.bumpversion.cfg'
+      - '.flake8'
+      - '.pre-commit-config.yaml'
+      - '.readthedocs.yaml'
+      - '**.md'
+      - '!README.md'
+      - '.github/**'
+      - '!.github/actions/setup-tox/**'
+      - '!.github/actions/pdm.conf'
+      - '!.github/workflows/build.yml'
+      - '.vscode/**'
+      - 'benchmark/**'
+      - 'docs/**'
+  push:
+    branches:
+      - main
+    tags-ignore:
+      - '*'
+    paths-ignore:
+      - '**.pyi'
+      - '.bumpversion.cfg'
+      - '.flake8'
+      - '.pre-commit-config.yaml'
+      - '.readthedocs.yaml'
+      - '**.md'
+      - '!README.md'
+      - '.github/**'
+      - '!.github/actions/setup-tox/**'
+      - '!.github/actions/pdm.conf'
+      - '!.github/workflows/build.yml'
+      - '.vscode/**'
+      - 'benchmark/**'
+      - 'docs/**'
+  workflow_dispatch:
+    inputs:
+      SOURCE_DATE_EPOCH:
+        description: 'SOURCE_DATE_EPOCH value for reproducible builds'
+        required: false
+        type: string
+  workflow_call:
+    inputs:
+      SOURCE_DATE_EPOCH:
+        description: 'SOURCE_DATE_EPOCH value for reproducible builds'
+        required: false
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    if: |
+      (github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'Bump version:'))
+      && (github.event_name != 'pull_request' || github.event.pull_request.draft != true)
+    runs-on: ubuntu-24.04
+    env:
+      SOURCE_DATE_EPOCH: ${{ inputs.SOURCE_DATE_EPOCH }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup tox
+        uses: ./.github/actions/setup-tox
+        with:
+          python-version: '3.11'
+      - name: Compute SOURCE_DATE_EPOCH from commit date
+        if: env.SOURCE_DATE_EPOCH == ''
+        run: |
+          date=$(git show ${{ github.sha }} --pretty="%ct" --no-patch)
+          echo "Using SOURCE_DATE_EPOCH=${date}"
+          echo "SOURCE_DATE_EPOCH=${date}" >> $GITHUB_ENV
+      - name: Build packages
+        run: tox run -e build
+      - name: Upload packages as artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: easynetwork-dist
+          path: dist
