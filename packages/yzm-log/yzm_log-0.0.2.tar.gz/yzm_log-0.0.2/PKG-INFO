@@ -1,0 +1,118 @@
+Metadata-Version: 2.4
+Name: yzm_log
+Version: 0.0.2
+Summary: Log information: Print the log, export the log file.
+Project-URL: github, https://github.com/YuZhengM/yzm_log
+Author-email: Zhengmin Yu <yuzmbio@163.com>
+License: Copyright (c) 2023 Zheng-Min Yu
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+License-File: LICENSE
+Keywords: file,log
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.9
+Requires-Dist: coloredlogs>=15.0
+Description-Content-Type: text/markdown
+
+# yzm_log
+
+> **`Print and save a simple log to a file`**
+
+This is a simple log package. You can see
+[Github-yzm_log](https://github.com/YuZhengM/yzm_log)
+[PyPI-yzm_log](https://pypi.org/project/yzm_log/)
+
+> upload
+
+```shell
+py -m build
+twine check dist/*
+twine upload dist/*
+```
+
+## Use
+
+> install
+
+```shell
+pip install yzm_log
+```
+
+> use
+
+```python
+# -*- coding: utf-8 -*-
+
+from yzm_log import Logger
+
+log = Logger("name", "log")
+
+if __name__ == '__main__':
+    print("run...")
+    log.debug("info......")
+    log.info("info......")
+    log.warning("info......")
+    log.error("info......")
+```
+
+> output
+
+```shell
+2023-03-17 09:21:36 root name[34768] DEBUG info......
+2023-03-17 09:21:36 root name[34768] INFO info......
+2023-03-17 09:21:36 root name[34768] WARNING info......
+2023-03-17 09:21:36 root name[34768] ERROR info......
+
+```
+
+## Introduction
+
+> **main function**
+
+> yzm_log.`Logger`(
+>> name: str = None,
+>
+>> log_path: str = None,
+>
+>> level: str = "INFO",
+>
+>> is_solitary: bool = True,
+>
+>> is_form_file: bool = False,
+>
+>> size: int = 104857600,
+>
+>> backup_count: int = 10,
+>
+>> encoding: str = "UTF-8"
+>
+> )
+
+```
+:param name: Project Name
+:param log_path: Log file output path. Default is log_%Y%m%d.log.
+:param level: Log printing level. Default is INFO.
+:param is_solitary: When the file path is consistent (here, the log_path parameter is not a specific file name, but a file path), whether the file is formed independently according to the name parameter. Default is True.
+:param is_form_file: Whether to form a log file. Default is False.
+:param size: Setting the file size if a file is formed. Default is 104857600. (100MB)
+:param backup_count: Setting the number of rotating files if a file is formed. Default is 10.
+:param encoding: Setting of file encoding if a file is formed. Default is UTF-8.
+```
