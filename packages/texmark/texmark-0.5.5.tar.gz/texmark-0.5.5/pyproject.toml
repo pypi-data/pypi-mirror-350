@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=61.0", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "texmark"
+authors = [
+    {name = "Mahé Perrette", email = "mahe.perrette@gmail.com"},
+]
+description='Write scientific articles in markdown'
+readme = "README.md"
+requires-python = ">=3.9"
+license-files= [ "LICENSE" ]
+
+dynamic = ["version", "dependencies"]
+
+[tool.setuptools.dynamic]
+dependencies =  {file = ["requirements.txt"]}
+
+[project.urls]
+homepage = "https://github.com/perrette/texmark"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = [
+    "texmark",
+]
+
+[ tool.setuptools.package-data ]
+texmark = ["templates/**/*"]
+
+[project.scripts]
+texmark = "texmark.build:main"
+texmark-journal = "texmark.filters.__main__:main"
+texmark-download-images = "texmark.filters.download_images:main"
+
+[tool.setuptools_scm]
+write_to = "texmark/_version.py"
