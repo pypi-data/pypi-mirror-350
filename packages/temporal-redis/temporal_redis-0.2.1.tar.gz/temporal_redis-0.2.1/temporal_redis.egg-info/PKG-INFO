@@ -1,0 +1,77 @@
+Metadata-Version: 2.4
+Name: temporal_redis
+Version: 0.2.1
+Summary: Temporal workflow result storage in Redis with TTL, retry, and batching
+Author-email: Your Name <you@example.com>
+License: MIT
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: temporalio>=1.0.0
+Requires-Dist: redis>=4.6.0
+Requires-Dist: pydantic>=2.0.0
+Requires-Dist: orjson>=3.9.0
+Requires-Dist: tenacity>=8.0.0
+
+# temporal_redis
+
+**temporal_redis** — это лёгкая асинхронная библиотека для хранения результатов Temporal Workflow в Redis.
+
+Поддерживает:
+
+- Redis Hash (workflow_id → JSON-данные)
+- Глобальный TTL (по умолчанию сутки)
+- Переопределяемые параметры (`redis_url`, `prefix`, `ttl`)
+- Retry-политику с экспоненциальным бэкоффом (через `tenacity`)
+- Пакетные операции (`store_results`, `get_results`, `delete_results`, …)
+- Прямая совместимость с `pydantic.BaseModel`
+
+## Установка
+
+```bash
+pip install temporal-redis
+```
+
+## Быстрый старт
+
+```python
+from temporal_redis import configure, store_result, get_result
+
+# Настройка (опционально)
+configure(
+    redis_url="redis://localhost:6379",
+    prefix="myapp:result:",
+    default_ttl=3600,  # 1 час
+)
+
+# Сохранение результата
+await store_result("workflow-123", {"value": 42})
+
+# Получение результата
+result = await get_result("workflow-123")
+print(result)  # {'value': 42}
+```
+
+## API
+
+| Функция                     | Описание |
+|-----------------------------|----------|
+| `configure(...)`            | Настроить redis_url, prefix и TTL |
+| `store_result(id, data)`    | Сохранить результат по ID |
+| `get_result(id)`            | Получить результат (или ошибка `ResultNotFoundError`) |
+| `store_results(dict)`       | Пакетное сохранение (workflow_id → data) |
+| `get_results(list)`         | Пакетное получение |
+| `exists_result(id)`         | Проверка наличия результата |
+| `exists_results(list)`      | Пакетная проверка |
+| `delete_result(id)`         | Удалить один результат |
+| `delete_results(list)`      | Пакетное удаление |
+
+## Исключения
+
+- `ResultNotFoundError` — если результата нет в Redis.
+
+## Зависимости
+
+- `redis`
+- `orjson`
+- `pydantic`
+- `tenacity`
