@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Getting Started &mdash; Interact  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+        <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+        <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+        <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+        <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+window.addEventListener("load", () => mermaid.run());
+</script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Base Classes" href="base.html" />
+    <link rel="prev" title="Welcome to Interact’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Interact
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#core-concept">Core Concept</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-usage">Example Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#importing-neccessary-modules">Importing neccessary modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#define-handlers">Define handlers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#define-the-chain">Define the Chain</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="base.html">Base Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="handlers.html">Handler Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="retrieval.html">Retrieval</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples_toc.html">Examples</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Interact</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Getting Started</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/getting-started.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="getting-started">
+<h1>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h1>
+<section id="core-concept">
+<h2>Core Concept<a class="headerlink" href="#core-concept" title="Link to this heading"></a></h2>
+<pre  class="mermaid">
+        graph LR
+    subgraph &quot;HandlerChain&quot;
+        A[Handler 1] --&gt;|Message| B[Handler 2]
+        B --&gt;|Message| C[Handler 3]
+    end
+    Input[&quot;Input (Message)&quot;] --&gt; A
+    C --&gt; Output[&quot;Output (Message)&quot;]
+    </pre><p><code class="docutils literal notranslate"><span class="pre">Interact</span></code> has three main components / assumptions:</p>
+<ul class="simple">
+<li><p>Entities in an application communicate through <code class="docutils literal notranslate"><span class="pre">Message</span></code> s.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Message</span></code> s are passed through <code class="docutils literal notranslate"><span class="pre">Handler</span></code> s that can modify (transform, format, etc.) the <code class="docutils literal notranslate"><span class="pre">Message</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Handler</span></code> s are chained together to form a <code class="docutils literal notranslate"><span class="pre">HandlerChain</span></code>. <code class="docutils literal notranslate"><span class="pre">HandlerChain</span></code> s hold a sequence of <code class="docutils literal notranslate"><span class="pre">Handler</span></code> s that are executed in order.</p></li>
+</ul>
+</section>
+<section id="example-usage">
+<h2>Example Usage<a class="headerlink" href="#example-usage" title="Link to this heading"></a></h2>
+<p>We will build a simple application that generates a company name and tagline based on a product. We will do this in two steps:</p>
+<ul class="simple">
+<li><p>Generate a company name based on a product.</p></li>
+<li><p>Generate a tagline based on the company name and product.</p></li>
+</ul>
+<section id="importing-neccessary-modules">
+<h3>Importing neccessary modules<a class="headerlink" href="#importing-neccessary-modules" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+
+<span class="kn">from</span> <span class="nn">dotenv</span> <span class="kn">import</span> <span class="n">load_dotenv</span>
+
+<span class="kn">from</span> <span class="nn">interact</span> <span class="kn">import</span> <span class="n">HandlerChain</span><span class="p">,</span> <span class="n">Message</span><span class="p">,</span> <span class="n">handler</span>
+<span class="kn">from</span> <span class="nn">interact.handlers</span> <span class="kn">import</span> <span class="n">OpenAiLLM</span>
+
+<span class="n">load_dotenv</span><span class="p">()</span>  <span class="c1"># load openai api key from .env file</span>
+</pre></div>
+</div>
+</section>
+<section id="define-handlers">
+<h3>Define handlers<a class="headerlink" href="#define-handlers" title="Link to this heading"></a></h3>
+<p>We define two <code class="docutils literal notranslate"><span class="pre">Handler</span></code> s, <code class="docutils literal notranslate"><span class="pre">CompanyNamePrompt</span></code> and <code class="docutils literal notranslate"><span class="pre">CompanyTaglinePrompt</span></code> that will generate the prompts for the company name and tagline.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@handler</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">company_name</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="n">Message</span><span class="p">,</span> <span class="n">chain</span><span class="p">:</span> <span class="n">HandlerChain</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">chain</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;product&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">primary</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;What would be an appropriate name for a business specializing in </span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">primary</span><span class="si">}</span><span class="s2">?&quot;</span>
+        <span class="s2">&quot;Only mention the company name and nothing else.&quot;</span>
+    <span class="p">)</span>
+
+
+<span class="nd">@handler</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">company_tagline</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="n">Message</span><span class="p">,</span> <span class="n">chain</span><span class="p">:</span> <span class="n">HandlerChain</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;What would be an appropriate tagline for a business specializing in </span><span class="si">{</span><span class="n">chain</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;product&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="sa">f</span><span class="s2">&quot; and with company name </span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">primary</span><span class="si">}</span><span class="s2">?</span><span class="se">\n</span><span class="s2">Format your output in the following&quot;</span>
+        <span class="sa">f</span><span class="s2">&quot; format:</span><span class="se">\n</span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">primary</span><span class="si">}</span><span class="s2">: &lt;tagline&gt;&quot;</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that:</p>
+<ul class="simple">
+<li><p>Interact allows you to define simple async functions as <code class="docutils literal notranslate"><span class="pre">Handler</span></code> s. These functions are responsible for <em>transforming</em> the <code class="docutils literal notranslate"><span class="pre">Message</span></code> s.</p></li>
+<li><p>You may choose to do anything inside these functions, including making API calls, formatting the prompts, anything your application needs to transform the input <code class="docutils literal notranslate"><span class="pre">Message</span></code>.</p></li>
+<li><p>The functions are decorated with the <code class="docutils literal notranslate"><span class="pre">&#64;handler</span></code> decorator to indicate that they are <code class="docutils literal notranslate"><span class="pre">Handler</span></code> s. Under the hood, the decorator creates a <code class="docutils literal notranslate"><span class="pre">Handler</span></code> object from the function.</p></li>
+<li><p>The input to the function is a <code class="docutils literal notranslate"><span class="pre">Message</span></code> and current <code class="docutils literal notranslate"><span class="pre">HandlerChain</span></code>. The <code class="docutils literal notranslate"><span class="pre">Message</span></code> is the resulting output from the previous <code class="docutils literal notranslate"><span class="pre">Handler</span></code> in the <code class="docutils literal notranslate"><span class="pre">HandlerChain</span></code>.</p></li>
+<li><p>The current <code class="docutils literal notranslate"><span class="pre">HandlerChain</span></code> is passed to the function to allow handlers to create and access variables in the <code class="docutils literal notranslate"><span class="pre">HandlerChain</span></code>. This is useful when you want to share information across multiple handlers in a <code class="docutils literal notranslate"><span class="pre">HandlerChain</span></code>. Note in this example, in  <code class="docutils literal notranslate"><span class="pre">company_name</span></code> we store the product name in the variable <code class="docutils literal notranslate"><span class="pre">product</span></code> and accessed it later in <code class="docutils literal notranslate"><span class="pre">company_tagline</span></code> handler.</p></li>
+</ul>
+</section>
+<section id="define-the-chain">
+<h3>Define the Chain<a class="headerlink" href="#define-the-chain" title="Link to this heading"></a></h3>
+<p>We chain the <code class="docutils literal notranslate"><span class="pre">Handler</span></code> s using the <code class="docutils literal notranslate"><span class="pre">&gt;&gt;</span></code> operator to form a <code class="docutils literal notranslate"><span class="pre">HandlerChain</span></code>. Then we start the chain by calling it with the initial <code class="docutils literal notranslate"><span class="pre">Message</span></code> “socks”.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">name_and_tagline_generator</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">company_name_prompt</span> <span class="o">&gt;&gt;</span> <span class="n">OpenAiLLM</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">company_tagline_prompt</span> <span class="o">&gt;&gt;</span> <span class="n">OpenAiLLM</span><span class="p">()</span>
+<span class="p">)</span>
+
+<span class="n">res</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">name_and_tagline_generator</span><span class="p">(</span><span class="s2">&quot;bike&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="c1"># The Sock Spot: Step into Comfort</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to Interact’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="base.html" class="btn btn-neutral float-right" title="Base Classes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Pritam Dey.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
