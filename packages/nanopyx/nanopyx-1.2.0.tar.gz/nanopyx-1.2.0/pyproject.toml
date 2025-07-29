@@ -1,0 +1,224 @@
+[build-system]
+requires = [
+    "setuptools>=42, <74",
+    "wheel>=0.38.4",
+    "build>=0.10.0",
+    "cython>=0.29.0",
+    "numpy>=1.19.0",
+    "mako",
+]
+
+build-backend = "setuptools.build_meta"
+
+[project]
+# For an example see REF: https://packaging.python.org/en/latest/specifications/declaring-project-metadata/
+name = "nanopyx"
+description = "Nanoscopy Python library (NanoPyx, the successor to NanoJ) - focused on light microscopy and super-resolution imaging"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { file = "LICENSE.txt" }
+keywords = [
+    "NanoJ",
+    "Super-Resolution Microscopy",
+    "Fluorescence",
+    "BioImage Analysis",
+]
+authors = [
+    { name = "Ricardo Henriques", email = "ricardo.jv.henriques@gmail.com" },
+    { name = "Bruno Saraiva", email = "bruno.msaraiva2@gmail.com" },
+    { name = "Inês Cunha", email = "inescunha200@gmail.com" },
+    { name = "António Brito", email = "antmsbrito95@gmail.com" },
+]
+maintainers = [{ name = "Bruno Saraiva", email = "bruno.msaraiva2@gmail.com" }]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "liquid_engine",
+    "mako>=1.3.0",
+    "cython>=0.29.32",
+    "numpy>=1.22,<2",
+    "scipy>=1.8",
+    "tifffile>=2022.5.4",
+    "scikit-image>=0.19.2",
+    "pyyaml>=6.0",
+    "onedrivedownloader>=1.1.3",
+    "gdown>=4.7.3",
+    "tqdm>=4.64.1",
+    "lmfit>=1.1.0",
+    "opencv-python>=4.7.0.68",
+    "pyopencl>=2022.3.1",
+    "scikit-learn>=1.1.0",
+    "matplotlib>=3.5",
+    "importlib-resources",
+    "ezinput>=0.0.2",
+]
+dynamic = ["version"] # changed in setup.py
+
+# [project.scripts]
+# nanopyx-pyx2pxd = "scripts.pyx2pxd:main"
+# nanopyx-c2cl = "scripts.c2cl:main"
+
+[project.optional-dependencies]
+all = ["nanopyx[developer,test,jupyter,doc, optional]"]
+developer = ["pyx2pxd>=0.1.1", "black>=23.1.0", "flake8>=6.0.0"]
+test = [
+    "nox>=2022.11.21",
+    "pytest==7.2", # required to work with pytest-cython (https://github.com/lgpage/pytest-cython/issues/58)
+    "pytest-cov>= 4.0.0",
+    "pytest-icdiff>=0.6",    # https://github.com/hjwp/pytest-icdiff
+    "pytest-clarity>=1.0.1", # https://pypi.org/project/pytest-clarity/
+    "pytest-timeout>=2.1.0",
+    "pytest-plt>=1.1.0",
+    "pytest-xdist>=3.1.0",
+    "pytest-sugar>=0.9.6",
+    "pytest-cython>=0.2.0",
+    "nanopyx[jupyter]",
+    "nanopyx[optional]",
+]
+optional=["numba", "dask", "dask_image", "transonic"]
+cuda = ["cupy"] # should be manually installed by users according to their CUDA version https://docs.cupy.dev/en/stable/install.html
+jupyter = [
+    "nbformat>=4.2.0",
+    "seaborn>=0.12.1",
+    "celluloid>=0.2.0",  # https://towardsdatascience.com/the-simplest-way-of-making-gifs-and-math-videos-with-python-aec41da74c6e
+    "jupyterlab>=3.5.3",
+    "ipywidgets>=8.0.0",
+    "nbmake>=1.3.5",
+    "ipyfilechooser>=0.6.0", 
+    "ipympl>=0.9.3",
+    "stackview>=0.6.1",
+    "ipycanvas>=0.13",
+]
+colab = [
+    "stackview>=0.6.1",
+    "ipycanvas==0.11.0",
+]
+doc = ["pdoc>=12.3.1", "nanopyx[jupyter,developer]"]
+
+[project.urls]
+homepage = "https://github.com/HenriquesLab/NanoPyx"
+documentation = "https://henriqueslab.github.io/nanopyx"
+repository = "https://github.com/HenriquesLab/NanoPyx"
+#changelog = "https://github.com/me/spam/blob/master/CHANGELOG.md"
+bug_tracker = "https://github.com/HenriquesLab/NanoPyx/issues"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"*" = ["*.yaml", "*.jpg", "*.cl"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.black]
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.venv
+  | build
+  | dist
+)/
+'''
+line-length = 120
+import-order = ["stdlib", "thirdparty", "local"]
+py37 = true
+
+[tool.flake8]
+# https://pypi.org/project/Flake8-pyproject/
+# https://flake8.pycqa.org/en/latest/user/configuration.html
+filename = [".py", "*.pyx", "*.px*"]
+exclude = [".eggs", "*.egg,build"]
+ignore = ["E901", "E225", "E226", "E227", "W503", "F401"]
+max-line-length = 120
+
+[tool.pyright]
+reportUndefinedVariable = false
+reportMissingImports = false
+
+[tool.pytest.ini_options]
+addopts = "--cov=nanopyx --plots --doctest-modules --doctest-cython --ignore-glob=run*Tools.py --ignore=setup.py --ignore=notebooks/ --ignore=src/scripts --ignore=src/notebookchef --ignore=tests/notebooks --cov-report term-missing"
+timeout = 6001
+plt_dirname = "tests_plots"
+doctest_encoding = "latin1"
+doctest_optionflags = "NORMALIZE_WHITESPACE ELLIPSIS"
+# Filters are standard python warning filters as described here:
+# https://docs.python.org/3/library/warnings.html#the-warnings-filter
+filterwarnings = [
+    "ignore:.*distutils.*:DeprecationWarning:.*",
+    "ignore:.*distutils.*:UserWarning:.*",
+    "ignore:.*The 'u' format is deprecated.*:DeprecationWarning:pywintypes",
+    "ignore:.*Deprecated NumPy.*:DeprecationWarning:.*",
+]
+testpaths = ["tests", "src/nanopyx"]
+
+[tool.coverage.run]
+plugins = ["Cython.Coverage"]
+source = ["src/nanopyx"]
+omit = [
+    "tests",
+    "src/nanopyx/core/utils/benchmark.py",
+    "src/nanopyx/core/templates",
+    "*__init__.py",
+    "*__*.py"
+]
+
+[tool.cibuildwheel]
+# https://cibuildwheel.readthedocs.io/en/stable/options/
+skip = ["pp*", "*musllinux*"]
+build = ["cp39-*", "cp310-*", "cp311-*", "cp312-*"]
+# it is not possible to test arm64 and the arm64 part of a universal2 wheel on this CI platform
+test-skip = ["*arm64"]
+# build-frontend = "pip"
+# config-settings = {}
+# dependency-versions = "pinned"
+# environment = {}
+# environment-pass = []
+
+# # An number from 1 to 3 to increase the level of verbosity (corresponding to invoking pip with -v, -vv, and -vvv),
+# # between -1 and -3 (-q, -qq, and -qqq), or just 0 (default verbosity)
+build-verbosity = 0
+
+# before-all = ""
+# before-build = ["git status"]
+# repair-wheel-command = ""
+
+test-command = "pytest {project}/tests"
+test-requires = ["nanopyx[test]"]
+# test-extras = []
+
+[tool.cibuildwheel.linux]
+# archs = ["x86_64"]
+manylinux-x86_64-image = "manylinux2014"
+# before-all = "yum install opencv opencv-devel opencv-python"
+# before-all = "yum install opencv-python"
+# repair-wheel-command = "auditwheel repair -w {dest_dir} {wheel}"
+
+[tool.cibuildwheel.macos]
+archs = ["arm64"]
+before-all = ["brew install llvm libomp"]
+test-requires = ["nanopyx[test]"]
+#test-command = "pytest -n=1 --timeout=1200 {project}/tests"
+# #repair-wheel-command = "delocate-wheel --require-archs {delocate_archs} -w {dest_dir} -v {wheel}"
+# repair-wheel-command = "delocate-wheel -w {dest_dir} -v {wheel}"
+
+# [tool.cibuildwheel.macos.environment]
+# CMAKE_OSX_ARCHITECTURES = "arm64;x86_64"
+# MACOSX_DEPLOYMENT_TARGET = "11"
+# LDFLAGS="-L/usr/local/lib"
+# CXX="/usr/local/opt/llvm/bin/clang++"
+# CC="/usr/local/opt/llvm/bin/clang"
+
+[tool.cibuildwheel.windows]
+archs = ["AMD64"]
+test-requires = ["nanopyx[test]"]
+#test-command = "pytest -n=0 --timeout=1200 {project}\\tests"
+# before-build = "pip install delvewheel"
+# repair-wheel-command = "delvewheel repair -w {dest_dir} {wheel}"
+
+# [tool.cibuildwheel.windows.environment]
+# SETUPTOOLS_USE_DISTUTILS = "stdlib"
