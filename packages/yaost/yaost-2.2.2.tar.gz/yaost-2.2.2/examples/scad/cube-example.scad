@@ -1,0 +1,3 @@
+$fa=3.000000;
+$fs=0.500000;
+hull()union(){union(){union(){translate([1,1,1])sphere($fn=24,r=1);translate([10,0,0])mirror([1,0,0])translate([-10,0,0])translate([1,1,1])sphere($fn=24,r=1);}translate([0,10,0])mirror([0,1,0])translate([0,-10,0])union(){translate([1,1,1])sphere($fn=24,r=1);translate([10,0,0])mirror([1,0,0])translate([-10,0,0])translate([1,1,1])sphere($fn=24,r=1);}}translate([0,0,10])mirror([0,0,1])translate([0,0,-10])union(){union(){translate([1,1,1])sphere($fn=24,r=1);translate([10,0,0])mirror([1,0,0])translate([-10,0,0])translate([1,1,1])sphere($fn=24,r=1);}translate([0,10,0])mirror([0,1,0])translate([0,-10,0])union(){translate([1,1,1])sphere($fn=24,r=1);translate([10,0,0])mirror([1,0,0])translate([-10,0,0])translate([1,1,1])sphere($fn=24,r=1);}}}
