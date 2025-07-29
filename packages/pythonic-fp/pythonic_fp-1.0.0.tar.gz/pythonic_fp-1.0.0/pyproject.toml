@@ -1,0 +1,56 @@
+[build-system]
+requires = ["flit_core>=3.4,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+version = '1.0.0'
+name = "pythonic-fp"
+authors = [{ name = "Geoffrey R. Scheller", email = "geoffrey@scheller.com" }]
+license = { file = "LICENSE" }
+readme = "README.md"
+requires-python = ">=3.12"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.13",
+    "Typing :: Typed",
+]
+dynamic = ["description"]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/grscheller/pythonic-fp/blob/main/README.md"
+Source = "https://github.com/grscheller/pythonic-fp"
+Documentation = "https://grscheller.github.io/pythonic-fp"
+
+[tool.flit.sdist]
+exclude = ["dist", ".mypy_cache" ]
+
+[tool.pylsp-mypy]
+enabled = true
+live-mode = true
+strict = true
+report_progress = true
+
+[tool.mypy]
+enable_incomplete_feature = ["NewGenericSyntax"]
+implicit_reexport = false
+local_partial_types = true
+warn_redundant_casts = true
+warn_return_any = true
+warn_unused_configs = true
+
+[tool.ruff]
+target-version = "py313"
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+
+[tool.ruff.lint.flake8-quotes]
+docstring-quotes = "double"
+
+[tool.ruff.format]
+quote-style = "single"
+docstring-code-line-length = 72
