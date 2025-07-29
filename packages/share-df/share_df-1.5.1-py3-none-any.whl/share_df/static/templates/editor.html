@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DataFrame Editor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabulator/5.4.4/css/tabulator.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/version-history.css') }}">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tabulator/5.4.4/js/tabulator.min.js"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.12.0/dist/cdn.min.js"></script>
+</head>
+<body x-data="editorApp({{ collaborative|lower }}, {{ test_mode|lower }})" x-init="init()">
+    <div id="loading-overlay" class="loading-overlay" x-show="loading">
+        <div class="loading-spinner"></div>
+        <div id="loading-text" class="loading-text" x-text="loadingText"></div>
+    </div>
+
+    <div class="bg-glow">
+        <div class="bg-gradient"></div>
+    </div>
+
+    <div class="content">
+        <header class="header">
+            <div class="header-content">
+                <h1 class="title">DataFrame Editor</h1>
+                
+                <div class="button-container">
+                    <div class="button-group">
+                        <button @click="addNewColumn()" class="button add-button">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m6-6H6"></path>
+                            </svg>
+                            Column
+                        </button>
+                        <button @click="addNewRow()" class="button add-button">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m6-6H6"></path>
+                            </svg>
+                            Row
+                        </button>
+                    </div>
+                    
+                    <template x-if="isCollaborative">
+                        <button @click="toggleVersionHistory()" class="button history-button">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Version History
+                        </button>
+                    </template>
+                    
+                    <template x-if="!isCollaborative">
+                        <button @click="saveData()" class="button save-button">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Save Changes
+                        </button>
+                    </template>
+                    
+                    <button @click="shutdownServer()" class="button send-button">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                        <span x-text="isCollaborative ? 'Done' : 'Send Data'"></span>
+                    </button>
+                    
+                    <template x-if="!isCollaborative">
+                        <button @click="cancelChanges()" class="button cancel-button">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                            Cancel
+                        </button>
+                    </template>
+                </div>
+            </div>
+            
+            <template x-if="isCollaborative">
+                <div id="collaborators-container" class="collaborators-container" x-show="Object.keys(collaborators).length > 0">
+                    <div class="collaborators-header">Collaborators:</div>
+                    <div id="collaborators-list" class="collaborators-list">
+                        <template x-for="(collab, id) in collaborators" :key="id">
+                            <div class="collaborator-badge" 
+                                 :data-user-id="id"
+                                 :style="`background-color: ${collab.color}20; border-color: ${collab.color}; color: ${collab.color}`">
+                                <div class="collaborator-dot" :style="`background-color: ${collab.color}`"></div>
+                                <span x-text="collab.name"></span>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </template>
+        </header>
+        
+        <div id="column-rename-tooltip" class="tooltip-box" style="display: none;" 
+             x-show="!isTestMode">
+            <div class="tooltip-content">
+                <div class="tooltip-icon">💡</div>
+                <div class="tooltip-text">
+                    <strong>Tip:</strong> Shift+Click on any column header to rename it.
+                    <button id="dismiss-tooltip" class="dismiss-button">Got it</button>
+                </div>
+            </div>
+        </div>
+
+        <main class="main-content">
+            <!-- Version History Sidebar -->
+            <div id="version-history-sidebar" class="version-sidebar" x-show="isVersionHistorySidebarOpen" x-transition>
+                <div class="sidebar-header">
+                    <h2>Version History</h2>
+                    <button @click="toggleVersionHistory()" class="close-button">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="sidebar-content">
+                    <template x-if="versionSnapshots.length === 0">
+                        <div class="no-versions">No changes have been made yet.</div>
+                    </template>
+                    
+                    <template x-for="snapshot in versionSnapshots" :key="snapshot.id">
+                        <div class="version-snapshot">
+                            <div class="snapshot-header" @click="toggleSnapshot(snapshot.id)">
+                                <span class="toggle-icon" x-text="expandedSnapshots.includes(snapshot.id) ? '▼' : '►'"></span>
+                                <span x-text="formatTimestamp(snapshot.timestamp)"></span>
+                                <span class="change-count" x-text="`(${snapshot.change_count} changes)`"></span>
+                                
+                                <!-- Context menu for snapshot -->
+                                <div class="snapshot-actions" @contextmenu.prevent="showSnapshotContextMenu($event, snapshot.id)">
+                                    <button class="restore-button" @click.stop="restoreVersion(snapshot.id)">
+                                        Restore
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="snapshot-changes" x-show="expandedSnapshots.includes(snapshot.id)">
+                                <template x-for="change in getSnapshotChanges(snapshot.id)" :key="change.id">
+                                    <div class="version-change" 
+                                         @contextmenu.prevent="showChangeContextMenu($event, change.id)"
+                                         :style="`border-color: ${change.user_color || '#3b82f6'}`">
+                                        <div class="change-header">
+                                            <span class="user-indicator" :style="`background-color: ${change.user_color || '#3b82f6'}`"></span>
+                                            <span class="user-name" x-text="change.user_name"></span>
+                                            <span class="change-time" x-text="formatTime(change.timestamp)"></span>
+                                        </div>
+                                        <div class="change-details">
+                                            <template x-if="change.change_type === 'cell_edit'">
+                                                <div>
+                                                    <div class="change-description" x-text="`Changed [${change.details.row}, ${change.details.column}]`"></div>
+                                                    <div class="change-diff">
+                                                        <span class="old-value" x-text="change.details.old_value"></span>
+                                                        <span class="arrow">→</span>
+                                                        <span class="new-value" x-text="change.details.new_value"></span>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                            <template x-if="change.change_type === 'add_column'">
+                                                <div>
+                                                    <div class="change-description" x-text="`Added column: ${change.details.column_name}`"></div>
+                                                </div>
+                                            </template>
+                                            <template x-if="change.change_type === 'add_row'">
+                                                <div>
+                                                    <div class="change-description" x-text="`Added new row`"></div>
+                                                </div>
+                                            </template>
+                                        </div>
+                                        
+                                        <div class="change-actions">
+                                            <button class="revert-button" @click="revertChange(change.id)" title="Undo this change">
+                                                Undo
+                                            </button>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+            
+            <!-- Context Menus -->
+            <div id="snapshot-context-menu" class="context-menu" x-show="snapshotContextMenu.visible" 
+                 :style="`top: ${snapshotContextMenu.y}px; left: ${snapshotContextMenu.x}px;`" 
+                 @click.away="hideContextMenus()">
+                <div class="menu-item" @click="restoreVersion(snapshotContextMenu.snapshotId); hideContextMenus()">
+                    Restore to this version
+                </div>
+            </div>
+            
+            <div id="change-context-menu" class="context-menu" x-show="changeContextMenu.visible" 
+                 :style="`top: ${changeContextMenu.y}px; left: ${changeContextMenu.x}px;`" 
+                 @click.away="hideContextMenus()">
+                <div class="menu-item" @click="revertChange(changeContextMenu.changeId); hideContextMenus()">
+                    Undo this change
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <div id="data-table"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="{{ url_for('static', path='/js/editor.js') }}"></script>
+</body>
+</html>
