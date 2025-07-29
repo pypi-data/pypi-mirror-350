@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "trade_mcp"
+version = "0.1.9"
+description = "Axgrad Trade MCP Server: Unified interface for Binance Futures and Aster APIs via MCP."
+authors = [
+    {name = "Axgrad Team", email = "tianyix@saharalabs.ai"}
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "python-binance==1.0.19",
+    "httpx>=0.27.0",
+    "uvicorn==0.27.1",
+    "starlette==0.37.1",
+    "fastmcp==0.1.0",
+    "python-dotenv==1.0.1"
+]
+
+[project.scripts]
+trade-mcp-serve = "trade_mcp.server.main:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"] 
