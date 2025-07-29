@@ -1,0 +1,75 @@
+Metadata-Version: 2.4
+Name: clickhouse-df
+Version: 0.1.4
+Summary: Read ClickHouse Cluster Data To Pandas/Polars DataFrame
+License: MIT License
+        
+        Copyright (c) 2025 ZhangYundi
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        
+Project-URL: homepage, https://github.com/link-yundi/clickhouse-df
+Project-URL: repository, https://github.com/link-yundi/clickhouse-df
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: clickhouse-driver>=0.2.9
+Requires-Dist: pandas>=2.2.3
+Requires-Dist: polars>=1.30.0
+Requires-Dist: pyarrow<20.0.0
+Requires-Dist: sqlparse>=0.5.3
+Dynamic: license-file
+
+# clickhouse-df
+请求 clickhouse集群，结果返回pandas.DataFrame/polars.DataFrame
+
+### 安装
+```shell
+pip install -U clickhouse_df
+```
+
+### 示例
+
+```python
+import clickhouse_df
+
+# 版本
+print(clickhouse_df.__version__)
+
+# 集群配置
+config = dict(
+    urls=["<host1>:<port>", "<host2>:<port>", ....],
+    user="<user_name>", 
+    password="xxxxxx", 
+)
+
+sql = "select * from <db_name>.<tb_name> where date='2024-10-23';"
+
+# 例子1
+with clickhouse_df.connect(**config):
+    # 请求 polars 
+    df_pl = clickhouse_df.to_polars(sql)
+    # 请求 pandas
+    df_pd = clickhouse_df.to_pandas(sql)
+
+# 例子2
+conn = clickhouse_df.connect(**config)
+df_pl = clickhouse_df.to_polars(sql, conn)
+df_pd = clickhouse_df.to_pandas(sql, conn)
+conn.disconnect()
