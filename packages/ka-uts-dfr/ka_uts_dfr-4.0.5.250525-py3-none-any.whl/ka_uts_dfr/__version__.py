@@ -1,0 +1,10 @@
+__title__ = 'ka_uts_dfr'
+__description__ = 'Dataframe (Pandas, Polars) Utilities.'
+__url__ = 'https://ka_uts-dfr.readthedocs.io/en/latest'
+__version__ = '4.0.5.250525'
+__build__ = 0x022200
+__author__ = 'Bernd Stroehle'
+__author_email__ = 'bernd.stroehle@gmail.com'
+__license__ = 'GPL-3.0-only WITH Classpath-Exception-2.0 OR BSD-3-Clause'
+__copyright__ = 'Copyright 2025 Bernd Stroehle'
+__cake__ = u'\u2728 \U0001f370 \u2728'
