@@ -1,0 +1,90 @@
+Metadata-Version: 2.4
+Name: SpaTranslator
+Version: 1.0.8
+Author-email: Sheng Mao <maosheng@westlake.edu.cn>
+Project-URL: Homepage, https://github.com/ChrisMao0325/SpaTranslator
+Project-URL: Bug Tracker, https://github.com/ChrisMao0325/SpaTranslator/issues
+Classifier: Programming Language :: Python :: 3.9
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: POSIX :: Linux
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Requires-Dist: scanpy>=1.9.1
+Requires-Dist: torch==2.5.0
+Requires-Dist: scikit-learn>=1.1.3
+Requires-Dist: scipy==1.9.3
+Requires-Dist: episcanpy==0.3.2
+Requires-Dist: seaborn>=0.11.2
+Requires-Dist: matplotlib>=3.6.2
+Requires-Dist: pot==0.9.0
+Requires-Dist: torchmetrics==1.6.2
+Requires-Dist: leidenalg
+Requires-Dist: pybedtools
+Requires-Dist: adjusttext
+Requires-Dist: jupyter
+Requires-Dist: hnswlib
+
+# SpaTranslator
+![alt text](Model_Overview.png)
+
+- 
+  **SpaTranslator** is a graph-based generative model for cross-modality prediction in spatial omics data. It enables the in silico generation of missing omics modalities—such as spatial ATAC-seq, RNA-seq, and histone modification profiles—across paired or unpaired tissue sections, by leveraging spatial neighborhood information and adversarial learning.
+---
+
+## 🧠 Highlights
+
+- 🔄 **Cross-modality generation** between spatial transcriptomics and epigenomics/proteomics
+- 📈 **Superior performance** on 12 benchmark datasets over state-of-the-art methods (multiDGD, JAMIE, scButterfly, scPair)
+- 🧬 Supports multiple data types: RNA, ATAC, histone marks (H3K27me3, H3K4me3), protein
+- 📍 **Graph Neural Network** integration for spatial structure modeling
+- 🧪 Flexible in intra- and inter-dataset prediction tasks
+
+---
+
+## 📂 Datasets
+
+SpaTranslator is benchmarked on:
+- **Spatial-ATAC-RNA-seq** (mouse brain)
+- **MISAR-seq** (mouse brain at stages E11, E13, E15, E18)
+- **10x Visium RNA-Protein** (human tonsil&lymph node)
+
+> Detailed documentation is written in the jupyter notebook
+---
+
+## 🚀 Installation Guide
+
+**Install with pip**  
+```bash
+conda create -n SpaTranslator python==3.9
+pip install spatranslator
+```
+
+**Install PyTorch Geometric and Related Dependencies**
+It's crucial to install versions of these packages that match your PyTorch and CUDA versions: 
+https://pytorch-geometric.readthedocs.io/en/latest/install/installation.html#installation-from-source
+
+The following command installs pyg_lib, torch_scatter, torch_sparse, torch_cluster, and torch_spline_conv.
+Note: The URL https://data.pyg.org/whl/torch-2.6.0+cu124.html specifies wheels for PyTorch 2.6.0 and CUDA 12.4.
+Adjust ${TORCH} and ${CUDA} in the URL below to match your installed PyTorch version and CUDA version. You can find the correct URL on the PyTorch Geometric installation page.
+
+```bash
+# Example for PyTorch 2.6.0 and CUDA 12.4
+# YOU MUST ADJUST THE URL BASED ON YOUR PYTORCH AND CUDA VERSION
+pip install torch_geometric
+pip install pyg_lib torch_scatter torch_sparse torch_cluster torch_spline_conv -f https://data.pyg.org/whl/torch-2.6.0+cu124.html
+```
+---
+
+## 📄 License
+
+SpaTranslator is released under the [MIT License](LICENSE).  
+You are free to use, modify, and distribute this software for academic and non-commercial purposes with proper attribution.
+
+---
+
+## 📬 Contact
+
+If you have questions, feature requests, or would like to contribute:
+
+- 💡 **Issues**: Please submit via the [GitHub Issues Page](https://github.com/ChrisMao0325/SpaTranslator/issues)
+- ✉️ **Email**: `maosheng@westlake.edu.cn`/`donghongyu@westlake.edu.cn` 
