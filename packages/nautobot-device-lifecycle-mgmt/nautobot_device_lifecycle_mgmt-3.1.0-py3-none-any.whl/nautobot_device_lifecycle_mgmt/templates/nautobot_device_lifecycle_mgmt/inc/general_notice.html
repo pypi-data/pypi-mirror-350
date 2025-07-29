@@ -1,0 +1,49 @@
+{% load helpers %}
+{% if perms.nautobot_device_lifecycle_mgmt.view_hardwarelcm and hw_notices %}
+{% for notice in hw_notices %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <strong>Hardware {% if notice.inventory_item %}Inventory Part {% endif %}Notice</strong>
+                {% if notice.expired %}<span class="label label-danger">Expired</span>{% endif %}
+            </div>
+            <table class="table table-hover panel-body attr-table">
+                <tr>
+                    <td>Name</td>
+                    <td>
+                        <a href="{% url 'plugins:nautobot_device_lifecycle_mgmt:hardwarelcm' pk=notice.id %}">{{ notice }}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>End of Sale</td>
+                    <td>{{ notice.end_of_sale|placeholder }}</td>
+                </tr>
+                <tr>
+                    <td>End of Support</td>
+                    <td>{{ notice.end_of_support|placeholder }}</td>
+                </tr>
+                <tr>
+                    <td>End of Software Releases</td>
+                    <td>{{ notice.end_of_sw_releases|placeholder }}</td>
+                </tr>
+                <tr>
+                    <td>End of Security Patches</td>
+                    <td>{{ notice.end_of_security_patches|placeholder }}</td>
+                </tr>
+                <tr>
+                    <td>Documentation URL</td>
+                    <td>
+                    {% if notice.documentation_url %}
+                        <a href="{{ notice.documentation_url }}">{{ notice.documentation_url }}</a>
+                    {% else %}
+                        &mdash;
+                    {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>Comments</td>
+                    <td>{{ notice.comments|placeholder }}</td>
+                </tr>
+            </table>
+        </div>
+{% endfor %}
+{% endif %}
