@@ -1,0 +1,144 @@
+Metadata-Version: 2.4
+Name: httpx-aiohttp
+Version: 0.1.4
+Summary: Aiohttp transport for HTTPX
+Author-email: Karen Petrosyan <kar.petrosyanpy@gmail.com>
+License: Copyright © 2025, Karen Petrosyan.
+        All rights reserved.
+        
+        Redistribution and use in source and binary forms, with or without
+        modification, are permitted provided that the following conditions are met:
+        
+        * Redistributions of source code must retain the above copyright notice, this
+          list of conditions and the following disclaimer.
+        
+        * Redistributions in binary form must reproduce the above copyright notice,
+          this list of conditions and the following disclaimer in the documentation
+          and/or other materials provided with the distribution.
+        
+        * Neither the name of the copyright holder nor the names of its
+          contributors may be used to endorse or promote products derived from
+          this software without specific prior written permission.
+        
+        THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+        AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+        IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+        DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+        FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+        DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+        SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+        CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+        OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+        OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+License-File: LICENSE
+Requires-Python: >=3.9
+Requires-Dist: aiohttp<4,>=3
+Requires-Dist: httpx<1,>=0.28.1
+Description-Content-Type: text/markdown
+
+
+<p align="center"><strong>httpx-aiohttp</strong> <em>- provides transports for httpx to work on top of aiohttp, handling all high-level features like authentication, retries, and cookies through httpx, while delegating low-level socket-level HTTP messaging to aiohttp</em></p>
+
+<p align="center">
+
+  <a href="https://pypi.org/project/httpx-aiohttp">
+      <img src="https://img.shields.io/pypi/v/httpx-aiohttp.svg" alt="pypi">
+  </a>
+</p>
+
+## Installation
+
+```shell
+uv pip install httpx-aiohttp
+```
+
+## Examples
+
+### Basic GET request
+
+```python
+import asyncio
+import httpx
+from httpx_aiohttp import AiohttpTransport
+from aiohttp import ClientSession
+
+
+async def main() -> None:
+    async with AiohttpTransport(client=ClientSession()) as aiohttp_transport:
+        httpx_client = httpx.AsyncClient(transport=aiohttp_transport)
+        response = await httpx_client.get("https://www.encode.io")
+        print(response)  # <Response [200]>
+
+
+asyncio.run(main())
+```
+
+### Timeouts
+
+```python
+import asyncio
+import httpx
+from httpx_aiohttp import AiohttpTransport
+from aiohttp import ClientSession
+
+
+async def main() -> None:
+    async with AiohttpTransport(client=ClientSession()) as aiohttp_transport:
+        httpx_client = httpx.AsyncClient(transport=aiohttp_transport)
+        response = await httpx_client.get("https://www.encode.io", timeout=httpx.Timeout(
+            connect=5.0,
+            read=5.0,
+            pool=5.0,
+            write=None  # Does not support for aiohttp transport
+        ))
+        print(response)  # <Response [200]>
+
+
+asyncio.run(main())
+```
+
+### Proxies
+
+```python
+import asyncio
+import httpx
+from httpx_aiohttp import AiohttpTransport
+from aiohttp import ClientSession
+
+
+async def main() -> None:
+    async with AiohttpTransport(
+        client=ClientSession(proxy="https://my-lovely-proxy")
+    ) as aiohttp_transport:
+        httpx_client = httpx.AsyncClient(
+            transport=aiohttp_transport,
+        )
+        response = await httpx_client.get("https://www.encode.io")
+        print(response)  # <Response [200]>
+
+
+asyncio.run(main())
+```
+
+### Shared client instance
+
+```python
+import asyncio
+import httpx
+from httpx_aiohttp import AiohttpTransport
+from aiohttp import ClientSession
+
+httpx_client = httpx.AsyncClient(
+    transport=AiohttpTransport(
+        client=lambda: ClientSession()
+    ),
+)
+
+async def main() -> None:
+    async with  httpx_client:
+        response = await httpx_client.get("https://www.encode.io")
+        print(response)  # <Response [200]>
+
+
+asyncio.run(main())
+```
