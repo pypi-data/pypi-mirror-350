@@ -1,0 +1,47 @@
+[build-system]
+requires =  ["setuptools>=77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cli-example"
+version = "0.3.0"
+description = "A simple CLI example"
+authors = [
+    { name = "Andrew", email = "andreeodg7@gmail.com" }
+]
+readme = "README.md"
+requires-python = ">=3.10"
+keywords = ["cli", "example", "python"]
+classifiers = [
+    "Programming Language :: Python :: 3.10"
+]
+
+# dependencies
+dependencies = [
+    "click>=8.0.0",
+]
+
+# optional dependencies for development
+[project.optional-dependencies]
+dev = [
+    "black",
+    "flake8",
+    "mypy",
+    "pylint",
+    "pytest",
+    "pytest-cov",
+    "pre-commit",
+    "build",
+    "twine",
+]
+
+[project.scripts]
+cli-example = "cli_example.main:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["cli_example*"]
+exclude = ["tests*", "Pipfile*"]
+
+[tool.setuptools.package-data]
+cli_example = ["*.txt", "*.md"]
