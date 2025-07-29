@@ -1,0 +1,20 @@
+{% extends "layout.html.j2" %}
+
+{% block scripts %}
+<script async src="{{ url_for('static', path='tournament_list.js') }}" type="module"></script>
+{% endblock%}
+
+{% block content %}
+<div>
+    <h1>Tournaments</h1>
+    <p>
+        Tournaments are subject to the <a href="{{ url_for('document_tournament_rules') }}">VEKN Tournament rules</a>.
+        Appointed judges follow the <a href="{{ url_for('document_judges_guide') }}">Judges' Guide</a>
+        and enforce the <a href="{{ url_for('document_code_of_ethics') }}">VEKN Code of Ethics</a>.
+    </p>
+    {% if organizer %}
+    <a href="{{ url_for('tournament_create') }}" class="btn btn-primary my-2">Create Tournament</a>
+    {% endif %}
+    <div id="contentDiv"></div>
+</div>
+{% endblock %}
