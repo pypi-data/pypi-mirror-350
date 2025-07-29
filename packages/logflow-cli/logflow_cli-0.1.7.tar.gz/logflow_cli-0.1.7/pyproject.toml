@@ -1,0 +1,47 @@
+[project]
+name = "logflow-cli"
+version = "0.1.7"
+description = "Focused developer journaling and ideation loop"
+authors = [{ name = "Jay Davis", email = "512jay@gmail.com" }]
+maintainers = [{ name = "Oravox LLC", email = "oravoxco@gmail.com" }]
+license = { text = "MIT" }
+readme = "README.md"
+requires-python = ">=3.8"
+keywords = ["cli", "developer-tools", "journaling", "productivity"]
+
+[tool.poetry]
+name = "logflow-cli"
+version = "0.1.7"
+description = "A CLI tool for developers to log ideas, stay focused, and track completed work."
+authors = ["Oravox LLC <oravoxco@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{ include = "logflow", from = "src" }]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+]
+
+[tool.poetry.dependencies]
+python = ">=3.8"
+rich = "13.7.1"
+python-slugify = "^8.0.0"
+pyyaml = "^6.0.2"
+
+[tool.poetry.scripts]
+logflow = "logflow.cli:main"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.5"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.extras]
+rich = ["rich"]
+fancy_slugs = ["python-slugify"]
+slugify = ["python-slugify"]
