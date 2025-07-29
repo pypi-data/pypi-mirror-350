@@ -1,0 +1,55 @@
+[build-system]
+requires = [
+  "hatchling >= 1.27",
+  "hatch-requirements-txt",
+]
+build-backend = "hatchling.build"
+
+# ---------------------------------------------------------------------------------------
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/quantsapp"]
+
+# Get version from code
+[tool.hatch.version]
+path = "src/quantsapp/_version.py"
+pattern = "^version: str = '(?P<version>.+)'"
+
+# Get requirements from txt file
+[tool.hatch.metadata.hooks.requirements_txt]
+files = ["requirements.txt"]
+
+# ---------------------------------------------------------------------------------------
+
+[project]
+name = "quantsapp-dev"
+description = "Quantsapp"
+
+dynamic = [
+  "version",
+  "dependencies",
+]
+authors = [
+  { name="Quantsapp", email="support@quantsapp.com" },
+]
+readme = "README.md"
+requires-python = ">=3.11"
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Operating System :: OS Independent",
+]
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+
+# ---------------------------------------------------------------------------------------
+
+[project.urls]
+Homepage = "https://github.com/pypa/sampleproject"
+Issues = "https://github.com/pypa/sampleproject/issues"
+
+# ---------------------------------------------------------------------------------------
+
