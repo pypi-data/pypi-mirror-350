@@ -1,0 +1,65 @@
+[tool.poetry]
+name = "state-of-the-art"
+version = "0.2.0"
+description = "Monorepo with state of the art project"
+authors = ["Jean Carlo Machado <jean.machado@getyourguide.com>"]
+readme = "README.md"
+
+packages = [
+  { include = "state_of_the_art" },
+  { include = "personal_streamlit" }
+]
+
+[tool.poetry.dependencies]
+python = ">=3.12,<3.14"
+fire = "*"
+openai = "^1.77"
+pypdf = "^4.1.0"
+arxiv = "^2.1.0"
+langchain = "^0.1.14"
+langchain-community = "^0.0.31"
+pyarrow = "^20.0"
+nltk = "^3.8.1"
+rank-bm25 = "^0.2.2"
+jupyter = "^1.0.0"
+langchain-core = "^0.1.42"
+matplotlib = "^3.8.4"
+urlextract = "^1.9.0"
+tiny-data-warehouse = ">=0.2.2"
+tqdm = "^4.66.2"
+fpdf = "^1.7.2"
+beautifulsoup4 = "^4.12.3"
+sentence-transformers = "^3.0.1"
+schedule = "^1.2.2"
+scipy = "^1.14.1"
+accelerate = "0.31.0"
+pytest = "^8.3.3"
+ddtrace = "^2.14.4"
+datadog = "^0.50.1"
+psutil = "^6.1.0"
+mlflow-skinny = "^2.17.2"
+tabulate = "^0.9.0"
+python-dotenv = "^1.1.0"
+torchvision = "^0.22.0"
+django = "^5.2.1"
+psycopg2-binary = "^2.9.10"
+gunicorn = "^23.0.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.1.1"
+black = "^24.3.0"
+pre-commit = "^4.0.1"
+
+[tool.poetry.group.streamlit.dependencies]
+streamlit-tags = "^1.2.8"
+streamlit-cookies-manager = "^0.2.0"
+streamlit-authenticator = "0.4.1"
+streamlit-nightly = "^1.39.1.dev20241101"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+sota = 'state_of_the_art.state_of_the_art:main'
+all_interests_report = 'state_of_the_art.recommenders.all_interests_report:main'
