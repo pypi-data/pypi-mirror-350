@@ -1,0 +1,305 @@
+Metadata-Version: 2.4
+Name: lightpdf-aipdf-mcp
+Version: 0.1.134
+Summary: MCP Server for LightPDF AI-PDF
+Author: LightPDF Team
+License: Proprietary
+Requires-Python: >=3.8
+Requires-Dist: httpx
+Requires-Dist: httpx-sse
+Requires-Dist: mcp
+Requires-Dist: mcp[cli]
+Requires-Dist: pydantic
+Requires-Dist: pydantic-settings
+Requires-Dist: python-dotenv
+Requires-Dist: starlette
+Requires-Dist: uvicorn
+Description-Content-Type: text/markdown
+
+# LightPDF Agent MCP Server
+
+LightPDF Agent MCP Server 是一个基于 MCP (Model Control Protocol) 的智能文档处理服务，提供全面的PDF处理和文档格式转换功能。该服务集成了先进的AI技术，可以智能处理文档，并提供高质量的转换结果。服务需要在支持 MCP 功能的软件（如 Cursor）中配置使用。
+
+## 主要特性
+
+- 智能文档处理：利用AI技术优化文档处理效果
+- 全面的格式支持：支持多种文档格式之间的转换
+- 专业的PDF工具：提供完整的PDF编辑、处理功能
+- 高并发处理：支持批量处理和并发任务
+- 详细的进度报告：实时反馈处理进度和结果
+- 安全可靠：支持文档加密和密码保护
+
+## 安装指南
+
+### 系统要求
+
+- Python 3.8+
+- uv 包管理器
+- 有效的 API 密钥
+- 支持 MCP 的 IDE（如 Cursor）
+
+### 使用 uvx 安装
+
+```bash
+# 安装 uvx（如果尚未安装）
+curl -fsSL https://install.uvx.sh | sh
+```
+
+## 配置说明
+
+在 Cursor 中配置 LightPDF Agent MCP Server，需要修改 `~/.cursor/mcp.json` 文件：
+
+```json
+{
+  "mcpServers": {
+    "lightpdf": {
+      "command": "uvx",
+      "args": [
+        "lightpdf-aipdf-mcp@latest"
+      ],
+      "env": {
+        "API_KEY": "your_api_key_here",
+        "API_ENDPOINT": "techsz.aoscdn.com/api"
+      }
+    }
+  }
+}
+```
+
+配置说明：
+- `command`: 使用 `uvx` 命令运行服务
+- `args`: 启动参数
+  - 使用最新版的 `lightpdf-aipdf-mcp` 包
+- `env`: 环境变量配置
+  - `API_KEY`: API密钥（必填），请在[轻闪PDF API文档](https://lightpdf.cn/edit-api-doc#/)申请
+  - `API_ENDPOINT`: API服务器地址（可选）
+
+配置完成后，重启 Cursor 使配置生效。
+
+## 验证安装
+
+安装和配置完成后，可以在 Cursor 中通过以下命令验证 MCP 服务是否正常工作：
+
+```
+@lightpdf help
+```
+
+如果显示帮助信息，表示安装和配置成功。
+
+## 功能特性
+
+### 文档格式转换
+- 支持多种文档格式之间的相互转换
+- 智能优化转换质量
+- 支持本地文件和网络URL
+- 支持批量转换
+- 并发处理，提高转换效率
+
+### PDF高级处理
+- PDF编辑：拆分、合并、旋转、压缩
+- 水印处理：添加/去除水印
+- 安全功能：加密/解密PDF
+- 页面优化：去除白边、提取图片
+- 详细的处理进度和结果报告
+
+## 支持的格式
+
+### 输入格式
+- Office文档
+  - Word (DOCX)
+  - Excel (XLSX)
+  - PowerPoint (PPTX)
+- 图像文件
+  - JPG/JPEG
+  - PNG
+- 其他格式
+  - PDF
+  - CAD (DWG)
+  - CAJ
+  - OFD
+
+### 输出格式
+- PDF
+- Office文档
+  - Word (DOCX)
+  - Excel (XLSX)
+  - PowerPoint (PPTX)
+- 图像格式
+  - JPG/JPEG
+  - PNG
+- 文本格式
+  - HTML
+  - TXT
+
+### 图片提取格式
+- BMP
+- PNG
+- GIF
+- TIF
+- JPG
+
+## PDF处理功能
+
+### PDF水印处理
+- 支持去除PDF文档中的水印
+- 支持添加自定义文本水印
+- 可设置水印位置、透明度、角度和应用页面范围
+
+### PDF页码添加
+- 支持在PDF文档中添加页码
+- 可自定义起始页码
+- 可选择页码位置（左上、上中、右上、左下、下中、右下）
+- 可设置页码边距
+
+### PDF编辑功能
+- **拆分PDF**: 支持按页码范围拆分，或每页生成一个新文件
+- **合并PDF**: 将多个PDF文件合并为一个
+- **旋转PDF**: 支持90°、180°、270°旋转，可指定页面范围
+- **压缩PDF**: 优化PDF文件大小，可调整图像质量
+
+### PDF安全功能
+- **加密PDF**: 添加密码保护
+- **解密PDF**: 移除密码保护（需提供原密码）
+
+## 使用方法
+
+### 基本命令格式
+
+在 Cursor 中使用 `@lightpdf <命令>` 格式调用工具。所有命令都支持以下通用参数：
+- `files`: 要处理的文件列表，每个文件对象包含：
+  - `path`: 文件路径或URL（必填）
+  - `password`: 文档密码（可选）
+  - `name`: 原始文件名（可选）
+
+### 常用命令示例
+
+#### 文档转换
+```bash
+# 转换为PDF
+@lightpdf convert_document --files=[{"path": "document.docx"}] --format=pdf
+
+# 转换为Word
+@lightpdf convert_document --files=[{"path": "document.pdf"}] --format=docx
+
+# 转换为图片
+@lightpdf convert_document --files=[{"path": "document.pdf"}] --format=jpg
+```
+
+#### PDF编辑
+```bash
+# 拆分PDF
+@lightpdf split_pdf --files=[{"path": "document.pdf"}] --pages="1-5,8,10-15"
+
+# 合并PDF
+@lightpdf merge_pdfs --files=[{"path": "doc1.pdf"}, {"path": "doc2.pdf"}]
+
+# 旋转PDF
+@lightpdf rotate_pdf --files=[{"path": "document.pdf"}] --angle=90 --pages="1-3"
+
+# 压缩PDF
+@lightpdf compress_pdf --files=[{"path": "document.pdf"}] --quality=60
+```
+
+#### 水印处理
+```bash
+# 添加水印
+@lightpdf add_watermark --files=[{"path": "document.pdf"}] --text="机密文件" --position="center" --opacity=0.5
+
+# 去除水印
+@lightpdf remove_watermark --files=[{"path": "document.pdf"}]
+```
+
+#### 安全功能
+```bash
+# 加密PDF
+@lightpdf encrypt_pdf --files=[{"path": "document.pdf"}] --password="your_password"
+
+# 解密PDF
+@lightpdf decrypt_pdf --files=[{"path": "document.pdf", "password": "your_password"}]
+```
+
+## 参数说明
+
+### 文档转换 (convert_document)
+- `format`: 目标格式
+  - 支持的值：`pdf`, `docx`, `xlsx`, `pptx`, `jpg`, `png`, `html`, `txt`
+- `quality`: 输出质量（可选，默认80）
+  - 范围：1-100，仅对图片输出有效
+
+### PDF编辑
+#### 拆分PDF (split_pdf)
+- `pages`: 页面范围
+  - 格式：`"1,3,5-7"`，支持单页和页面范围
+- `split_type`: 拆分类型（可选）
+  - `page`: 按指定页面拆分（默认）
+  - `every`: 每页生成一个文件
+
+#### 合并PDF (merge_pdfs)
+- 无需额外参数，按files列表顺序合并
+
+#### 旋转PDF (rotate_pdf)
+- `angle`: 旋转角度
+  - 支持的值：90, 180, 270
+- `pages`: 页面范围（可选，默认全部页面）
+
+#### 压缩PDF (compress_pdf)
+- `quality`: 压缩质量（可选，默认60）
+  - 范围：1-100
+
+### 水印处理
+#### 添加水印 (add_watermark)
+- `text`: 水印文本
+- `position`: 位置（可选，默认center）
+  - 支持的值：`center`, `topleft`, `topright`, `bottomleft`, `bottomright`
+- `opacity`: 透明度（可选，默认0.5）
+  - 范围：0.1-1.0
+- `pages`: 页面范围（可选，默认全部页面）
+
+### 安全功能
+#### 加密PDF (encrypt_pdf)
+- `password`: 设置的密码
+
+#### 解密PDF (decrypt_pdf)
+- 密码通过files参数中的password字段提供
+
+## 故障排除
+
+### 常见问题解决
+
+1. **服务无法启动**
+   - 检查 API 密钥是否正确
+   - 确认 Cursor 版本是否支持 MCP
+   - 检查 `mcp.json` 配置是否正确
+   - 确保使用Python 3.8+版本
+   - 确认uvx是否正确安装
+
+2. **文件处理失败**
+   - 检查文件格式是否受支持
+   - 确认文件路径是否正确
+   - 验证文件大小是否超出限制（通常为100MB）
+
+3. **转换结果不理想**
+   - 对于复杂格式，可能需要尝试不同的转换参数
+   - 某些特殊排版可能无法完全保留
+
+### 日志查看
+
+如果您遇到问题，请提供完整的错误信息以便获得更好的支持。
+
+## 更新与维护
+
+### 获取最新文档
+
+访问官方文档网站获取最新使用说明和API参考。
+
+## 注意事项
+
+1. 确保有足够的网络带宽和磁盘空间
+2. 对于网络URL，确保URL可访问且文件大小在合理范围内
+3. 批量转换时会自动控制并发数，避免过度占用系统资源
+4. 某些格式转换可能需要较长时间，请耐心等待
+5. 水印去除功能仅适用于PDF格式文件
+6. 复杂水印可能无法完全去除，效果取决于水印类型
+7. 所有PDF编辑功能只支持PDF格式的输入文件
+8. 使用Python版本必须是3.8或更高版本
+9. 推荐使用uvx进行安装和管理包
