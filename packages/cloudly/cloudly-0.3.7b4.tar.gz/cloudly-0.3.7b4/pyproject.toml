@@ -1,0 +1,121 @@
+[build-system]
+requires = ["flit_core >=3.7.1,<4"]
+build-backend = "flit_core.buildapi"
+
+
+[project]
+name = "cloudly"
+authors = [
+    {name = "Zepu Zhang", email = "zepu.zhang@gmail.com"},
+]
+dependencies = [
+    "fastavro",
+    "filelock",
+    "orjson",
+    "pyarrow",
+    "tqdm",
+    "typing-extensions",
+    "tzdata",
+    "zstandard",
+    "deprecation",
+]
+requires-python = ">=3.10"
+readme = "README.rst"
+license = {file = "LICENSE"}
+classifiers = [
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dynamic = ['version', 'description']
+
+
+[project.urls]
+Source = "https://github.com/zpz/cloudly"
+
+
+[project.optional-dependencies]
+doc = [
+    "sphinx",
+    "numpydoc",
+    "pydata-sphinx-theme",
+]
+azure = [
+    "azure-storage-blob >=12.9.0,<13.0",
+]
+gcp = [
+    "google-auth",
+    "google-api-core",
+    "google-api-python-client",
+    "google-cloud-batch",
+    "google-cloud-compute",
+    "google-cloud-logging",
+    "google-cloud-scheduler",
+    "google-cloud-secret-manager",
+    "google-cloud-storage",
+    "google-cloud-workflows",
+    "requests",
+]
+postgres = [
+    "psycopg[binary, pool]",
+]
+cloudsql = [
+    "cloud-sql-python-connector[pg8000]",
+]
+bigquery = [
+    "google-cloud-bigquery",
+    "google-cloud-bigquery-storage",
+]
+vertexai = [
+    "google-cloud-aiplatform",
+    "google-cloud-resource-manager",
+]
+test = [
+    "pytest-asyncio",
+    "pytest-mock",
+    "boltons",
+    "lz4",
+    "orjson",
+]
+
+
+# See https://beta.ruff.rs/docs/rules/
+[tool.ruff]
+target-version = "py310"
+exclude = ["tests/experiments"]
+
+[tool.ruff.lint]
+select = ["E", "F", "S", "I001"]  # isort
+ignore = ["E501", "S101", "S102", "S103", "S104", "S108", "S301", "S311", "S603", "S607", "S608"]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402", "F401"]
+
+[tool.ruff.format]
+quote-style = "single"
+
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = ["tests"]
+addopts = "-sv --log-cli-level info -p no:cacheprovider --ignore tests/experiments --ignore tests/experimental --tb=short --durations 3"
+
+
+[tool.coverage.report]
+fail_under = 70
+show_missing = true
+skip_empty = true
+omit = [
+    "src/cloudly/experimental",
+]
+exclude_also = [
+    "def __repr__",
+    "def __str__",
+    "raise NotImplementedError",
+    "@(abc\\.)?abstractmethod",
+]
+
+[tool.coverage.run]
+source = ["cloudly"]
+data_file = "/tmp/.coverage"
+
