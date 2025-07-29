@@ -1,0 +1,136 @@
+Metadata-Version: 2.4
+Name: boltwood
+Version: 0.1.0
+Summary: A hypermodern, type-safe, zero-dependency python library for the Boltwood II & III cloud sensors.
+Project-URL: Source, https://github.com/michealroberts/boltwood
+Project-URL: Issues, https://github.com/michealroberts/boltwood/issues
+Project-URL: PullRequests, https://github.com/michealroberts/boltwood/pulls
+Project-URL: Discussions, https://github.com/michealroberts/boltwood/discussions
+Author-email: michealroberts <michael@observerly.com>
+Maintainer-email: Michael Roberts <michael@observerly.com>
+License: MIT License
+        
+        Copyright (c) 2025 Michael J. Roberts
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+License-File: LICENSE
+Keywords: boltwood,boltwood-ii,boltwood-iii,boltwood-sensor,cloud-sensor,weather,weather-monitoring,weather-sensor,weather-station
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3.13
+Requires-Python: >=3.13
+Requires-Dist: celerity>=0.31.0
+Requires-Dist: pydantic>=2.11.4
+Requires-Dist: samps>=0.1.0
+Description-Content-Type: text/markdown
+
+![pypi](https://img.shields.io/pypi/v/boltwood.svg)
+![versions](https://img.shields.io/pypi/pyversions/boltwood.svg)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![boltwood/test](https://github.com/michealroberts/boltwood/actions/workflows/test.yml/badge.svg)](https://github.com/michealroberts/boltwood/actions/workflows/test.yml)
+
+# Boltwood
+
+Modern, type-safe, zero-dependency python library for controlling the Boltwood III observing conditions sensor.
+
+## Installation
+
+```bash
+uv add boltwood
+```
+
+or
+
+using your preferred environment / package manager of choice, e.g., `poetry`, `conda` or `pip`:
+
+```bash
+pip install boltwood
+```
+
+```bash
+poetry add boltwood
+```
+
+```bash
+conda install boltwood
+```
+
+## Usage
+
+```python
+from boltwood import (
+    BoltwoodIIIConditionsMonitorDeviceInterface,
+    BoltwoodIIIConditionsMonitorDeviceParameters,
+)
+
+# Define the parameters for the BoltwoodIII monitor device:
+params: BoltwoodIIIConditionsMonitorDeviceParameters = BoltwoodIIIConditionsMonitorDeviceParameters(
+    name="Boltwood III Conditions Monitor",
+    description="Boltwood III Conditions Monitor",
+    port=port,
+    baudrate=baudrate,
+    latitude=33.87047,
+    longitude=-118.24708,
+    elevation=0.0,
+    did="0", # Device ID
+    vid="",  # Vendor ID
+    pid="",  # Product ID
+)
+
+# Create a new Boltwood III Conditions Monitor device interface:
+monitor = BoltwoodIIIConditionsMonitorDeviceInterface(
+    id=0,
+    params=params,
+)
+
+# Initialise the monitor:
+monitor.initialise()
+
+# Get the current status of the monitor:
+status = monitor.get_status()
+
+...
+```
+
+As the boltwood instance is fully typed, you can use your IDE's autocompletion to see all the available methods and properties.
+
+We have also provided further usage examples in the [examples](./examples) directory.
+
+## Milestones
+
+- [X] Type-safe modern 3.6+ Python
+- [X] Fully unit tested
+- [X] Simpler API (modelled around the ASCOM Alpaca API)
+- [X] Integration testing with HIL testing (hardware-in-the-loop)
+- [X] Zero-external dependencies (no numpy, astropy etc for portability)
+- [X] Example API usage
+- [X] Fully supported Observing Conditions Sensor operations
+- [ ] Fully supported Alert Threshold operations
+- [ ] ASCOM Alpaca APIs w/Fast API
+
+---
+
+### Disclaimer
+
+This project is not affiliated with Diffraction Limited in any way. It is a community-driven project. All trademarks and logos are the property of their respective owners.
+
+### License
+
+This project is licensed under the terms of the MIT license.
