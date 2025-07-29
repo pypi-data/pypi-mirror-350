@@ -1,0 +1,43 @@
+"""
+Main entry point for the {{ project_name }} application.
+To run this file, use the following command:
+
+```bash
+ragbits api run {{pkg_name}}.main:ChatApp
+```
+"""
+from collections.abc import AsyncGenerator
+
+from pydantic import BaseModel
+from ragbits.core.prompt import Prompt
+from ragbits.chat.interface import ChatInterface
+from ragbits.chat.interface.types import ChatResponse, Message
+from {{pkg_name}}.prompt_qa import QAPrompt, QAPromptInput
+from {{pkg_name}}.components import get_llm, get_document_search
+
+
+class ChatApp(ChatInterface):
+    """Chat interface for {{ project_name }} application."""
+
+    def __init__(self) -> None:
+        self.llm = get_llm()
+        self.document_search = get_document_search()
+
+    async def chat(
+        self,
+        message: str,
+        history: list[Message] | None = None,
+        context: dict | None = None,
+    ) -> AsyncGenerator[ChatResponse, None]:
+        # Search for relevant documents
+        search_results = await self.document_search.search(message)
+
+        # Create prompt with context
+        prompt = QAPrompt(QAPromptInput(
+            question=message,
+            contexts=[ctx.text_representation for ctx in search_results]
+        ))
+
+        # Stream the response from the LLM
+        async for chunk in self.llm.generate_streaming(prompt):
+            yield self.create_text_response(chunk)
