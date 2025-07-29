@@ -1,0 +1,138 @@
+Metadata-Version: 2.4
+Name: tq-share-sms
+Version: 1.0.0
+Summary: TQ短信验证码API Python客户端
+Author: buer
+Author-email: buer <226824@qq.com>
+Keywords: sms,api,短信,验证码
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests>=2.20.0
+Dynamic: author
+Dynamic: license-file
+Dynamic: requires-python
+
+# TQ短信验证码API Python客户端
+
+一个简单易用的TQ短信验证码API Python客户端库。
+
+## 安装
+
+```bash
+pip install tq-sms
+```
+
+## 快速开始
+
+### 基本使用
+
+```python
+from tq_sms import TQSmsClient
+
+# 使用用户名和密码初始化（会自动登录）
+client = TQSmsClient(username="您的用户名", password="您的密码")
+
+# 或者使用已有的token
+# client = TQSmsClient(token="您的token")
+
+# 获取余额
+balance = client.get_wallet()
+print(f"余额: {balance['data']['balances']}")
+
+# 获取手机号
+phone_result = client.get_phone(channel_id="您的渠道ID")
+phone_number = phone_result['data']['mobile']
+print(f"获取到手机号: {phone_number}")
+
+# 获取验证码
+code_result = client.get_code(channel_id="您的渠道ID", phone_num=phone_number)
+if code_result['data']['code']:
+    print(f"验证码: {code_result['data']['code']}")
+
+# 如果没获取到验证码，拉黑手机号
+else:
+    client.blacklist_phone(channel_id="您的渠道ID", phone_no=phone_number)
+    print("已拉黑手机号")
+```
+
+### 高级使用
+
+```python
+# 获取验证码（带重试机制）
+code = client.get_code_with_retry(
+    channel_id="您的渠道ID", 
+    phone_num=phone_number, 
+    max_retries=50
+)
+
+if code:
+    print(f"验证码: {code}")
+else:
+    print("获取验证码失败")
+    # 拉黑手机号
+    client.blacklist_phone(channel_id="您的渠道ID", phone_no=phone_number)
+```
+
+## API 方法
+
+### `login()`
+登录获取token（如果初始化时提供了用户名密码会自动调用）
+
+### `get_wallet()`
+获取用户余额
+
+### `get_phone(channel_id, phone_num=None, operator=None, scope=None)`
+获取手机号
+- `channel_id`: 渠道ID（必需）
+- `phone_num`: 指定手机号码（可选）
+- `operator`: 运营商类型，0=全部，5=虚拟，4=非虚拟（可选）
+- `scope`: 指定号段，多个号段用逗号隔开（可选）
+
+### `get_code(channel_id, phone_num)`
+获取验证码
+- `channel_id`: 渠道ID（必需）
+- `phone_num`: 手机号码（必需）
+
+### `blacklist_phone(channel_id, phone_no)`
+拉黑手机号码
+- `channel_id`: 渠道ID（必需）
+- `phone_no`: 手机号码（必需）
+
+### `get_code_with_retry(channel_id, phone_num, max_retries=100)`
+获取验证码（带重试机制）
+- `channel_id`: 渠道ID（必需）
+- `phone_num`: 手机号码（必需）
+- `max_retries`: 最大重试次数，默认100次（可选）
+
+## 注意事项
+
+1. 所有API调用均会自动添加1秒休眠，避免请求过于频繁
+2. 网络请求具有自动重试机制，遇到网络错误会无限重试
+3. 建议获取验证码最多重试100次
+4. 如果没有获取到手机号，务必调用拉黑手机号接口
+5. Token具有永久有效性，请妥善保管
+
+## 错误处理
+
+所有方法在失败时会抛出异常：
+- `ValueError`: 参数错误
+- `Exception`: API调用失败
+
+## 许可证
+
+MIT License
+
+## 贡献
+
+欢迎提交Issue和Pull Request。 
