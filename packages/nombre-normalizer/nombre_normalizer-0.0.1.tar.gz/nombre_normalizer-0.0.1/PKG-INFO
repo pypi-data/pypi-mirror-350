@@ -1,0 +1,308 @@
+Metadata-Version: 2.4
+Name: nombre-normalizer
+Version: 0.0.1
+Summary: Normalizador de nombres y apellidos en español
+Home-page: https://github.com/tuusuario/nombre-normalizer
+Author: Mon Maldonado
+Author-email: pigmonchu@gmail.com
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Topic :: Text Processing :: Linguistic
+Classifier: Topic :: Utilities
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: numpy==2.2.6
+Requires-Dist: pandas==2.2.3
+Requires-Dist: python-dateutil==2.9.0.post0
+Requires-Dist: pytz==2025.2
+Requires-Dist: six==1.17.0
+Requires-Dist: tzdata==2025.2
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0; extra == "dev"
+Requires-Dist: pytest-cov>=2.0; extra == "dev"
+Requires-Dist: black>=21.0; extra == "dev"
+Requires-Dist: flake8>=3.9; extra == "dev"
+Requires-Dist: mypy>=0.910; extra == "dev"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# Normalizador de Nombres y Apellidos en Español
+
+Un paquete Python especializado en normalizar nombres y apellidos en español, manejando correctamente las partículas, la separación nombre/apellido y las reglas de capitalización del idioma español.
+
+## ✨ Características
+
+- **Separación inteligente** de nombres y apellidos usando heurísticas avanzadas
+- **Manejo correcto de partículas** (de, del, de la, van, etc.) en minúscula
+- **Capitalización apropiada** respetando las reglas del español
+- **Detección de casos problemáticos** para revisión manual
+- **Compatible con pandas** para procesamiento masivo de datos
+- **Interfaz de línea de comandos** para uso directo
+- **Diccionarios integrados** de nombres y apellidos españoles/latinoamericanos
+
+## 🚀 Instalación
+
+### Desde PyPI (recomendado)
+```bash
+pip install nombre-normalizer
+```
+
+### Desde el código fuente
+```bash
+git clone https://github.com/usuario/nombre-normalizer.git
+cd nombre-normalizer
+pip install -e .
+```
+
+### Para desarrollo
+```bash
+git clone https://github.com/usuario/nombre-normalizer.git
+cd nombre-normalizer
+pip install -e ".[dev]"
+```
+
+## 📖 Uso
+
+### Uso básico
+
+```python
+from nombre_normalizer import normalizar_nombre_simple
+
+# Ejemplo simple
+resultado = normalizar_nombre_simple("juan carlos garcia de la torre")
+print(resultado['nombres'])    # "Juan Carlos"
+print(resultado['apellidos'])  # "García de la Torre"
+print(resultado['es_problematico'])  # False
+```
+
+### Uso avanzado con clase
+
+```python
+from nombre_normalizer import NombreNormalizer
+
+# Crear instancia del normalizador
+normalizador = NombreNormalizer()
+
+# Normalizar un registro
+resultado = normalizador.normalizar_registro("maria jose lopez")
+print(f"Nombres: {resultado['nombres']}")
+print(f"Apellidos: {resultado['apellidos']}")
+
+# Obtener casos problemáticos
+casos_problema = normalizador.obtener_casos_problema()
+```
+
+### Procesamiento de DataFrames
+
+```python
+import pandas as pd
+from nombre_normalizer import NombreNormalizer
+
+# Cargar datos
+df = pd.read_csv('personas.csv')
+
+# Procesar DataFrame
+normalizador = NombreNormalizer()
+df_normalizado = normalizador.procesar_dataframe(
+    df, 
+    col_nombre='nombre_completo',
+    col_apellido='apellidos'  # Opcional
+)
+
+# Ver resultados
+print(df_normalizado[['nombres_norm', 'apellidos_norm', 'es_problematico']])
+
+# Exportar casos problemáticos
+normalizador.exportar_casos_problema('casos_revisar.csv')
+```
+
+### Procesamiento de archivos CSV
+
+```python
+from nombre_normalizer import procesar_csv
+
+# Procesar archivo completo
+procesar_csv(
+    'datos_originales.csv',
+    'datos_normalizados.csv',
+    col_nombre='nombre',
+    col_apellido='apellido'
+)
+```
+
+## 🖥️ Interfaz de línea de comandos
+
+El paquete incluye una herramienta de línea de comandos para procesamiento directo:
+
+```bash
+# Uso básico
+nombre-normalizer datos.csv -o resultado.csv -n nombre
+
+# Con columna de apellidos separada
+nombre-normalizer personas.csv -o limpio.csv -n nombre -a apellidos
+
+# Exportar casos problemáticos
+nombre-normalizer datos.csv -o resultado.csv -n "nombre completo" --problemas
+
+# Con información detallada
+nombre-normalizer datos.csv -o resultado.csv -n nombre --verbose
+```
+
+### Opciones de la CLI
+
+- `archivo_entrada`: Archivo CSV de entrada (requerido)
+- `-o, --output`: Archivo CSV de salida (requerido)
+- `-n, --nombre`: Nombre de la columna que contiene los nombres (requerido)
+- `-a, --apellido`: Nombre de la columna que contiene los apellidos (opcional)
+- `--problemas`: Exportar casos problemáticos a archivo separado
+- `--encoding`: Codificación del archivo CSV (default: utf-8)
+- `-v, --verbose`: Mostrar información detallada del procesamiento
+
+## 📊 Ejemplos de transformaciones
+
+| Entrada | Nombres | Apellidos |
+|---------|---------|-----------|
+| `"juan carlos garcia de la torre"` | `"Juan Carlos"` | `"García de la Torre"` |
+| `"maria jose lopez"` | `"María José"` | `"López"` |
+| `"pedro de la cruz"` | `"Pedro"` | `"de la Cruz"` |
+| `"ana maria santos del rio"` | `"Ana María"` | `"Santos del Río"` |
+| `"jose luis van der berg"` | `"José Luis"` | `"van Der Berg"` |
+
+## 🔧 Configuración avanzada
+
+### Personalizar partículas
+
+```python
+normalizador = NombreNormalizer()
+
+# Agregar partículas personalizadas
+normalizador.particulas.add('vom')
+normalizador.particulas.add('zu')
+
+# Procesar con nuevas partículas
+resultado = normalizador.normalizar_registro("hans vom berg")
+```
+
+### Manejo de casos problemáticos
+
+```python
+normalizador = NombreNormalizer()
+
+# Procesar datos
+df_resultado = normalizador.procesar_dataframe(df, 'nombre')
+
+# Revisar casos problemáticos
+casos_problema = normalizador.obtener_casos_problema()
+for caso in casos_problema:
+    print(f"Original: {caso['original_nombre']}")
+    print(f"Procesado: {caso['nombres']} | {caso['apellidos']}")
+    print("---")
+
+# Exportar para revisión manual
+normalizador.exportar_casos_problema('revisar_manualmente.csv')
+```
+
+## 🧪 Testing
+
+El proyecto incluye una suite completa de tests:
+
+```bash
+# Ejecutar todos los tests
+python -m pytest tests/
+
+# Con cobertura
+python -m pytest tests/ --cov=nombre_normalizer
+
+# Tests específicos
+python -m pytest tests/test_normalizer.py::TestNombreNormalizer::test_capitalizar_palabra
+```
+
+## 📁 Estructura del proyecto
+
+```
+nombre-normalizer/
+├── nombre_normalizer/
+│   ├── __init__.py          # Inicialización del paquete
+│   ├── nombre_normalizer.py # Módulo principal
+│   └── cli.py              # Interfaz de línea de comandos
+├── tests/
+│   └── test_normalizer.py  # Tests unitarios
+├── setup.py                # Configuración del paquete
+├── requirements.txt        # Dependencias
+├── README.md              # Este archivo
+└── LICENSE                # Licencia MIT
+```
+
+## 🤝 Contribuir
+
+Las contribuciones son bienvenidas. Para contribuir:
+
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
+### Desarrollo local
+
+```bash
+# Clonar repositorio
+git clone https://github.com/usuario/nombre-normalizer.git
+cd nombre-normalizer
+
+# Instalar en modo desarrollo
+pip install -e ".[dev]"
+
+# Ejecutar tests
+python -m pytest
+
+# Formatear código
+black nombre_normalizer/
+flake8 nombre_normalizer/
+```
+
+## 📋 Limitaciones conocidas
+
+- **Nombres extranjeros**: El algoritmo está optimizado para nombres españoles/latinoamericanos
+- **Casos ambiguos**: Algunos casos requieren revisión manual (se marcan como problemáticos)
+- **Contexto cultural**: Las reglas pueden no aplicar perfectamente a todas las variantes regionales
+
+## 🔮 Roadmap
+
+- [ ] Soporte para más idiomas (catalán, euskera, gallego)
+- [ ] API REST para integración con otros sistemas
+- [ ] Interfaz web para uso interactivo
+- [ ] Mejora de heurísticas con machine learning
+- [ ] Soporte para títulos nobiliarios y académicos
+
+## 📄 Licencia
+
+Este proyecto está licenciado bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para detalles.
+
+## 👨‍💻 Autor
+
+**Tu Nombre** - [tu.email@ejemplo.com](mailto:tu.email@ejemplo.com)
+
+Enlace del proyecto: [https://github.com/usuario/nombre-normalizer](https://github.com/usuario/nombre-normalizer)
+
+## 🙏 Agradecimientos
+
+- Inspirado en las necesidades reales de procesamiento de datos en español
+- Agradecimientos a la comunidad de Python por las herramientas utilizadas
+- Basado en las reglas ortográficas de la Real Academia Española
