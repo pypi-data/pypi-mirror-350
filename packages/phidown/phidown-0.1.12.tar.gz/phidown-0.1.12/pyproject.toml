@@ -1,0 +1,55 @@
+[project]
+name = "phidown"
+version = "0.1.12"
+description = "A project using AWS services and dataset tools for Sentinel data"
+authors = [
+    { name = "Roberto Del Prete", email = "roberto.delprete@esa.int" },
+]
+dependencies = [
+    "boto3>=1.37.34",
+    "numpy>=1.6",
+    "pandas>=1.5.2",
+    "supervisely>=6.73.338",
+    "pyaml>=25.1.0",
+    "ipykernel>=6.29.5",
+    "zstandard>=0.23.0",
+]
+requires-python = ">=3.9"
+
+[project.license]
+text = "GPLv3"
+
+[project.optional-dependencies]
+viz = [
+    "ipywidgets>=8.1.6",
+    "folium>=0.18.0",
+]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-mock>=3.10.0",
+    "flake8>=7.2.0",
+]
+
+[build-system]
+requires = [
+    "pdm-backend",
+]
+build-backend = "pdm.backend"
+
+[tool.pdm]
+distribution = true
+
+[tool.pdm.build]
+includes = [
+    "phidown/**",
+]
+
+[tool.pdm.sdist]
+includes = [
+    "phidown/**",
+    "README.md",
+    "LICENSE",
+]
+
+[tool.pdm.wheel]
+universal = true
