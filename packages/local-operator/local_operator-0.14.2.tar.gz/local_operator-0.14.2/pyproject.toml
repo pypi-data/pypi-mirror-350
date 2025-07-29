@@ -1,0 +1,88 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "local-operator"
+version = "0.14.2"
+description = "A team of proactive AI assistants that can work together behind the scenes to help you get mundane tasks done so you can focus on the fun stuff."
+readme = "README.md"
+authors = [{ name = "Damian Tran", email = "damian@radienthq.com" }]
+license = { file = "LICENSE" }
+classifiers = [
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.12",
+]
+keywords = ["local", "agent", "execution", "operator", "agent-to-agent", "agentic", "local-first", "ai", "proactive"]
+dependencies = [
+    "langchain-openai",
+    "langchain-ollama", 
+    "langchain-anthropic",
+    "langchain-google-genai",
+    "langchain",
+    "langchain-community",
+    "python-dotenv",
+    "pydantic",
+    "tiktoken",
+    "uvicorn",
+    "fastapi",
+    "playwright",
+    "requests",
+    "psutil",
+    "dill",
+    "pyreadline3",
+    "jsonlines",
+    "python-multipart",
+    "browser-use",
+    "apscheduler",
+    # Constraints
+    "faiss-cpu==1.10.0",
+    "certifi>=2024.7.4",
+    "configobj>=5.0.9",
+    "cryptography>=43.0.1",
+    "idna>=3.7",
+    "jinja2>=3.1.5",
+    "requests>=2.32.0",
+    "twisted>=24.7.0rc1",
+    "urllib3>=2.2.2",
+    "websockets>=15.0.1",
+    "setuptools>=78.1.1",
+]
+requires-python = ">=3.12"
+
+[project.optional-dependencies]
+dev = ["black", "isort", "pylint", "pyright", "pytest", "pytest-asyncio", "pip-audit"]
+
+[project.urls]
+Homepage = "https://github.com/damianvtran/local-operator"
+
+[project.scripts]
+local-operator = "local_operator.cli:main"
+
+[tool.black]
+line-length = 100
+target-version = ['py312']
+extend-exclude = "F401"
+
+[tool.pylint."messages control"]
+ignore = ["setup.py", "__init__.py"]
+disable = "all"
+enable = [
+    "empty-docstring",
+    "missing-class-docstring",
+    "missing-function-docstring",
+    "missing-module-docstring"
+]
+
+[tool.isort]
+profile = "black"
+
+[tool.pyright]
+reportMissingTypeArgument = true
+strictListInference = true
+reportPrivateImportUsage = false
+
+[tool.pytest.ini_options]
+addopts = "-vv -s"
+testpaths = ["tests"]
