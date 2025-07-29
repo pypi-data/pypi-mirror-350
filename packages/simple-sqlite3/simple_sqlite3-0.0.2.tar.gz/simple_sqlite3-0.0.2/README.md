@@ -1,0 +1,306 @@
+# Simple SQLite3
+
+[![PyPI version](https://badge.fury.io/py/simple-sqlite3.svg)](https://pypi.org/project/simple-sqlite3/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+**Simple SQLite3** is a lightweight, Pythonic wrapper for SQLite3 databases. It provides an intuitive and easy-to-use API for managing tables, inserting/querying data, and exporting results, with built-in support for JSON/CSV/TXT, schema evolution, and a convenient CLI.
+
+---
+
+## Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+  - [Programmatic Usage](#programmatic-usage)
+  - [CLI Examples](#cli-examples)
+- [Advanced Features](#advanced-features)
+- [License](#license)
+
+---
+
+## Features
+
+- Easy-to-use API for SQLite3 database and table management.
+- Command-line interface (CLI) for database operations.
+- Support for exporting data to JSON, CSV and TXT formats.
+- Robust to both nested and non-nested data, with datetime support.
+- Utilities for processing queried results.
+
+---
+
+## Installation
+
+```bash
+pip install simple-sqlite3
+```
+
+---
+
+## Quick Start
+
+### Programmatic Usage
+
+#### 1. Insert a List of Dicts (Non-Nested Data)
+
+```python
+from simple_sqlite3 import Database
+
+db = Database("database.db")
+table = db.table("people")
+
+table.insert([
+    {"name": "Amy", "age": 30, "city": "Helsinki"},
+    {"name": "Bob", "age": 25, "city": "Cambridge"},
+    {"name": "Cat", "age": 20, "city": "Paris"},
+])
+
+results = table.query("SELECT *")
+
+print(results)
+```
+
+**Example Output:**
+```python
+[
+    {'name': 'Amy', 'age': 30, 'city': 'Helsinki'},
+    {'name': 'Bob', 'age': 25, 'city': 'Cambridge'},
+    {'name': 'Cat', 'age': 20, 'city': 'Paris'}
+]
+```
+
+#### 2. Insert a List of Dicts (Non-Nested Data)
+```python
+from simple_sqlite3 import Database
+
+db = Database("database.db")
+table = db.table("nested")
+
+table.insert([
+  {
+    "country": "Finland",
+    "info": {
+      "capital": "Helsinki",
+      "latitude": 60.1699,
+      "longitude": 24.9384
+    }
+  },
+  {
+    "country": "France",
+    "info": {
+      "capital": "Paris",
+      "latitude": 48.8566,
+      "longitude": 2.3522
+    }
+  },
+  {
+    "country": "Japan",
+    "info": {
+      "capital": "Tokyo",
+      "latitude": 35.6895,
+      "longitude": 139.6917
+    }
+  }
+])
+
+results = table.query("SELECT *")
+
+print(results)
+```
+
+#### 3. Insert Timeseries
+
+```python
+from datetime import datetime as dt
+from simple_sqlite3 import Database
+
+db = Database("database.db")
+table = db.table("timeseries")
+
+table.insert([
+  {"date": dt(2024, 6, 1), "value": 1.2345, "pair": "EURUSD"},
+  {"date": dt(2024, 6, 2), "value": 1.2350, "pair": "EURUSD"},
+  {"date": dt(2024, 6, 3), "value": 1.2360, "pair": "EURUSD"},
+  {"date": dt(2024, 6, 4), "value": 1.2375, "pair": "EURUSD"},
+  {"date": dt(2024, 6, 1), "value": 109.45, "pair": "USDJPY"},
+  {"date": dt(2024, 6, 2), "value": 109.60, "pair": "USDJPY"},
+  {"date": dt(2024, 6, 3), "value": 109.75, "pair": "USDJPY"},
+  {"date": dt(2024, 6, 4), "value": 109.90, "pair": "USDJPY"},
+])
+
+results = table.query("SELECT * WHERE pair = 'EURUSD'", auto_parse_dates=True)
+
+print(results)
+```
+
+#### 4. Insert Mixed Data
+
+```python
+from datetime import datetime as dt
+from simple_sqlite3 import Database
+
+db = Database("database.db")
+table = db.table("mixed_data")
+
+table.insert([
+  {"date": dt(2024, 6, 1), "value": 1.2345, "pair": "EURUSD", "source": "ECB"},
+  {"date": dt(2024, 6, 1), "value": 109.45, "pair": "USDJPY", "source": "BOJ"},
+  {"date": dt(2024, 6, 2), "value": 0.8567, "pair": "EURGBP", "source": "ECB"},
+  {"date": dt(2024, 6, 2), "value": 1.4200, "pair": "GBPUSD", "source": "FED"},
+  {
+    "date": dt(2024, 6, 2),
+    "value": 1.2370,
+    "pair": "EURUSD",
+    "source": "ECB",
+    "meta": {
+      "confidence": 0.98,
+      "contributors": ["ECB", "Bloomberg"],
+      "valuation": {"buy": 0.4, "hold": 0.2, "sell": 0.4}
+    }
+  },
+  {
+    "date": dt(2024, 6, 3),
+    "value": 109.80,
+    "pair": "USDJPY",
+    "source": "BOJ",
+    "meta": {
+      "confidence": 0.95,
+      "contributors": ["BOJ"]
+    }
+  }
+])
+
+results = table.query("SELECT *", auto_parse_dates=True)
+
+print(results)
+```
+
+#### 5. Insert Data Into Memory and Export as JSON, CSV and TXT
+
+```python
+from datetime import datetime as dt
+from simple_sqlite3 import Database
+
+db = Database(":memory:")
+table = db.table("timeseries")
+
+table.insert([
+  {"date": dt(2025, 5, 22), "value": 5328, "idx": "S&P 500"},
+  {"date": dt(2025, 5, 21), "value": 5421, "idx": "S&P 500"},
+  {"date": dt(2025, 5, 22), "value": 5448, "idx": "EURO STOXX 50"},
+  {"date": dt(2025, 5, 21), "value": 5452, "idx": "EURO STOXX 50"},
+])
+
+table.export_to_json("timeseries.json")
+table.export_to_csv("timeseries.csv")
+table.export_to_txt("timeseries.txt")
+```
+
+#### 6. Exporting Queried Results
+
+```python
+from datetime import datetime as dt
+from simple_sqlite3 import Database
+from simple_sqlite3.utils import QueryResultsProcessor
+
+db = Database(":memory:")
+table = db.table("timeseries")
+
+table.insert([
+  {"date": dt(2025, 5, 22), "value": 5328, "idx": "S&P 500"},
+  {"date": dt(2025, 5, 21), "value": 5421, "idx": "S&P 500"},
+  {"date": dt(2025, 5, 22), "value": 5448, "idx": "EURO STOXX 50"},
+  {"date": dt(2025, 5, 21), "value": 5452, "idx": "EURO STOXX 50"},
+])
+
+results = table.query("SELECT * WHERE idx = 'EURO STOXX 50'")
+
+processor = QueryResultsProcessor(results)
+
+processor.to_json("timeseries.json")
+processor.to_csv("timeseries.csv")
+processor.to_txt("timeseries.txt")
+```
+
+#### 7. Vacuuming and Cleaning Up
+
+```python
+from datetime import datetime as dt
+from simple_sqlite3 import Database
+
+db = Database("database.db")
+
+table = db.table("stocks")
+
+table.insert([
+  {"date": dt(2025, 5, 22), "value": 5328, "idx": "S&P 500"},
+  {"date": dt(2025, 5, 21), "value": 5421, "idx": "S&P 500"},
+  {"date": dt(2025, 5, 22), "value": 5448, "idx": "EURO STOXX 50"},
+  {"date": dt(2025, 5, 21), "value": 5451, "idx": "EURO STOXX 50"},
+] * 2) # Duplicated
+
+table.delete_duplicates()
+
+table = db.table("currencies")
+
+table.insert([
+  {"date": dt(2024, 6, 1), "value": 1.2345, "pair": "EURUSD"},
+  {"date": dt(2024, 6, 2), "value": 1.2350, "pair": "EURUSD"},
+  {"date": dt(2024, 6, 1), "value": 109.45, "pair": "USDJPY"},
+  {"date": dt(2024, 6, 2), "value": 109.60, "pair": "USDJPY"},
+])
+
+table.delete(confirm=True)
+
+db.vacuum()
+
+db.delete(confirm=True)
+```
+
+### CLI Examples
+
+> **Note:** The CLI can be run using the `db` command after installation (e.g., `db insert ...`).  
+> If installed as a module, you can also use `python -m simple_sqlite3.cli ...`.
+
+#### Insert data from a JSON file into a table
+```bash
+db insert -database database.db -table timeseries -file timeseries.json
+```
+
+#### Query all rows from a table
+```bash
+db query -database database.db -table timeseries -sql "SELECT *"
+```
+
+#### Remove duplicate rows from a table
+```bash
+db delete_duplicates -database database.db -table timeseries
+```
+
+#### Export a table to CSV format
+```bash
+db export -database database.db -table timeseries -output timeseries.csv
+```
+
+#### Delete a table from the database
+```bash
+db delete -database database.db -table timeseries
+```
+
+#### Delete the entire database file
+```bash
+db delete -database database.db
+```
+
+## Advanced Features
+
+- **Automatic WAL Mode:** Write-Ahead Logging for better concurrency (default).
+- **Schema Evolution:** New columns are added automatically on insert if `force=True` (default).
+- **Batch Export:** Efficiently export large tables in batches to avoid memory issues.
+
+---
+
+## License
+
+This project is developed by Rob Suomi and licensed under the MIT License.  
+See the [LICENSE](LICENSE) file for details.
