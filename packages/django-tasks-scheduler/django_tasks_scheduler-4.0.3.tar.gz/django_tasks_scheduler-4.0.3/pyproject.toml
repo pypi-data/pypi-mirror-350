@@ -1,0 +1,86 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "django-tasks-scheduler"
+version = "4.0.3"
+description = "An async job scheduler for django using redis/valkey brokers"
+authors = [{ name = "Daniel Moran", email = "daniel@moransoftware.ca" }]
+requires-python = "~=3.10"
+readme = "README.md"
+license = "MIT"
+maintainers = [{ name = "Daniel Moran", email = "daniel@moransoftware.ca" }]
+keywords = [
+    "redis",
+    "valkey",
+    "django",
+    "background-jobs",
+    "job-queue",
+    "task-queue",
+    "redis-queue",
+    "scheduled-jobs",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Web Environment",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Framework :: Django",
+    "Framework :: Django :: 5.0",
+    "Framework :: Django :: 5.1",
+    "Framework :: Django :: 5.2",
+]
+dependencies = [
+    "django>=5",
+    "croniter>=2.0",
+    "click~=8.2",
+]
+
+[project.optional-dependencies]
+yaml = ["pyyaml~=6.0"]
+valkey = ["valkey>=6.0.2,<7"]
+sentry = ["sentry-sdk~=2.19"]
+
+[project.urls]
+Homepage = "https://github.com/django-commons/django-tasks-scheduler"
+Documentation = "https://django-tasks-scheduler.readthedocs.io/"
+"Bug Tracker" = "https://github.com/django-commons/django-tasks-scheduler/issues"
+Funding = "https://github.com/sponsors/cunla"
+
+[dependency-groups]
+dev = [
+    "time-machine>=2.16.0,<3",
+    "ruff>=0.11",
+    "coverage~=7.6",
+    "fakeredis~=2.28",
+    "pyyaml>=6,<7",
+]
+
+[tool.hatch.build.targets.sdist]
+include = ["scheduler"]
+
+[tool.hatch.build.targets.wheel]
+include = ["scheduler"]
+
+[tool.ruff]
+line-length = 120
+exclude = [
+    'scheduler/migrations',
+    'testproject',
+    '.venv',
+    '.github',
+    '__pycache__',
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
