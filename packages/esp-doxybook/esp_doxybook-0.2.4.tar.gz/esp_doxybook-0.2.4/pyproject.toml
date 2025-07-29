@@ -1,0 +1,87 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "esp-doxybook"
+authors = [
+    {name = "Fu Hanxi", email = "fuhanxi@espressif.com"},
+]
+maintainers = [
+    {name = "Fu Hanxi", email = "fuhanxi@espressif.com"},
+]
+readme = "README.md"
+license = {file = "LICENSE"}
+dynamic = ["version", "description"]
+requires-python = ">=3.7"
+keywords = ['doxygen', 'c', 'cpp', 'markdown']
+dependencies = [
+    "Jinja2",
+]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+
+[project.optional-dependencies]
+doc = [
+    "mkdocs",
+    "mkdocs-material",
+]
+
+[project.urls]
+Source = "https://github.com/espressif/doxybook"
+
+[project.scripts]
+esp-doxybook = "doxybook.__main__:main"
+esp-doxybook-pre-commit = "doxybook.__main__:main_pre_commit"
+
+[tool.flit.module]
+name = "doxybook"
+
+[tool.isort]
+profile = 'black'
+force_grid_wrap = 1
+
+[tool.black]
+line-length = 120
+skip-string-normalization = true
+
+[tool.ruff]
+line-length = 120
+target-version = "py37"
+
+[tool.ruff.format]
+quote-style = "single"
+docstring-code-format = true
+
+[tool.ruff.lint]
+select = [
+    'F',  # Pyflakes
+    'E',  # pycodestyle
+    'W',  # pycodestyle
+    'I',  # isort
+    'UP',  # pyupgrade
+    'PL',  # pylint
+]
+extend-ignore = [
+    "PLR0911",  # too-many-return-statements
+    "PLR0912",  # too-many-branches
+    "PLR0913",  # too-many-arguments
+    "PLR0915",  # too-many-statements
+]
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+tag_format = "v$version"
+version = "0.2.4"
+update_changelog_on_bump = true
+version_files = [
+    "doxybook/__init__.py",
+    "README.md",
+]
