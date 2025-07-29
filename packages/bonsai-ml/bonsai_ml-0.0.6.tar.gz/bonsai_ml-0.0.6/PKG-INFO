@@ -1,0 +1,133 @@
+Metadata-Version: 2.1
+Name: bonsai_ml
+Version: 0.0.6
+Summary: bonsai
+Home-page: https://github.com/leecheolu/bonsai-ml.git
+Author: MAPS
+Author-email: dongguk.maps@gmail.com
+Keywords: Decision Tree,DT
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: scikit-learn
+Requires-Dist: docplex
+Requires-Dist: psutil
+
+# BONSAI: Branch Optimization for Numerical Splits for Accurate and Interpretable Models
+
+BONSAI is a novel decision tree algorithm that globally optimizes split decisions over numerical and categorical attributes, offering both **high predictive accuracy** and **interpretable model structures**. Unlike greedy methods like CART or C4.5, BONSAI performs **global tree induction** under a depth constraint using a slot-node formulation and search-space reduction techniques.
+
+## 🔧 Features
+
+- ✅ Global optimization-based decision tree induction  
+- ✅ Supports both numerical and categorical attributes  
+- ✅ Depth-constrained tree learning for compact, interpretable models  
+- ✅ Avoids the overhead of traditional MIP solvers  
+- ✅ Outperforms standard and optimization-based tree algorithms on benchmarks
+
+## 📦 Installation
+
+```bash
+pip install bonsai-ml
+```
+
+> Ensure Python 3.8+ is installed.
+
+## 📘 Usage Example
+
+Here's a minimal working example using BONSAI:
+
+```python
+from bonsai_ml.bonsai_ml import *
+import pandas as pd
+
+df_pq = pd.read_csv('./zoo_train.csv')
+df_pq_test = pd.read_csv('./zoo_test.csv')
+
+attributes = {}
+attributes['hair'] = 'Categorical'
+attributes['feathers'] = 'Categorical'
+attributes['eggs'] = 'Categorical'
+attributes['milk'] = 'Categorical'
+attributes['airborne'] = 'Categorical'
+attributes['aquatic'] = 'Categorical'
+attributes['predator'] = 'Categorical'
+attributes['toothed'] = 'Categorical'
+attributes['backbone'] = 'Categorical'
+attributes['breathes'] = 'Categorical'
+attributes['venomous'] = 'Categorical'
+attributes['fins'] = 'Categorical'
+attributes['legs'] = 'Categorical'
+attributes['tail'] = 'Categorical'
+attributes['domestic'] = 'Categorical'
+attributes['catsize'] = 'Categorical'
+attributes['class'] = 'Output'
+
+
+accuracy, tree = train(df_pq, attributes, rule_path='rule_{}'.format('test'),
+                          tree_path='nodes_{}.tree'.format(mn), min_sample=2)
+
+lazy_rule = lazy_import('rule_{}'.format('test'))
+
+test_acc, f1 = test(df_pq_test, attributes,file_name='rule_{}'.format('test'))
+
+
+```
+
+## 📊 Benchmark Summary
+
+BONSAI has been evaluated on various UCI benchmark datasets and has outperformed CART and C4.5 in terms of predictive accuracy:
+
+BONSAI has been evaluated on the following UCI benchmark datasets:
+
+| Dataset Name                | # Instances |
+|----------------------------|-------------|
+| Zoo                        | 101         |
+| Iris                       | 150         |
+| Hepatitis                  | 155         |
+| Wine                       | 178         |
+| Penguin                    | 344         |
+| Wholesale                  | 440         |
+| Indian Liver Patient       | 583         |
+| Credit Approval            | 690         |
+| Blood Transfusion          | 748         |
+| Diabetes                   | 768         |
+| Tic-tac-toe                | 958         |
+| Statlog (German Credit)    | 1000        |
+| Banknote Authentication    | 1372        |
+| Contraceptive              | 1473        |
+| Car Evaluation             | 1728        |
+| Image Segmentation         | 2310        |
+| Rice                       | 3810        |
+
+[//]: # (## 📚 Paper Reference)
+
+[//]: # ()
+[//]: # ()
+[//]: # (> _“BONSAI: Branch Optimization for Numerical Splits for Accurate and Interpretable Models”_  )
+
+[//]: # (> Authors: [Author List]  )
+
+[//]: # (> Conference: [Conference Name, Year])
+
+## 🛠 Dependencies
+
+- `numpy`
+- `scikit-learn`
+- `pandas` 
+- `docplex` 
+- `psutil` 
+
+
+[//]: # (## 🧑‍💻 Development)
+
+[//]: # ()
+[//]: # (Feel free to open issues or pull requests on [GitHub]&#40;https://github.com/yourusername/bonsai-tree&#41; to contribute.)
+
+[//]: # (## 📄 License)
+
+[//]: # ()
+[//]: # (MIT License © 2025 YourName)
