@@ -1,0 +1,65 @@
+[build-system]
+requires = ["setuptools>=64.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+ee_wildfire = ["config_options.yml"]
+
+[project]
+name = "ee-wildfire"
+version = "2025.1.4"
+description = "Pulls data from Google Earth Engine, syncs it to Google Drive, and downloads files."
+authors = [
+    { name = "Jake Bova", email = "developer.montana@gmail.com" },
+    { name = "Lorn Jaeger", email = "lornjaeger@proton.me" }, 
+    { name = "Kyle Krstulich", email = "kylekrstulich@gmail.com" },
+]
+
+maintainers = [ 
+    { name = "Kyle Krstulich", email = "kylekrstulich@gmail.com" },
+    { name = "Lorn Jaeger", email = "lornjaeger@proton.me" },
+]
+
+readme = "README.md"
+
+license = { file = "LICENSE" }
+
+requires-python = ">=3.10"
+
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Python"
+]
+
+keywords = ["wildfire", "earth engine"]
+
+dependencies = [
+	"earthengine-api",
+	"tqdm",
+	"pandas",
+	"raster_tools",
+	"geopandas",
+	"shapely",
+	"numpy",
+	"geemap",
+	"tdqm",
+	"google-api-python-client",
+	"google-auth-httplib2",
+	"google-auth-oauthlib",
+	"setuptools",
+	"wheel",
+]
+
+
+[project.urls]
+Homepage = "https://github.com/KylesCorner/Earth-Engine-Wildfire-Data/tree/master"
+Issues = "https://github.com/KylesCorner/Earth-Engine-Wildfire-Data/issues"
+
+[project.scripts]
+ee-wildfire = "ee_wildfire.main:main"
