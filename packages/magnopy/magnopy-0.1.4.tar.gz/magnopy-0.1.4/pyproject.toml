@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "magnopy"
+dynamic = ["version"]
+description = "Magnopy is a Python package for magnons."
+authors = [{ name = "Andrey Rybakov", email = "rybakov.ad@icloud.com" }]
+dependencies = ["numpy", "matplotlib", "wulfric>=0.5.4"]
+requires-python = ">=3.9"
+readme = "README.rst"
+classifiers = [
+    'Development Status :: 4 - Beta',
+    'Intended Audience :: Science/Research',
+    'Intended Audience :: Developers',
+    'Intended Audience :: Education',
+    'Intended Audience :: End Users/Desktop',
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.12',
+    'Programming Language :: Python :: 3.13',
+    'Programming Language :: Python :: 3 :: Only',
+    'Topic :: Software Development',
+    'Topic :: Scientific/Engineering',
+    "Operating System :: OS Independent",
+]
+
+[project.scripts]
+magnopy = "magnopy.__main__:main"
+magnopy-lswt = "magnopy._cli._cli_solve_lswt:manager"
+
+[project.urls]
+Homepage = "https://magnopy.org"
+Documentation = "https://magnopy.org"
+Repository = "https://github.com/magnopy/magnopy.git"
+Issues = "https://github.com/magnopy/magnopy/issues"
+Changelog = "https://magnopy.org/en/latest/release-notes/index.html"
+
+[tool.setuptools.dynamic]
+version = { attr = "magnopy.__version__" }
