@@ -1,0 +1,297 @@
+Metadata-Version: 2.4
+Name: cdef-population
+Version: 0.1.0
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Science/Research
+Classifier: Intended Audience :: Healthcare Industry
+Classifier: License :: OSI Approved :: MIT License
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Operating System :: MacOS
+Classifier: Programming Language :: Rust
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Programming Language :: Python :: Implementation :: PyPy
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Scientific/Engineering :: Medical Science Apps.
+Classifier: Topic :: Scientific/Engineering :: Information Analysis
+Summary: Danish registry data analysis for severe chronic diseases in children and their families
+Keywords: healthcare,epidemiology,danish-registry,population-health,severe-chronic-disease
+Author: Tobias Kragholm <your.email@example.com>
+Author-email: Tobias Kragholm <your.email@example.com>
+License: MIT OR Apache-2.0
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown; charset=UTF-8; variant=GFM
+Project-URL: Homepage, https://github.com/your-username/cdef-population-wheel
+Project-URL: Repository, https://github.com/your-username/cdef-population-wheel
+Project-URL: Bug Tracker, https://github.com/your-username/cdef-population-wheel/issues
+Project-URL: Documentation, https://github.com/your-username/cdef-population-wheel#readme
+
+# cdef-population Python Wheel
+
+Python wheel packaging for [cdef-population](https://github.com/your-username/cdef-population): Danish registry data analysis for severe chronic diseases in children and their families.
+
+## Overview
+
+This repository packages the `cdef-population` Rust binary as a Python wheel, enabling easy installation and distribution through PyPI or private package repositories. This is particularly useful for deployment on systems with restricted internet access that only allow PyPI-based installations.
+
+## Installation
+
+### From PyPI (when available)
+```bash
+pip install cdef-population
+```
+
+### From wheel file
+```bash
+pip install cdef_population-0.1.0-py3-none-win_amd64.whl
+```
+
+### From source
+```bash
+pip install maturin
+git clone https://github.com/your-username/cdef-population-wheel.git
+cd cdef-population-wheel
+maturin build --release
+pip install target/wheels/*.whl
+```
+
+## Usage
+
+After installation, the `cdef-population` command will be available in your PATH:
+
+```bash
+# Show help
+cdef-population --help
+
+# Analyze register data
+cdef-population register bef --data-dir /path/to/data
+
+# Create study cohort
+cdef-population study-cohort --start-year 1995 --end-year 2018 --output cohort.parquet
+
+# Perform case-control analysis
+cdef-population case-control --cohort-file cohort.parquet --output results.parquet
+```
+
+## Platform Support
+
+Pre-built wheels are available for:
+- **Windows**: x86_64 (64-bit)
+- **Linux**: x86_64 (64-bit)
+- **macOS**: x86_64 and universal2 (Intel + ARM)
+
+## Building Wheels
+
+### Prerequisites
+
+- Python 3.8+
+- [maturin](https://github.com/PyO3/maturin): `pip install maturin`
+- [cargo-xwin](https://github.com/rust-cross/cargo-xwin): `pip install cargo-xwin` (for Windows cross-compilation)
+- Rust toolchain
+
+### Local Development
+
+#### Build all platforms
+```bash
+./scripts/build-wheel.sh
+```
+
+#### Build specific platform
+```bash
+# Linux (native)
+maturin build --release --target x86_64-unknown-linux-gnu
+
+# Windows (cross-compilation with cargo-xwin)
+cargo xwin build --release --target x86_64-pc-windows-msvc
+maturin build --release --target x86_64-pc-windows-msvc
+
+# macOS (native, on macOS only)
+maturin build --release --target x86_64-apple-darwin
+```
+
+#### Test built wheels
+```bash
+./scripts/test-wheel.sh
+```
+
+### Cross-Compilation for Windows
+
+We use [cargo-xwin](https://github.com/rust-cross/cargo-xwin) for reliable Windows cross-compilation:
+
+```bash
+# Install cargo-xwin
+pip install cargo-xwin
+
+# Cross-compile and build Windows wheel
+cargo xwin build --release --target x86_64-pc-windows-msvc
+maturin build --release --target x86_64-pc-windows-msvc
+```
+
+This approach provides reliable Windows cross-compilation without requiring Docker or local Windows SDK setup.
+
+## CI/CD
+
+The repository includes GitHub Actions workflows that automatically:
+
+1. **Build wheels** for all supported platforms on every push
+2. **Test wheels** on their respective platforms
+3. **Create releases** with wheel attachments when tags are pushed
+4. **Upload to PyPI** (optional, requires configuration)
+
+### Release Process
+
+1. Update version in `Cargo.toml`
+2. Create and push a git tag:
+   ```bash
+   git tag v0.1.0
+   git push origin v0.1.0
+   ```
+3. GitHub Actions will automatically build and release wheels
+
+## Deployment to Offline Systems
+
+For systems without internet access but with PyPI mirror support:
+
+1. **Download wheels** from GitHub Releases or build locally
+2. **Transfer wheels** to the target system
+3. **Install offline**:
+   ```bash
+   pip install cdef_population-0.1.0-py3-none-win_amd64.whl --no-deps
+   ```
+4. **Verify installation**:
+   ```bash
+   cdef-population --help
+   ```
+
+### Windows Remote Server Deployment
+
+Specific instructions for Windows environments:
+
+1. Download the Windows wheel (`*win_amd64.whl`)
+2. Transfer to Windows server
+3. Install in command prompt or PowerShell:
+   ```cmd
+   pip install cdef_population-0.1.0-py3-none-win_amd64.whl
+   ```
+4. Test installation:
+   ```cmd
+   cdef-population --version
+   cdef-population --help
+   ```
+
+## Data Directory Configuration
+
+The application automatically detects the appropriate data directory based on the platform:
+
+- **macOS**: `/Users/tobiaskragholm/generated_data/parquet`
+- **Linux/Windows**: `/home/tkragholm/generated_data/parquet`
+
+Override with the `DATA_DIR` environment variable or `--data-dir` flag:
+
+```bash
+export DATA_DIR=/custom/data/path
+cdef-population register bef
+
+# Or use flag
+cdef-population register bef --data-dir /custom/data/path
+```
+
+## Troubleshooting
+
+### Common Issues
+
+#### Wheel installation fails
+```bash
+# Try upgrading pip
+pip install --upgrade pip
+
+# Install with verbose output
+pip install -v cdef_population-*.whl
+```
+
+#### Binary not found after installation
+```bash
+# Check if binary is in PATH
+which cdef-population
+
+# Or try running with full path
+python -m pip show cdef-population
+```
+
+#### Permission denied on Windows
+```cmd
+# Run as administrator or check execution policy
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+### Platform-Specific Issues
+
+#### Windows
+- Ensure Visual C++ Redistributable is installed
+- Check Windows Defender/antivirus settings
+- Verify PowerShell execution policy
+
+#### Linux
+- Install required system libraries if needed
+- Check file permissions
+- Verify glibc compatibility
+
+#### macOS
+- Allow unsigned binary execution in Security settings
+- Install Xcode Command Line Tools if needed
+
+## Development
+
+### Project Structure
+
+```
+cdef-population-wheel/
+├── Cargo.toml              # Rust project configuration
+├── pyproject.toml          # Python packaging configuration
+├── src/main.rs             # Thin wrapper around main crate
+├── scripts/
+│   ├── build-wheel.sh      # Local build script
+│   └── test-wheel.sh       # Testing script
+├── .github/workflows/
+│   └── build-wheels.yml    # CI/CD pipeline
+└── README.md               # This file
+```
+
+### Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test with `./scripts/test-wheel.sh`
+5. Submit a pull request
+
+### Dependencies
+
+The wheel packages the main `cdef-population` crate as a dependency. To update:
+
+1. Update the dependency version in `Cargo.toml`
+2. Test the build
+3. Update version and release
+
+## License
+
+This project is licensed under the same terms as the main `cdef-population` project.
+
+## Support
+
+For issues related to:
+- **Wheel packaging/installation**: Open an issue in this repository
+- **Core functionality**: See the main [cdef-population](https://github.com/your-username/cdef-population) repository
+- **Windows deployment**: Check the deployment documentation above
+
+## Related Projects
+
+- [cdef-population](https://github.com/your-username/cdef-population) - Main analysis library
+- [maturin](https://github.com/PyO3/maturin) - Rust-Python packaging tool
+- [cargo-xwin](https://github.com/rust-cross/cargo-xwin) - Windows cross-compilation
