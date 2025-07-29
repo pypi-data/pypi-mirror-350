@@ -1,0 +1,32 @@
+# lightning.pytorch==2.1.3
+eval_after_fit: true
+seed_everything: false
+trainer:
+  accelerator: gpu
+  devices: 1
+  logger:
+    class_path: lightning.pytorch.loggers.TensorBoardLogger
+    init_args:
+      save_dir: logs/segformer
+      name: standard
+      default_hp_metric: false
+  callbacks:
+    - class_path: torch_uncertainty.callbacks.TUSegCheckpoint
+    - class_path: lightning.pytorch.callbacks.LearningRateMonitor
+      init_args:
+        logging_interval: step
+model:
+  num_classes: 11
+  loss: CrossEntropyLoss
+  version: std
+  arch: 0
+data:
+  root: ./data
+  batch_size: 16
+  num_workers: 20
+optimizer:
+  lr: 0.01
+lr_scheduler:
+  milestones:
+    - 30
+  gamma: 0.1
