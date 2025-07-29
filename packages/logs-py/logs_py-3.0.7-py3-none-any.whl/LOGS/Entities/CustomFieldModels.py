@@ -1,0 +1,57 @@
+from enum import Enum
+
+
+class CustomFieldDataType(Enum):
+    String = "String"
+    StringArray = "StringArray"
+    Integer = "Integer"
+    IntegerArray = "IntegerArray"
+    Float = "Float"
+    FloatArray = "FloatArray"
+    Boolean = "Boolean"
+    Date = "Date"
+    DateArray = "DateArray"
+    DateTime = "DateTime"
+    DateTimeArray = "DateTimeArray"
+    Time = "Time"
+    TimeArray = "TimeArray"
+    DateTimeRange = "DateTimeRange"
+    TimeRange = "TimeRange"
+    Dataset = "Dataset"
+    DatasetArray = "DatasetArray"
+    Sample = "Sample"
+    SampleArray = "SampleArray"
+    Project = "Project"
+    ProjectArray = "ProjectArray"
+    Organization = "Organization"
+    OrganizationArray = "OrganizationArray"
+    Person = "Person"
+    PersonArray = "PersonArray"
+    Method = "Method"
+    MethodArray = "MethodArray"
+    Instrument = "Instrument"
+    InstrumentArray = "InstrumentArray"
+    SharedContent = "SharedContent"
+    SharedContentArray = "SharedContentArray"
+    LabNotebook = "LabNotebook"
+    LabNotebookArray = "LabNotebookArray"
+    LabNotebookExperiment = "LabNotebookExperiment"
+    LabNotebookExperimentArray = "LabNotebookExperimentArray"
+    LabNotebookEntry = "LabNotebookEntry"
+    LabNotebookEntryArray = "LabNotebookEntryArray"
+    ViewableEntity = "ViewableEntity"
+    Inventory = "Inventory"
+    InventoryArray = "InventoryArray"
+    EntityBarCode = "EntityBarCode"
+    Url = "Url"
+    UrlArray = "UrlArray"
+
+
+class CustomFieldValuesSearchPredicate(Enum):
+    AND = "AND"
+    OR = "OR"
+
+
+class CustomFieldValueType(Enum):
+    CustomField = "CustomField"
+    CustomTypeSection = "CustomTypeSection"
