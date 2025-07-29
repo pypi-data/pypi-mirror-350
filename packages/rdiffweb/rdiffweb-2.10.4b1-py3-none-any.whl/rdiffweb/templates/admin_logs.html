@@ -1,0 +1,52 @@
+{% extends 'admin.html' %}
+{% from 'include/table.html' import table %}
+{% block title %}
+  {% trans %}System Logs{% endtrans %}
+{% endblock title %}
+{% set admin_nav_active="logs" %}
+{% block script %}
+  <script>
+  $.fn.dataTable.render.description = function () {
+      return function (data, type, row, meta) {
+          switch(row[5]){
+              case 'threat':
+                  return '<span class="badge badge-pill badge-primary">{% trans %}Threat{% endtrans %}</span> ' + safe(row[4]);
+              case 'auth':
+                  return '<span class="badge badge-pill badge-primary">{% trans %}User Login{% endtrans %}</span> ' + safe(row[4]);
+              case 'activity':
+                  return '<span class="badge badge-pill badge-primary">{% trans %}User Activity{% endtrans %}</span> ' + safe(row[4]);
+              default:
+                return safe(row[4]);
+          }
+      };
+  }
+  </script>
+{% endblock script %}
+{% block content %}
+  {# Lazy loaded Table #}
+  {% set buttons = [
+  {'text': _('All'), 'extend': 'clear'},
+  {'text': _('User Login'), 'extend': 'filter', 'column': 'tag:name', 'search': 'auth'},
+  {'text': _('Threats'), 'extend': 'filter', 'column': 'tag:name', 'search': 'threat'},
+  {'text': _('User Activity'), 'extend': 'filter', 'column': 'tag:name', 'search': 'activity'},
+  ] %}
+  {% set columns = [
+  {'name':'filename', 'visible': False },
+  {'name':'date', 'title':_('When'), 'orderable': True, 'render':'datetime', 'width':'150px'},
+  {'name':'ip', 'title':_('IP Address'), 'orderable': True, 'width':'120px'},
+  {'name':'username', 'title':_('User'), 'orderable': True, 'width':'120px'},
+  {'name':'description', 'title':_('Event Description'), 'orderable': True, 'render':'description' },
+  {'name':'tag', 'visible': False},
+  ] %}
+  {{ table(url_for('/admin/logs/data.json'),
+  columns=columns,
+  buttons=buttons,
+  order=[[ 1, 'desc' ]],
+  state_save=False,
+  searching=True,
+  show_header=True,
+  empty_message=_('Logs is empty'),
+  info_message=_('Displaying _START_-_END_ of _TOTAL_ most recent log systems'),
+  paging=True,
+  pageLength=20) }}
+{% endblock %}
