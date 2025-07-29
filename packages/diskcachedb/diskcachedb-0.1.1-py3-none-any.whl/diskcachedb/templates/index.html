@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}DiskCache Viewer - Home{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+   <div class="col-md-6">
+      <div class="card">
+         <div class="card-body">
+            <h2 class="card-title text-center mb-4">Welcome to DiskCache Viewer</h2>
+            <form method="POST" action="{{ url_for('index') }}">
+               <div class="mb-3">
+                  <label for="cache_dir" class="form-label">DiskCache Directory Location</label>
+                  <input type="text"
+                     class="form-control"
+                     id="cache_dir"
+                     name="cache_dir"
+                     value="{{ cache_dir }}"
+                     placeholder="/projects/hnd_olympicsvt_blr/oly_tools/diskcache"
+                     required>
+                  <div class="form-text">Enter the path to your DiskCache directory</div>
+               </div>
+               <div class="mb-3">
+                  <label for="db_name" class="form-label">Database Name</label>
+                  <select class="form-select" id="db_name" name="db_name" required>
+                     <option value="">Select a database</option>
+                  </select>
+                  <div class="form-text">Select the name of the database to connect to</div>
+               </div>
+               <div class="d-grid">
+                  <button type="submit" class="btn btn-primary">Connect to Database</button>
+               </div>
+            </form>
+         </div>
+      </div>
+   </div>
+</div>
+<script>
+   document.getElementById('cache_dir').addEventListener('change', function() {
+       const cacheDir = this.value;
+       const dbSelect = document.getElementById('db_name');
+
+       // Clear existing options
+       dbSelect.innerHTML = '<option value="">Loading...</option>';
+
+       fetch('/list_dbs', {
+           method: 'POST',
+           headers: {
+               'Content-Type': 'application/json'
+           },
+           body: JSON.stringify({ cache_dir: cacheDir })
+       })
+       .then(response => response.json())
+       .then(data => {
+           dbSelect.innerHTML = '';
+           if (data.db_names.length === 0) {
+               dbSelect.innerHTML = '<option value="">No databases found</option>';
+           } else {
+               dbSelect.innerHTML = '<option value="">Select a database</option>';
+               data.db_names.forEach(db => {
+                   const option = document.createElement('option');
+                   option.value = db;
+                   option.text = db;
+                   dbSelect.appendChild(option);
+               });
+           }
+       })
+       .catch(err => {
+           console.error('Error fetching DB names:', err);
+           dbSelect.innerHTML = '<option value="">Error fetching databases</option>';
+       });
+   });
+</script>
+{% endblock %}
