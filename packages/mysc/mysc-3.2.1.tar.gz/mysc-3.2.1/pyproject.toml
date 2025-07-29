@@ -1,0 +1,94 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mysc"
+version = "3.2.1"
+authors = [
+    {name = "Me2sY", email = "me2sy@outlook.com"}
+]
+description = "A Scrcpy client implemented in Python. Gui with Kivy/dearpygui/pygame. With Video, Audio, also Control. GUI Supports Key Proxy, Extensions, window position record, right-click gesture control, File Manager, Virtual Camera, UHID Keyboard and Chinese input and more."
+readme = "README.md"
+requires-python = ">= 3.11"
+keywords = ["scrcpy", "android", "adbutils", "av", "numpy", "Kivy", "KivyMD", "DearPyGui", "Pygame", "adb", "pyaudio"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: Chinese (Simplified)",
+    "Topic :: Multimedia :: Graphics :: Capture :: Screen Capture"
+]
+
+dependencies = [
+    # Base
+    "loguru", "adbutils>=2.8.10", "click", "uiautomator2",
+
+    # Video
+    "av", "numpy",
+
+    # Audio
+    "pyaudio",
+
+    # Control
+    "pyperclip"
+]
+
+
+[project.optional-dependencies]
+# For GUI USE
+gui = [
+    # GUI Framework
+    "kivy>=2.3.1", "pynput",
+    "dearpygui>=2.0.0",
+    "pygame",
+
+    # GUI Functions
+    "moosegesture", "pyvirtualcam"
+]
+
+# Web USE
+web = [
+    "nicegui"
+]
+
+flac = [
+    "pyflac"
+]
+
+opus = [
+    "pyogg", "opuslib"
+]
+
+tools = [
+    "pyvirtualcam"
+]
+
+full = [
+    "kivy>=2.3.1",
+    "dearpygui>=2.0.0", "pygame",
+    "pyperclip", "moosegesture", "pyvirtualcam", "opencv-python",
+    "nicegui",
+    "pyflac", "pyogg", "opuslib"
+]
+
+
+[project.scripts]
+mysc-cli = "myscrcpy.run:run"
+mysc-web = "myscrcpy.gui.ng.main:run_app"
+
+mysc-t-vc = "myscrcpy.tools.virtualcam:cli"
+
+mysc-unlocker = "myscrcpy.tools.unlocker:run"
+
+mysc-k-cli = "myscrcpy.gui.k.main:run"
+
+[project.gui-scripts]
+mysc-gui = "myscrcpy.run:run"
+
+mysc-k = "myscrcpy.gui.k.main:run"
+
+
+[project.urls]
+Homepage = "https://github.com/me2sy/MYScrcpy"
+Issues = "https://github.com/me2sy/MYScrcpy/issues"
