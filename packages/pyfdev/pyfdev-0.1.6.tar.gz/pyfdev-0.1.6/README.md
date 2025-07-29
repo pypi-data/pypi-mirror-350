@@ -1,0 +1,169 @@
+# pyfdev
+
+pyfdev is a minimal, statically‑typed subset of Python that compiles to C via Tiny C Compiler (TCC). It offers Python‑like syntax with the performance of native C, right out of the box.
+
+---
+
+## 🚀 Features Implemented So Far
+
+### Basic Types & Declarations
+
+* **`num`** → `int` (e.g. `num x = 5`)
+* **`real`** → `double` (e.g. `real pi = 3.14`)
+* **`text`** → `char*` (e.g. `text msg = "hello"`)
+* **`yesno`** → `bool` (e.g. `yesno flag = true`)
+* **`list`** → homogeneous arrays + length (e.g. `list nums = [1,2,3]` or `list words = ["a","b"]`)
+
+### Arithmetic & Boolean Expressions
+
+* Operators: `+`, `-`, `*`, `/`, `%`
+* Comparisons: `==`, `!=`, `<`, `>`, `<=`, `>=`
+* Logical: `&&`, `||`, `!`
+* Mixed numeric/float expressions infer `%d` or `%f` automatically in `print()`
+
+### Printing
+
+* **`print(expr)`** handles:
+
+  * String literals and `text` variables (`%s`)
+  * Numeric and boolean (`num`/`yesno`) (`%d`)
+  * Floating-point (`real`) (`%f`)
+  * Lists: prints `[elem0, elem1, …]`
+
+### Control Flow Extensions
+
+1. **`if` / `elif` / `else`** blocks with Python‑style indentation
+2. **`unless cond:`** inverse-`if` sugar
+3. **Guarded clauses:** `if cond when guard:`
+4. **Early-exit guard:** `guard cond else:`
+5. **Ternary expressions:** `cond ? val1 : val2`
+6. **Range membership:** `x in a..b` → `x >= a && x <= b`
+7. **Pattern matching:**
+
+   ```pf
+   match x {
+     case 0:       print("zero")
+     case 1:       print("one")
+     default:      print("many")
+   }
+   ```
+
+---
+
+## ⚙️ Installation
+
+pyfdev provides a one‑step installer that sets up the CLI and automatically installs Tiny C Compiler (TCC) on your system.
+
+### Requirements
+
+* Python 3.7+ installed
+* On **Linux**/macOS: a system package manager (`apt`, `dnf`, `brew`, etc.)
+* On **Windows**: PowerShell with administrative privileges (for package manager install)
+
+### Install via `pip`
+
+```bash
+pip install pyfdev
+pyfdev --install-tcc    # automatically installs TCC if missing
+```
+
+The `--install-tcc` flag will detect your OS and run:
+
+* **Debian/Ubuntu**: `sudo apt-get update && sudo apt-get install tcc`
+* **Fedora/Red Hat**: `sudo dnf install tcc`
+* **macOS (Homebrew)**: `brew install tcc`
+* **Windows (Chocolatey)**: `choco install tcc`
+
+Or combine into one command:
+
+```bash
+pip install pyfdev && pyfdev --install-tcc
+```
+
+---
+
+## 📦 Usage
+
+1. **Write** your pyfdev code in a `.pf` file, e.g. `hello.pf`:
+
+   ```pf
+   num x = 10
+   if x > 5:
+       print("big")
+   else:
+       print("small")
+   ```
+
+2. **Compile & Run** in one step:
+
+   ```bash
+   pyfdev hello.pf
+   ```
+
+   This generates `hello.c`, compiles it with TCC, and runs the executable.
+
+3. **Separate Steps** (optional):
+
+   ```bash
+   pyfdev --transpile hello.pf    # emits hello.c
+   pyfdev --compile hello.c       # emits hello.exe or ./hello
+   pyfdev --run hello.exe         # runs the binary
+   ```
+
+---
+
+## 🧪 Testing Features
+
+* **Expressions & Prints**:
+
+  ```pf
+  num a = 5 + 3 * 2
+  real ratio = a / 2.0
+  print(a)
+  print(ratio)
+  ```
+
+* **Control Flow**:
+
+  ```pf
+  num x = 3
+  unless x > 5:
+      print("x is small")
+  guard x < 0 else:
+      print("x >= 0")
+      return
+  ```
+
+* **Ternary & Ranges**:
+
+  ```pf
+  num y = 7
+  print((y % 2 == 0) ? "even" : "odd")
+  print(y in 1..10)
+  ```
+
+* **Match/Case**:
+
+  ```pf
+  num code = 2
+  match code {
+    case 1: print("one")
+    case 2: print("two")
+    default: print("other")
+  }
+  ```
+
+---
+
+## 📚 Further Development
+
+* Add `while` and `for` loops
+* User-defined functions and modules
+* Enhanced error reporting with line numbers
+* Standard library built-ins (e.g. `len()`, `append()`)
+
+Contributions welcome! Submit issues and pull requests on GitHub: [https://github.com/yourusername/pyfdev](https://github.com/yourusername/pyfdev)
+
+---
+
+Happy coding with pyfdev!
