@@ -1,0 +1,108 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools_scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "flatland-rl"
+description = "Multi Agent Reinforcement Learning on Trains"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+keywords = ["flatland"]
+authors = [{ name = "Flatland Association", email = "contact@flatland-association.org" }]
+classifiers = [
+    'Development Status :: 4 - Beta',
+    'Intended Audience :: Developers',
+    'Natural Language :: English',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.12',
+    'Programming Language :: Python :: 3.13',
+]
+dependencies = [
+    "attrs",
+    "boto3",
+    "click",
+    "crowdai_api",
+    "dataclasses",
+    "fastenum",
+    "graphviz",
+    "importlib_resources",
+    "ipycanvas",
+    "ipyevents",
+    "ipython<9.0.0", # pin as long as we support python 3.10. ERROR: Ignored the following versions that require a different python version: 0.7 Requires-Python >=3.6, <3.7; 0.8 Requires-Python >=3.6, <3.7; 9.0.0 Requires-Python >=3.11; 9.0.0b1 Requires-Python >=3.11; 9.0.0b2 Requires-Python >=3.11; 9.0.1 Requires-Python >=3.11; 9.0.2 Requires-Python >=3.11; 9.1.0 Requires-Python >=3.11; 9.2.0 Requires-Python >=3.11
+    "ipywidgets",
+    "matplotlib",
+    "msgpack_numpy",
+    "msgpack",
+    "networkx",
+    "numpy<2",
+    "pandas",
+    "Pillow",
+    "pyglet",
+    "pydantic",
+    "PyYAML",
+    "recordtype",
+    "redis",
+    "seaborn",
+    "tqdm",
+    "svgutils",
+    "timeout_decorator",
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+dev = [
+    "coverage",
+    "flake8",
+    "flake8-eradicate",
+    "ipycytoscape",
+    "jupyter",
+    "jupyter-contrib-nbextensions",
+    "jupyter-core",
+    "m2r",
+    "nbmake",
+    "notebook",
+    "numpydoc",
+    "pip-tools",
+    "pytest",
+    "pytest-retry",
+    "snakeviz",
+    "sphinx<8.2.0", # pin as long as we support python 3.10. ERROR: Ignored the following versions that require a different python version: 0.7 Requires-Python >=3.6, <3.7; 0.8 Requires-Python >=3.6, <3.7; 3.5rc0 Requires-Python >=3.11; 8.2.0 Requires-Python >=3.11; 8.2.0rc1 Requires-Python >=3.11; 8.2.0rc2 Requires-Python >=3.11; 8.2.1 Requires-Python >=3.11; 8.2.2 Requires-Python >=3.11; 8.2.3 Requires-Python >=3.11; 8.3.0 Requires-Python >=3.11; 9.0.0 Requires-Python >=3.11; 9.0.0b1 Requires-Python >=3.11; 9.0.0b2 Requires-Python >=3.11; 9.0.1 Requires-Python >=3.11; 9.0.2 Requires-Python >=3.11; 9.1.0 Requires-Python >=3.11; 9.2.0 Requires-Python >=3.11
+    "tox",
+    "twine",
+    "twine",
+]
+ml = [
+    "ray[default,rllib]",
+    "wandb",
+    "torch",
+    # pin dm-tree, 0.1.9 has import errors under MacOS M1 at least.
+    "dm-tree<0.1.9",
+    "supersuit<3.10.0", # pin because of bug: https://github.com/Farama-Foundation/SuperSuit/pull/258
+    "pettingzoo",
+    "stable_baselines3",
+]
+
+[project.urls]
+"Homepage" = "https://www.flatland-association.org"
+"Github Repository" = "https://github.com/flatland-association/flatland-rl"
+"Issue Tracker" = "https://github.com/flatland-association/flatland-rl/issues"
+
+[project.scripts]
+flatland-demo = "flatland.cli:demo"
+# deprecated, use flatland- prefix for all scripts
+evaluator = "flatland.cli:evaluator"
+flatland-evaluator = "flatland.cli:evaluator"
+flatland-trajectory-generate-from-policy = "flatland.trajectories.trajectories:generate_trajectory_from_policy"
+flatland-trajectory-evaluate = "flatland.evaluators.trajectory_evaluator:evaluate_trajectory"
+
+[tool.setuptools.packages]
+find = { }
+
+[tool.setuptools_scm]
+
+[tool.pytest.ini_options]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+]
