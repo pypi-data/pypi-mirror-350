@@ -1,0 +1,29 @@
+name: Test and Coverage
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-24.04, macos-14]
+        python-version: ['3.13']
+        group: [1, 2, 3, 4, 5]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: astral-sh/setup-uv@v5
+      - name: Run tests with Python ${{ matrix.python-version }} on ${{ matrix.os }}
+        env:
+          PYTEST_GROUP: ${{ matrix.group }}
+        run: |
+          pip install tox==4.23.2
+          uv run tox -e py_partial
+      - name: Upload coverage to Codecov
+        if: matrix.os == 'ubuntu-24.04'
+        uses: codecov/codecov-action@v4
+        with:
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
