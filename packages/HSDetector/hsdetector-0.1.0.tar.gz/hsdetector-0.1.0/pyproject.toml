@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "HSDetector"
+version = "0.1.0"
+description = "Detection of membrane components hot spots around a protein"
+readme = "README.md"
+authors = [{ name = "David Sotillo Núñez", email = "david.sotillo.bq@gmail.com" }]
+license = { text = "MIT" }
+requires-python = ">=3.8"
+
+dependencies = [
+    "numpy < 2.0",
+    "vermouth",
+    "tqdm",
+    "MDAnalysis",
+    "lipyphilic == 0.10.0",
+    "matplotlib",
+    "fortranformat",
+    "importlib-resources; python_version < '3.9'"
+]
+
+[project.scripts]
+HSDetector = "HSDetector.main:main"
+HSDetector_tools = "HSDetector.tools_cli:main"
+
+[tool.setuptools]
+include-package-data = true
+package-dir = { "" = "." }
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["HSDetector*"]
+exclude = ["tests*"]
+
+[tool.setuptools.package-data]
+HSDetector = ["inputs/**/*"]
