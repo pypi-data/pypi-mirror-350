@@ -1,0 +1,120 @@
+<script type="text/javascript">
+    const surveyPage = '{{ page.pk }}'
+    const surveySubmitUrl = '{{ page.submit_url }}'
+    const surveyDataUploadUrl = '{{ page.uploads_url }}'
+    const surveyJsonStr = '{{ page.json|escapejs }}'
+    let surveyJson = {}
+
+    let containerId = "survey-form-container"
+
+    if (typeof surveyContainerId !== 'undefined') {
+        containerId = surveyContainerId
+    }
+
+    if (surveyJsonStr) {
+        surveyJson = JSON.parse(surveyJsonStr);
+    }
+
+    $(function () {
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        function saveSurveyData(path, payload) {
+            let props = {
+                method: "POST",
+                body: JSON.stringify(payload),
+                headers: {
+                    "X-CSRFToken": getCookie("csrftoken"),
+                    "Content-Type": "application/json;charset=UTF-8"
+                },
+                mode: "same-origin",
+            }
+
+            return fetch(path, props)
+                .then(response => {
+                    return response.json()
+                        .then(result => {
+                            return {
+                                ok: response.ok,
+                                body: result
+                            }
+                        });
+                })
+                .then(resultObj => {
+                    return resultObj;
+                })
+                .catch(error => {
+                    throw error;
+                });
+        }
+
+        const $surveyContainer = $(`#${containerId}`)
+
+        if ($surveyContainer.length) {
+            const survey = new Survey.Model(surveyJson);
+            $surveyContainer.Survey({model: survey});
+
+            survey.onUploadFiles.add(uploadFiles)
+            survey.onComplete.add(surveyComplete);
+        } else {
+            console.error(`Can not find Survey Container with id: '${containerId}' `)
+        }
+
+        function surveyComplete(sender) {
+            const payload = {form_data: sender.data, page: surveyPage}
+            saveSurveyData(surveySubmitUrl, payload)
+        }
+
+        function uploadFiles(_, options) {
+
+            const formData = new FormData();
+
+            options.files.forEach(function (file) {
+                formData.append(file.name, file);
+            });
+
+            let props = {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "X-CSRFToken": getCookie("csrftoken"),
+                },
+                mode: "same-origin",
+            }
+
+            fetch(surveyDataUploadUrl, props).then((response) => response.json())
+                .then((result) => {
+                    const {uploads} = result
+                    options.callback("success",
+                        options.files.map(function (file) {
+                            return {file: file, content: uploads[file.name]};
+                        })
+                    );
+                })
+                .catch((error) => {
+                    options.callback("error");
+                });
+        }
+    });
+</script>
+
+
+
+
+
+
+
+
