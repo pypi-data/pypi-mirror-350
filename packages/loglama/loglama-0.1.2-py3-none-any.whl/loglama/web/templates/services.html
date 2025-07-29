@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PyLama Services Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        .service-card {
+            height: 100%;
+            transition: transform 0.3s;
+        }
+        .service-card:hover {
+            transform: translateY(-5px);
+        }
+        .service-iframe {
+            width: 100%;
+            height: 300px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f8f9fa;
+        }
+        .service-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+        .service-inactive {
+            opacity: 0.6;
+        }
+        .service-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .service-status {
+            font-size: 0.8rem;
+            padding: 3px 8px;
+            border-radius: 10px;
+        }
+        .status-active {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-inactive {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-list me-2"></i> LogLama
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Logs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/services">Services</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>PyLama Services Dashboard</h1>
+            <button id="refresh-services" class="btn btn-primary">
+                <i class="fas fa-sync-alt me-2"></i> Refresh
+            </button>
+        </div>
+
+        <div class="row" id="services-container">
+            <!-- Services will be dynamically added here -->
+            <div class="col-12 text-center py-5">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-3">Loading services...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // State management
+        const state = {
+            services: [],
+            refreshInterval: null,
+            refreshRate: 10000 // 10 seconds
+        };
+
+        // DOM elements
+        const elements = {
+            servicesContainer: document.getElementById('services-container'),
+            refreshServicesBtn: document.getElementById('refresh-services')
+        };
+
+        // Initialize the application
+        function init() {
+            loadServices();
+            setupEventListeners();
+            // Auto-refresh services status
+            state.refreshInterval = setInterval(loadServices, state.refreshRate);
+        }
+
+        // Load services from the API
+        async function loadServices() {
+            try {
+                const response = await fetch('/api/services');
+                const data = await response.json();
+
+                if (data.error) {
+                    console.error(`Error loading services: ${data.error}`);
+                    showError(`Error loading services: ${data.error}`);
+                    return;
+                }
+
+                state.services = data.services;
+                renderServices(state.services);
+            } catch (error) {
+                console.error(`Error loading services: ${error.message}`);
+                showError(`Error loading services: ${error.message}`);
+            }
+        }
+
+        // Render services in the grid
+        function renderServices(services) {
+            // Clear the container
+            elements.servicesContainer.innerHTML = '';
+
+            // If no services, show a message
+            if (!services || services.length === 0) {
+                elements.servicesContainer.innerHTML = `
+                    <div class="col-12 text-center py-5">
+                        <i class="fas fa-info-circle fa-3x mb-3 text-muted"></i>
+                        <p class="lead">No services found.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Render each service
+            services.forEach(service => {
+                const serviceCard = document.createElement('div');
+                serviceCard.className = `col-md-6 col-lg-4 mb-4`;
+                serviceCard.innerHTML = `
+                    <div class="card service-card ${!service.active ? 'service-inactive' : ''}">
+                        <div class="card-body">
+                            <div class="service-header mb-3">
+                                <h5 class="card-title">
+                                    <i class="${service.icon}"></i> ${service.name}
+                                </h5>
+                                <span class="service-status ${service.active ? 'status-active' : 'status-inactive'}">
+                                    ${service.active ? 'Active' : 'Inactive'}
+                                </span>
+                            </div>
+                            <p class="card-text">${service.description}</p>
+                            <p class="card-text"><small class="text-muted">Port: ${service.default_port}</small></p>
+                            ${service.active ? `
+                                <div class="mb-3">
+                                    <iframe class="service-iframe" src="${service.url}" title="${service.name}" sandbox="allow-same-origin allow-scripts"></iframe>
+                                </div>
+                                <a href="${service.url}" target="_blank" class="btn btn-primary w-100">
+                                    <i class="fas fa-external-link-alt me-2"></i> Open in New Tab
+                                </a>
+                            ` : `
+                                <div class="alert alert-warning" role="alert">
+                                    <i class="fas fa-exclamation-triangle me-2"></i> Service is not running
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                `;
+                elements.servicesContainer.appendChild(serviceCard);
+            });
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Refresh services button
+            elements.refreshServicesBtn.addEventListener('click', () => {
+                loadServices();
+            });
+        }
+
+        // Helper function to show error messages
+        function showError(message) {
+            const errorAlert = document.createElement('div');
+            errorAlert.className = 'alert alert-danger alert-dismissible fade show';
+            errorAlert.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.insertBefore(errorAlert, document.body.firstChild);
+        }
+
+        // Initialize the application when the DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
