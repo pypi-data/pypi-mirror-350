@@ -1,0 +1,41 @@
+Metadata-Version: 2.4
+Name: lynxkite-graph-analytics
+Version: 0.1.0
+Summary: The graph analytics executor and boxes for LynxKite
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: fsspec>=2025.3.2
+Requires-Dist: grand-cypher>=0.13.0
+Requires-Dist: joblib>=1.4.2
+Requires-Dist: lynxkite-core
+Requires-Dist: matplotlib>=3.10.1
+Requires-Dist: networkx[default]>=3.4.2
+Requires-Dist: osmnx>=2.0.2
+Requires-Dist: pandas>=2.2.3
+Requires-Dist: polars>=1.25.2
+Requires-Dist: pyarrow>=19.0.1
+Requires-Dist: torch>=2.7.0
+Requires-Dist: torch-geometric>=2.6.1
+Requires-Dist: umap-learn>=0.5.7
+Provides-Extra: dev
+Requires-Dist: pytest>=8.3.5; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.26.0; extra == "dev"
+Provides-Extra: gpu
+Requires-Dist: cuml-cu12>=25.2.1; extra == "gpu"
+Requires-Dist: nx-cugraph-cu12>=25.4.0; extra == "gpu"
+Requires-Dist: polars[gpu]>=1.25.2; extra == "gpu"
+Requires-Dist: pylibcugraph-cu12>=25.4.0; extra == "gpu"
+
+# LynxKite Graph Analytics
+
+This is a LynxKite plugin that provides a graph analytics environment.
+Includes a batch executor operating on graph bundles and a collection of GPU-accelerated graph data science operations.
+
+To use this, install both LynxKite and this plugin.
+Then "LynxKite Graph Analytics" will show up as one of the workspace types in LynxKite.
+
+```bash
+pip install lynxkite lynxkite-graph-analytics
+```
+
+Run LynxKite with `NX_CUGRAPH_AUTOCONFIG=True` to enable GPU-accelerated graph data science operations.
