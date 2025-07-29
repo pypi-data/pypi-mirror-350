@@ -1,0 +1,95 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "synvya_sdk"
+version = "0.2.3"
+description = "Tools for a Nostr agentic ecosystem"
+readme = "README.md"
+requires-python = ">=3.10, <3.13"
+license = { text = "MIT" }
+authors = [
+    {name = "Synvya", email = "synvya@synvya.com"}
+]
+dependencies = [
+    "agno>=1.1.1",
+    "openai>=1.50.0",
+    "nostr_sdk",
+    "pydantic>=2.0.0",
+    "mcp",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-asyncio>=0.23.5",
+    "black>=23.0",
+    "isort>=5.0",
+    "mypy>=1.0",
+    "pylint>=3.0",
+]
+examples = [
+    "python-dotenv>=1.0",
+    "psycopg[binary]>=3.2.5",
+    "sqlalchemy>=2.0.0",
+    "nest-asyncio>=1.6.0",
+    "pgvector>=0.3.6",
+    "fastapi>=0.110.0",
+    "uvicorn>=0.30.0",
+]
+
+[project.urls]
+Homepage = "https://www.synvya.com"
+Repository = "https://github.com/synvya/sdk"
+Documentation = "https://github.com/synvya/sdk#readme"
+BugTracker = "https://github.com/synvya/sdk/issues"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+packages = ["synvya_sdk"]
+exclude-package-data = {"*" = ["tests/*", "tests/**/*"]}
+
+
+[tool.black]
+line-length = 88
+target-version = ['py39']
+include = '\.pyi?$'
+src = ["src", "tests", "examples"]
+
+[tool.isort]
+profile = "black"
+src_paths = ["src", "tests", "examples"]
+multi_line_output = 3
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+mypy_path = "src"
+check_untyped_defs = true
+disallow_untyped_defs = true
+exclude = [
+    "examples/dad_joke_game/__init__.py",
+]
+
+[[tool.mypy.overrides]]
+module = ["nostr_sdk.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["src.synvya_sdk.*.*.pyi"]
+follow_imports = "skip"
+
+[tool.setuptools.package-data]
+synvya_sdk = ["py.typed"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+markers = [
+    "asyncio: mark test as async",
+]
+
+[tool.setuptools_scm]
+version_scheme = "guess-next-dev"
+local_scheme = "node-and-date"
