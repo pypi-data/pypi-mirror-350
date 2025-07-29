@@ -1,0 +1,39 @@
+[workspace]
+members = [
+    "python_ext",
+    "parser",
+    "sample_parser",
+    "json_stats",
+    "toktrie",
+    "toktrie_hf_tokenizers",
+    "toktrie_hf_downloader",
+]
+# just exclude python_ext since it doesn't build without maturin
+default-members = [
+    "parser",
+    "sample_parser",
+    "json_stats",
+    "toktrie",
+    "toktrie_hf_tokenizers",
+    "toktrie_hf_downloader",
+]
+resolver = "2"
+
+[profile.release]
+debug = 1
+# lto = "thin"
+# codegen-units = 1
+
+[profile.perf]
+inherits = "release"
+debug = 1
+opt-level = 3
+
+# [patch.crates-io]
+# derivre = { path = "../derivre" }
+
+[workspace.dependencies]
+toktrie = { path = "toktrie" }
+llguidance = { path = "parser" }
+toktrie_hf_tokenizers = { path = "toktrie_hf_tokenizers" }
+toktrie_hf_downloader = { path = "toktrie_hf_downloader" }
