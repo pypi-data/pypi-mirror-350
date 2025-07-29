@@ -1,0 +1,47 @@
+[project]
+name = "puma-hep"
+description = "ATLAS Flavour Tagging Plotting Code"
+dynamic = ["version", "dependencies"]
+readme = "README.md"
+requires-python = ">=3.10,<3.12"
+
+[project.urls]
+"Homepage" = "https://github.com/umami-hep/puma"
+"Issue Tracker" = "https://github.com/umami-hep/puma/issues"
+
+[project.scripts]
+yuma = "puma.hlplots.yuma:main"
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"] }
+
+[build-system]
+requires = ["setuptools", "wheel"]
+
+[tool.ruff]
+target-version = "py38"
+line-length = 100
+preview = true
+lint.select = ["ALL"]
+lint.ignore = [
+    "COM", "D100", "D101", "D102", "D103", "D104", "D105", "D205", "D401", "EM", "FIX", "FBT",
+    "S101", "S404", "S602", "PLR2004", "PLR0912", "PLR0913", "PLR0914", "PLR0915", "PLR0917",
+    "PLC0415", "G004", "PD901", "N802", "C901", "DTZ005", "DTZ007", "INP", "EXE002", "TD002", 
+    "ANN001", "ANN002", "ANN003", "ANN101", "ANN201", "ANN202", "ANN204", "CPY001", "TRY003",
+    "N803", "N806", "N812", "T201", "PLW1514", "PTH123", "RUF015", "RUF017", "PLR6301", "ERA", "ISC001", 
+    "PT027", "NPY002", "PT009", "PTH120", "PLW1641", "PTH118", "PLR0904", "N817", "PTH103", "PTH107", "S603",
+    "PTH113", "S113", "TCH"
+]
+
+[tool.ruff.lint.flake8-pytest-style]
+fixture-parentheses = false
+mark-parentheses = false
+
+[tool.ruff.lint.isort]
+required-imports = ["from __future__ import annotations"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy" # Accepts: "google", "numpy", or "pep257".
+
+[mypy]
+ignore_missing_imports = "True"
