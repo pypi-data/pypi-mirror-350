@@ -1,0 +1,113 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "g2py"
+version = "1.0.0"
+description = "基于蚂蚁集团G2可视化引擎的Python数据可视化库"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "G2PY Development Team", email = "admin@g2py.org"},
+]
+maintainers = [
+    {name = "G2PY Development Team", email = "admin@g2py.org"},
+]
+keywords = ["数据可视化", "图表", "G2", "AntV", "Python", "Jupyter", "可视化"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research", 
+    "Intended Audience :: Education",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Multimedia :: Graphics :: Graphics Conversion",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3 :: Only",
+    "Operating System :: OS Independent",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS",
+    "Environment :: Web Environment",
+    "Environment :: Console",
+    "Framework :: Jupyter",
+]
+requires-python = ">=3.11"
+dependencies = [
+    "jinja2>=3.1.0",
+    "simplejson>=3.17.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+]
+jupyter = [
+    "jupyter>=1.0.0",
+    "jupyterlab>=3.0.0", 
+    "ipython>=7.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/g2py/g2py"
+Documentation = "https://github.com/g2py/g2py/blob/main/README.md"
+Repository = "https://github.com/g2py/g2py.git"
+"Bug Reports" = "https://github.com/g2py/g2py/issues"
+Changelog = "https://github.com/g2py/g2py/blob/main/CHANGELOG.md"
+
+[project.scripts]
+g2py = "g2py.cli:main"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["g2py*"]
+
+[tool.setuptools.package-data]
+"g2py" = ["templates/*.html", "static/*.js", "static/*.css"]
+
+[tool.black]
+line-length = 88
+target-version = ['py311', 'py312']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--cov=g2py",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-report=xml",
+] 
