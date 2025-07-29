@@ -1,0 +1,226 @@
+Metadata-Version: 2.4
+Name: aib-cli
+Version: 0.5
+Summary: AI-powered CLI tool for build your full-stack  applications in minutes
+Author-email: GoCodeo <support@gocodeo.com>
+License-File: LICENSE
+Keywords: AI,Agent,CLI,Code Generation,Full-Stack
+Requires-Python: >=3.10
+Requires-Dist: anthropic>=0.18.1
+Requires-Dist: google-generativeai>=0.5.0
+Requires-Dist: json-repair>=0.30.0
+Requires-Dist: openai>=1.12.0
+Requires-Dist: python-dotenv>=1.0.0
+Requires-Dist: rich>=13.7.0
+Requires-Dist: typer>=0.9.0
+Description-Content-Type: text/markdown
+
+# AIB-CLI: The AI-Native SaaS Framework
+
+---
+
+> **What is AIBuilder?**
+> 
+> **English:** AIBuilder is a framework or tool that enables developers to automatically generate applications or software solutions using artificial intelligence models. It automates code generation, database setup, authentication, and more, leveraging AI at every step.
+>
+> **日本語:** AIBuilder（エーアイビルダー）は、AIモデルを活用してアプリやソフトウェアソリューションを自動生成できるフレームワークまたはツールです。コード生成、DB設定、認証などをAIで自動化します。
+>
+> **中文:** AIBuilder 是一种利用人工智能模型自动生成应用或软件解决方案的框架或工具。它通过 AI 自动完成代码生成、数据库配置、认证等所有步骤。
+
+---
+
+## 🌏 Multi-language Overview
+
+### 🇯🇵 日本語 (Japanese)
+
+**AIB-CLIは、AIエージェントによって即座に本番対応のSaaSアプリを生成できるAIネイティブフレームワークです。**
+
+- 高度なAIモデル（OpenAI, Anthropic, Gemini, GitHub Copilot/Models）に対応
+- Next.js + Supabaseによるフルスタックアプリを自動生成
+- 認証、リアルタイム機能、型安全なTypeScript、DBスキーマも自動化
+- `.env`ファイルでAPIキーを設定
+- コマンド例: `aib-cli init`
+
+[詳細は英語セクションをご覧ください]
+
+---
+
+### 🇨🇳 中文 (Chinese)
+
+**AIB-CLI 是一个 AI 原生框架，可通过自主 AI 智能体即时生成可投入生产的 SaaS 应用。**
+
+- 支持多种先进 AI 模型（OpenAI、Anthropic、Gemini、GitHub Copilot/Models）
+- 自动搭建 Next.js + Supabase 全栈应用
+- 自动集成认证、实时功能、TypeScript 强类型、数据库结构
+- 通过 `.env` 文件配置 API 密钥
+- 示例命令：`aib-cli init`
+
+[详细内容请参见英文部分]
+
+---
+
+### 🇬🇧 English (Original)
+
+**AIB-CLI: Instantly generate production-ready SaaS apps, powered by autonomous AI Agents.**
+
+- Supports advanced AI models (OpenAI, Anthropic, Gemini, GitHub Copilot/Models)
+- Auto scaffolds full-stack Next.js + Supabase apps
+- Built-in authentication, real-time, TypeScript, and DB schemas
+- Configure API keys in `.env`
+- Example command: `aib-cli init`
+
+[See below for full English documentation]
+
+---
+
+## 🚀 What is AIBuilder CLI?
+
+AIBuilder CLI (AIB-CLI) is an AI-native framework that empowers you to generate production-ready SaaS applications instantly using the latest AI models. It automates the entire process of building, configuring, and scaffolding full-stack Next.js applications with authentication, real-time features, and database integration—all with minimal input from the user.
+
+## ✨ Key Features
+
+- 🤖 **Multi-Model AI Integration**: Supports OpenAI (GPT-4, GPT-3.5), Anthropic (Claude), Google Gemini, GitHub Copilot, and GitHub Models (https://models.github.ai/inference)
+- 🏗️ **Full-Stack Generation**: Instantly scaffolds Next.js + Supabase apps with TypeScript, authentication, and real-time features
+- 🔐 **Authentication**: Seamless Supabase Auth integration with protected routes
+- ⚡ **Real-time**: Native real-time features via Supabase
+- 📊 **Automated Database**: Auto-generated schemas and SQL migrations
+- 🧠 **Autonomous Build Agents**: AI agents handle project setup, code generation, and configuration
+- 🌍 **Multi-language Ready**: Documentation and .env samples in English, Japanese, and Chinese
+- 🧩 **Template System**: Choose from E-commerce, CRM, Marketing, or Default templates
+- 🛠️ **CLI Tooling**: Simple commands to initialize, build, and manage your SaaS project
+- 🔑 **Flexible API Key Management**: Use any supported AI model by providing the relevant API key in your .env
+
+## Integration
+
+AIB-CLI is designed for seamless integration with the latest AI models and modern SaaS stacks. You can:
+
+- **Switch AI Providers Easily:** Use OpenAI, Anthropic, Gemini, GitHub Copilot, or GitHub Models by simply changing the model name and API key in your `.env` file.
+- **Plug & Play:** The CLI auto-detects your selected model and uses the correct API integration for code generation and project scaffolding.
+- **Extendable:** Add new AI providers or custom templates by extending the `gocodeo_cli/services/llm_service.py` and `gocodeo_cli/templates/` folders.
+- **Use as a Library:** Import and use the core LLM service in your own Python scripts:
+
+```python
+from gocodeo_cli.services.llm_service import llm
+result = llm.generate_code("اكتب دالة تجمع رقمين", model="openai/gpt-4.1")
+print(result)
+```
+
+- **Multi-language Ready:** All configuration and documentation are available in English, Japanese, and Chinese for global teams.
+
+For more advanced integration, see the `examples/` folder for ready-to-use scripts with different AI providers.
+
+## 📦 Quick Start
+
+### Installation
+
+Install from PyPI:
+
+```bash
+pip install aib-cli
+```
+
+Or install from source:
+
+```bash
+git clone https://github.com/<your-username>/aib-cli.git
+cd aib-cli
+pip install -e .
+```
+
+## 🛠️ Usage
+
+Start a new SaaS project with:
+
+```bash
+aib-cli init
+```
+
+### Interactive Setup Flow
+
+Running `aib-cli init` will guide you through:
+
+- ✅ Project name & description
+- 📋 Template selection (E-commerce, CRM, Marketing, Default)
+- 🧩 Tech stack selection (Next.js UI only or Next.js + Supabase)
+- 🔑 Supabase configuration (URL, Anon Key, Access Token)
+- 🤖 AI model selection (Claude, GPT-4.1, Gemini, GitHub Copilot, GitHub Models)
+
+## 🤖 AI Model Support
+
+You can use any of the following models by providing the appropriate API key in your `.env` file:
+
+```env
+# Claude (Anthropic)
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+
+# OpenAI (GPT-4, GPT-3.5)
+OPENAI_API_KEY=your_openai_api_key_here
+
+# Google Gemini
+GOOGLE_API_KEY=your_google_api_key_here
+
+# GitHub Copilot
+GITHUB_API_KEY=your_github_api_key_here
+
+# GitHub Models (https://models.github.ai/inference)
+GITHUB_TOKEN=your_github_token_here
+
+# Use GITHUB_API_KEY for GitHub Copilot models (e.g., model="github-copilot")
+# Use GITHUB_TOKEN for GitHub Models endpoint (e.g., model="openai/gpt-4.1" or "gpt-4.1")
+# Example usage:
+#   result = llm.generate_code("...", model="github-copilot")
+#   result = llm.generate_code("...", model="openai/gpt-4.1")
+
+# Only one API key is required for your chosen model. The CLI will prompt you if a key is missing.
+```
+
+## 🏗️ What Happens Under the Hood?
+
+The AIB-CLI automates:
+
+| Task                  | Details                                                      |
+|-----------------------|--------------------------------------------------------------|
+| Project Initialization| Scaffold Next.js project with TypeScript integration         |
+| Authentication Setup  | Integrated Supabase Auth with UI & route protection          |
+| Database Schema       | Automatic DB setup, models, and SQL migrations               |
+| Dependency Installation| npm dependencies and dev environment configuration          |
+| Real-time Setup       | Native integration of Supabase real-time capabilities        |
+| AI Code Generation    | Uses your selected LLM to generate code and project files    |
+| Development Server    | Auto-start Next.js dev server for immediate preview          |
+
+## 📝 Example Output
+
+```
+✅ Build complete!
+╭─────────────── Build Summary ───────────────╮
+│                                             │
+│ Project:       task-manager                 │
+│ Description:   App for managing tasks       │
+│ Tech Stack:    Next.js + Supabase           │
+│ Files Created: 42                           │
+│ Status:        FINISHED                     │
+│                                             │
+╰─────────────────────────────────────────────╯
+```
+
+## 🌟 Why AIB-CLI?
+
+AIB-CLI revolutionizes SaaS development by leveraging advanced AI to automate the creation of full-stack products. Focus on your business logic and innovation—let the framework handle the rest.
+
+## 🤝 Contributing
+
+We welcome contributions! Fork the repo, submit pull requests, or open issues to help improve AIB-CLI.
+
+## 📄 License
+
+Licensed under MIT – see LICENSE for details.
+
+## 🔗 Useful Links
+
+- GitHub: [github.com/<your-username>/aib-cli](https://github.com/<your-username>/aib-cli)
+- PyPI: [pypi.org/project/aib-cli](https://pypi.org/project/aib-cli)
+- Documentation: Coming soon!
+
+⭐ Support the framework by starring the repo!
+
+**AIB-CLI — AI-powered SaaS app development reimagined.**
