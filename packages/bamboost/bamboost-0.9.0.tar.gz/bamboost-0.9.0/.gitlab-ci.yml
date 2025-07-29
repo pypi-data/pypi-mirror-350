@@ -1,0 +1,11 @@
+stages:
+  - test
+
+test:
+  stage: test
+  image: dhna/mpi4py
+  script:
+    - pip install ".[test]"
+    - cd tests/
+    - pytest --cov=bamboost --cov-report term
+  coverage: /(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/
