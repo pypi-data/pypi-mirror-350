@@ -1,0 +1,151 @@
+Metadata-Version: 2.1
+Name: qgis-ns-pe
+Version: 0.1.0
+Summary: A CLI tool for processing LiDAR data from Nova Scotia and PEI using QGIS
+Home-page: https://github.com/amadgakkhar/qgis-ns-pe
+Author: Amad Gakkhar
+Author-email: amad.gakkhar@adept-techsolutions.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Scientific/Engineering :: GIS
+Classifier: Topic :: Scientific/Engineering :: Information Analysis
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: pyproj>=3.0.0
+Requires-Dist: requests>=2.25.1
+Requires-Dist: laspy>=2.0.0
+Requires-Dist: numpy>=1.20.0
+Requires-Dist: matplotlib>=3.3.0
+Requires-Dist: lazrs>=0.1.0
+
+# QGIS Nova Scotia & PEI LiDAR Processing Tool
+
+A command-line tool for processing LiDAR data from Nova Scotia and Prince Edward Island using QGIS. This tool allows you to:
+
+- Geocode addresses in Nova Scotia and PEI
+- Download and process LiDAR point cloud data
+- Extract building footprints from LiDAR data
+- Generate satellite imagery for the location
+- Visualize 3D point clouds
+
+## Features
+
+- Address geocoding using OpenStreetMap Nominatim API
+- Coordinate transformation between different CRS (WGS84, NAD83(CSRS), MTM zone 5)
+- LiDAR point cloud processing using laspy
+- Building point extraction
+- 3D visualization capabilities
+- Satellite imagery retrieval from Mapbox
+
+## Prerequisites
+
+- Python 3.8 or higher
+- QGIS 3.22.0 or higher
+- Conda (required for QGIS installation)
+
+## Installation
+
+The installation process has two steps: setting up QGIS and installing this package.
+
+### 1. Install QGIS using Conda
+
+First, create a new conda environment with QGIS installed:
+
+```bash
+# Create a new environment with QGIS and Python 3.8
+conda create -n qgis-env -c conda-forge qgis python=3.8
+
+# Activate the environment
+conda activate qgis-env
+```
+
+### 2. Install qgis-ns-pe
+
+After activating the conda environment, install this package:
+
+```bash
+# For users: install from PyPI
+pip install qgis-ns-pe
+
+# For developers: install in editable mode from source
+git clone https://github.com/amadgakkhar/qgis-ns-pe.git
+cd qgis-ns-pe
+pip install -e .
+```
+
+### Verification
+
+To verify the installation:
+
+```bash
+# Activate the environment (if not already activated)
+conda activate qgis-env
+
+# Try running the tool with --help
+qgis-ns-pe --help
+```
+
+## Usage
+
+The tool can be used from the command line with the following syntax:
+
+```bash
+qgis-ns-pe --address "Your Address" --index_path "/path/to/lidar_index.gpkg" [--show_3d]
+```
+
+Example:
+```bash
+qgis-ns-pe --address "8 Alderwood Dr, Halifax, NS B3N 1S7" --index_path "/path/to/Index_LiDARtiles_tuileslidar.gpkg" --show_3d
+```
+
+### Arguments
+
+- `--address`: The address to process (required)
+- `--index_path`: Path to the LiDAR index GPKG file (required)
+- `--show_3d`: Optional flag to show 3D visualizations of the point clouds
+
+### Output
+
+The tool creates two directories:
+- `lidar_tiles/`: Contains downloaded LiDAR tiles
+- `output/`: Contains processed files:
+  - `sat.png`: Satellite image of the location
+  - `lidar_cropped.laz`: Cropped LiDAR point cloud
+  - `buildings.laz`: Extracted building points
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **QGIS not found**: Make sure you've activated the conda environment with `conda activate qgis-env`
+2. **Import errors**: Ensure you're running the tool from the conda environment where QGIS is installed
+3. **Missing dependencies**: If you encounter any missing dependency errors, try installing them with conda first:
+   ```bash
+   conda install -c conda-forge <package-name>
+   ```
+
+## Data Sources
+
+- LiDAR data: Nova Scotia and PEI government open data portals
+- Geocoding: OpenStreetMap Nominatim API
+- Satellite imagery: Mapbox Static Images API
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## Authors
+
+- Amad Gakkhar - Initial work
+
+## Acknowledgments
+
+- QGIS Development Team
+- laspy contributors
+- OpenStreetMap contributors
+- Mapbox
