@@ -1,0 +1,107 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mfpymake"
+description = "pymake is a Python package to compile MODFLOW-based models."
+readme = "README.md"
+authors = [
+    { name = "mfpymake Team", email = "modflow@usgs.gov" },
+]
+maintainers = [
+    { name = "Joseph D. Hughes", email = "jdhughes@usgs.gov" },
+]
+keywords = ["MODFLOW", "groundwater", "hydrogeology"]
+license = { text = "CC0" }
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "License :: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Hydrology",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "numpy",
+    "requests",
+    "networkx",
+    "meson>=1.8.0",
+    "ninja",
+    "pydotplus",
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+lint = [
+    "cffconvert",
+    "ruff",
+]
+test = [
+    "mfpymake[lint]",
+    "coverage",
+    "flaky",
+    "filelock",
+    "pytest!=8.1.0",
+    "pytest-benchmark",
+    "pytest-cov",
+    "pytest-dependency",
+    "pytest-dotenv",
+    "pytest-xdist",
+    "appdirs",
+    "matplotlib",
+    "modflow-devtools",
+    "flopy",
+]
+
+[project.scripts]
+mfpymake = "pymake.cmds.mfpymakecli:main"
+make-program = "pymake.cmds.build:main"
+make-code-json = "pymake.cmds.createjson:main"
+
+[project.urls]
+Documentation = "https://mfpymake.readthedocs.io"
+"Release Notes" = "https://github.com/modflowpy/flopy/blob/develop/docs/version_changes.md"
+"Bug Tracker" = "https://github.com/modflowpy/pymake/issues"
+"Source Code" = "https://github.com/modflowpy/pymake"
+
+[tool.hatch.build.targets.sdist]
+only-include = ["pymake"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["pymake"]
+
+[tool.hatch.version]
+path = "pymake/config.py"
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+select = [
+    "D409", # pydocstyle - section-underline-matches-section-length
+    "E",    # pycodestyle error
+    "F",    # Pyflakes
+    "I001", # isort - unsorted-imports
+    "RUF",  # Ruff-specific rules
+    "UP",   # Pyupgrade
+]
+ignore = [
+    "E722", # do not use bare `except`
+    "E741", # ambiguous variable name
+    "F401", # unused import
+    "F841", # local variable assigned but never used
+    "RUF005", # collection literal concatenation
+    "RUF022", # Apply an isort-style sorting to `__all__`
+    "UP015", # redundant open modes
+]
+
+[tool.codespell]
+ignore-words-list = [
+    "Fo",
+    "nam",
+]
