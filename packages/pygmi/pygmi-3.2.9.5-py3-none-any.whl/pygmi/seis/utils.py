@@ -1,0 +1,210 @@
+# -----------------------------------------------------------------------------
+# Name:        utils.py (part of PyGMI)
+#
+# Author:      Patrick Cole
+# E-Mail:      pcole@geoscience.org.za
+#
+# Copyright:   (c) 2020 Council for Geoscience
+# Licence:     GPL-3.0
+#
+# This file is part of PyGMI
+#
+# PyGMI is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# PyGMI is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# -----------------------------------------------------------------------------
+"""Module for miscellaneous utilities relating to earthquake seismology."""
+
+import difflib
+import os
+from PySide6 import QtWidgets
+
+from pygmi.misc import BasicModule
+
+
+class CorrectDescriptions(BasicModule):
+    """
+    Correct SEISAN descriptions.
+
+    This compares the descriptions found in SEISAN type 3 lines to a custom
+    list.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        idir = os.path.dirname(os.path.realpath(__file__))
+        tfile = os.path.join(idir, r'descriptions.txt')
+
+        self.le_textfile = QtWidgets.QLineEdit(tfile)
+
+        self.setupui()
+
+    def setupui(self):
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.buttonbox.htmlfile = 'seis.dm.corrtyp3'
+        gl_main = QtWidgets.QGridLayout(self)
+        pb_textfile = QtWidgets.QPushButton('Load Description List')
+
+        self.setWindowTitle(r'Correct Descriptions')
+
+        gl_main.addWidget(self.le_textfile, 0, 0, 1, 1)
+        gl_main.addWidget(pb_textfile, 0, 1, 1, 1)
+
+        gl_main.addWidget(self.buttonbox, 5, 0, 1, 2)
+
+        pb_textfile.pressed.connect(self.get_textfile)
+
+    def get_textfile(self, filename=''):
+        """
+        Get description list filename.
+
+        Parameters
+        ----------
+        filename : str, optional
+            Filename submitted for testing. The default is ''.
+
+        Returns
+        -------
+        None.
+
+        """
+        ext = 'Description list (*.txt)'
+
+        if filename == '':
+            filename, _ = QtWidgets.QFileDialog.getOpenFileName(
+                self.parent, 'Open File', '.', ext)
+            if filename == '':
+                return
+
+        self.le_textfile.setText(filename)
+
+    def settings(self, nodialog=False):
+        """
+        Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        if 'Seis' not in self.indata:
+            return False
+
+        tmp = self.exec()
+
+        if tmp != 1:
+            return False
+
+        self.acceptall()
+
+        return True
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.saveobj(self.le_textfile)
+
+    def acceptall(self):
+        """
+        Accept option.
+
+        Updates self.outdata, which is used as input to other modules.
+
+        Returns
+        -------
+        None.
+
+        """
+        filename = self.le_textfile.text()
+        with open(filename, encoding='utf-8') as fno:
+            tmp = fno.read()
+
+        masterlist = tmp.split('\n')
+
+        data = self.indata['Seis']
+
+        nomatch = []
+        correction = []
+
+        for i in data:
+            if '3' not in i:
+                continue
+            text = i['3'].region
+
+            cmatch = difflib.get_close_matches(text, masterlist, 1, cutoff=0.7)
+            if cmatch:
+                cmatch = cmatch[0]
+            else:
+                nomatch.append(text)
+                continue
+
+            if cmatch != text:
+                correction.append(text + ' to ' + cmatch)
+                i['3'].region = cmatch
+
+        self.outdata['Seis'] = data
+
+
+def _testfn():
+    """
+    Test routine.
+
+    Returns
+    -------
+    None.
+
+    """
+    import sys
+    from pygmi.seis import iodefs
+
+    _ = QtWidgets.QApplication(sys.argv)
+
+    ifile = r"D:\workdata\PyGMI Test Data\Seismology\collect1.out"
+
+    IO = iodefs.ImportSeisan()
+    IO.ifile = ifile
+    IO.settings(True)
+    data = IO.outdata
+
+    tmp = CorrectDescriptions()
+    tmp.indata = data
+    tmp.settings()
+
+
+if __name__ == "__main__":
+    _testfn()
