@@ -1,0 +1,57 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "aioafero"
+version = "3.2.1"
+dependencies = [
+  "aiohttp",
+  "beautifulsoup4",
+  "securelogging>=1.0.1"
+]
+requires-python = ">=3.12"
+authors = [
+  {name = "Chris Dohmen", email = "chris.dohmen11@gmail.com"}
+]
+maintainers = [
+  {name = "Chris Dohmen", email = "chris.dohmen11@gmail.com"},
+  {name = "tpural"}
+]
+description = "Talk to the Hubspace API asynchronously"
+readme = "README.rst"
+license = {file = "LICENSE.txt"}
+keywords = ["Afero", "Afero IoT", "Hubspace", "Myko"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+
+[project.optional-dependencies]
+test = [
+  "pytest",
+  "pytest-mock",
+  "pytest-cov",
+  "pytest-asyncio",
+  "aioresponses",
+  "pytest-aioresponses",
+  "anyio",
+  "tox",
+]
+cli = [
+  "click",
+]
+
+[project.urls]
+Repository = "https://github.com/Expl0dingBanana/aioafero"
+Changelog = "https://github.com/Expl0dingBanana/aioafero/CHANGELOG.md"
+
+# pyproject.toml
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "--cov --cov-report term-missing"
+testpaths = [
+    "tests"
+]
