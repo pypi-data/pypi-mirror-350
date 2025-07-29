@@ -1,0 +1,135 @@
+Metadata-Version: 2.4
+Name: pyzoltan
+Version: 1.1
+Summary: Wrapper for the Zoltan data management library
+Home-page: http://github.com/pypr/pyzoltan
+Author: PySPH Developers
+Author-email: PySPH Developers <pysph-dev@googlegroups.com>
+License: Unless otherwise specified by LICENSE.txt files in individual
+        directories, all code is
+        
+        Copyright (c) 2009-2018, the PySPH developers
+        All rights reserved.
+        
+        Redistribution and use in source and binary forms, with or without
+        modification, are permitted provided that the following conditions are
+        met:
+        
+         1. Redistributions of source code must retain the above copyright
+            notice, this list of conditions and the following disclaimer.
+         2. Redistributions in binary form must reproduce the above copyright
+            notice, this list of conditions and the following disclaimer in
+            the documentation and/or other materials provided with the
+            distribution.
+         3. Neither the name of the copyright holder nor the names of its contributors
+            may be used to endorse or promote products derived from this software
+            without specific prior written permission.
+        
+        THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+        AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+        IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+        DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+        FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+        DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+        SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+        CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+        OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+        OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+        
+Project-URL: Documentation, https://pyzoltan.readthedocs.io
+Project-URL: Repository, https://github.com/pypr/pyzoltan.git
+Project-URL: Issues, https://github.com/pypr/pyzoltan/issues
+Keywords: Cython,Zoltan,Dynamic load balancing
+Platform: Linux
+Platform: Mac OS-X
+Platform: Unix
+Platform: Windows
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Natural Language :: English
+Classifier: Operating System :: MacOS :: MacOS X
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Operating System :: POSIX
+Classifier: Operating System :: Unix
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Scientific/Engineering
+Classifier: Topic :: Scientific/Engineering :: Physics
+Classifier: Topic :: Software Development :: Libraries
+Description-Content-Type: text/x-rst
+License-File: LICENSE.txt
+Requires-Dist: numpy
+Requires-Dist: mpi4py>=1.2
+Provides-Extra: docs
+Requires-Dist: sphinx; extra == "docs"
+Provides-Extra: tests
+Requires-Dist: pytest>=3.0; extra == "tests"
+Provides-Extra: dev
+Requires-Dist: sphinx; extra == "dev"
+Requires-Dist: pytest>=3.0; extra == "dev"
+Requires-Dist: cython>3.0; extra == "dev"
+Requires-Dist: cyarray; extra == "dev"
+Dynamic: author
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: platform
+
+PyZoltan: a Python wrapper for the Zoltan library
+==================================================
+
+|CI Status|  |Documentation Status|
+
+.. |CI Status| image:: https://github.com/pypr/pyzoltan/actions/workflows/tests.yml/badge.svg
+    :target: https://github.com/pypr/pyzoltan/actions/workflows/tests.yml
+.. |Documentation Status| image:: https://readthedocs.org/projects/pyzoltan/badge/?version=latest
+    :target: https://pyzoltan.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
+
+PyZoltan is as the name suggests, is a Python wrapper for the Zoltan_
+data management library.
+
+In PyZoltan, we wrap the specific routines and objects that we wish to
+use. The following features of Zoltan are currently supported:
+
+- Dynamic load balancing using geometric algorithms
+- Unstructured point-to-point communication
+- Distributed data directories
+
+
+.. _Zoltan: http://www.cs.sandia.gov/Zoltan/
+
+Installation
+-------------
+
+PyZoltan requires the following:
+
+- numpy
+- cyarray
+- Cython
+- mpi4py_
+- Zoltan_
+
+
+.. _mpi4py: http://mpi4py.scipy.org/
+
+Zoltan itself needs to be already installed. We provide a convenient script
+called ``build_zoltan.sh`` that can be used to build Zoltan.
+
+Many of the other dependencies can be installed using pip or conda::
+
+  $ pip install -r requirements.txt
+
+Once this is installed one can install PyZoltan as follows::
+
+  $ pip install pyzoltan
+
+or via the usual ``setup.py`` method::
+
+  $ python setup.py install # or develop
+
+
+For more installation instructions, especially on how to build Zoltan and
+PyZoltan, please see the documentation here: https://pyzoltan.readthedocs.io
