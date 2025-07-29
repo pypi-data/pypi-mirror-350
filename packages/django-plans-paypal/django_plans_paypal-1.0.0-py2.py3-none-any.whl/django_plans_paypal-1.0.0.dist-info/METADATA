@@ -1,0 +1,280 @@
+Metadata-Version: 2.4
+Name: django-plans-paypal
+Version: 1.0.0
+Summary: Integration between django-plans and django-paypal.
+Home-page: https://github.com/PetrDlouhy/django-plans-paypal
+Author: Petr Dlouhý
+Author-email: petr.dlouhy@email.cz
+License: MIT
+Keywords: django-plans-paypal
+Classifier: Development Status :: 3 - Alpha
+Classifier: Framework :: Django :: 1.11
+Classifier: Framework :: Django :: 2.0
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Natural Language :: English
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+License-File: LICENSE
+License-File: AUTHORS.rst
+Requires-Dist: django-author>=1.0.3
+Requires-Dist: django-extensions
+Requires-Dist: django-plans
+Requires-Dist: django-paypal
+Requires-Dist: django-related-admin
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: summary
+
+=============================
+Django plans paypal
+=============================
+
+.. image:: https://badge.fury.io/py/django-plans-paypal.svg
+    :target: https://badge.fury.io/py/django-plans-paypal
+
+.. image:: https://github.com/PetrDlouhy/django-plans-paypal/actions/workflows/main.yml/badge.svg
+    :target: https://github.com/PetrDlouhy/django-plans-paypal/actions/workflows/main.yml
+
+.. image:: https://codecov.io/gh/PetrDlouhy/django-plans-paypal/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/PetrDlouhy/django-plans-paypal
+
+Almost automatic integration between `django-plans <https://github.com/django-getpaid/django-plans>`_ and `django-paypal <https://github.com/spookylukey/django-paypal>`_.
+This will add subscribe buttons to the order page and automatically confirm the `Order` after the payment.
+
+Currently it is in experimetal stage, wher only recurring payments (subscribtions) are supported.
+
+
+Documentation
+-------------
+
+The full documentation is at https://django-plans-paypal.readthedocs.io.
+
+Quickstart
+----------
+
+Install and configure ``django-plans`` and ``django-paypal`` apps.
+Capture mode is not yet supported, so ``PAYMENT_VARINANTS`` with ``'capture': False`` will not get confirmed.
+
+Install Django plans paypal::
+
+    pip install django-plans-paypal
+
+Add it to your ``INSTALLED_APPS``, before the ``plans``:
+
+.. code-block:: python
+
+    INSTALLED_APPS = (
+        ...
+        'payments',
+        'paypal.standard.ipn',
+        'plans_paypal',
+        ...
+    )
+
+Add your bussiness account e-mail address to settings:
+
+.. code-block:: python
+
+   PAYPAL_BUSSINESS_EMAIL = "foo@bar.com"
+
+   # To enable encrypted PayPal form:
+   PAYPAL_ENCRYPTED_FORM = True
+   PAYPAL_PRIVATE_CERT = os.path.join(BASE_DIR, 'certs/paypal_private.pem')
+   PAYPAL_PUBLIC_CERT = os.path.join(BASE_DIR, 'certs/paypal_public.pem')
+   PAYPAL_CERT = os.path.join(BASE_DIR, 'certs/paypal_cert.pem')
+   PAYPAL_CERT_ID = 'xxxxx'
+
+
+Add Django ``plans_paypal`` to the URL patterns:
+
+.. code-block:: python
+
+    urlpatterns = [
+        ...
+        url(r'^plans-paypal', include('plans_paypal.urls')),
+        ...
+    ]
+
+Override `django-plans` class `CreateOrderView` so that `get_success_url()` returns url of `paypal-payment` view:
+
+.. code-block:: python
+
+    def get_success_url(self):
+       return reverse("paypal-payment", kwargs={'order_id': self.object.id})
+
+Sandbox testing
+---------------
+
+Set following settings:
+
+.. code-block:: python
+
+   PAYPAL_TEST_BUSSINESS_EMAIL = "foo@bar.com"
+   PAYPAL_TEST = True
+
+   # For encrypted PayPal sandbox form:
+   PAYPAL_TEST_PRIVATE_CERT = os.path.join(BASE_DIR, 'certs/paypal_private.pem')
+   PAYPAL_TEST_PUBLIC_CERT = os.path.join(BASE_DIR, 'certs/paypal_public.pem')
+   PAYPAL_TEST_CERT = os.path.join(BASE_DIR, 'certs/paypal_sandbox_cert.pem')
+   PAYPAL_TEST_CERT_ID = 'xxxx'
+
+
+Redirect user to `paypal-payment-sandbox` instead of `paypal-payment` view.
+
+Features
+--------
+
+* TODO
+
+Running Tests
+-------------
+
+Does the code actually work?
+
+::
+
+    source <YOURVIRTUALENV>/bin/activate
+    (myenv) $ pip install tox
+    (myenv) $ tox
+
+Credits
+-------
+
+Tools used in rendering this package:
+
+*  Cookiecutter_
+*  `cookiecutter-djangopackage`_
+
+.. _Cookiecutter: https://github.com/audreyr/cookiecutter
+.. _`cookiecutter-djangopackage`: https://github.com/pydanny/cookiecutter-djangopackage
+
+
+
+
+History
+-------
+
+1.0.0 (2025-05-23)
+++++++++++++++++++
+
+* create order more robust: take the data from custom_data
+* Support Django up to 5.2
+
+0.7.1 (2024-04-23)
+++++++++++++++++++
+* fail if PaymentFailureView is requested on completed orders
+
+0.7.0 (2024-04-12)
+++++++++++++++++++
+* migrate code to RecurringUserPlan.renewal_triggered_by
+* migrate data of RecurringUserPlans with payment_provider="paypal-recurring" and renewal_triggered_by=TASK to renewal_triggered_by=OTHER
+
+0.6.0 (2023-03-22)
++++++++++++++++++++
+* Fix amount received on recurring payments, add tests
+
+0.5.1 (2023-02-11)
++++++++++++++++++++
+* allow only logged users to access the failure view
+
+0.5.0 (2022-12-14)
++++++++++++++++++++
+
+* Fix tax received on recurring payments
+* More robust receiving original Order ID (if PayPal fails to handle custom_data)
+* update to Django 4.1
+* fix completing recurring payments if first order status is returned
+* only log error if custom data can't be parsed
+
+0.4.10 (2022-04-29)
++++++++++++++++++++
+* fix problem with duplicate payments
+* PayPalPaymentAdmin: display connected IPN fields
+
+0.4.9 (2022-03-07)
+++++++++++++++++++
+* make parsing custom_data more robust
+
+0.4.8 (2022-01-19)
+++++++++++++++++++
+* fix last release
+* add tests and test on all supported Django/Python versions through GitHub actions
+
+0.4.7 (2022-01-13)
+++++++++++++++++++
+* fix problem if there was ' in custom payment data
+
+0.4.6 (2021-12-02)
+++++++++++++++++++
+* fix problem with creating bad JSON
+
+0.4.5 (2021-12-01)
+++++++++++++++++++
+* fix IPN field editing in PayPalPaymentAdmin
+* store also user e-mail in custom to enable search in IPN admin
+
+0.4.4 (2021-12-01)
+++++++++++++++++++
+* create PayPalPayment before completing the order
+
+0.4.3 (2021-11-30)
+++++++++++++++++++
+* fix problem with recurring payments
+* add created/modified/author auto fields
+
+0.4.2 (2021-11-08)
+++++++++++++++++++
+* fix problem with other IPN types
+
+0.4.1 (2021-10-18)
+++++++++++++++++++
+* cancel order after returning to failure URL
+
+0.4.0 (2021-10-18)
+++++++++++++++++++
+* allow to set up encrypted PayPal form
+
+0.3.0 (2021-10-15)
+++++++++++++++++++
+* fixes and improvements to the sandbox/production functionality
+* reverse sandbox logic - if no `PAYPAL_TEST`, the sandbox view would return production so nobody can pay through sandbox on production server
+
+0.2.2 (2021-10-12)
+++++++++++++++++++
+* fix foregotten pudb
+
+0.2.1 (2021-10-12)
+++++++++++++++++++
+* add sandbox view, so both production and sandbox can be used on one server
+
+0.2.0 (2021-10-11)
+++++++++++++++++++
+* fix periods to complain with PayPal maximal durations
+
+0.1.0 (2021-10-08)
+++++++++++++++++++
+* hook ipn.PayPalIpn object with plans.Order (for later usage e.g. determining PayPal fee)
+* set plan renewal for django-plans
+
+0.0.2 (2018-08-05)
+++++++++++++++++++
+
+* Payment process without capturing should work
+* Automatic buttons generation
+
+0.0.1 (2018-07-23)
+++++++++++++++++++
+
+* First release on PyPI.
