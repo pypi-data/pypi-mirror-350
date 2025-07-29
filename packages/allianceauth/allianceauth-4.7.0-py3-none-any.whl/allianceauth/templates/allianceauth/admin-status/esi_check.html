@@ -1,0 +1,37 @@
+{% load i18n %}
+<div id="esi-alert" class="col-12 collapse">
+    <div class="alert alert-warning">
+        <p class="text-center ">{% translate 'Your Server received an ESI error response code of ' %}<b id="esi-code">?</b></p>
+        <hr>
+        <pre id="esi-data" class="text-center text-wrap"></pre>
+    </div>
+</div>
+
+<script>
+    const elemCard = document.getElementById("esi-alert");
+    const elemMessage = document.getElementById("esi-data");
+    const elemCode = document.getElementById("esi-code");
+
+    fetch('{% url "authentication:esi_check" %}')
+        .then((response) => {
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error("Something went wrong");
+        })
+        .then((responseJson) => {
+            console.log("ESI Check: ", JSON.stringify(responseJson, null, 2));
+
+            const status = responseJson.status;
+            if (status !== 200) {
+                elemCode.textContent = status
+                elemMessage.textContent = responseJson.data.error;
+                new bootstrap.Collapse(elemCard, {
+                    toggle: true
+                })
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+</script>

@@ -1,0 +1,13 @@
+{% load i18n %}
+
+<form action="{% url 'theme' %}?next={{ next|urlencode }}" method="post">
+    {% csrf_token %}
+
+    <select name="theme" class="form-select" aria-label="" onchange="this.form.submit()">
+        <option selected>{% translate "Select Theme" %}</option>
+
+        {% for theme in themes %}
+            <option value="{{ theme.get_name }}"{% if selected_theme.name == theme.name %} selected="selected"{% endif %}>{{ theme.name }}</option>
+        {% endfor %}
+    </select>
+</form>
