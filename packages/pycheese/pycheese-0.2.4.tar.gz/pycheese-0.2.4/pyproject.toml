@@ -1,0 +1,45 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pycheese"
+dynamic = ["version"]
+description = "Generate beautiful images of code with syntax highlighting in a stylish terminal window."
+readme = "README.md"
+authors = [
+    { name="Krautlabs", email="dev@krautlabs.com" }
+]
+license = { file = "LICENSE" }
+classifiers = [
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Documentation",
+    "Topic :: Utilities",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent"
+]
+requires-python = ">=3.13"
+dependencies = [
+    "pillow>=11.2.1",
+    "pygments>=2.19.1",
+    "tomli-w>=1.2.0",
+]
+
+[tool.hatch.envs.default]
+dependencies = [
+    "coverage>=7.8.0",
+    "hatch>=1.14.1",
+    "pytest>=8.3.5",
+    "ipython"
+]
+
+[tool.hatch.version]
+path = "src/pycheese/__init__.py"
+
+[project.urls]
+Homepage = "https://github.com/krautlabs/pycheese"
+
+[project.scripts]
+pycheese= "pycheese.render:main"
+fonts-tool= "pycheese.utils.fonts:main"
