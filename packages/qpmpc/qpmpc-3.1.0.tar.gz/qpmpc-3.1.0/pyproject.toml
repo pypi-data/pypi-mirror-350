@@ -1,0 +1,70 @@
+[build-system]
+requires = ["flit_core >=2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "qpmpc"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+    {name = "Stéphane Caron", email = "stephane.caron@normalesup.org"},
+]
+maintainers = [
+    {name = "Stéphane Caron", email = "stephane.caron@normalesup.org"},
+]
+dynamic = ['version', 'description']
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Mathematics",
+]
+dependencies = [
+    "qpsolvers >=1.8.0",
+]
+keywords = ["model", "predictive", "control", "linear", "time-varying"]
+
+[project.optional-dependencies]
+extras = [
+    "loop-rate-limiters",
+]
+
+[project.urls]
+Homepage = "https://github.com/stephane-caron/qpmpc"
+Documentation = "https://scaron.info/doc/qpmpc/"
+Source = "https://github.com/stephane-caron/qpmpc"
+Tracker = "https://github.com/stephane-caron/qpmpc/issues"
+Changelog = "https://github.com/stephane-caron/qpmpc/blob/main/CHANGELOG.md"
+
+[tool.flit.module]
+name = "qpmpc"
+
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.lint]
+select = [
+    # pyflakes
+    "F",
+    # pycodestyle
+    "E",
+    "W",
+    # isort
+    "I001",
+    # pydocstyle
+    "D"
+]
+ignore = [
+    "D401",  # good for methods but not for class docstrings
+    "D405",  # British-style section names are also "proper"!
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
