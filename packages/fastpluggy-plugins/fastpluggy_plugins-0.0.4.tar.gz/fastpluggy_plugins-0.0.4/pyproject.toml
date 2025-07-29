@@ -1,0 +1,30 @@
+[project]
+name = "fastpluggy-plugins"
+version = "0.0.4"
+description = "Official plugin bundle for FastPluggy"
+authors = [{ name = "Your Name", email = "you@example.com" }]
+readme = "README.md"
+requires-python = ">=3.10"
+
+[project.optional-dependencies]
+crud_tools = ["jinja2"]
+redis_tools = ["redis"]
+tasks_worker = ["croniter", "psutil"]
+scheduled_query = ["loguru", "prometheus_client"]
+ui_tools = ["babel", "jinja2"]
+all = ["babel", "croniter", "jinja2", "loguru", "prometheus_client", "psutil", "redis"]
+
+[tool.setuptools]
+packages = ["fastpluggy_plugin"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"fastpluggy_plugin" = ["**/*"]
+
+[project.entry-points."fastpluggy.plugins"]
+tasks_worker = "fastpluggy_plugin.tasks_worker.plugin:TaskRunnerPlugin"
+crud_tools = "fastpluggy_plugin.crud_tools.plugin:CrudToolsModule"
+redis_tools = "fastpluggy_plugin.redis_tools.plugin:RedisToolsPlugin"
+ui_tools = "fastpluggy_plugin.ui_tools.plugin:UiToolsModule"
+websocket_tool = "fastpluggy_plugin.websocket_tool.plugin:WebSocketToolPlugin"
+scheduled_query = "fastpluggy_plugin.scheduled_query.plugin:ScheduledQueryPlugin"
