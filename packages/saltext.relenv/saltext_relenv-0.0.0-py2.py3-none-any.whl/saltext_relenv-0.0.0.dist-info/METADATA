@@ -1,0 +1,62 @@
+Metadata-Version: 2.4
+Name: saltext.relenv
+Version: 0.0.0
+Summary: Salt Extension for interacting with Relenv
+Home-page: https://github.com/Akm0d/saltext-relenv
+Author: Tyler Levy Conde
+Author-email: tyler.levy-conde@broadcom.com
+Project-URL: Source, https://github.com/Akm0d/saltext-relenv
+Project-URL: Tracker, https://github.com/Akm0d/saltext-relenv/issues
+Keywords: salt-extension
+Platform: any
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Cython
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Requires-Python: >=3.5
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: salt>=3006
+Requires-Dist: relenv>=0.19.0
+Dynamic: license-file
+
+# relenv
+
+Salt Extension for interacting with Relenv
+
+## Quickstart
+
+To get started with your new project:
+
+    # Create a new venv
+    python3 -m venv env --prompt relenv
+    source env/bin/activate
+
+    # On mac, you may need to upgrade pip
+    python -m pip install --upgrade pip
+
+    # On WSL or some flavors of linux you may need to install the `enchant`
+    # library in order to build the docs
+    sudo apt-get install -y enchant
+
+    # Install extension + test/dev/doc dependencies into your environment
+    python -m pip install -e .[tests,dev,docs]
+
+    # Run tests!
+    python -m nox -e tests-3
+
+    # skip requirements install for next time
+    export SKIP_REQUIREMENTS_INSTALL=1
+
+    # Build the docs, serve, and view in your web browser:
+    python -m nox -e docs && (cd docs/_build/html; python -m webbrowser localhost:8000; python -m http.server; cd -)
+
+    # Run the example function
+    salt-call --local relenv.example_function text="Happy Hacking!"
