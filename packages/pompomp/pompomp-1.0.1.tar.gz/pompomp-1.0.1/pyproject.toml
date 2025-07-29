@@ -1,0 +1,62 @@
+[build-system]
+requires = [
+    "setuptools >= 75.0.0",
+    "wheel",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pompomp"
+authors = [
+    {name = "Michel TRUONG", email = "michel.truong@gmail.com"},
+]
+maintainers = [
+    {name = "Michel TRUONG", email = "michel.truong@gmail.com"},
+]
+description = "Generate sleek, no-fluff themes, tailored for Oh My Posh."
+readme = {file = "README.md", content-type = "text/markdown"}
+license = {file = "LICENSE.md", content-type = "text/markdown"}
+keywords = ["pompomp", ]
+dynamic = [
+    "version",
+    "dependencies",
+    "optional-dependencies",
+]
+classifiers = [
+    'Development Status :: 5 - Production/Stable',
+    'License :: OSI Approved :: MIT License',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.12',
+    'Operating System :: OS Independent',
+    'Intended Audience :: Developers',
+    'Topic :: Software Development :: Libraries :: Python Modules',
+]
+
+[project.urls]
+Repository = "https://github.com/KaminoU/pompomp"
+"Bug Tracker" = "https://github.com/KaminoU/pompomp/issues"
+Documentation = "https://github.com/KaminoU/pompomp/blob/main/README.md"
+Changelog = "https://github.com/KaminoU/pompomp/blob/main/CHANGELOG.md"
+
+[tool.setuptools.dynamic]
+version = {attr = "pompomp.meta.__version__"}
+dependencies = {file = ["requirements.txt"]}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["pompomp*"]
+exclude = [
+    "docs*",
+    "examples*",
+    "resources*",
+    "tests*",
+]
+
+[project.scripts]
+pompomp = "pompomp.__main__:main"
+
+[tool.setuptools.package-data]
+pompomp = [
+    "*.conf.yml",
+    "templates/**/*",
+]
