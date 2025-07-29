@@ -1,0 +1,41 @@
+[project]
+name = "nupgis"
+version = "0.1.7"
+description = "NUmPyGIS. A Python library for GIS using numpy only."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=2.2.6",
+]
+license = { file = "LICENSE" }
+authors = [{name="Masum Billal", email="billalmasum93@gmail.com"}]
+
+[dependency-groups]
+dev = [
+    "coverage>=7.8.0",
+    "mypy>=1.15.0",
+    "pytest>=8.3.5",
+]
+docs = [
+    "sphinx>=8.2.3",
+    "sphinx-book-theme>=1.1.4",
+]
+formatting = [
+    "pre-commit>=4.2.0",
+]
+
+
+[tool.ruff]
+exclude = [".venv"]
+line-length = 120
+target-version = "py311"
+
+
+[tool.bandit.assert_used]
+skips = ['*_test.py', '*/test_*.py']
+
+[[tool.uv.index]]
+name = "testpypi"
+url = "https://test.pypi.org/simple/"
+publish-url = "https://test.pypi.org/legacy/"
+explicit = true
