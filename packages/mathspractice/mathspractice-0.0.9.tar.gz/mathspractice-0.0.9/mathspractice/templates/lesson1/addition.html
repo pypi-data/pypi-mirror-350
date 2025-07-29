@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h1><a class="button" href="{{ url_for('lesson1.index') }}">{% block title %}Lesson 1{% endblock %}</a></h1>
+{% endblock %}
+
+{% block content %}
+
+    <h1><a class="button" href="{{ url_for('lesson1.addition') }}">Addition</a></h1>
+    {% set lesson = 'lesson1' %}
+    {% set section = 'addition' %}
+    {% include 'stats.html' %}
+    <form method="post" action="{{ url_for('lesson1.addition') }}">
+        <input type="hidden" id="first" name="first" value="{{ first }}">
+        <input type="hidden" id="second" name="second" value="{{ second }}">
+        <input type="hidden" id="now" name="now" value="{{ now }}">
+        <p class="center">
+        Add the first number and the second number:
+        </p>
+        <table class="compact">
+            <tr><td>&nbsp;</td><td class="right">{{ first }}</td></tr>
+            <tr><td class="right">+</td><td class="right">{{ second }}</td></tr>
+            <tr><td class="right">=</td><td class="right"><input class="right" type="number" id="answer" name="answer" autocomplete="off" autofocus></td></tr>
+            <tr><td colspan="2" class="center"><input type="submit" id="submit" name="Check" value="Check"></td></tr>
+        </table>
+    </form>
+
+{% endblock %}
