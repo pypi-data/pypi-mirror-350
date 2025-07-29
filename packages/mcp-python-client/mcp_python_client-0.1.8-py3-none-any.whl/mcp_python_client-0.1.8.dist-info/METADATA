@@ -1,0 +1,120 @@
+Metadata-Version: 2.4
+Name: mcp-python-client
+Version: 0.1.8
+Summary: Python client for interacting with MCP servers and LLMs
+Project-URL: Homepage, https://github.com/lingster/mcp-python-client
+Project-URL: Bug Tracker, https://github.com/lingster/mcp-python-client/issues
+Author-email: Ling Li <email@ling-li.com>
+Maintainer-email: Ling Li <email@ling-li.com>
+License-File: LICENSE
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.10
+Requires-Dist: anyio>=4.8.0
+Requires-Dist: litellm>=1.63.14
+Requires-Dist: loguru>=0.7.3
+Requires-Dist: mcp>=0.0.17
+Requires-Dist: mypy>=1.15.0
+Requires-Dist: pydantic>=2.0.0
+Requires-Dist: pytest-asyncio>=0.26.0
+Requires-Dist: pytest>=8.3.5
+Requires-Dist: python-dotenv>=1.0.0
+Description-Content-Type: text/markdown
+
+# MCP Python Client
+
+A reusable Python client for interacting with MCP (Machine Conversation Protocol) servers and LLMs.
+
+## Features
+
+- Connect to and interact with multiple MCP servers
+- Call tools provided by MCP servers
+- Process user queries using various LLM models via LiteLLM
+- Support for synchronous and asynchronous operations
+- Streaming response support
+
+## Installation
+
+```bash
+pip install mcp-python-client
+```
+
+## Quick Start
+
+```python
+import asyncio
+from mcp_python_client import MCPClient
+
+async def main():
+    # Create a client with your preferred LLM settings
+    client = MCPClient(
+        model="anthropic/claude-3-sonnet-20240229",
+        api_key="your_api_key_here"  # Or set via env var
+    )
+    
+    # Connect to MCP servers defined in your config
+    await client.connect_to_all_servers()
+    
+    # Process a query
+    query = "What is the current weather in New York?"
+    
+    # Stream response
+    async for chunk in client.aprocess_query(query):
+        print(chunk, end="", flush=True)
+    
+    # Clean up
+    await client.cleanup()
+
+# Run the example
+asyncio.run(main())
+```
+
+## Configuration
+
+The client looks for a configuration file in the following locations:
+
+1. Path specified when creating the client
+2. `~/.config/mcp-client/config.json`
+3. `~/.mcp-client.json`
+4. `./mcp-client.json`
+5. `./config.json`
+
+Example configuration file:
+
+```json
+{
+  "mcpServers": {
+    "shell-server": {
+      "command": "mcp-shell-server",
+      "args": ["--use_cache"],
+      "env": {
+        "SHELL_SERVER_CACHE_DIR": "/tmp/shell-server-cache"
+      }
+    },
+    "python-server": {
+      "command": "mcp-python-server",
+      "args": []
+    }
+  }
+}
+```
+
+## Advanced Usage
+
+See the [documentation](https://github.com/yourusername/mcp-python-client) for more advanced usage examples and API details.
+
+## Publishing
+``` 
+uv build
+uv publish
+```
+## License
+
+MIT
