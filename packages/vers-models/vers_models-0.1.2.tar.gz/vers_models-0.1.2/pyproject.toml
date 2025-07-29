@@ -1,0 +1,71 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "vers-models"
+dynamic = ["version"]
+description = ''
+readme = "README.md"
+requires-python = ">=3.9"
+license = "AGPL-3.0-or-later"
+keywords = []
+authors = [
+    { name = "Marceau", email = "pypi@marceau-h.fr" },
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = [
+    "torch>=2.0.0",
+    "numpy",
+    "scikit-learn",
+    "tqdm",
+    "jiwer",
+]
+
+[project.urls]
+Documentation = "https://github.com/Marceau-H/vers_models#readme"
+Issues = "https://github.com/Marceau-H/vers_models/issues"
+Source = "https://github.com/Marceau-H/vers_models"
+
+
+[tool.hatch.version]
+path = "src/vers_models/__about__.py"
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+    "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/vers_models tests}"
+
+[tool.coverage.run]
+source_pkgs = ["vers_models"]
+branch = true
+parallel = true
+omit = [
+    "src/vers_models/__about__.py",
+]
+
+[tool.coverage.paths]
+vers_models = ["src/vers_models", "*/vers_models/src/vers_models"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "no cov",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+
+[project.scripts]
+vers = "vers_models.cli:cli"
+vers-models = "vers_models.cli:cli"
