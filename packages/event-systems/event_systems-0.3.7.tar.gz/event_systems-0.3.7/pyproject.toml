@@ -1,0 +1,65 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "event-systems"
+version = "0.3.7"
+authors = [
+  { email="sir_even@icloud.com"},
+]
+description = "A collection of thread-safe event systems which components can use to subscribe and post to other components."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    
+]
+
+[project.urls]
+"Homepage" = "https://github.com/sirEven/event-systems.git"
+
+[mypy]
+ignore_missing_imports = true
+
+[tool.setuptools.package-data]
+"event_systems" = ["py.typed"]
+
+[tool.coverage.run]
+omit = [
+    # omit anything in a .local directory anywhere
+    "test_*",
+    "main.py",
+    "__init__.py",
+    "conftest.py",
+    "tests/helpers/*",
+]
+
+[tool.coverage.report]
+exclude_also = [
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+[tool.mypy]
+exclude = "^tests/"
+
+[dependency-groups]
+dev = [
+    "nest-asyncio>=1.6.0",
+    "pytest-asyncio>=0.25.2",
+    "pytest-cov>=6.0.0",
+    "pytest>=8.3.4",
+]
+
+[tool.ruff]
+select = ["ANN"]
+
+[tool.pytest.ini_options]
+markers = [
+    "integration: mark test as integration test"
+]
