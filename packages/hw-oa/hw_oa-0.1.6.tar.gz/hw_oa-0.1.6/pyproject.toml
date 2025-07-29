@@ -1,0 +1,35 @@
+[project]
+name = "hw-oa"
+version = "0.1.6"
+description = "通过提示调用不同api，实现请假、考勤、外出等OA功能"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "httpx>=0.28.1",
+    "mcp[cli]>=1.9.0",
+]
+classifiers = [
+    "Environment :: MacOS X",
+]
+[project.urls]
+Homepage = "https://gitee.com/chenkunlia/hw-oa"
+
+[tool.poetry]
+packages = [
+    {include = "hw_oa_server",from = "src"},
+]
+
+
+[[tool.uv.index]]
+name = "testpypi"
+url = "https://test.pypi.org/simple/"
+publish-url = "https://test.pypi.org/legacy/"
+explicit = true
+
+[project.scripts]
+hw-oa = "hw_oa_server.main:main"
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
