@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "myofinder"
+dynamic = ["readme", "dependencies"]
+version = "1.1.0.post1"
+description = "Automatic calculation of the fusion index by AI segmentation"
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
+keywords = ["segmentation", "fusion index", "automation", "muscle culture"]
+requires-python = ">=3.9"
+authors = [{name = "Tissue Engineering Lab", email = "antoine.weisrock@kuleuven.be"}]
+maintainers = [{name = "Antoine Weisrock", email = "antoine.weisrock@gmail.com"}]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Image Recognition"
+]
+
+[project.urls]
+Homepage = "https://github.com/TissueEngineeringLab/MyoFInDer"
+Documentation = "https://tissueengineeringlab.github.io/MyoFInDer/"
+Repository = "https://github.com/TissueEngineeringLab/MyoFInDer.git"
+Issues = "https://github.com/TissueEngineeringLab/MyoFInDer/issues"
+Download = "https://pypi.org/project/myofinder/#files"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+include-package-data = false
+
+[tool.setuptools.dynamic]
+readme = {file = "README.md", content-type = "text/markdown"}
+dependencies = {file = "requirements.txt"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["myofinder*"]
+exclude = []
+namespaces = false
+
+[tool.setuptools.package-data]
+myofinder = [
+    "app_images/*"
+]
