@@ -1,0 +1,154 @@
+# This file has been updated to use the newer PEP 621 format
+# The [project] section replaces the older [tool.poetry] section
+
+[project]
+name = "plainspeak"
+version = "1.0.0"
+description = "Turns everyday English into real terminal commands and API calls."
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "cschanhniem", email = "contact@plainspeak.pro"}
+]
+keywords = ["nlp", "cli", "automation", "llm"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.11"
+dependencies = [
+    "cmd2>=2.4.3",
+    "ctransformers>=0.2.27",
+    "jinja2>=3.1.3",
+    "pydantic>=2.5.3",
+    "typer[all]>=0.9.0",
+    "toml>=0.10.2",
+]
+
+[project.urls]
+Homepage = "https://cschanhniem.github.io/plainspeak/"
+Repository = "https://github.com/cschanhniem/plainspeak"
+Documentation = "https://cschanhniem.github.io/plainspeak/"
+
+[project.scripts]
+plainspeak = "plainspeak.cli:main"
+
+[project.optional-dependencies]
+cuda = ["ctransformers"]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+# The original tool.poetry section is kept for backward compatibility
+# but will be ignored in favor of the [project] section above
+[tool.poetry]
+name = "plainspeak"
+version = "1.0.0"
+description = "Turns everyday English into real terminal commands and API calls."
+authors = ["cschanhniem <contact@plainspeak.pro>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/cschanhniem/plainspeak"
+documentation = "https://cschanhniem.github.io/plainspeak/"
+homepage = "https://cschanhniem.github.io/plainspeak/"
+keywords = ["nlp", "cli", "automation", "llm"]
+
+[tool.poetry.dependencies]
+python = "^3.11" # Specify a compatible Python version, e.g., 3.11+
+cmd2 = "^2.4.3"
+ctransformers = "^0.2.27"
+jinja2 = "^3.1.3"
+pydantic = "^2.5.3"
+typer = {extras = ["all"], version = "^0.9.0"}
+toml = "^0.10.2"
+
+[tool.poetry.extras]
+cuda = ["ctransformers"]
+
+[tool.poetry.scripts]
+plainspeak = "plainspeak.cli:main"
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.0.0"
+flake8 = "^7.0.0"
+mypy = "^1.0.0"
+pytest = "^8.0.0"
+pytest-mock = "^3.11.1"
+Pillow = "^10.0.0" # For image handling
+pandas = "^2.0.0" # Data processing
+PyYAML = "^6.0" # YAML files
+icalendar = "^5.0.0" # Calendar operations
+keyring = "^24.0.0" # Secure storage
+psutil = "^5.9.0" # Process monitoring
+networkx = "^2.7.0" # Dependency graphs
+transformers = {version = "^4.30.0", extras = ["sentencepiece"]} # Use transformers with sentencepiece
+huggingface-hub = ">=0.24.0,<1.0" # Upgraded version to be compatible with transformers
+tokenizers = {version = "^0.21.1", markers = "platform_system != 'Linux'"} # Version that's compatible with transformers
+types-toml = "^0.10.8.20240310"
+types-pyyaml = "^6.0.12.20250516"
+types-icalendar = "^6.3.0.20250517"
+types-python-dateutil = "^2.9.0.20250516"
+types-pytz = "^2025.2.0.20250516"
+pre-commit = "^4.2.0"
+types-tabulate = "^0.9.0.20241207"
+types-requests = "^2.32.0.20250515"
+
+# Build system configuration moved to the top of the file
+
+[tool.black]
+line-length = 120
+target-version = ['py311']
+exclude = '''
+(
+  /(
+      \.eggs
+    | \.git
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+  )/
+  | scripts/ensure_asset_dirs.py
+)
+'''
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+check_untyped_defs = false
+disallow_untyped_decorators = false
+no_implicit_optional = false
+ignore_missing_imports = true
+
+# Disable specific error codes
+disable_error_code = "no-any-return,index,arg-type,union-attr"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q -v"
+testpaths = [
+    "tests",
+]
+norecursedirs = [
+    "tests/binaries",
+]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::PendingDeprecationWarning",
+]
