@@ -1,0 +1,24 @@
+[main]
+output_dir = "test_scratch"
+scratch_dir = "/tmp"
+cpus = 2
+mem_per_cpu_gb = 1
+workers = 1
+overwrite = false
+
+[molecules]
+xyz_dir = "molecules"
+
+[[step]]
+name = "01_opt_freq_singlet"
+keywords = ["D4", "TPSS", "def2-SVP", "OPT"]
+
+[[step]]
+name = "01_opt_freq_singlet"
+keywords = ["D4", "TPSS", "def2-SVP", "FREQ"]
+
+[[step]]
+name = "1"
+keywords = ["D4", "TPSS", "def2-SVP"]
+blocks = ["%TDDFT NROOTS 1 END"]
+mult = 3
