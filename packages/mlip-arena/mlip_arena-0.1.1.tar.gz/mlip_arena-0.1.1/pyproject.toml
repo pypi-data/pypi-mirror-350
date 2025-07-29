@@ -1,0 +1,43 @@
+[build-system]
+requires = [ "flit_core >=3.2,<4",]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "mlip-arena"
+version = "0.1.1"
+description = "Fair and transparent benchmark of machine learning interatomic potentials (MLIPs), beyond error-based regression metrics"
+readme = ".github/README.md"
+requires-python = ">=3.10"
+keywords = [ "pytorch", "machine-learning-interatomic-potentials", "huggingface", "deep-learning", "graph-neural-networks",]
+classifiers = [ "Development Status :: 1 - Planning", "Programming Language :: Python", "Programming Language :: Python :: 3.10", "Programming Language :: Python :: 3.11", "Programming Language :: Python :: 3.12", "Programming Language :: Python :: 3 :: Only",]
+dependencies = [ "ase", "pymatgen", "torch", "huggingface_hub", "datasets", "safetensors", "prefect>3.2.0", "prefect-dask", "dask", "dask_jobqueue", "tables", "MDAnalysis",]
+[[project.authors]]
+name = "Yuan Chiang"
+email = "cyrusyc@lbl.gov"
+
+[project.optional-dependencies]
+app = [ "streamlit==1.43.2", "plotly",]
+test = [ "torch==2.4.0", "torch_dftd==0.4.0", "e3nn==0.5.0", "dgl", "chgnet==0.3.8", "sevenn==0.9.3.post1", "alignn==2024.5.27", "mattersim==1.1.2", "torchani==2.2.4", "pytest", "pytest-xdist", "prefect==3.2.13", "pymatgen>=2025.1.9", "MDAnalysis", "streamlit==1.43.2",]
+mace = [ "mace-torch==0.3.12",]
+matgl = [ "matgl==1.2.6",]
+fairchem = [ "hydra-core", "fairchem-core==1.10.0",]
+orb = [ "orb-models==0.4.0", "pynanoflann",]
+deepmd = [ "torch==2.2.0", "deepmd-kit",]
+
+[project.urls]
+Homepage = "https://github.com/atomind-ai/mlip-arena"
+Issues = "https://github.com/atomind-ai/mlip-arena/issues"
+
+[tool.ruff]
+extend-include = [ "*.ipynb",]
+exclude = [ ".bzr", ".direnv", ".eggs", ".git", ".git-rewrite", ".hg", ".ipynb_checkpoints", ".mypy_cache", ".nox", ".pants.d", ".pyenv", ".pytest_cache", ".pytype", ".ruff_cache", ".svn", ".tox", ".venv", ".vscode", "__pypackages__", "_build", "buck-out", "build", "dist", "node_modules", "site-packages", "venv",]
+line-length = 88
+indent-width = 4
+
+[tool.ruff.lint]
+select = [ "B", "C4", "E", "EXE", "F", "FA", "FBT003", "FLY", "I", "ICN", "PD", "PERF", "PIE", "PL", "PT", "PYI", "Q", "RET", "RSE", "RUF", "SIM", "SLOT", "TCH", "TID", "TID", "UP", "W", "YTT",]
+ignore = [ "C408", "PLR", "E501", "B028", "EM101", "EM102", "G004", "RUF015", "RET505", "PT004", "B017", "PT011", "PT012", "E741", "FBT003", "PERF203", "F405", "PD901",]
+fixable = [ "ALL",]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
