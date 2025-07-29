@@ -1,0 +1,231 @@
+Metadata-Version: 2.4
+Name: dashgen
+Version: 0.1.1
+Summary: Gere dashboards visuais como imagens usando HTML/CSS e Playwright.
+Home-page: https://github.com/77-Indicadores/dashgen
+Author: Vinicius Moreira
+Author-email: vinicius@77indicadores.com.br
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: playwright
+Requires-Dist: jinja2
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# Dashgen
+
+📊 Gere **dashboards visuais como imagens (PNG)** diretamente do Python com HTML, CSS e Chart.js.
+
+---
+
+## ✨ O que é?
+
+`dashgen` é um micro-framework que permite criar dashboards dinâmicos e exportá-los como imagens de alta qualidade.
+
+Ideal para gerar relatórios diários, KPIs, resumos visuais e compartilhar automaticamente via e-mail, WhatsApp, etc.
+
+---
+
+## 🛠 Instalação
+
+```bash
+pip install dashgen
+playwright install
+````
+
+---
+
+## 🚀 Exemplo Completo
+
+```python
+from dashgen import Dashboard
+from dashgen.core.layout import Row, Column
+
+# Criar o dashboard
+db = Dashboard(
+    title="Relatório de Vendas",
+    logo_path="logo.png",  # Caminho da logo opcional
+    size=(1080, 1080),
+    theme={
+        "primary": "#005f73",  # Cor de destaque
+        "accent": "#94d2bd",   # Cor auxiliar
+        "bg": "#fefae0",       # Fundo
+        "text": "#001219"      # Texto padrão
+    }
+)
+
+# Linha com dois cards lado a lado
+db.add(Row(
+    Column(6).add_card("Receita Acumulada", 8200000, 10000000),
+    Column(6).add_card("Unidades Vendidas", 320, 400)
+))
+
+# Linha com tabela e gráfico de barras
+dados = [
+    {"Nome": "Projeto A", "Meta": "R$ 2M", "Realizado": "R$ 1.6M", "Variação": "-20%"},
+    {"Nome": "Projeto B", "Meta": "R$ 3M", "Realizado": "R$ 3.1M", "Variação": "+3%"},
+]
+db.add(Row(
+    Column(6).add_table("Receita por Empreendimento", dados, ["Nome", "Meta", "Realizado", "Variação"]),
+    Column(6).add_chart("bar", "Vendas Mensais", [
+        {"label": "Jan", "value": 120},
+        {"label": "Fev", "value": 135},
+        {"label": "Mar", "value": 160},
+    ])
+))
+
+# Gráfico de linha ocupando a largura total
+db.add(Row(
+    Column(12).add_chart("line", "Receita Total (R$)", [
+        {"label": "Jan", "value": 1200000},
+        {"label": "Fev", "value": 1450000},
+        {"label": "Mar", "value": 1600000},
+    ])
+))
+
+# Exportar como imagem
+db.generate("output_dashboard.png")
+```
+
+---
+
+## 🧱 Componentes Disponíveis
+
+### 🧩 Layout
+
+* `Row(...)`: Agrupa colunas horizontalmente.
+* `Column(width=...)`: Define largura (1 a 12 colunas).
+
+---
+
+### 📦 Cards
+
+```python
+Column(6).add_card("Título", valor, meta)
+```
+
+KPI com barra de progresso proporcional a valor/meta.
+
+---
+
+### 📊 Tabela
+
+```python
+Column(6).add_table("Título", data, headers)
+```
+
+* `data`: lista de dicionários
+* `headers`: chaves a exibir
+
+---
+
+### 📈 Gráfico
+
+```python
+Column(6).add_chart("bar", "Título", data)
+Column(6).add_chart("line", "Título", data)
+```
+
+* `data`: lista de `{ "label": ..., "value": ... }`
+* `chart_type`: `"bar"` ou `"line"`
+
+---
+
+## 🎨 Tema Personalizado
+
+```python
+theme = {
+    "primary": "#005f73",  # Cor de destaque (barras, títulos)
+    "accent": "#94d2bd",   # Cor auxiliar
+    "bg": "#fefae0",       # Fundo da imagem
+    "text": "#001219"      # Texto padrão
+}
+```
+
+---
+
+## 📚 Documentação Técnica
+
+### 📘 Classe: `Dashboard`
+
+```python
+Dashboard(
+    title="Meu Relatório",
+    logo_path=None,
+    size=(1080, 1080),
+    theme=None
+)
+```
+
+| Parâmetro   | Tipo             | Descrição                |
+| ----------- | ---------------- | ------------------------ |
+| `title`     | `str`            | Título no topo da imagem |
+| `logo_path` | `str` (opcional) | Caminho para logo        |
+| `size`      | `(int, int)`     | Tamanho da imagem        |
+| `theme`     | `dict[str, str]` | Cores CSS (ver acima)    |
+
+---
+
+### ✅ `Dashboard.add(layout: Row)`
+
+Adiciona uma linha com colunas ao dashboard.
+
+---
+
+### ✅ `Dashboard.generate(path: str)`
+
+Gera e salva a imagem em `path`.
+
+---
+
+### 📘 Classe: `Row`
+
+```python
+Row(Column(...), Column(...))
+```
+
+Agrupa colunas horizontalmente. Largura total deve somar até 12.
+
+---
+
+### 📘 Classe: `Column(width=12)`
+
+Define a largura da coluna (1 a 12).
+
+---
+
+### ✅ `Column.add_card(title, value, target)`
+
+Exibe um indicador com barra de progresso.
+
+---
+
+### ✅ `Column.add_table(title, data, headers)`
+
+Cria uma tabela a partir de dados estruturados.
+
+---
+
+### ✅ `Column.add_chart(chart_type, title, data)`
+
+Cria gráfico do tipo `"bar"` ou `"line"` com dados de `label` e `value`.
+
+---
+
+## ✅ Requisitos
+
+* Python 3.7+
+* `playwright` (`playwright install`)
+* `jinja2`
+
+---
