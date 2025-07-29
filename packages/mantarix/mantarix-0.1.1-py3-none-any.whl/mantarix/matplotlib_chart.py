@@ -1,0 +1,1 @@
+from mantarix.core.matplotlib_chart import MatplotlibChart

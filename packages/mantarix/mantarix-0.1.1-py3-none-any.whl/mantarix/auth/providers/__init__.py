@@ -1,0 +1,4 @@
+from mantarix.auth.providers.auth0_oauth_provider import Auth0OAuthProvider
+from mantarix.auth.providers.azure_oauth_provider import AzureOAuthProvider
+from mantarix.auth.providers.github_oauth_provider import GitHubOAuthProvider
+from mantarix.auth.providers.google_oauth_provider import GoogleOAuthProvider

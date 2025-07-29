@@ -1,0 +1,1 @@
+from mantarix.core.lottie import Lottie

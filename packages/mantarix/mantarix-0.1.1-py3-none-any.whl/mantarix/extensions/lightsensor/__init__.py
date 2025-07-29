@@ -1,0 +1,1 @@
+from mantarix.core.lightsensor import LightSensor
