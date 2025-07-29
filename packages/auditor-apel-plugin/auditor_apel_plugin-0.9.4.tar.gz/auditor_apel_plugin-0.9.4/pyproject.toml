@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools==80.4.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "auditor_apel_plugin"
+version = "0.9.4"
+requires-python = ">=3.9"
+dependencies = [
+	     "python-auditor==0.9.4",
+	     "cryptography==44.0.3",
+	     "pyyaml==6.0.2",
+	     "pydantic==2.11.4",
+	     "argo-ams-library==0.6.2",
+]
+description = "AUDITOR plugin for sending accounting data to APEL"
+readme = "README.md"
+
+[project.optional-dependencies]
+style = [
+      "black==25.1.0",
+      "ruff==0.11.9",
+]
+tests = [
+      "pytest==8.3.5",
+      "pytest-cov==6.1.1",
+      "mypy==1.15.0",	
+      "types-pyyaml==6.0.12.20250402",
+]
+build = [
+      "build==1.2.2.post1",
+      "setuptools==80.4.0",
+]
+
+[project.scripts]
+auditor-apel-publish = "auditor_apel_plugin.publish:main"
+auditor-apel-republish = "auditor_apel_plugin.republish:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.coverage.run]
+source = ["src"]
+omit = ["*__init__.py", "*publish.py", "*_version.py"]
+branch = true
+
+[tool.coverage.lcov]
+output = "lcov.info"
+
+[tool.black]
+include = '\.pyi?$'
+
+[tool.pytest.ini_options]
+addopts = "-s -v --cov --cov-report lcov"
+testpaths = ["tests"]
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[[tool.mypy.overrides]]
+module = ["pyauditor", "argo_ams_library"]
+ignore_missing_imports = true
+
+[tool.ruff.lint]
+extend-select = ["I"]
