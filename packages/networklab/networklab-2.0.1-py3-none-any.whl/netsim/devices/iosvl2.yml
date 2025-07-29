@@ -1,0 +1,19 @@
+---
+description: IOSv L2 image
+interface_name: GigabitEthernet{ifindex // 4}/{ifindex % 4}
+parent: iosv
+group_vars:
+  netlab_device_type: iosvl2
+features:
+  initial:
+    min_mtu: 68
+    min_phy_mtu: 1500
+    max_mtu: 4700
+  vlan:
+    model: l3-switch
+    svi_interface_name: Vlan{vlan}
+    mixed_trunk: False
+libvirt:
+  image: cisco/iosvl2
+  build: https://netlab.tools/labs/iosvl2/
+  create_template: iosv.xml.j2
