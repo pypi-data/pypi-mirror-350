@@ -1,0 +1,162 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sega_learn"
+version = "0.1.12"
+readme = "README_PyPI.md"
+description = "Sega Learn is a Python package for machine learning and data science."
+authors = [
+    {name = "Santiago Gonzalez", email = "sega97@gmail.com"},
+]
+license = {file = "LICENSE.txt"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.9"
+dependencies = [
+        "numpy",
+        "pandas",
+        "scikit-learn",
+        "scipy",
+        "statsmodels",
+]
+
+[project.optional-dependencies]
+vis = [
+    "matplotlib",
+    "seaborn",
+    "tqdm",
+    "tabulate",
+]
+accelerators = [
+    "cupy-cuda12x>=13.4.0",
+    "numba>=0.60.0",
+]
+
+[tool.setuptools.packages]
+find = { include = ["sega_learn*"] }
+
+[project.urls]
+Homepage = "https://github.com/SantiagoEnriqueGA/sega_learn"
+Repository = "https://github.com/SantiagoEnriqueGA/sega_learn"
+
+[tool.ruff]
+target-version = "py39"
+
+# Define directories/files to check ('.' means the current directory)
+# Add specific directories if you don't want to check everything from the root
+src = ["sega_learn", "tests", "examples"]
+
+# Exclude directories/files Ruff should ignore
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+    "build",                # Exclude the build directory
+    "sega_learn.egg-info",  # Exclude egg info
+    "docs/*",               # Exclude all generated HTML docs
+    ".html",                # Exclude HTML files
+    "_archive/",            # Exclude the archive directory
+    "__pycache__/",         # Exclude python cache
+    "scripts/*",            # Exclude scripts directory
+    "scripts/out/*",        # Exclude scripts/out directory
+    "*.pyc",
+    "*.pyo",
+    "*.pyd",
+    "*_dev/",               # Exclude any folder ending in _dev
+    "*.txt",                # Exclude any .txt file
+    # Exclude performance test logs/plots
+    "tests_performance/",
+    "examples/**/plots/",
+
+    # Exclude ipynb files
+    "*.ipynb",
+]
+
+[tool.ruff.lint]
+# Baseline set of rules:
+    # E = pycodestyle errors
+    # F = Pyflakes errors
+    # W = pycodestyle warnings
+    # I = isort (import sorting)
+    # UP = pyupgrade (suggests modern Python syntax)
+    # B = flake8-bugbear (finds likely bugs)
+    # C4 = flake8-comprehensions (helps write better comprehensions)
+    # SIM = flake8-simplify (simplifies code)
+    # TID = flake8-tidy-imports
+    # D = pydocstyle (docstring style checker)
+select = ["E", "F", "W", "I", "UP", "B", "C4", "SIM", "TID", "D"]
+
+
+# Add the specific codes to ignore
+ignore = ["F403", "F405", "E501", "D100", "D104", "D105"]
+# F403/405 are "import *" statements
+# E501 is line length (ruff format . will still try to wrap lines)
+# D100 is missing docstring in public module
+# D104 is missing docstring in public package
+# D105 is missing docstring in magic method (__name__, __str__, etc.)
+
+# Keep fixable settings
+fixable = ["ALL"]
+unfixable = []
+
+[tool.ruff.lint.pydocstyle]
+convention = "google" # <- Using Google style guide for docstrings (not "numpy" or "pep257")
+
+# Optional: per-file ignores
+[tool.ruff.lint.per-file-ignores]
+# These are excluded because the order of imports is important
+# Linting errors for order of imports are ignored
+"sega_learn/__init__.py" = ["F401"]
+"sega_learn/utils/__init__.py" = ["I001"]
+"sega_learn/neural_networks/__init__.py" = ["I001", "F401"]
+"sega_learn/auto/regressor.py" = ["TID252"]
+"sega_learn/auto/classifier.py" = ["TID252"]
+
+[tool.ruff.format]
+# Enable the formatter (similar to Black)
+# Ruff's default formatter aims for Black compatibility.
+# You can add specific overrides if needed, e.g.:
+# line-ending = "lf"
+# quote-style = "double"
+# docstring-code-format = true
+
+# Keep this section enabled. The formatter will still wrap long lines.
+# You could configure line-length here if you wanted something other than 88,
+# but ignoring E501 in the linter doesn't stop the formatter.
+# line-length = 100 # Example: If you wanted a longer line limit
