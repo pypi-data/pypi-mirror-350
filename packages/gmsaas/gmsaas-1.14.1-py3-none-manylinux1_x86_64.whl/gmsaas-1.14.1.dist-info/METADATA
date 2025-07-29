@@ -1,0 +1,312 @@
+Metadata-Version: 2.1
+Name: gmsaas
+Version: 1.14.1
+Summary: Universal Command Line Interface for Genymotion Cloud SaaS
+Home-page: https://cloud.geny.io
+Author: Genymobile
+Author-email: contact@genymobile.com
+License: Proprietary
+Platform: any
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: License :: Other/Proprietary License
+Classifier: Operating System :: MacOS :: MacOS X
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Software Development :: Quality Assurance
+Classifier: Topic :: Software Development :: Testing
+Classifier: Topic :: Software Development :: Embedded Systems
+Classifier: Topic :: System :: Emulators
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: click
+Requires-Dist: PySocks
+Requires-Dist: requests
+Requires-Dist: requests-toolbelt
+Requires-Dist: tabulate
+Requires-Dist: python-engineio
+Requires-Dist: python-socketio>=5
+Requires-Dist: websocket-client
+Requires-Dist: psutil
+Requires-Dist: pyperclip
+Requires-Dist: packaging
+Requires-Dist: importlib-resources; python_version < "3.9"
+
+# gmsaas
+
+## Description
+
+`gmsaas` is a command line interface to rule all your virtual devices hosted in Genymotion SaaS solution without opening an Internet browser. With it you can list, start and stop devices. Above all, you can securely connect to any devices through Android Debug Bridge.
+
+It is a lightweight binary, easy to install, easy to update.
+
+## Requirements
+
+- Python 3.8 or above
+- pip3
+- Android SDK
+
+## Installation
+
+```bash
+pip3 install [--user] gmsaas
+```
+
+## Get started
+
+Two steps are required to use `gmsaas` properly:
+
+- Configure the path to your Android SDK with:
+
+  ```bash
+  gmsaas config set android-sdk-path <sdk_path>
+  ```
+
+- Authenticate with:
+
+  ```bash
+  gmsaas auth token <token>
+  ```
+
+Full documentation can be found [here](https://docs.genymotion.com/gmsaas/1.x/)
+
+
+# Change Log
+
+All notable changes of `gmsaas` are documented in this file.
+
+## 1.14.1
+
+### Fixed
+
+- Resolved an issue where `adbconnect` command failed on Windows due to a missing OpenSSL dependency.
+
+## 1.14.0
+
+### Changed
+
+- Drop support of Linux distributions using glibc version earlier than 2.31.
+
+### Fixed
+
+- Fixed ADB Tunnel stability within a congested network environment.
+
+## 1.13.0
+
+### Added
+
+- Added `gmsaas adb start|stop` commands.
+
+### Changed
+
+- Included architecture information in the gmsaas portal.
+- Updated `exit_code_desc` for exit code `12` from `ADBTUNNEL_GENERIC_ERROR` to `ADBTUNNEL_TIMEOUT_ERROR`.
+- Updated `exit_code_desc` for exit code `9` from `APPLE_M1_CHIP_ERROR` to `APPLE_SILICON_CHIP_ERROR`.
+- Refined error wording for exit code `7 (PACKAGE_ERROR)`.
+- Refined error wording for exit code `12 (ADBTUNNEL_TIMEOUT_ERROR)`.
+
+### Fixed
+
+- Enhanced ADB Tunnel reliability.
+
+## 1.12.0
+
+### Added
+
+- Native Android support (ARM-based images).
+- Display Android image beta information in the `recipes get|list` and `osimages get|list` commands.
+
+## 1.11.0
+
+### Added
+
+- Added `gmsaas doctor` command to quickly check if gmsaas is configured properly.
+
+### Fixed
+
+- Python 3.12 support.
+
+## 1.10.0
+
+### Added
+
+- Added `gmsaas auth token <token>` command (use API Token for authentication).
+- Added `gmsaas auth reset` command (clear API Token from cache).
+- Read `GENYMOTION_API_TOKEN` environment variable for authentication.
+
+### Changed
+
+- Marked `gmsaas auth login <email>` command as deprecated.
+- Marked `gmsaas auth logout` command as deprecated.
+- Marked `gmsaas auth whoami` command as deprecated.
+
+### Fixed
+
+- Improved real-time instance state update reliability.
+
+## 1.9.0
+
+### Added
+
+- Added `gmsaas instances display` command.
+
+## 1.8.0
+
+### Added
+
+- Added `--max-run-duration` option for command `gmsaas instances start`.
+- Added `gmsaas hwprofiles get|list|create|delete` commands.
+- Added `gmsaas osimages get|list|clone|delete` commands.
+- Added `gmsaas recipes get|create|delete` commands.
+- Added `gmsaas instances save|saveas` commands.
+
+### Changed
+
+- Require at least Python 3.8.
+- Marked as deprecated `--stop-when-inactive` option, replaced by `--max-run-duration`.
+- Added `--out` option to `gmsaas logzip` command.
+- Added `--source` option to `gmsaas recipes list` command.
+- Improved help wording which is now accessible with `-h` in addition of `--help`.
+- Added more details in JSON output format regarding Recipes and Instances.
+
+## 1.7.1
+
+### Fixed
+
+- Fix gmsaas when system temp directory is mounted on a separate partition.
+
+## 1.7.0
+
+### Added
+
+- Added Apple Silicon support (requires pip3 >= 20.9)
+- Instances returned by `gmsaas --format json instances *` commands include `created_at` info
+- Improved Android Sdk path verification with `gmsaas config set android-sdk-path <path>` command
+
+### Changed
+
+- Deprecate Python 3.5
+
+### Fixed
+
+- Fix corrupted configuration file with simultaneous multiple gmsaas processes
+
+## 1.6.1
+
+### Fixed
+
+- Fix dependencies to continue supporting Python 3.5
+
+## 1.6.0
+
+### Added
+
+- `gmsaas instances get <uuid>` command to get information about one specific instance
+
+### Fixed
+
+- Enforce start and stop commands in case of server connection failure
+
+## 1.5.2
+
+### Added
+
+- `gmsaas --format json instances *` command outputs full recipe(s) info
+
+### Fixed
+
+- Improve ADB Tunnel stability over time
+
+## 1.5.1
+
+### Added
+
+- Instances printed by `gmsaas --format json instances *` commands include recipe UUID info
+
+### Fixed
+
+- Optimize `gmsaas instances adbconnect` command and reduce the number of timeout errors
+
+## 1.5.0
+
+### Added
+
+- JSON format output for all `gmsaas` commands. Get it with `--format` global option or
+  by defining it in configuration `gmsaas config set output-format json`
+
+### Fixed
+
+- Improve Socket.IO stability
+
+## 1.4.0
+
+### Added
+
+- SOCKS5 proxy support with `gmsaas config set proxy` command
+
+### Changed
+
+- Use simple quotes instead of back quotes in all outputs
+
+### Fixed
+
+- Fix recipes sorting regarding Android 10
+
+## 1.3.2
+
+### Fixed
+
+- Fix `gmsaas` behavior when configuration and system proxy are both set: system proxy no longer interferes
+
+## 1.3.1
+
+### Fixed
+
+- Fix assertion when gmsaas is upgraded while an older ADB Tunnel is running
+- Improve Socket.IO connection stability
+
+## 1.3.0
+
+### Added
+
+- HTTP/HTTPS proxy support with `gmsaas config set proxy` command
+- `--verbose/-v` global option to print logs to standard output
+
+### Changed
+
+- Improve wording of error messages
+- Improve password cyphering
+
+### Fixed
+
+- Make ADB Tunnel more resilient: continue running when terminal is closed
+
+## 1.2.0
+
+### Added
+
+- `--quiet/-q` option to `gmsaas instances list` command to print instance UUIDs only
+
+## 1.1.0
+
+### Added
+
+- `gmsaas logzip` command to fetch all logs in one ZIP archive
+
+### Changed
+
+- Improve `gmsaas auth login` output in case of failure
+
+## 1.0.0 (initial release)
+
+### Added
+
+- List device recipes available
+- List running devices
+- Start a device based on one recipe
+- Stop a running device
+- Connect a running device to ADB
+- Disconnect a running device from ADB
