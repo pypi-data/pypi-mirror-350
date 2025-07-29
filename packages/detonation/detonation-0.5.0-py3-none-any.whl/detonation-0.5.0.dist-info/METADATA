@@ -1,0 +1,102 @@
+Metadata-Version: 2.4
+Name: detonation
+Version: 0.5.0
+Summary: Decouple Torch Network-Aware Training on Interlinked Online Nodes (DeToNATION)
+Project-URL: Homepage, https://github.com/schneiderkamplab/DeToNATION
+Project-URL: Bug Tracker, https://github.com/schneiderkamplab/DeToNATION/issues
+Author: Peter Schneider-Kamp, Mogens Henrik From
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.11
+Requires-Dist: einops
+Requires-Dist: numpy
+Requires-Dist: torch
+Provides-Extra: all
+Requires-Dist: aimrun; extra == 'all'
+Requires-Dist: click; extra == 'all'
+Requires-Dist: datasets; extra == 'all'
+Requires-Dist: libcst; extra == 'all'
+Requires-Dist: mltiming; extra == 'all'
+Requires-Dist: protobuf; extra == 'all'
+Requires-Dist: sentencepiece; extra == 'all'
+Requires-Dist: transformers; extra == 'all'
+Provides-Extra: benchmarks
+Requires-Dist: aimrun; extra == 'benchmarks'
+Requires-Dist: click; extra == 'benchmarks'
+Requires-Dist: datasets; extra == 'benchmarks'
+Requires-Dist: mltiming; extra == 'benchmarks'
+Requires-Dist: protobuf; extra == 'benchmarks'
+Requires-Dist: sentencepiece; extra == 'benchmarks'
+Requires-Dist: transformers; extra == 'benchmarks'
+Provides-Extra: dev
+Requires-Dist: libcst; extra == 'dev'
+Provides-Extra: examples
+Requires-Dist: click; extra == 'examples'
+Requires-Dist: datasets; extra == 'examples'
+Requires-Dist: protobuf; extra == 'examples'
+Requires-Dist: sentencepiece; extra == 'examples'
+Requires-Dist: transformers; extra == 'examples'
+Description-Content-Type: text/markdown
+
+# Decoupled Torch Network-Aware Training on Interlinked Online Nodes (DeToNATION)
+
+This code currently implements the results described in [FlexDeMo: Decoupled Momentum Optimization for Fully and Hybrid Sharded Training](https://arxiv.org/abs/2502.06728). An implementation to run all experiments from the paper is found in the benchmarks folder.
+
+## Installation
+Installation from PyPI:
+```
+pip install detonation
+```
+
+Installation from source:
+```
+git clone https://github.com/schneiderkamplab/DeToNATION
+cd DeToNATION
+pip install .
+```
+
+## Example
+There is a a full example for language model training using FlexDeMo in the example folder. Please refer to the documentation:
+```
+examples/t5/README.md
+```
+This example demonstrates the use of the `prepare_detonation` function for obtaining a distributed model and optimizer.
+
+## Benchmarks
+There is a a full benchmarking example for language model training using FlexDeMo in the benchmarks folder. Please refer to the documentation:
+```
+benchmarks/t5/README.md
+```
+This benchmarking example demonstrates the use of the `prepare_detonation` function for obtaining a distributed model and optimizer, and uses aim and mltiming to track model parameters and performance.
+
+## Usage
+The direct usage of DeToNATION without using `prepare_detonation` requires three elements as exemplified below for the FlexDeMo optimizer, i.e., DeToNATION with node-based hybrid sharding using DeMo replication.
+
+First, you need to wrap your model with FSDP and the hybrid sharding strategy:
+```
+from torch.distributed.fsdp import FullyShardedDataParallel as FSDP
+model = FSDP(
+    model,
+    sharding_strategy=ShardingStrategy.HYBRID_SHARD,
+)
+```
+
+Then, you can import and instantiate the FlexDeMo optimizer:
+```
+from detonation import DeMo
+optim = DeMo(
+    compression_topk=16,
+    compression_chunk=128,
+    sharding_parallel_group=model.process_group,
+    replication_parallel_group=model._inter_node_pg,
+)
+```
+
+Third and last, you need to wrap the forward and backward pass using a
+`no_sync` context manager to avoid automatic full gradient synchronization:
+```
+    with model.no_sync(): # Disable gradient synchronizations across FSDP instances.
+        loss = model(input_ids=batch["input_ids"],labels=batch["labels"])["loss"]
+        loss.backward()
+```
