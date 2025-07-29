@@ -1,0 +1,52 @@
+name: NATS Server Releases
+on:
+  push:
+    tags:
+      - v*
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    name: GitHub Release
+    runs-on: ${{ vars.GHA_WORKER_RELEASE || 'ubuntu-latest' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "stable"
+
+      - name: Check version matches tag
+        env:
+          TRAVIS_TAG: ${{ github.ref_name }}
+        run: |
+          go test -race -v -run=TestVersionMatchesTag ./server -ldflags="-X=github.com/nats-io/nats-server/v2/server.serverVersion=$TRAVIS_TAG" -count=1 -vet=off
+
+      - name: Install cosign
+        # Use commit hash here to avoid a re-tagging attack, as this is a third-party action
+        # Commit 3454372f43399081ed03b604cb2d021dabca52bb = tag v3.8.2
+        uses: sigstore/cosign-installer@3454372f43399081ed03b604cb2d021dabca52bb
+
+      - name: Install syft
+        # Use commit hash here to avoid a re-tagging attack, as this is a third-party action
+        # Commit e11c554f704a0b820cbf8c51673f6945e0731532 = tag v0.20.0
+        uses: anchore/sbom-action/download-syft@e11c554f704a0b820cbf8c51673f6945e0731532
+        with:
+          syft-version: "v1.20.0"
+
+      - name: Create release
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          distribution: goreleaser
+          version: "~> v2"
+          args: release --clean
+        env:
+          GITHUB_REPOSITORY_NAME: ${{ github.event.repository.name }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
