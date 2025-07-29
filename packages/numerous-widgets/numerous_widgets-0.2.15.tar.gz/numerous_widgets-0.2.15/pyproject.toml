@@ -1,0 +1,125 @@
+[project]
+name = "numerous-widgets"
+version = "0.2.15"
+dependencies = ["anywidget", "pydantic", "jinja2", "h5py"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers"
+]
+readme = "README.md"
+authors = [
+  { name="Lasse Thomsen, Numerous ApS", email="lasse.thomsen@numerous.com" },
+]
+description = "Widgets and patterns for building apps using frameworks like Panel, Marimo, and Jupyter based on the AnyWidget library."
+requires-python = ">=3.11"
+
+[tool.setuptools]
+package-dir = {"" = "python/src"}
+packages.find = {where = ["python/src"], include = ["numerous.*"]}
+
+[tool.setuptools.package-data]
+"numerous.widgets" = ["static/*.mjs", "static/*.css"]
+
+[project.optional-dependencies]
+dev = [
+    "pre-commit",
+    "black",
+    "mypy",
+    "anywidget[dev]",
+    "python-dotenv",
+    "numerous",
+    "pytest",
+    "ruff==0.6.4",
+    "mypy==1.11.2",
+    "coverage==7.6.1",
+    "twine==5.1.1",
+    "mkdocs==1.6.0",
+    "mkdocstrings==0.26.2",
+    "mkdocstrings-python==1.12.2",
+    "mkdocs_snippet_plugin==1.0.2",
+    "mkdocs-material==9.5.46",
+    "mkdocs-gen-files==0.5.0",
+    "mkdocs-section-index==0.3.9",
+    "mkdocs-literate-nav==0.6.1",
+    # for testing related to frameworks
+    "marimo",
+    "panel"
+]
+
+[tool.poetry.dependencies]
+python-dotenv = "^1.0.0"
+
+[tool.semantic_release]
+branch = "main"
+commit_parser = "angular"
+version_toml = ["pyproject.toml:project.version"]
+template_dir = "templates"
+
+[tool.semantic_release.remote.token]
+env = "GH_TOKEN"
+
+[tool.semantic_release.changelog]
+exclude_commit_patterns = [
+    '''chore(?:\([^)]*?\))?: .+''',
+    '''ci(?:\([^)]*?\))?: .+''',
+    '''refactor(?:\([^)]*?\))?: .+''',
+    '''style(?:\([^)]*?\))?: .+''',
+    '''test(?:\([^)]*?\))?: .+''',
+    '''build\((?!deps\): .+)''',
+    '''Merged? .*''',
+    '''initial commit''',
+]
+
+[tool.ruff]
+src = ["python/src"]
+exclude = ["python/examples"]
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "ANN101",
+    "D101",
+    "D103",
+    "D107",
+    "D203",
+    "D211",
+    "D212",
+    "FA100",
+    "FA102",
+    "ISC001",
+    "COM812",
+    "FBT001",
+    "FBT002",
+    "PLR0913",
+    "G004",
+    "EM101",
+    "TRY003",
+    "DTZ005",
+    "EM102",
+    "PLC0414",
+]
+
+[tool.ruff.lint.isort]
+lines-after-imports = 2
+
+[tool.ruff.lint.flake8-pytest-style]
+# defaults changes in 0.6.0 which gives some issues
+fixture-parentheses = false
+mark-parentheses = false
+
+[tool.ruff.lint.extend-per-file-ignores]
+"python/tests/**" = ["INP001", "S101", "D100", "D103"]
+
+
+[tool.mypy]
+ignore_missing_imports = true
+exclude = ["python/examples"]
+implicit_optional = true
+
+[project.urls]
+Homepage = "https://github.com/pypa/sampleproject"
+Issues = "https://github.com/pypa/sampleproject/issues"
+
+[project.scripts]
+numerous-widgets = "numerous.widgets.cli:main"
