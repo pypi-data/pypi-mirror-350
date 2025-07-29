@@ -1,0 +1,40 @@
+test notebooks via wheel:
+  stage: build
+  tags: [envinf3, shell]
+  needs: []
+  before_script:
+    - cd Tests/Data
+    - python -m venv --upgrade-deps .venv
+    - source .venv/bin/activate
+    - pip install -r requirements.txt
+    - pip install --force-reinstall --pre --no-index --find-links https://vip.s3.ufz.de/ogs/public/ci/python/gmsh/index.html "gmsh>=4.11"
+    - pip install -r requirements-dev.txt
+    - pip install -r requirements-ogs.txt
+  script:
+    # https://github.com/matplotlib/matplotlib/issues/25306:
+    - rm -rf "$(python -c 'import matplotlib as mpl; print(mpl.get_cachedir())')"
+    # Glacier tutorial
+    - |
+      cd ../../web/content/docs/tutorials/advancing-glacier
+      python mesh_basin.py
+      msh2vtu mesh_basin.msh --reindex
+      ogs OGSinput_basin.prj
+      cd -
+    # Append mtest install directory to PYTHONPATH
+    - export PYTHONPATH=/opt/tfel-rliv-4.0/lib/python3.11/site-packages:$PYTHONPATH
+    - export LD_LIBRARY_PATH=/opt/tfel-rliv-4.0/lib:$LD_LIBRARY_PATH
+    # TODO:
+    #  - better timeout
+    #  - run in parallel
+    - |
+      find . -type f -iname '*.py' \
+          | grep -vP '\.ci-skip|_out|\.venv|PhaseField|mtest|sen_shear|PETSc' \
+          | xargs grep -l "jupytext_version" \
+          | xargs grep -L "ci skip" \
+          | xargs python Notebooks/testrunner.py --out _out
+  artifacts:
+    when: always
+    paths:
+      - Tests/Data/_out/**/*.html
+      - Tests/Data/_out/**/*out.txt
+      - web/**/glacier.pdf

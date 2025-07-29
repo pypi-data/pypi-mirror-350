@@ -1,0 +1,13 @@
+build mac petsc:
+  tags: [mac, arm64]
+  extends:
+    - .template-build-linux
+    - .test-artifacts
+  needs: [meta]
+  timeout: 3h
+  allow_failure: true
+  variables:
+    BUILD_CTEST_LARGE_ON_MASTER: "true"
+    CMAKE_PRESET: release-petsc
+    CMAKE_ARGS: >-
+      -DOGS_USE_PIP=ON

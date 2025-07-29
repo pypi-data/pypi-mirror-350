@@ -1,0 +1,12 @@
+meta:
+  stage: preparation
+  tags: [shell]
+  needs: []
+  variables:
+    GIT_DEPTH: 1000
+  script:
+    - echo "OGS_VERSION=${CI_COMMIT_TAG:-`git describe --tags --long --dirty --always`}" >> build.env
+    - cat build.env
+  artifacts:
+    reports:
+      dotenv: build.env

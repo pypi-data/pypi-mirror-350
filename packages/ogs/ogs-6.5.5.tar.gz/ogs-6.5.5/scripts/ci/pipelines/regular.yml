@@ -1,0 +1,42 @@
+include:
+  - local: "/scripts/ci/jobs/meta.yml"
+  - local: "/scripts/ci/jobs/ci_images.yml"
+  # jobs, can be individually disabled for testing
+  - local: "/scripts/ci/jobs/pre-commit.yml"
+  - local: "/scripts/ci/pipelines/linux.yml"
+  - local: "/scripts/ci/pipelines/mac.yml"
+  - local: "/scripts/ci/pipelines/win.yml"
+  - local: "/scripts/ci/jobs/build-docs.yml"
+  - local: "/scripts/ci/jobs/jupyter.yml"
+  - local: "/scripts/ci/jobs/code-quality.yml"
+  - local: "/scripts/ci/jobs/code-coverage.yml"
+  - local: "/scripts/ci/jobs/check-header.yml"
+  - local: "/scripts/ci/jobs/include-what-you-use.yml"
+  - local: "/scripts/ci/jobs/clang-sanitizer.yml"
+  - local: "/scripts/ci/jobs/clang-tidy.yml"
+  - local: "/scripts/ci/jobs/web-preview.yml"
+  - local: "/scripts/ci/jobs/web-check.yml"
+  - local: "/scripts/ci/jobs/web-deploy.yml"
+  - local: "/scripts/ci/jobs/release.yml"
+  - local: "/scripts/ci/jobs/package.yml"
+
+# child pipelines
+wheels:
+  stage: build
+  needs: []
+  trigger:
+    include: /scripts/ci/jobs/build-wheels.yml
+  rules:
+    - changes:
+        - Applications/Python/**/*
+        - Tests/Python/**/*
+    - if: $CI_COMMIT_TAG
+    - when: manual
+      allow_failure: true
+
+# disabled, downstream pipeline does not work currently
+.ufz-bgr/hpc/tutorial:
+  stage: check
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+  trigger: ufz-bgr/hpc/tutorial

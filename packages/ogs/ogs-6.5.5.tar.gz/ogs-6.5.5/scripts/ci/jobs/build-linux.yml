@@ -1,0 +1,68 @@
+linux ctest large:
+  extends:
+    - .template-build-linux
+    - .test-artifacts
+  tags: [shell, envinf]
+  needs: [meta]
+  rules:
+    - when: manual
+      allow_failure: true
+  timeout: 3h
+  variables:
+    BUILD_TESTS: "false"
+    BUILD_CTEST_LARGE: "true"
+    CMAKE_PRESET: release-all
+    CMAKE_ARGS: >-
+      -DBUILD_SHARED_LIBS=ON
+      -DOGS_USE_MKL=ON
+      -DOGS_USE_NETCDF=ON
+  before_script:
+    - source /opt/intel/oneapi/setvars.sh
+
+build linux (no unity):
+  extends:
+    - .template-build-linux
+  tags: [shell, envinf]
+  needs: [meta]
+  timeout: 3h
+  variables:
+    BUILD_TESTS: "false"
+    BUILD_CTEST: "false"
+    CHECK_WARNINGS: "true"
+    CMAKE_PRESET: ci-no-unity
+
+build linux (no deps, no procs):
+  extends: .template-build-linux
+  tags: [shell, envinf]
+  needs: [meta]
+  timeout: 2h
+  variables:
+    BUILD_TESTS: "false"
+    BUILD_CTEST: "false"
+    CMAKE_ARGS: -DOGS_BUILD_PROCESSES=SteadyStateDiffusion
+    CMAKE_PRESET: ci-simplest
+
+build linux debug with sanitizers:
+  extends:
+    - .template-build-linux
+    - .test-artifacts
+  tags: [envinf, shell]
+  needs: [meta]
+  variables:
+    CMAKE_PRESET: sanitizer
+    CMAKE_ARGS: >-
+      -DOGS_CTEST_MAX_RUNTIME=60
+      -DOGS_BUILD_PROCESSES=SteadyStateDiffusion
+
+build linux ubuntu perf:
+  extends:
+    - .template-build-linux
+    - .test-artifacts
+    - .rules-master-manual
+  tags: [shell, ubuntu]
+  needs: [meta]
+  variables:
+    CMAKE_PRESET: release-all
+    CTEST_PARALLEL_LEVEL: 1 # Run ctests serially
+    CTEST_TIMEOUT: 480
+    OGS_PERFORMANCE_TESTS_ALLOWED_TO_FAIL: false

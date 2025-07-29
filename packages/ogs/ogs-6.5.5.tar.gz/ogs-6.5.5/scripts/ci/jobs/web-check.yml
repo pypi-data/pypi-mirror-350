@@ -1,0 +1,20 @@
+check web links:
+  stage: check
+  allow_failure: true
+  tags: [envinf4, docker] # pinning for cache
+  extends:
+    - .rules-master-manual
+  needs: [ci_images, "build linux arch", "build mac petsc"]
+  image: $WEB_IMAGE
+  script:
+    # Copy notebook pages
+    - cp -rl build/*/web/content web/
+    - cd web
+    - yarn
+    - yarn index
+    - HUGO_ENVIRONMENT=lychee hugo
+    - lychee --config ./lychee.toml --cache --max-cache-age 2d --threads ${CTEST_PARALLEL_LEVEL:-4} public
+    # - lychee --config ./lychee-gitlab.toml --cache --max-cache-age 14d --max-concurrency 2 public
+  cache:
+    paths:
+      - web/.lycheecache

@@ -1,0 +1,37 @@
+cppcheck:
+  stage: check
+  needs: [meta]
+  tags: [envinf, shell]
+  before_script:
+    - mkdir -p build
+    - cd build
+  script:
+    - >
+      cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Release -DOGS_BUILD_UTILS=OFF
+      -DOGS_USE_UNITY_BUILDS=OFF
+    - bash cppcheck.sh
+  artifacts:
+    when: always
+    reports:
+      codequality: build/cppcheck.json
+    paths:
+      - build/cppcheck.json
+
+ruff:
+  stage: check
+  needs: []
+  tags: [envinf, shell]
+  script:
+    - pipx run ruff check --exit-zero --output-format gitlab . > ruff-report.json
+    - pipx run ruff check .
+  artifacts:
+    reports:
+      codequality: ruff-report.json
+
+# Disabled, see !3053
+.code_quality:
+  stage: check
+  needs: []
+  rules:
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"

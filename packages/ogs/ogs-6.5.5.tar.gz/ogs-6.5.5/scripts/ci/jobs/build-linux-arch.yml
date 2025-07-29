@@ -1,0 +1,16 @@
+build linux arch:
+  extends:
+    - .template-build-linux
+    - .test-artifacts
+  tags: [shell, envinf]
+  needs: [meta]
+  timeout: 3h
+  variables:
+    BUILD_CTEST_LARGE_ON_MASTER: "true"
+    CMAKE_PRESET: release-all
+    CMAKE_ARGS: >-
+      -DBUILD_SHARED_LIBS=ON
+      -DOGS_USE_MKL=ON
+      -DOGS_USE_NETCDF=ON
+  before_script:
+    - source /opt/intel/oneapi/setvars.sh
