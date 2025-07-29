@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "twdspring"
+description = "Stream Monitoring under the Time Warping Distance"
+readme = "README.md"
+license = {text = "GPL-3.0-or-later"}
+authors = [
+    {name = "Aleksey Astafiev", email = "aastafiev@gmail.com"}
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3.12",
+]
+keywords = ["time warping distance", "stream", "online", "dtw", "pattern", "search pattern",
+            "monitoring", "stream monitoring", "time series", "time series analysis", "distance"]
+dependencies = ["numpy"]
+dynamic = ["version"]
+requires-python = ">=3.12"
+
+[project.urls]
+Homepage = "https://aastafiev.github.io/twdspring/"
+Source = "https://github.com/aastafiev/twdspring"
+
+[project.optional-dependencies]
+dev = ["pytest"]
+docs = ["sphinx"]
+
+[tool.setuptools.packages.find]
+include = ["twdspring"]
+
+[tool.setuptools.dynamic]
+version = {attr = "twdspring.__version__"}
+
+[tool.pytest.ini_options]
+log_cli=true
+# log_cli_level="INFO"
+log_cli_format="[%(levelname)1.1s %(asctime)s %(name)s %(module)s:%(lineno)d] %(message)s"
