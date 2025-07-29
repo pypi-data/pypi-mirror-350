@@ -1,0 +1,74 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "iban-oplata"
+version = "0.0.1"
+requires-python = ">=3.8"
+description = "Python SDK for ibanoplata.com API"
+readme = "README.md"
+keywords = ["iban", "iban oplata", "Ukraine", "🇺🇦", "api", "ibanoplata.com"]
+maintainers = [
+    {name = "Dmytro Litvinov", email = "me@dmytrolitvinov.com"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Web Environment",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+license = {text = "MIT License"}
+dependencies = [
+    "requests"
+]
+
+[project.urls]
+Homepage = "https://github.com/DmytroLitvinov/python-iban-oplata"
+Issues = "https://github.com/DmytroLitvinov/python-iban-oplata/issues"
+Changelog = "https://github.com/DmytroLitvinov/python-iban-oplata/blob/main/CHANGELOG.md"
+
+# Ruff
+# ----
+[tool.ruff]
+src = ["iban_oplata"]
+line-length = 120
+indent-width = 4
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401", "F403"]
+
+# Mypy
+# ----
+
+[tool.mypy]
+files = "."
+
+# Use strict defaults
+strict = true
+warn_unreachable = true
+warn_no_return = true
+
+[[tool.mypy.overrides]]
+# Don't require test functions to include types
+module = "tests.*"
+allow_untyped_defs = true
+disable_error_code = "attr-defined"
