@@ -1,0 +1,60 @@
+from ..base import Event, EventType, EventData
+from ....utils.types.identifier import StrObjectId
+from ....base_models.chatty_asset_model import ChattyAssetModel
+from pydantic import BaseModel, Field, field_validator, ValidationInfo
+from ....company.assets.company_assets import CompanyAssetType
+from typing import ClassVar, Optional
+from ....utils.types.executor_types import ExecutorType
+
+class AssetData(EventData):
+    asset_id: StrObjectId
+    asset: Optional[ChattyAssetModel] = Field(default=None)
+    asset_type: CompanyAssetType
+    executor_type: ExecutorType
+    executor_id: StrObjectId
+
+    @property
+    def message_group_id(self) -> str:
+        return f"asset-{self.asset_id}"
+
+class AssetEvent(Event):
+    data: AssetData
+
+    VALID_TYPES: ClassVar[set] = {
+        EventType.PRODUCT_CREATED,
+        EventType.PRODUCT_UPDATED,
+        EventType.PRODUCT_DELETED,
+        EventType.SOURCE_CREATED,
+        EventType.SOURCE_UPDATED,
+        EventType.SOURCE_DELETED,
+        EventType.TAG_CREATED,
+        EventType.TAG_UPDATED,
+        EventType.TAG_DELETED,
+        EventType.USER_CREATED,
+        EventType.USER_UPDATED,
+        EventType.USER_DELETED,
+        EventType.FAST_ANSWER_CREATED,
+        EventType.FAST_ANSWER_UPDATED,
+        EventType.FAST_ANSWER_DELETED,
+        EventType.SALE_CREATED,
+        EventType.SALE_UPDATED,
+        EventType.SALE_DELETED,
+        EventType.BUSINESS_AREA_CREATED,
+        EventType.BUSINESS_AREA_UPDATED,
+        EventType.BUSINESS_AREA_DELETED,
+        EventType.FUNNEL_CREATED,
+        EventType.FUNNEL_UPDATED,
+        EventType.FUNNEL_DELETED,
+        EventType.FUNNEL_STAGE_CREATED,
+        EventType.FUNNEL_STAGE_UPDATED,
+        EventType.FUNNEL_STAGE_DELETED,
+        EventType.WORKFLOW_CREATED,
+        EventType.WORKFLOW_UPDATED,
+        EventType.WORKFLOW_DELETED
+    }
+
+    @field_validator('data')
+    def validate_data_fields(cls, v: AssetData, info: ValidationInfo):
+        if "deleted" not in info.data.get('type').value and not v.asset:
+            raise ValueError("asset must be set for all events except PRODUCT_DELETED")
+        return v
