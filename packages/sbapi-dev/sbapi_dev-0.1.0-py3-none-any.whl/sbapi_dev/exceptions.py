@@ -1,0 +1,2 @@
+class ServeboltAPIError(Exception):
+    pass
