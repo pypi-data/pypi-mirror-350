@@ -1,0 +1,76 @@
+{
+    "general":
+    {
+        "template_name": "MBM_v3.0.1",
+        "template_stereo_name": "bma-1_0p2mm"
+    },
+     "short_preparation_pipe":
+    {
+        "use_T2": {},
+    	"crop_aladin_pipe":
+    	{
+            "reg_T1_on_template":
+            {
+                "rig_only_flag":true
+            },
+            "reg_T1_on_template2":
+            {
+                "rig_only_flag":true
+            }
+        }
+    },
+    "debias":
+    {
+        "s": 4
+    },
+    "reg":
+    {
+        "n": 2,
+        "m": "ref",
+        "dof": 12
+    },
+    "old_segment_pipe":
+    {
+        "segment":
+        {
+            "gm_output_type": [false, false, true],
+            "wm_output_type": [false, false, true],
+            "csf_output_type": [false, false, true]
+        },
+        "threshold_gm":
+        {
+            "thresh": 0.5
+        },
+        "threshold_wm":
+        {
+            "thresh": 0.5
+        },
+        "threshold_csf":
+        {
+            "thresh": 0.5
+        },
+        "export_5tt_pipe":
+        {
+        },
+        "IsoSurface_brain_pipe":
+        {
+            "merge_brain_tissues":
+            {
+                "keep_indexes": [1,2,3]
+            }
+        }
+    },
+    "mask_from_seg_pipe":
+    {
+        "dilate_mask":
+        {
+            "kernel_shape": "sphere",
+            "kernel_size": 2
+        },
+        "erode_mask":
+        {
+            "kernel_shape": "sphere",
+            "kernel_size": 2
+        }
+    }
+}
