@@ -1,0 +1,56 @@
+[build-system]
+requires = ["setuptools>=62"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "atlantisfastapi"
+version = "9.0.0"
+description = "atlantisfastapi"
+readme = "README.md"
+authors = [{ name = "Atlantis Labs", email = "r00tail@protonmail.com" }]
+dependencies = [
+    'coderfastapi ~= 6.0.0',
+    "atlantiscore ~= 12.0",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest ~= 7.4",
+    "pytest-asyncio ~= 0.21",
+    "pytest-cov ~= 4.1",
+    "pytest-mock ~= 3.11",
+    "pytest-xdist[psutil] ~= 3.3",
+]
+dev = [
+    'black ~= 23.9'
+]
+
+[tool.bumpver]
+current_version = "9.0.0"
+version_pattern = "MAJOR.MINOR.PATCH"
+commit_message = "bump version {old_version} -> {new_version}"
+commit = true
+tag = true
+push = true
+
+[tool.bumpver.file_patterns]
+"pyproject.toml" = [
+    'current_version = "{version}"',
+    'version = "{version}"'
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
+[tool.coverage.run]
+source = ["atlantisfastapi"]
+concurrency = ["greenlet", "thread"]
+
+[tool.coverage.report]
+show_missing = true
+omit = ["tests/*"]
+
+[tool.isort]
+profile = "black"
+src_paths = ["atlantisfastapi", "tests"]
+combine_as_imports = true
