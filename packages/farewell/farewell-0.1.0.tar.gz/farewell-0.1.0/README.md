@@ -1,0 +1,87 @@
+# Farewell
+
+Simple, unobtrusive script exit notifications.
+
+## Installation
+
+```python
+pip install farewell
+```
+
+## Quickstart
+
+The `farewell` module is designed to be used in a script that eventually exits.
+
+### Basic usage
+
+```python
+from farewell import on_exit
+
+def on_success():
+    print("✅ Everything worked!")
+
+def on_error(error):
+    print(f"❌ Failed: {error['type']} - {error['message']}")
+
+on_exit(succes_func=on_success,
+        error_func=on_error)
+
+# You actual script logic below - completely unchanged!
+print("Script running...")
+
+# Uncomment to test error:
+# raise ValueError("Test error!")
+
+print("Script finished!")
+```
+
+### Usage with a main()
+
+```python
+from farewell import on_exit
+
+def setup_notifications() :
+    def success_notification():
+        print("✅ Everything worked!")
+    
+    def error_notification(error):
+        print(f"❌ Failed: {error['type']} - {error['message']}")
+
+    on_exit(success_notification, error_notification)
+
+def main():
+    print("Script running...")
+    
+    # Uncomment to test error:
+    # raise ValueError("Test error!")
+    
+    print("Script finished!")
+
+if __name__ == "__main__":
+    setup_notifications() # could also be called inside main()
+    main()
+```
+
+### Example with AWS SNS notifications
+
+Also checkout `./examples/sns.py` for a more complete example.
+
+```python
+from farewell import on_exit
+import boto3
+
+sns = boto3.client('sns')
+
+def notify_success():
+    sns.publish(TopicArn="...", Message="✅ Everything worked!")
+
+def notify_error(err):
+    sns.publish(TopicArn="...", Message=f"❌ Failed: {err['type']} - {err['message']}")
+
+on_exit(succes_func=notify_success,
+        error_func=notify_error)
+
+# You actual script logic below - completely unchanged!
+```
+
+## next
