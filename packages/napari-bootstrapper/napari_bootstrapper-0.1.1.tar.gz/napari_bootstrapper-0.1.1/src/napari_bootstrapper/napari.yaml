@@ -1,0 +1,46 @@
+name: napari-bootstrapper
+display_name: Bootstrapper
+# use 'hidden' to remove plugin from napari hub search results
+visibility: public
+# see https://napari.org/stable/plugins/technical_references/manifest.html#fields for valid categories
+categories: ["Annotation", "Segmentation", "Dataset"]
+contributions:
+  commands:
+    - id: napari-bootstrapper.make_sample_data
+      python_name: napari_bootstrapper._sample_data:make_sample_data
+      title: Load sample data
+    - id: napari-bootstrapper.merge_labels
+      title: Create Merge Labels
+      python_name: napari_bootstrapper.post._merge_split_widget:merge_labels
+    - id: napari-bootstrapper.delete_labels
+      title: Create Delete Labels
+      python_name: napari_bootstrapper.post._merge_split_widget:delete_labels
+    - id: napari-bootstrapper.morph_labels
+      title: Create Morph Labels
+      python_name: napari_bootstrapper.post._merge_split_widget:morph_labels
+    - id: napari-bootstrapper.split_labels
+      title: Create Split Labels
+      python_name: napari_bootstrapper.post._merge_split_widget:split_labels
+    - id: napari-bootstrapper.filter_labels
+      title: Create Filter Labels
+      python_name: napari_bootstrapper.post._merge_split_widget:filter_labels
+    - id: napari-bootstrapper.Widget
+      python_name: napari_bootstrapper:Widget
+      title: Bootstrapper
+  sample_data:
+    - command: napari-bootstrapper.make_sample_data
+      display_name: cremi_sample_c
+      key: cremi_sample_c
+  widgets:
+    - command: napari-bootstrapper.Widget
+      display_name: Bootstrapper
+    - command: napari-bootstrapper.delete_labels
+      display_name: Delete Labels
+    - command: napari-bootstrapper.merge_labels
+      display_name: Merge Labels
+    - command: napari-bootstrapper.split_labels
+      display_name: Split Labels
+    - command: napari-bootstrapper.morph_labels
+      display_name: Morph Labels
+    - command: napari-bootstrapper.filter_labels
+      display_name: Filter Labels
