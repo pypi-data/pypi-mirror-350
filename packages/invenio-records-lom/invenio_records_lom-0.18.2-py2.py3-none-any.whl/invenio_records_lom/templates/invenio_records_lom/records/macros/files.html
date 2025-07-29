@@ -1,0 +1,84 @@
+{# -*- coding: utf-8 -*-
+
+  Copyright (C) 2020 CERN.
+  Copyright (C) 2020 Northwestern University.
+  Copyright (C) 2021, 2023 Graz University of Technology.
+  Copyright (C) 2021 TU Wien.
+
+  invenio-records-lom is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+
+  For the original code see the NOTE below.
+#}
+{#
+  NOTE:
+  copy pasted code from invenio_app_rdm/records/macros/files.html
+  it was necessary to copy paste it to override the endpoint from invenio_app_rdm_records to invenio_records_lom
+#}
+
+{% from "invenio_app_rdm/records/macros/files.html" import file_list %}
+
+{%- macro preview_file(preview_endpoint, pid_value, filename, is_preview, id='preview-iframe', width='100%', height='400' ) %}
+  {% if is_preview %}
+    {%- set preview_url = url_for(preview_endpoint, pid_value=pid_value, filename=filename, preview=1) -%}
+  {% else %}
+    {%- set preview_url = url_for(preview_endpoint, pid_value=pid_value, filename=filename) -%}
+  {% endif %}
+  <iframe
+    class="preview-iframe"
+    id="{{id}}"
+    name="{{id}}"
+    width="{{width}}"
+    height="{{height}}"
+    src="{{ preview_url }}">
+  </iframe>
+{%- endmacro %}
+
+
+{% macro lom_preview_file_box(file, pid, is_preview, record) %}
+  <div id="lom-filepreview-accordion" class="ui accordion panel mb-10 {{record.ui.access_status.id}}" href="#files-preview-accordion-panel">
+    <h3 class="active title trigger panel-heading truncated m-0 {{record.ui.access_status.id}}" aria-label="{{ _('File preview') }}">
+      <span id="preview-file-title">{{file.key}}</span>
+      <i class="ui angle right icon"></i>
+    </h3>
+    <div id="collapsablePreview" class="active conten pt-0">
+      {{ preview_file('invenio_records_lom.record_file_preview', pid_value=pid, filename=file.key, is_preview=is_preview) }}
+    </div>
+  </div>
+{%- endmacro %}
+
+
+{% macro lom_file_list_box(files, pid, is_preview, include_deleted, record, permissions) %}
+  <div id="lom-filelist-accordion" class="ui accordion panel mb-10 {{record.ui.access_status.id}}" href="#files-list-accordion-panel">
+    <h3 class="active title trigger panel-heading m-0 {{record.ui.access_status.id}}" aria-label="{{ _('Files') }}">
+      {{ _("Files") }}
+      <small class="text-muted">
+        {% if files %}
+          ({{files|sum(attribute='size')|filesizeformat}})
+        {% endif %}
+      </small>
+      <i class="angle right icon"></i>
+    </h3>
+    <div class="active content pt-0">
+      {% if record.access.files == 'restricted' %}
+        <div class="ui {{ record.ui.access_status.message_class }} message file-box-message">
+          <i class="ui {{ record.ui.access_status.icon }} icon"></i>
+          <b>{{ record.ui.access_status.title_l10n }}</b>
+          <p>{{ record.ui.access_status.description_l10n }}</p>
+          {% if record.access.embargo.reason %}
+            <p>{{_("Reason")}}: {{record.access.embargo.reason}}</p>
+          {% endif%}
+        </div>
+      {% endif %}
+      <div id="collapsableFiles">
+        {{ file_list(
+          files, pid, is_preview, include_deleted,
+          record=record,
+          download_endpoint='invenio_records_lom.record_file_download',
+          preview_endpoint='invenio_records_lom.record_file_preview',
+          permissions=permissions,
+        ) }}
+      </div>
+    </div>
+  </div>
+{%- endmacro %}
