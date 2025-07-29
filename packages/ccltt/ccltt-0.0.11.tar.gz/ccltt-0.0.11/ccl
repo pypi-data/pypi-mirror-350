@@ -1,0 +1,326 @@
+ LIBRARY:
+   MATERIAL: Air at 25 C
+     Material Description = Air at 25 C and 1 atm (dry)
+     Material Group = Air Data,Constant Property Gases
+     Option = Pure Substance
+     Thermodynamic State = Gas
+     PROPERTIES:
+       Option = General Material
+       EQUATION OF STATE:
+         Density = 1.185 [kg m^-3]
+         Molar Mass = 28.966 [kg kmol^-1]
+         Option = Value
+       END
+       SPECIFIC HEAT CAPACITY:
+         Option = Value
+         Specific Heat Capacity = 1005 [J kg^-1 K^-1]
+         Specific Heat Type = Constant Pressure
+       END
+       REFERENCE STATE:
+         Option = Specified Point
+         Reference Pressure = 1 [atm]
+         Reference Specific Enthalpy = 0. [J/kg]
+         Reference Specific Entropy = 0. [J/kg/K]
+         Reference Temperature = 25 [C]
+       END
+       DYNAMIC VISCOSITY:
+         Dynamic Viscosity = 1.81e-5 [kg m^-1 s^-1]
+         Option = Value
+       END
+       THERMAL CONDUCTIVITY:
+         Option = Value
+         Thermal Conductivity = 2.61E-02 [W m^-1 K^-1]
+       END
+       ABSORPTION COEFFICIENT:
+         Absorption Coefficient = 0.01 [m^-1]
+         Option = Value
+       END
+       SCATTERING COEFFICIENT:
+         Option = Value
+         Scattering Coefficient = 0.0 [m^-1]
+       END
+       REFRACTIVE INDEX:
+         Option = Value
+         Refractive Index = 1.0 [m m^-1]
+       END
+       THERMAL EXPANSIVITY:
+         Option = Value
+         Thermal Expansivity = 0.003356 [K^-1]
+       END
+     END
+   END
+ END
+ FLOW: Flow Analysis 1
+   SOLUTION UNITS:
+     Angle Units = [rad]
+     Length Units = [m]
+     Mass Units = [kg]
+     Solid Angle Units = [sr]
+     Temperature Units = [K]
+     Time Units = [s]
+   END
+   ANALYSIS TYPE:
+     Option = Steady State
+     EXTERNAL SOLVER COUPLING:
+       Option = None
+     END
+   END
+   DOMAIN: Default Domain
+     Coord Frame = Coord 0
+     Domain Type = Fluid
+     Location = fluid
+     BOUNDARY: ColdWall
+       Boundary Type = WALL
+       Location = coldwall
+       BOUNDARY CONDITIONS:
+         HEAT TRANSFER:
+           Fixed Temperature = 288.25 [K]
+           Option = Fixed Temperature
+         END
+         MASS AND MOMENTUM:
+           Option = No Slip Wall
+         END
+         WALL ROUGHNESS:
+           Option = Smooth Wall
+         END
+       END
+     END
+     BOUNDARY: HotWall
+       Boundary Type = WALL
+       Location = hotwall
+       BOUNDARY CONDITIONS:
+         HEAT TRANSFER:
+           Fixed Temperature = 307.85 [K]
+           Option = Fixed Temperature
+         END
+         MASS AND MOMENTUM:
+           Option = No Slip Wall
+         END
+         WALL ROUGHNESS:
+           Option = Smooth Wall
+         END
+       END
+     END
+     BOUNDARY: bottomwall
+       Boundary Type = WALL
+       Location = bottomwall
+       BOUNDARY CONDITIONS:
+         HEAT TRANSFER:
+           Option = Adiabatic
+         END
+         MASS AND MOMENTUM:
+           Option = No Slip Wall
+         END
+         WALL ROUGHNESS:
+           Option = Smooth Wall
+         END
+       END
+     END
+     BOUNDARY: sym1
+       Boundary Type = SYMMETRY
+       Location = Primitive 2D A
+     END
+     BOUNDARY: sym2
+       Boundary Type = SYMMETRY
+       Location = Primitive 2D B
+     END
+     BOUNDARY: topwall
+       Boundary Type = WALL
+       Location = topwall
+       BOUNDARY CONDITIONS:
+         HEAT TRANSFER:
+           Option = Adiabatic
+         END
+         MASS AND MOMENTUM:
+           Option = No Slip Wall
+         END
+         WALL ROUGHNESS:
+           Option = Smooth Wall
+         END
+       END
+     END
+     DOMAIN MODELS:
+       BUOYANCY MODEL:
+         Buoyancy Reference Temperature = 298.05 [K]
+         Gravity X Component = 0 [m s^-2]
+         Gravity Y Component = -9.81 [m s^-2]
+         Gravity Z Component = 0 [m s^-2]
+         Option = Buoyant
+         BUOYANCY REFERENCE LOCATION:
+           Option = Automatic
+         END
+       END
+       DOMAIN MOTION:
+         Option = Stationary
+       END
+       MESH DEFORMATION:
+         Option = None
+       END
+       REFERENCE PRESSURE:
+         Reference Pressure = 1 [atm]
+       END
+     END
+     FLUID DEFINITION: Fluid 1
+       Material = Air at 25 C
+       Option = Material Library
+       MORPHOLOGY:
+         Option = Continuous Fluid
+       END
+     END
+     FLUID MODELS:
+       COMBUSTION MODEL:
+         Option = None
+       END
+       HEAT TRANSFER MODEL:
+         Include Viscous Dissipation Term = On
+         Option = Thermal Energy
+       END
+       THERMAL RADIATION MODEL:
+         Option = None
+       END
+       TURBULENCE MODEL:
+         Option = SST
+         BUOYANCY TURBULENCE:
+           Option = None
+         END
+       END
+       TURBULENT WALL FUNCTIONS:
+         Option = Automatic
+       END
+     END
+   END
+   OUTPUT CONTROL:
+     MONITOR OBJECTS:
+       MONITOR BALANCES:
+         Option = Full
+       END
+       MONITOR FORCES:
+         Option = Full
+       END
+       MONITOR PARTICLES:
+         Option = Full
+       END
+       MONITOR POINT: Monitor Point 1
+         Cartesian Coordinates = 0.005 [m], 1.09 [m], 0 [m]
+         Coord Frame = Coord 0
+         Option = Cartesian Coordinates
+         Output Variables List = Temperature,Velocity
+         MONITOR LOCATION CONTROL:
+           Interpolation Type = Nearest Vertex
+         END
+         POSITION UPDATE FREQUENCY:
+           Option = Initial Mesh Only
+         END
+       END
+       MONITOR POINT: Monitor Point 2
+         Cartesian Coordinates = 0.07 [m], 1.09 [m], 0 [m]
+         Coord Frame = Coord 0
+         Option = Cartesian Coordinates
+         Output Variables List = Temperature,Velocity
+         MONITOR LOCATION CONTROL:
+           Interpolation Type = Nearest Vertex
+         END
+         POSITION UPDATE FREQUENCY:
+           Option = Initial Mesh Only
+         END
+       END
+       MONITOR RESIDUALS:
+         Option = Full
+       END
+       MONITOR TOTALS:
+         Option = Full
+       END
+     END
+     RESULTS:
+       File Compression Level = Default
+       Option = Standard
+     END
+   END
+   SOLVER CONTROL:
+     Turbulence Numerics = High Resolution
+     ADVECTION SCHEME:
+       Option = High Resolution
+     END
+     CONVERGENCE CONTROL:
+       Length Scale Option = Conservative
+       Maximum Number of Iterations = 700
+       Minimum Number of Iterations = 1
+       Timescale Control = Auto Timescale
+       Timescale Factor = 1.0
+     END
+     CONVERGENCE CRITERIA:
+       Residual Target = 1e-5
+       Residual Type = RMS
+     END
+     DYNAMIC MODEL CONTROL:
+       Global Dynamic Model Control = On
+     END
+     INTERRUPT CONTROL:
+       Option = Any Interrupt
+       CONVERGENCE CONDITIONS:
+         Option = Default Conditions
+       END
+     END
+   END
+ END
+ COMMAND FILE:
+   Version = 24.1
+   Results Version = 24.1
+ END
+ SIMULATION CONTROL:
+   EXECUTION CONTROL:
+     EXECUTABLE SELECTION:
+       Double Precision = No
+       Large Problem = No
+     END
+     INTERPOLATOR STEP CONTROL:
+       Runtime Priority = Standard
+       MEMORY CONTROL:
+         Memory Allocation Factor = 1.0
+         Option = Model Based
+       END
+     END
+     PARALLEL HOST LIBRARY:
+       HOST DEFINITION: nspczhangyang
+         Remote Host Name = NSPC-ZHANGYANG
+         Host Architecture String = winnt-amd64
+         Installation Root = D:\Program Files\ANSYS Inc\v%v\CFX
+       END
+     END
+     PARTITIONER STEP CONTROL:
+       Multidomain Option = Automatic
+       Runtime Priority = Standard
+       MEMORY CONTROL:
+         Memory Allocation Factor = 1.0
+         Option = Model Based
+       END
+       PARTITION SMOOTHING:
+         Maximum Partition Smoothing Sweeps = 100
+         Option = Smooth
+       END
+       PARTITIONING TYPE:
+         MeTiS Type = k-way
+         Option = MeTiS
+         Partition Size Rule = Automatic
+       END
+     END
+     RUN DEFINITION:
+       Run Mode = Full
+       Solver Input File = \
+         D:/Code/Practice/VMFL052_Fluent_WB/input/VMFL052_CFX.def
+       Solver Results File = \
+         D:\Code\Practice\VMFL078_CFX\input\VMFL052_CFX_001.res
+     END
+     SOLVER STEP CONTROL:
+       Runtime Priority = Standard
+       MEMORY CONTROL:
+         Memory Allocation Factor = 1.0
+         Option = Model Based
+       END
+       PARALLEL ENVIRONMENT:
+         Number of Processes = 1
+         Start Method = Serial
+       END
+     END
+   END
+ END

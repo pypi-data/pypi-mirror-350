@@ -1,0 +1,324 @@
+root
+children :
+    LIBRARY
+    children :
+        MATERIAL: Air at 25 C
+        children :
+            Material Description : str = "Air at 25 C and 1 atm (dry)"
+            Option : str = "Pure Substance"
+            Thermodynamic State : str = "Gas"
+            PROPERTIES
+            children :
+                Option : str = "General Material"
+                EQUATION OF STATE
+                children :
+                    Density : real = 1.185
+                    Molar Mass : real = 28.966
+                    Option : str = "Value"
+                SPECIFIC HEAT CAPACITY
+                children :
+                    Option : str = "Value"
+                    Specific Heat Capacity : int = 1005
+                    Specific Heat Type : str = "Constant Pressure"
+                REFERENCE STATE
+                children :
+                    Option : str = "Specified Point"
+                    Reference Pressure : int = 1
+                    Reference Specific Enthalpy : real = 0.0
+                    Reference Specific Entropy : real = 0.0
+                    Reference Temperature : int = 25
+                DYNAMIC VISCOSITY
+                children :
+                    Dynamic Viscosity : real = 1.81e-05
+                    Option : str = "Value"
+                THERMAL CONDUCTIVITY
+                children :
+                    Option : str = "Value"
+                    Thermal Conductivity : real = 0.0261
+                ABSORPTION COEFFICIENT
+                children :
+                    Absorption Coefficient : real = 0.01
+                    Option : str = "Value"
+                SCATTERING COEFFICIENT
+                children :
+                    Option : str = "Value"
+                    Scattering Coefficient : real = 0.0
+                REFRACTIVE INDEX
+                children :
+                    Option : str = "Value"
+                    Refractive Index : real = 1.0
+                THERMAL EXPANSIVITY
+                children :
+                    Option : str = "Value"
+                    Thermal Expansivity : real = 0.003356
+    FLOW: Flow Analysis 1
+    children :
+        SOLUTION UNITS
+        children :
+            Angle Units : int = 1
+            Length Units : int = 1
+            Mass Units : int = 1
+            Solid Angle Units : int = 1
+            Temperature Units : int = 1
+            Time Units : int = 1
+        ANALYSIS TYPE
+        children :
+            Option : str = "Steady State"
+            EXTERNAL SOLVER COUPLING
+            children :
+                Option : str = "None"
+        DOMAIN: Default Domain
+        children :
+            Coord Frame : str = "Coord 0"
+            Domain Type : str = "Fluid"
+            Location : str = "fluid"
+            BOUNDARY: ColdWall
+            children :
+                Boundary Type : str = "WALL"
+                Location : str = "coldwall"
+                BOUNDARY CONDITIONS
+                children :
+                    HEAT TRANSFER
+                    children :
+                        Fixed Temperature : real = 288.25
+                        Option : str = "Fixed Temperature"
+                    MASS AND MOMENTUM
+                    children :
+                        Option : str = "No Slip Wall"
+                    WALL ROUGHNESS
+                    children :
+                        Option : str = "Smooth Wall"
+            BOUNDARY: HotWall
+            children :
+                Boundary Type : str = "WALL"
+                Location : str = "hotwall"
+                BOUNDARY CONDITIONS
+                children :
+                    HEAT TRANSFER
+                    children :
+                        Fixed Temperature : real = 307.85
+                        Option : str = "Fixed Temperature"
+                    MASS AND MOMENTUM
+                    children :
+                        Option : str = "No Slip Wall"
+                    WALL ROUGHNESS
+                    children :
+                        Option : str = "Smooth Wall"
+            BOUNDARY: bottomwall
+            children :
+                Boundary Type : str = "WALL"
+                Location : str = "bottomwall"
+                BOUNDARY CONDITIONS
+                children :
+                    HEAT TRANSFER
+                    children :
+                        Option : str = "Adiabatic"
+                    MASS AND MOMENTUM
+                    children :
+                        Option : str = "No Slip Wall"
+                    WALL ROUGHNESS
+                    children :
+                        Option : str = "Smooth Wall"
+            BOUNDARY: sym1
+            children :
+                Boundary Type : str = "SYMMETRY"
+                Location : str = "Primitive 2D A"
+            BOUNDARY: sym2
+            children :
+                Boundary Type : str = "SYMMETRY"
+                Location : str = "Primitive 2D B"
+            BOUNDARY: topwall
+            children :
+                Boundary Type : str = "WALL"
+                Location : str = "topwall"
+                BOUNDARY CONDITIONS
+                children :
+                    HEAT TRANSFER
+                    children :
+                        Option : str = "Adiabatic"
+                    MASS AND MOMENTUM
+                    children :
+                        Option : str = "No Slip Wall"
+                    WALL ROUGHNESS
+                    children :
+                        Option : str = "Smooth Wall"
+            DOMAIN MODELS
+            children :
+                BUOYANCY MODEL
+                children :
+                    Buoyancy Reference Temperature : real = 298.05
+                    Gravity X Component : int = 0
+                    Gravity Y Component : str = "-9.81"
+                    Gravity Z Component : int = 0
+                    Option : str = "Buoyant"
+                    BUOYANCY REFERENCE LOCATION
+                    children :
+                        Option : str = "Automatic"
+                DOMAIN MOTION
+                children :
+                    Option : str = "Stationary"
+                MESH DEFORMATION
+                children :
+                    Option : str = "None"
+                REFERENCE PRESSURE
+                children :
+                    Reference Pressure : int = 1
+            FLUID DEFINITION: Fluid 1
+            children :
+                Material : str = "Air at 25 C"
+                Option : str = "Material Library"
+                MORPHOLOGY
+                children :
+                    Option : str = "Continuous Fluid"
+            FLUID MODELS
+            children :
+                COMBUSTION MODEL
+                children :
+                    Option : str = "None"
+                HEAT TRANSFER MODEL
+                children :
+                    Include Viscous Dissipation Term : str = "On"
+                    Option : str = "Thermal Energy"
+                THERMAL RADIATION MODEL
+                children :
+                    Option : str = "None"
+                TURBULENCE MODEL
+                children :
+                    Option : str = "SST"
+                    BUOYANCY TURBULENCE
+                    children :
+                        Option : str = "None"
+                TURBULENT WALL FUNCTIONS
+                children :
+                    Option : str = "Automatic"
+        OUTPUT CONTROL
+        children :
+            MONITOR OBJECTS
+            children :
+                MONITOR BALANCES
+                children :
+                    Option : str = "Full"
+                MONITOR FORCES
+                children :
+                    Option : str = "Full"
+                MONITOR PARTICLES
+                children :
+                    Option : str = "Full"
+                MONITOR POINT: Monitor Point 1
+                children :
+                    Cartesian Coordinates : real list = [0.005, 1.09, 0.0]
+                    Coord Frame : str = "Coord 0"
+                    Option : str = "Cartesian Coordinates"
+                    MONITOR LOCATION CONTROL
+                    children :
+                        Interpolation Type : str = "Nearest Vertex"
+                    POSITION UPDATE FREQUENCY
+                    children :
+                        Option : str = "Initial Mesh Only"
+                MONITOR POINT: Monitor Point 2
+                children :
+                    Cartesian Coordinates : real list = [0.07, 1.09, 0.0]
+                    Coord Frame : str = "Coord 0"
+                    Option : str = "Cartesian Coordinates"
+                    MONITOR LOCATION CONTROL
+                    children :
+                        Interpolation Type : str = "Nearest Vertex"
+                    POSITION UPDATE FREQUENCY
+                    children :
+                        Option : str = "Initial Mesh Only"
+                MONITOR RESIDUALS
+                children :
+                    Option : str = "Full"
+                MONITOR TOTALS
+                children :
+                    Option : str = "Full"
+            RESULTS
+            children :
+                File Compression Level : str = "Default"
+                Option : str = "Standard"
+        SOLVER CONTROL
+        children :
+            Turbulence Numerics : str = "High Resolution"
+            ADVECTION SCHEME
+            children :
+                Option : str = "High Resolution"
+            CONVERGENCE CONTROL
+            children :
+                Length Scale Option : str = "Conservative"
+                Maximum Number of Iterations : int = 700
+                Minimum Number of Iterations : int = 1
+                Timescale Control : str = "Auto Timescale"
+                Timescale Factor : real = 1.0
+            CONVERGENCE CRITERIA
+            children :
+                Residual Target : real = 1.0e-05
+                Residual Type : str = "RMS"
+            DYNAMIC MODEL CONTROL
+            children :
+                Global Dynamic Model Control : str = "On"
+            INTERRUPT CONTROL
+            children :
+                Option : str = "Any Interrupt"
+                CONVERGENCE CONDITIONS
+                children :
+                    Option : str = "Default Conditions"
+    COMMAND FILE
+    children :
+        Version : real = 24.1
+        Results Version : real = 24.1
+    SIMULATION CONTROL
+    children :
+        EXECUTION CONTROL
+        children :
+            EXECUTABLE SELECTION
+            children :
+                Double Precision : str = "No"
+                Large Problem : str = "No"
+            INTERPOLATOR STEP CONTROL
+            children :
+                Runtime Priority : str = "Standard"
+                MEMORY CONTROL
+                children :
+                    Memory Allocation Factor : real = 1.0
+                    Option : str = "Model Based"
+            PARALLEL HOST LIBRARY
+            children :
+                HOST DEFINITION: nspczhangyang
+                children :
+                    Remote Host Name : str = "NSPC-ZHANGYANG"
+                    Host Architecture String : str = "winnt-amd64"
+                    Installation Root : str = "D:\Program Files\ANSYS Inc\v%v\CFX"
+            PARTITIONER STEP CONTROL
+            children :
+                Multidomain Option : str = "Automatic"
+                Runtime Priority : str = "Standard"
+                MEMORY CONTROL
+                children :
+                    Memory Allocation Factor : real = 1.0
+                    Option : str = "Model Based"
+                PARTITION SMOOTHING
+                children :
+                    Maximum Partition Smoothing Sweeps : int = 100
+                    Option : str = "Smooth"
+                PARTITIONING TYPE
+                children :
+                    MeTiS Type : str = "k-way"
+                    Option : str = "MeTiS"
+                    Partition Size Rule : str = "Automatic"
+            RUN DEFINITION
+            children :
+                Run Mode : str = "Full"
+                Solver Input File : str = "D:/Code/Practice/VMFL052_Fluent_WB/input/VMFL052_CFX.def"
+                Solver Results File : str = "D:\Code\Practice\VMFL078_CFX\input\VMFL052_CFX_001.res"
+            SOLVER STEP CONTROL
+            children :
+                Runtime Priority : str = "Standard"
+                MEMORY CONTROL
+                children :
+                    Memory Allocation Factor : real = 1.0
+                    Option : str = "Model Based"
+                PARALLEL ENVIRONMENT
+                children :
+                    Number of Processes : int = 1
+                    Start Method : str = "Serial"
+

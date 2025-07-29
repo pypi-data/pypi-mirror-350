@@ -1,0 +1,517 @@
+GridTo: po logy
+{
+    surnum = "GridTopology"
+    ghost_type = "FACE"
+}
+GridGeometry
+{
+    surnum = "网格参数"
+    use_entity_global_id = TRUE
+    new_period = FALSE
+    period_mode = "old_period"
+    periodicity_num = 1
+    period_gap = 1.0e-5
+    MeshImportationParameter
+    {
+        surnum = "网格输入参数"
+        file_name = "mesh.spmesh"
+        refine_times = 0
+    }
+    // 周期边界条件_1
+    periodicity_1
+    {
+        surnum = "周期边界条件_1"
+        periodic_type = 2
+        translation_vector = 0.0,0.0,1.0
+        rotation_invariant_point = 0.0,0.0,0.0
+        rotation_axis_direction = 0.0,0.0,1.0
+        rotation_angle = 60.0
+        periodic_set_id = 0,1
+        periodic_set_id_1 = 1
+        periodic_set_id_2 = 2
+        part_id = 1
+    }
+}
+FluidSubstance
+{
+    surnum = "FluidSubstance"
+    CADGridGeometry
+    {
+        surnum = "CADGridGeometry"
+        use_entity_global_id = TRUE
+    }
+}
+TimerManager
+{
+    surnum = "TimerManager"
+    timer_list = "*::*::*"
+    print_summed = TRUE
+    print_max = TRUE
+    print_threshold = 0.0
+}
+Main
+{
+    surnum = "通用设置"
+    job_name = "AESim_CB_Simulation"
+    calculation_feature = "transient"
+    IsGravity = FALSE
+    note_book_variables = FALSE
+    Coriolis
+    {
+        surnum = "Coriolis"
+        omega = 0.0,0.0,0.0
+    }
+    Restart
+    {
+        surnum = "重启动设置"
+        is_from_restart = FALSE
+        restart_dump_interval = 5000
+        restart_dump_dirname = "Restart"
+    }
+}
+ThermoPhysicalModels
+{
+    surnum = "热物理模型设置"
+    model_all = FALSE
+    NavierStokes
+    {
+        surnum = "N-S方程参数"
+        velocity_pressure_algo = "simplec"
+        density_relaxation = 0.8
+        pressure_relaxation = 0.3
+    }
+    Turbulence
+    {
+        surnum = "湍流模型设置"
+        model = "k-epsilon"
+        momentum_source_term = TRUE
+        k_clipping_value = 8000.0
+        KEpsilon
+        {
+            surnum = "K-Epsilon参数库"
+            ce1 = 1.44
+            ce2 = 1.92
+            ce4 = 1.20
+            sigmak = 1.0
+            sigmae = 1.30
+            source_coupling = TRUE
+            rotation_correction_type_hid = "cazalbou"
+        }
+        WallFunction
+        {
+            surnum = "壁面函数"
+            name = "two_scale_log_wall_function"
+            karman_constant = 0.42
+            yplus_limit = 10.88
+        }
+    }
+    ThermalScalar
+    {
+        surnum = "传热模型设置"
+        model = "off"
+    }
+    Combustion
+    {
+        surnum = "燃烧模型设置"
+        model = "off"
+        property
+        {
+            surnum = "property"
+            num_properties = 0
+        }
+        Variables
+        {
+            surnum = "Variables"
+            num_variables = 0
+        }
+    }
+    Radiation
+    {
+        surnum = "辐射模型设置"
+        model = "off"
+        verbosity = 0
+    }
+    Lagrangian
+    {
+        surnum = "离散相模型设置"
+        model = "one_way"
+        restart_status_a = FALSE
+        particle_model_status = TRUE
+        average_veloc_status = FALSE
+        ParticleModels
+        {
+            surnum = "粒子模型"
+            origin_submodel_status_a = TRUE
+            firstato_submodel = "off"
+            secondato_submodel = "off"
+        }
+        SchemeOrder
+        {
+            surnum = "计算精度"
+            order = 1
+            turbulent_dispersion_status = FALSE
+        }
+        JavisPartOutput
+        {
+            surnum = "JavisPartOutput"
+            javis_diameter_status = TRUE
+            javis_mass_status = TRUE
+            javis_residence_time_status = TRUE
+            javis_temperature_status = TRUE
+            javis_stat_weight_status = TRUE
+            javis_velocity_status = TRUE
+            javis_coords_status = TRUE
+            javis_velocity_seen_status = TRUE
+            javis_cell_id = TRUE
+        }
+        Statistics
+        {
+            surnum = "离散相统计信息设置"
+            threshold = 0.0
+            iteration_start = 1
+            iteration_steady_start = 10
+            statistics_groups_of_particles = 0
+            volume_status = FALSE
+            dpm_vof_field = FALSE
+            dpm_smd_field = FALSE
+            dpm_velx_field = FALSE
+            dpm_vely_field = FALSE
+            dpm_velz_field = FALSE
+            dpm_diam_field = FALSE
+            dpm_dens_field = FALSE
+            dpm_temp_field = FALSE
+            boundary_status = FALSE
+            SMD_Statistic
+            {
+                surnum = "粒子SMD统计设置"
+                area_num = 0
+            }
+        }
+    }
+}
+Materials
+{
+    surnum = "流体材料"
+    num_of_materials = 1
+    // 材料属性_1
+    material_1
+    {
+        surnum = "材料属性_1"
+        name = "air"
+        density
+        {
+            surnum = "密度"
+            label = "Density"
+            choice = "constant"
+            initial_value = 1.225
+        }
+        dynamic_diffusion
+        {
+            surnum = "扩散速度"
+            label = "DiffDyn"
+            choice = "constant"
+            initial_value = 0.01
+        }
+        molecular_viscosity
+        {
+            surnum = "分子粘度"
+            label = "LamVisc"
+            choice = "constant"
+            initial_value = 1.83337e-05
+        }
+        specific_heat
+        {
+            surnum = "比热容"
+            label = "SpecHeat"
+            choice = "constant"
+            initial_value = 1017.24
+        }
+        thermal_conductivity
+        {
+            surnum = "导热系数"
+            label = "ThermalCond"
+            choice = "constant"
+            initial_value = 0.026
+        }
+    }
+}
+VolumeZoneCondition
+{
+    surnum = "体区域设置"
+    num_volume_zone = 1
+    // 体区域_1
+    volume_zone_1
+    {
+        surnum = "体区域_1"
+        name = "Cell"
+        material_name = "air"
+        material = "air"
+        HaveSource = FALSE
+        IsHeadLosses = FALSE
+        location = 1
+        Initialization
+        {
+            surnum = "初始化"
+            NavierStokes
+            {
+                surnum = "N-S方程"
+                value = "velocity[0]=0.0;velocity[1]=0.0;velocity[2]=0.0;"
+            }
+            Turbulence
+            {
+                surnum = "Turbulence"
+                choice = "reference_value"
+            }
+            UserScalars
+            {
+                surnum = "UserScalars"
+            }
+        }
+    }
+}
+BoundaryCondition
+{
+    surnum = "边界条件"
+    num_boundary_zone = 3
+    // 边界_1
+    boundary_zone_1
+    {
+        surnum = "边界_1"
+        name = "inlet"
+        nature = "inlet"
+        location = 3
+        NavierStokes
+        {
+            surnum = "动量"
+            choice = "velocity_norm"
+            value = 0.9
+            direction = "normal"
+            headloss = FALSE
+            is_convective_inlet = FALSE
+        }
+        Turbulence
+        {
+            surnum = "湍流"
+            choice = "turbulent_intensity"
+            hydraulic_diameter = 0.0255
+            turbulent_intensity = 5.0
+        }
+        Particles
+        {
+            surnum = "粒子"
+            choice = "inlet"
+            class_nums = 1
+            inject_rotate_copy_switch = FALSE
+            // 种类_1
+            class_1
+            {
+                surnum = "种类_1"
+                number = 1
+                frequency = 0
+                density = 780.0
+                nozzle_status = FALSE
+                temperature_status = TRUE
+                one_point_inject_status = TRUE
+                Diameter
+                {
+                    surnum = "Diameter"
+                    choice = "prescribed"
+                    value = 5e-04
+                    standard_deviation = 0.0
+                }
+                Velocity
+                {
+                    surnum = "Velocity"
+                    choice = "components"
+                    value = 0.0,0.0,10.0
+                }
+                OnePointInjectType
+                {
+                    surnum = "粒子单点注入设置"
+                    inject_type = 2
+                    inject_point = 0.0,0.036,0.0
+                    inject_internal_tol = 1e-5
+                }
+                StatisticalWeight
+                {
+                    surnum = "粒子表征权重设置"
+                    choice = "rate"
+                    mass_flow_rate = 1.0e-3
+                }
+                Temperature
+                {
+                    surnum = "粒子热力参数设置"
+                    choice = "prescribed"
+                    value = 300.0
+                    specific_heat = 1400.0
+                    emissivity = 0.7
+                }
+            }
+        }
+    }
+    // 边界_2
+    boundary_zone_2
+    {
+        surnum = "边界_2"
+        name = "outlet"
+        nature = "outlet"
+        location = 4
+        Particles
+        {
+            surnum = "粒子"
+            choice = "outlet"
+        }
+    }
+    // 边界_3
+    boundary_zone_3
+    {
+        surnum = "边界_3"
+        name = "wall"
+        nature = "wall"
+        roughness = 0.0
+        location = 5
+        NavierStokes
+        {
+            surnum = "动量"
+            is_sliding_wall = FALSE
+            is_rotating_wall = FALSE
+        }
+        Particles
+        {
+            surnum = "粒子"
+            choice = "bounce"
+            norm_factor = 1.0
+            tang_factor = 1.0
+        }
+    }
+}
+ReferenceValues
+{
+    surnum = "参考值"
+    pressure = 101325.0
+    temperature = 298.0
+    IniTurbRefVal = TRUE
+    velocity = 1.0
+    length = 0.5
+    SetMassMolar = FALSE
+}
+NumericalParameters
+{
+    surnum = "数值参数设置"
+    gradient_reconstruction = "Least Squares Method"
+    time_stepping_scheme = "implicit euler"
+    EquationParameters
+    {
+        surnum = "方程求解设置"
+        pressure
+        {
+            surnum = "压力方程"
+            label = "Pressure"
+            residual_tol = 1.0e-4
+        }
+        velocity
+        {
+            surnum = "动量方程"
+            label = "Velocity"
+            residual_tol = 1.0e-4
+            convection_scheme = "nvd_tvd_scheme"
+            Advanced
+            {
+                surnum = "Advanced"
+                ConvectionScheme
+                {
+                    surnum = "对流项重构"
+                    limiter_choice = "VANLEERV"
+                }
+            }
+        }
+        k
+        {
+            surnum = "k方程"
+            label = "k"
+            residual_tol = 1.0e-4
+            convection_scheme = "second_order_linear_upwind"
+        }
+        epsilon
+        {
+            surnum = "epsilon方程"
+            label = "epsilon"
+            residual_tol = 1.0e-4
+            convection_scheme = "second_order_linear_upwind"
+        }
+    }
+}
+HierarchyTimeIntegrator
+{
+    surnum = "时间积分参数"
+    start_time = 0.0
+    end_time = 100.0
+    max_integrator_steps = 50
+    use_nonuniform_workload = FALSE
+    load_balancing_threshold = 0.5
+    print_balance_efficiency = TRUE
+    time_stepping_method = "constant"
+    GriddingAlgorithm
+    {
+        surnum = "GriddingAlgorithm"
+        patch_size = 12000000
+        num_patch_per_proc_a = 1
+    }
+    TimeStepParameters
+    {
+        surnum = "时间步长参数"
+        time_step_ref = 0.0001
+    }
+}
+PostProcess
+{
+    surnum = "后处理设置"
+    log_all_nodes = FALSE
+    log_file_name = "aesim_cb_sim.log"
+    javis_dump_interval = 1
+    javis_number_procs_per_file = 1
+    FieldExtremumOutput = TRUE
+    FieldMaxMinValues
+    {
+        surnum = "FieldMaxMinValues"
+    }
+    Statistics
+    {
+        surnum = "Statistics"
+        verbosity = 1
+    }
+    InteriorMassFlux_HF
+    {
+        surnum = "内部面流量统计"
+        verbosity = 1
+        interiorFaceStatics = FALSE
+    }
+    TimeAverages
+    {
+        surnum = "时间平均设置"
+        verbosity = 1
+        time_average = FALSE
+    }
+    Probe
+    {
+        surnum = "探针设置"
+    }
+    profiles
+    {
+        surnum = "profiles"
+        num_profiles = 0
+    }
+}
+RunSimulation
+{
+    surnum = "运行模拟"
+    Process = 20
+}
+Material
+{
+    file_name = "../app.mlib"
+}
+ModelInfo
+{
+    file_name = "../Period-Sector-Tetrahedron-Mesh12W.j"
+}
