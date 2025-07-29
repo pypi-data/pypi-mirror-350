@@ -1,0 +1,123 @@
+# [tool.poetry]
+# name = "linc"
+# version = "1.7.1"
+# description = "A package to handle LICEL Binary format"
+# authors = ["Juan Diego <jdlar@eafit.edu.co>"]
+# license = "MIT"
+# readme = "README.md"
+
+# [tool.poetry.dependencies]
+# python = ">=3.10,<3.12"
+# pydantic = "^1.10.2"
+# typer = {extras = ["all"], version = "^0.6.1"}
+# numpy = "^1.23.4"
+# netCDF4 = "^1.6.2"
+# tomli = "^2.0.1"
+
+
+# [tool.poetry.group.dev.dependencies]
+# xarray = "^2022.10.0"
+# black = "^22.10.0"
+# pytest = "^7.1.3"
+# notebook = "^6.5.1"
+# matplotlib = "^3.6.1"
+
+# [tool.poetry.scripts]
+# linc = "linc.cli:app"
+
+
+# [tool.pdm]
+# distribution = true
+
+# [tool.pdm.dev-dependencies]
+# dev = [
+#     "xarray<2023.0.0,>=2022.10.0",
+#     "black<23.0.0,>=22.10.0",
+#     "pytest<8.0.0,>=7.1.3",
+#     "notebook<7.0.0,>=6.5.1",
+#     "matplotlib<4.0.0,>=3.6.1",
+# ]
+
+# [tool.pdm.build]
+# includes = []
+# [project]
+# name = "linc"
+# version = "2.0.2"
+# description = "A package to handle LICEL Binary format"
+# authors = [
+#     {name = "Juan Diego", email = "jdlar@eafit.edu.co"},
+# ]
+# dependencies = [
+#     "numpy>=1.26.4,<2.0.0",
+#     "netCDF4<2.0.0,>=1.6.2",
+#     "tomli<3.0.0,>=2.0.1",
+#     "typer>=0.12.5",
+#     "pydantic>=2.9.2",
+# ]
+# requires-python = "<3.12,>=3.10"
+# readme = "README.md"
+# license = {text = "MIT"}
+
+# # [project.urls]
+# # Documentation = "https://gfat1.gitlab.io/gfatpy"
+# # Respository = "https://gitlab.com/gfat1/gfatpy"
+
+# [project.scripts]
+# linc = "linc.cli:app"
+
+# [tool.pdm.scripts]
+# test = "pytest ./tests"
+
+[project]
+name = "linc"
+dynamic = ["version"]
+description = "A package to handle LICEL Binary format"
+authors = [{ name = "Juan Diego", email = "jdlar@eafit.edu.co" }]
+classifiers = [
+  "Intended Audience :: Science/Research",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python",
+  "Topic :: Scientific/Engineering :: Atmospheric Science",
+  "Framework :: Pydantic",
+  "Framework :: Pydantic :: 2",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+requires-python = ">=3.10"
+readme = "README.md"
+license = { text = "MIT" }
+dependencies = [
+  "numpy>=2.0.2,<2.1",
+  "pydantic>=2.10.6",
+  "typer>=0.15.1,<1",
+  "netCDF4>=1.6.2,<2",
+  "tomli>=2.0.1,<3",
+]
+
+[project.scripts]
+linc = "linc.cli:app"
+
+[dependency-groups]
+dev = [
+  "xarray>=2023.12.0,<2024.6",
+  "black>=22.10.0,<23",
+  "pytest>=7.1.3,<8",
+  "notebook>=6.5.1,<7",
+  "matplotlib>=3.6.1,<4",
+  "pre-commit>=4.1.0",
+]
+
+[tool.hatch.version]
+path = "linc/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+include = ['/README.md', '/linc']
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
