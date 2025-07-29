@@ -1,0 +1,26 @@
+{% extends "enap_designsystem/base.html" %}
+{% load static %}
+{% load wagtailcore_tags wagtailimages_tags %}
+{% block content %}
+<ul class="breadcrumb {% if dark %}dark-breadcrumb{% endif %}">
+    <li>
+        <a class="link-breadcrumbs {% if dark %}white{% endif %}" href="/">
+            <i style="{% if dark %}color: #30BFBC;{% else %}color: #007D7A;{% endif %} font-size: 14px; margin-right: 10px;" class="fa-solid fa-house"></i>
+            <i class="fa-solid fa-chevron-right" style="{% if dark %}color: #30BFBC;{% else %}color: #007D7A;{% endif %} font-size: 14px; margin-left: 5px;"></i>
+        </a>
+    </li>
+    
+    {% for ancestor in ancestors %}
+        {% if not ancestor.is_root %}
+            <li>
+                <a class="link-breadcrumbs {% if dark %}white{% endif %}" href="{{ ancestor.url }}">
+                    {{ ancestor.title }}
+                    <i class="fa-solid fa-chevron-right" style="{% if dark %}color: #30BFBC;{% else %}color: #007D7A;{% endif %} font-size: 14px; margin-left: 5px;"></i>
+                </a>
+            </li>
+        {% endif %}
+    {% endfor %}
+    
+    <li class="text-local-breadcrumbs {% if dark %}white{% endif %}">{{ current_page.title }}</li>
+</ul>
+{% endblock %}

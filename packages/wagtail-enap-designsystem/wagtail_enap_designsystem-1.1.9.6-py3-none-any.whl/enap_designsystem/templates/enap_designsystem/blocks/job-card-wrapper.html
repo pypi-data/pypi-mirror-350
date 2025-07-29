@@ -1,0 +1,58 @@
+{% extends "enap_designsystem/base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+{% load static %}
+{% block content %}
+<div class="job-card-wrapper">
+    <div style="background-color: #024248; color: white; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+        {% if job.image %}
+            {% image job.image fill-800x450 format-webp preserve-svg as card_img %}
+            <div style="background-image: url('{{ card_img.url }}'); background-size: cover; background-position: center; border-radius: 12px; height: 200px;"></div>
+        {% endif %}
+        
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+            {% if job.title %}
+                <h2 style="font-size: 18px; font-weight: 600; margin: 0; color: white;">{{ job.title }}</h2>
+            {% endif %}
+            
+            {% if job.description %}
+                <div style="font-size: 16px; margin: 0; color: white;">{{ job.description|richtext }}</div>
+            {% endif %}
+        </div>
+        
+        <div style="display: flex; justify-content: flex-end;">
+            <a href="{{ job.url }}" style="display: inline-block; padding: 8px 16px; background-color: #3a86ff; color: white; text-decoration: none; border-radius: 4px;">{{ job.link_text|default:"Ver detalhes" }}</a>
+        </div>
+    </div>
+    
+    <div style="display: flex; justify-content: space-between; padding: 10px; background-color: #f8f9fa; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; border: 1px solid #eaeaea; border-top: none;">
+        <span style="display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; text-transform: uppercase; {% if job.status == 'aberta' %}background-color: #d1fae5; color: #047857;{% elif job.status == 'em_andamento' %}background-color: #e0f2fe; color: #0369a1;{% else %}background-color: #fee2e2; color: #b91c1c;{% endif %}">
+            {{ job.get_status_label }}
+        </span>
+        
+        <button onclick="shareJob(this)" data-url="{{ job.url }}" style="background: transparent; border: none; cursor: pointer; color: #6b7280; display: flex; align-items: center; font-size: 14px;">
+            <i class="icon-share"></i> Compartilhar
+        </button>
+    </div>
+</div>
+
+<script>
+function shareJob(button) {
+    const url = button.getAttribute('data-url');
+    
+    if (navigator.share) {
+        navigator.share({
+            title: button.closest('.job-card-wrapper').querySelector('h2').textContent,
+            url: url
+        }).catch(console.error);
+    } else {
+        navigator.clipboard.writeText(url).then(() => {
+            const originalText = button.textContent;
+            button.textContent = 'Link copiado!';
+            setTimeout(() => {
+                button.innerHTML = '<i class="icon-share"></i> Compartilhar';
+            }, 2000);
+        });
+    }
+}
+</script>
+{% endblock %}

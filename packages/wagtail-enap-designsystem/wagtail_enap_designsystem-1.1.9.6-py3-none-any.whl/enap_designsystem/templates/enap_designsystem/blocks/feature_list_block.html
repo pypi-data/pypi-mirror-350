@@ -1,0 +1,55 @@
+{% extends "enap_designsystem/base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+{% block content %}
+
+
+<div class="feature-list-container">
+    <!-- Featured item (left side) -->
+    <div class="feature-list-featured">
+        <div class="feature-item feature-item--large">
+            {% if value.featured_link_url %}
+                <a href="{{ value.featured_link_url }}" class="feature-item__link">
+            {% endif %}
+                <div class="feature-item__media">
+                    {% if value.featured_image %}
+                        {% image value.featured_image fill-600x450 class="feature-item__image" %}
+                    {% endif %}
+                </div>
+                <div class="feature-item__content">
+                    <h2 class="feature-item__title">{{ value.featured_title }}</h2>
+                    <div class="feature-item__description">
+                        {{ value.featured_description|richtext }}
+                    </div>
+                </div>
+            {% if value.featured_link_url %}
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+ <!-- List items (right side) -->
+ <div class="feature-list-items">
+    {% for item in value.list_items %}
+        <div class="feature-item">
+            <div class="feature-item__media">
+                {% if item.image %}
+                    {% image item.image fill-300x200 class="feature-item__image" %}
+                {% endif %}
+            </div>
+            {% if item.link_url %}
+                    <a href="{{ item.link_url }}" class="feature-item__link">
+            <div class="feature-item__content">
+                <h3 class="feature-item__title">{{ item.title }}</h3>
+                <div class="feature-item__description">
+                    {{ item.description|richtext }}
+                </div>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+</div>
+
+
+{% endblock %}
