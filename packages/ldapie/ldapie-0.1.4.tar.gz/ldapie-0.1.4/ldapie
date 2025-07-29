@@ -1,0 +1,23 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import os
+import sys
+
+# Add the parent directory to the Python path if running from repository
+parent_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, parent_dir)
+
+try:
+    # First try to import directly (installed package)
+    from ldapie.ldapie import cli
+except ImportError:
+    try:
+        # Try importing as module within package (development)
+        from src.ldapie.ldapie import cli
+    except ImportError:
+        print("Error: Could not import ldapie module. Make sure it's installed or you're running from the correct directory.")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    cli()
