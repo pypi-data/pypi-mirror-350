@@ -1,0 +1,41 @@
+locals {
+    common = { 
+      project_name   = var.project_name
+      project_code   = var.project_code
+      service_name   = var.service_name
+      environment    = var.environment
+      aws_profile    = var.aws_profile
+      aws_account_id = var.aws_account_id
+      aws_region     = var.aws_region
+      default_tags = {
+          project_name      = var.project_name
+          project_code      = var.project_code
+          service_name      = var.service_name
+          environment       = var.environment
+          terraform_managed = true
+      }
+    }
+}
+
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+  backend "s3" {
+    bucket                   = "${LOWERED_PROJECT_CODE}-${ENVIRONMENT}-tfstate-bucket"
+    key                      = "${ENVIRONMENT}/${PROJECT_NAME}/${SERVICE_NAME}/terraform.tfstate"
+    dynamodb_table           = "${PROJECT_CODE}-${ENVIRONMENT}-tfstate-lock-table"
+    region                   = "${AWS_REGION}"
+    shared_credentials_files = ["~/.aws/credentials"]
+    profile                  = "${AWS_PROFILE}"
+  }
+}
+
+provider "aws" {
+  region                   = local.common.aws_region
+  shared_credentials_files = ["~/.aws/credentials"]
+  profile                  = local.common.aws_profile
+}
