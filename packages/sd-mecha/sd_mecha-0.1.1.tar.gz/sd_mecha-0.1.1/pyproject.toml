@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sd-mecha"
+version = "0.1.1"
+description = "State dict recipe merger"
+readme = "README.md"
+authors = [{ name = "ljleb" }]
+requires-python = ">=3.10"
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "click>=8.1.7",
+    "numpy>=1.26.0",
+    "torch>=2.1.0",
+    "scipy>=1.14.0",
+    "safetensors>=0.4.2",
+    "tqdm>=4.66.2",
+    "fuzzywuzzy>=0.18.0",
+    "python-Levenshtein",
+    "PyYAML>=6.0.1",
+]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "-ra"
+pythonpath = "."
+testpaths = [
+    "tests",
+]
+
+[tool.setuptools.package-dir]
+sd_mecha = "sd_mecha"
+
+[tool.setuptools.package-data]
+"*" = ["*.yaml"]
+
+[project.urls]
+Homepage = "https://github.com/ljleb/sd-mecha"
+Issues = "https://github.com/ljleb/sd-mecha/issues"
