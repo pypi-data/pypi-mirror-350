@@ -1,0 +1,248 @@
+#: import Clipboard kivy.core.clipboard.Clipboard
+#: import _i_ ae.kivy_iterable_displayer
+#: import DEF_LANGUAGE ae.i18n.DEF_LANGUAGE
+#: import INSTALLED_LANGUAGES ae.i18n.INSTALLED_LANGUAGES
+
+#: import DEBUG_LEVELS ae.core.DEBUG_LEVELS
+
+#: import THEME_DARK_BACKGROUND_COLOR ae.gui.utils.THEME_DARK_BACKGROUND_COLOR
+#: import THEME_DARK_FONT_COLOR ae.gui.utils.THEME_DARK_FONT_COLOR
+#: import THEME_LIGHT_BACKGROUND_COLOR ae.gui.utils.THEME_LIGHT_BACKGROUND_COLOR
+#: import THEME_LIGHT_FONT_COLOR ae.gui.utils.THEME_LIGHT_FONT_COLOR
+
+
+<UserPreferencesButton@FlowButton>
+    tap_flow_id: id_of_flow('open', 'user_preferences')
+    ellipse_fill_ink: app.mixed_back_ink
+
+<UserPreferencesPopup@FlowDropDown>
+    canvas.before:
+        Color:
+            rgba: app.mixed_back_ink
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+    FlowButton:
+        tap_flow_id: id_of_flow('toggle', 'app_tour')
+        tap_kwargs: dict(popups_to_close=(root, ))
+        text: _("stop app onboarding tour") if app.tour_layout else _("start app onboarding tour")
+        square_fill_ink: Window.clearcolor
+    FlowButton:
+        tap_flow_id: id_of_flow('open', 'themes_menu')
+        text: _("themes")
+        square_fill_ink: Window.clearcolor
+    FlowButton:
+        tap_flow_id: id_of_flow('open', 'colors_menu')
+        text: _("colors")
+        square_fill_ink: Window.clearcolor
+    AppStateSlider:
+        app_state_name: 'sound_volume'
+        cursor_image: 'atlas://data/images/defaulttheme/audio-volume-high'
+        min: 0.0
+        max: 1.0
+        step: 0.03
+    AppStateSlider:    # current kivy module vibrator.py does not support amplitudes arg of android api
+        app_state_name: 'vibration_volume'
+        cursor_image: app.main_app.img_file('vibration', app.app_states['font_size'], app.app_states['light_theme'])
+        min: 0.0
+        max: 1.0
+        step: 0.1
+    AppStateSlider:
+        app_state_name: 'font_size'
+        cursor_image: app.main_app.img_file('font_size', app.app_states['font_size'], app.app_states['light_theme'])
+        min: app.min_font_size
+        max: app.max_font_size
+        step: 1
+    BoxLayout:
+        size_hint_y: None
+        height: app.button_height if INSTALLED_LANGUAGES else 0
+        opacity: 1 if INSTALLED_LANGUAGES else 0
+        OptionalButton:
+            lang_code: DEF_LANGUAGE
+            tap_flow_id: id_of_flow('change', 'lang_code', self.lang_code)
+            tap_kwargs: dict(popups_to_close=(root, ))
+            square_fill_ink:
+                app.app_states['update_ink'] if app.main_app.lang_code in ('', self.lang_code) else Window.clearcolor
+            text: _(self.lang_code)
+            visible: DEF_LANGUAGE not in INSTALLED_LANGUAGES
+        LangCodeButton:
+            lang_idx: 0
+        LangCodeButton:
+            lang_idx: 1
+        LangCodeButton:
+            lang_idx: 2
+    BoxLayout:
+        size_hint_y: None
+        height: app.button_height
+        FlowButton:
+            tap_flow_id: id_of_flow('change', 'light_theme')
+            tap_kwargs: dict(light_theme=False)
+            text: _("dark")
+            color: THEME_DARK_FONT_COLOR or self.color
+            square_fill_ink: THEME_DARK_BACKGROUND_COLOR or self.square_fill_ink
+        FlowButton:
+            tap_flow_id: id_of_flow('change', 'light_theme')
+            tap_kwargs: dict(light_theme=True)
+            text: _("light")
+            color: THEME_LIGHT_FONT_COLOR or self.color
+            square_fill_ink: THEME_LIGHT_BACKGROUND_COLOR or self.square_fill_ink
+    BoxLayout:
+        size_hint_y: None
+        height: app.button_height if app.main_app.debug else 0
+        opacity: 1 if app.main_app.debug else 0
+        DebugLevelButton:
+            level_idx: 0
+        DebugLevelButton:
+            level_idx: 1
+        DebugLevelButton:
+            level_idx: 2
+        DebugLevelButton:
+            level_idx: 3
+    BoxLayout:
+        size_hint_y: None
+        height: app.button_height if app.main_app.debug else 0
+        opacity: 1 if app.main_app.debug else 0
+        KbdInputModeButton:
+            text: 'below_target'
+        KbdInputModeButton:
+            text: 'pan'
+        KbdInputModeButton:
+            text: 'scale'
+        KbdInputModeButton:
+            text: 'resize'
+        KbdInputModeButton:
+            text: ''
+    OptionalButton:
+        size_hint_x: 1
+        text: "kivy settings"
+        visible: app.main_app.verbose
+        on_release: app.open_settings()
+    OptionalButton:
+        tap_flow_id: id_of_flow('open', 'iterable_displayer', 'app env info')
+        tap_kwargs: dict(popup_kwargs=dict(title=self.text, data=app.main_app.app_env_dict()))
+        size_hint_x: 1
+        text: "app and system info"
+        visible: app.main_app.verbose
+    OptionalButton:
+        tap_flow_id: id_of_flow('open', 'f_string_evaluator')
+        tap_kwargs: dict(popup_kwargs=dict(title=self.text))
+        size_hint_x: 1
+        text: "help message f-string evaluator"
+        visible: app.main_app.verbose
+    OptionalButton:
+        size_hint_x: 1
+        text: "dump configs/logs/resources"
+        visible: app.main_app.debug
+        on_release:
+            app.main_app.show_message("at: " + app.main_app.backup_config_resources(), title="cfg/res backup stored"); \
+            root.close()
+    OptionalButton:
+        tap_flow_id: id_of_flow('open', 'user_name_editor') # open UserNameEditor widget implemented in :mod:`ae.kivy`
+        tap_kwargs: dict(popups_to_close=(root, ))
+        size_hint_x: 1
+        text: "add new or change current user " + app.main_app.user_id
+        visible: app.main_app.debug
+    OptionalButton:
+        tap_flow_id: id_of_flow('show', 'input')
+        tap_kwargs:
+            dict(popups_to_close=(root, ), popup_kwargs=dict(
+            message="file path/name",
+            title=self.text,
+            confirm_flow_id=id_of_flow('save', 'clipboard_file'),
+            confirm_text="delete" if Clipboard.paste() == 'DELETE_FILE' else "save"))
+            # calling event handler :meth:`ae.kivy.apps.KivyMainApp.on_clipboard_file_save`
+        size_hint_x: 1
+        text: "delete file" if Clipboard.paste() == 'DELETE_FILE' else "save clipboard content"
+        visible: app.main_app.debug and hasattr(app.main_app, 'on_clipboard_file_save') and Clipboard.paste()
+
+
+<ColorsMenuPopup@FlowDropDown>
+    child_data_maps: [dict(cls='ChangeColorButton', kwargs=dict(color_name=_c)) for _c in app.main_app.color_attr_names]
+
+<ChangeColorButton>
+    tap_flow_id: id_of_flow('open', 'color_editor', self.color_name)
+    square_fill_ink: Window.clearcolor
+    ellipse_fill_ink: app.app_states[self.color_name]
+    text: _(self.color_name)
+
+<ColorEditorPopup@FlowDropDown>
+    auto_width_anim_duration: 0.3
+    fully_opened: False
+    on_complete_opened: self.fully_opened = True; color_editor.color = app.app_states[root.attach_to.color_name]
+    ColorPicker:
+        id: color_editor
+        on_color:
+            root.fully_opened and root.attach_to and \
+            app.main_app.change_app_state(root.attach_to.color_name, list(args[1]))
+        size_hint_y: None
+        height: self.width
+        canvas.before:
+            Color:
+                rgba: Window.clearcolor
+            RoundedRectangle:
+                pos: self.pos
+                size: self.size
+
+
+<ThemesMenuPopup>
+    child_data_maps: self.child_menu_items(app.app_states['theme_names'])
+
+
+<LangCodeButton@OptionalButton>
+    lang_idx: 0
+    lang_code: INSTALLED_LANGUAGES[min(self.lang_idx, len(INSTALLED_LANGUAGES) - 1)]
+    tap_flow_id: id_of_flow('change', 'lang_code', self.lang_code)
+    tap_kwargs: dict(popups_to_close=1)
+    square_fill_ink: app.app_states['read_ink'] if app.main_app.lang_code == self.lang_code else Window.clearcolor
+    size_hint_x: 1 if self.visible else None
+    text: _(self.lang_code)
+    visible: len(INSTALLED_LANGUAGES) > self.lang_idx
+
+<DebugLevelButton@OptionalButton>
+    level_idx: 0
+    tap_flow_id: id_of_flow('change', 'debug_level', self.text)
+    tap_kwargs: dict(popups_to_close=1)
+    square_fill_ink: app.app_states['read_ink'] if app.main_app.debug_level == self.level_idx else Window.clearcolor
+    size_hint_x: 1 if self.visible else None
+    text: DEBUG_LEVELS[min(self.level_idx, len(DEBUG_LEVELS) - 1)]
+    visible: app.main_app.debug and self.level_idx < len(DEBUG_LEVELS)
+
+<KbdInputModeButton@OptionalButton>
+    tap_flow_id: id_of_flow('change', 'kbd_input_mode', self.text)
+    tap_kwargs: dict(popups_to_close=1)
+    square_fill_ink: app.app_states['read_ink'] if app.main_app.kbd_input_mode == self.text else Window.clearcolor
+    size_hint_x: 1 if self.visible else None
+    visible: app.main_app.debug
+
+<FStringEvaluatorPopup@FlowPopup>
+    BoxLayout:
+        orientation: 'vertical'
+        FlowInput:
+            id: eval_text
+            size_hint_y: None
+            height: app.main_app.font_size * 1.8
+            focus: True
+            auto_complete_texts: file_lines(normalize("{usr}/FStringEvalSuggestions.txt"))
+            on_auto_complete_texts:
+                write_file_text(self.auto_complete_texts, normalize("{usr}/FStringEvalSuggestions.txt"))
+            on_text_validate:
+                result_label.text = str(_(eval_text.text, \
+                glo_vars=app.main_app.global_variables(evaluator_popup=root, input_widget=self)))
+        FlowButton:
+            text: "evaluate '" + eval_text.text + "'"
+            size_hint_y: None
+            height: app.button_height
+            square_fill_ink: app.app_states['read_ink']
+            on_release:
+                result_label.text = str(_(eval_text.text, \
+                glo_vars=app.main_app.global_variables(evaluator_popup=root, tap_widget=self)))
+        ScrollView:
+            always_overscroll: False        # workaround to kivy scrollview bug (viewport kept at bottom)
+            do_scroll_x: False
+            Label:
+                id: result_label
+                text_size: self.width, None
+                size_hint: 1, None
+                height: self.texture_size[1]
+                color: app.font_color
+                font_size: app.main_app.font_size * 0.75
