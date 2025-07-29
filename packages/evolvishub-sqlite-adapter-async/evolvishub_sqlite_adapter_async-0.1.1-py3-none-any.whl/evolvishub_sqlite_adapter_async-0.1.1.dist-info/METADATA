@@ -1,0 +1,307 @@
+Metadata-Version: 2.4
+Name: evolvishub-sqlite-adapter-async
+Version: 0.1.1
+Summary: A professional async SQLite adapter library
+Project-URL: Homepage, https://github.com/evolvisai/evolvishub-sqlite-adapter
+Project-URL: Documentation, https://evolvishub-sqlite-adapter.readthedocs.io/
+Project-URL: Repository, https://github.com/evolvisai/evolvishub-sqlite-adapter.git
+Project-URL: Issues, https://github.com/evolvisai/evolvishub-sqlite-adapter/issues
+Author-email: "Alban Maxhuni, PhD" <amaxhuni@evolvis.ai>
+License-Expression: MIT
+License-File: LICENSE
+Keywords: adapter,async,database,sqlite
+Classifier: Development Status :: 4 - Beta
+Classifier: Framework :: AsyncIO
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Database
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Typing :: Typed
+Requires-Python: >=3.9
+Requires-Dist: aiosqlite>=0.19.0
+Requires-Dist: typing-extensions>=4.5.0
+Provides-Extra: dev
+Requires-Dist: black>=23.1.0; extra == 'dev'
+Requires-Dist: build>=1.0.0; extra == 'dev'
+Requires-Dist: isort>=5.12.0; extra == 'dev'
+Requires-Dist: mypy>=1.0.0; extra == 'dev'
+Requires-Dist: pytest-asyncio>=0.21.0; extra == 'dev'
+Requires-Dist: pytest-cov>=4.1.0; extra == 'dev'
+Requires-Dist: pytest>=7.0.0; extra == 'dev'
+Requires-Dist: ruff>=0.1.0; extra == 'dev'
+Requires-Dist: wheel>=0.42.0; extra == 'dev'
+Provides-Extra: docs
+Requires-Dist: sphinx-autodoc-typehints>=1.24.0; extra == 'docs'
+Requires-Dist: sphinx-rtd-theme>=1.3.0; extra == 'docs'
+Requires-Dist: sphinx>=7.0.0; extra == 'docs'
+Description-Content-Type: text/markdown
+
+# Evolvishub SQLite Adapter
+
+<div align="center">
+  <img src="assets/png/eviesales.png" alt="Evolvis AI Logo" width="200"/>
+</div>
+
+A professional, generic library for SQLite in Python with asynchronous support, developed by [Evolvis AI](https://evolvis.ai). This library provides a high-level interface for working with SQLite databases asynchronously, including connection pooling, transaction management, and comprehensive error handling.
+
+## About Evolvis AI
+
+Evolvis AI is your ally in making your company a pioneer and leader in the industry. We believe in:
+
+- **Co-creation**: We continuously collaborate with you in developing our solutions
+- **Open Source Priority**: We reduce costs and develop robust tools using open-source technologies
+- **Transparency and Honesty**: We keep you informed about progress continuously
+
+Our mission is to make artificial intelligence accessible to companies of all sizes, enabling them to compete in a dynamic environment. As Forbes highlights: "Organizations that strategically adopt AI will have a significant competitive advantage in today's data-driven market."
+
+## Features
+
+- 🚀 **Async Support**: Built on `aiosqlite` for non-blocking database operations
+- 🔄 **Connection Pooling**: Efficient connection management with automatic pool refresh for schema changes
+- 🔒 **Transaction Management**: Context managers for safe transaction handling with automatic commits
+- ⚙️ **Configurable**: Extensive configuration options via INI file or programmatically
+- 🛡️ **Type Safety**: Full type hints and validation
+- 📝 **Comprehensive Logging**: Configurable logging with sensitive data masking
+- 🧪 **Tested**: Extensive test suite with high coverage
+- 📚 **Well Documented**: Detailed documentation with examples
+
+## Async Implementation
+
+While SQLite itself doesn't natively support async operations, this library uses `aiosqlite` to provide async support through the following mechanisms:
+
+1. **Thread Pool**: SQLite operations are executed in a separate thread pool to prevent blocking the event loop
+2. **Connection Pooling**: Multiple connections are managed efficiently to handle concurrent operations
+3. **Async Context Managers**: All database operations use async context managers for proper resource management
+
+This approach provides several benefits:
+- Non-blocking I/O operations
+- Efficient resource utilization
+- Proper async/await syntax support
+- Thread safety for concurrent operations
+
+Note: Due to SQLite's design, there are some limitations:
+- Write operations are still serialized at the database level
+- High concurrency write operations may experience contention
+- For high-write workloads, consider using a different database system
+
+## Connection Pooling
+
+The adapter implements an efficient connection pooling mechanism with the following features:
+
+1. **Automatic Pool Management**: Connections are automatically created and managed based on the configured pool size
+2. **Schema Change Handling**: The connection pool is automatically refreshed when DDL statements (CREATE, ALTER, DROP) are executed
+3. **Resource Cleanup**: All connections are properly closed when the adapter is closed
+
+Example of connection pool usage:
+```python
+adapter = SQLiteAdapter(config)
+await adapter.connect()  # Initialize pool with configured size
+
+# DDL statements automatically refresh the connection pool
+await adapter.execute("CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT)")
+await adapter.execute("ALTER TABLE users ADD COLUMN email TEXT")
+
+# Regular queries use the existing pool
+result = await adapter.execute("SELECT * FROM users")
+
+await adapter.close()  # Clean up all connections
+```
+
+## Transaction Management
+
+The adapter provides robust transaction management with the following features:
+
+1. **Context Manager Support**: Use `async with` for automatic transaction handling
+2. **Automatic Commits**: Changes are automatically committed after successful operations
+3. **Error Handling**: Transactions are automatically rolled back on errors
+
+Example of transaction usage:
+```python
+async with adapter.transaction() as conn:
+    # Execute multiple operations in a single transaction
+    await conn.execute("INSERT INTO users (name) VALUES (?)", ["John"])
+    await conn.execute("INSERT INTO profiles (user_id) VALUES (?)", [conn.lastrowid])
+    # Transaction is automatically committed if no errors occur
+```
+
+## Logging and Sanitization
+
+The adapter includes comprehensive logging with built-in data sanitization:
+
+1. **Query Logging**: All SQL queries are logged with their parameters
+2. **Result Logging**: Query results are logged with sensitive data masking
+3. **Error Logging**: Detailed error information is logged for debugging
+
+Example of logging configuration:
+```python
+config = DatabaseConfig(
+    log_level="DEBUG",
+    log_file="database.log"
+)
+adapter = SQLiteAdapter(config)
+```
+
+The logging system automatically masks sensitive data in query results, ensuring that sensitive information is not exposed in logs.
+
+## Installation
+
+### From PyPI
+
+```bash
+pip install evolvishub-sqlite-adapter-async
+```
+
+### From Source
+
+1. Clone the repository:
+```bash
+git clone https://github.com/evolvisai/evolvishub-sqlite-adapter-async.git
+cd evolvishub-sqlite-adapter-async
+```
+
+2. Install build dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+3. Build the package:
+```bash
+python -m build
+```
+
+4. Install the built wheel:
+```bash
+pip install dist/evolvishub_sqlite_adapter_async-0.1.0-py3-none-any.whl
+```
+
+### Development Installation
+
+For development, install in editable mode with all dependencies:
+```bash
+pip install -e ".[dev]"
+```
+
+This will install the package in development mode along with all development dependencies.
+
+## Quick Start
+
+```python
+import asyncio
+from evolvishub_sqlite_adapter_async import SQLiteAdapter
+
+async def main():
+    # Initialize adapter with config file
+    adapter = SQLiteAdapter("config.ini")
+    await adapter.connect()
+    
+    try:
+        # Execute a query
+        async for result in adapter.execute(
+            "SELECT * FROM users WHERE age > ?",
+            [18]
+        ):
+            print(result["rows"])
+        
+        # Use transactions
+        async with adapter.transaction() as conn:
+            await conn.execute(
+                "INSERT INTO users (name) VALUES (?)",
+                ["John"]
+            )
+            await conn.execute(
+                "INSERT INTO profiles (user_id) VALUES (?)",
+                [conn.lastrowid]
+            )
+    
+    finally:
+        # Clean up
+        await adapter.close()
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+## Configuration
+
+The adapter can be configured in three ways:
+
+1. Using a configuration file:
+```python
+adapter = SQLiteAdapter("path/to/your/config.ini")
+```
+
+2. Using a DatabaseConfig instance:
+```python
+from evolvishub_sqlite_adapter_async import DatabaseConfig
+
+config = DatabaseConfig(
+    database="my.db",
+    pool_size=5,
+    journal_mode="WAL",
+    synchronous="NORMAL",
+    foreign_keys=True,
+    check_same_thread=False,
+    cache_size=2000,
+    temp_store="MEMORY",
+    page_size=4096,
+    log_level="INFO",
+    log_file=""
+)
+adapter = SQLiteAdapter(config)
+```
+
+3. Using default settings:
+```python
+adapter = SQLiteAdapter()
+```
+
+### Configuration Options
+
+Create your own configuration file with these options:
+
+```ini
+[database]
+# Path to the SQLite database file
+database = your_database.db
+
+# Connection pool settings
+pool_size = 5
+timeout = 30.0
+
+# SQLite specific settings
+journal_mode = WAL
+synchronous = NORMAL
+foreign_keys = true
+check_same_thread = false
+
+# Logging settings
+log_level = INFO
+log_file = your_log_file.log
+
+# Performance settings
+cache_size = 2000  # 2MB cache
+temp_store = MEMORY
+page_size = 4096
+```
+
+Note: For testing purposes, a template configuration file is available in the `tests` directory. However, for production use, you should create your own configuration file with settings appropriate for your application.
+
+## API Reference
+
+### SQLiteAdapter
+
+The main class for database operations.
+
+#### Methods
+
+- `connect()`: Initialize the connection pool
+- `close()`: Close all connections
+- `execute(query, parameters)`: Execute a query and return results. For DDL statements, the connection pool is automatically refreshed
+- `fetch_one(query, parameters)`: Get a single row
+- `fetch_all(query, parameters)`: Get all rows
+- `transaction()`: Create a transaction context with automatic commits 
