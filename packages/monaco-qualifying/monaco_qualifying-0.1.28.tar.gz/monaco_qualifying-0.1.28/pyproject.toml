@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=64.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "monaco_qualifying"
+version = "0.1.28"
+authors = [
+  { name="Liliia Shpytsia", email="fioletowujsemizwetik@gmail.com" },
+]
+description = "Analysis of Formula 1 qualification results."
+readme = {file = "README.md", content-type = "text/markdown"}
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Operating System :: OS Independent",
+]
+license = "MIT"
+license-files = ["LICENSE"]
+dependencies = []
+
+[project.scripts]
+monaco_qualifying = "monaco_qualifying.__main__:main"
+
+[project.urls]
+Homepage = "https://git.foxminded.ua/liliia-shpytsia-mentoring/task_6_report_of_monaco_2018_racing"
+Issues = "https://git.foxminded.ua/liliia-shpytsia-mentoring/task_6_report_of_monaco_2018_racing/-/issues"
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0.0"]
+
+[tool.ruff]
+target-version = "py310"
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]
+line-length = 88
+
+[tool.ruff.isort]
+known-first-party = ["monaco_qualifying"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+zip-safe = false
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+monaco_qualifying = ["data/*.txt", "data/*.log"]
