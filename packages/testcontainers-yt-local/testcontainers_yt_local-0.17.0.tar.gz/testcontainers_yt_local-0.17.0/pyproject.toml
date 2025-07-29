@@ -1,0 +1,71 @@
+[project]
+name = "testcontainers-yt-local"
+description = "Testcontainer for Yt"
+readme = "README.md"
+keywords = ["testing", "docker", "test automation", "yt", "ytsaurus", "pytest"]
+authors = [
+    {name = "Dmitriy Fedorov"},
+]
+requires-python = ">=3.10"
+license = {text = "Apache 2.0"}
+dynamic = ["version"]
+dependencies = [
+    "testcontainers ~= 4.10.0",
+    "ytsaurus-client < 0.14",
+    "ytsaurus-yson < 0.5",
+    "deepmerge < 1.2",
+]
+
+[project.urls]
+Homepage = "https://github.com/dmi-feo/testcontainers-yt-local"
+Repository = "https://github.com/dmi-feo/testcontainers-yt-local.git"
+Issues = "https://github.com/dmi-feo/testcontainers-yt-local/issues"
+Changelog = "https://github.com/dmi-feo/testcontainers-yt-local/blob/main/CHANGELOG.md"
+
+[project.optional-dependencies]
+pytest = [
+    "pytest < 9",
+]
+
+tests = [
+    "pytest < 9",
+    "requests < 3",
+]
+release = [
+    "bump-my-version == 0.18.3",
+    "generate-changelog == 0.10.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+
+[tool.setuptools.package-data]
+"testcontainers_yt_local" = ["py.typed"]
+
+[project.entry-points.pytest11]
+testcontainers_yt_local = "testcontainers_yt_local.fixtures"
+
+[tool.setuptools.dynamic]
+version = {attr = "testcontainers_yt_local.__version__"}
+
+[tool.bumpversion]
+current_version = "0.17.0"
+commit = true
+commit_args = "--no-verify"
+tag = true
+tag_name = "{new_version}"
+message = "New version: {new_version} [changelog-ignore]"
+allow_dirty = true
+
+[[tool.bumpversion.files]]
+filename = "testcontainers_yt_local/__init__.py"
+
+[[tool.bumpversion.files]]
+filename = "CHANGELOG.md"
+search = "Unreleased"
+
+[[tool.bumpversion.files]]
+filename = "CHANGELOG.md"
+search = "{current_version}...HEAD"
+replace = "{current_version}...{new_version}"

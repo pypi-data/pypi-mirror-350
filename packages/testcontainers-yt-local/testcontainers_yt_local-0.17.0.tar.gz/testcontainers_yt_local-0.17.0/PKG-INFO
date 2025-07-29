@@ -1,0 +1,64 @@
+Metadata-Version: 2.4
+Name: testcontainers-yt-local
+Version: 0.17.0
+Summary: Testcontainer for Yt
+Author: Dmitriy Fedorov
+License: Apache 2.0
+Project-URL: Homepage, https://github.com/dmi-feo/testcontainers-yt-local
+Project-URL: Repository, https://github.com/dmi-feo/testcontainers-yt-local.git
+Project-URL: Issues, https://github.com/dmi-feo/testcontainers-yt-local/issues
+Project-URL: Changelog, https://github.com/dmi-feo/testcontainers-yt-local/blob/main/CHANGELOG.md
+Keywords: testing,docker,test automation,yt,ytsaurus,pytest
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: testcontainers~=4.10.0
+Requires-Dist: ytsaurus-client<0.14
+Requires-Dist: ytsaurus-yson<0.5
+Requires-Dist: deepmerge<1.2
+Provides-Extra: pytest
+Requires-Dist: pytest<9; extra == "pytest"
+Provides-Extra: tests
+Requires-Dist: pytest<9; extra == "tests"
+Requires-Dist: requests<3; extra == "tests"
+Provides-Extra: release
+Requires-Dist: bump-my-version==0.18.3; extra == "release"
+Requires-Dist: generate-changelog==0.10.0; extra == "release"
+Dynamic: license-file
+
+A way to run https://ytsaurus.tech/docs/en/overview/try-yt#using-docker via testcontainers.
+
+Pypi: https://pypi.org/project/testcontainers-yt-local/
+
+## Installation
+
+```shell
+pip install testcontainers-yt-local
+```
+
+or (to install pytest fixtures also)
+
+```shell
+pip install "testcontainers-yt-local[pytest]"
+```
+
+## Usage
+```python
+from testcontainers_yt_local.container import YtContainerInstance
+
+
+with YtContainerInstance() as yt:
+    yt_cli = yt.get_client()
+    print(yt_cli.list("/"))
+```
+
+or use a fixture (requires `testcontainers-yt-local[pytest]` installed)
+```python
+def test_with_fixture(yt_cluster_function):
+    # there is a bunch of fixtures available:
+    # yt_cluster_session, yt_cluster_function, yt_cluster_module, yt_cluster_class, yt_cluster_package.
+    # The only difference is their scope.
+    url = f"{yt_cluster_function.proxy_url_http}/ping"
+    r = requests.get(url)
+    assert r.status_code == 200
+```
