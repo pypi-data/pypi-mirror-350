@@ -1,0 +1,124 @@
+Metadata-Version: 2.3
+Name: tracktolib
+Version: 0.55.0
+Summary: Utility library for python
+License: MIT
+Keywords: utility
+Author: Julien Brayere
+Author-email: julien.brayere@tracktor.fr
+Requires-Python: >=3.12,<4.0
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Provides-Extra: api
+Provides-Extra: http
+Provides-Extra: logs
+Provides-Extra: pg
+Provides-Extra: pg-sync
+Provides-Extra: s3
+Provides-Extra: s3-minio
+Provides-Extra: tests
+Requires-Dist: aiobotocore (>=2.9.0) ; extra == "s3"
+Requires-Dist: asyncpg (>=0.27.0) ; extra == "pg"
+Requires-Dist: deepdiff (>=8.1.0) ; extra == "tests"
+Requires-Dist: fastapi (>=0.103.2) ; extra == "api"
+Requires-Dist: httpx (>=0.25.0) ; extra == "http"
+Requires-Dist: minio (>=7.2.0) ; extra == "s3-minio"
+Requires-Dist: psycopg (>=3.1.12) ; extra == "pg-sync"
+Requires-Dist: pycryptodome (>=3.20.0) ; extra == "s3-minio"
+Requires-Dist: pydantic (>=2) ; extra == "api"
+Requires-Dist: python-json-logger (>=3.2.1) ; extra == "logs"
+Requires-Dist: rich (>=13.6.0) ; extra == "pg"
+Project-URL: Homepage, https://github.com/tracktor/tracktolib
+Project-URL: Repository, https://github.com/tracktor/tracktolib
+Description-Content-Type: text/markdown
+
+# Tracktolib
+
+[![Python versions](https://img.shields.io/pypi/pyversions/tracktolib)](https://pypi.python.org/pypi/tracktolib)
+[![Latest PyPI version](https://img.shields.io/pypi/v/tracktolib?logo=pypi)](https://pypi.python.org/pypi/tracktolib)
+[![CircleCI](https://circleci.com/gh/Tracktor/tracktolib/tree/master.svg?style=shield)](https://app.circleci.com/pipelines/github/Tracktor/tracktolib?branch=master)
+
+Utility library for python
+
+# Installation
+
+You can choose to not install all the dependencies by specifying
+the [extra](https://python-poetry.org/docs/cli/#options-4) parameter such as:
+
+```bash
+poetry add tracktolib@latest -E pg-sync -E tests --group dev 
+```
+
+Here we only install the utilities using `psycopg` (pg-sync) and `deepdiff` (tests) for the dev environment.
+
+# Utilities
+
+- **log**
+
+Utility functions for logging.
+
+```python
+import logging
+from tracktolib.logs import init_logging
+
+logger = logging.getLogger()
+formatter, stream_handler = init_logging(logger, 'json', version='0.0.1')
+```
+
+- **pg**
+
+Utility functions for [asyncpg](https://github.com/MagicStack/asyncpg)
+
+- **pg-sync**
+
+Utility functions based on psycopg such as `fetch_one`, `insert_many`, `fetch_count` ...
+
+To use the functions, create a `Connection` using psycopg: `conn = psycopg2.connect()`
+
+*fetch_one*
+
+```python
+from tracktolib.pg.pg_sync import (
+    insert_many, fetch_one, fetch_count, fetch_all
+)
+
+data = [
+    {'foo': 'bar', 'value': 1},
+    {'foo': 'baz', 'value': 2}
+]
+insert_many(conn, 'public.test', data)  # Will insert the 2 dict
+query = 'SELECT foo from public.test order by value asc'
+value = fetch_one(conn, query, required=True)  # Will return {'foo': 'bar'}, raise an error is not found
+assert fetch_count(conn, 'public.test') == 2
+query = 'SELECT * from public.test order by value asc'
+assert fetch_all(conn, query) == data
+
+```
+
+- **tests**
+
+Utility functions for testing
+
+- **s3-minio**
+
+Utility functions for [minio](https://min.io/docs/minio/linux/developers/python/API.html)
+
+- **s3**
+
+Utility functions for [aiobotocore](https://github.com/aio-libs/aiobotocore)
+
+- **logs**
+
+Utility functions to initialize the logging formatting and streams
+
+- **http**
+
+Utility functions using [httpx](https://www.python-httpx.org/)
+
+- **api**
+
+Utility functions using [fastapi](https://fastapi.tiangolo.com/)
+
