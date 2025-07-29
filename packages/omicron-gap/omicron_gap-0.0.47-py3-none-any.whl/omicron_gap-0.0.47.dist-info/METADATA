@@ -1,0 +1,60 @@
+Metadata-Version: 2.4
+Name: omicron_gap
+Version: 0.0.47
+Summary: Utilities to analyze and fill gaps in omicron triggers
+Author-email: Joseph Areeda <joseph.areeda@ligo.org>
+Project-URL: Bug Tracker, https://git.ligo.org/joseph-areeda/omicron-gap/-/issues
+Project-URL: Source Code, https://git.ligo.org/joseph-areeda/omicron-gap.git
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)
+Classifier: Natural Language :: English
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Topic :: Scientific/Engineering :: Astronomy
+Classifier: Topic :: Scientific/Engineering :: Physics
+Requires-Python: <3.12,>=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: dqsegdb2
+Requires-Dist: gwdatafind>=1.1.0
+Requires-Dist: ligo-segments>=1.0.0
+Requires-Dist: ligotimegps>=1.2.1
+Requires-Dist: gwpy>=3.0.7
+Requires-Dist: matplotlib>=3.3.0
+Requires-Dist: numpy
+Requires-Dist: astropy
+Requires-Dist: python-dateutil
+Requires-Dist: pytz
+Requires-Dist: gpstime
+Requires-Dist: gwtrigfind
+Requires-Dist: pyomicron
+Requires-Dist: ja-webutils
+Dynamic: license-file
+
+# Omicron gap related utilities
+
+This package is a collection of utilities to compliment LIGO's detector 
+characterization group Omicron trigger generator task. Our goal is to
+visualize the times when we should have triggers and any gaps.
+
+There are also programs to submit htCondor jobs to fill in 
+those gaps.
+
+* __omicron-batch-merge-dir__ - to reduce the number of files, this program 
+  safely merges contiguous trigger files in a metric day
+* __omicron-channel-check__ - examines each channel in our configuration file 
+  to confirm it is available in current frame files.
+* **omicron-compare-dirs** - Confirm that 2 directories have trigger files that cover 
+  the same time period and have the same number of triggers. Works with merge programs
+* **omicron-find-gaps** - Check DQ segments, frame availability and trigger file
+  ecistance to determine which segments if any need to be reprocessed
+* **omicron-gaps** 
+* **omicron-gap-analysis**
+* **omicron-merge-days**
+* **omicron-metric-day-merge**
+* **omicron-plot-gaps**
+* **omicron-segfile-print**
