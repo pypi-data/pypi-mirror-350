@@ -1,0 +1,121 @@
+[project]
+name = "scriptman"
+version = "2.8.462"
+description = "A powerful Python package for automation, script management, and workflow orchestration."
+readme = "README.md"
+requires-python = ">=3.12,<4.0"
+authors = [
+    { name = "Nelson Ombuya", email = "developer@incognitouser.anonaddy.me" },
+]
+dependencies = [
+    "tqdm>=4.67.1",
+    "loguru>=0.7.3",
+    "tomlkit>=0.13.2",
+    "filelock>=3.16.1",
+    "types-tqdm>=4.67.0.20241221",
+    "pydantic[email]>=2.10.6,<3.0.0",
+]
+
+[project.optional-dependencies]
+api = [
+    "uvicorn>=0.34.0",
+    "fastapi>=0.115.8",
+    "requests>=2.32.3",
+    "pydantic[email]>=2.10.6,<=2.11.0",
+    "types-requests>=2.32.0.20241016",
+]
+cache = ["dill>=0.3.9", "diskcache>=5.6.3"]
+etl = ["pandas>=2.2.3", "pandas-stubs>=2.2.3.241126"]
+pyodbc = ["pyodbc>=5.2.0"]
+scheduler = ["apscheduler>=3.11.0", "pydantic>=2.10.6"]
+selenium = [
+    "selenium>=4.28.1",
+    "requests>=2.32.3",
+    "types-selenium>=3.141.9",
+    "webdriver-manager>=4.0.2",
+    "types-requests>=2.32.0.20241016",
+]
+sqlalchemy = ["sqlalchemy>=2.0.37", "pyodbc>=5.2.0"]
+
+[project.scripts]
+scriptman = "scriptman.core.cli:CLI.start_cli_instance"
+
+# Development dependency groups (used only during development)
+[tool.poetry.group.api.dependencies]
+fastapi = "^0.115.8"
+pydantic = { extras = ["email"], version = "^2.10.6" }
+uvicorn = "^0.34.0"
+
+[tool.poetry.group.cache.dependencies]
+diskcache = "^5.6.3"
+dill = "^0.3.9"
+
+[tool.poetry.group.sqlalchemy.dependencies]
+sqlalchemy = "^2.0.38"
+pyodbc = "^5.2.0"
+
+[tool.poetry.group.pyodbc.dependencies]
+pyodbc = "^5.2.0"
+
+[tool.poetry.group.etl.dependencies]
+pandas = "^2.2.3"
+pandas-stubs = "^2.2.3.241126"
+
+[tool.poetry.group.lint.dependencies]
+black = "^24.10.0"
+isort = "^5.13.2"
+mypy = "^1.13.0"
+
+[tool.poetry.group.scheduler.dependencies]
+apscheduler = "^3.11.0"
+
+[tool.poetry.group.selenium.dependencies]
+selenium = "^4.28.1"
+requests = "^2.32.3"
+types-selenium = "^3.141.9"
+types-requests = "^2.32.0.20241016"
+webdriver-manager = "^4.0.2"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.3.4"
+icecream = "^2.1.4"
+pytest-cov = "^6.0.0"
+pytest-mock = "^3.14.0"
+
+# Formatting & Linting Configuration
+[tool.black]
+line-length = 90
+target-version = ["py312", "py313"]
+
+[tool.isort]
+profile = "black"
+
+[tool.mypy]
+strict = true
+warn_no_return = true
+warn_return_any = true
+warn_unreachable = true
+check_untyped_defs = true
+warn_unused_ignores = true
+warn_unused_configs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_untyped_decorators = true
+
+[[tool.mypy.overrides]]
+module = ["apscheduler.*", "diskcache.*", "dill.*", "pyodbc.*"]
+ignore_missing_imports = true
+
+[tool.scriptman]
+root_dir = "."
+logs_dir = ".logs"
+log_level = "DEBUG"
+
+[tool.scriptman.cache]
+dir = ".cache"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
