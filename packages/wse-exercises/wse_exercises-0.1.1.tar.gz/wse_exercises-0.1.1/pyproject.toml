@@ -1,0 +1,76 @@
+[tool.poetry]
+name = "wse-exercises"
+version = "0.1.1"
+description = "Exercises for WSE applications"
+authors = ["Sergei Mikurov <454004@mail.ru>"]
+readme = "README.md"
+packages = [
+    { include = "wse_exercises", from = "src" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pydantic = "^2.11.4"
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.15.0"
+ruff = "^0.11.9"
+pytest-cov = "^6.1.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.ruff]
+# https://docs.astral.sh/ruff/configuration/
+exclude = [
+    ".github/*",
+    ".idea/*",
+    ".venv*",
+    "docs/*",
+    "*/conftest.py",
+]
+line-length = 79
+
+[tool.ruff.lint]
+select = [
+    "F",    # pyflakes: https://pypi.org/project/pyflakes/
+    "E",    # pycodestyle: Error; pycodestyle: https://pypi.org/project/pycodestyle/
+    "W",    # pycodestyle: Warning
+    "I",    # isort: https://pypi.org/project/isort/
+    "N",    # pep8-naming: https://pypi.org/project/pep8-naming/
+    "D",    # pydocstyle: https://pypi.org/project/pydocstyle/
+    "B",    # flake8-bugbear: https://pypi.org/project/flake8-bugbear/
+    "C90",  # mccabe: https://pypi.org/project/mccabe/
+    "ANN",  # flake8-annotations: https://pypi.org/project/flake8-annotations/
+    "Q",    # flake8-quotes: https://pypi.org/project/flake8-quotes/
+]
+ignore = [
+    "D203",     # 1 blank line required before class docstring
+    "D211",     # No blank lines allowed before class docstring
+    "D213",     # Multi-line docstring summary should start at the second line
+    "D416",     # Section name should end with a colon
+]
+
+[tool.ruff.lint.per-file-ignores]
+"*/interfaces/*.py" = [
+    "D101",     # undocumented public class definitions
+    "D102",     # undocumented public method definitions
+    "D107",     # public `__init__` method definitions are missing
+    "D204",     # class methods are not separated from the class's docstring
+    "E301",     # missing blank lines between methods of a class
+    "E302"      # missing blank lines between top level functions and classes
+]
+
+[tool.ruff.lint.pycodestyle]
+max-doc-length = 72
+
+[tool.ruff.lint.flake8-quotes]
+inline-quotes = "single"
+
+[tool.ruff.format]
+quote-style = "single"
+
+[tool.pytest.ini_options]
+addopts = "--doctest-modules"
