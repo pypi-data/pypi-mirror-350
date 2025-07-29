@@ -1,0 +1,75 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "rc-im-native-mcp-server"
+version = "0.1.9"
+description = "基于MCP协议的融云IM服务（包装Rust SDK）"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+    { name = "Rongcloud", email = "imsdk@rongcloud.cn" }
+]
+dependencies = [
+    "mcp[cli]",
+    "uvicorn",
+    "pydantic",
+    "pydantic-settings",
+    "click>=8.0.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pip-tools"
+]
+
+[project.scripts]
+rc-im-native-mcp-server = "native_mcp.server.server:main"
+
+[project.urls]
+Homepage = "https://github.com/rongcloud/RC-IM-Native-MCP-Server"
+Repository = "https://github.com/rongcloud/RC-IM-Native-MCP-Server.git"
+
+[tool.hatch.build.targets.wheel]
+packages = ["native_mcp"]
+include = [
+    "native_mcp/**/*.py",
+    "native_mcp/lib/**/*.so",
+    "native_mcp/lib/**/*.dylib",
+    "native_mcp/lib/**/*.dll"
+]
+
+[tool.hatch.build]
+exclude = [
+    "native_mcp/imsdk/rust_db/",
+    "native_mcp/imsdk/rust_db/**/*",
+    "native_mcp/lib/rust_db/",
+    "native_mcp/lib/rust_db/**/*",
+    "**/*.db",
+    "**/*.db-shm",
+    "**/*.db-wal",
+    "**/*.kv",
+    ".vscode/",
+    ".idea/",
+    ".env",
+    ".venv",
+    ".DS_Store",
+    ".gitignore",
+    ".cursorrules",
+    "config.json",
+    "setup.py",
+    "main.py",
+    ".python-version",
+    "**/*.egg-info",
+    "**/*.egg-info/**/*"
+]
+artifacts = [
+    "native_mcp/imsdk/rust_db/**",
+    "native_mcp/lib/rust_db/**",
+    "readme_img/**"
+]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
