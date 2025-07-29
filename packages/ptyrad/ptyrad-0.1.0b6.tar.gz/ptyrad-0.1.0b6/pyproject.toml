@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ptyrad"
+version = "0.1.0b6"
+authors = [
+  { name="Chia-Hao Lee", email="cl2696@cornell.edu" },
+]
+description = "PtyRAD: Ptychographic Reconstruction with Automatic Differentiation"
+readme = "README.md"
+keywords = ["Ptychography"]
+license = "LGPL-3.0"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+  "accelerate",
+  "h5py",
+  "jupyter",
+  "matplotlib",
+  "optuna",
+  "torch>=2.0,<2.7",
+  "scikit-learn",
+  "scipy",
+  "tifffile",
+  "torchvision"
+]
+
+[project.scripts]
+ptyrad = "ptyrad.cli:main"
+
+[project.urls]
+"Homepage" = "https://github.com/chiahao3/ptyrad"
+"Repository" = "https://github.com/chiahao3/ptyrad"
+"Issues" = "https://github.com/chiahao3/ptyrad/issues"
+"Changelog" = "https://github.com/chiahao3/ptyrad/blob/main/CHANGELOG.md"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
