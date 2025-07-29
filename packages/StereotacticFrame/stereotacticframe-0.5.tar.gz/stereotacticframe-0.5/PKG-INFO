@@ -1,0 +1,88 @@
+Metadata-Version: 2.4
+Name: StereotacticFrame
+Version: 0.5
+Summary: A python package to put medical images in frame alignment.
+Author-email: "Dirk W.M. Loeffen" <dwm.loeffen@hotmail.com>
+License: MIT License
+        
+        Copyright (c) 2023 Stereotactic and Functional Neurosurgery Nijmegen
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+License-File: LICENSE
+Classifier: Development Status :: 4 - Beta
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Python: >=3.13
+Requires-Dist: numpy>=1.26.0
+Requires-Dist: pyvista>=0.44.0
+Requires-Dist: simpleitk>=2.3.1
+Requires-Dist: typer>=0.12.5
+Description-Content-Type: text/markdown
+
+# StereotacticFrame
+
+A python package to detect a stereotactic frame in MR and CT images
+
+# Installation
+
+Use pip to install the package:
+
+```pip install FrameRegistration```
+
+
+# Install from source
+
+Use git to clone the repository:
+
+```git clone github.com/dwml/FrameRegistration.git```
+
+Use cd to get into the directory:
+
+```cd FrameRegistration```
+
+Use poetry to install the package. For installation instructions for poetry see their documentation [here](https://python-poetry.org/docs/). After poetry is installed, in the FrameRegistration directory, run:
+
+```poetry install```
+
+# Usage
+
+The package has a command line interface that can be run using
+
+```frame_transform calculate image_path modality transform_path```
+
+The *image_path* should be the path to the input image, the *modality* should be one of **MR** or **CT** and *transform_path* is an optional path of the output transform. Since this is still under development a log file can be produced using:
+
+```frame_transform calculate image_path modality transform_path log_path --loggin-on```
+
+One can apply the transform using:
+
+```frame_transform apply image_path transform_path output_image_path```
+
+# Issues
+
+Since this package is only tested on our own imaging it would not be strange if it does not work adequately on your data. If so please submit an issue at the [issue page](https://github.com/dwml/StereotacticFrame/issues).
+
+# Warning
+
+> [!CAUTION]
+> In no circumstances can one use this package for clinical purposes. It is not thoroughly tested on a variety of images and should therefore only be used for research purposes.
