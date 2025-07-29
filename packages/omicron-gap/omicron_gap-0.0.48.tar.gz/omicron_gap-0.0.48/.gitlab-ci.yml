@@ -1,0 +1,104 @@
+include:
+  - project: computing/gitlab-ci-templates
+    file:
+      - python.yml
+
+stages:
+  - build
+  - deploy
+  - lint
+  - test
+  - docs
+
+
+# -- lint -------------------
+#
+# These jobs check the code
+# for quality issues
+#
+
+.lint:
+  stage: lint
+  image: igwn/base:conda
+
+flake8:
+  extends:
+    # https://computing.docs.ligo.org/gitlab-ci-templates/python/#.python:flake8
+    - build
+    - .lint
+  needs: []
+  script:
+    - echo "Linting code... This will take about 10 seconds."
+    - conda install flake8
+    - flake8
+
+# -- build ------------------
+build:
+  stage: build
+  image: areeda/omicron_test:0.4
+
+
+  script:
+    - /opt/conda/bin/conda run --prefix /opt/conda/envs/omicron-311 python -m pip install .
+
+# -- deploy -----------------
+
+pages:
+  stage: test
+  script:
+    - mkdir -p public
+    - cp -vR docs/build/html/* public/
+
+  dependencies:
+    - docs
+  artifacts:
+    paths:
+      - public
+
+# testing
+test:
+  image: areeda/omicron_test:0.4
+
+  script:
+
+    - /opt/conda/bin/conda run --prefix /opt/conda/envs/omicron-311 python -m pip install .
+
+    # show us what variables are available
+    - printenv
+    # make sure all programs can at least run
+    - /opt/conda/bin/conda run --prefix /opt/conda/envs/omicron-311 omicron-gaps --help >/dev/null
+    - /opt/conda/bin/conda run --prefix /opt/conda/envs/omicron-311 omicron-channel-check  --help >/dev/null
+    - /opt/conda/bin/conda run --prefix /opt/conda/envs/omicron-311 omicron-compare-dirs  --help >/dev/null
+    - /opt/conda/bin/conda run --prefix /opt/conda/envs/omicron-311 omicron-subdag-create  --help >/dev/null
+    - /opt/conda/bin/conda run --prefix /opt/conda/envs/omicron-311 omicron-find-gaps  --help >/dev/null
+    - /opt/conda/bin/conda run --prefix /opt/conda/envs/omicron-311 omicron-gaps  --help >/dev/null
+    - /opt/conda/bin/conda run --prefix /opt/conda/envs/omicron-311 omicron-gap-analysis  --help >/dev/null
+    - /opt/conda/bin/conda run --prefix /opt/conda/envs/omicron-311 omicron-gap-plot-animator  --help >/dev/null
+    - /opt/conda/bin/conda run --prefix /opt/conda/envs/omicron-311 omicron-logfile-backup  --help >/dev/null
+    - /opt/conda/bin/conda run --prefix /opt/conda/envs/omicron-311 omicron-merge-days  --help >/dev/null
+    - /opt/conda/bin/conda run --prefix /opt/conda/envs/omicron-311 omicron-metric-day-merge  --help >/dev/null
+    - /opt/conda/bin/conda run --prefix /opt/conda/envs/omicron-311 omicron-plot-gaps  --help >/dev/null
+    - /opt/conda/bin/conda run --prefix /opt/conda/envs/omicron-311 omicron-segfile-print  --help >/dev/null
+
+# -- docs -------------------
+#
+# These jobs run the sphinx
+# documentation build
+#
+
+docs:
+  stage: deploy
+  image: areeda/sphinx_latex
+  extends:
+    - build
+  script:
+#    - conda install make texlive-core
+    - python -m pip install sphinx sphinx-rtd-theme sphinx-tabs sphinxcontrib-programoutput2 numpydoc
+    - mamba install  python-ldas-tools-framecpp ldas-tools-framecpp  m2crypto pykerberos
+    - pip install .
+    - pushd docs
+    - make html
+    - popd
+  artifacts:
+    paths:
+      - docs/build/html
