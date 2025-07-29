@@ -1,0 +1,46 @@
+[project]
+name = "fastapi-mctools"
+version = "0.5.2"
+description = "Fastapi mc style tools to make it easier to develop."
+authors = [
+    {name = "Jungminchae", email = "minchae3618@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "boto3>=1.38.23",
+    "click>=8.2.1",
+    "fastapi>=0.115.12",
+    "httpx>=0.28.1",
+    "redis>=6.1.0",
+    "sqlalchemy[asyncio]>=2.0.41",
+]
+
+[dependency-groups]
+dev = [
+    "aiosqlite>=0.21.0",
+    "pymysql>=1.1.1",
+    "pytest>=8.3.5",
+    "pytest-asyncio>=0.26.0",
+    "pytest-mock>=3.14.0",
+]
+
+
+[project.scripts]
+mct = "fastapi_mctools.commands.main:command_main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+addopts = "-s --testdox"
+
+[tool.ruff]
+line-length = 130
+
+[tool.uv.build-backend]
+module-name = "fastapi_mctools"
+module-root = ""
+
+[build-system]
+requires = ["uv_build>=0.7.8,<0.8.0"]
+build-backend = "uv_build"
