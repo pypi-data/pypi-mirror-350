@@ -1,0 +1,15 @@
+
+module "lambda_functions" {
+
+  source = "./modules/lambda"
+  common = local.common
+  service_name = var.service_name
+  app_path = var.app_path
+
+  apigw_execution_arns = module.api_gateway.apigw_execution_arns
+  
+  runtime = "${TERRAYML_RUNTIME}"
+
+  lambda_function_list = ${LAMBDA_FUNCTIONS_LIST}
+  lambda_events_list = ${LAMBDA_EVENTS_LIST}
+}
