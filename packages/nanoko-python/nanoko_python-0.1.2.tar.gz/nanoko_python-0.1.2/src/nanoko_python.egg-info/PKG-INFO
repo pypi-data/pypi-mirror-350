@@ -1,0 +1,35 @@
+Metadata-Version: 2.4
+Name: nanoko-python
+Version: 0.1.2
+Summary: Python library for Nanoko API
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: httpx>=0.28.1
+Requires-Dist: pydantic[email]>=2.11.4
+Dynamic: license-file
+
+# Nanoko Python API Library
+
+This is a Python library for the Nanoko API, including both synchronous and asynchronous APIs for question bank, user, LLM, and service.
+
+## Installation
+
+```bash
+pip install nanoko-python
+```
+
+## Usage
+
+```python
+from nanoko import Nanoko
+
+nanoko = Nanoko(base_url="http://localhost:25324")
+
+# Login
+nanoko.user.login(username="username", password="password")
+
+# Get user information
+user = nanoko.user.me()
+print(user)
+```
