@@ -1,0 +1,123 @@
+[build-system]
+requires = ["poetry-core>=2.0"]
+build-backend = "poetry.core.masonry.api"
+
+[project]
+name = "textoutpc"
+version = "0.3"
+description = "BBCode parser and renderer for Planète Casio"
+readme = "README.rst"
+requires-python=">=3.9,<4.0"
+authors = [
+    { name = "Thomas Touhey", email = "thomas@touhey.fr" },
+]
+keywords = ["planète casio", "textout", "bbcode", "translator", "parser"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "License :: OSI Approved :: CEA CNRS Inria Logiciel Libre License, version 2.1 (CeCILL-2.1)",
+    "Natural Language :: French",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Intended Audience :: Developers",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content :: CGI Tools/Libraries",
+    "Topic :: Text Processing :: Markup :: HTML"
+]
+dependencies = [
+    "docutils>=0.20,<0.21",
+    "eval-type-backport>=0.2,<0.3; python_version < '3.10'",
+    "pydantic>=2.9,<3",
+    "regex>=2024.11.6",
+    "thcolor>=0.4,<0.5",
+    "typing-extensions>=4.8,<5",
+]
+
+[project.urls]
+homepage = "https://textoutpc.touhey.pro/"
+"Documentation" = "https://textoutpc.touhey.pro/"
+"Source Code" = "https://gitlab.com/thomas.touhey/textoutpc"
+"Bug Tracker" = "https://gitlab.com/thomas.touhey/textoutpc/-/issues"
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+tag_format = "$version"
+update_changelog_on_bump = true
+version = "0.1.4"
+version_files = [
+    "pyproject.toml:version",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "@abstractmethod",
+    "pragma: no cover"
+]
+
+[tool.mypy]
+ignore_missing_imports = true
+mypy_path = "."
+warn_unused_ignores = true
+show_error_codes = true
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^3.3.3"
+pytest = "^7.4.3"
+pytest-cov = "^4.1.0"
+sphinx-autobuild = "^2021.3.14"
+
+[tool.poetry.group.docs.dependencies]
+furo = "^2023.9.10"
+sphinx = "^7.1.2"
+sphinxcontrib-mermaid = "^0.9.2"
+toml = "^0.10.2"
+
+[tool.pytest.ini_options]
+addopts = """
+--cov=textoutpc --cov-report term --doctest-modules
+--ignore=docs --ignore=migrations
+"""
+
+[tool.ruff]
+fix = true
+line-length = 79
+target-version = "py39"
+
+[tool.ruff.lint]
+select = [
+    "ANN",
+    "ASYNC",
+    "B",
+    "COM",
+    "D",
+    "E",
+    "F",
+    "FAST",
+    "G",
+    "I",
+    "Q",
+    "RUF",
+    "S",
+    "UP",
+    "W",
+]
+ignore = [
+    "ANN002", # No type annotations for *args
+    "ANN003", # No type annotations for **kwargs
+    "ANN204", # No return type for special method
+    "ANN401", # We allow typing.Any in certain annoying cases
+    "D105",   # No need for docstrings in magic __methods__
+    "D107",   # No need for docstrings in __init__
+    "S413",   # We use pycryptodome, not pycrypto
+    "S608",   # We build our requests ourselves here.
+]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+known-first-party = ["textoutpc"]
+required-imports = ["from __future__ import annotations"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**.py" = ["D103", "S101", "S106"]
+"docs/**.py" = ["D100", "D103", "F841"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "pep257"
