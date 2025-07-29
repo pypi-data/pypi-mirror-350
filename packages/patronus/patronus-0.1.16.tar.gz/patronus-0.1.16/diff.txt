@@ -1,0 +1,158 @@
+diff --git a/src/patronus/datasets/datasets.py b/src/patronus/datasets/datasets.py
+index c79234a..7e7b749 100644
+--- a/src/patronus/datasets/datasets.py
++++ b/src/patronus/datasets/datasets.py
+@@ -134,6 +134,8 @@ class Row:
+             return self._row.tags
+         return None
+ 
++    def _pat_dump(self):
++        return self._row.to_dict()
+ 
+ @dataclasses.dataclass
+ class Dataset:
+diff --git a/src/patronus/experiments/experiment.py b/src/patronus/experiments/experiment.py
+index e9028ba..9d07f6b 100644
+--- a/src/patronus/experiments/experiment.py
++++ b/src/patronus/experiments/experiment.py
+@@ -136,6 +136,9 @@ def run_experiment(
+     otel_endpoint: Optional[str] = None,
+     ui_url: Optional[str] = None,
+     timeout_s: Optional[int] = None,
++    resource_dir: Optional[str] = None,
++    prompt_providers: Optional[list[str]] = None,
++    prompt_templating_engine: Optional[str] = None,
+     integrations: Optional[list[typing.Any]] = None,
+     **kwargs,
+ ) -> Union["Experiment", typing.Awaitable["Experiment"]]:
+@@ -202,6 +205,9 @@ def run_experiment(
+             otel_endpoint=otel_endpoint,
+             ui_url=ui_url,
+             timeout_s=timeout_s,
++            resource_dir=resource_dir,
++            prompt_providers=prompt_providers,
++            prompt_templating_engine=prompt_templating_engine,
+             integrations=integrations,
+             **kwargs,
+         )
+@@ -245,6 +251,9 @@ class Experiment:
+     _otel_endpoint: Optional[str]
+     _ui_url: Optional[str]
+     _timeout_s: Optional[int]
++    _resource_dir: Optional[str]
++    _prompt_providers: Optional[list[str]]
++    _prompt_templating_engine: Optional[str]
+ 
+     _ctx: Optional[context.PatronusContext] = None
+ 
+@@ -265,6 +274,9 @@ class Experiment:
+         otel_endpoint: Optional[str] = None,
+         ui_url: Optional[str] = None,
+         timeout_s: Optional[int] = None,
++        resource_dir: Optional[str] = None,
++        prompt_providers: Optional[list[str]] = None,
++        prompt_templating_engine: Optional[str] = None,
+         integrations: Optional[list[typing.Any]] = None,
+         **kwargs,
+     ):
+@@ -297,6 +309,9 @@ class Experiment:
+         self._otel_endpoint = otel_endpoint
+         self._ui_url = ui_url
+         self._timeout_s = timeout_s
++        self._resource_dir = resource_dir
++        self._prompt_providers = prompt_providers
++        self._prompt_templating_engine = prompt_templating_engine
+ 
+         self._prepared = False
+ 
+@@ -321,6 +336,9 @@ class Experiment:
+         otel_endpoint: Optional[str] = None,
+         ui_url: Optional[str] = None,
+         timeout_s: Optional[int] = None,
++        resource_dir: Optional[str] = None,
++        prompt_providers: Optional[list[str]] = None,
++        prompt_templating_engine: Optional[str] = None,
+         integrations: Optional[list[typing.Any]] = None,
+         **kwargs: typing.Any,
+     ) -> te.Self:
+@@ -485,6 +503,9 @@ class Experiment:
+             api_url=self._api_url or cfg.api_url,
+             otel_endpoint=self._otel_endpoint or cfg.otel_endpoint,
+             api_key=self._api_key or cfg.api_key,
++            resource_dir=self._resource_dir or cfg.resource_dir,
++            prompt_providers=self._prompt_providers or cfg.prompt_providers,
++            prompt_templating_engine=cfg.prompt_templating_engine,
+             client_http=client_http,
+             client_http_async=client_http_async,
+             timeout_s=self._timeout_s or cfg.timeout_s,
+diff --git a/src/patronus/experiments/types.py b/src/patronus/experiments/types.py
+index 83159cf..6f0c3c7 100644
+--- a/src/patronus/experiments/types.py
++++ b/src/patronus/experiments/types.py
+@@ -25,6 +25,9 @@ class TaskResult(pydantic.BaseModel):
+     metadata: Optional[dict[str, typing.Any]] = None
+     tags: Optional[dict[str, str]] = None
+ 
++    def _pat_dump(self):
++        return self.model_dump(mode="json")
++
+ 
+ MaybeEvaluationResult = typing.Union[EvaluationResult, api_types.EvaluationResult, None]
+ 
+@@ -92,6 +95,12 @@ class _EvalParent(pydantic.BaseModel):
+             return self.evals[evaluator_or_name]
+         return None
+ 
++    def _pat_dump(self):
++        # We don't want to expsoe the parent.
++        # Since this is an experiment type, the previous task/evaluations
++        # are already logged.
++        return "_EvalParent(...)"
++
+ 
+ _EvalParent.model_rebuild()
+ 
+diff --git a/src/patronus/init.py b/src/patronus/init.py
+index 95d2616..38b01f2 100644
+--- a/src/patronus/init.py
++++ b/src/patronus/init.py
+@@ -126,7 +126,7 @@ def build_context(
+     api_url: Optional[str],
+     otel_endpoint: str,
+     api_key: str,
+-    resource_dir: Optional[str] = None,
++    resource_dir: str = None,
+     prompt_providers: Optional[list[str]] = None,
+     prompt_templating_engine: Optional[str] = None,
+     client_http: Optional[httpx.Client] = None,
+diff --git a/src/patronus/tracing/logger.py b/src/patronus/tracing/logger.py
+index cd1671a..104df8a 100644
+--- a/src/patronus/tracing/logger.py
++++ b/src/patronus/tracing/logger.py
+@@ -7,6 +7,7 @@ from time import time_ns
+ from types import MappingProxyType
+ from typing import Optional, Union
+ 
++import pydantic
+ from opentelemetry._logs import SeverityNumber
+ from opentelemetry.exporter.otlp.proto.grpc._log_exporter import OTLPLogExporter as OTLPLogExporterTCP
+ from opentelemetry.sdk._logs import LogRecord
+@@ -134,8 +135,18 @@ def encode_attrs(v):
+ 
+ 
+ def transform_body(v: typing.Any):
++    # We check for the private method first since it may do overridding of the types checked later
++    if hasattr(v, "_pat_dump"):
++        v = v._pat_dump()
+     if v is None:
+         return None
++    if isinstance(v, pydantic.BaseModel):
++        try:
++            v = v.model_dump(mode="json")
++        except Exception:
++            # If we fail to dump the model, we will get the `str` reperesentation later
++            # We don't want to raise since the model could be defined by the user
++            pass
+     if isinstance(v, MappingProxyType):
+         v = dict(v)
+     if isinstance(v, list):

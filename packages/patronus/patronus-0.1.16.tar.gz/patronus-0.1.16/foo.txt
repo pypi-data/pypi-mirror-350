@@ -1,0 +1,38 @@
+Based on that knowledge I want to implement methods that would call the API to save the prompt. I want the interface to be roughtly as so:
+
+```
+from patronus.prompts import Prompt, push_pormpt, apush_prompt
+p = Prompt(
+    name="pirate/foo/bar",
+    body="Behave like {{ kind }} pirate!",
+    metadata={
+        "engine": "mustache",
+        "model_params": {
+            "temperature": 0.5
+        }
+    },
+)
+
+# sync version, returns LoadedPrompt
+loaded_prompt = push_prompt(p)
+# async version, returns LoadedPrompt
+loaded_prompt = await apush_prompt(p)
+```
+
+I also noticed some issues that you may fix as well. I noticed that metadata is typed as string, not as optional dict object (JSON). Let's fix type hinting for it.
+
+Also in contrast to load method, I want it to only work with APIs, I think we can ignore the local storage for now.
+Since the SDK is high level I think we should consider it working as follows:
+* Assume project from context/config (the same way as load method works)
+* You can also pass project as argument (NOT_GIVEN) should be an default
+* The method should be smart about that, we shouldn't create a revision if one already exists for given prompt definition. For that we can use normalized sha field.
+* Normalized sha is created by running sha256 on the prompt that has whitespace stripped from start and end.
+* based on API Client SDK file:
+   * You will need to use it to understand how to call these APIs
+   * Most likely you'll want to call create revision api and list revisions api
+* Both methods sync and async should be exported in the same way
+* Make sure that the code you produce has proper type hinting
+* And type hinting follows convention used in existing code
+* Also, make sure that code is consistent with the codebase
+
+Please come up with the plan first. You can edit files directly.
