@@ -1,0 +1,225 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.2.5"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    },
+    {
+      "url": "https://moa.rpm.kr-st-midasit.com/backend/function-executor/python-execute/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-designers_guide-func_execute-calc_content_8": {
+      "post": {
+        "summary": "Dynamic Factors for Railway Bridges with Multiple Spans",
+        "description": "[EN1991-2] This guide provides a detailed approach to calculating dynamic factors for railway bridges with main girders that span multiple spans. It includes instructions for determining the dynamic factor used in static analysis, which accounts for general dynamic amplification, and the dynamic factor applied to real train movements, which considers the effects of train speed and resonance. By following this guide, engineers can ensure that the bridge design accommodates both standard dynamic loads and the specific dynamic effects of real trains operating at high speeds.",
+        "x-content-info": {
+          "standardType": "EUROCODE",
+          "codeName": "EN1991-2",
+          "codeTitle": "Eurocode 1: Actions on structures \u2014 Part 2: Traffic loads on bridges",
+          "title": "Dynamic Factors for Railway Bridges with Multiple Spans",
+          "description": "[EN1991-2] This guide provides a detailed approach to calculating dynamic factors for railway bridges with main girders that span multiple spans. It includes instructions for determining the dynamic factor used in static analysis, which accounts for general dynamic amplification, and the dynamic factor applied to real train movements, which considers the effects of train speed and resonance. By following this guide, engineers can ensure that the bridge design accommodates both standard dynamic loads and the specific dynamic effects of real trains operating at high speeds.",
+          "edition": "2003 Incorporating Corrigendum No. 1",
+          "figurePath": "https://moa.rpm.kr-dv-midasit.com/design-guide/figures/detail_content_8.png"
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "G8_COMP_3": {
+                    "title": "Total span length for multi-span main girder",
+                    "type": "number",
+                    "description": "The total span length for a multi-span main girder, denoted as Li, is the sum of all individual span lengths in a continuous main girder system. This combined length, from L1 to Ln, is crucial for calculating the mean span length, which is used in dynamic analysis and load distribution for multi-span main girders.",
+                    "default": 115,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1991-2"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.4.5.3(Table6.2)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "L_{i}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "m"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G8_COMP_4": {
+                    "title": "Number of spans for continuous girders",
+                    "type": "number",
+                    "description": "The number of spans refers to how many spans are present in a continuous girder or slab system. It is used to calculate the mean span length, and this value helps determine the determinant length, which must not be less than the longest span.",
+                    "default": 5,
+                    "exclusiveMinimum": 1,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1991-2"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.4.5.3(Table6.2)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "n"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "ea"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 0
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G8_COMP_8": {
+                    "title": "Maximum line speed at the site",
+                    "type": "number",
+                    "description": "The maximum line speed at the site refers to the highest speed allowed for trains on a specific section of the railway track. It is crucial for evaluating dynamic effects on structures like bridges, ensuring they are designed to handle the expected train speeds safely.",
+                    "default": 350,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1991-2"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.4.4(1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "V"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "km/h"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 1
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "G8_COMP_3",
+                  "G8_COMP_4",
+                  "G8_COMP_8"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "isInput": false,
+                    "codeName": "",
+                    "reference": [
+                      ""
+                    ],
+                    "title": "",
+                    "description": "",
+                    "figurePath": "",
+                    "descriptTable": [],
+                    "compType": "",
+                    "symbol": "",
+                    "result": {
+                      "value": "0.0",
+                      "table": [],
+                      "formula": [],
+                      "variables": {}
+                    },
+                    "refStd": "",
+                    "unit": "",
+                    "notation": "standard",
+                    "decimal": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

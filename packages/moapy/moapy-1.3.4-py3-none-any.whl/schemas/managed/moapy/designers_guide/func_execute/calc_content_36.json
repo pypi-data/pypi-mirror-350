@@ -1,0 +1,650 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.2.5"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    },
+    {
+      "url": "https://moa.rpm.kr-st-midasit.com/backend/function-executor/python-execute/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-designers_guide-func_execute-calc_content_36": {
+      "post": {
+        "summary": "Seismic Earth Pressure Coefficient Using Mononobe-Okabe Formula",
+        "description": "[EN1998-5] This guide provides detailed steps for calculating the earth pressure coefficient for retaining structures using the Mononobe-Okabe formula, excluding water table effects. It includes methods for both active and passive earth pressure states, explaining how to incorporate factors such as soil friction angle, wall and backfill inclination, and seismic coefficients. By following this guide, users can accurately assess earth pressures under seismic conditions, ensuring the stability and safety of retaining structures.",
+        "x-content-info": {
+          "standardType": "EUROCODE",
+          "codeName": "EN1998-5",
+          "codeTitle": "Eurocode 8 \u2014 Design of structures for earthquake resistance \u2014 Part 5: Foundations, retaining structures and geotechnical aspects",
+          "title": "Seismic Earth Pressure Coefficient Using Mononobe-Okabe Formula",
+          "description": "[EN1998-5] This guide provides detailed steps for calculating the earth pressure coefficient for retaining structures using the Mononobe-Okabe formula, excluding water table effects. It includes methods for both active and passive earth pressure states, explaining how to incorporate factors such as soil friction angle, wall and backfill inclination, and seismic coefficients. By following this guide, users can accurately assess earth pressures under seismic conditions, ensuring the stability and safety of retaining structures.",
+          "edition": "2004",
+          "figurePath": "https://moa.rpm.kr-dv-midasit.com/design-guide/figures/detail_content_36.png"
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "G31_COMP_1": {
+                    "title": "Selection of ground type",
+                    "type": "string",
+                    "description": "Choose the appropriate ground type based on the geotechnical properties of the site. The available types range from rock-like formations (Type A) to soft soils (Type D and E), each influencing the seismic response of the structure.",
+                    "default": "A",
+                    "enum": [
+                      "A",
+                      "B",
+                      "C",
+                      "D",
+                      "E"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.1.2(Table3.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "groundtype"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$groundtype$$",
+                            "Description"
+                          ],
+                          [
+                            "A",
+                            "Rock or rock-like geological formations with a maximum of 5 meters of weaker material at the surface. The shear wave velocity $$v_{s,30}$$ exceeds 800 m/s."
+                          ],
+                          [
+                            "B",
+                            "Deposits of very dense sand, gravel, or very stiff clay, extending at least several tens of meters in thickness, characterized by a gradual increase in mechanical properties with depth. The shear wave velocity $$v_{s,30}$$ ranges between 360 and 800 m/s."
+                          ],
+                          [
+                            "C",
+                            "Deep deposits of dense or medium-dense sand, gravel, or stiff clay, with a thickness ranging from several tens to many hundreds of meters. The shear wave velocity $$v_{s,30}$$ ranges between 180 and 360 m/s."
+                          ],
+                          [
+                            "D",
+                            "Deposits of loose-to-medium cohesionless soil (with or without soft cohesive layers) or predominantly soft-to-firm cohesive soil. The shear wave velocity $$v_{s,30}$$ is less than 180 m/s."
+                          ],
+                          [
+                            "E",
+                            "A soil profile consisting of a surface alluvium layer, with shear wave velocities typical of Type C or D (between 5 m and 20 m thick), underlain by stiffer material with a shear wave velocity greater than 800 m/s."
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G31_COMP_2": {
+                    "title": "Reference peak ground acceleration",
+                    "type": "number",
+                    "description": "The reference peak ground acceleration represents the maximum expected ground acceleration for a specific location during an earthquake, assuming it occurs on Type A ground (rock or very stiff soil). It is typically based on a 475-year return period, corresponding to an approximately 10% probability of exceedance over 50 years.",
+                    "default": 2.35,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.2.1(2)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "a_{gR}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "m/s^2"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G31_COMP_3": {
+                    "title": "Selection of importance class",
+                    "type": "string",
+                    "description": "Select the importance class for the bridge based on its criticality. Class I applies to less critical bridges, Class II to standard bridges, and Class III to essential bridges that require higher safety standards. Detailed information can be found in Eurocode 1998-2, section 2.1.",
+                    "default": "Class I",
+                    "enum": [
+                      "Class I",
+                      "Class II",
+                      "Class III"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.2.1(3)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "impoclass"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G31_COMP_6": {
+                    "title": "Selection of response spectrum type",
+                    "type": "string",
+                    "description": "The values for the periods and soil factor that define the shape of the elastic response spectrum depend on the ground type. Generally, Type 1 is recommended for areas where large earthquakes occur, with surface-wave magnitudes exceeding 5.5, while Type 2 is suitable for regions with smaller earthquakes, where the surface-wave magnitude is 5.5 or less.",
+                    "default": "Type 1 (For large earthquakes)",
+                    "enum": [
+                      "Type 1 (For large earthquakes)",
+                      "Type 2 (For smaller earthquakes)"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.2.2.2(2)P"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "spectype"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G36_COMP_5": {
+                    "title": "Selection for vertical seismic force direction",
+                    "type": "string",
+                    "description": "This selection distinguishes whether the vertical seismic force acts in the same direction as gravity (upward) or in the opposite direction (downward). The differentiation between upward and downward forces affects the response of the soil-wall system during seismic events, requiring different calculations.",
+                    "default": "Upward vertical force",
+                    "enum": [
+                      "Upward vertical force",
+                      "Downward vertical force"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-5"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "AnnexE(5)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "seisdirect"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$seisdirect$$",
+                            "Description"
+                          ],
+                          [
+                            "Upward vertical force",
+                            "Vertical seismic force acts in the same direction as gravity."
+                          ],
+                          [
+                            "Downward vertical force",
+                            "Vertical seismic force acts in the opposite direction to gravity."
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G36_COMP_10": {
+                    "title": "Angle of shearing resistance in terms of effective stress",
+                    "type": "number",
+                    "description": "The angle of shearing resistance in terms of effective stress represents the soil's resistance to shear under effective stress conditions. It reflects the frictional strength of the soil when considering the stress carried by the soil particles, excluding pore water pressure.",
+                    "default": 35.0,
+                    "exclusiveMinimum": 0,
+                    "exclusiveMaximum": 90,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-5"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "AnnexE(4)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "\\phi\\prime"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "degree"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G36_COMP_11": {
+                    "title": "Partial factor for shearing resistance angle",
+                    "type": "string",
+                    "description": "The partial factor for the shearing resistance angle is used to account for uncertainties in the soil's shear strength parameters during design. It ensures a safety margin by adjusting the calculated values of the shearing resistance angle. More details can be found in EN 1997-1 Annex A.",
+                    "default": "1.00",
+                    "enum": [
+                      "1.00",
+                      "1.25"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-5"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "AnnexE(4)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "\\gamma\\prime_{\\phi}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$\\gamma\\prime_{\\phi}$$",
+                            "Description"
+                          ],
+                          [
+                            "1.00",
+                            "Applied for structural (STR) and geotechnical (GEO) limit state M1 verifications, reflecting a lower safety margin for cases where conditions are better understood or less critical."
+                          ],
+                          [
+                            "1.25",
+                            "Used for verifications of equilibrium limit state (EQU), structural (STR) and geotechnical (GEO) limit state M2, and uplift limit state (UPL), providing a higher safety margin to account for uncertainties in these critical conditions."
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G36_COMP_12": {
+                    "title": "Inclination angle of the back face of the wall",
+                    "type": "number",
+                    "description": "The inclination angle of the back face of the wall refers to the angle between the back face of the wall and the horizontal line. This angle influences how earth pressure is distributed on the retaining structure.",
+                    "default": 90.0,
+                    "exclusiveMinimum": 0,
+                    "exclusiveMaximum": 180,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-5"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "AnnexE(FigureE.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "\\psi"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "degree"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      },
+                      "refStd": {
+                        "type": "string",
+                        "default": "NDPs",
+                        "description": "Nationally Determined Parameters"
+                      }
+                    }
+                  },
+                  "G36_COMP_14": {
+                    "title": "Inclination angle of the backfill surface",
+                    "type": "number",
+                    "description": "The backfill slope angle refers to the angle between the horizontal ground and the slope of the backfill material behind the retaining wall. It influences the earth pressure acting on the wall, depending on how steep the backfill is.",
+                    "default": 0.0,
+                    "minimum": -180,
+                    "maximum": 180,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-5"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "AnnexE(FigureE.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "\\beta"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "degree"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      },
+                      "refStd": {
+                        "type": "string",
+                        "default": "NDPs",
+                        "description": "Nationally Determined Parameters"
+                      }
+                    }
+                  },
+                  "G36_COMP_16": {
+                    "title": "Friction angle between soil and wall",
+                    "type": "number",
+                    "description": "The friction angle between the soil and the wall represents the angle of shearing resistance along the interface between the backfill soil and the retaining wall. It reflects the degree of frictional interaction, influencing the magnitude of earth pressure exerted on the wall.",
+                    "default": 0.0,
+                    "minimum": 0,
+                    "exclusiveMaximum": 90,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-5"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "AnnexE(FigureE.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "\\delta"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "degree"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      },
+                      "refStd": {
+                        "type": "string",
+                        "default": "NDPs",
+                        "description": "Nationally Determined Parameters"
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "G31_COMP_1",
+                  "G31_COMP_2",
+                  "G31_COMP_3",
+                  "G31_COMP_6",
+                  "G36_COMP_5",
+                  "G36_COMP_10",
+                  "G36_COMP_11",
+                  "G36_COMP_12",
+                  "G36_COMP_14",
+                  "G36_COMP_16"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "isInput": false,
+                    "codeName": "",
+                    "reference": [
+                      ""
+                    ],
+                    "title": "",
+                    "description": "",
+                    "figurePath": "",
+                    "descriptTable": [],
+                    "compType": "",
+                    "symbol": "",
+                    "result": {
+                      "value": "0.0",
+                      "table": [],
+                      "formula": [],
+                      "variables": {}
+                    },
+                    "refStd": "",
+                    "unit": "",
+                    "notation": "standard",
+                    "decimal": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

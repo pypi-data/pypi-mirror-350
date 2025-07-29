@@ -1,0 +1,174 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.1.3"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    },
+    {
+      "url": "https://moa.rpm.kr-st-midasit.com/backend/function-executor/python-execute/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-plugins-Text_to_Civil-textImage-text_to_plate_mesh": {
+      "post": {
+        "summary": "Text to Plate Mesh",
+        "description": "Convert the text to a plate mesh and upload the image as a triangular mesh to MIDAS CIVIL.",
+        "operationId": "text to plate mesh",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/text_to_plate_mesh"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "title": "Response Text To Plate Mesh"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "PrintColor": {
+        "properties": {
+          "r": {
+            "type": "integer",
+            "title": "R",
+            "description": "The red component of the color",
+            "default": 0
+          },
+          "g": {
+            "type": "integer",
+            "title": "G",
+            "description": "The green component of the color",
+            "default": 0
+          },
+          "b": {
+            "type": "integer",
+            "title": "B",
+            "description": "The blue component of the color",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "title": "PrintColor",
+        "description": "The color of the RGB, [0~255, 0~255, 0~255]\n\nArgs:\n            r (int): The red component of the color\n            g (int): The green component of the color\n            b (int): The blue component of the color"
+      },
+      "TextToPlateMeshInput": {
+        "properties": {
+          "text": {
+            "type": "string",
+            "title": "Text",
+            "description": "The text to convert",
+            "default": "Example"
+          },
+          "insert": {
+            "type": "string",
+            "title": "Insert",
+            "description": "The insert point of the text (lower left corner)",
+            "default": "0,0,0"
+          },
+          "height": {
+            "type": "string",
+            "title": "Height",
+            "description": "The height of the text",
+            "default": "1"
+          },
+          "color": {
+            "$ref": "#/components/schemas/PrintColor",
+            "description": "The color of the text RGB, [0~255, 0~255, 0~255]"
+          }
+        },
+        "type": "object",
+        "title": "TextToPlateMeshInput",
+        "description": "The input data for the text to plate mesh conversion.\n\nArgs:\n        text (str): The text to convert\n        insert (str): The insert point of the text (lower left corner)\n        height (str): The height of the text\n        color (PrintColor): The color of the text RGB, [0~255, 0~255, 0~255]"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "text_to_plate_mesh": {
+        "properties": {
+          "inp": {
+            "$ref": "#/components/schemas/TextToPlateMeshInput"
+          }
+        },
+        "type": "object",
+        "required": [
+          "inp"
+        ],
+        "title": "text to plate mesh"
+      }
+    }
+  }
+}

@@ -1,0 +1,400 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.2.5"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    },
+    {
+      "url": "https://moa.rpm.kr-st-midasit.com/backend/function-executor/python-execute/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-designers_guide-func_execute-calc_content_12": {
+      "post": {
+        "summary": "Uniform Bridge Temperature Range Calculation for Hong Kong",
+        "description": "[HK.SDM-2013] This guide explains how to calculate the uniform bridge temperature range components specific to Hong Kong, where the contraction range, expansion range, and overall range for the uniform bridge temperature are adjusted based on climate data and environmental conditions unique to Hong Kong. The minimum and maximum uniform bridge temperatures have been updated to account for climate change impacts in Hong Kong, ensuring that structural temperature ranges accurately reflect local conditions and capture the potential contraction, expansion, and overall variation of bridge temperatures within these localized parameters.",
+        "x-content-info": {
+          "standardType": "HK.SDM",
+          "codeName": "HK.SDM2013",
+          "codeTitle": "Structures Design Manual for Highways and Railways",
+          "title": "Uniform Bridge Temperature Range Calculation for Hong Kong",
+          "description": "[HK.SDM-2013] This guide explains how to calculate the uniform bridge temperature range components specific to Hong Kong, where the contraction range, expansion range, and overall range for the uniform bridge temperature are adjusted based on climate data and environmental conditions unique to Hong Kong. The minimum and maximum uniform bridge temperatures have been updated to account for climate change impacts in Hong Kong, ensuring that structural temperature ranges accurately reflect local conditions and capture the potential contraction, expansion, and overall variation of bridge temperatures within these localized parameters.",
+          "edition": "5th revision of 2023",
+          "figurePath": null
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "G12_COMP_1": {
+                    "title": "Structure type selection for uniform bridge temperature",
+                    "type": "string",
+                    "description": "Selecting the structure type as either normal or minor determines which uniform bridge temperature values apply. Normal structures require standard temperatures adjusted for climate change, while minor structures allow simplified temperature values suited to specific structural elements.",
+                    "default": "Normal",
+                    "enum": [
+                      "Normal",
+                      "Minor"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "HK.SDM2013"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.5.2(Table3.17)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "tempstruct"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$tempstruct$$",
+                            "Description"
+                          ],
+                          [
+                            "Normal",
+                            "Uses standard uniform temperatures, adjusted for climate change effects."
+                          ],
+                          [
+                            "Minor",
+                            "Uses simplified temperatures for foot/cycle track bridges, carriageway joints, and temporary erection loading."
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G12_COMP_2": {
+                    "title": "Type of superstructure",
+                    "type": "string",
+                    "description": "Select the type of superstructure for the bridge. The superstructure type affects various design parameters, including load distribution and temperature adjustments.",
+                    "default": "Steel deck on steel girders",
+                    "enum": [
+                      "Steel deck on steel girders",
+                      "Steel deck on steel truss or plate girders",
+                      "Concrete deck on steel box",
+                      "Concrete deck on truss or plate girders",
+                      "Concrete slab",
+                      "Concrete beams",
+                      "Concrete box girder"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "HK.SDM2013"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.5.3(Figure3.2)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "supertype"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": "https://moa.rpm.kr-dv-midasit.com/design-guide/figures/detail_g12_comp_2.png"
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$supertype$$",
+                            "Description"
+                          ],
+                          [
+                            "Steel deck on steel girders",
+                            "A steel deck supported by steel girders, commonly used for high load capacity and flexibility in design."
+                          ],
+                          [
+                            "Steel deck on steel truss or plate girders",
+                            "A steel deck supported by steel truss or plate girders, offering enhanced structural integrity and load distribution."
+                          ],
+                          [
+                            "Concrete deck on steel box",
+                            "A concrete deck supported by a steel box girder, providing high torsional rigidity and strength, ideal for longer spans or curved bridges."
+                          ],
+                          [
+                            "Concrete deck on truss or plate girders",
+                            "A concrete deck supported by truss or plate girders, offering enhanced load distribution and stability, suitable for medium to long spans."
+                          ],
+                          [
+                            "Concrete slab",
+                            "A solid concrete slab superstructure, typically for smaller spans and simpler load distribution."
+                          ],
+                          [
+                            "Concrete beams",
+                            "Concrete beams as the primary supporting structure, suitable for moderate to long spans."
+                          ],
+                          [
+                            "Concrete box girder",
+                            "A concrete box girder structure, known for its strength, torsional resistance, and suitability for curved spans."
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G12_COMP_4": {
+                    "title": "Deck surfacing type for uniform bridge temperature adjustment",
+                    "type": "string",
+                    "description": "Select the deck surfacing type for the bridge. This choice affects the uniform bridge temperature adjustments, as different surfacing types and depths impact the thermal properties of the structure. Refer to Table 3.18 for specific adjustment values.",
+                    "default": "Unsurfaced Plain",
+                    "enum": [
+                      "Unsurfaced Plain",
+                      "Unsurfaced Trafficked or Waterproofed",
+                      "Surfacing Depths"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "HK.SDM2013"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.5.2(Table3.18)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "dsurftype"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$dsurftype$$",
+                            "Description"
+                          ],
+                          [
+                            "Unsurfaced Plain",
+                            "Deck with no surfacing, typically exposed concrete."
+                          ],
+                          [
+                            "Unsurfaced Trafficked or Waterproofed",
+                            "Deck with no surfacing but designed for traffic or waterproofed for additional protection."
+                          ],
+                          [
+                            "Surfacing Depths",
+                            "Deck with a specific surfacing depth (e.g., 40 mm, 100 mm, etc.), including waterproofing layers."
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G12_COMP_5": {
+                    "title": "Deck surfacing depth",
+                    "type": "number",
+                    "description": "Enter the surfacing depth for the bridge deck, including any waterproofing layers. This value is used to adjust the uniform bridge temperature based on the thickness of the surfacing.",
+                    "default": 120,
+                    "minimum": 40,
+                    "maximum": 200,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "HK.SDM2013"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.5.2(Table3.18)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "t_{s}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "mm"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G12_COMP_6": {
+                    "title": "Height above mean sea level ",
+                    "type": "number",
+                    "description": "Enter the height above mean sea level for the structure. This value is used to adjust the uniform bridge temperature values based on elevation, as specified in Table 3.17.",
+                    "default": 95.5,
+                    "minimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "HK.SDM2013"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.5.2(5)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "amsl"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "m"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "G12_COMP_1",
+                  "G12_COMP_2",
+                  "G12_COMP_4",
+                  "G12_COMP_5",
+                  "G12_COMP_6"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "isInput": false,
+                    "codeName": "",
+                    "reference": [
+                      ""
+                    ],
+                    "title": "",
+                    "description": "",
+                    "figurePath": "",
+                    "descriptTable": [],
+                    "compType": "",
+                    "symbol": "",
+                    "result": {
+                      "value": "0.0",
+                      "table": [],
+                      "formula": [],
+                      "variables": {}
+                    },
+                    "refStd": "",
+                    "unit": "",
+                    "notation": "standard",
+                    "decimal": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

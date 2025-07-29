@@ -1,0 +1,649 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.2.5"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    },
+    {
+      "url": "https://moa.rpm.kr-st-midasit.com/backend/function-executor/python-execute/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-designers_guide-func_execute-calc_content_27": {
+      "post": {
+        "summary": "Shear Verification Without Design Shear Reinforcement",
+        "description": "[EN1992-1-1] This guide focuses on shear verification for members without design shear reinforcement, following the principles of Eurocode. It provides a comprehensive approach to evaluate shear safety for three section types: reinforced concrete sections, cracked prestressed sections, and support regions, all without shear reinforcement. The verification process considers both the calculated shear resistance and the minimum required shear resistance to ensure safety and compliance with design standards. If the calculated shear safety ratio exceeds the allowable limit, additional design checks for shear reinforcement will be required. This guide aims to help designers ensure that the structural capacity of members relying solely on the concrete section and longitudinal reinforcement is adequately verified.",
+        "x-content-info": {
+          "standardType": "EUROCODE",
+          "codeName": "EN1992-1-1",
+          "codeTitle": "Eurocode 2: Design of concrete structures \u2014 Part 1-1: General rules and rules for buildings",
+          "title": "Shear Verification Without Design Shear Reinforcement",
+          "description": "[EN1992-1-1] This guide focuses on shear verification for members without design shear reinforcement, following the principles of Eurocode. It provides a comprehensive approach to evaluate shear safety for three section types: reinforced concrete sections, cracked prestressed sections, and support regions, all without shear reinforcement. The verification process considers both the calculated shear resistance and the minimum required shear resistance to ensure safety and compliance with design standards. If the calculated shear safety ratio exceeds the allowable limit, additional design checks for shear reinforcement will be required. This guide aims to help designers ensure that the structural capacity of members relying solely on the concrete section and longitudinal reinforcement is adequately verified.",
+          "edition": "2004",
+          "figurePath": null
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "G14_COMP_3": {
+                    "title": "Design situations",
+                    "type": "string",
+                    "description": "This table outlines different design situations, categorized into persistent, transient, and accidental conditions. Each category represents a specific scenario that may affect the design and safety considerations of a structure.",
+                    "default": "Persistent",
+                    "enum": [
+                      "Persistent",
+                      "Transient",
+                      "Accidental"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "2.4.2.4(Table2.1N)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "designsitu"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G14_COMP_4": {
+                    "title": "Compressive strength classes",
+                    "type": "string",
+                    "description": "Compressive strength classes categorize concrete based on its compressive strength, typically indicated by a standard notation such as C30/37, where the first number represents the cylinder strength and the second the cube strength. For more detailed information, refer toEN 206-1 (Table 7).",
+                    "default": "C12/15",
+                    "enum": [
+                      "C12/15",
+                      "C16/20",
+                      "C20/25",
+                      "C25/30",
+                      "C30/37",
+                      "C35/45",
+                      "C40/50",
+                      "C45/55",
+                      "C50/60",
+                      "C55/67",
+                      "C60/75",
+                      "C70/85",
+                      "C80/95",
+                      "C90/105"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.1.3(Table 3.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "C"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G27_COMP_1": {
+                    "title": "Section type without shear reinforcement for shear resistance",
+                    "type": "string",
+                    "description": "Before calculating the shear resistance for reinforced concrete members without shear reinforcement, the type of structural element to be analyzed must be selected. This ensures that the appropriate methodology and parameters are applied for accurate and reliable design.",
+                    "default": "Reinforced concrete section",
+                    "enum": [
+                      "Reinforced concrete section",
+                      "Cracked prestressed section",
+                      "Support region"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.2.2(1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "secwobar"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$secwobar$$",
+                            "Description"
+                          ],
+                          [
+                            "Reinforced concrete section",
+                            "A reinforced concrete section without shear reinforcement; typically used for general concrete elements."
+                          ],
+                          [
+                            "Cracked prestressed section",
+                            "A prestressed concrete section cracked in flexure; includes bonded prestressing for shear calculations."
+                          ],
+                          [
+                            "Support region",
+                            "A section near supports; includes adjustments for load positions and reduced shear contributions."
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G27_COMP_2": {
+                    "title": "Design shear force",
+                    "type": "number",
+                    "description": "The design shear force is the calculated value of the applied shear force acting on a concrete section due to external loading and prestressing. It is used to assess whether the section's resistance is sufficient to withstand the applied shear.",
+                    "default": 350.0,
+                    "minimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.2.1(3)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "V_{Ed}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "kN"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G27_COMP_3": {
+                    "title": "Axial force in the cross-sectio",
+                    "type": "number",
+                    "description": "Axial force in the cross-section refers to the total force acting along the axis of a concrete section due to external loading or prestressing. It is considered positive when it induces compression in the section, and the effects of imposed deformations such as shrinkage or temperature changes can be ignored in its calculation.",
+                    "default": 1850.0,
+                    "minimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.2.2(1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "N_{Ed}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "kN"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G27_COMP_4": {
+                    "title": "Diameter of longitudinal tensile reinforcement",
+                    "type": "number",
+                    "description": "The diameter of longitudinal tensile reinforcement refers to the thickness of individual reinforcement bars used in the tensile zone of a concrete section. This dimension directly influences the cross-sectional area of the reinforcement, affecting the structural capacity to resist tensile and shear forces.",
+                    "default": 32.0,
+                    "minimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.2.2(Figure6.3)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "\\phi_{sl}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "mm"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 0
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G27_COMP_5": {
+                    "title": "Number of longitudinal tensile reinforcement",
+                    "type": "number",
+                    "description": "The number of longitudinal tensile reinforcement bars refers to the total count of reinforcement bars placed in the tensile zone of a concrete section.",
+                    "default": 6.0,
+                    "minimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.2.2(Figure6.3)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "n_{sl}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "ea"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 0
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G27_COMP_6": {
+                    "title": "Smallest cross-sectional width in tensile area",
+                    "type": "number",
+                    "description": "The smallest cross-sectional width in the tensile area refers to the narrowest part of a concrete section where tensile stresses occur. This dimension is crucial in shear resistance calculations, as it directly impacts the section's ability to handle shear forces.",
+                    "default": 600.0,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.2.2(1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "b_{w}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "mm"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G27_COMP_7": {
+                    "title": "Effective depth of cross section",
+                    "type": "number",
+                    "description": "The effective depth of cross section is the distance from the extreme compression fiber to the centroid of the tensile reinforcement. It is a key parameter in determining the shear and flexural resistance of a concrete section.",
+                    "default": 429.0,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.2.2(Figure6.3)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "d"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "mm"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G27_COMP_8": {
+                    "title": "Area of the concrete cross-section",
+                    "type": "number",
+                    "description": "The area of the concrete cross-section refers to the total cross-sectional area of the concrete, including both the compression and tension zones. It is a fundamental parameter used in structural calculations to determine stresses, axial forces, and shear resistance.",
+                    "default": 300000.0,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.2.2(1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "A_{C}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "mm^2"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G27_COMP_9": {
+                    "title": "Distance from the load application point to the support",
+                    "type": "number",
+                    "description": "The distance from the load application point to the support is the horizontal distance measured from the centerline of the support to the point where the load is applied. This distance is critical in determining the shear force and the effective contribution of the load to the section's shear resistance.",
+                    "default": 200.0,
+                    "minimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.2.2(Figure6.4)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "a_{v}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "mm"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "G14_COMP_3",
+                  "G14_COMP_4",
+                  "G27_COMP_1",
+                  "G27_COMP_2",
+                  "G27_COMP_3",
+                  "G27_COMP_4",
+                  "G27_COMP_5",
+                  "G27_COMP_6",
+                  "G27_COMP_7",
+                  "G27_COMP_8",
+                  "G27_COMP_9"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "isInput": false,
+                    "codeName": "",
+                    "reference": [
+                      ""
+                    ],
+                    "title": "",
+                    "description": "",
+                    "figurePath": "",
+                    "descriptTable": [],
+                    "compType": "",
+                    "symbol": "",
+                    "result": {
+                      "value": "0.0",
+                      "table": [],
+                      "formula": [],
+                      "variables": {}
+                    },
+                    "refStd": "",
+                    "unit": "",
+                    "notation": "standard",
+                    "decimal": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,2239 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.3.3"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-dgnengine-eurocode2_beam-report_ec2_beam": {
+      "post": {
+        "summary": "Eurocode 2 Beam Design",
+        "description": "Eurocode 2 provides a comprehensive review of reinforced concrete (RC) beam design with a focus on strength assessment, available in Excel format.",
+        "operationId": "report ec2 beam",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "matl": {
+                    "properties": {
+                      "fck": {
+                        "properties": {
+                          "value": {
+                            "type": "number",
+                            "title": "Value",
+                            "description": "Stress"
+                          },
+                          "unit": {
+                            "type": "string",
+                            "enum": [
+                              "Pa",
+                              "KPa",
+                              "MPa",
+                              "psi",
+                              "ksi"
+                            ],
+                            "title": "enUnitStress"
+                          }
+                        },
+                        "type": "object",
+                        "title": "Concrete Compressive Strength (fck)",
+                        "description": "The characteristic strength of concrete in compression, typically measured in MPa (SI) or psi (US). This is a key parameter in the design of concrete structures.",
+                        "x-component-detail": {
+                          "id": "moapy.data_pre.Stress"
+                        }
+                      },
+                      "fy": {
+                        "properties": {
+                          "value": {
+                            "type": "number",
+                            "title": "Value",
+                            "description": "Stress"
+                          },
+                          "unit": {
+                            "type": "string",
+                            "enum": [
+                              "Pa",
+                              "KPa",
+                              "MPa",
+                              "psi",
+                              "ksi"
+                            ],
+                            "title": "enUnitStress"
+                          }
+                        },
+                        "type": "object",
+                        "title": "Rebar Yield Strength (fy)",
+                        "description": "The yield strength of the reinforcement bars (rebar) used in concrete, typically measured in MPa (SI) or psi (US). It represents the stress at which the rebar begins to plastically deform.",
+                        "x-component-detail": {
+                          "id": "moapy.data_pre.Stress"
+                        }
+                      },
+                      "fys": {
+                        "properties": {
+                          "value": {
+                            "type": "number",
+                            "title": "Value",
+                            "description": "Stress"
+                          },
+                          "unit": {
+                            "type": "string",
+                            "enum": [
+                              "Pa",
+                              "KPa",
+                              "MPa",
+                              "psi",
+                              "ksi"
+                            ],
+                            "title": "enUnitStress"
+                          }
+                        },
+                        "type": "object",
+                        "title": "Stirrup Yield Strength (fys)",
+                        "description": "The yield strength of stirrups (reinforcing steel ties used for shear reinforcement) in concrete, typically measured in MPa (SI) or psi (US).",
+                        "x-component-detail": {
+                          "id": "moapy.data_pre.Stress"
+                        }
+                      }
+                    },
+                    "type": "object",
+                    "title": "Material",
+                    "description": "Defines the material strength properties of concrete and reinforcement used in structural design, including compressive strength of concrete and yield strength of rebars and stirrups.",
+                    "x-component-detail": {
+                      "id": "moapy.rc_pre.MaterialNative"
+                    },
+                    "default": {
+                      "fck": {
+                        "unit": "MPa",
+                        "value": 24.0
+                      },
+                      "fy": {
+                        "unit": "MPa",
+                        "value": 400.0
+                      },
+                      "fys": {
+                        "unit": "MPa",
+                        "value": 400.0
+                      }
+                    }
+                  },
+                  "sect": {
+                    "properties": {
+                      "sectionType": {
+                        "type": "string",
+                        "const": "Solid_Rectangle",
+                        "title": "Section Type",
+                        "description": "Type of the section, fixed as 'Solid_Rectangle'.",
+                        "default": "Solid_Rectangle",
+                        "readOnly": true
+                      },
+                      "b": {
+                        "properties": {
+                          "value": {
+                            "type": "number",
+                            "title": "Value",
+                            "description": "Length"
+                          },
+                          "unit": {
+                            "type": "string",
+                            "enum": [
+                              "mm",
+                              "cm",
+                              "m",
+                              "in",
+                              "ft"
+                            ],
+                            "title": "enUnitLength"
+                          }
+                        },
+                        "type": "object",
+                        "title": "Width",
+                        "description": "The width of the rectangular section. This dimension is critical for determining the bending and shear resistance of the section.",
+                        "x-component-detail": {
+                          "id": "moapy.data_pre.Length"
+                        }
+                      },
+                      "h": {
+                        "properties": {
+                          "value": {
+                            "type": "number",
+                            "title": "Value",
+                            "description": "Length"
+                          },
+                          "unit": {
+                            "type": "string",
+                            "enum": [
+                              "mm",
+                              "cm",
+                              "m",
+                              "in",
+                              "ft"
+                            ],
+                            "title": "enUnitLength"
+                          }
+                        },
+                        "type": "object",
+                        "title": "Height",
+                        "description": "The height of the rectangular section. This dimension is crucial for calculating the section's capacity to resist bending moments and axial loads.",
+                        "x-component-detail": {
+                          "id": "moapy.data_pre.Length"
+                        }
+                      }
+                    },
+                    "type": "object",
+                    "title": "Section",
+                    "description": "Defines a solid rectangular section with specified width (b) and height (h). These parameters are used in structural design to evaluate the section's capacity to resist bending, shear, and axial forces.",
+                    "x-component-detail": {
+                      "id": "moapy.data_pre.SectionRectangle"
+                    },
+                    "default": {
+                      "sectionType": "Solid_Rectangle",
+                      "b": {
+                        "unit": "mm",
+                        "value": 400.0
+                      },
+                      "h": {
+                        "unit": "mm",
+                        "value": 600.0
+                      }
+                    }
+                  },
+                  "force": {
+                    "properties": {
+                      "axial": {
+                        "properties": {
+                          "value": {
+                            "type": "number",
+                            "title": "Value",
+                            "description": "Force"
+                          },
+                          "unit": {
+                            "type": "string",
+                            "enum": [
+                              "N",
+                              "kN",
+                              "MN",
+                              "lbf",
+                              "kip"
+                            ],
+                            "title": "enUnitForce"
+                          }
+                        },
+                        "type": "object",
+                        "title": "Axial",
+                        "description": "Axial force acting along the longitudinal axis of the member. Positive values indicate compression, negative values indicate tension.",
+                        "x-component-detail": {
+                          "id": "moapy.data_pre.Force"
+                        }
+                      },
+                      "bending": {
+                        "properties": {
+                          "value": {
+                            "type": "number",
+                            "title": "Value",
+                            "description": "Moment"
+                          },
+                          "unit": {
+                            "type": "string",
+                            "enum": [
+                              "kN.m",
+                              "kip.in",
+                              "kip.ft",
+                              "N.mm",
+                              "N.m"
+                            ],
+                            "title": "enUnitMoment"
+                          }
+                        },
+                        "type": "object",
+                        "title": "Moment",
+                        "description": "Bending moment acting about the member's major axis (X-axis). This represents the primary flexural action in the strong axis direction.",
+                        "x-component-detail": {
+                          "id": "moapy.data_pre.Moment"
+                        }
+                      },
+                      "shear": {
+                        "properties": {
+                          "value": {
+                            "type": "number",
+                            "title": "Value",
+                            "description": "Force"
+                          },
+                          "unit": {
+                            "type": "string",
+                            "enum": [
+                              "N",
+                              "kN",
+                              "MN",
+                              "lbf",
+                              "kip"
+                            ],
+                            "title": "enUnitForce"
+                          }
+                        },
+                        "type": "object",
+                        "title": "Shear",
+                        "description": "Shear force acting parallel to the member's major axis (X-axis). This represents the transverse force causing horizontal shear deformation.",
+                        "x-component-detail": {
+                          "id": "moapy.data_pre.Force"
+                        }
+                      }
+                    },
+                    "type": "object",
+                    "title": "Force",
+                    "description": "The plus sign in axial is compression.",
+                    "x-component-detail": {
+                      "id": "moapy.data_pre.NativeForce"
+                    },
+                    "default": {
+                      "axial": {
+                        "unit": "kN",
+                        "value": 0.0
+                      },
+                      "bending": {
+                        "unit": "kN.m",
+                        "value": 0.0
+                      },
+                      "shear": {
+                        "unit": "kN",
+                        "value": 0.0
+                      }
+                    }
+                  },
+                  "rebar": {
+                    "properties": {
+                      "main": {
+                        "properties": {
+                          "cover": {
+                            "properties": {
+                              "value": {
+                                "type": "number",
+                                "title": "Value",
+                                "description": "Length"
+                              },
+                              "unit": {
+                                "type": "string",
+                                "enum": [
+                                  "mm",
+                                  "cm",
+                                  "m",
+                                  "in",
+                                  "ft"
+                                ],
+                                "title": "enUnitLength"
+                              }
+                            },
+                            "type": "object",
+                            "title": "Concrete Cover",
+                            "description": "The distance from the centroid of the rebar to the nearest surface of the concrete. This cover ensures adequate protection for the rebar and prevents corrosion.",
+                            "x-component-detail": {
+                              "id": "moapy.data_pre.Length"
+                            }
+                          },
+                          "space": {
+                            "properties": {
+                              "value": {
+                                "type": "number",
+                                "title": "Value",
+                                "description": "Length"
+                              },
+                              "unit": {
+                                "type": "string",
+                                "enum": [
+                                  "mm",
+                                  "cm",
+                                  "m",
+                                  "in",
+                                  "ft"
+                                ],
+                                "title": "enUnitLength"
+                              }
+                            },
+                            "type": "object",
+                            "title": "Rebar",
+                            "description": "The distance between adjacent rebars. This specifies the spacing between each reinforcement bar to ensure proper load transfer and concrete bonding.",
+                            "x-component-detail": {
+                              "id": "moapy.data_pre.Length"
+                            }
+                          },
+                          "top": {
+                            "items": {
+                              "properties": {
+                                "number": {
+                                  "type": "integer",
+                                  "exclusiveMinimum": 0.0,
+                                  "title": "Number of Rebars",
+                                  "description": "The number of reinforcement bars (rebars) used in the given location. This specifies how many rebars are placed together in the beam or column section."
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "enum": [
+                                    "P4",
+                                    "P5",
+                                    "P6",
+                                    "P8",
+                                    "P10",
+                                    "P12",
+                                    "P14",
+                                    "P16",
+                                    "P18",
+                                    "P20",
+                                    "P22",
+                                    "P24",
+                                    "P26",
+                                    "P30",
+                                    "P32",
+                                    "P36",
+                                    "P40"
+                                  ],
+                                  "title": "Rebar Name",
+                                  "description": "The name or designation of the rebar. This typically refers to the type or size of the rebar, such as 'P26' or 'D16'.",
+                                  "default": "P26"
+                                }
+                              },
+                              "type": "object",
+                              "required": [
+                                "name"
+                              ],
+                              "title": "Rebar Number and Cover",
+                              "description": "Defines the number, name, and concrete cover for reinforcement bars (rebars) used in concrete structures. The concrete cover ensures the durability and protection of the rebars from environmental factors.",
+                              "x-component-detail": {
+                                "id": "moapy.rc_pre.RebarNumberNameCover"
+                              }
+                            },
+                            "type": "array",
+                            "title": "Top Reinforcement Bars",
+                            "description": "List of top reinforcement bars (rebars) for the beam. Includes details such as rebar number, type, and cover distance from the beam surface."
+                          },
+                          "bot": {
+                            "items": {
+                              "properties": {
+                                "number": {
+                                  "type": "integer",
+                                  "exclusiveMinimum": 0.0,
+                                  "title": "Number of Rebars",
+                                  "description": "The number of reinforcement bars (rebars) used in the given location. This specifies how many rebars are placed together in the beam or column section."
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "enum": [
+                                    "P4",
+                                    "P5",
+                                    "P6",
+                                    "P8",
+                                    "P10",
+                                    "P12",
+                                    "P14",
+                                    "P16",
+                                    "P18",
+                                    "P20",
+                                    "P22",
+                                    "P24",
+                                    "P26",
+                                    "P30",
+                                    "P32",
+                                    "P36",
+                                    "P40"
+                                  ],
+                                  "title": "Rebar Name",
+                                  "description": "The name or designation of the rebar. This typically refers to the type or size of the rebar, such as 'P26' or 'D16'.",
+                                  "default": "P26"
+                                }
+                              },
+                              "type": "object",
+                              "required": [
+                                "name"
+                              ],
+                              "title": "Rebar Number and Cover",
+                              "description": "Defines the number, name, and concrete cover for reinforcement bars (rebars) used in concrete structures. The concrete cover ensures the durability and protection of the rebars from environmental factors.",
+                              "x-component-detail": {
+                                "id": "moapy.rc_pre.RebarNumberNameCover"
+                              }
+                            },
+                            "type": "array",
+                            "title": "Bottom Reinforcement Bars",
+                            "description": "List of bottom reinforcement bars (rebars) for the beam. Includes details such as rebar number, type, and cover distance from the beam surface."
+                          }
+                        },
+                        "type": "object",
+                        "title": "Main Reinforcement",
+                        "description": "Details of the main reinforcement for the beam, including the top and bottom reinforcement bars (rebars) and their specifications.",
+                        "x-component-detail": {
+                          "id": "moapy.rc_pre.BeamMainRebar"
+                        }
+                      },
+                      "stirrup": {
+                        "properties": {
+                          "number": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0.0,
+                            "title": "Legs",
+                            "description": "The number of legs for the reinforcement bar. This specifies how many individual legs (bars) are used for the rebar."
+                          },
+                          "name": {
+                            "type": "string",
+                            "enum": [
+                              "P4",
+                              "P5",
+                              "P6",
+                              "P8",
+                              "P10",
+                              "P12",
+                              "P14",
+                              "P16",
+                              "P18",
+                              "P20",
+                              "P22",
+                              "P24",
+                              "P26",
+                              "P30",
+                              "P32",
+                              "P36",
+                              "P40"
+                            ],
+                            "title": "Rebar",
+                            "description": "The name or designation of the rebar. This typically refers to the type or size of the rebar.",
+                            "default": "P10"
+                          },
+                          "space": {
+                            "properties": {
+                              "value": {
+                                "type": "number",
+                                "title": "Value",
+                                "description": "Length"
+                              },
+                              "unit": {
+                                "type": "string",
+                                "enum": [
+                                  "mm",
+                                  "cm",
+                                  "m",
+                                  "in",
+                                  "ft"
+                                ],
+                                "title": "enUnitLength"
+                              }
+                            },
+                            "type": "object",
+                            "title": "Rebar",
+                            "description": "The distance between adjacent rebars. This specifies the spacing between each reinforcement bar to ensure proper load transfer and concrete bonding.",
+                            "x-component-detail": {
+                              "id": "moapy.data_pre.Length"
+                            }
+                          }
+                        },
+                        "type": "object",
+                        "title": "Stirrup Reinforcement",
+                        "description": "Details of the stirrup reinforcement for the beam, including the rebar type, spacing, and other parameters for shear reinforcement.",
+                        "x-component-detail": {
+                          "id": "moapy.rc_pre.RebarNumberNameSpace"
+                        }
+                      }
+                    },
+                    "type": "object",
+                    "title": "Rebar",
+                    "description": "Defines the rebar pattern for a beam, including top and bottom reinforcement bars (rebars) and stirrup reinforcements. The pattern is determined based on the unit system (SI or US) and includes specifications like number, size, type, and spacing of rebars.",
+                    "x-component-detail": {
+                      "id": "moapy.rc_pre.BeamRebarPattern"
+                    },
+                    "default": {
+                      "main": {
+                        "bot": [
+                          {
+                            "name": "P26",
+                            "number": 2
+                          }
+                        ],
+                        "cover": {
+                          "unit": "mm",
+                          "value": 40.0
+                        },
+                        "space": {
+                          "unit": "mm",
+                          "value": 40.0
+                        },
+                        "top": [
+                          {
+                            "name": "P26",
+                            "number": 2
+                          }
+                        ]
+                      },
+                      "stirrup": {
+                        "name": "P10",
+                        "number": 2,
+                        "space": {
+                          "unit": "mm",
+                          "value": 100.0
+                        }
+                      }
+                    }
+                  }
+                },
+                "type": "object",
+                "title": "report ec2 beam"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "title": "Type",
+                      "description": "Type",
+                      "default": "xlsx"
+                    },
+                    "result": {
+                      "type": "string",
+                      "title": "Result",
+                      "description": "have to base64 to binary data",
+                      "default": ""
+                    }
+                  },
+                  "type": "object",
+                  "title": "Bytes",
+                  "description": "Result Bytes",
+                  "x-component-detail": {
+                    "id": "moapy.data_post.ResultBytes"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "detail": {
+                      "items": {
+                        "properties": {
+                          "loc": {
+                            "items": {
+                              "anyOf": [
+                                {
+                                  "type": "string"
+                                },
+                                {
+                                  "type": "integer"
+                                }
+                              ]
+                            },
+                            "type": "array",
+                            "title": "Location"
+                          },
+                          "msg": {
+                            "type": "string",
+                            "title": "Message"
+                          },
+                          "type": {
+                            "type": "string",
+                            "title": "Error Type"
+                          }
+                        },
+                        "type": "object",
+                        "required": [
+                          "loc",
+                          "msg",
+                          "type"
+                        ],
+                        "title": "ValidationError"
+                      },
+                      "type": "array",
+                      "title": "Detail"
+                    }
+                  },
+                  "type": "object",
+                  "title": "HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "x-content-info": {
+          "title": "Eurocode 2 Beam Design",
+          "description": "Eurocode 2 provides a comprehensive review of reinforced concrete (RC) beam design with a focus on strength assessment, available in Excel format.",
+          "standardType": "EUROCODE",
+          "codeName": "EN1992-1-1:2004"
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BeamMainRebar": {
+        "properties": {
+          "cover": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "title": "Value",
+                "description": "Length"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm",
+                  "cm",
+                  "m",
+                  "in",
+                  "ft"
+                ],
+                "title": "enUnitLength"
+              }
+            },
+            "type": "object",
+            "title": "Concrete Cover",
+            "description": "The distance from the centroid of the rebar to the nearest surface of the concrete. This cover ensures adequate protection for the rebar and prevents corrosion.",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Length"
+            }
+          },
+          "space": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "title": "Value",
+                "description": "Length"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm",
+                  "cm",
+                  "m",
+                  "in",
+                  "ft"
+                ],
+                "title": "enUnitLength"
+              }
+            },
+            "type": "object",
+            "title": "Rebar",
+            "description": "The distance between adjacent rebars. This specifies the spacing between each reinforcement bar to ensure proper load transfer and concrete bonding.",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Length"
+            }
+          },
+          "top": {
+            "items": {
+              "properties": {
+                "number": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0.0,
+                  "title": "Number of Rebars",
+                  "description": "The number of reinforcement bars (rebars) used in the given location. This specifies how many rebars are placed together in the beam or column section."
+                },
+                "name": {
+                  "type": "string",
+                  "enum": [
+                    "P4",
+                    "P5",
+                    "P6",
+                    "P8",
+                    "P10",
+                    "P12",
+                    "P14",
+                    "P16",
+                    "P18",
+                    "P20",
+                    "P22",
+                    "P24",
+                    "P26",
+                    "P30",
+                    "P32",
+                    "P36",
+                    "P40"
+                  ],
+                  "title": "Rebar Name",
+                  "description": "The name or designation of the rebar. This typically refers to the type or size of the rebar, such as 'P26' or 'D16'.",
+                  "default": "P26"
+                }
+              },
+              "type": "object",
+              "required": [
+                "name"
+              ],
+              "title": "Rebar Number and Cover",
+              "description": "Defines the number, name, and concrete cover for reinforcement bars (rebars) used in concrete structures. The concrete cover ensures the durability and protection of the rebars from environmental factors.",
+              "x-component-detail": {
+                "id": "moapy.rc_pre.RebarNumberNameCover"
+              }
+            },
+            "type": "array",
+            "title": "Top Reinforcement Bars",
+            "description": "List of top reinforcement bars (rebars) for the beam. Includes details such as rebar number, type, and cover distance from the beam surface."
+          },
+          "bot": {
+            "items": {
+              "properties": {
+                "number": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0.0,
+                  "title": "Number of Rebars",
+                  "description": "The number of reinforcement bars (rebars) used in the given location. This specifies how many rebars are placed together in the beam or column section."
+                },
+                "name": {
+                  "type": "string",
+                  "enum": [
+                    "P4",
+                    "P5",
+                    "P6",
+                    "P8",
+                    "P10",
+                    "P12",
+                    "P14",
+                    "P16",
+                    "P18",
+                    "P20",
+                    "P22",
+                    "P24",
+                    "P26",
+                    "P30",
+                    "P32",
+                    "P36",
+                    "P40"
+                  ],
+                  "title": "Rebar Name",
+                  "description": "The name or designation of the rebar. This typically refers to the type or size of the rebar, such as 'P26' or 'D16'.",
+                  "default": "P26"
+                }
+              },
+              "type": "object",
+              "required": [
+                "name"
+              ],
+              "title": "Rebar Number and Cover",
+              "description": "Defines the number, name, and concrete cover for reinforcement bars (rebars) used in concrete structures. The concrete cover ensures the durability and protection of the rebars from environmental factors.",
+              "x-component-detail": {
+                "id": "moapy.rc_pre.RebarNumberNameCover"
+              }
+            },
+            "type": "array",
+            "title": "Bottom Reinforcement Bars",
+            "description": "List of bottom reinforcement bars (rebars) for the beam. Includes details such as rebar number, type, and cover distance from the beam surface."
+          }
+        },
+        "type": "object",
+        "title": "Beam Main Rebar",
+        "description": "Defines the main reinforcement bars for a beam, including the top and bottom reinforcement bars (rebars) and their specifications.",
+        "x-component-detail": {
+          "id": "moapy.rc_pre.BeamMainRebar"
+        }
+      },
+      "BeamRebarPattern": {
+        "properties": {
+          "main": {
+            "properties": {
+              "cover": {
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "title": "Value",
+                    "description": "Length"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "enum": [
+                      "mm",
+                      "cm",
+                      "m",
+                      "in",
+                      "ft"
+                    ],
+                    "title": "enUnitLength"
+                  }
+                },
+                "type": "object",
+                "title": "Concrete Cover",
+                "description": "The distance from the centroid of the rebar to the nearest surface of the concrete. This cover ensures adequate protection for the rebar and prevents corrosion.",
+                "x-component-detail": {
+                  "id": "moapy.data_pre.Length"
+                }
+              },
+              "space": {
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "title": "Value",
+                    "description": "Length"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "enum": [
+                      "mm",
+                      "cm",
+                      "m",
+                      "in",
+                      "ft"
+                    ],
+                    "title": "enUnitLength"
+                  }
+                },
+                "type": "object",
+                "title": "Rebar",
+                "description": "The distance between adjacent rebars. This specifies the spacing between each reinforcement bar to ensure proper load transfer and concrete bonding.",
+                "x-component-detail": {
+                  "id": "moapy.data_pre.Length"
+                }
+              },
+              "top": {
+                "items": {
+                  "properties": {
+                    "number": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0.0,
+                      "title": "Number of Rebars",
+                      "description": "The number of reinforcement bars (rebars) used in the given location. This specifies how many rebars are placed together in the beam or column section."
+                    },
+                    "name": {
+                      "type": "string",
+                      "enum": [
+                        "P4",
+                        "P5",
+                        "P6",
+                        "P8",
+                        "P10",
+                        "P12",
+                        "P14",
+                        "P16",
+                        "P18",
+                        "P20",
+                        "P22",
+                        "P24",
+                        "P26",
+                        "P30",
+                        "P32",
+                        "P36",
+                        "P40"
+                      ],
+                      "title": "Rebar Name",
+                      "description": "The name or designation of the rebar. This typically refers to the type or size of the rebar, such as 'P26' or 'D16'.",
+                      "default": "P26"
+                    }
+                  },
+                  "type": "object",
+                  "required": [
+                    "name"
+                  ],
+                  "title": "Rebar Number and Cover",
+                  "description": "Defines the number, name, and concrete cover for reinforcement bars (rebars) used in concrete structures. The concrete cover ensures the durability and protection of the rebars from environmental factors.",
+                  "x-component-detail": {
+                    "id": "moapy.rc_pre.RebarNumberNameCover"
+                  }
+                },
+                "type": "array",
+                "title": "Top Reinforcement Bars",
+                "description": "List of top reinforcement bars (rebars) for the beam. Includes details such as rebar number, type, and cover distance from the beam surface."
+              },
+              "bot": {
+                "items": {
+                  "properties": {
+                    "number": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0.0,
+                      "title": "Number of Rebars",
+                      "description": "The number of reinforcement bars (rebars) used in the given location. This specifies how many rebars are placed together in the beam or column section."
+                    },
+                    "name": {
+                      "type": "string",
+                      "enum": [
+                        "P4",
+                        "P5",
+                        "P6",
+                        "P8",
+                        "P10",
+                        "P12",
+                        "P14",
+                        "P16",
+                        "P18",
+                        "P20",
+                        "P22",
+                        "P24",
+                        "P26",
+                        "P30",
+                        "P32",
+                        "P36",
+                        "P40"
+                      ],
+                      "title": "Rebar Name",
+                      "description": "The name or designation of the rebar. This typically refers to the type or size of the rebar, such as 'P26' or 'D16'.",
+                      "default": "P26"
+                    }
+                  },
+                  "type": "object",
+                  "required": [
+                    "name"
+                  ],
+                  "title": "Rebar Number and Cover",
+                  "description": "Defines the number, name, and concrete cover for reinforcement bars (rebars) used in concrete structures. The concrete cover ensures the durability and protection of the rebars from environmental factors.",
+                  "x-component-detail": {
+                    "id": "moapy.rc_pre.RebarNumberNameCover"
+                  }
+                },
+                "type": "array",
+                "title": "Bottom Reinforcement Bars",
+                "description": "List of bottom reinforcement bars (rebars) for the beam. Includes details such as rebar number, type, and cover distance from the beam surface."
+              }
+            },
+            "type": "object",
+            "title": "Main Reinforcement",
+            "description": "Details of the main reinforcement for the beam, including the top and bottom reinforcement bars (rebars) and their specifications.",
+            "x-component-detail": {
+              "id": "moapy.rc_pre.BeamMainRebar"
+            }
+          },
+          "stirrup": {
+            "properties": {
+              "number": {
+                "type": "integer",
+                "exclusiveMinimum": 0.0,
+                "title": "Legs",
+                "description": "The number of legs for the reinforcement bar. This specifies how many individual legs (bars) are used for the rebar."
+              },
+              "name": {
+                "type": "string",
+                "enum": [
+                  "P4",
+                  "P5",
+                  "P6",
+                  "P8",
+                  "P10",
+                  "P12",
+                  "P14",
+                  "P16",
+                  "P18",
+                  "P20",
+                  "P22",
+                  "P24",
+                  "P26",
+                  "P30",
+                  "P32",
+                  "P36",
+                  "P40"
+                ],
+                "title": "Rebar",
+                "description": "The name or designation of the rebar. This typically refers to the type or size of the rebar.",
+                "default": "P10"
+              },
+              "space": {
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "title": "Value",
+                    "description": "Length"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "enum": [
+                      "mm",
+                      "cm",
+                      "m",
+                      "in",
+                      "ft"
+                    ],
+                    "title": "enUnitLength"
+                  }
+                },
+                "type": "object",
+                "title": "Rebar",
+                "description": "The distance between adjacent rebars. This specifies the spacing between each reinforcement bar to ensure proper load transfer and concrete bonding.",
+                "x-component-detail": {
+                  "id": "moapy.data_pre.Length"
+                }
+              }
+            },
+            "type": "object",
+            "title": "Stirrup Reinforcement",
+            "description": "Details of the stirrup reinforcement for the beam, including the rebar type, spacing, and other parameters for shear reinforcement.",
+            "x-component-detail": {
+              "id": "moapy.rc_pre.RebarNumberNameSpace"
+            }
+          }
+        },
+        "type": "object",
+        "title": "Rebar",
+        "description": "Defines the rebar pattern for a beam, including top and bottom reinforcement bars (rebars) and stirrup reinforcements. The pattern is determined based on the unit system (SI or US) and includes specifications like number, size, type, and spacing of rebars.",
+        "x-component-detail": {
+          "id": "moapy.rc_pre.BeamRebarPattern"
+        }
+      },
+      "Force": {
+        "properties": {
+          "value": {
+            "type": "number",
+            "title": "Value",
+            "description": "Force"
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "N",
+              "kN",
+              "MN",
+              "lbf",
+              "kip"
+            ],
+            "title": "enUnitForce"
+          }
+        },
+        "type": "object",
+        "title": "Force",
+        "description": "Force",
+        "x-component-detail": {
+          "id": "moapy.data_pre.Force"
+        }
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "properties": {
+                "loc": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "integer"
+                      }
+                    ]
+                  },
+                  "type": "array",
+                  "title": "Location"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "Message"
+                },
+                "type": {
+                  "type": "string",
+                  "title": "Error Type"
+                }
+              },
+              "type": "object",
+              "required": [
+                "loc",
+                "msg",
+                "type"
+              ],
+              "title": "ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Length": {
+        "properties": {
+          "value": {
+            "type": "number",
+            "title": "Value",
+            "description": "Length"
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "mm",
+              "cm",
+              "m",
+              "in",
+              "ft"
+            ],
+            "title": "enUnitLength"
+          }
+        },
+        "type": "object",
+        "title": "Length",
+        "description": "Length",
+        "x-component-detail": {
+          "id": "moapy.data_pre.Length"
+        }
+      },
+      "MaterialNative": {
+        "properties": {
+          "fck": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "title": "Value",
+                "description": "Stress"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "Pa",
+                  "KPa",
+                  "MPa",
+                  "psi",
+                  "ksi"
+                ],
+                "title": "enUnitStress"
+              }
+            },
+            "type": "object",
+            "title": "Concrete Compressive Strength (fck)",
+            "description": "The characteristic strength of concrete in compression, typically measured in MPa (SI) or psi (US). This is a key parameter in the design of concrete structures.",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Stress"
+            }
+          },
+          "fy": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "title": "Value",
+                "description": "Stress"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "Pa",
+                  "KPa",
+                  "MPa",
+                  "psi",
+                  "ksi"
+                ],
+                "title": "enUnitStress"
+              }
+            },
+            "type": "object",
+            "title": "Rebar Yield Strength (fy)",
+            "description": "The yield strength of the reinforcement bars (rebar) used in concrete, typically measured in MPa (SI) or psi (US). It represents the stress at which the rebar begins to plastically deform.",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Stress"
+            }
+          },
+          "fys": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "title": "Value",
+                "description": "Stress"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "Pa",
+                  "KPa",
+                  "MPa",
+                  "psi",
+                  "ksi"
+                ],
+                "title": "enUnitStress"
+              }
+            },
+            "type": "object",
+            "title": "Stirrup Yield Strength (fys)",
+            "description": "The yield strength of stirrups (reinforcing steel ties used for shear reinforcement) in concrete, typically measured in MPa (SI) or psi (US).",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Stress"
+            }
+          }
+        },
+        "type": "object",
+        "title": "Material",
+        "description": "Defines the material strength properties of concrete and reinforcement used in structural design, including compressive strength of concrete and yield strength of rebars and stirrups.",
+        "x-component-detail": {
+          "id": "moapy.rc_pre.MaterialNative"
+        }
+      },
+      "Moment": {
+        "properties": {
+          "value": {
+            "type": "number",
+            "title": "Value",
+            "description": "Moment"
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "kN.m",
+              "kip.in",
+              "kip.ft",
+              "N.mm",
+              "N.m"
+            ],
+            "title": "enUnitMoment"
+          }
+        },
+        "type": "object",
+        "title": "Moment",
+        "description": "Moment",
+        "x-component-detail": {
+          "id": "moapy.data_pre.Moment"
+        }
+      },
+      "NativeForce": {
+        "properties": {
+          "axial": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "title": "Value",
+                "description": "Force"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "N",
+                  "kN",
+                  "MN",
+                  "lbf",
+                  "kip"
+                ],
+                "title": "enUnitForce"
+              }
+            },
+            "type": "object",
+            "title": "Axial",
+            "description": "Axial force acting along the longitudinal axis of the member. Positive values indicate compression, negative values indicate tension.",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Force"
+            }
+          },
+          "bending": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "title": "Value",
+                "description": "Moment"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "kN.m",
+                  "kip.in",
+                  "kip.ft",
+                  "N.mm",
+                  "N.m"
+                ],
+                "title": "enUnitMoment"
+              }
+            },
+            "type": "object",
+            "title": "Moment",
+            "description": "Bending moment acting about the member's major axis (X-axis). This represents the primary flexural action in the strong axis direction.",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Moment"
+            }
+          },
+          "shear": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "title": "Value",
+                "description": "Force"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "N",
+                  "kN",
+                  "MN",
+                  "lbf",
+                  "kip"
+                ],
+                "title": "enUnitForce"
+              }
+            },
+            "type": "object",
+            "title": "Shear",
+            "description": "Shear force acting parallel to the member's major axis (X-axis). This represents the transverse force causing horizontal shear deformation.",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Force"
+            }
+          }
+        },
+        "type": "object",
+        "title": "Force",
+        "description": "The plus sign in axial is compression.",
+        "x-component-detail": {
+          "id": "moapy.data_pre.NativeForce"
+        }
+      },
+      "RebarNumberNameCover": {
+        "properties": {
+          "number": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Number of Rebars",
+            "description": "The number of reinforcement bars (rebars) used in the given location. This specifies how many rebars are placed together in the beam or column section."
+          },
+          "name": {
+            "type": "string",
+            "enum": [
+              "P4",
+              "P5",
+              "P6",
+              "P8",
+              "P10",
+              "P12",
+              "P14",
+              "P16",
+              "P18",
+              "P20",
+              "P22",
+              "P24",
+              "P26",
+              "P30",
+              "P32",
+              "P36",
+              "P40"
+            ],
+            "title": "Rebar Name",
+            "description": "The name or designation of the rebar. This typically refers to the type or size of the rebar, such as 'P26' or 'D16'.",
+            "default": "P26"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "Rebar Number and Cover",
+        "description": "Defines the number, name, and concrete cover for reinforcement bars (rebars) used in concrete structures. The concrete cover ensures the durability and protection of the rebars from environmental factors.",
+        "x-component-detail": {
+          "id": "moapy.rc_pre.RebarNumberNameCover"
+        }
+      },
+      "RebarNumberNameSpace": {
+        "properties": {
+          "number": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Legs",
+            "description": "The number of legs for the reinforcement bar. This specifies how many individual legs (bars) are used for the rebar."
+          },
+          "name": {
+            "type": "string",
+            "enum": [
+              "P4",
+              "P5",
+              "P6",
+              "P8",
+              "P10",
+              "P12",
+              "P14",
+              "P16",
+              "P18",
+              "P20",
+              "P22",
+              "P24",
+              "P26",
+              "P30",
+              "P32",
+              "P36",
+              "P40"
+            ],
+            "title": "Rebar",
+            "description": "The name or designation of the rebar. This typically refers to the type or size of the rebar.",
+            "default": "P10"
+          },
+          "space": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "title": "Value",
+                "description": "Length"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm",
+                  "cm",
+                  "m",
+                  "in",
+                  "ft"
+                ],
+                "title": "enUnitLength"
+              }
+            },
+            "type": "object",
+            "title": "Rebar",
+            "description": "The distance between adjacent rebars. This specifies the spacing between each reinforcement bar to ensure proper load transfer and concrete bonding.",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Length"
+            }
+          }
+        },
+        "type": "object",
+        "title": "Spacing",
+        "description": "Defines the number of legs of rebars and the spacing between them for reinforcement in concrete structures. Proper spacing ensures load transfer efficiency and concrete bonding around the rebar.",
+        "x-component-detail": {
+          "id": "moapy.rc_pre.RebarNumberNameSpace"
+        }
+      },
+      "ResultBytes": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "title": "Type",
+            "description": "Type",
+            "default": "xlsx"
+          },
+          "result": {
+            "type": "string",
+            "title": "Result",
+            "description": "have to base64 to binary data",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "title": "Bytes",
+        "description": "Result Bytes",
+        "x-component-detail": {
+          "id": "moapy.data_post.ResultBytes"
+        }
+      },
+      "SectionRectangle": {
+        "properties": {
+          "sectionType": {
+            "type": "string",
+            "const": "Solid_Rectangle",
+            "title": "Section Type",
+            "description": "Type of the section, fixed as 'Solid_Rectangle'.",
+            "default": "Solid_Rectangle",
+            "readOnly": true
+          },
+          "b": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "title": "Value",
+                "description": "Length"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm",
+                  "cm",
+                  "m",
+                  "in",
+                  "ft"
+                ],
+                "title": "enUnitLength"
+              }
+            },
+            "type": "object",
+            "title": "Width",
+            "description": "The width of the rectangular section. This dimension is critical for determining the bending and shear resistance of the section.",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Length"
+            }
+          },
+          "h": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "title": "Value",
+                "description": "Length"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm",
+                  "cm",
+                  "m",
+                  "in",
+                  "ft"
+                ],
+                "title": "enUnitLength"
+              }
+            },
+            "type": "object",
+            "title": "Height",
+            "description": "The height of the rectangular section. This dimension is crucial for calculating the section's capacity to resist bending moments and axial loads.",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Length"
+            }
+          }
+        },
+        "type": "object",
+        "title": "Section",
+        "description": "Defines a solid rectangular section with specified width (b) and height (h). These parameters are used in structural design to evaluate the section's capacity to resist bending, shear, and axial forces.",
+        "x-component-detail": {
+          "id": "moapy.data_pre.SectionRectangle"
+        }
+      },
+      "Stress": {
+        "properties": {
+          "value": {
+            "type": "number",
+            "title": "Value",
+            "description": "Stress"
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "Pa",
+              "KPa",
+              "MPa",
+              "psi",
+              "ksi"
+            ],
+            "title": "enUnitStress"
+          }
+        },
+        "type": "object",
+        "title": "Stress",
+        "description": "Stress",
+        "x-component-detail": {
+          "id": "moapy.data_pre.Stress"
+        }
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "enUnitForce": {
+        "type": "string",
+        "enum": [
+          "N",
+          "kN",
+          "MN",
+          "lbf",
+          "kip"
+        ],
+        "title": "enUnitForce"
+      },
+      "enUnitLength": {
+        "type": "string",
+        "enum": [
+          "mm",
+          "cm",
+          "m",
+          "in",
+          "ft"
+        ],
+        "title": "enUnitLength"
+      },
+      "enUnitMoment": {
+        "type": "string",
+        "enum": [
+          "kN.m",
+          "kip.in",
+          "kip.ft",
+          "N.mm",
+          "N.m"
+        ],
+        "title": "enUnitMoment"
+      },
+      "enUnitStress": {
+        "type": "string",
+        "enum": [
+          "Pa",
+          "KPa",
+          "MPa",
+          "psi",
+          "ksi"
+        ],
+        "title": "enUnitStress"
+      },
+      "report_ec2_beam": {
+        "properties": {
+          "matl": {
+            "properties": {
+              "fck": {
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "title": "Value",
+                    "description": "Stress"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "enum": [
+                      "Pa",
+                      "KPa",
+                      "MPa",
+                      "psi",
+                      "ksi"
+                    ],
+                    "title": "enUnitStress"
+                  }
+                },
+                "type": "object",
+                "title": "Concrete Compressive Strength (fck)",
+                "description": "The characteristic strength of concrete in compression, typically measured in MPa (SI) or psi (US). This is a key parameter in the design of concrete structures.",
+                "x-component-detail": {
+                  "id": "moapy.data_pre.Stress"
+                }
+              },
+              "fy": {
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "title": "Value",
+                    "description": "Stress"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "enum": [
+                      "Pa",
+                      "KPa",
+                      "MPa",
+                      "psi",
+                      "ksi"
+                    ],
+                    "title": "enUnitStress"
+                  }
+                },
+                "type": "object",
+                "title": "Rebar Yield Strength (fy)",
+                "description": "The yield strength of the reinforcement bars (rebar) used in concrete, typically measured in MPa (SI) or psi (US). It represents the stress at which the rebar begins to plastically deform.",
+                "x-component-detail": {
+                  "id": "moapy.data_pre.Stress"
+                }
+              },
+              "fys": {
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "title": "Value",
+                    "description": "Stress"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "enum": [
+                      "Pa",
+                      "KPa",
+                      "MPa",
+                      "psi",
+                      "ksi"
+                    ],
+                    "title": "enUnitStress"
+                  }
+                },
+                "type": "object",
+                "title": "Stirrup Yield Strength (fys)",
+                "description": "The yield strength of stirrups (reinforcing steel ties used for shear reinforcement) in concrete, typically measured in MPa (SI) or psi (US).",
+                "x-component-detail": {
+                  "id": "moapy.data_pre.Stress"
+                }
+              }
+            },
+            "type": "object",
+            "title": "Material",
+            "description": "Defines the material strength properties of concrete and reinforcement used in structural design, including compressive strength of concrete and yield strength of rebars and stirrups.",
+            "x-component-detail": {
+              "id": "moapy.rc_pre.MaterialNative"
+            },
+            "default": {
+              "fck": {
+                "unit": "MPa",
+                "value": 24.0
+              },
+              "fy": {
+                "unit": "MPa",
+                "value": 400.0
+              },
+              "fys": {
+                "unit": "MPa",
+                "value": 400.0
+              }
+            }
+          },
+          "sect": {
+            "properties": {
+              "sectionType": {
+                "type": "string",
+                "const": "Solid_Rectangle",
+                "title": "Section Type",
+                "description": "Type of the section, fixed as 'Solid_Rectangle'.",
+                "default": "Solid_Rectangle",
+                "readOnly": true
+              },
+              "b": {
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "title": "Value",
+                    "description": "Length"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "enum": [
+                      "mm",
+                      "cm",
+                      "m",
+                      "in",
+                      "ft"
+                    ],
+                    "title": "enUnitLength"
+                  }
+                },
+                "type": "object",
+                "title": "Width",
+                "description": "The width of the rectangular section. This dimension is critical for determining the bending and shear resistance of the section.",
+                "x-component-detail": {
+                  "id": "moapy.data_pre.Length"
+                }
+              },
+              "h": {
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "title": "Value",
+                    "description": "Length"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "enum": [
+                      "mm",
+                      "cm",
+                      "m",
+                      "in",
+                      "ft"
+                    ],
+                    "title": "enUnitLength"
+                  }
+                },
+                "type": "object",
+                "title": "Height",
+                "description": "The height of the rectangular section. This dimension is crucial for calculating the section's capacity to resist bending moments and axial loads.",
+                "x-component-detail": {
+                  "id": "moapy.data_pre.Length"
+                }
+              }
+            },
+            "type": "object",
+            "title": "Section",
+            "description": "Defines a solid rectangular section with specified width (b) and height (h). These parameters are used in structural design to evaluate the section's capacity to resist bending, shear, and axial forces.",
+            "x-component-detail": {
+              "id": "moapy.data_pre.SectionRectangle"
+            },
+            "default": {
+              "sectionType": "Solid_Rectangle",
+              "b": {
+                "unit": "mm",
+                "value": 400.0
+              },
+              "h": {
+                "unit": "mm",
+                "value": 600.0
+              }
+            }
+          },
+          "force": {
+            "properties": {
+              "axial": {
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "title": "Value",
+                    "description": "Force"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "enum": [
+                      "N",
+                      "kN",
+                      "MN",
+                      "lbf",
+                      "kip"
+                    ],
+                    "title": "enUnitForce"
+                  }
+                },
+                "type": "object",
+                "title": "Axial",
+                "description": "Axial force acting along the longitudinal axis of the member. Positive values indicate compression, negative values indicate tension.",
+                "x-component-detail": {
+                  "id": "moapy.data_pre.Force"
+                }
+              },
+              "bending": {
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "title": "Value",
+                    "description": "Moment"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "enum": [
+                      "kN.m",
+                      "kip.in",
+                      "kip.ft",
+                      "N.mm",
+                      "N.m"
+                    ],
+                    "title": "enUnitMoment"
+                  }
+                },
+                "type": "object",
+                "title": "Moment",
+                "description": "Bending moment acting about the member's major axis (X-axis). This represents the primary flexural action in the strong axis direction.",
+                "x-component-detail": {
+                  "id": "moapy.data_pre.Moment"
+                }
+              },
+              "shear": {
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "title": "Value",
+                    "description": "Force"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "enum": [
+                      "N",
+                      "kN",
+                      "MN",
+                      "lbf",
+                      "kip"
+                    ],
+                    "title": "enUnitForce"
+                  }
+                },
+                "type": "object",
+                "title": "Shear",
+                "description": "Shear force acting parallel to the member's major axis (X-axis). This represents the transverse force causing horizontal shear deformation.",
+                "x-component-detail": {
+                  "id": "moapy.data_pre.Force"
+                }
+              }
+            },
+            "type": "object",
+            "title": "Force",
+            "description": "The plus sign in axial is compression.",
+            "x-component-detail": {
+              "id": "moapy.data_pre.NativeForce"
+            },
+            "default": {
+              "axial": {
+                "unit": "kN",
+                "value": 0.0
+              },
+              "bending": {
+                "unit": "kN.m",
+                "value": 0.0
+              },
+              "shear": {
+                "unit": "kN",
+                "value": 0.0
+              }
+            }
+          },
+          "rebar": {
+            "properties": {
+              "main": {
+                "properties": {
+                  "cover": {
+                    "properties": {
+                      "value": {
+                        "type": "number",
+                        "title": "Value",
+                        "description": "Length"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "enum": [
+                          "mm",
+                          "cm",
+                          "m",
+                          "in",
+                          "ft"
+                        ],
+                        "title": "enUnitLength"
+                      }
+                    },
+                    "type": "object",
+                    "title": "Concrete Cover",
+                    "description": "The distance from the centroid of the rebar to the nearest surface of the concrete. This cover ensures adequate protection for the rebar and prevents corrosion.",
+                    "x-component-detail": {
+                      "id": "moapy.data_pre.Length"
+                    }
+                  },
+                  "space": {
+                    "properties": {
+                      "value": {
+                        "type": "number",
+                        "title": "Value",
+                        "description": "Length"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "enum": [
+                          "mm",
+                          "cm",
+                          "m",
+                          "in",
+                          "ft"
+                        ],
+                        "title": "enUnitLength"
+                      }
+                    },
+                    "type": "object",
+                    "title": "Rebar",
+                    "description": "The distance between adjacent rebars. This specifies the spacing between each reinforcement bar to ensure proper load transfer and concrete bonding.",
+                    "x-component-detail": {
+                      "id": "moapy.data_pre.Length"
+                    }
+                  },
+                  "top": {
+                    "items": {
+                      "properties": {
+                        "number": {
+                          "type": "integer",
+                          "exclusiveMinimum": 0.0,
+                          "title": "Number of Rebars",
+                          "description": "The number of reinforcement bars (rebars) used in the given location. This specifies how many rebars are placed together in the beam or column section."
+                        },
+                        "name": {
+                          "type": "string",
+                          "enum": [
+                            "P4",
+                            "P5",
+                            "P6",
+                            "P8",
+                            "P10",
+                            "P12",
+                            "P14",
+                            "P16",
+                            "P18",
+                            "P20",
+                            "P22",
+                            "P24",
+                            "P26",
+                            "P30",
+                            "P32",
+                            "P36",
+                            "P40"
+                          ],
+                          "title": "Rebar Name",
+                          "description": "The name or designation of the rebar. This typically refers to the type or size of the rebar, such as 'P26' or 'D16'.",
+                          "default": "P26"
+                        }
+                      },
+                      "type": "object",
+                      "required": [
+                        "name"
+                      ],
+                      "title": "Rebar Number and Cover",
+                      "description": "Defines the number, name, and concrete cover for reinforcement bars (rebars) used in concrete structures. The concrete cover ensures the durability and protection of the rebars from environmental factors.",
+                      "x-component-detail": {
+                        "id": "moapy.rc_pre.RebarNumberNameCover"
+                      }
+                    },
+                    "type": "array",
+                    "title": "Top Reinforcement Bars",
+                    "description": "List of top reinforcement bars (rebars) for the beam. Includes details such as rebar number, type, and cover distance from the beam surface."
+                  },
+                  "bot": {
+                    "items": {
+                      "properties": {
+                        "number": {
+                          "type": "integer",
+                          "exclusiveMinimum": 0.0,
+                          "title": "Number of Rebars",
+                          "description": "The number of reinforcement bars (rebars) used in the given location. This specifies how many rebars are placed together in the beam or column section."
+                        },
+                        "name": {
+                          "type": "string",
+                          "enum": [
+                            "P4",
+                            "P5",
+                            "P6",
+                            "P8",
+                            "P10",
+                            "P12",
+                            "P14",
+                            "P16",
+                            "P18",
+                            "P20",
+                            "P22",
+                            "P24",
+                            "P26",
+                            "P30",
+                            "P32",
+                            "P36",
+                            "P40"
+                          ],
+                          "title": "Rebar Name",
+                          "description": "The name or designation of the rebar. This typically refers to the type or size of the rebar, such as 'P26' or 'D16'.",
+                          "default": "P26"
+                        }
+                      },
+                      "type": "object",
+                      "required": [
+                        "name"
+                      ],
+                      "title": "Rebar Number and Cover",
+                      "description": "Defines the number, name, and concrete cover for reinforcement bars (rebars) used in concrete structures. The concrete cover ensures the durability and protection of the rebars from environmental factors.",
+                      "x-component-detail": {
+                        "id": "moapy.rc_pre.RebarNumberNameCover"
+                      }
+                    },
+                    "type": "array",
+                    "title": "Bottom Reinforcement Bars",
+                    "description": "List of bottom reinforcement bars (rebars) for the beam. Includes details such as rebar number, type, and cover distance from the beam surface."
+                  }
+                },
+                "type": "object",
+                "title": "Main Reinforcement",
+                "description": "Details of the main reinforcement for the beam, including the top and bottom reinforcement bars (rebars) and their specifications.",
+                "x-component-detail": {
+                  "id": "moapy.rc_pre.BeamMainRebar"
+                }
+              },
+              "stirrup": {
+                "properties": {
+                  "number": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0.0,
+                    "title": "Legs",
+                    "description": "The number of legs for the reinforcement bar. This specifies how many individual legs (bars) are used for the rebar."
+                  },
+                  "name": {
+                    "type": "string",
+                    "enum": [
+                      "P4",
+                      "P5",
+                      "P6",
+                      "P8",
+                      "P10",
+                      "P12",
+                      "P14",
+                      "P16",
+                      "P18",
+                      "P20",
+                      "P22",
+                      "P24",
+                      "P26",
+                      "P30",
+                      "P32",
+                      "P36",
+                      "P40"
+                    ],
+                    "title": "Rebar",
+                    "description": "The name or designation of the rebar. This typically refers to the type or size of the rebar.",
+                    "default": "P10"
+                  },
+                  "space": {
+                    "properties": {
+                      "value": {
+                        "type": "number",
+                        "title": "Value",
+                        "description": "Length"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "enum": [
+                          "mm",
+                          "cm",
+                          "m",
+                          "in",
+                          "ft"
+                        ],
+                        "title": "enUnitLength"
+                      }
+                    },
+                    "type": "object",
+                    "title": "Rebar",
+                    "description": "The distance between adjacent rebars. This specifies the spacing between each reinforcement bar to ensure proper load transfer and concrete bonding.",
+                    "x-component-detail": {
+                      "id": "moapy.data_pre.Length"
+                    }
+                  }
+                },
+                "type": "object",
+                "title": "Stirrup Reinforcement",
+                "description": "Details of the stirrup reinforcement for the beam, including the rebar type, spacing, and other parameters for shear reinforcement.",
+                "x-component-detail": {
+                  "id": "moapy.rc_pre.RebarNumberNameSpace"
+                }
+              }
+            },
+            "type": "object",
+            "title": "Rebar",
+            "description": "Defines the rebar pattern for a beam, including top and bottom reinforcement bars (rebars) and stirrup reinforcements. The pattern is determined based on the unit system (SI or US) and includes specifications like number, size, type, and spacing of rebars.",
+            "x-component-detail": {
+              "id": "moapy.rc_pre.BeamRebarPattern"
+            },
+            "default": {
+              "main": {
+                "bot": [
+                  {
+                    "name": "P26",
+                    "number": 2
+                  }
+                ],
+                "cover": {
+                  "unit": "mm",
+                  "value": 40.0
+                },
+                "space": {
+                  "unit": "mm",
+                  "value": 40.0
+                },
+                "top": [
+                  {
+                    "name": "P26",
+                    "number": 2
+                  }
+                ]
+              },
+              "stirrup": {
+                "name": "P10",
+                "number": 2,
+                "space": {
+                  "unit": "mm",
+                  "value": 100.0
+                }
+              }
+            }
+          }
+        },
+        "type": "object",
+        "title": "report ec2 beam"
+      }
+    }
+  }
+}

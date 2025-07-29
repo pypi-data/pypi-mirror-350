@@ -1,0 +1,501 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.2.5"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    },
+    {
+      "url": "https://moa.rpm.kr-st-midasit.com/backend/function-executor/python-execute/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-designers_guide-func_execute-calc_content_10": {
+      "post": {
+        "summary": "Wind Force Calculation on Rectangular Bridge Piers",
+        "description": "[EN1991-1-4] This guide provides a detailed methodology for calculating wind loads on rectangular bridge piers. It covers essential factors such as the shape, orientation, and size of the piers, as well as wind speed, height, and pressure coefficients. The guide also explains how to apply appropriate force coefficients specifically for rectangular piers, ensuring accurate wind load assessment for bridge design and safety considerations.",
+        "x-content-info": {
+          "standardType": "EUROCODE",
+          "codeName": "EN1991-1-4",
+          "codeTitle": "Eurocode 1: Actions on structures \u2014 Part 1-4: General actions \u2014 Wind actions",
+          "title": "Wind Force Calculation on Rectangular Bridge Piers",
+          "description": "[EN1991-1-4] This guide provides a detailed methodology for calculating wind loads on rectangular bridge piers. It covers essential factors such as the shape, orientation, and size of the piers, as well as wind speed, height, and pressure coefficients. The guide also explains how to apply appropriate force coefficients specifically for rectangular piers, ensuring accurate wind load assessment for bridge design and safety considerations.",
+          "edition": "2005+A1:2010 Incorporating corrigenda July 2009 and January 2010",
+          "figurePath": "https://moa.rpm.kr-dv-midasit.com/design-guide/figures/detail_content_10.png"
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "G3_COMP_2": {
+                    "title": "Fundamental wind velocity",
+                    "type": "number",
+                    "description": "The fundamental wind velocity is the baseline 10-minute mean wind speed measured at a height of 10 meters above open terrain with minimal vegetation and few obstacles. It is the starting point for calculating the basic wind velocity, before applying any adjustments for wind direction or season. The value is typically provided in national standards.",
+                    "default": 27,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1991-1-4"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "4.2(1)P"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "v_{b,0}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "m/s"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G3_COMP_6": {
+                    "title": "Mean return period",
+                    "type": "number",
+                    "description": "The mean return period is the average time interval over which a specific wind event (like a wind speed) is expected to be exceeded once. A mean return period of 50 years indicates that the wind speed is likely to be exceeded once every 50 years on average.",
+                    "default": 50,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1991-1-4"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.4(1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "p_{years}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "years"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 0
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      },
+                      "refStd": {
+                        "type": "string",
+                        "default": "NDPs",
+                        "description": "Nationally Determined Parameters"
+                      }
+                    }
+                  },
+                  "G3_COMP_10": {
+                    "title": "Reference height above ground",
+                    "type": "number",
+                    "description": "The reference height is the maximum height above ground for the section being considered. This height is used in wind load calculations to determine the peak wind velocity and other wind-related forces acting on the structure.",
+                    "default": 6,
+                    "minimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1991-1-4"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "5.1(Table5.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "z_{e}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "m"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G3_COMP_15": {
+                    "title": "Terrain category selection",
+                    "type": "string",
+                    "description": "This section allows the user to choose the appropriate terrain category based on the characteristics of the surrounding area. Terrain categories are used to define the roughness of the ground, which affects wind speed calculations. Options typically range from open terrain with low vegetation to urban environments with numerous obstacles.",
+                    "default": "[0] Sea or coastal area exposed to the open sea",
+                    "enum": [
+                      "[0] Sea or coastal area exposed to the open sea",
+                      "[I] Lakes or flat and horizontal area with negligible vegetation and without obstacles",
+                      "[II] Area with low vegetation such as grass and isolated obstacles (trees, buildings) with separations of at least 20 obstacle heights",
+                      "[III] Area with regular cover of vegetation or buildings or with isolated obstacles with separations of maximum 20 obstacle heights (such as villages, suburban terrain, permanent forest)",
+                      "[IV] Area in which at least 15 % of the surface is covered with buildings and their average height exceeds 15 m"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1991-1-4"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "4.3.2(Table4.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "terrain"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": "https://moa.rpm.kr-dv-midasit.com/design-guide/figures/detail_g3_comp_15.png"
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$terrain$$",
+                            "Description"
+                          ],
+                          [
+                            "[0] Sea or coastal area exposed to the open sea",
+                            "Areas directly exposed to the open sea, such as coastal regions with no protection from land (e.g., oceanfront cliffs or beaches)."
+                          ],
+                          [
+                            "[I] Lakes or flat and horizontal area with negligible vegetation and without obstacles",
+                            "Flat, open areas like large lakes or plains with minimal vegetation and no significant obstacles (e.g., flat open fields or dried-up lakebeds)."
+                          ],
+                          [
+                            "[II] Area with low vegetation such as grass and isolated obstacles (trees, buildings) with separations of at least 20 obstacle heights",
+                            "Areas with low vegetation like grasslands or farmland, with occasional obstacles such as trees or buildings, separated by at least 20 times their height (e.g., rural fields with scattered farmhouses)."
+                          ],
+                          [
+                            "[III] Area with regular cover of vegetation or buildings or with isolated obstacles with separations of maximum 20 obstacle heights (such as villages, suburban terrain, permanent forest)",
+                            "Areas with a regular cover of vegetation or buildings, such as suburban areas or forests, with obstacles like trees or houses spaced up to 20 times their height (e.g., villages or small towns surrounded by forests)."
+                          ],
+                          [
+                            "[IV] Area in which at least 15 % of the surface is covered with buildings and their average height exceeds 15 m",
+                            "Urbanized areas where at least 15% of the ground surface is covered by tall buildings, typically over 15 meters in height (e.g., city centers with skyscrapers or densely built industrial zones)."
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G10_COMP_3": {
+                    "title": "Length of the rectangular pier being considered",
+                    "type": "number",
+                    "description": "The length of the rectangular pier refers to the total vertical height of the pier being analyzed. This measurement is crucial for determining the reference area exposed to wind loads and is used in wind force calculations.",
+                    "default": 6.5,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1991-1-4"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "7.6(2)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "l"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "m"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G10_COMP_4": {
+                    "title": "Breadth of rectangular sections",
+                    "type": "number",
+                    "description": "In rectangular sections, the breadth refers to the shorter dimension of the cross-section that is perpendicular to the wind direction. This dimension is critical in determining the reference area and the wind loads acting on the structure.",
+                    "default": 2.5,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1991-1-4"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "7.6(Figure7.23)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "b"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "m"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G10_COMP_5": {
+                    "title": "Depth of rectangular section",
+                    "type": "number",
+                    "description": "The depth, denoted as d, refers to the longer dimension of the rectangular section perpendicular to the wind direction. It represents the distance between the front and back faces of the section, playing a crucial role in determining the wind forces acting on the structure. The depth is used to calculate the reference area and influences the pressure distribution on the rectangular section.",
+                    "default": 3,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1991-1-4"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "7.6(Figure7.23)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "d"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "m"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G10_COMP_6": {
+                    "title": "Radius of rounded corners",
+                    "type": "number",
+                    "description": "The radius of rounded corners refers to the curvature of the edges where two surfaces meet, typically on rectangular or square structural sections. This radius is important in wind load calculations, as rounded corners reduce wind resistance and turbulence compared to sharp edges, leading to a more streamlined flow of wind around the structure.",
+                    "default": 0,
+                    "minimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1991-1-4"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "7.6(Figure7.24)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "r"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "m"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "G3_COMP_2",
+                  "G3_COMP_6",
+                  "G3_COMP_10",
+                  "G3_COMP_15",
+                  "G10_COMP_3",
+                  "G10_COMP_4",
+                  "G10_COMP_5",
+                  "G10_COMP_6"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "isInput": false,
+                    "codeName": "",
+                    "reference": [
+                      ""
+                    ],
+                    "title": "",
+                    "description": "",
+                    "figurePath": "",
+                    "descriptTable": [],
+                    "compType": "",
+                    "symbol": "",
+                    "result": {
+                      "value": "0.0",
+                      "table": [],
+                      "formula": [],
+                      "variables": {}
+                    },
+                    "refStd": "",
+                    "unit": "",
+                    "notation": "standard",
+                    "decimal": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,207 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.2.5"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-plugins-earthpressure_coefficient-eurocode_kakp-calc_earthpressure_coefficient": {
+      "post": {
+        "summary": "Earth Pressure Coefficient Estimator",
+        "description": "Calculates the earth pressure coefficient based on the provided input parameters, which include soil properties, wall geometry, and other relevant factors. The result is an estimated coefficient that represents the ratio of lateral earth pressure to vertical stress, commonly used in geotechnical engineering to analyze the stability and design of retaining walls, foundations, and other structures subjected to soil pressure.",
+        "operationId": "calc earthpressure coefficient",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/calc_earthpressure_coefficient"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EarthPressureResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "x-content-info": {
+          "title": "Earth Pressure Coefficient Estimator",
+          "description": "Calculates the earth pressure coefficient based on the provided input parameters, which include soil properties, wall geometry, and other relevant factors. The result is an estimated coefficient that represents the ratio of lateral earth pressure to vertical stress, commonly used in geotechnical engineering to analyze the stability and design of retaining walls, foundations, and other structures subjected to soil pressure."
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "EarthPressureData": {
+        "properties": {
+          "phiValues": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array",
+            "title": "Phivalues"
+          },
+          "series": {
+            "additionalProperties": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "type": "object",
+            "title": "Series"
+          }
+        },
+        "type": "object",
+        "required": [
+          "phiValues",
+          "series"
+        ],
+        "title": "EarthPressureData",
+        "dataclassname": "moapy.plugins.earthpressure_coefficient.base.EarthPressureData"
+      },
+      "EarthPressureInput": {
+        "properties": {
+          "beta": {
+            "type": "number",
+            "title": "Beta"
+          },
+          "phi": {
+            "type": "number",
+            "title": "Phi"
+          },
+          "delta": {
+            "type": "number",
+            "title": "Delta"
+          }
+        },
+        "type": "object",
+        "required": [
+          "beta",
+          "phi",
+          "delta"
+        ],
+        "title": "EarthPressureInput",
+        "dataclassname": "moapy.plugins.earthpressure_coefficient.base.EarthPressureInput"
+      },
+      "EarthPressureResult": {
+        "properties": {
+          "kaBase": {
+            "$ref": "#/components/schemas/EarthPressureData"
+          },
+          "kaCalculatedCurve": {
+            "$ref": "#/components/schemas/EarthPressureData"
+          },
+          "calculatedKa": {
+            "type": "number",
+            "title": "Calculatedka"
+          },
+          "kpBase": {
+            "$ref": "#/components/schemas/EarthPressureData"
+          },
+          "kpCalculatedCurve": {
+            "$ref": "#/components/schemas/EarthPressureData"
+          },
+          "calculatedKp": {
+            "type": "number",
+            "title": "Calculatedkp"
+          }
+        },
+        "type": "object",
+        "required": [
+          "kaBase",
+          "kaCalculatedCurve",
+          "calculatedKa",
+          "kpBase",
+          "kpCalculatedCurve",
+          "calculatedKp"
+        ],
+        "title": "EarthPressureResult",
+        "dataclassname": "moapy.plugins.earthpressure_coefficient.base.EarthPressureResult"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "calc_earthpressure_coefficient": {
+        "properties": {
+          "inp": {
+            "$ref": "#/components/schemas/EarthPressureInput"
+          }
+        },
+        "type": "object",
+        "required": [
+          "inp"
+        ],
+        "title": "calc earthpressure coefficient"
+      }
+    }
+  }
+}

@@ -1,0 +1,1103 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.2.5"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    },
+    {
+      "url": "https://moa.rpm.kr-st-midasit.com/backend/function-executor/python-execute/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-designers_guide-func_execute-calc_content_40": {
+      "post": {
+        "summary": "Nominal Concrete Cover Based on Exposure Resistance Classes",
+        "description": "[2G:EN1992-1-1] This guide offers a detailed approach to calculating the required concrete cover thickness for durability based on the Exposure Resistance Classes (ERC) as defined in the Eurocode 2nd Generation standards. It provides a structured process to determine the appropriate cover thickness for varying exposure conditions, ensuring effective corrosion protection and longevity of the concrete structure. The guide includes step-by-step instructions on selecting ERC values and applying them to calculate minimum cover thickness for diverse environmental scenarios. Tailored for engineers and structural designers, this guide enables users to meet Eurocode durability requirements, thereby optimizing concrete structure performance and safety across various applications.",
+        "x-content-info": {
+          "standardType": "2G:EUROCODE",
+          "codeName": "2G:EN1992-1-1",
+          "codeTitle": "Eurocode 2 \u2014 Design of concrete structures - Part 1-1: General rules and rules for buildings, bridges and civil engineering structures",
+          "title": "Nominal Concrete Cover Based on Exposure Resistance Classes",
+          "description": "[2G:EN1992-1-1] This guide offers a detailed approach to calculating the required concrete cover thickness for durability based on the Exposure Resistance Classes (ERC) as defined in the Eurocode 2nd Generation standards. It provides a structured process to determine the appropriate cover thickness for varying exposure conditions, ensuring effective corrosion protection and longevity of the concrete structure. The guide includes step-by-step instructions on selecting ERC values and applying them to calculate minimum cover thickness for diverse environmental scenarios. Tailored for engineers and structural designers, this guide enables users to meet Eurocode durability requirements, thereby optimizing concrete structure performance and safety across various applications.",
+          "edition": "2003",
+          "figurePath": null
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "G40_COMP_1": {
+                    "title": "Exposure classes based on environmental conditions",
+                    "type": "string",
+                    "description": "This table categorizes exposure classes that define the environmental conditions affecting concrete structures. These classifications help determine durability requirements, including resistance to carbonation, chlorides, freeze-thaw cycles, and chemical attacks, ensuring appropriate design for various environments.",
+                    "default": "XC1",
+                    "enum": [
+                      "XC1",
+                      "XC2",
+                      "XC3",
+                      "XC4",
+                      "XD1",
+                      "XD2",
+                      "XD3",
+                      "XS1",
+                      "XS2",
+                      "XS3"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "2G:EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.3(Table6.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "expoclass"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": "https://moa.rpm.kr-dv-midasit.com/design-guide/figures/detail_g40_comp_1.png"
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$expoclass$$",
+                            "Description",
+                            "Informative examples where exposure classes can occur (NDP)"
+                          ],
+                          [
+                            "XC1",
+                            "Dry",
+                            "Concrete inside buildings with low air humidity, where the corrosion rate will be insignificant."
+                          ],
+                          [
+                            "XC2",
+                            "Wet or permanent high humidity, rarely dry.",
+                            "Concrete surfaces subject to long-term water contact or permanently submerged in water or permanently exposed to high humidity; many foundations; water containments (not external). NOTE 1 Leaching could also cause corrosion (see (5), and (6), XA classes)."
+                          ],
+                          [
+                            "XC3",
+                            "Moderate humidity.",
+                            "Concrete inside buildings with moderate humidity and not permanent high humidity; External concrete sheltered from rain."
+                          ],
+                          [
+                            "XC4",
+                            "Cyclic wet and dry.",
+                            "Concrete surfaces subject to cyclic water contact (e.g. external concrete not sheltered from rain as walls and facades)."
+                          ],
+                          [
+                            "XD1",
+                            "Moderate humidity",
+                            "Concrete surfaces exposed to airborne chlorides."
+                          ],
+                          [
+                            "XD2",
+                            "Wet, rarely dry.",
+                            "Swimming pools; Concrete components exposed to industrial waters containing chlorides. NOTE 2 If the chloride content of the water is sufficiently low then XD1 applies."
+                          ],
+                          [
+                            "XD3",
+                            "Cyclic wet and dry.",
+                            "Parts of bridges exposed to water containing chlorides; Concrete roads, pavements and car park slabs in areas where de-icing agents are frequently used."
+                          ],
+                          [
+                            "XS1",
+                            "Exposed to airborne salt but not in direct contact with sea water.",
+                            "Structures near to or on the coast."
+                          ],
+                          [
+                            "XS2",
+                            "Permanently submerged.",
+                            "Parts of marine structures and structures in seawater."
+                          ],
+                          [
+                            "XS3",
+                            "Tidal, splash and spray zones.",
+                            "Parts of marine structures and structures temporarily or permanently directly over sea water."
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G40_COMP_4": {
+                    "title": "Options for determining allowance for deviation in cover",
+                    "type": "string",
+                    "description": "($$\\Delta{c_{dev}}$$) Select the case that applies to your construction scenario to calculate the appropriate allowance for deviation in cover. This ensures accurate adjustments based on construction practices, surface conditions, and quality assurance measures.",
+                    "default": "In general: for execution in tolerance class 1 according to EN 13670",
+                    "enum": [
+                      "In general: for execution in tolerance class 1 according to EN 13670",
+                      "For execution in tolerance class 2 according to EN 13670",
+                      "Where fabrication is subjected to a quality assurance system",
+                      "Where it can be assured that an accurate measurement device is used for monitoring",
+                      "For concrete members in exposure class XC1",
+                      "For concrete cast against surfaces with exposed aggregate",
+                      "For concrete cast against unevenness due to formwork or excavation sheeting",
+                      "Concrete cast against prepared ground",
+                      "Concrete cast directly against unprepared soil",
+                      "Post-installed reinforcing bars"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "2G:EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.5.3(Table6.7)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "devioption"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$devioption$$",
+                            "Description"
+                          ],
+                          [
+                            "In general: for execution in tolerance class 1 according to EN 13670",
+                            "Standard construction tolerances (Class 1): Typical for general construction projects. Example: Residential or commercial buildings."
+                          ],
+                          [
+                            "For execution in tolerance class 2 according to EN 13670",
+                            "Higher precision tolerances (Class 2): For projects requiring tight construction control. Example: Bridges or industrial facilities."
+                          ],
+                          [
+                            "Where fabrication is subjected to a quality assurance system",
+                            "Systematic monitoring with quality assurance, including cover measurements. Example: Precast concrete elements with certification."
+                          ],
+                          [
+                            "Where it can be assured that an accurate measurement device is used for monitoring",
+                            "High-precision monitoring with non-conforming elements being rejected. Example: Factory-manufactured concrete panels."
+                          ],
+                          [
+                            "For concrete members in exposure class XC1",
+                            "Minimal risk of corrosion due to mild exposure. Example: Indoor concrete structures not exposed to significant moisture."
+                          ],
+                          [
+                            "For concrete cast against surfaces with exposed aggregate",
+                            "Cast against roughened or aggregate-exposed surfaces. Example: Interfaces between concrete layers."
+                          ],
+                          [
+                            "For concrete cast against unevenness due to formwork or excavation sheeting",
+                            "Cast against irregular surfaces, such as ribbed finishes or architectural textures. Example: Decorative concrete walls."
+                          ],
+                          [
+                            "Concrete cast against prepared ground",
+                            "Cast against prepared but uneven ground. Example: Concrete cast on a leveled but rough blinding layer."
+                          ],
+                          [
+                            "Concrete cast directly against unprepared soil",
+                            "Cast directly against unprepared soil, requiring higher allowances. Example: Footings or foundations poured on natural soil."
+                          ],
+                          [
+                            "Post-installed reinforcing bars",
+                            "Bars installed after the concrete is cast, requiring specific tolerances. Example: Retrofitting structures with drilled anchors."
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G40_COMP_7": {
+                    "title": "Casting against soil conditions for minimum cover adjustments",
+                    "type": "string",
+                    "description": "Choose the type of surface against which concrete will be cast to determine whether additional concrete cover is required. For surfaces directly in contact with soil, adjustments are made based on orientation to ensure adequate compaction and durability.",
+                    "default": "Not cast against soil",
+                    "enum": [
+                      "Not cast against soil",
+                      "Horizontal soil surface",
+                      "Vertical soil surface"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "2G:EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.5.2.1(2)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "castsoil"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$castsoil$$",
+                            "Description"
+                          ],
+                          [
+                            "Not cast against soil",
+                            "Concrete is cast against a surface that does not come into contact with soil, such as formwork or other concrete elements."
+                          ],
+                          [
+                            "Horizontal soil surface",
+                            "Concrete is cast against a horizontal soil ground surface, such as the bottom of a foundation or underground structure. Easier compaction."
+                          ],
+                          [
+                            "Vertical soil surface",
+                            "Concrete is cast against a vertical soil surface, such as the side of a foundation or underground wall. Compaction is harder, requiring additional cover."
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G40_COMP_9": {
+                    "title": "Design service life",
+                    "type": "string",
+                    "description": "($$\\Delta{c_{min,30}}$$) Design service life refers to the intended period during which a structure or component is expected to perform its required functions without significant maintenance or repair. It is a key factor in determining durability requirements, including concrete cover thickness and material selection, to ensure the structure meets its performance criteria throughout its lifespan.",
+                    "default": "100 years",
+                    "enum": [
+                      "100 years",
+                      "50 years",
+                      "25 years",
+                      "10 years or less"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "2G:EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.5.2.2(2)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "T_{lf}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "years"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$T_{lf}$$",
+                            "Description"
+                          ],
+                          [
+                            "100 years",
+                            "Monumental building structures, Bridges, other civil engineering structures supporting road or railway traffic"
+                          ],
+                          [
+                            "50 years",
+                            "Building structures not covered by another category, Bridges where the main structural members have reduced protection"
+                          ],
+                          [
+                            "25 years",
+                            "Agricultural, and similar structures Replaceable structural parts Replaceable structural parts other than tension components"
+                          ],
+                          [
+                            "10 years or less",
+                            "Temporary structures"
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G40_COMP_11": {
+                    "title": "Execution conditions for minimum cover adjustment",
+                    "type": "string",
+                    "description": "($$\\Delta{c_{min,exc}}$$) Select the execution condition that applies to your project to determine whether the minimum cover adjustment can be applied. This ensures accurate adjustments based on construction quality and curing practices.",
+                    "default": "Standard practices without enhanced measures",
+                    "enum": [
+                      "Standard practices without enhanced measures",
+                      "Enhanced compaction ensured",
+                      "Compliance with curing Class 3 or higher"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "2G:EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.5.2.2(3)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "excucond"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$excucond$$",
+                            "Description"
+                          ],
+                          [
+                            "Standard practices without enhanced measures",
+                            "No specific measures for enhanced compaction or curing below Class 3 standards; typical construction methods are followed."
+                          ],
+                          [
+                            "Enhanced compaction ensured",
+                            "Concrete compaction is achieved through geometry, placement, and curing, such as slab geometries where reinforcement positions are unaffected."
+                          ],
+                          [
+                            "Compliance with curing Class 3 or higher",
+                            "Curing meets at least Class 3 requirements as per EN 13670, ensuring improved curing quality."
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G40_COMP_13": {
+                    "title": "Prestressing conditions for minimum cover adjustment",
+                    "type": "string",
+                    "description": "($$\\Delta{c_{min,p}}$$)Select the prestressing condition that applies to your structure to determine if the additional minimum cover adjustment for prestressing tendons is required. This ensures proper concrete cover is applied based on the reinforcement type and protection measures.",
+                    "default": "Non-prestressed reinforcement or other conditions",
+                    "enum": [
+                      "Non-prestressed reinforcement or other conditions",
+                      "Pre-tensioned or post-tensioned tendons",
+                      "Internal bonded post-tensioning with protection level 2 or 3",
+                      "Internal unbonded prestressing tendons with corrosion-resistant sheaths"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "2G:EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.5.2.2(4)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "prescond"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$prescond$$",
+                            "Description"
+                          ],
+                          [
+                            "Non-prestressed reinforcement or other conditions",
+                            "The structure does not include prestressing tendons, making additional cover for prestressing unnecessary."
+                          ],
+                          [
+                            "Pre-tensioned or post-tensioned tendons",
+                            "Additional concrete cover is required for prestressing tendons to ensure durability and protection."
+                          ],
+                          [
+                            "Internal bonded post-tensioning with protection level 2 or 3",
+                            "Prestressing tendons are already protected according to high-level durability standards."
+                          ],
+                          [
+                            "Internal unbonded prestressing tendons with corrosion-resistant sheaths",
+                            "Tendons are enclosed in corrosion-resistant sheaths, providing sufficient protection."
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G40_COMP_15": {
+                    "title": "Additional protection conditions for minimum cover reduction",
+                    "type": "string",
+                    "description": "($$\\Delta{c_{dur,red1}}$$) Select whether additional protection measures, such as surface coatings, have been applied to your concrete structure. This will determine if the minimum cover reduction can be applied.",
+                    "default": "Concrete without additional protection",
+                    "enum": [
+                      "Concrete without additional protection",
+                      "Concrete with additional protection applied"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "2G:EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.5.2.2(5)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "addprotec"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$addprotec$$",
+                            "Description"
+                          ],
+                          [
+                            "Concrete without additional protection",
+                            "No additional measures are applied, so the minimum cover remains unchanged."
+                          ],
+                          [
+                            "Concrete with additional protection applied",
+                            "Additional protection, such as surface coatings, is provided, allowing a reduction in required cover."
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G40_COMP_17": {
+                    "title": "Abrasion exposure conditions for minimum cover addition",
+                    "type": "string",
+                    "description": "($$\\Delta{c_{dur,abr}}$$)Select the abrasion exposure condition that applies to your structure to determine if additional concrete cover is required for abrasion resistance. This ensures the structure is properly designed for durability under specific abrasion conditions.",
+                    "default": "No significant abrasion exposure",
+                    "enum": [
+                      "No significant abrasion exposure",
+                      "XM1: Low abrasion exposure",
+                      "XM2: Moderate abrasion exposure",
+                      "XM3: Severe abrasion exposure"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "2G:EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.5.2.2(6)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "abraexpo"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$abraexpo$$",
+                            "Description"
+                          ],
+                          [
+                            "No significant abrasion exposure",
+                            "Abrasion is negligible, so no additional cover for abrasion resistance is required."
+                          ],
+                          [
+                            "XM1: Low abrasion exposure",
+                            "Concrete subjected to minor abrasion, requiring an additional cover for durability."
+                          ],
+                          [
+                            "XM2: Moderate abrasion exposure",
+                            "Concrete subjected to moderate abrasion, requiring an additional cover for durability."
+                          ],
+                          [
+                            "XM3: Severe abrasion exposure",
+                            "Concrete subjected to severe abrasion, requiring an additional cover for durability."
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G40_COMP_20": {
+                    "title": "Reinforcement type for minimum cover calculation",
+                    "type": "string",
+                    "description": "($$c_{min,b}$$) Select the type of reinforcement used in your structure to determine the appropriate method for calculating the minimum concrete cover for bond. This ensures the correct cover is applied based on the reinforcement configuration.",
+                    "default": "Separated bars",
+                    "enum": [
+                      "Separated bars",
+                      "Bundled bars"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "2G:EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.5.2.3(Table6.5)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "rebartype"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$rebartype$$",
+                            "Description"
+                          ],
+                          [
+                            "Separated bars",
+                            "Individual reinforcement bars that are not bundled together."
+                          ],
+                          [
+                            "Bundled bars",
+                            "Reinforcement bars grouped into a single bundle, requiring an equivalent diameter for calculations."
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G40_COMP_22": {
+                    "title": "Diameter of a single reinforcement bar",
+                    "type": "number",
+                    "description": "The diameter of a single reinforcement bar represents the thickness of an individual bar used in concrete structures. It is a key parameter for calculating the cross-sectional area, determining spacing, and assessing bond strength in structural design.",
+                    "default": 32.0,
+                    "minimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "2G:EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "11.4.3(1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "\\phi"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "mm"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 0
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G40_COMP_25": {
+                    "title": "Number of bars in a bundle",
+                    "type": "string",
+                    "description": "Select the number of bars in a bundle to ensure proper arrangement and spacing based on structural and design requirements. The number of bars directly impacts the required contact and clear distance between bundles.",
+                    "default": "2",
+                    "enum": [
+                      "2",
+                      "3",
+                      "4"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "2G:EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "11.4.3(1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "n_{b}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "ea"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 0
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$n_{b}$$",
+                            "Description"
+                          ],
+                          [
+                            "2",
+                            "Two bars arranged in parallel contact, suitable for standard configurations."
+                          ],
+                          [
+                            "3",
+                            "Three bars in parallel contact, the maximum for general cases."
+                          ],
+                          [
+                            "4",
+                            "Four bars in parallel contact, allowed only for vertical bars in compression or bars in a lapped joint."
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G40_COMP_26": {
+                    "title": "Carbonation resistance classification",
+                    "type": "string",
+                    "description": "The carbonation resistance classification defines the levels of concrete's resistance to corrosion caused by carbonation. These classes (XRC0.5 to XRC7) indicate increasing levels of durability, with higher numbers representing greater resistance required in environments with significant carbonation exposure.",
+                    "default": "XRC0.5",
+                    "enum": [
+                      "XRC0.5",
+                      "XRC1",
+                      "XRC2",
+                      "XRC3",
+                      "XRC4",
+                      "XRC5",
+                      "XRC6",
+                      "XRC7"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "2G:EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.5.2.2(Table6.3)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "ercxrc"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$ercxrc$$",
+                            "Description"
+                          ],
+                          [
+                            "XRC0.5",
+                            "Very low carbonation resistance, suitable for non-structural elements in low exposure environments. Example: Interior walls in dry areas."
+                          ],
+                          [
+                            "XRC1",
+                            "Low carbonation resistance, applicable to mild exposure conditions with limited risk of carbonation. Example: Sheltered concrete in temperate climates."
+                          ],
+                          [
+                            "XRC2",
+                            "Moderate carbonation resistance, appropriate for structures in environments with moderate carbonation exposure. Example: Residential buildings in urban areas."
+                          ],
+                          [
+                            "XRC3",
+                            "Standard carbonation resistance, designed for typical structural applications under normal exposure conditions. Example: Office buildings in cities."
+                          ],
+                          [
+                            "XRC4",
+                            "High carbonation resistance, used in structures exposed to significant carbonation risks. Example: Concrete facades in industrial areas."
+                          ],
+                          [
+                            "XRC5",
+                            "Very high carbonation resistance, suitable for critical structures requiring enhanced protection. Example: Bridge elements in high traffic zones."
+                          ],
+                          [
+                            "XRC6",
+                            "Extreme carbonation resistance, applied in structures with severe carbonation risks and long service life. Example: Underground metro tunnels."
+                          ],
+                          [
+                            "XRC7",
+                            "Maximum carbonation resistance, used in highly demanding environments with extreme exposure conditions. Example: Historical monuments in polluted urban environments."
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G40_COMP_27": {
+                    "title": "Chloride resistance classification",
+                    "type": "string",
+                    "description": "The chloride resistance classification defines the levels of concrete's resistance to corrosion caused by chloride ingress. These classes (XRDS0.5 to XRDS10) indicate increasing levels of protection, with higher numbers representing greater resistance required for environments with higher chloride exposure risks, such as marine or de-icing salt conditions.",
+                    "default": "XRDS0.5",
+                    "enum": [
+                      "XRDS0.5",
+                      "XRDS1",
+                      "XRDS1.5",
+                      "XRDS2",
+                      "XRDS3",
+                      "XRDS4",
+                      "XRDS5",
+                      "XRDS6",
+                      "XRDS8",
+                      "XRDS10"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "2G:EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "6.5.2.2(Table6.4)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "ercxrd"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$ercxrd$$",
+                            "Description"
+                          ],
+                          [
+                            "XRDS0.5",
+                            "Very low chloride resistance, suitable for non-structural elements in environments with minimal chloride exposure. Example: Interior concrete elements in dry environments."
+                          ],
+                          [
+                            "XRDS1",
+                            "Low chloride resistance, applicable for mild exposure conditions with limited chloride penetration. Example: Sheltered concrete surfaces in low chloride areas."
+                          ],
+                          [
+                            "XRDS1.5",
+                            "Slightly increased chloride resistance, suitable for environments with moderate chloride risks. Example: Residential structures in urban areas with minor road salt exposure."
+                          ],
+                          [
+                            "XRDS2",
+                            "Moderate chloride resistance, designed for structural applications in areas with noticeable chloride exposure. Example: Parking garages or bridges in regions using de-icing salts."
+                          ],
+                          [
+                            "XRDS3",
+                            "High chloride resistance, appropriate for structures exposed to significant chloride risks. Example: Coastal buildings exposed to airborne chlorides."
+                          ],
+                          [
+                            "XRDS4",
+                            "Very high chloride resistance, used for critical structures requiring enhanced chloride protection. Example: Marine piers or structures partially submerged in seawater."
+                          ],
+                          [
+                            "XRDS5",
+                            "Extreme chloride resistance, for structures in severe chloride exposure environments. Example: Offshore platforms exposed to constant seawater splashing."
+                          ],
+                          [
+                            "XRDS6",
+                            "Maximum chloride resistance, applied to highly demanding environments with prolonged chloride risks. Example: Underwater tunnels fully immersed in seawater."
+                          ],
+                          [
+                            "XRDS8",
+                            "Ultra-high chloride resistance, suitable for specialized structures with extreme durability requirements. Example: Nuclear waste storage in chloride-prone environments."
+                          ],
+                          [
+                            "XRDS10",
+                            "Superior chloride resistance, used in the most challenging environments where maximum protection is critical. Example: Subsea structures exposed to aggressive chloride environments for extended service life."
+                          ]
+                        ]
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "G40_COMP_1",
+                  "G40_COMP_4",
+                  "G40_COMP_7",
+                  "G40_COMP_9",
+                  "G40_COMP_11",
+                  "G40_COMP_13",
+                  "G40_COMP_15",
+                  "G40_COMP_17",
+                  "G40_COMP_20",
+                  "G40_COMP_22",
+                  "G40_COMP_25",
+                  "G40_COMP_26",
+                  "G40_COMP_27"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "isInput": false,
+                    "codeName": "",
+                    "reference": [
+                      ""
+                    ],
+                    "title": "",
+                    "description": "",
+                    "figurePath": "",
+                    "descriptTable": [],
+                    "compType": "",
+                    "symbol": "",
+                    "result": {
+                      "value": "0.0",
+                      "table": [],
+                      "formula": [],
+                      "variables": {}
+                    },
+                    "refStd": "",
+                    "unit": "",
+                    "notation": "standard",
+                    "decimal": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,459 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.3.3"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-dgnengine-test_code-ec2_shear_design": {
+      "post": {
+        "summary": "DGNDEV REVOLUTION",
+        "description": "Eurocode 2 shear design for reinforced concrete beam",
+        "operationId": "ec2 shear design",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "inp": {
+                    "properties": {
+                      "dgnsitu": {
+                        "type": "string",
+                        "title": "Dgnsitu",
+                        "description": "Design situation",
+                        "default": "Persistent"
+                      },
+                      "strenghtclass": {
+                        "type": "string",
+                        "title": "Strenghtclass",
+                        "description": "Strength class",
+                        "default": "C30/37"
+                      },
+                      "sectType": {
+                        "type": "string",
+                        "title": "Secttype",
+                        "description": "Section type",
+                        "default": "Reinforced concrete section"
+                      },
+                      "vEd": {
+                        "type": "number",
+                        "title": "Ved",
+                        "description": "Design shear force",
+                        "default": 350.0
+                      },
+                      "nEd": {
+                        "type": "number",
+                        "title": "Ned",
+                        "description": "Design axial force",
+                        "default": 1850.0
+                      },
+                      "phiSl": {
+                        "type": "number",
+                        "title": "Phisl",
+                        "description": "Diameter of longitudinal tensile reinforcement",
+                        "default": 32.0
+                      },
+                      "nSl": {
+                        "type": "integer",
+                        "title": "Nsl",
+                        "description": "Number of longitudinal tensile reinforcement",
+                        "default": 4
+                      },
+                      "bW": {
+                        "type": "number",
+                        "title": "Bw",
+                        "description": "Width of the web",
+                        "default": 300.0
+                      },
+                      "d": {
+                        "type": "number",
+                        "title": "D",
+                        "description": "Effective depth",
+                        "default": 450.0
+                      },
+                      "aC": {
+                        "type": "number",
+                        "title": "Ac",
+                        "description": "Cover to the longitudinal reinforcement",
+                        "default": 35.0
+                      },
+                      "aV": {
+                        "type": "number",
+                        "title": "Av",
+                        "description": "Area of shear reinforcement",
+                        "default": 100.0
+                      }
+                    },
+                    "type": "object",
+                    "title": "TestData",
+                    "x-component-detail": {
+                      "id": "moapy.dgnengine.test_code.TestData"
+                    }
+                  }
+                },
+                "type": "object",
+                "required": [
+                  "inp"
+                ],
+                "title": "ec2 shear design"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errorList": {
+                      "type": "object",
+                      "title": "Errorlist"
+                    },
+                    "warningList": {
+                      "type": "object",
+                      "title": "Warninglist"
+                    },
+                    "resReport": {
+                      "type": "object",
+                      "title": "Resreport"
+                    }
+                  },
+                  "type": "object",
+                  "title": "DG_Result_Reports",
+                  "x-component-detail": {
+                    "id": "moapy.designers_guide.core_engine.execute_calc_general.DG_Result_Reports"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "detail": {
+                      "items": {
+                        "properties": {
+                          "loc": {
+                            "items": {
+                              "anyOf": [
+                                {
+                                  "type": "string"
+                                },
+                                {
+                                  "type": "integer"
+                                }
+                              ]
+                            },
+                            "type": "array",
+                            "title": "Location"
+                          },
+                          "msg": {
+                            "type": "string",
+                            "title": "Message"
+                          },
+                          "type": {
+                            "type": "string",
+                            "title": "Error Type"
+                          }
+                        },
+                        "type": "object",
+                        "required": [
+                          "loc",
+                          "msg",
+                          "type"
+                        ],
+                        "title": "ValidationError"
+                      },
+                      "type": "array",
+                      "title": "Detail"
+                    }
+                  },
+                  "type": "object",
+                  "title": "HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "x-content-info": {
+          "title": "DGNDEV REVOLUTION",
+          "description": "Eurocode 2 shear design for reinforced concrete beam",
+          "standardType": "EUROCODE",
+          "codeName": "EN1992-1-1:2004"
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "DG_Result_Reports": {
+        "properties": {
+          "errorList": {
+            "type": "object",
+            "title": "Errorlist"
+          },
+          "warningList": {
+            "type": "object",
+            "title": "Warninglist"
+          },
+          "resReport": {
+            "type": "object",
+            "title": "Resreport"
+          }
+        },
+        "type": "object",
+        "title": "DG_Result_Reports",
+        "x-component-detail": {
+          "id": "moapy.designers_guide.core_engine.execute_calc_general.DG_Result_Reports"
+        }
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "properties": {
+                "loc": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "integer"
+                      }
+                    ]
+                  },
+                  "type": "array",
+                  "title": "Location"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "Message"
+                },
+                "type": {
+                  "type": "string",
+                  "title": "Error Type"
+                }
+              },
+              "type": "object",
+              "required": [
+                "loc",
+                "msg",
+                "type"
+              ],
+              "title": "ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "TestData": {
+        "properties": {
+          "dgnsitu": {
+            "type": "string",
+            "title": "Dgnsitu",
+            "description": "Design situation",
+            "default": "Persistent"
+          },
+          "strenghtclass": {
+            "type": "string",
+            "title": "Strenghtclass",
+            "description": "Strength class",
+            "default": "C30/37"
+          },
+          "sectType": {
+            "type": "string",
+            "title": "Secttype",
+            "description": "Section type",
+            "default": "Reinforced concrete section"
+          },
+          "vEd": {
+            "type": "number",
+            "title": "Ved",
+            "description": "Design shear force",
+            "default": 350.0
+          },
+          "nEd": {
+            "type": "number",
+            "title": "Ned",
+            "description": "Design axial force",
+            "default": 1850.0
+          },
+          "phiSl": {
+            "type": "number",
+            "title": "Phisl",
+            "description": "Diameter of longitudinal tensile reinforcement",
+            "default": 32.0
+          },
+          "nSl": {
+            "type": "integer",
+            "title": "Nsl",
+            "description": "Number of longitudinal tensile reinforcement",
+            "default": 4
+          },
+          "bW": {
+            "type": "number",
+            "title": "Bw",
+            "description": "Width of the web",
+            "default": 300.0
+          },
+          "d": {
+            "type": "number",
+            "title": "D",
+            "description": "Effective depth",
+            "default": 450.0
+          },
+          "aC": {
+            "type": "number",
+            "title": "Ac",
+            "description": "Cover to the longitudinal reinforcement",
+            "default": 35.0
+          },
+          "aV": {
+            "type": "number",
+            "title": "Av",
+            "description": "Area of shear reinforcement",
+            "default": 100.0
+          }
+        },
+        "type": "object",
+        "title": "TestData",
+        "x-component-detail": {
+          "id": "moapy.dgnengine.test_code.TestData"
+        }
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "ec2_shear_design": {
+        "properties": {
+          "inp": {
+            "properties": {
+              "dgnsitu": {
+                "type": "string",
+                "title": "Dgnsitu",
+                "description": "Design situation",
+                "default": "Persistent"
+              },
+              "strenghtclass": {
+                "type": "string",
+                "title": "Strenghtclass",
+                "description": "Strength class",
+                "default": "C30/37"
+              },
+              "sectType": {
+                "type": "string",
+                "title": "Secttype",
+                "description": "Section type",
+                "default": "Reinforced concrete section"
+              },
+              "vEd": {
+                "type": "number",
+                "title": "Ved",
+                "description": "Design shear force",
+                "default": 350.0
+              },
+              "nEd": {
+                "type": "number",
+                "title": "Ned",
+                "description": "Design axial force",
+                "default": 1850.0
+              },
+              "phiSl": {
+                "type": "number",
+                "title": "Phisl",
+                "description": "Diameter of longitudinal tensile reinforcement",
+                "default": 32.0
+              },
+              "nSl": {
+                "type": "integer",
+                "title": "Nsl",
+                "description": "Number of longitudinal tensile reinforcement",
+                "default": 4
+              },
+              "bW": {
+                "type": "number",
+                "title": "Bw",
+                "description": "Width of the web",
+                "default": 300.0
+              },
+              "d": {
+                "type": "number",
+                "title": "D",
+                "description": "Effective depth",
+                "default": 450.0
+              },
+              "aC": {
+                "type": "number",
+                "title": "Ac",
+                "description": "Cover to the longitudinal reinforcement",
+                "default": 35.0
+              },
+              "aV": {
+                "type": "number",
+                "title": "Av",
+                "description": "Area of shear reinforcement",
+                "default": 100.0
+              }
+            },
+            "type": "object",
+            "title": "TestData",
+            "x-component-detail": {
+              "id": "moapy.dgnengine.test_code.TestData"
+            }
+          }
+        },
+        "type": "object",
+        "required": [
+          "inp"
+        ],
+        "title": "ec2 shear design"
+      }
+    }
+  }
+}

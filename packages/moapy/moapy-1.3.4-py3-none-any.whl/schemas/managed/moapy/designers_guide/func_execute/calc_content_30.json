@@ -1,0 +1,734 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.2.5"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    },
+    {
+      "url": "https://moa.rpm.kr-st-midasit.com/backend/function-executor/python-execute/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-designers_guide-func_execute-calc_content_30": {
+      "post": {
+        "summary": "Bearing Resistance Calculation of Foundations under Undrained Conditions",
+        "description": "[EN1997-1] This guide provides step-by-step instructions for calculating the bearing resistance of foundation structures under undrained conditions. Bearing resistance is the ability of the soil beneath a foundation to support the applied loads without undergoing shear failure. Calculating this is essential for ensuring that the foundation can safely transfer structural loads to the ground. The guide includes calculations for Ultimate Limit States using three different design approaches, each with specific partial factors applied to structural and geotechnical limit states.",
+        "x-content-info": {
+          "standardType": "EUROCODE",
+          "codeName": "EN1997-1",
+          "codeTitle": "Eurocode 7: Geotechnical design \u2014 Part 1: General rules",
+          "title": "Bearing Resistance Calculation of Foundations under Undrained Conditions",
+          "description": "[EN1997-1] This guide provides step-by-step instructions for calculating the bearing resistance of foundation structures under undrained conditions. Bearing resistance is the ability of the soil beneath a foundation to support the applied loads without undergoing shear failure. Calculating this is essential for ensuring that the foundation can safely transfer structural loads to the ground. The guide includes calculations for Ultimate Limit States using three different design approaches, each with specific partial factors applied to structural and geotechnical limit states.",
+          "edition": "2004",
+          "figurePath": "https://moa.rpm.kr-dv-midasit.com/design-guide/figures/detail_content_30.png"
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "G30_COMP_1": {
+                    "title": "Design approach selection",
+                    "type": "string",
+                    "description": "The appropriate design approach for geotechnical calculations is selected. Each approach applies different combinations of partial factors to actions, ground strength parameters, and resistances, affecting the verification process for ultimate limit states.",
+                    "default": "Design Approach 1",
+                    "enum": [
+                      "Design Approach 1",
+                      "Design Approach 2",
+                      "Design Approach 3"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1997-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "2.4.7.3.4.1(1)P"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "deappro"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$deappro$$",
+                            "Description"
+                          ],
+                          [
+                            "Design Approach 1",
+                            "Combination: A1+ M1 + R1"
+                          ],
+                          [
+                            "Design Approach 2",
+                            "Combination: A1 + M1 + R2"
+                          ],
+                          [
+                            "Design Approach 3",
+                            "Combination: A1 + M2 + R3"
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G30_COMP_6": {
+                    "title": "Foundation width",
+                    "type": "number",
+                    "description": "This term represents the actual width of the foundation, measured perpendicular to the length direction. It is used as a base dimension for calculating the effective width.",
+                    "default": 2.5,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1997-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "AnnexD(FigureD.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "B"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "m"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G30_COMP_9": {
+                    "title": "Foundation length",
+                    "type": "number",
+                    "description": "This term represents the actual length of the foundation, measured along the longest side. It serves as the base dimension for calculating the effective length.",
+                    "default": 3.0,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1997-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "AnnexD(FigureD.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "L"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "m"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G30_COMP_13": {
+                    "title": "Height of the foundation",
+                    "type": "number",
+                    "description": "This term represents the thickness of the overburden, which is the soil layer above the foundation.",
+                    "default": 1.5,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1997-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "AnnexD(FigureD.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "h_{1}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "m"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G30_COMP_14": {
+                    "title": "Thickness of the overburden",
+                    "type": "number",
+                    "description": "This term represents the thickness of the overburden, which is the soil layer above the foundation. It is relevant when the foundation is fully embedded in the soil, indicating the depth of the material exerting pressure on the foundation.",
+                    "default": 0.5,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1997-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "AnnexD(FigureD.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "h_{2}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "m"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G30_COMP_16": {
+                    "title": "Inclination of the foundation base",
+                    "type": "number",
+                    "description": "This term represents the angle of inclination of the foundation base relative to the horizontal plane. It influences the bearing resistance calculation by accounting for how the foundation's slope affects the distribution of loads and the overall stability.",
+                    "default": 0.0,
+                    "minimum": 0,
+                    "maximum": 90,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1997-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "AnnexD(FigureD.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "\\alpha"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "degree"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G30_COMP_17": {
+                    "title": "Weight density of overburden soil",
+                    "type": "number",
+                    "description": "This term represents the weight density of the soil, which is the weight per unit volume of the soil material. It influences the calculation of overburden pressure and is a key factor in determining the bearing capacity of the foundation. Detailed values can be found in EN1991-1-1 Annex A, Table A.6.",
+                    "default": 15.0,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1997-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "AnnexD(1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "\\gamma"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "kN/m^3"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      },
+                      "refStd": {
+                        "type": "string",
+                        "default": "NDPs",
+                        "description": "Nationally Determined Parameters"
+                      }
+                    }
+                  },
+                  "G30_COMP_18": {
+                    "title": "Weight density of concrete",
+                    "type": "number",
+                    "description": "This term represents the weight density of the concrete used in the foundation, which is the weight per unit volume of the concrete material. It is used in calculations to account for the self-weight of the foundation. Detailed values can be found in EN1991-1-1 Annex A, Table A.1.",
+                    "default": 25.0,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1997-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "AnnexD(1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "\\gamma_{c}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "kN/m^3"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      },
+                      "refStd": {
+                        "type": "string",
+                        "default": "NDPs",
+                        "description": "Nationally Determined Parameters"
+                      }
+                    }
+                  },
+                  "G30_COMP_19": {
+                    "title": "Vertical load at center of foundation",
+                    "type": "number",
+                    "description": "This term represents the vertical load acting at the center of the foundation. It accounts for the downward force from the structure's weight and other applied loads, typically considered to act at the foundation's center.",
+                    "default": 500.0,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1997-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "AnnexD(1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "V"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "kN"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G30_COMP_20": {
+                    "title": "Horizontal load at center of foundation",
+                    "type": "number",
+                    "description": "his term represents the horizontal load acting at the center of the foundation. It reflects the forces applied laterally to the foundation, typically assumed to act at the foundation's center.",
+                    "default": 0.0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1997-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "AnnexD(3)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "H"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "kN"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G30_COMP_21": {
+                    "title": "Width direction moment acting at center of foundation",
+                    "type": "number",
+                    "description": "This term represents the moment in the width direction acting at the center of the foundation. It is caused by forces that generate rotational effects around the width of the foundation.",
+                    "default": 0.0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1997-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "AnnexD(FigureD.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "M_{B}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "kN.m"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G30_COMP_22": {
+                    "title": "Length direction moment acting at center of foundation",
+                    "type": "number",
+                    "description": "This term represents the moment in the length direction acting at the center of the foundation. It results from forces that induce rotational effects along the length of the foundation.",
+                    "default": 0.0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1997-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "AnnexD(FigureD.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "M_{L}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "kN.m"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G30_COMP_28": {
+                    "title": "Undrained shear strength",
+                    "type": "number",
+                    "description": "This term represents the undrained shear strength of the soil, which measures the soil's resistance to shear deformation under conditions where pore water pressure does not dissipate. It is a key parameter in assessing the stability of soil under short-term loading conditions, particularly in saturated clay.",
+                    "default": 30.0,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1997-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.3.10.3(2)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "c_{u}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "kPa"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "G30_COMP_1",
+                  "G30_COMP_6",
+                  "G30_COMP_9",
+                  "G30_COMP_13",
+                  "G30_COMP_14",
+                  "G30_COMP_16",
+                  "G30_COMP_17",
+                  "G30_COMP_18",
+                  "G30_COMP_19",
+                  "G30_COMP_20",
+                  "G30_COMP_21",
+                  "G30_COMP_22",
+                  "G30_COMP_28"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "isInput": false,
+                    "codeName": "",
+                    "reference": [
+                      ""
+                    ],
+                    "title": "",
+                    "description": "",
+                    "figurePath": "",
+                    "descriptTable": [],
+                    "compType": "",
+                    "symbol": "",
+                    "result": {
+                      "value": "0.0",
+                      "table": [],
+                      "formula": [],
+                      "variables": {}
+                    },
+                    "refStd": "",
+                    "unit": "",
+                    "notation": "standard",
+                    "decimal": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

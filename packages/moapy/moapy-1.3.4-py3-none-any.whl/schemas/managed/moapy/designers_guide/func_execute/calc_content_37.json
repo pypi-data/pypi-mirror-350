@@ -1,0 +1,446 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.2.5"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    },
+    {
+      "url": "https://moa.rpm.kr-st-midasit.com/backend/function-executor/python-execute/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-designers_guide-func_execute-calc_content_37": {
+      "post": {
+        "summary": "Concrete and Reinforcement Properties and Design Parameter Calculation",
+        "description": "[2G:EN1992-1-1] This guide provides a comprehensive overview of the essential parameters for concrete and reinforcement bar design based on the Eurocode 2nd Generation standards. It includes step-by-step instructions on calculating key values such as compressive and tensile strengths, and modulus of elasticity, using the specific factors and reference values defined by Eurocode. Designed for engineers and designers, this guide ensures that all concrete and reinforcement bar parameters are calculated to meet the required safety and performance standards in structural applications.",
+        "x-content-info": {
+          "standardType": "2G:EUROCODE",
+          "codeName": "2G:EN1992-1-1",
+          "codeTitle": "Eurocode 2 \u2014 Design of concrete structures - Part 1-1: General rules and rules for buildings, bridges and civil engineering structures",
+          "title": "Concrete and Reinforcement Properties and Design Parameter Calculation",
+          "description": "[2G:EN1992-1-1] This guide provides a comprehensive overview of the essential parameters for concrete and reinforcement bar design based on the Eurocode 2nd Generation standards. It includes step-by-step instructions on calculating key values such as compressive and tensile strengths, and modulus of elasticity, using the specific factors and reference values defined by Eurocode. Designed for engineers and designers, this guide ensures that all concrete and reinforcement bar parameters are calculated to meet the required safety and performance standards in structural applications.",
+          "edition": "2023",
+          "figurePath": null
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "G37_COMP_1": {
+                    "title": "Design situation selection",
+                    "type": "string",
+                    "description": "Select the applicable design situation for the concrete structure. Each situation corresponds to different load conditions and factors that impact structural requirements and safety considerations.",
+                    "default": "Persistent and transient design situation",
+                    "enum": [
+                      "Persistent and transient design situation",
+                      "Fatigue design situation",
+                      "Accidental design situation",
+                      "Serviceability limit state"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "2G:EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "4.3.3(Table4.3)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "designsitu"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$designsitu$$",
+                            "Description"
+                          ],
+                          [
+                            "Persistent and transient design situation",
+                            "Standard load conditions expected over the structure's lifespan, including both short- and long-term loads."
+                          ],
+                          [
+                            "Fatigue design situation",
+                            "Load conditions that consider repetitive or cyclic loading, such as from machinery or traffic."
+                          ],
+                          [
+                            "Accidental design situation",
+                            "Unusual or extreme load conditions due to accidents or unforeseen events, impacting structural resilience."
+                          ],
+                          [
+                            "Serviceability limit state",
+                            "Conditions that ensure the structure\u2019s functionality, durability, and comfort under regular use."
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G37_COMP_4": {
+                    "title": "Strength classes for concrete",
+                    "type": "string",
+                    "description": "This term refers to the classification of concrete based on its compressive strength, allowing for standardized strength categories used in design. These classes help engineers select appropriate concrete strength levels for various structural applications.",
+                    "default": "C12/15",
+                    "enum": [
+                      "C12/15",
+                      "C16/20",
+                      "C20/25",
+                      "C25/30",
+                      "C30/37",
+                      "C35/45",
+                      "C40/50",
+                      "C45/55",
+                      "C50/60",
+                      "C55/67",
+                      "C60/75",
+                      "C70/85",
+                      "C80/95",
+                      "C90/105",
+                      "C100/115"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "2G:EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "5.1.3(Table5.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "f"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G37_COMP_11": {
+                    "title": "Adjusting factor for the modulus of elasticity of concrete based on aggregate type",
+                    "type": "number",
+                    "description": "For concrete with quartzite aggregates, the factor is typically set at 9500. For other aggregate types, the factor can range from 5000 to 13000, depending on the specific characteristics of the aggregates used. This adjustment ensures that the modulus of elasticity reflects the material properties of different aggregate compositions.",
+                    "default": 9500.0,
+                    "minimum": 5000,
+                    "maximum": 13000,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "2G:EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "5.1.4(2)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "k_{E}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 0
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      },
+                      "refStd": {
+                        "type": "string",
+                        "default": "NDPs",
+                        "description": "Nationally Determined Parameters"
+                      }
+                    }
+                  },
+                  "G37_COMP_23": {
+                    "title": "Strength classes of reinforcing steel",
+                    "type": "string",
+                    "description": "This classification denotes the minimum yield strength of reinforcing steel, with each class (e.g., B400, B500) indicating strength in megapascals (MPa). Higher classes are selected for structures requiring greater load capacity.",
+                    "default": "B400",
+                    "enum": [
+                      "B400",
+                      "B450",
+                      "B500",
+                      "B550",
+                      "B600",
+                      "B700"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "2G:EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "5.2.2(Table5.4)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "rebarclass"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G37_COMP_27": {
+                    "title": "Concrete strength class selection",
+                    "type": "string",
+                    "description": "Select the appropriate concrete strength class based on the type of cement, cement strength, and binder composition. Each class defines specific material properties used in design calculations for time-dependent behavior and durability.",
+                    "default": "CS",
+                    "enum": [
+                      "CS",
+                      "CN",
+                      "CR"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "2G:EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "B.3(TableB.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "concclass"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$concclass$$",
+                            "Description"
+                          ],
+                          [
+                            "CS",
+                            "Type: CEM III, CEM II/B; Cement Strength Class: 32,5 N; 42,5 N; Binder Composition: Portland cement clinker with more than 65% ggbs or more than 35% fly ash (fa)"
+                          ],
+                          [
+                            "CN",
+                            "Type: CEM II, CEM I; Cement Strength Class: 42,5 N; 32,5 R; Binder Composition: Portland cement clinker with 35-65% ggbs or 20-35% fly ash (fa)"
+                          ],
+                          [
+                            "CR",
+                            "Type: CEM I; Cement Strength Class: 42,5 R; 52,5 N; 52,5 R; Binder Composition: -"
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G37_COMP_28": {
+                    "title": "Age of the concrete being considered",
+                    "type": "number",
+                    "description": "This term represents the specific age of the concrete at which its properties are evaluated, where t is less than or equal to the reference age. It is used to assess how concrete characteristics develop over time.",
+                    "default": 3.0,
+                    "exclusiveMinimum": 0,
+                    "maximum": 28,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "2G:EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "B.4(B.2)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "t"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "days"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 0
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "G37_COMP_1",
+                  "G37_COMP_4",
+                  "G37_COMP_11",
+                  "G37_COMP_23",
+                  "G37_COMP_27",
+                  "G37_COMP_28"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "isInput": false,
+                    "codeName": "",
+                    "reference": [
+                      ""
+                    ],
+                    "title": "",
+                    "description": "",
+                    "figurePath": "",
+                    "descriptTable": [],
+                    "compType": "",
+                    "symbol": "",
+                    "result": {
+                      "value": "0.0",
+                      "table": [],
+                      "formula": [],
+                      "variables": {}
+                    },
+                    "refStd": "",
+                    "unit": "",
+                    "notation": "standard",
+                    "decimal": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

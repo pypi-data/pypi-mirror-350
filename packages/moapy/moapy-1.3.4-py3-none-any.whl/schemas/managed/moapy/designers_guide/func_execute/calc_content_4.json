@@ -1,0 +1,231 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.2.5"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    },
+    {
+      "url": "https://moa.rpm.kr-st-midasit.com/backend/function-executor/python-execute/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-designers_guide-func_execute-calc_content_4": {
+      "post": {
+        "summary": "Geometrical Imperfection Calculation in Bridge Design",
+        "description": "[EN1992-1-1] Geometrical imperfections in bridge design account for deviations due to construction tolerances or fabrication errors. These imperfections are critical for components like girders, piers, and arches, affecting their stability and load-bearing capacity. In girders and piers, imperfections can lead to additional moments or instability, especially under axial compression, and must be included in the structural analysis to prevent buckling. For arch bridges, imperfections impact vertical and horizontal buckling behavior, requiring early consideration in design. Geometrical imperfections are primarily considered in ultimate limit state analysis, ensuring the structure can handle real-world loads while maintaining stability.",
+        "x-content-info": {
+          "standardType": "EUROCODE",
+          "codeName": "EN1992-1-1",
+          "codeTitle": "Eurocode 2: Design of concrete structures \u2014 Part 1-1: General rules and rules for buildings",
+          "title": "Geometrical Imperfection Calculation in Bridge Design",
+          "description": "[EN1992-1-1] Geometrical imperfections in bridge design account for deviations due to construction tolerances or fabrication errors. These imperfections are critical for components like girders, piers, and arches, affecting their stability and load-bearing capacity. In girders and piers, imperfections can lead to additional moments or instability, especially under axial compression, and must be included in the structural analysis to prevent buckling. For arch bridges, imperfections impact vertical and horizontal buckling behavior, requiring early consideration in design. Geometrical imperfections are primarily considered in ultimate limit state analysis, ensuring the structure can handle real-world loads while maintaining stability.",
+          "edition": "2004",
+          "figurePath": null
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "G2_COMP_4": {
+                    "title": "Length or height of structural members in bridge design",
+                    "type": "number",
+                    "description": "The length or height of structural members is used to calculate the reduction factor for geometrical imperfections, reflecting the actual size of elements like girders, piers, and arches in bridge design.",
+                    "default": 30,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "5.2(5)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "number"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "l"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "m"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G2_COMP_7": {
+                    "title": "Axial load in isolated members",
+                    "type": "number",
+                    "description": "Axial load in isolated members refers to the vertical or compressive force applied along the axis of a structural element. This load is crucial in analyzing buckling behavior, as it interacts with imperfections such as initial deflection or inclination, affecting the stability of the member.",
+                    "default": 650,
+                    "minimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "5.2(7)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "N"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "kN"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G6_COMP_2": {
+                    "title": "Buckling modes and boundary conditions",
+                    "type": "string",
+                    "description": "Buckling modes and boundary conditions describe how structural members behave under load based on their end restraints. Different conditions, such as pinned, fixed, or guided ends, affect the way a member experiences buckling.",
+                    "default": "Pinned Ends",
+                    "enum": [
+                      "Pinned Ends",
+                      "Free - Fixed Ends",
+                      "Pinned - Fixed Ends",
+                      "Fixed Ends",
+                      "Guided - Fixed Ends"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "5.8.3.2(Figure5.7)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "buckmode"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": "https://moa.rpm.kr-dv-midasit.com/design-guide/figures/detail_g6_comp_2.png"
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "G2_COMP_4",
+                  "G2_COMP_7",
+                  "G6_COMP_2"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "isInput": false,
+                    "codeName": "",
+                    "reference": [
+                      ""
+                    ],
+                    "title": "",
+                    "description": "",
+                    "figurePath": "",
+                    "descriptTable": [],
+                    "compType": "",
+                    "symbol": "",
+                    "result": {
+                      "value": "0.0",
+                      "table": [],
+                      "formula": [],
+                      "variables": {}
+                    },
+                    "refStd": "",
+                    "unit": "",
+                    "notation": "standard",
+                    "decimal": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

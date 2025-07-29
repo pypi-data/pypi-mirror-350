@@ -1,0 +1,2351 @@
+/*
+**********************************************************************************************************************************************************
+**********************************************************************************************************************************************************
+안녕하세요 유토리입니다. 
+유토리 도우미를 공개합니다.
+급하게 공개하게되어서 스크립트 정리가 안되어있습니다.
+이런 프로그램이 뿌려지면 안좋은건 알지만 지금 제가 안뿌려도 뿌려지게될 상황이 되었습니다
+그럴빠에 제가 뿌리는게 낫다고 생각하여서 뿌립니다.
+Unicode 로 컴파일 해주세요
+**********************************************************************************************************************************************************
+**********************************************************************************************************************************************************
+*/
+
+Version = 2.6.1
+#SingleInstance, off
+#NoEnv
+#Persistent
+#KeyHistory 0
+FileDelete, %A_ScriptDir%\dax.txt
+FileDelete, %A_ScriptDir%\day.txt
+SetBatchLines, -1
+ListLines, OFF
+SetWinDelay, 0
+SetControlDelay, 0
+CoordMode, Mouse, Client
+SkinForm(Apply, A_ScriptDir . "\Data\USkin.dll", A_ScriptDir . "\Data\Skin.msstyles") ; 스킨사용을 위한
+WinGetTitle, MainWindowTitle, ahk_class Nexon.NWind, 
+WinSetTitle,%MainWindowTitle%,,% ReadMemoryTxt(0x0055E6C4,MainWindowTitle) ; 현재 아이디로 타이틀명 변경
+WinGetTitle, MainWindowTitle, ahk_class Nexon.NWind,
+Gosub,Gui
+Guicontrol,, MainTitleName,% "아이디 : " ReadMemoryTxt(0x0055E6C4,MainWindowTitle)
+Global MainWindowTitle
+Global MainX,MainY,MainMapNum,WalkRange,WalkInterval=200
+Global DestX,DestY
+Global DestIndex = 1
+
+;각종 좌표들.. X와 Y순서입니다.
+Global BB10X := [12,12,19,19, 1,1 ,18,18, 1, 1,45,45,60,60,80,80,100,100,120,120,140,140,140,147,147,110,110,123,126,126,134,134,127,127]
+Global BB10Y := [2 ,18,18,34,34,51,51,64,64,79,79,54,54,75,75,53,53 ,77 ,77 , 58, 58,57 ,73 ,73 ,45 , 45, 39, 39, 39, 28, 28, 20, 20,  2]
+;북방 10층 도는 좌표입니다.
+
+Global BB9X := [40,40,57,57,60,60,67,67,56,56,65,65,47,42,42,21,21,42,42,20,20,20,34,34, 3,24,24, 9, 9]
+Global BB9Y := [83,75,75,65,65,55,55,44,44,27,27,19,19,19,34,34,21,21,14,14, 3,43,43,57,57,66,82,82,83]
+;북방 9층 도는 좌표입니다.
+
+
+Global BB910X := [40,40,57,57,60,60,67,67,56,56,65,65,47,42,42,21,21,42,42,20,20,20,34,34, 3, 3, 0,147,147,110,110,123,126,126,134,134,127,127,12,12,19,19, 1,1 ,18,18, 1, 1,45,45,60,60,80,80,100,100,120,120,140,140,140,147,147,149,6 , 6,24,24, 9, 9]
+Global BB910Y := [83,75,75,65,65,55,55,44,44,27,27,19,19,19,34,34,21,21,14,14, 3,43,43,57,57,53,53, 52,45 , 45, 39, 39, 39, 28, 28, 20, 20,  2,2 ,18,18,34,34,51,51,64,64,79,79,54,54,75,75,53,53 ,77 ,77 , 58, 58,57 ,73 ,73 , 54, 54,55,66,66,82,82,83]
+;북방 9~10층 도는 좌표입니다. 보통 쇠조각 노가다 할때 사람 많이없으면 9~10층, 사람없으면 10층은 사람 잘안오니까 박아 뒀었어여
+
+
+Global goldX := [126,9 ,5 , 5,28,28,29, 6, 6,15,15,24,24,10,5,5 , 9, 9, 4,25,25,28,9 ,9,11,11,1, 0,15,15,3, 3, 9,9, 6,6,8,8,11,7 , 7,9,9,11,18]
+Global goldY := [45 ,25,25, 6, 6, 5, 5,28,19,19, 6, 6, 2, 9,9,26,26,29,12,12, 0,26,26,8, 8, 0,0,11,11, 5,5,16,16,8,22,3,3,0,25,25, 5,5,0,10,10]
+;괴성굴 황금가루 파밍용 좌표입니다.
+
+Global scX := [11]
+Global scY := [1]
+;비밀고원? 이였던거같아요 어쨋든 좌표입니다.
+
+Global brX := [9,10]
+Global brY := [0,0]
+;봉래산 좌표입니다.
+
+Global dkX := [10,10,19,20, 8,24,34,34,39,34,34,39,10,10,34,34,10,19,19,11,11,11,11]
+Global dkY := [4 ,8 ,2 ,12,12,12,11,16,16,10,16,16,16,18,18, 4, 4, 4, 1, 1, 1, 1, 1]
+;어둠동굴 좌표입니다. 사람 안오고 1인기준 풀경이라 
+
+
+Global DAX := BB910X
+Global DAY := BB910Y
+;Global DAX := brX
+;Global DAY := brY
+;최종적으로 캐릭터가 사냥하는데 이용할 좌표입니다. DAX,DAY에 위에 적어놓은 좌표를 적어놓으면 됩니다.
+;캐릭터가 가는도중에 장애물이 있으면 안되겠죠?
+
+Global MainNowHP,MainFullHP,MainHPPercent
+Global MainNowMP,MainFullMP,MainMPPercent
+Global preHP,preMP
+Global lagCnt = 0
+global MainHide,MainHon,MainJungdok
+Global moving = 0
+Global useItem = 0
+Global StartEXP,StartTime,ReviveInterval
+Global CharTargetNum1,CharTargetNum2,CharTargetNum3,CharTargetNum4,CharTargetNum5,CharTargetNum0
+Global preMapNum
+;이전맵..
+Global HellDelay = 0,THDelay = 0,MaDelay = 0,LIDelay = 0, CsDelay = 0, CJDelay = 0
+Global rootDelay = 0, moveDelay = 0
+Global AD, SD, DD, FD, QD, WD, ED, CD, RD
+Global AreaDelay = 0, nextArea = 0, useCnt = 0
+;여러가지 딜레이들...
+Global curseMode = 0, curseCnt = 0
+Global PSkillStart = 0
+Global lowLevel = 0
+;파밍용입니다.
+Global selfCount = 0
+;주위에 몹없으면 원래 축지쓰도록 했는데 보류입니다.
+Global attack = 0
+Global jp = 1
+Global PHP := 60
+;체력을 얼마까지 채울것인지..
+return
+
+main()
+{
+	Gui,submit,nohide
+	Static MainSkillTIme
+	MainX := ReadMemory(ReadMemory(0x0055DB04, MainWindowTitle) + 0x128, MainWindowTitle) ; 메인캐릭의 x좌표
+	MainY := ReadMemory(ReadMemory(0x0055DB04, MainWindowTitle) + 0x12c, MainWindowTitle) ; 메인캐릭의 y좌표
+
+
+	MainNowHP := ReadMemory(ReadMemory(0x0055DB04, MainWindowTitle) + 0x110, MainWindowTitle) ; 메인캐릭의 hp
+	MainFullHP := ReadMemory(ReadMemory(0x0055DB04, MainWindowTitle) + 0x114, MainWindowTitle) ; 메인캐릭의 최대 hp
+    
+	NowMP := ReadMemory(ReadMemory(0x0055DB04, MainWindowTitle) + 0x118, MainWindowTitle)
+	FullMP := ReadMemory(ReadMemory(0x0055DB04, MainWindowTitle) + 0x11c, MainWindowTitle)
+	MPPercent := NowMP / FullMP *100
+	HPPercent := MainNowHP / MainFullHp * 100
+
+	CharTargetNum0 := ReadMemory(ReadMemory(0x0055D4F8, MainWindowTitle) + 0xe8, MainWindowTitle,2) ; 메인캐릭의 타겟넘버(스킬쓸때 대상정하는번호)
+
+
+	
+	if(MPPercent < 20)
+	{
+		UseMainMagic(1)
+		;저는 공력증강을 1번으로 설정해놔서 마나가 20% 보다 낮을경우 사용하도록 하였습니다.
+	}
+	else
+	{
+		;if(HPPercent < 85)
+		
+		if(HPPercent < PHP)
+		{
+			if(MainNowHP = 0)
+			{
+				Revive()
+				;사실 운영자님한테 부활 만들어 달라한건 매크로 하다 중간에 죽는거 떄문에 빡쳐서 했던거죠 ㅎㅎ...
+			}
+			else
+			{
+				Heal()
+				;PHP라는 퍼센트보다 낮을경우 힐 합니다.
+			}
+		}
+		else if(attack = 1)
+		{
+			if(lowLevel = 1)
+			{
+				LL()
+				;쇠조각 파밍용.. 마나 더 오르거나 성려멸주 특성강화하면 윤도나 여러 재료도 성려멸주로 파밍할 수 있지않을까 싶어요 성려멸주는 10에 설정 해놨습니다.
+			}
+			else
+			{
+				;이부분이 기본 사냥용 세팅입니다.
+				;광역스킬 사용할 것이 있을 경우..
+				if(nextArea != 0)
+				{
+					Guicontrol,, GetExp1,사용광역 : %nextArea%
+					UseMainMagic(nextArea)
+					useCnt += 1
+					if(useCnt > 5)
+					{
+						useCnt := 0
+						nextArea := 0
+					}
+					;바람 같은경우 너무빨리 입력할 경우 키 입력이 씹히기 때문에 4~5번 정도 사용할 수 있도록 했습니다.
+					
+				}
+				else if(AreaDelay+7000 < A_TickCount)
+				{
+					AreaDelay := A_TickCount
+
+					if(curseMode = 1)
+					{
+; 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52
+; A  B  C  D  E  F  G  H  I  J   K  L  M  N  O  P  Q  R  S  T  U  V  W  X  Y  Z
+; 저같은 경우는 광역기를 알파벳 대문자들에 설정해놔서.. 이렇게 사용하도록 했습니다.
+; 염화를 사용한 뒤에 쿨다운이 돈 광역기를 사용하는 구조입니다.
+; nextArea 에 각각 원하는 광역기를 설정하면 될거에요
+						if(SD + 132000 < A_TickCount)
+						{
+							;sleep,160
+							nextArea := 45
+							SD := A_TickCount
+							Guicontrol,, ExpCalc,사용스킬 : 번개
+							PHP := 90
+						}
+						else if(CD + 321000 < A_TickCount)
+						{
+							;sleep,160
+							nextArea := 29
+							CD := A_TickCount
+							Guicontrol,, ExpCalc,사용스킬 : 불기
+							PHP := 10
+						}
+						else if(RD + 321000 < A_TickCount)
+						{
+							;sleep,160
+							nextArea := 44
+							RD := A_TickCount
+							Guicontrol,, ExpCalc,사용스킬 : 대기
+							PHP := 10
+						}
+						else if(ED + 321000 < A_TickCount)
+						{
+							;sleep,160
+							nextArea := 31
+							ED := A_TickCount
+							Guicontrol,, ExpCalc,사용스킬 : 불기
+							PHP := 10
+						}
+						else if(DD + 301000 < A_TickCount)
+						{
+							;sleep,160
+							nextArea := 30
+							DD := A_TickCount
+							Guicontrol,, ExpCalc,사용스킬 : 폭류
+							PHP := 10
+						}		
+						
+						else if(QD + 271000 < A_TickCount)
+						{
+							;sleep,160
+							nextArea := 43
+							QD := A_TickCount
+							Guicontrol,, ExpCalc,사용스킬 : 마기
+							PHP := 10
+						}
+						else if(WD + 305000 < A_TickCount)
+						{
+							nextArea := 49
+							WD := A_TickCount
+							Guicontrol,, ExpCalc,사용스킬 : 한빙
+							PHP := 10
+						}
+						else if(AD + 302000 < A_TickCount)
+						{
+							;sleep,160
+							nextArea := 27
+							AD := A_TickCount
+							Guicontrol,, ExpCalc,사용스킬 : 지폭
+							PHP := 10
+						}
+						else if(FD + 240000 < A_TickCount)
+						{
+							;sleep,160
+							nextArea := 32
+							FD := A_TickCount
+							Guicontrol,, ExpCalc,사용스킬 : 수옥
+							PHP := 10
+						}
+						curseMode := 0
+					}
+					else if(checkMonsters() = 1)
+					;주위 몬스터 수를 잽니다.
+					{
+						curseMode := 2
+						if(CsDelay + 14000 < A_TickCount)
+						{
+							;sleep,160
+							CsDelay := A_TickCount
+							AreaDelay := A_TickCount - 14000
+							Guicontrol,, ExpCalc,사용스킬 : 저주
+							nextArea := 52
+							curseMode := 1
+							PHP := 90
+						}
+					}
+					else
+					{
+						;주위 몬스터가 적을경우..
+						PHP := 10
+						curseMode := 0
+					}
+				}
+				else if(CsDelay + 14000 < A_TickCount && curseMode = 0)
+				{
+					;sleep,160
+					CsDelay := A_TickCount
+					AreaDelay := A_TickCount - 14000
+					Guicontrol,, ExpCalc,사용스킬 : 저주
+					nextArea := 52
+					;극염화 사용.. 저는 Z에 설정해놔서..
+				}
+				else if(CJDelay + 26000 < A_TickCount)
+				{
+					CJDelay := A_TickCount
+					nextArea := 8
+					UseMainMagic(8)
+				}
+				else if(LIDelay + 18000 < A_TickCount)
+				{
+					;sleep,160
+					LIDelay := A_TickCount
+					Guicontrol,, ExpCalc,사용스킬 : 라인
+					nextArea := 7
+				}
+				else
+				{
+					;sleep,160
+					;모든게 쿨다운 일경우 헬파를 날립니다.
+					Guicontrol,, ExpCalc,사용스킬 : 헬파
+					if(HP() = 1)
+					{
+						HellDelay := A_TickCount
+					}
+					
+				}
+				
+				
+				
+
+			}
+            
+		if(rootDelay + 3000 < A_TickCount)
+		{
+			root()
+			rootDelay := A_TickCount
+			;전노를 사용합니다..
+		}
+            else if(moving = 1 && moveDelay + 500 < A_TickCount)
+	;이동에 관한 내용입니다. 유토리는 도사가 따라다니는 것이라면 제 버전은 정해진 좌표로 이동하게 합니다. 거리가 멀 경우 고속이동도 사용하도록 했습니다.
+            {
+                MainMapNum := ReadMemory(ReadMemory(0x0055D504, MainWindowTitle) + 0x3ce, MainWindowTitle,2) ;메인캐릭의 맵넘버
+                moveDelay := A_TickCount
+                if(MainX = DestX && MainY = DestY)
+                {
+		;좌표에 도달시, 다음 좌표로 가도록 설정..
+                    DestIndex+=1
+		
+                    if(DestIndex > DAX.length())
+		;마지막 좌표에 도달시.. 처음으로.
+                    {
+                        DestIndex = 1
+			if(useItem = 1)
+			;어둠동굴용으로 만들었습니다. 마지막 좌표 도달시 a에 위치한 아이템 쓰도록..
+			{
+				PostMessage, 0x100, 85,1441793,,%MainWindowTitle%
+				PostMessage, 0x100, 65,1966081,,%MainWindowTitle%
+			}
+
+                    }
+                }
+                else if(preMapNum!=MainMapNum)
+		;다른맵에 도달시.. 다음 좌표로 향하도록...
+                {
+                    DestIndex+=1
+		    AreaDelay := A_TickCount - 14000
+                    if(DestIndex > DAX.length())
+                    {
+                        DestIndex = 1
+                    }
+                }
+                
+                DestX := DAX[DestIndex]
+                DestY := DAY[DestIndex]
+                ;Guicontrol,, ExpCalc,DestX : %DestX%
+                ;Guicontrol,, GetExp1,DestY : %DestY%
+                
+                preMapNum := MainMapNum
+                move(MainX,MainY,DestX,DestY)
+
+            }
+		}
+        
+
+		
+	}
+	
+
+
+	if(curseMode = 0)
+	{
+		Guicontrol,, HTime, 저주 사용은함
+	}
+	else if(curseMode = 1)
+	{
+		Guicontrol,, HTime, 몹많은 저주
+	}
+	else if(curseMode = 2)
+	{
+		Guicontrol,, HTime, 저주 대기중
+	}
+
+	
+	
+}
+
+mainenter() ; 만약 알트키가 안눌러져있다면 엔터를침 (알트엔터로 전체화면방지)
+{
+	If (getkeystate("Alt","P")=0)
+	{
+		PostMessage, 0x100, 13,1835009,,%MainWindowTitle%
+	}
+}
+
+Heal()
+{
+		;저는 기원이 4번..
+		UseMainMagic(4)
+		PostMessage, 0x100, 36,21430273,,%MainWindowTitle%
+		mainenter()
+}
+Revive()
+{
+		;부활이 Y
+		UseMainMagic(51)
+		PostMessage, 0x100, 36,21430273,,%MainWindowTitle%
+		mainenter()
+}
+LL()
+{
+	;쇠조각 앵벌이용..
+	if(nextArea != 0)
+	{
+		Guicontrol,, GetExp1,사용광역 : %nextArea%
+		UseMainMagic(nextArea)
+		useCnt += 1
+		if(useCnt > 5)
+		{
+			useCnt := 0
+			nextArea := 0
+		}
+		
+	}
+
+	else if(AreaDelay+20000 < A_TickCount)
+	{
+		AreaDelay := A_TickCount
+		if(SD + 132000 < A_TickCount)
+		{
+			;sleep,160
+			nextArea := 45
+			SD := A_TickCount
+			Guicontrol,, ExpCalc,사용스킬 : 번개
+			PHP := 10
+		}
+		else if(CD + 321000 < A_TickCount)
+		{
+			;sleep,160
+			nextArea := 29
+			CD := A_TickCount
+			Guicontrol,, ExpCalc,사용스킬 : 불기
+			PHP := 10
+		}
+		else if(RD + 321000 < A_TickCount)
+		{
+			;sleep,160
+			nextArea := 44
+			RD := A_TickCount
+			Guicontrol,, ExpCalc,사용스킬 : 대기
+			PHP := 10
+		}
+		else if(ED + 321000 < A_TickCount)
+		{
+			;sleep,160
+			nextArea := 31
+			ED := A_TickCount
+			Guicontrol,, ExpCalc,사용스킬 : 불기
+			PHP := 10
+		}
+		else if(DD + 301000 < A_TickCount)
+		{
+			;sleep,160
+			nextArea := 30
+			DD := A_TickCount
+			Guicontrol,, ExpCalc,사용스킬 : 폭류
+			PHP := 10
+		}		
+		
+		else if(QD + 271000 < A_TickCount)
+		{
+			;sleep,160
+			nextArea := 43
+			QD := A_TickCount
+			Guicontrol,, ExpCalc,사용스킬 : 마기
+			PHP := 10
+		}
+		else if(WD + 305000 < A_TickCount)
+		{
+			nextArea := 49
+			WD := A_TickCount
+			Guicontrol,, ExpCalc,사용스킬 : 한빙
+			PHP := 10
+		}
+		else if(AD + 302000 < A_TickCount)
+		{
+			;sleep,160
+			nextArea := 27
+			AD := A_TickCount
+			Guicontrol,, ExpCalc,사용스킬 : 지폭
+			PHP := 10
+		}
+		else if(FD + 240000 < A_TickCount)
+		{
+			;sleep,160
+			nextArea := 32
+			FD := A_TickCount
+			Guicontrol,, ExpCalc,사용스킬 : 수옥
+			PHP := 10
+		}
+	}
+	else
+	{
+		;성려멸주를 사용하도록합니다.
+		UseMainMagic(10)
+		PostMessage, 0x100, 36,21430273,,%MainWindowTitle%
+		PostMessage, 0x100, 36,21430273,,%MainWindowTitle%
+		PostMessage, 0x100, 38,21495809,,%MainWindowTitle%
+		
+		target := ReadMemory(0x0055E6C0, MainWindowTitle,2)
+		if(target=CharTargetNum0)
+		{
+			selfCount += 1
+			if(selfCount > 5)
+			{
+				jp = 1;
+			}
+			Guicontrol,, HTime,적상태 : %selfCount%셀프 %jp%점프
+
+			PostMessage, 0x100, 27,65537,,%MainWindowTitle%
+
+		}
+		else
+		{
+			selfCount = 0
+			jp = 0;
+			mainenter()
+		}
+	}
+
+}
+
+HP()
+{
+			;헬파이어입니다. 2번스킬에 할당..
+			UseMainMagic(2)
+			PostMessage, 0x100, 36,21430273,,%MainWindowTitle%
+			PostMessage, 0x100, 36,21430273,,%MainWindowTitle%
+			PostMessage, 0x100, 38,21495809,,%MainWindowTitle%
+	target := ReadMemory(0x0055E6C0, MainWindowTitle,2)
+
+			if(target=CharTargetNum0)
+			{
+				;타겟이 자기자신일경우 안쏘고 쿨도 안돌립니다.
+				selfCount += 4
+				PostMessage, 0x100, 27,65537,,%MainWindowTitle%
+				return 0
+			}
+			else
+			{
+				;타겟이 자기자신아닐경우 쏩니다.
+				selfCount = 0
+				mainenter()
+				return 1
+			}
+}
+
+LI()
+{
+		;십자 소상파 환겁..
+			UseMainMagic(7)
+}
+
+checkMonsters()
+{
+
+	;타겟팅 스킬로 주위 몹 몇마리 인지 카운팅합니다.
+	UseMainMagic(2)
+	PostMessage, 0x100, 36,21430273,,%MainWindowTitle%
+	cnt:=0
+	targets := {}
+	loop,30
+	{
+		sleep, 1
+		PostMessage, 0x100, 39,21823489,,%MainWindowTitle%
+		target := ReadMemory(0x0055E6C0, MainWindowTitle,2)
+		targets[target] := 1
+	}
+	For key, value in targets
+	{
+		cnt+=1
+	}
+
+	;30번 돌려서 주위몹이 12마리 보다작다 => 광역기안씀, 크다 => 광역기씀
+
+	PostMessage, 0x100, 27,65537,,%MainWindowTitle%
+	if(cnt < 12)
+	{
+		return 0
+	}
+	return 1
+}
+
+move(Mx,My,Dx,Dy)
+{
+	;정해진 위치로 움직이도록..
+    
+    distance = 0
+    if(Mx < Dx)
+    {
+        distance := Dx-Mx
+        PostMessage, 0x100, 39,21823489,,%MainWindowTitle%
+    }
+    else if(Mx > Dx)
+    {
+        distance := Mx-Dx
+        PostMessage, 0x100, 37,21692417,,%MainWindowTitle%
+    }
+    if(Mx==Dx)
+    {
+        if(My < Dy)
+        {   
+            distance := Dy-My
+            PostMessage, 0x100, 40,22020097,,%MainWindowTitle%
+        }
+        else if(My > Dy)
+        {
+            distance := My-Dy
+            PostMessage, 0x100, 38,21495809,,%MainWindowTitle%
+        }
+    }
+    
+
+    
+    ;if(distance > 6 && selfCount > 5)
+    if(distance > 6)
+    {
+		UseMainMagic(3)
+    }
+}
+
+
+root()
+{
+	;전노.. UseMainMagic 을 사용해도 무방합니다.
+	PostMessage, 0x100, 16,2752513,,%MainWindowTitle%
+	PostMessage, 0x100, 90,2883585,,%MainWindowTitle%
+	PostMessage, 0x100, 88,2949121,,%MainWindowTitle%
+	PostMessage, 0x101, 16,2752513,,%MainWindowTitle%
+}
+
+
+UseMainMagic(Num) ; 넘버 넣어주면 해당넘버에있는 스킬써줌 
+{
+	PostMessage, 0x100, 16,2752513,,%MainWindowTitle%
+	PostMessage, 0x100, 90,2883585,,%MainWindowTitle%
+	PostMessage, 0x101, 16,2752513,,%MainWindowTitle%
+	if(Num <= 26) ; 소문자
+	{
+		Param := 64 + Num
+		PostMessage, 0x100,%Param%,,,%MainWindowTitle%
+	}
+	else ; 대문자
+
+	{
+		Num -= 26
+		Param := 64 + Num
+		PostMessage, 0x100, 16,2752513,,%MainWindowTitle%
+		PostMessage, 0x100,%Param%,,,%MainWindowTitle%
+		PostMessage, 0x101, 16,2752513,,%MainWindowTitle%
+	}
+}
+
+GetMagic() ; 해당스킬이 몇번째에있는지 찾음.. 저는 사용하지 않았습니다.
+{
+	loop,52
+	{
+		Offset := ((A_Index - 1) * 0x148)
+		MagicName := ReadMemoryTxt(ReadMemory(0x0055D4F8, MainWindowTitle) + (0x25c8 + Offset),MainWindowTitle)
+		if(MagicName != "")
+		{
+			if(MagicName = "투명")
+			{
+				MainHide := A_Index
+			}
+			if(MagicName = "혼마술")
+			{
+				MainHon := A_Index
+			}
+			if(MagicName = "중독")
+			{
+				MainJungdok := A_Index
+			}
+		}
+	}
+}
+
+;힐러 부분은 솔플이기 때문에 제가 다루지 않고 삭제했습니당.
+Class healer
+{
+	init()
+	{
+		this.GetSpellSlot()
+		this.noChat(this.TitleName)
+	}
+	main() ; 각각 켜져있으면 따라가기, 힐감
+	{
+		Gui,Submit,Nohide
+		if(this.CharNum = 1)  
+		{
+			CharTargetNum1 := this.GetCharNum(this.TitleName)
+			if(C1_1 = 1)
+			{
+				this.Check1 := 1
+			}
+			else
+			{
+				this.Check1 := 0
+			}
+			if(C1_2 = 1)
+			{
+				this.Check2 := 1
+			}			
+			else
+			{
+				this.Check2 := 0
+			}
+		}
+		else if(this.CharNum = 2) 
+		{
+			CharTargetNum2 := this.GetCharNum(this.TitleName)
+			if(C2_1 = 1)
+			{
+				this.Check1 := 1
+			}
+			else
+			{
+				this.Check1 := 0
+			}
+			if(C2_2 = 1)
+			{
+				this.Check2 := 1
+			}			
+			else
+			{
+				this.Check2 := 0
+			}
+		}
+		else if(this.CharNum = 3) 
+		{
+			CharTargetNum3 := this.GetCharNum(this.TitleName)
+			if(C3_1 = 1)
+			{
+				this.Check1 := 1
+			}
+			else
+			{
+				this.Check1 := 0
+			}
+			if(C3_2 = 1)
+			{
+				this.Check2 := 1
+			}			
+			else
+			{
+				this.Check2 := 0
+			}
+		}
+		else if(this.CharNum = 4) 
+		{
+			CharTargetNum4 := this.GetCharNum(this.TitleName)
+			if(C4_1 = 1)
+			{
+				this.Check1 := 1
+			}
+			else
+			{
+				this.Check1 := 0
+			}
+			if(C4_2 = 1)
+			{
+				this.Check2 := 1
+			}			
+			else
+			{
+				this.Check2 := 0
+			}
+		}
+		else if(this.CharNum = 5) 
+		{
+			CharTargetNum5 := this.GetCharNum(this.TitleName)
+			if(C5_1 = 1)
+			{
+				this.Check1 := 1
+			}
+			else
+			{
+				this.Check1 := 0
+			}
+			if(C5_2 = 1)
+			{
+				this.Check2 := 1
+			}			
+			else
+			{
+				this.Check2 := 0
+			}
+		}
+		if(CheckFollow = 1)
+		{
+			this.Follow()
+		}
+		this.Heal()	
+	}
+	GetCharNum(TitleName) ; 부캐릭  타겟넘버를 구해옴 
+	{
+		return ReadMemory(ReadMemory(0x0055D4F8, TitleName) + 0xe8, TitleName,2)		
+	}
+	noChat(TitleName) ; 엔터키로 대화하느거 끄는거임
+	{
+		WriteMemory((ReadMemory(0x0055D4B0, TitleName) + 0x28de44),TitleName,0x00,"char")
+	}
+	Follow() ; 따라가기 설명귀찬.. 대충 따라감..
+	{
+		Gui,Submit,Nohide 
+		IfWinNotActive,% this.Name ; 비활성화 되었을때만 
+		{
+			this.GetPos(this.TitleName)
+			
+			if (MainMapNum = this.MapNum)
+			{
+				this.MoveX := MainX
+				this.MoveY := MainY
+			}
+			if((abs(MainX - this.PosX) > WalkRange || abs(MainY - this.PosY) > WalkRange) && MainMapNum = this.MapNum )
+			{
+				this.Flag := 1
+				if(this.WalkTime + WalkInterval < A_TickCount)
+				{
+					if(MainX > this.PosX)
+					{
+						if (this.GetSubDir(this.TitleName) = 1)
+						{
+							this.InputDirKey(this.TitleName,1,1)
+						}
+						else
+						{
+							this.InputDirKey(this.TitleName,1,2)
+						}
+					}
+					if(MainX < this.PosX)
+					{
+						if (this.GetSubDir(this.TitleName) = 3)
+						{
+							this.InputDirKey(this.TitleName,3,1)
+						}
+						else
+						{
+							this.InputDirKey(this.TitleName,3,2)
+						}
+					}
+					if(MainY > this.PosY)
+					{
+						if (this.GetSubDir(this.TitleName) = 2)
+						{
+							this.InputDirKey(this.TitleName,2,1)
+						}
+						else
+						{
+							this.InputDirKey(this.TitleName,2,2)
+						}					
+					}
+					if(MainY < this.PosY)
+					{
+						if (this.GetSubDir(this.TitleName) = 0)
+						{
+							this.InputDirKey(this.TitleName,0,1)
+						}
+						else
+						{
+							this.InputDirKey(this.TitleName,0,2)
+						}
+					}
+					this.WalkTime := A_TickCount
+				}
+			}
+			else if(MainMapNum != this.MapNum)
+			{
+				if (this.Flag = 1)
+				{
+					this.MainFace := ReadMemory(ReadMemory(0x0055D4F8, MainWindowTitle) + 0x175, MainWindowTitle,2)
+					this.Flag := 0
+				}
+				if(this.WalkTime + WalkInterval < A_TickCount)
+				{
+					if(this.MoveX > this.PosX)
+					{
+						if (this.GetSubDir(this.TitleName) = 1)
+						{
+							this.InputDirKey(this.TitleName,1,1)
+						}
+						else
+						{
+							this.InputDirKey(this.TitleName,1,2)
+						}
+					}
+					if(this.MoveX <  this.PosX)
+					{
+						if (this.GetSubDir(this.TitleName) = 3)
+						{
+							this.InputDirKey(this.TitleName,3,1)
+						}
+						else
+						{
+							this.InputDirKey(this.TitleName,3,2)
+						}
+					}
+					if(this.MoveY >  this.PosY)
+					{
+						if (this.GetSubDir(this.TitleName)= 2)
+						{
+							this.InputDirKey(this.TitleName,2,1)
+						}
+						else
+						{
+							this.InputDirKey(this.TitleName,2,2)
+						}					
+					}
+					if(this.MoveY <  this.PosY)
+					{
+						if (this.GetSubDir(this.TitleName) = 0)
+						{
+							this.InputDirKey(this.TitleName,0,1)
+						}
+						else
+						{
+							this.InputDirKey(this.TitleName,0,2)
+						}
+					}
+					if(this.MoveX = this.PosX && this.MoveY = this.PosY)
+					{
+						if (this.MainFace = 0)
+							this.InputDirKey(this.TitleName,0,1)
+						else if (this.MainFace  = 1)
+							this.InputDirKey(this.TitleName,1,1)
+						else if (this.MainFace  = 2)
+							this.InputDirKey(this.TitleName,2,1)
+						else if (this.MainFace  = 3)
+							this.InputDirKey(this.TitleName,3,1)
+					}
+					this.WalkTime := A_TickCount
+				}
+			}
+		}
+	}
+	Heal() ; 힐 .... 실력이 부족해서 복잡함
+	{
+		Gui,Submit,Nohide
+		this.GetPos(this.TitleName)
+		this.GetSubState(this.TitleName)
+		if(ReviveInterval = 1)
+		{
+			this.ReviveInterval := 1500
+		}
+		else
+		{
+			this.ReviveInterval := 100
+		}
+		 if(ReadMemory(ReadMemory(0x0055D4F8, this.TitleName) + 0x163, this.TitleName,1) = 1) ; 유령상태면
+		{
+			if(this.SpellTime + this.ReviveInterval < A_TickCount)
+			{
+				this.CastSpell(this.TitleName,"부활",2)
+				this.SpellTime := A_TickCount
+				this.inputKey(this.TitleName,1)
+				return
+			}
+			else
+				return
+		}
+		else if(ReadMemory(ReadMemory(0x0055D4F8, MainWindowTitle) + 0x163, MainWindowTitle,1) = 1) ; 유령상태면
+		{
+			if(this.SpellTime + this.ReviveInterval < A_TickCount)
+			{
+				this.CastSpell(this.TitleName,"부활",1)
+				this.SpellTime := A_TickCount
+				PostMessage, 0x100, 16,2752513,,%MainWindowTitle%
+				PostMessage, 0x100, 188,3342337,,%MainWindowTitle%
+				PostMessage, 0x101, 16,2752513,,%MainWindowTitle%
+				return
+			}
+			else
+				return
+		}
+		if(this.MPPercent < 30) ; 부캐마나 낮으면
+		{
+			if(this.SpellTime + 200 < A_TickCount)
+			{
+				this.CastSpell(this.TitleName,"공력증강")
+				this.SpellTime := A_TickCount
+				return
+			}
+			else
+				return
+		}
+		if(DosaNum1 = this.CharNum)
+		{
+			if(ReadMemory(ReadMemory(0x0055D4F8, MainWindowTitle) + 0x1fb,MainWindowTitle) != 0) ; 절망걸리면
+			{
+				if (Check5 = 1) ;시력회복
+				{
+					if(this.SpellTime + 300 < A_TickCount)
+					{
+						this.CastSpell(this.TitleName,"시력회복",1)
+						this.SpellTime := A_TickCount
+						 this.SiReady := 0
+					}
+					else
+					{
+						 this.SiReady := 1
+					}
+				}
+				else
+				{
+					 this.SiReady := 0
+				}
+			}
+			else
+			{
+				 this.SiReady := 0
+			}
+		}
+		if(DosaNum2 = this.CharNum)
+		{
+			if(Check6 = 1)
+			{
+				
+				if(this.PahonTime + DosaTime * 1000 < A_TickCount)
+				{
+					
+					if(this.SpellTime + 300 < A_TickCount)
+					{
+						
+						this.CastSpell(this.TitleName,"파혼술",1)
+						this.SpellTime := A_TickCount
+						this.PahonTime := A_TickCount
+						this.PahonReady := 0
+					}
+					else
+					{
+						this.PahonReady := 1
+					}
+				}
+				else
+				{
+					this.PahonReady := 0
+				}
+			}
+		}
+		if (MainMapNum = this.MapNum && abs(MainX - this.PosX)  < 9 && abs(MainY - this.PosY) < 9  && this.Check2 = 1) ; 힐부분
+		{
+			if(MainHPPercent < Heal_BaekHP && this.SubHealBaek > 0  && this.Baek2Ready != 1 && this.PSkillReady != 1 && this.Baek1Time + this.Baek1interval < A_TickCount) ;희원
+			{
+				if(this.SpellTime + 300 < A_TickCount)
+				{
+					this.CastSpell(this.TitleName,"백호의희원",1)
+					this.Baek1Time := A_TickCount
+					this.Baek1interval :=  (this.NowMP // 10 )  + 10
+					if(this.Baek1interval < 2000)
+						this.Baek1interval := 2000
+					this.SpellTime := A_TickCount
+					this.Baek1Ready := 0
+				}
+				else
+				{
+					this.Baek1Ready := 1
+				}
+			}
+			else
+			{
+				this.Baek1Ready := 0
+			}
+			if( (MainHPPercent < Heal_BaekHP2 ||  this.HPPercent < Heal_BaekHP2) && this.SubHeal8 > 0  && this.PSkillReady != 1&& this.Baek1Ready != 1 && this.Baek2Time + this.Baek2interval < A_TickCount) ;희원 첨
+			{
+				if(this.SpellTime + 300 < A_TickCount)
+				{
+					this.CastSpell(this.TitleName,"백호의희원첨",1)
+					this.Baek2Time := A_TickCount
+					this.Baek2interval :=  (this.NowMP // 10 )  / 2
+					if(this.Baek2interval < 2000)
+						this.Baek2interval := 2000
+					this.SpellTime := A_TickCount
+					this.Baek2Ready := 0
+				}
+				else
+				{
+					this.Baek2Ready := 1
+				}
+			}
+			else
+			{
+				this.Baek2Ready := 0
+			}
+			if(this.Baek1Ready != 1 && this.Baek2Ready != 1 && this.SiReady != 1 && this.PahonReady != 1 && this.PSkillReady != 1) ;백호희원 준비중이 아니면
+			{
+				if(this.SubHealReady != 1)
+				{
+					if(MainHPPercent < Heal_MainHP)
+					{
+						if(this.SpellTime + HCool < A_TickCount)
+						{
+							this.CastSpell(this.TitleName,"힐",1)
+							this.SpellTime := A_TickCount
+						}
+					}
+				}
+				if(this.HPPercent < Heal_SubHP )
+				{
+					if(this.SpellTime + HCool < A_TickCount)
+					{
+						this.CastSpell(this.TitleName,"힐",2)
+						this.SpellTime := A_TickCount
+						this.SubHealReady := 0
+					}
+					else
+					{
+						this.SubHealReady := 1
+					}
+				}
+				else
+				{
+					this.SubHealReady := 0
+				}
+			}
+			if(this.HPPercent >= Heal_SubHP && MainHPPercent >= Heal_MainHP &&  this.Check1 = 1 &&  this.PSkillReady != 1) ; 혼마술
+			{
+				if(this.SpellTime2 + HCool < A_TickCount)
+				{
+					this.CastSpell(this.TitleName,"혼마술")
+					this.TargetChange(this.TitleName)
+					
+					this.SpellTime2 := A_TickCount
+				}
+			}
+		}
+		else if((abs(MainX - this.PosX)  > 9 || abs(MainY - this.PosY) > 9)  && this.Check2 = 1) ; 멀리있을떄 ㅈ힐
+		{
+			if(this.Baek1Ready != 1 && this.Baek2Ready != 1 && this.SiReady != 1 && this.PahonReady != 1 && this.PSkillReady != 1) ;백호희원 준비중이 아니면
+			{
+				if(this.HPPercent < Heal_SubHP )
+				{
+					if(this.SpellTime + HCool < A_TickCount)
+					{
+						this.CastSpell(this.TitleName,"힐",2)
+						this.SpellTime := A_TickCount
+					}
+				}
+			}
+		}
+		else if(MainMapNum = this.MapNum && abs(MainX - this.PosX)  < 9 && abs(MainY - this.PosY) < 9  && this.Check1 = 1 &&  this.PSkillReady != 1)
+		{
+			if(this.SpellTime2 + HCool < A_TickCount)
+			{
+				this.CastSpell(this.TitleName,"혼마술")
+				this.TargetChange(this.TitleName)
+				this.SpellTime2 := A_TickCount
+			}
+		}
+		if(PSkillStart = this.CharNum )
+		{
+			if(this.SpellTime + 300 < A_TickCount)
+			{
+				this.CastSpell(this.TitleName,"파력")
+				this.SpellTime := A_TickCount
+				PSkillStart := 0
+			}
+			else
+			{
+				this.PSkillReady := 1
+			}
+		}
+		else if(PSkillStart != (this.CharNum + 5))
+		{
+			this.PSkillReady := 0
+		}
+		if(PSkillStart = (this.CharNum + 5))
+		{
+			if(this.SpellTime + 300 < A_TickCount)
+			{
+				this.CastSpell(this.TitleName,"귀염")
+				this.SpellTime := A_TickCount
+				PSkillStart := 0
+			}
+			else
+			{
+				this.PSkillReady := 1
+			}
+		}
+		else if(PSkillStart != this.CharNum)
+		{
+			this.PSkillReady := 0
+		}
+	}
+
+	TargetChange(TitleName) ; 혼마술쓸떄 위로쓰는지 아래로쓰는지
+	{
+		if(this.CharNum = 1 ||  this.CharNum = 3 this.CharNum = 5)
+		{
+			PostMessage, 0x100, 40,22020097,,%TitleName%
+		}
+		else
+		{
+			PostMessage, 0x100, 38,21495809,,%TitleName%
+		}
+		this.SubEnterInput(TitleName)
+	}
+	GetTargetNum(TitleName) 
+	{
+		return ReadMemory(0x0055E6C0, TitleName,2)		
+	}
+	SubEnterInput(TitleName) ; 알트 안눌렸을때만 엔터
+	{
+		If (getkeystate("Alt","P")=0)
+		{
+			PostMessage, 0x100, 13,1835009,,%TitleName%
+		}
+	}
+	inputKey(TitleName,num)
+	{
+		if(num = 1) ; 먹기
+		{
+			PostMessage, 0x100, 16,2752513,,%TitleName%
+			PostMessage, 0x100, 188,3342337,,%TitleName%
+			PostMessage, 0x101, 16,2752513,,%TitleName%
+		}
+	}
+	GetHealSkill(Num)
+	{
+		Loop
+		{
+			if(Num = 8)
+			{
+				if(this.청룡의기원 > 0)
+				{
+					return this.청룡의기원
+				}
+				else
+				{
+					Num--
+				}
+			}
+			else if(Num = 7)
+			{
+				if(this.신선의기원 > 0)
+				{
+					return this.신선의기원
+				}
+				else
+				{
+					Num--
+				}
+			}
+			else if(Num = 6)
+			{
+				if(this.봉황의기원 > 0)
+				{
+					return this.봉황의기원
+				}
+				else
+				{
+					Num--
+				}
+			}
+			else if(Num = 5)
+			{
+				if(this.신령의기원 > 0)
+				{
+					return this.신령의기원
+				}
+				else
+				{
+					Num--
+				}
+			}
+			else if(Num = 4)
+			{
+				if(this.생명의기원 > 0)
+				{
+					return this.생명의기원
+				}
+				else
+				{
+					Num--
+				}
+			}
+			else if(Num = 3)
+			{
+				if(this.태양의기원 > 0)
+				{
+					return this.태양의기원
+				}
+				else
+				{
+					Num--
+				}
+			}
+			else if(Num = 2)
+			{
+				if(this.구름의기원 > 0)
+				{
+					return this.구름의기원
+				}
+				else
+				{
+					return this.태양의기원
+				}
+			}
+		}
+	}
+	
+	
+	CastSpell(TitleName,Spell,Target=0)    ; Target 1 = 본체 2 = 도사 0= 없음
+	{
+		Gui,submit,nohide
+		if(Spell = "부활")
+		{
+			if(Target = 1)
+			{
+				this.SetTarget(1,TitleName)
+			}
+			else if(Target = 2)
+			{
+				this.SetTarget(2,TitleName)
+			}
+			this.UseSubMagic(this.SubRevive,TitleName)
+		}
+		else if(Spell = "힐")
+		{
+			if(this.설룡의기원 > 0)
+			{
+				this.SubHeal := this.설룡의기원
+				this.SubHeal_ := this.GetHealSkill(8)
+			}
+			else if(this.청룡의기원 > 0)
+			{
+				this.SubHeal := this.청룡의기원
+				this.SubHeal_ :=  this.GetHealSkill(7)
+			}
+			else if(this.신선의기원 > 0)
+			{
+				this.SubHeal := this.신선의기원
+				this.SubHeal_ :=  this.GetHealSkill(6)
+			}
+			else if(this.봉황의기원 > 0)
+			{
+				this.SubHeal := this.봉황의기원
+				this.SubHeal_ :=  this.GetHealSkill(5)
+			}
+			else if(this.신령의기원 > 0)
+			{
+				this.SubHeal := this.신령의기원
+				this.SubHeal_ :=  this.GetHealSkill(4)
+			}
+			else if(this.생명의기원 > 0)
+			{
+				this.SubHeal := this.생명의기원
+				this.SubHeal_ :=  this.GetHealSkill(3)
+			}
+			else if(this.태양의기원 > 0)
+			{
+				this.SubHeal := this.태양의기원
+				this.SubHeal_ :=  this.GetHealSkill(2)
+			}
+			else if(this.구름의기원 > 0)
+			{
+				this.SubHeal := this.구름의기원
+				this.SubHeal_ := this.구름의기원
+			}
+			else if(this.현자의기원 > 0)
+			{
+				this.SubHeal := this.현자의기원
+				this.SubHeal_ := this.현자의기원
+			}
+			if(Target = 1)
+			{
+				this.SetTarget(1,TitleName)
+			}
+			else if(Target = 2)
+			{
+				this.SetTarget(2,TitleName)
+			}
+			this.UseSubMagic(this.SubHeal,TitleName)
+			if(TwoHeal = 1)
+			{
+				this.UseSubMagic(this.SubHeal_,TitleName)
+			}
+			else if(TwoHeal2 = 1)
+			{
+				this.UseSubMagic(this.SubHeal_Auto,TitleName,1)
+			}
+		}
+		else if(Spell = "공력증강")
+		{
+			this.UseSubMagic(this.SubGong,TitleName,1)
+		}
+		else if(Spell = "파력")
+		{
+			this.UseSubMagic(this.SubPa,TitleName,1)
+		}
+		else if(Spell = "귀염")
+		{
+			this.UseSubMagic(this.SubYeom,TitleName,1)
+		}
+		else if(Spell = "백호의희원")
+		{
+			this.SetTarget(1,TitleName)
+			this.UseSubMagic(this.백호의희원,TitleName)
+		}
+		else if(Spell = "백호의희원첨")
+		{
+			this.UseSubMagic(this.백호의희원첨,TitleName,1)
+		}
+		else if(Spell = "혼마술")
+		{
+			this.UseSubMagic(this.SubHon,TitleName,1)
+		}
+		else if(Spell = "파혼술")
+		{
+			this.SetTarget(1,TitleName)
+			this.UseSubMagic(this.SubDeHon,TitleName)
+		}
+		else if(Spell = "시력회복")
+		{
+			this.SetTarget(1,TitleName)
+			this.UseSubMagic(this.Subsi,TitleName)
+		}
+	}
+	UseSubMagic(Num,TitleName,Mtype = 0)
+	{
+		PostMessage, 0x100, 16,2752513,,%TitleName%
+		PostMessage, 0x100, 90,2883585,,%TitleName%
+		PostMessage, 0x101, 16,2752513,,%TitleName%
+		if(Num <= 26)
+		{
+			Param := 64 + Num
+			PostMessage, 0x100,%Param%,,,%TitleName%
+		}
+		else
+		{
+			Num -= 26
+			Param := 64 + Num
+			PostMessage, 0x100, 16,2752513,,%TitleName%
+			PostMessage, 0x100,%Param%,,,%TitleName%
+			PostMessage, 0x101, 16,2752513,,%TitleName%
+		}
+		if(Mtype = 0)
+			this.SubEnterInput(TitleName)
+	}
+	SetTarget(TargetNum,TitleName) ; 타겟변경 해당번호로 타겟을 변경
+	{
+		if(TargetNum = 1)
+		{
+			MainCharNum := ReadMemory(ReadMemory(0x0055D4F8, MainWindowTitle) + 0xe8, MainWindowTitle,2)
+			WriteMemory(0x0055E6C0,TitleName,MainCharNum,"short")
+		}
+		else
+		{
+			SubCharNum := ReadMemory(ReadMemory(0x0055D4F8, TitleName) + 0xe8, TitleName,2)
+			WriteMemory(0x0055E6C0,TitleName,SubCharNum,"short")
+		}
+	}
+	GetMagicName(TitleName,offset)
+	{
+		return ReadMemoryTxt(ReadMemory(0x0055D4F8, TitleName) + (0x25c8 + Offset),TitleName)
+	}
+	GetSubState(TitleName)
+	{
+		this.NowHP := ReadMemory(ReadMemory(0x0055DB04, TitleName) + 0x110, TitleName)
+		this.FullHP := ReadMemory(ReadMemory(0x0055DB04, TitleName) + 0x114, TitleName)
+		this.HPPercent := this.NowHP / this.FullHP *100
+		this.NowMP := ReadMemory(ReadMemory(0x0055DB04, TitleName) + 0x118, TitleName)
+		this.FullMP := ReadMemory(ReadMemory(0x0055DB04, TitleName) + 0x11c, TitleName)
+		this.MPPercent := this.NowMP / this.FullMP *100
+	}
+	GetSpellSlot()
+	{
+		loop,52
+		{
+			this.Offset := ((A_Index - 1) * 0x148)
+			this.MagicName := this.GetMagicName(this.TitleName,this.Offset)
+			if(this.MagicName != "")
+			{
+				if(this.MagicName = "현자의기원")
+				{
+					this.현자의기원 := A_Index
+				}
+				else if(this.MagicName = "구름의기원")
+				{
+					this.구름의기원 := A_Index
+				}
+				else if(this.MagicName = "태양의기원")
+				{
+					this.태양의기원 := A_Index
+				}				
+				else if(this.MagicName = "생명의기원")
+				{
+					this.생명의기원 := A_Index
+				}
+				else if(this.MagicName = "신령의기원")
+				{
+					this.신령의기원 := A_Index
+				}
+				else if(this.MagicName = "봉황의기원")
+				{
+					this.봉황의기원 := A_Index
+				}
+				else if(this.MagicName = "신선의기원")
+				{
+					this.신선의기원 := A_Index
+				}
+				else if(this.MagicName = "청룡의기원")
+				{
+					this.청룡의기원 := A_Index
+				}
+				else if(this.MagicName = "설룡의기원")
+				{
+					this.설룡의기원 := A_Index
+				}
+				else if(this.MagicName = "자동기원")
+				{
+					this.SubHeal_Auto := A_Index
+				}
+				else if(this.MagicName = "공력증강")
+				{
+					this.SubGong := A_Index
+				}
+				else if(this.MagicName = "혼마술")
+				{
+					this.SubHon := A_Index
+				}
+				else if(this.MagicName = "백호의희원'첨")
+				{
+					this.백호의희원첨 := A_Index
+				}
+				else if(this.MagicName = "백호의희원")
+				{
+					this.백호의희원 := A_Index
+				}
+				else if(this.MagicName = "부활")
+				{
+					this.SubRevive := A_Index
+				}
+				else if(this.MagicName = "파혼술")
+				{
+					this.SubDeHon := A_Index
+				}
+				else if(this.MagicName = "파력무참")
+				{
+					this.SubPa := A_Index
+				}
+				else if(this.MagicName = "귀염추혼소")
+				{
+					this.SubYeom := A_Index
+				}				
+				else if(this.MagicName = "시력회복")
+				{
+					this.Subsi := A_Index
+				}
+				else if(this.MagicName = "금강불체")
+				{
+					this.Subpa1 := A_Index
+				}
+			}
+		}
+	}
+	InputDirKey(TitleName,num,loopnum)
+	{
+		if(num = 0)
+		{
+			PostMessage, 0x100, 38,21495809,,%TitleName%
+			if (loopnum = 2)
+				PostMessage, 0x100, 38,21495809,,%TitleName%
+		}
+		else if(num = 2)
+		{
+			PostMessage, 0x100, 40,22020097,,%TitleName%
+			if (loopnum = 2)
+				PostMessage, 0x100, 40,22020097,,%TitleName%
+		}
+		else if(num = 3)
+		{
+			PostMessage, 0x100, 37,21692417,,%TitleName%
+			if (loopnum = 2)
+				PostMessage, 0x100, 37,21692417,,%TitleName%
+		}
+		else if(num = 1)
+		{
+			PostMessage, 0x100, 39,21823489,,%TitleName%
+			if (loopnum = 2)
+				PostMessage, 0x100, 39,21823489,,%TitleName%
+		}
+	}
+	GetSubDir(TitleName)
+	{
+		return ReadMemory(ReadMemory(0x0055D4F8, TitleName) + 0x175, TitleName,2)
+	}
+	GetPos(TitleName)
+	{
+		this.PosX := ReadMemory(ReadMemory(0x0055DB04, TitleName) + 0x128, TitleName)
+		this.PosY := ReadMemory(ReadMemory(0x0055DB04, TitleName) + 0x12c, TitleName)
+		this.MapNum := ReadMemory(ReadMemory(0x0055D504, TitleName) + 0x3ce, TitleName,2)
+	}
+	__New(Name,_TitleName,_Num)
+	{
+		this.TitleName := _TitleName
+		this.Name := Name
+		this.GetSpellSlot()
+		this.SpellTime := A_TickCount
+		this.CharNum := _Num
+	}
+}
+
+
+아이템입기() ;오류가있어서 안쓰시는게 (일정시간이 지나면 안읽어짐)
+{	
+	Gui,Submit,Nohide
+	Static 메모리쿨
+	if(메모리쿨 + 5000 < A_TickCount)
+	{
+		WriteMemory((ReadMemory(0x0055D4B0, MainWindowTitle) + 0x28de44),MainWindowTitle,0x00,"char")
+		메모리쿨 := A_TickCount
+	}
+	if(MainNowHP != 0)
+	{
+		loop,52
+		{
+			Offset := ((A_Index - 1) * 0xb0)
+			MagicName := ReadMemoryTxt2(ReadMemory(0x0055D4F8, MainWindowTitle) + (0x206 + Offset),MainWindowTitle)
+			if(A_Index = 1)
+			{
+				Guicontrol,, TestMessage0,%MagicName%
+				Guicontrol,, TestMessage01,%MainHead%
+				Guicontrol,, TestMessage6,%MainNowHP%				
+			}
+			else if(A_Index= 2)
+			{
+				Guicontrol,, TestMessage1,%MagicName%
+				Guicontrol,, TestMessage11,%MainShield%
+			}
+			else if(A_Index= 3)
+			{
+				Guicontrol,, TestMessage2,%MagicName%
+				Guicontrol,, TestMessage21,%MainWeapon%
+			}
+			else if(A_Index= 4)
+			{
+				Guicontrol,, TestMessage3,%MagicName%
+				Guicontrol,, TestMessage31,%MainArmor%
+			}
+			else if(A_Index= 5)
+			{
+				Guicontrol,, TestMessage4,%MagicName%
+				Guicontrol,, TestMessage41,%MainRing1%
+			}
+			else if(A_Index= 6)
+			{
+				Guicontrol,, TestMessage5,%MagicName%
+				Guicontrol,, TestMessage51,%Mainacce1%
+			}
+			
+			if(MagicName != "")
+			{
+				if(MagicName = MainHead )
+				{
+					UseMainItem(A_Index)
+				}
+				else if(MagicName =MainShield )
+				{
+					UseMainItem(A_Index)
+				}
+				else if(MagicName = MainWeapon)
+				{
+					UseMainItem(A_Index)
+				}
+				else if(MagicName = MainArmor)
+				{
+					UseMainItem(A_Index)
+				}
+				else if(MagicName = MainRing1)
+				{
+					UseMainItem(A_Index)
+				}
+				else if(MagicName = MainRing2)
+				{
+					UseMainItem(A_Index)
+				}
+				else if(MagicName = Mainacce1)
+				{
+					UseMainItem(A_Index)
+				}
+				else if(MagicName =Mainacce2)
+				{
+					UseMainItem(A_Index)
+				}				
+			}				
+		}
+	}	
+
+}
+
+UseMainItem(Num)
+{
+	static MainEquipTime
+	if(MainEquipTime + 100 < A_TickCount)
+	{
+		PostMessage, 0x100, 85,1441793,,%MainWindowTitle%
+		if(Num <= 26)
+		{
+			Param := 64 + Num
+			PostMessage, 0x100,%Param%,,,%MainWindowTitle%
+		}
+		else
+		{
+			Num -= 26
+			Param := 64 + Num
+			PostMessage, 0x100, 16,2752513,,%MainWindowTitle%
+			PostMessage, 0x100,%Param%,,,%MainWindowTitle%
+			PostMessage, 0x101, 16,2752513,,%MainWindowTitle%
+		}
+		PostMessage, 0x100, 13,1835009,,%MainWindowTitle%
+		MainEquipTime := A_TickCount
+	}
+}
+
+SkinForm(Param1 = "Apply", DLL = "", SkinName = ""){
+    if(Param1 = Apply){
+        DllCall("LoadLibrary", str, DLL)
+        DllCall(DLL . "\USkinInit", Int,0, Int,0, AStr, SkinName) ; For 유니코드
+        ;DllCall(DLL . "\USkinInit", Int,0, Int,0, Str, SkinName) ; For ANSI
+    }else if(Param1 = 0){
+        DllCall(DLL . "\USkinExit")
+        }
+}
+
+;**********************************************Gui
+
+Gui:
+gosub,ini_Read
+ci := 1
+Gui, Add, Tab,x0 y0 w480 h335 AltSubmit vTabNum , 메인|힐설정|기능1|파력귀염
+Gui, Tab,메인
+Gui, add, groupbox, x6 y30 w280 h50 cBlue +Center , 본캐
+Gui, Add, Text, x20 y53 w140 vMainTitleName ,
+Gui, add, groupbox, x6 y85 w280 h160 cBlue +Center , 도사
+
+
+Gui,add,Button,x220 y103 w50  h25 vBt1,이동
+
+Gui,add,CheckBox,x10 y130 w60 h20 vC2_1 Checked%C2_1%,혼마술
+Gui,add,CheckBox,x70 y130 w30 h20 vC2_2 Checked%C2_2%,힐
+Gui, Add, Text, x120 y134 w80 vSub2Name ,비어있는슬롯
+Gui,add,Button,x220 y128 w50  h25 vBt2,막굴템
+
+Gui,add,CheckBox,x10 y155 w60 h20 vC3_1 Checked%C3_1%,혼마술
+Gui,add,CheckBox,x70 y155 w30 h20 vC3_2 Checked%C3_2%,힐
+Gui, Add, Text, x120 y159 w80 vSub3Name ,비어있는슬롯
+Gui,add,Button,x220 y153 w50  h25 vBt3,공격
+
+Gui,add,CheckBox,x10 y180 w60 h20 vC4_1 Checked%C4_1%,혼마술
+Gui,add,CheckBox,x70 y180 w30 h20 vC4_2 Checked%C4_2%,힐
+Gui, Add, Text, x120 y184 w80 vSub4Name ,비어있는슬롯
+Gui,add,Button,x220 y178 w50  h25 vBt4,도사4
+
+Gui,add,CheckBox,x10 y205 w60 h20 vC5_1 Checked%C5_1%,혼마술
+Gui,add,CheckBox,x70 y205 w30 h20 vC5_2 Checked%C5_2%,힐
+Gui, Add, Text, x120 y209 w80 vSub5Name ,비어있는슬롯
+Gui,add,Button,x220 y203 w50  h25 vBt5,도사5
+
+
+Gui, Add, Text, x20 y265 w350 BackgroundTrans vMessage,MOTD :
+
+Gui, Add, Text, x300 y68 w160  vExpCalc ,시간당 경험치 : 
+Gui, Add, Text, x300 y88 w160  vGetExp1 ,획득 경험치 :
+Gui, Add, Text, x300 y108 w160  vHTime ,사냥시간 : 
+Gui, Add, Button, x340 y130 w85 h30 ,사냥시간 리셋
+
+Gui, Add, Text, x340 y200 w40 BackgroundTrans ,단축키
+Gui,Add,Hotkey,x380 y195 w75 h25 vhotkey1 gShotkey 
+Gui, Add, Button, x340 y220 w115 h60 vc1, 정지
+Gui, Add, Button, x340 y220 w115 h60 vc2, 시작
+
+gui,tab,힐설정
+Gui, add, groupbox, x40 y50 w400 h140 cBlue +Center , 기본 기원
+
+Gui,add,CheckBox,x65 y70 w15 h20 vCheckFollow Checked%CheckFollow%,
+Gui, Add, Text, x86 y75 w70 ,따라올 간격
+Gui,Add,Edit,x155 y72 w30 h20 vWalkRange,%WalkRange%
+Gui, Add, Text, x188 y75 w70 ,칸
+
+
+Gui,Add,Text,x75 y104 w100 h20 ,본캐에게 사용
+Gui, Add, Text, x160 y104 w60 ,HP 퍼센트
+Gui,Add,Edit,x220 y101 w30 h20 vHeal_MainHP,%Heal_MainHP%
+Gui, Add, Text, x250 y104 w60 ,미만 일때
+Gui,Add,Text,x75 y124 w100 h20 ,부캐에게 사용
+Gui, Add, Text, x160 y124 w70 ,HP 퍼센트
+Gui,Add,Edit,x220 y121 w30 h20 vHeal_SubHP,%Heal_SubHP%
+Gui, Add, Text, x250 y124 w60 ,미만 일때
+
+Gui, Add, Text, x75 y145 w60  ,힐 쿨타임
+Gui, Add, Edit, x135 y141 w40 vHCool,%HCool%
+Gui,add,CheckBox,x190 y141 w100 h20 vTwoHeal Checked%TwoHeal%,투힐(다른힐)
+Gui,add,CheckBox,x300 y141 w100 h20 vTwoHeal2 Checked%TwoHeal2%,투힐(자동기원)
+Gui,add,CheckBox,x75 y163 w180 h20 vReviveInterval Checked%ReviveInterval%,부활지연(1.5초마다 부활)
+
+
+
+Gui, add, groupbox, x40 y190 w400 h75 cBlue +Center , 희원셋팅
+Gui, Add, Text, x80 y211 w100 ,희원 본캐 체력이
+Gui,Add,Edit,x175 y208 w30 h20 vHeal_BaekHP,%Heal_BaekHP%
+Gui, Add, Text, x210 y212 w100 ,퍼 미만 일때 사용
+Gui, Add, Text, x60 y231 w110 ,희원'첨 둘중 체력이
+Gui,Add,Edit,x175 y228 w30 h20 vHeal_BaekHP2,%Heal_BaekHP2%
+Gui, Add, Text, x210 y232 w100 ,퍼 미만 일때 사용
+Gui, Add, Text, x310 y232 w40 ,그룹원
+Gui,Add,Edit,x350 y228 w20 h20 vHeal_Baek3,%Heal_Baek3%
+Gui, Add, Text, x370 y232 w40 ,명
+gui,tab,기능1
+Gui, add, groupbox, x40 y30 w400 h120 cBlue +Center ,디버프 설정(본캐)
+Gui,Add,CheckBox,x60 y60 w220 h20 vCheck4 Checked%Check4%, 절망핵 사용(화면이 깜박거릴수있음)
+Gui,Add,CheckBox,x60 y80 w205 h20 vCheck5 Checked%Check5%, 시력회복 사용(시력회복 쓸 도사 :
+Gui,Add,Edit,x265 y80 w30 h20 vDosaNum1,%DosaNum1%
+Gui, Add, Text, x298 y85 w40 ,번)
+Gui,Add,CheckBox,x60 y100 w180 h20 vCheck6 Checked%Check6%, 파혼술 시전(파혼술 쓸 도사 : 
+Gui,Add,Edit,x240 y100 w30 h20 vDosaNum2,%DosaNum2%
+Gui, Add, Text, x273 y105 w20 ,번, 
+Gui,Add,Edit,x293 y100 w30 h20 vDosaTime,%DosaTime%
+Gui, Add, Text, x328 y105 w80 ,초마다 사용)
+Gui, add, groupbox, x40 y150 w200 h120 cBlue +Center ,본캐
+Gui,Add,CheckBox,x50 y170 w80 h20 vCheck1 Checked%Check1%, 자동투명
+Gui,Add,CheckBox,x50 y190 w80 h20 vCheck1_1 Checked%Check1_1%, 자동중독
+Gui,Add,CheckBox,x50 y210 w80 h20 vCheck1_2 Checked%Check1_2%, 자동혼마술
+Gui, add, groupbox, x240 y150 w200 h120 cBlue +Center ,부캐
+gui,tab,파력귀염
+Gui, Add, Text, x40 y80 w180  ,1번 도사 원격 파력무참 단축키
+Gui, Add, Text, x40 y105 w180  ,2번 도사 원격 파력무참 단축키
+Gui, Add, Text, x40 y130 w180  ,3번 도사 원격 파력무참 단축키
+Gui, Add, Text, x40 y155 w180  ,4번 도사 원격 파력무참 단축키
+Gui, Add, Text, x40 y180 w180  ,5번 도사 원격 파력무참 단축키
+Gui,Add,Hotkey,x215 y75 w60 h20 vPakey1 gPakeyLabel1
+Gui,Add,Hotkey,x215 y100 w60 h20 vPakey2 gPakeyLabel2
+Gui,Add,Hotkey,x215 y125 w60 h20 vPakey3 gPakeyLabel3
+Gui,Add,Hotkey,x215 y150 w60 h20 vPakey4 gPakeyLabel4
+Gui,Add,Hotkey,x215 y175 w60 h20 vPakey5 gPakeyLabel5
+Gui, Add, Text, x285 y80 w70  ,귀염 단축키
+Gui, Add, Text, x285 y105 w70  ,귀염 단축키
+Gui, Add, Text, x285 y130 w70  ,귀염 단축키
+Gui, Add, Text, x285 y155 w70  ,귀염 단축키
+Gui, Add, Text, x285 y180 w70  ,귀염 단축키
+Gui,Add,Hotkey,x360 y75 w60 h20 vPakey6 gPakeyLabel6
+Gui,Add,Hotkey,x360 y100 w60 h20 vPakey7 gPakeyLabel7
+Gui,Add,Hotkey,x360 y125 w60 h20 vPakey8 gPakeyLabel8
+Gui,Add,Hotkey,x360 y150 w60 h20 vPakey9 gPakeyLabel9
+Gui,Add,Hotkey,x360 y175 w60 h20 vPakey10 gPakeyLabel10
+/*
+gui,tab,자동템입기
+Gui, add, groupbox, x20 y50 w440 h240 cBlue +Center , 자동 아이템 입기
+Gui, Add, Text, x80 y67 w300 BackgroundTrans,이름바꾼 아이템은 바꾼 이름을 사용
+Gui, add, groupbox, x20 y80 w220 h210 cBlue +Center , 본캐
+Gui,Add,CheckBox,x30 y95 w100 h20 vCheckITEM Checked%CheckITEM%, 본캐 사용
+Gui, Add, Text, x30 y120 w30 ,무기
+Gui, Add, Text, x30 y140 w30 ,투구
+Gui, Add, Text, x30 y160 w30 ,갑옷
+Gui, Add, Text, x30 y180 w30 ,방패
+Gui, Add, Text, x30 y200 w30 ,반지
+Gui, Add, Text, x30 y220 w30 ,반지
+Gui, Add, Text, x30 y240 w30 ,보조
+Gui, Add, Text, x30 y260 w30 ,보조
+Gui,Add,Edit,x60 y116 w120 h20 vMainWeapon,%MainWeapon%
+Gui,Add,Edit,x60 y136 w120 h20 vMainHead,%MainHead%
+Gui,Add,Edit,x60 y156 w120 h20 vMainArmor,%MainArmor%
+Gui,Add,Edit,x60 y176 w120 h20 vMainShield,%MainShield%
+Gui,Add,Edit,x60 y196 w120 h20 vMainRing1,%MainRing1%
+Gui,Add,Edit,x60 y216 w120 h20 vMainRing2,%MainRing2%
+Gui,Add,Edit,x60 y236 w120 h20 vMainacce1,%Mainacce1%
+Gui,Add,Edit,x60 y256 w120 h20 vMainacce2,%Mainacce2%
+Gui, Add, Text, x250 y100 w160 ,아이템창에 해당 아이템이`n있으면 사용하는 원리입니다.`n만일 똑같은이름인 여분의`n템이 템창에 있다면 계속`n 갈아낄껍니다. 주의!`n`n`n엔터키로 대화창열기가`n off됩니다`n`n`n※팅김방지를위해`n아이템입기 간격 100ms
+*/
+GuiControl,disable,CheckITEM
+Gui, Show,h300 w480,유토리 도우미 %Version%
+GuiControl Hide, c%ci%
+ci := 2
+Global CheckITEM,MainWeapon,MainHead,MainArmor,MainShield,MainRing1,MainRing2,Mainacce1,Mainacce2
+Global Heal_MainHP,Heal_SubHP,Heal_BaekHP,Heal_BaekHP2,Heal_Baek3,hotkey1
+Global C1_1,C1_2,C2_1,C2_2,C3_1,C3_2,C4_1,C4_2,C5_1,C5_2,Check1,Check1_1,Check1_2,Check4
+global HTime,GetExp1,ExpCalc,Check5,Check6,DosaNum1,DosaNum2,DosaTime,HCool,CheckFollow,TwoHeal,TwoHeal2
+return
+
+Shotkey:
+Gui, Submit, Nohide 
+guicontrol,disable,hotkey1
+Hotkey,%hotkey1%,HotkeyInput,on
+return
+
+PakeyLabel1:
+Gui, Submit, Nohide 
+guicontrol,disable,Pakey1
+Hotkey,%Pakey1%,SubHotkey1,on
+return
+PakeyLabel2:
+Gui, Submit, Nohide 
+guicontrol,disable,Pakey2
+Hotkey,%Pakey2%,SubHotkey2,on
+return
+PakeyLabel3:
+Gui, Submit, Nohide 
+guicontrol,disable,Pakey3
+Hotkey,%Pakey3%,SubHotkey3,on
+return
+PakeyLabel4:
+Gui, Submit, Nohide 
+guicontrol,disable,Pakey4
+Hotkey,%Pakey4%,SubHotkey4,on
+return
+PakeyLabel5:
+Gui, Submit, Nohide 
+guicontrol,disable,Pakey5
+Hotkey,%Pakey5%,SubHotkey5,on
+return
+PakeyLabel6:
+Gui, Submit, Nohide 
+guicontrol,disable,Pakey6
+Hotkey,%Pakey6%,SubHotkey6,on
+return
+PakeyLabel7:
+Gui, Submit, Nohide 
+guicontrol,disable,Pakey7
+Hotkey,%Pakey7%,SubHotkey7,on
+return
+PakeyLabel8:
+Gui, Submit, Nohide 
+guicontrol,disable,Pakey8
+Hotkey,%Pakey8%,SubHotkey8,on
+return
+PakeyLabel9:
+Gui, Submit, Nohide 
+guicontrol,disable,Pakey9
+Hotkey,%Pakey9%,SubHotkey9,on
+return
+PakeyLabel10:
+Gui, Submit, Nohide 
+guicontrol,disable,Pakey10
+Hotkey,%Pakey10%,SubHotkey10,on
+return
+
+SubHotkey1:
+PSkillStart := 1
+return
+SubHotkey2:
+PSkillStart := 2
+return
+SubHotkey3:
+PSkillStart := 3
+return
+SubHotkey4:
+PSkillStart := 4
+return
+SubHotkey5:
+PSkillStart := 5
+return
+
+SubHotkey6:
+PSkillStart := 6
+return
+SubHotkey7:
+PSkillStart := 7
+return
+SubHotkey8:
+PSkillStart := 8
+return
+SubHotkey9:
+PSkillStart := 9
+return
+SubHotkey10:
+PSkillStart := 10
+return
+
+
+
+
+
+
+HotkeyInput:
+if(ci = 2)
+{
+	gosub,BStart
+}
+else if(ci = 1)
+{
+	gosub,BStop
+}
+return
+
+BStart:
+Button시작:
+Gui, Submit, Nohide 
+gosub,ini_write
+GuiControl Hide, c%ci%
+ci := 3 - ci
+GuiControl Show, c%ci%
+
+GetMagic()
+StartTime := A_TickCount
+StartExp := ReadMemory(ReadMemory(0x0055DB04, MainWindowTitle) + 0x120, MainWindowTitle)
+;HellDelay := A_TickCount
+;THDelay := A_TickCount
+;MaDelay := A_TickCount
+;LIDelay := A_TickCount
+;CsDelay := A_TickCount
+;ADelay := A_TickCount
+;rootDelay := A_TickCount
+;moveDelay := A_TickCount
+;AD := A_TickCount
+;SD := A_TickCount
+;DD := A_TickCount
+;FD := A_TickCount
+;QD := A_TickCount
+;DestIndex := 0
+DestX := DAX[DestIndex]
+DestY := DAY[DestIndex]
+selfCount := 0
+preMapNum := ReadMemory(ReadMemory(0x0055D504, MainWindowTitle) + 0x3ce, MainWindowTitle,2)
+SetTimer,main,100
+return
+
+BStop:
+button정지:
+Gui, Submit, Nohide 
+GuiControl Hide, c%ci%
+ci := 3 - ci
+GuiControl Show, c%ci%
+SetTimer,main,off
+return
+
+Button이동:
+if(moving = 0)
+{
+    moving := 1
+}
+else
+{
+    moving := 0
+}
+return 
+
+Button막굴템:
+if(useItem = 1)
+{
+	useItem := 0
+}
+else
+{
+	useItem := 1
+}
+Guicontrol,, Sub2Name,아이템사용 : %useItem%
+return
+
+Button공격:
+if(attack = 1)
+{
+	attack := 0
+}
+else
+{
+	attack := 1
+}
+Guicontrol,, Sub3Name,공격 : %attack%
+return
+
+Button도사4:
+Global Sub4,SubCheck4,SubName4
+WinGetTitle, SubName, ahk_class Nexon.NWind,
+loop,5
+{
+	if(SubCheck%A_Index% = 1)
+	{
+		if(SubName%A_Index% = SubName)
+		{
+			msgbox,중복된 아이디
+			return
+		}
+	}
+}
+if(MainWindowTitle = SubName)
+{
+	msgbox,메인 캐릭터입니다.
+	return
+}
+WinSetTitle,%SubName%,,% ReadMemoryTxt(0x0055E6C4,SubName)
+WinGetTitle, SubName, ahk_class Nexon.NWind,
+Guicontrol,, Sub4Name,%SubName%
+SubName4 := SubName
+SubCheck4 = 1
+Sub4 := New healer(ReadMemoryTxt(0x0055E6C4,SubName),SubName,4)
+guicontrol,disable,Bt4
+return
+
+Button도사5:
+Global Sub5,SubCheck5,SubName5
+WinGetTitle, SubName, ahk_class Nexon.NWind,
+loop,5
+{
+	if(SubCheck%A_Index% = 1)
+	{
+		if(SubName%A_Index% = SubName)
+		{
+			msgbox,중복된 아이디
+			return
+		}
+	}
+}
+if(MainWindowTitle = SubName)
+{
+	msgbox,메인 캐릭터입니다.
+	return
+}
+WinSetTitle,%SubName%,,% ReadMemoryTxt(0x0055E6C4,SubName)
+WinGetTitle, SubName, ahk_class Nexon.NWind,
+Guicontrol,, Sub5Name,%SubName%
+SubName5 := SubName
+SubCheck5 = 1
+Sub5 := New healer(ReadMemoryTxt(0x0055E6C4,SubName),SubName,5)
+guicontrol,disable,Bt5
+return
+Button사냥시간리셋:
+if(lowLevel = 1)
+{
+	lowLevel := 0
+}
+else
+{
+	lowLevel := 1
+}
+return
+ini_Read:
+iniRead, C1_1, Data\Save.ini, setting,Data1
+iniRead, C1_2, Data\Save.ini, setting,Data2
+iniRead, C2_1, Data\Save.ini, setting,Data3
+iniRead, C2_2, Data\Save.ini, setting,Data4
+iniRead, C3_1, Data\Save.ini, setting,Data5
+iniRead, C3_2, Data\Save.ini, setting,Data6
+iniRead, C4_1, Data\Save.ini, setting,Data7
+iniRead, C4_2, Data\Save.ini, setting,Data8
+iniRead, C5_1, Data\Save.ini, setting,Data9
+iniRead, C5_2, Data\Save.ini, setting,Data10
+iniRead, WalkRange, Data\Save.ini, setting,Data11
+iniRead, Heal_Baek3, Data\Save.ini, setting,Data12
+iniRead, Heal_BaekHP, Data\Save.ini, setting,Data13
+iniRead, Heal_BaekHP2, Data\Save.ini, setting,Data14
+iniRead, Heal_MainHP, Data\Save.ini, setting,Data15
+iniRead, Heal_SubHP, Data\Save.ini, setting,Data16
+iniRead, Check1, Data\Save.ini, setting,Data17
+iniRead, Check1_1, Data\Save.ini, setting,Data18
+iniRead, Check1_2, Data\Save.ini, setting,Data19
+iniRead, Check4, Data\Save.ini, setting,Data20
+iniRead, Check5, Data\Save.ini, setting,Data21
+iniRead, Check6, Data\Save.ini, setting,Data22
+iniRead, DosaNum1, Data\Save.ini, setting,Data23
+iniRead, DosaNum2, Data\Save.ini, setting,Data24
+iniRead, DosaTime, Data\Save.ini, setting,Data25
+iniRead, HCool, Data\Save.ini, setting,Data26
+iniRead, CheckFollow, Data\Save.ini, setting,Data27
+iniRead, TwoHeal, Data\Save.ini, setting,Data28
+iniRead, CheckITEM, Data\Save.ini, setting,Data29
+iniRead, MainWeapon, Data\Save.ini, setting,Data30
+iniRead, MainHead, Data\Save.ini, setting,Data31
+iniRead, MainArmor, Data\Save.ini, setting,Data32
+iniRead, MainShield, Data\Save.ini, setting,Data33
+iniRead, MainRing1, Data\Save.ini, setting,Data34
+iniRead, MainRing2, Data\Save.ini, setting,Data35
+iniRead, Mainacce1, Data\Save.ini, setting,Data36
+iniRead, Mainacce2, Data\Save.ini, setting,Data37
+iniRead, TwoHeal2, Data\Save.ini, setting,Data38
+iniRead, ReviveInterval, Data\Save.ini, setting,Data39
+
+return
+
+ini_Write:
+Gui,Submit,Nohide
+iniWrite, %C1_1%, Data\Save.ini, setting,Data1
+iniWrite, %C1_2%, Data\Save.ini, setting,Data2
+iniWrite, %C2_1%, Data\Save.ini, setting,Data3
+iniWrite, %C2_2%, Data\Save.ini, setting,Data4
+iniWrite, %C3_1%, Data\Save.ini, setting,Data5
+iniWrite, %C3_2%, Data\Save.ini, setting,Data6
+iniWrite, %C4_1%, Data\Save.ini, setting,Data7
+iniWrite, %C4_2%, Data\Save.ini, setting,Data8
+iniWrite, %C5_1%, Data\Save.ini, setting,Data9
+iniWrite, %C5_2%, Data\Save.ini, setting,Data10
+iniWrite, %WalkRange%, Data\Save.ini, setting,Data11
+iniWrite, %Heal_Baek3%, Data\Save.ini, setting,Data12
+iniWrite, %Heal_BaekHP%, Data\Save.ini, setting,Data13
+iniWrite, %Heal_BaekHP2%, Data\Save.ini, setting,Data14
+iniWrite, %Heal_MainHP%, Data\Save.ini, setting,Data15
+iniWrite, %Heal_SubHP%, Data\Save.ini, setting,Data16
+iniWrite, %Check1%, Data\Save.ini, setting,Data17
+iniWrite, %Check1_1%, Data\Save.ini, setting,Data18
+iniWrite, %Check1_2%, Data\Save.ini, setting,Data19
+iniWrite, %Check4%, Data\Save.ini, setting,Data20
+iniWrite, %Check5%, Data\Save.ini, setting,Data21
+iniWrite, %Check6%, Data\Save.ini, setting,Data22
+iniWrite, %DosaNum1%, Data\Save.ini, setting,Data23
+iniWrite, %DosaNum2%, Data\Save.ini, setting,Data24
+iniWrite, %DosaTime%, Data\Save.ini, setting,Data25
+iniWrite, %HCool%, Data\Save.ini, setting,Data26
+iniWrite, %CheckFollow%, Data\Save.ini, setting,Data27
+iniWrite, %TwoHeal%, Data\Save.ini, setting,Data28
+iniWrite, %CheckITEM%, Data\Save.ini, setting,Data29
+iniWrite, %MainWeapon%, Data\Save.ini, setting,Data30
+iniWrite, %MainHead%, Data\Save.ini, setting,Data31
+iniWrite, %MainArmor%, Data\Save.ini, setting,Data32
+iniWrite, %MainShield%, Data\Save.ini, setting,Data33
+iniWrite, %MainRing1%, Data\Save.ini, setting,Data34
+iniWrite, %MainRing2%, Data\Save.ini, setting,Data35
+iniWrite, %Mainacce1%, Data\Save.ini, setting,Data36
+iniWrite, %Mainacce2%, Data\Save.ini, setting,Data37
+iniWrite, %TwoHeal2%, Data\Save.ini, setting,Data38
+iniWrite, %ReviveInterval%, Data\Save.ini, setting,Data39
+
+return
+WriteMemory(WriteAddress = "", PROGRAM="", Data="", TypeOrLength = "")
+{
+   Static OLDPROC, hProcess, pid
+   If (PROGRAM != OLDPROC)
+   {
+        if hProcess
+          closed := DllCall("CloseHandle", "UInt", hProcess), hProcess := 0, OLDPROC := ""
+        if PROGRAM
+        {
+            WinGet, pid, pid, % OLDPROC := PROGRAM
+            jPID = pid
+            if !pid 
+               return "Process Doesn't Exist", OLDPROC := "" ;blank OLDPROC so subsequent calls will work if process does exist
+            hProcess := DllCall("OpenProcess", "Int", 0x8 | 0x20, "Int", 0, "UInt", pid)   
+        }
+   }
+    If Data is Number   ; Either a numeric value or a memory address.
+    {
+        If TypeOrLength is Integer  ; Address of a buffer was passed.
+        {
+            DataAddress := Data
+            DataSize := TypeOrLength    ; Length in bytes of the data in the buffer.
+        }
+        Else    ; A numeric value was passed.
+        {
+            If (TypeOrLength = "Double" or TypeOrLength = "Int64")
+                DataSize = 8
+            Else If (TypeOrLength = "Int" or TypeOrLength = "UInt"
+                                          or TypeOrLength = "Float")
+                DataSize = 4
+            Else If (TypeOrLength = "Short" or TypeOrLength = "UShort")
+                DataSize = 2
+            Else If (TypeOrLength = "Char" or TypeOrLength = "UChar")
+       DataSize = 1
+            Else {
+              ;  MsgBox, Invalid type of number.
+                Return False 
+            }
+            VarSetCapacity(Buf, DataSize, 0)
+            NumPut(Data, Buf, 0, TypeOrLength)
+            DataAddress := &Buf
+        }
+    }
+    Else    ; Data is a string.
+    {
+        DataAddress := &Data
+        If TypeOrLength is Integer  ; Length (in characters) was specified.
+        {
+            If A_IsUnicode
+                DataSize := TypeOrLength * 2    ; 1 character = 2 bytes.
+            Else
+                DataSize := TypeOrLength
+        }
+        Else
+        {
+            If A_IsUnicode
+                DataSize := (StrLen(Data) + 1) * 2  ; Take the whole string
+            Else                                    ; with the null terminator.
+                DataSize := StrLen(Data) + 1
+        }
+    }                                               
+    ; will return null if write works
+    if (hProcess && DllCall("WriteProcessMemory", "UInt", hProcess 
+                                         , "UInt", WriteAddress
+                                         , "UInt", DataAddress
+                                         , "UInt", DataSize
+                                         , "UInt", 0))
+        return                               
+    else  return !hProcess ? "Handle Closed:" closed : "Fail"
+}
+ReadMemoryTxt(MADDRESS,PROGRAM) 
+{ 
+	winget, pid, PID, %PROGRAM%
+	VarSetCapacity(MVALUE,15,0) 
+	ProcessHandle := DllCall("OpenProcess", "Int", 24, "Char", 0, "UInt", pid, "UInt") 
+	DllCall("ReadProcessMemory","UInt",ProcessHandle,"UInt",MADDRESS,"Str",MVALUE,"UInt",15,"UInt *",0)
+	return MVALUE 
+} 
+ReadMemoryTxt2(MADDRESS,PROGRAM) 
+{ 
+	winget, pid, PID, %PROGRAM%
+	VarSetCapacity(MVALUE,20,0) 
+	ProcessHandle := DllCall("OpenProcess", "Int", 24, "Char", 0, "UInt", pid, "UInt") 
+	DllCall("ReadProcessMemory","UInt",ProcessHandle,"UInt",MADDRESS,"Str",MVALUE,"UInt",20,"UInt *",0)
+	return MVALUE 
+} 
+ReadMemory(MADDRESS=0,PROGRAM="",BYTES=4) 
+{
+   Static OLDPROC, ProcessHandle
+   VarSetCapacity(buffer, BYTES) 
+   If (PROGRAM != OLDPROC)
+   {
+        if ProcessHandle
+          closed := DllCall("CloseHandle", "UInt", ProcessHandle), ProcessHandle := 0, OLDPROC := ""
+        if PROGRAM
+        {
+            WinGet, pid, pid, % OLDPROC := PROGRAM
+            if !pid 
+               return "Process Doesn't Exist", OLDPROC := "" 
+            ProcessHandle := DllCall("OpenProcess", "Int", 16, "Int", 0, "UInt", pid)   
+        }
+   }   
+   If !(ProcessHandle && DllCall("ReadProcessMemory", "UInt", ProcessHandle, "UInt", MADDRESS, "Ptr", &buffer, "UInt", BYTES, "Ptr", 0))
+      return !ProcessHandle ? "Handle Closed: " closed : "Fail"
+   else if (BYTES = 1)
+      Type := "UChar"
+   else if (BYTES = 2)
+      Type := "UShort"
+   else if (BYTES = 4)
+      Type := "UInt"
+   else 
+      Type := "Int64"
+   return numget(buffer, 0, Type)
+}
+
+saveXY()
+{
+	MainX := ReadMemory(ReadMemory(0x0055DB04, MainWindowTitle) + 0x128, MainWindowTitle) 
+	MainY := ReadMemory(ReadMemory(0x0055DB04, MainWindowTitle) + 0x12c, MainWindowTitle) 
+	div := Chr(44)
+
+	FileAppend, %MainX%%div%, %A_ScriptDir%\dax.txt
+	FileAppend, %MainY%%div%, %A_ScriptDir%\day.txt
+}
+
+Guiclose:
+SkinForm(0)
+ExitApp
+return

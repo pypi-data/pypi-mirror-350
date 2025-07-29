@@ -1,0 +1,4191 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.3.3"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-dgnengine-eurocode4_composited_beam-report_ec4_composited_beam": {
+      "post": {
+        "summary": "Eurocode 4 Steel Composite Beam Design",
+        "description": "Composite beam that resists bending moment by integrally connecting to reinforced concrete slab and steel beam supporting it by shear connector is designed. Depending on the data that  is entered by users, results of deflection checking, shear connector estimation and Heel drop vibration checking as well as design stress checking applied to each part of composite beam and is automatically calculated.",
+        "operationId": "report ec4 composited beam",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "matl": {
+                    "properties": {
+                      "girder": {
+                        "properties": {
+                          "code": {
+                            "type": "string",
+                            "title": "Code",
+                            "description": "Unique code for the material as defined in the material database. This is used to identify the specific steel material.",
+                            "readOnly": true
+                          },
+                          "name": {
+                            "type": "string",
+                            "enum": [
+                              "S235",
+                              "S275",
+                              "S355",
+                              "S450",
+                              "S275N/NL",
+                              "S355N/NL",
+                              "S420N/NL",
+                              "S460N/NL",
+                              "S275M/ML",
+                              "S355M/ML",
+                              "S420M/ML",
+                              "S460M/ML",
+                              "S235W",
+                              "S355W",
+                              "S460Q/QL/QL1"
+                            ],
+                            "title": "Name",
+                            "description": "Name of the steel material. The material name is selected from a list of available materials.",
+                            "default": "S235"
+                          }
+                        },
+                        "type": "object",
+                        "title": "Girder",
+                        "description": "Defines the steel girder properties used in the composite beam, including the material properties.",
+                        "x-component-detail": {
+                          "id": "moapy.steel_pre.SteelMaterial"
+                        }
+                      },
+                      "slab": {
+                        "properties": {
+                          "conc": {
+                            "properties": {
+                              "value": {
+                                "type": "number",
+                                "title": "Value",
+                                "description": "Stress"
+                              },
+                              "unit": {
+                                "type": "string",
+                                "enum": [
+                                  "Pa",
+                                  "KPa",
+                                  "MPa",
+                                  "psi",
+                                  "ksi"
+                                ],
+                                "title": "enUnitStress"
+                              }
+                            },
+                            "type": "object",
+                            "title": "Concrete Strength (fck)",
+                            "description": "Compressive strength of the concrete in MPa, representing its ability to resist axial load.",
+                            "x-component-detail": {
+                              "id": "moapy.data_pre.Stress"
+                            }
+                          }
+                        },
+                        "type": "object",
+                        "title": "Slab",
+                        "description": "Defines the concrete slab properties used in the composite beam, including the material properties.",
+                        "x-component-detail": {
+                          "id": "moapy.dgnengine.eurocode4_composited_beam.SlabMaterial"
+                        }
+                      },
+                      "rebar": {
+                        "properties": {
+                          "prop": {
+                            "properties": {
+                              "value": {
+                                "type": "number",
+                                "title": "Value",
+                                "description": "Stress"
+                              },
+                              "unit": {
+                                "type": "string",
+                                "enum": [
+                                  "Pa",
+                                  "KPa",
+                                  "MPa",
+                                  "psi",
+                                  "ksi"
+                                ],
+                                "title": "enUnitStress"
+                              }
+                            },
+                            "type": "object",
+                            "title": "Rebar Strength (fsk)",
+                            "description": "Yield strength of the rebar in MPa",
+                            "x-component-detail": {
+                              "id": "moapy.data_pre.Stress"
+                            }
+                          }
+                        },
+                        "type": "object",
+                        "title": "Rebar",
+                        "description": "Defines the rebar properties used in the composite beam, including the material properties.",
+                        "x-component-detail": {
+                          "id": "moapy.dgnengine.eurocode4_composited_beam.RebarMaterial"
+                        }
+                      },
+                      "shearConn": {
+                        "properties": {
+                          "code": {
+                            "type": "string",
+                            "title": "Code",
+                            "description": "Unique code for the material as defined in the material database. This is used to identify the specific steel material.",
+                            "readOnly": true
+                          },
+                          "name": {
+                            "type": "string",
+                            "enum": [
+                              "S235",
+                              "S275",
+                              "S355",
+                              "S450",
+                              "S275N/NL",
+                              "S355N/NL",
+                              "S420N/NL",
+                              "S460N/NL",
+                              "S275M/ML",
+                              "S355M/ML",
+                              "S420M/ML",
+                              "S460M/ML",
+                              "S235W",
+                              "S355W",
+                              "S460Q/QL/QL1"
+                            ],
+                            "title": "Name",
+                            "description": "Name of the steel material. The material name is selected from a list of available materials.",
+                            "default": "S235"
+                          }
+                        },
+                        "type": "object",
+                        "title": "Shear Connector",
+                        "description": "Defines the shear connector properties used in the composite beam, including the material properties.",
+                        "x-component-detail": {
+                          "id": "moapy.steel_pre.SteelMaterial"
+                        }
+                      }
+                    },
+                    "type": "object",
+                    "title": "Material",
+                    "description": "Defines the material properties of the composite beam, including the steel girder and concrete slab.",
+                    "x-component-detail": {
+                      "id": "moapy.dgnengine.eurocode4_composited_beam.CompositedMaterial"
+                    },
+                    "default": {
+                      "girder": {
+                        "code": "EN10025",
+                        "name": "S235"
+                      },
+                      "slab": {
+                        "conc": {
+                          "unit": "MPa",
+                          "value": 24.0
+                        }
+                      },
+                      "rebar": {
+                        "prop": {
+                          "unit": "MPa",
+                          "value": 400.0
+                        }
+                      },
+                      "shearConn": {
+                        "code": "EN10025",
+                        "name": "S235"
+                      }
+                    }
+                  },
+                  "sect": {
+                    "properties": {
+                      "slab": {
+                        "properties": {
+                          "shape": {
+                            "type": "string",
+                            "enum": [
+                              "T-Shape",
+                              "Half T-Shape"
+                            ],
+                            "title": "Slab Shape",
+                            "description": "Shape of the slab",
+                            "default": "T-Shape"
+                          },
+                          "thickness": {
+                            "properties": {
+                              "value": {
+                                "type": "number",
+                                "title": "Value",
+                                "description": "Length"
+                              },
+                              "unit": {
+                                "type": "string",
+                                "enum": [
+                                  "mm",
+                                  "cm",
+                                  "m",
+                                  "in",
+                                  "ft"
+                                ],
+                                "title": "enUnitLength"
+                              }
+                            },
+                            "type": "object",
+                            "title": "Slab Thickness",
+                            "description": "Thickness of the slab in millimeters, representing the depth of the concrete slab section.",
+                            "x-component-detail": {
+                              "id": "moapy.data_pre.Length"
+                            }
+                          }
+                        },
+                        "type": "object",
+                        "title": "Slab",
+                        "description": "Defines the concrete slab properties used in the composite beam, including the thickness of the slab.",
+                        "x-component-detail": {
+                          "id": "moapy.dgnengine.eurocode4_composited_beam.CompositedSlab"
+                        }
+                      },
+                      "girder": {
+                        "properties": {
+                          "shape": {
+                            "type": "string",
+                            "title": "Section Shape",
+                            "description": "Structural steel section profile type (e.g., H-shape, T-shape, Channel, Angle). This parameter defines the fundamental cross-sectional geometry of the steel member.",
+                            "default": "H",
+                            "readOnly": true
+                          },
+                          "name": {
+                            "type": "string",
+                            "enum": [
+                              "HD 260x114",
+                              "HD 260x142",
+                              "HD 260x172",
+                              "HD 260x225",
+                              "HD 260x299",
+                              "HD 260x54.1",
+                              "HD 260x68.2",
+                              "HD 260x93",
+                              "HD 320x127",
+                              "HD 320x158",
+                              "HD 320x198",
+                              "HD 320x245",
+                              "HD 320x300",
+                              "HD 320x74.2",
+                              "HD 320x97.6",
+                              "HD 360x134",
+                              "HD 360x147",
+                              "HD 360x162",
+                              "HD 360x179",
+                              "HD 360x196",
+                              "HD 400x187",
+                              "HD 400x216",
+                              "HD 400x237",
+                              "HD 400x262",
+                              "HD 400x287",
+                              "HD 400x314",
+                              "HD 400x347",
+                              "HD 400x382",
+                              "HD 400x421",
+                              "HD 400x463",
+                              "HD 400x509",
+                              "HD 400x551",
+                              "HD 400x592",
+                              "HD 400x634",
+                              "HE 100 A",
+                              "HE 100 AA",
+                              "HE 100 B",
+                              "HE 100 C",
+                              "HE 100 M",
+                              "HE 1000 A",
+                              "HE 1000 AA",
+                              "HE 1000 B",
+                              "HE 1000 M",
+                              "HE 1000x249",
+                              "HE 1000x393",
+                              "HE 1000x415",
+                              "HE 1000x438",
+                              "HE 1000x494",
+                              "HE 1000x584",
+                              "HE 120 A",
+                              "HE 120 AA",
+                              "HE 120 B",
+                              "HE 120 C",
+                              "HE 120 M",
+                              "HE 140 A",
+                              "HE 140 AA",
+                              "HE 140 B",
+                              "HE 140 C",
+                              "HE 140 M",
+                              "HE 160 A",
+                              "HE 160 AA",
+                              "HE 160 B",
+                              "HE 160 C",
+                              "HE 160 M",
+                              "HE 180 A",
+                              "HE 180 AA",
+                              "HE 180 B",
+                              "HE 180 C",
+                              "HE 180 M",
+                              "HE 200 A",
+                              "HE 200 AA",
+                              "HE 200 B",
+                              "HE 200 C",
+                              "HE 200 M",
+                              "HE 220 A",
+                              "HE 220 AA",
+                              "HE 220 B",
+                              "HE 220 C",
+                              "HE 220 M",
+                              "HE 240 A",
+                              "HE 240 AA",
+                              "HE 240 B",
+                              "HE 240 C",
+                              "HE 240 M",
+                              "HE 260 A",
+                              "HE 260 AA",
+                              "HE 260 B",
+                              "HE 260 C",
+                              "HE 260 M",
+                              "HE 280 A",
+                              "HE 280 AA",
+                              "HE 280 B",
+                              "HE 280 C",
+                              "HE 280 M",
+                              "HE 300 A",
+                              "HE 300 AA",
+                              "HE 300 B",
+                              "HE 300 C",
+                              "HE 300 M",
+                              "HE 320 A",
+                              "HE 320 AA",
+                              "HE 320 B",
+                              "HE 320 C",
+                              "HE 320 M",
+                              "HE 340 A",
+                              "HE 340 AA",
+                              "HE 340 B",
+                              "HE 340 M",
+                              "HE 360 A",
+                              "HE 360 AA",
+                              "HE 360 B",
+                              "HE 360 M",
+                              "HE 400 A",
+                              "HE 400 AA",
+                              "HE 400 B",
+                              "HE 400 M",
+                              "HE 450 A",
+                              "HE 450 AA",
+                              "HE 450 B",
+                              "HE 450 M",
+                              "HE 500 A",
+                              "HE 500 AA",
+                              "HE 500 B",
+                              "HE 500 M",
+                              "HE 550 A",
+                              "HE 550 AA",
+                              "HE 550 B",
+                              "HE 550 M",
+                              "HE 600 A",
+                              "HE 600 AA",
+                              "HE 600 B",
+                              "HE 600 M",
+                              "HE 600x337",
+                              "HE 600x399",
+                              "HE 650 A",
+                              "HE 650 AA",
+                              "HE 650 B",
+                              "HE 650 M",
+                              "HE 650x343",
+                              "HE 650x407",
+                              "HE 700 A",
+                              "HE 700 AA",
+                              "HE 700 B",
+                              "HE 700 M",
+                              "HE 700x352",
+                              "HE 700x418",
+                              "HE 800 A",
+                              "HE 800 AA",
+                              "HE 800 B",
+                              "HE 800 M",
+                              "HE 800x373",
+                              "HE 800x444",
+                              "HE 900 A",
+                              "HE 900 AA",
+                              "HE 900 B",
+                              "HE 900 M",
+                              "HE 900x391",
+                              "HE 900x466",
+                              "HL 1000 A",
+                              "HL 1000 AA",
+                              "HL 1000 B",
+                              "HL 1000 M",
+                              "HL 1000x443",
+                              "HL 1000x483",
+                              "HL 1000x539",
+                              "HL 1000x554",
+                              "HL 1000x591",
+                              "HL 1000x642",
+                              "HL 1000x748",
+                              "HL 1100 A",
+                              "HL 1100 B",
+                              "HL 1100 M",
+                              "HL 1100 R",
+                              "HL 1100x548",
+                              "HL 1100x607",
+                              "HL 920x344",
+                              "HL 920x368",
+                              "HL 920x390",
+                              "HL 920x420",
+                              "HL 920x449",
+                              "HL 920x491",
+                              "HL 920x537",
+                              "HL 920x588",
+                              "HL 920x656",
+                              "HL 920x725",
+                              "HL 920x787",
+                              "HLZ 1100 A",
+                              "HLZ 1100 B",
+                              "HLZ 1100 C",
+                              "HLZ 1100 D",
+                              "IPE 100",
+                              "IPE 120",
+                              "IPE 140",
+                              "IPE 160",
+                              "IPE 180",
+                              "IPE 200",
+                              "IPE 220",
+                              "IPE 240",
+                              "IPE 270",
+                              "IPE 300",
+                              "IPE 330",
+                              "IPE 360",
+                              "IPE 400",
+                              "IPE 450",
+                              "IPE 500",
+                              "IPE 550",
+                              "IPE 600",
+                              "IPE 750x134",
+                              "IPE 750x147",
+                              "IPE 750x173",
+                              "IPE 750x196",
+                              "IPE 750x220",
+                              "IPE 80",
+                              "IPE A 100",
+                              "IPE A 120",
+                              "IPE A 140",
+                              "IPE A 160",
+                              "IPE A 180",
+                              "IPE A 200",
+                              "IPE A 220",
+                              "IPE A 240",
+                              "IPE A 270",
+                              "IPE A 300",
+                              "IPE A 330",
+                              "IPE A 360",
+                              "IPE A 400",
+                              "IPE A 450",
+                              "IPE A 500",
+                              "IPE A 550",
+                              "IPE A 600",
+                              "IPE A 80",
+                              "IPE AA 100",
+                              "IPE AA 120",
+                              "IPE AA 140",
+                              "IPE AA 160",
+                              "IPE AA 180",
+                              "IPE AA 200",
+                              "IPE AA 220",
+                              "IPE AA 240",
+                              "IPE AA 80",
+                              "IPE O 180",
+                              "IPE O 200",
+                              "IPE O 220",
+                              "IPE O 240",
+                              "IPE O 270",
+                              "IPE O 300",
+                              "IPE O 330",
+                              "IPE O 360",
+                              "IPE O 400",
+                              "IPE O 450",
+                              "IPE O 500",
+                              "IPE O 550",
+                              "IPE O 600",
+                              "IPE V 400",
+                              "IPE V 450",
+                              "IPE V 500",
+                              "IPE V 550",
+                              "IPE V 600",
+                              "IPN 100",
+                              "IPN 120",
+                              "IPN 140",
+                              "IPN 160",
+                              "IPN 180",
+                              "IPN 200",
+                              "IPN 220",
+                              "IPN 240",
+                              "IPN 260",
+                              "IPN 280",
+                              "IPN 300",
+                              "IPN 320",
+                              "IPN 340",
+                              "IPN 360",
+                              "IPN 380",
+                              "IPN 400",
+                              "IPN 450",
+                              "IPN 500",
+                              "IPN 550",
+                              "IPN 600",
+                              "IPN 80",
+                              "J 102x102x23",
+                              "J 102x44x7",
+                              "J 114x114x27",
+                              "J 127x114x27",
+                              "J 127x114x29",
+                              "J 127x76x16",
+                              "J 152x127x37",
+                              "J 76x76x13",
+                              "J 76x76x15",
+                              "J 89x89x19",
+                              "UB 1000x400x296",
+                              "UB 1000x400x321",
+                              "UB 1000x400x371",
+                              "UB 1000x400x412",
+                              "UB 1000x400x443",
+                              "UB 1000x400x483",
+                              "UB 1000x400x539",
+                              "UB 1000x400x554",
+                              "UB 1000x400x591",
+                              "UB 1000x400x642",
+                              "UB 1000x400x748",
+                              "UB 1016x305x222",
+                              "UB 1016x305x249",
+                              "UB 1016x305x272",
+                              "UB 1016x305x314",
+                              "UB 1016x305x350",
+                              "UB 1016x305x393",
+                              "UB 1016x305x415",
+                              "UB 1016x305x438",
+                              "UB 1016x305x494",
+                              "UB 1016x305x584",
+                              "UB 1100x400x343",
+                              "UB 1100x400x390",
+                              "UB 1100x400x433",
+                              "UB 1100x400x499",
+                              "UB 1100x400x548",
+                              "UB 1100x400x607",
+                              "UB 127x76x13",
+                              "UB 152x89x16",
+                              "UB 178x102x19",
+                              "UB 203x102x23",
+                              "UB 203x133x25",
+                              "UB 203x133x30",
+                              "UB 254x102x22",
+                              "UB 254x102x25",
+                              "UB 254x102x28",
+                              "UB 254x146x31",
+                              "UB 254x146x37",
+                              "UB 254x146x43",
+                              "UB 305x102x25",
+                              "UB 305x102x28",
+                              "UB 305x102x33",
+                              "UB 305x127x37",
+                              "UB 305x127x42",
+                              "UB 305x127x48",
+                              "UB 305x165x40",
+                              "UB 305x165x46",
+                              "UB 305x165x54",
+                              "UB 356x127x33",
+                              "UB 356x127x39",
+                              "UB 356x171x45",
+                              "UB 356x171x51",
+                              "UB 356x171x57",
+                              "UB 356x171x67",
+                              "UB 406x140x39",
+                              "UB 406x140x46",
+                              "UB 406x140x53",
+                              "UB 406x178x54",
+                              "UB 406x178x60",
+                              "UB 406x178x67",
+                              "UB 406x178x74",
+                              "UB 406x178x85",
+                              "UB 457x152x52",
+                              "UB 457x152x60",
+                              "UB 457x152x67",
+                              "UB 457x152x74",
+                              "UB 457x152x82",
+                              "UB 457x191x106",
+                              "UB 457x191x67",
+                              "UB 457x191x74",
+                              "UB 457x191x82",
+                              "UB 457x191x89",
+                              "UB 457x191x98",
+                              "UB 533x165x66",
+                              "UB 533x165x74",
+                              "UB 533x165x85",
+                              "UB 533x210x101",
+                              "UB 533x210x109",
+                              "UB 533x210x122",
+                              "UB 533x210x138",
+                              "UB 533x210x82",
+                              "UB 533x210x92",
+                              "UB 610x178x82",
+                              "UB 610x178x92",
+                              "UB 610x229x101",
+                              "UB 610x229x113",
+                              "UB 610x229x125",
+                              "UB 610x229x140",
+                              "UB 610x229x153",
+                              "UB 610x305x149",
+                              "UB 610x305x179",
+                              "UB 610x305x238",
+                              "UB 686x254x125",
+                              "UB 686x254x140",
+                              "UB 686x254x152",
+                              "UB 686x254x170",
+                              "UB 686x254x192",
+                              "UB 762x267x134",
+                              "UB 762x267x147",
+                              "UB 762x267x173",
+                              "UB 762x267x197",
+                              "UB 762x267x220",
+                              "UB 838x292x176",
+                              "UB 838x292x194",
+                              "UB 838x292x226",
+                              "UB 838x292x251",
+                              "UB 914x305x201",
+                              "UB 914x305x224",
+                              "UB 914x305x238",
+                              "UB 914x305x253",
+                              "UB 914x305x271",
+                              "UB 914x305x289",
+                              "UB 914x305x313",
+                              "UB 914x305x345",
+                              "UB 914x305x381",
+                              "UB 914x305x425",
+                              "UB 914x305x474",
+                              "UB 914x305x521",
+                              "UB 914x305x576",
+                              "UB 920x420x344",
+                              "UB 920x420x368",
+                              "UB 920x420x390",
+                              "UB 920x420x420",
+                              "UB 920x420x449",
+                              "UB 920x420x491",
+                              "UB 920x420x537",
+                              "UB 920x420x588",
+                              "UB 920x420x656",
+                              "UB 920x420x725",
+                              "UB 920x420x787",
+                              "UBP 203x203x45",
+                              "UBP 203x203x54",
+                              "UBP 254x254x63",
+                              "UBP 254x254x71",
+                              "UBP 254x254x85",
+                              "UBP 305x305x110",
+                              "UBP 305x305x126",
+                              "UBP 305x305x149",
+                              "UBP 305x305x186",
+                              "UBP 305x305x223",
+                              "UBP 305x305x79",
+                              "UBP 305x305x88",
+                              "UBP 305x305x95",
+                              "UBP 356x368x109",
+                              "UBP 356x368x133",
+                              "UBP 356x368x152",
+                              "UBP 356x368x174",
+                              "UC 152x152x23",
+                              "UC 152x152x30",
+                              "UC 152x152x37",
+                              "UC 152x152x44",
+                              "UC 152x152x51",
+                              "UC 203x203x100",
+                              "UC 203x203x46",
+                              "UC 203x203x52",
+                              "UC 203x203x60",
+                              "UC 203x203x71",
+                              "UC 203x203x86",
+                              "UC 254x254x107",
+                              "UC 254x254x132",
+                              "UC 254x254x167",
+                              "UC 254x254x73",
+                              "UC 254x254x89",
+                              "UC 305x305x118",
+                              "UC 305x305x137",
+                              "UC 305x305x158",
+                              "UC 305x305x198",
+                              "UC 305x305x240",
+                              "UC 305x305x283",
+                              "UC 305x305x313",
+                              "UC 305x305x342",
+                              "UC 305x305x97",
+                              "UC 356x368x129",
+                              "UC 356x368x153",
+                              "UC 356x368x177",
+                              "UC 356x368x202",
+                              "UC 356x406x235",
+                              "UC 356x406x287",
+                              "UC 356x406x340",
+                              "UC 356x406x393",
+                              "UC 356x406x467",
+                              "UC 356x406x509",
+                              "UC 356x406x551",
+                              "UC 356x406x592",
+                              "UC 356x406x634"
+                            ],
+                            "title": "Section Name",
+                            "description": "Standardized designation of the steel section based on industry specifications. This identifier corresponds to specific dimensional and structural properties in the steel section database.",
+                            "default": "IPE 400"
+                          }
+                        },
+                        "type": "object",
+                        "title": "Girder",
+                        "description": "Defines the steel girder properties used in the composite beam, including the spacing of the girder.",
+                        "x-component-detail": {
+                          "id": "moapy.dgnengine.eurocode4_composited_beam.CompositedGirderSpacing"
+                        }
+                      }
+                    },
+                    "type": "object",
+                    "title": "Section",
+                    "description": "Defines the cross-sectional properties of the composite beam, including the steel girder and concrete slab.",
+                    "x-component-detail": {
+                      "id": "moapy.dgnengine.eurocode4_composited_beam.CompositedSect"
+                    },
+                    "default": {
+                      "slab": {
+                        "shape": "T-Shape",
+                        "thickness": {
+                          "unit": "mm",
+                          "value": 150.0
+                        }
+                      },
+                      "girder": {
+                        "name": "IPE 400",
+                        "shape": "H"
+                      }
+                    }
+                  },
+                  "load": {
+                    "properties": {
+                      "construction": {
+                        "properties": {
+                          "value": {
+                            "type": "number",
+                            "minimum": 0.0,
+                            "title": "Value",
+                            "description": "Load value"
+                          },
+                          "unit": {
+                            "type": "string",
+                            "enum": [
+                              "kN/m^{2}",
+                              "kip/ft^{2}"
+                            ],
+                            "title": "enUnitLoad"
+                          }
+                        },
+                        "type": "object",
+                        "title": "Construction Load",
+                        "description": "Load associated with construction activities, such as temporary loads during building phases.",
+                        "x-component-detail": {
+                          "id": "moapy.data_pre.Load"
+                        }
+                      },
+                      "live": {
+                        "properties": {
+                          "value": {
+                            "type": "number",
+                            "minimum": 0.0,
+                            "title": "Value",
+                            "description": "Load value"
+                          },
+                          "unit": {
+                            "type": "string",
+                            "enum": [
+                              "kN/m^{2}",
+                              "kip/ft^{2}"
+                            ],
+                            "title": "enUnitLoad"
+                          }
+                        },
+                        "type": "object",
+                        "title": "Live Load",
+                        "description": "Load due to live or transient factors, including occupancy and usage of the structure over time.",
+                        "x-component-detail": {
+                          "id": "moapy.data_pre.Load"
+                        }
+                      },
+                      "finish": {
+                        "properties": {
+                          "value": {
+                            "type": "number",
+                            "minimum": 0.0,
+                            "title": "Value",
+                            "description": "Load value"
+                          },
+                          "unit": {
+                            "type": "string",
+                            "enum": [
+                              "kN/m^{2}",
+                              "kip/ft^{2}"
+                            ],
+                            "title": "enUnitLoad"
+                          }
+                        },
+                        "type": "object",
+                        "title": "Finish Load",
+                        "description": "Load from finishing activities, such as flooring, roofing, or interior elements added at the end of construction.",
+                        "x-component-detail": {
+                          "id": "moapy.data_pre.Load"
+                        }
+                      }
+                    },
+                    "type": "object",
+                    "title": "Unit Loads",
+                    "description": "You need to define the different loads that need to be considered in architectural and structural design. By providing specific information about each type of load, engineers can evaluate and design the safety and performance of structures.",
+                    "x-component-detail": {
+                      "id": "moapy.data_pre.UnitLoads"
+                    },
+                    "default": {
+                      "construction": {
+                        "unit": "kN/m^{2}",
+                        "value": 0.0
+                      },
+                      "live": {
+                        "unit": "kN/m^{2}",
+                        "value": 0.0
+                      },
+                      "finish": {
+                        "unit": "kN/m^{2}",
+                        "value": 0.0
+                      }
+                    }
+                  },
+                  "shear_conn": {
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "enum": [
+                          "M6",
+                          "M8",
+                          "M9",
+                          "M13",
+                          "M16",
+                          "M19",
+                          "M22",
+                          "M25"
+                        ],
+                        "title": "Bolt Size",
+                        "description": "The size of the bolt, typically denoted by the outer diameter (e.g., M20, M10)",
+                        "default": "M19"
+                      },
+                      "num": {
+                        "type": "integer",
+                        "enum": [
+                          1,
+                          2,
+                          3
+                        ],
+                        "maximum": 3.0,
+                        "minimum": 0.0,
+                        "title": "Number of Shear Connectors",
+                        "description": "Number of shear connectors (stud bolts) used in the connection.",
+                        "default": 1
+                      },
+                      "space": {
+                        "properties": {
+                          "value": {
+                            "type": "number",
+                            "title": "Value",
+                            "description": "Length"
+                          },
+                          "unit": {
+                            "type": "string",
+                            "enum": [
+                              "mm",
+                              "cm",
+                              "m",
+                              "in",
+                              "ft"
+                            ],
+                            "title": "enUnitLength"
+                          }
+                        },
+                        "type": "object",
+                        "title": "Shear Connector Spacing",
+                        "description": "Spacing between adjacent shear connectors (studs).",
+                        "x-component-detail": {
+                          "id": "moapy.data_pre.Length"
+                        }
+                      },
+                      "length": {
+                        "properties": {
+                          "value": {
+                            "type": "number",
+                            "title": "Value",
+                            "description": "Length"
+                          },
+                          "unit": {
+                            "type": "string",
+                            "enum": [
+                              "mm",
+                              "cm",
+                              "m",
+                              "in",
+                              "ft"
+                            ],
+                            "title": "enUnitLength"
+                          }
+                        },
+                        "type": "object",
+                        "title": "Shear Connector Length",
+                        "description": "Length of each shear connector (stud).",
+                        "x-component-detail": {
+                          "id": "moapy.data_pre.Length"
+                        }
+                      }
+                    },
+                    "type": "object",
+                    "title": "Shear Connector",
+                    "description": "Shear connectors are critical in transferring forces between connected structural elements. They play a key role in ensuring the strength and stability of a structure, and are designed to meet specific requirements based on the materials, configuration, and design load. Proper selection and placement of shear connectors enhance the safety, strength, and durability of the structure.",
+                    "x-component-detail": {
+                      "id": "moapy.steel_pre.ShearConnector_EC"
+                    },
+                    "default": {
+                      "name": "M19",
+                      "num": 1,
+                      "space": {
+                        "unit": "mm",
+                        "value": 300.0
+                      },
+                      "length": {
+                        "unit": "mm",
+                        "value": 100.0
+                      }
+                    }
+                  },
+                  "param": {
+                    "properties": {
+                      "leng": {
+                        "properties": {
+                          "span": {
+                            "properties": {
+                              "value": {
+                                "type": "number",
+                                "title": "Value",
+                                "description": "Length"
+                              },
+                              "unit": {
+                                "type": "string",
+                                "enum": [
+                                  "mm",
+                                  "cm",
+                                  "m",
+                                  "in",
+                                  "ft"
+                                ],
+                                "title": "enUnitLength"
+                              }
+                            },
+                            "type": "object",
+                            "title": "Span Length",
+                            "description": "The distance between two supports of the girder. This is a critical measurement in determining the load-carrying capacity of the girder.",
+                            "x-component-detail": {
+                              "id": "moapy.data_pre.Length"
+                            }
+                          },
+                          "spacing": {
+                            "properties": {
+                              "value": {
+                                "type": "number",
+                                "title": "Value",
+                                "description": "Length"
+                              },
+                              "unit": {
+                                "type": "string",
+                                "enum": [
+                                  "mm",
+                                  "cm",
+                                  "m",
+                                  "in",
+                                  "ft"
+                                ],
+                                "title": "enUnitLength"
+                              }
+                            },
+                            "type": "object",
+                            "title": "Spacing",
+                            "description": "The distance between adjacent girders. Proper spacing ensures optimal load distribution and stability of the structure.",
+                            "x-component-detail": {
+                              "id": "moapy.data_pre.Length"
+                            }
+                          },
+                          "lb": {
+                            "properties": {
+                              "value": {
+                                "type": "number",
+                                "title": "Value",
+                                "description": "Length"
+                              },
+                              "unit": {
+                                "type": "string",
+                                "enum": [
+                                  "mm",
+                                  "cm",
+                                  "m",
+                                  "in",
+                                  "ft"
+                                ],
+                                "title": "enUnitLength"
+                              }
+                            },
+                            "type": "object",
+                            "title": "Unbraced Length",
+                            "description": "The distance between points that are considered unbraced for lateral torsional buckling. This is a critical parameter in determining the stability of the girder.",
+                            "x-component-detail": {
+                              "id": "moapy.data_pre.Length"
+                            }
+                          }
+                        },
+                        "type": "object",
+                        "title": "Girder",
+                        "description": "Length of the girder in meters, representing the span of the composite beam.",
+                        "x-component-detail": {
+                          "id": "moapy.rc_pre.CompositedParam"
+                        }
+                      }
+                    },
+                    "type": "object",
+                    "title": "Design Parameter",
+                    "description": "Defines the design parameters for the composite beam, including the length of the girder.",
+                    "x-component-detail": {
+                      "id": "moapy.dgnengine.eurocode4_composited_beam.CompositedParameter"
+                    },
+                    "default": {
+                      "leng": {
+                        "lb": {
+                          "unit": "m",
+                          "value": 10.0
+                        },
+                        "spacing": {
+                          "unit": "m",
+                          "value": 3.0
+                        },
+                        "span": {
+                          "unit": "m",
+                          "value": 10.0
+                        }
+                      }
+                    }
+                  }
+                },
+                "type": "object",
+                "title": "report ec4 composited beam"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "title": "Type",
+                      "description": "Type",
+                      "default": "xlsx"
+                    },
+                    "result": {
+                      "type": "string",
+                      "title": "Result",
+                      "description": "have to base64 to binary data",
+                      "default": ""
+                    }
+                  },
+                  "type": "object",
+                  "title": "Bytes",
+                  "description": "Result Bytes",
+                  "x-component-detail": {
+                    "id": "moapy.data_post.ResultBytes"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "detail": {
+                      "items": {
+                        "properties": {
+                          "loc": {
+                            "items": {
+                              "anyOf": [
+                                {
+                                  "type": "string"
+                                },
+                                {
+                                  "type": "integer"
+                                }
+                              ]
+                            },
+                            "type": "array",
+                            "title": "Location"
+                          },
+                          "msg": {
+                            "type": "string",
+                            "title": "Message"
+                          },
+                          "type": {
+                            "type": "string",
+                            "title": "Error Type"
+                          }
+                        },
+                        "type": "object",
+                        "required": [
+                          "loc",
+                          "msg",
+                          "type"
+                        ],
+                        "title": "ValidationError"
+                      },
+                      "type": "array",
+                      "title": "Detail"
+                    }
+                  },
+                  "type": "object",
+                  "title": "HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "x-content-info": {
+          "title": "Eurocode 4 Steel Composite Beam Design",
+          "description": "Composite beam that resists bending moment by integrally connecting to reinforced concrete slab and steel beam supporting it by shear connector is designed. Depending on the data that  is entered by users, results of deflection checking, shear connector estimation and Heel drop vibration checking as well as design stress checking applied to each part of composite beam and is automatically calculated.",
+          "standardType": "EUROCODE",
+          "codeName": "EN1994-1-1:2005"
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CompositedGirderSpacing": {
+        "properties": {
+          "shape": {
+            "type": "string",
+            "title": "Section Shape",
+            "description": "Structural steel section profile type (e.g., H-shape, T-shape, Channel, Angle). This parameter defines the fundamental cross-sectional geometry of the steel member.",
+            "default": "H",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "enum": [
+              "HD 260x114",
+              "HD 260x142",
+              "HD 260x172",
+              "HD 260x225",
+              "HD 260x299",
+              "HD 260x54.1",
+              "HD 260x68.2",
+              "HD 260x93",
+              "HD 320x127",
+              "HD 320x158",
+              "HD 320x198",
+              "HD 320x245",
+              "HD 320x300",
+              "HD 320x74.2",
+              "HD 320x97.6",
+              "HD 360x134",
+              "HD 360x147",
+              "HD 360x162",
+              "HD 360x179",
+              "HD 360x196",
+              "HD 400x187",
+              "HD 400x216",
+              "HD 400x237",
+              "HD 400x262",
+              "HD 400x287",
+              "HD 400x314",
+              "HD 400x347",
+              "HD 400x382",
+              "HD 400x421",
+              "HD 400x463",
+              "HD 400x509",
+              "HD 400x551",
+              "HD 400x592",
+              "HD 400x634",
+              "HE 100 A",
+              "HE 100 AA",
+              "HE 100 B",
+              "HE 100 C",
+              "HE 100 M",
+              "HE 1000 A",
+              "HE 1000 AA",
+              "HE 1000 B",
+              "HE 1000 M",
+              "HE 1000x249",
+              "HE 1000x393",
+              "HE 1000x415",
+              "HE 1000x438",
+              "HE 1000x494",
+              "HE 1000x584",
+              "HE 120 A",
+              "HE 120 AA",
+              "HE 120 B",
+              "HE 120 C",
+              "HE 120 M",
+              "HE 140 A",
+              "HE 140 AA",
+              "HE 140 B",
+              "HE 140 C",
+              "HE 140 M",
+              "HE 160 A",
+              "HE 160 AA",
+              "HE 160 B",
+              "HE 160 C",
+              "HE 160 M",
+              "HE 180 A",
+              "HE 180 AA",
+              "HE 180 B",
+              "HE 180 C",
+              "HE 180 M",
+              "HE 200 A",
+              "HE 200 AA",
+              "HE 200 B",
+              "HE 200 C",
+              "HE 200 M",
+              "HE 220 A",
+              "HE 220 AA",
+              "HE 220 B",
+              "HE 220 C",
+              "HE 220 M",
+              "HE 240 A",
+              "HE 240 AA",
+              "HE 240 B",
+              "HE 240 C",
+              "HE 240 M",
+              "HE 260 A",
+              "HE 260 AA",
+              "HE 260 B",
+              "HE 260 C",
+              "HE 260 M",
+              "HE 280 A",
+              "HE 280 AA",
+              "HE 280 B",
+              "HE 280 C",
+              "HE 280 M",
+              "HE 300 A",
+              "HE 300 AA",
+              "HE 300 B",
+              "HE 300 C",
+              "HE 300 M",
+              "HE 320 A",
+              "HE 320 AA",
+              "HE 320 B",
+              "HE 320 C",
+              "HE 320 M",
+              "HE 340 A",
+              "HE 340 AA",
+              "HE 340 B",
+              "HE 340 M",
+              "HE 360 A",
+              "HE 360 AA",
+              "HE 360 B",
+              "HE 360 M",
+              "HE 400 A",
+              "HE 400 AA",
+              "HE 400 B",
+              "HE 400 M",
+              "HE 450 A",
+              "HE 450 AA",
+              "HE 450 B",
+              "HE 450 M",
+              "HE 500 A",
+              "HE 500 AA",
+              "HE 500 B",
+              "HE 500 M",
+              "HE 550 A",
+              "HE 550 AA",
+              "HE 550 B",
+              "HE 550 M",
+              "HE 600 A",
+              "HE 600 AA",
+              "HE 600 B",
+              "HE 600 M",
+              "HE 600x337",
+              "HE 600x399",
+              "HE 650 A",
+              "HE 650 AA",
+              "HE 650 B",
+              "HE 650 M",
+              "HE 650x343",
+              "HE 650x407",
+              "HE 700 A",
+              "HE 700 AA",
+              "HE 700 B",
+              "HE 700 M",
+              "HE 700x352",
+              "HE 700x418",
+              "HE 800 A",
+              "HE 800 AA",
+              "HE 800 B",
+              "HE 800 M",
+              "HE 800x373",
+              "HE 800x444",
+              "HE 900 A",
+              "HE 900 AA",
+              "HE 900 B",
+              "HE 900 M",
+              "HE 900x391",
+              "HE 900x466",
+              "HL 1000 A",
+              "HL 1000 AA",
+              "HL 1000 B",
+              "HL 1000 M",
+              "HL 1000x443",
+              "HL 1000x483",
+              "HL 1000x539",
+              "HL 1000x554",
+              "HL 1000x591",
+              "HL 1000x642",
+              "HL 1000x748",
+              "HL 1100 A",
+              "HL 1100 B",
+              "HL 1100 M",
+              "HL 1100 R",
+              "HL 1100x548",
+              "HL 1100x607",
+              "HL 920x344",
+              "HL 920x368",
+              "HL 920x390",
+              "HL 920x420",
+              "HL 920x449",
+              "HL 920x491",
+              "HL 920x537",
+              "HL 920x588",
+              "HL 920x656",
+              "HL 920x725",
+              "HL 920x787",
+              "HLZ 1100 A",
+              "HLZ 1100 B",
+              "HLZ 1100 C",
+              "HLZ 1100 D",
+              "IPE 100",
+              "IPE 120",
+              "IPE 140",
+              "IPE 160",
+              "IPE 180",
+              "IPE 200",
+              "IPE 220",
+              "IPE 240",
+              "IPE 270",
+              "IPE 300",
+              "IPE 330",
+              "IPE 360",
+              "IPE 400",
+              "IPE 450",
+              "IPE 500",
+              "IPE 550",
+              "IPE 600",
+              "IPE 750x134",
+              "IPE 750x147",
+              "IPE 750x173",
+              "IPE 750x196",
+              "IPE 750x220",
+              "IPE 80",
+              "IPE A 100",
+              "IPE A 120",
+              "IPE A 140",
+              "IPE A 160",
+              "IPE A 180",
+              "IPE A 200",
+              "IPE A 220",
+              "IPE A 240",
+              "IPE A 270",
+              "IPE A 300",
+              "IPE A 330",
+              "IPE A 360",
+              "IPE A 400",
+              "IPE A 450",
+              "IPE A 500",
+              "IPE A 550",
+              "IPE A 600",
+              "IPE A 80",
+              "IPE AA 100",
+              "IPE AA 120",
+              "IPE AA 140",
+              "IPE AA 160",
+              "IPE AA 180",
+              "IPE AA 200",
+              "IPE AA 220",
+              "IPE AA 240",
+              "IPE AA 80",
+              "IPE O 180",
+              "IPE O 200",
+              "IPE O 220",
+              "IPE O 240",
+              "IPE O 270",
+              "IPE O 300",
+              "IPE O 330",
+              "IPE O 360",
+              "IPE O 400",
+              "IPE O 450",
+              "IPE O 500",
+              "IPE O 550",
+              "IPE O 600",
+              "IPE V 400",
+              "IPE V 450",
+              "IPE V 500",
+              "IPE V 550",
+              "IPE V 600",
+              "IPN 100",
+              "IPN 120",
+              "IPN 140",
+              "IPN 160",
+              "IPN 180",
+              "IPN 200",
+              "IPN 220",
+              "IPN 240",
+              "IPN 260",
+              "IPN 280",
+              "IPN 300",
+              "IPN 320",
+              "IPN 340",
+              "IPN 360",
+              "IPN 380",
+              "IPN 400",
+              "IPN 450",
+              "IPN 500",
+              "IPN 550",
+              "IPN 600",
+              "IPN 80",
+              "J 102x102x23",
+              "J 102x44x7",
+              "J 114x114x27",
+              "J 127x114x27",
+              "J 127x114x29",
+              "J 127x76x16",
+              "J 152x127x37",
+              "J 76x76x13",
+              "J 76x76x15",
+              "J 89x89x19",
+              "UB 1000x400x296",
+              "UB 1000x400x321",
+              "UB 1000x400x371",
+              "UB 1000x400x412",
+              "UB 1000x400x443",
+              "UB 1000x400x483",
+              "UB 1000x400x539",
+              "UB 1000x400x554",
+              "UB 1000x400x591",
+              "UB 1000x400x642",
+              "UB 1000x400x748",
+              "UB 1016x305x222",
+              "UB 1016x305x249",
+              "UB 1016x305x272",
+              "UB 1016x305x314",
+              "UB 1016x305x350",
+              "UB 1016x305x393",
+              "UB 1016x305x415",
+              "UB 1016x305x438",
+              "UB 1016x305x494",
+              "UB 1016x305x584",
+              "UB 1100x400x343",
+              "UB 1100x400x390",
+              "UB 1100x400x433",
+              "UB 1100x400x499",
+              "UB 1100x400x548",
+              "UB 1100x400x607",
+              "UB 127x76x13",
+              "UB 152x89x16",
+              "UB 178x102x19",
+              "UB 203x102x23",
+              "UB 203x133x25",
+              "UB 203x133x30",
+              "UB 254x102x22",
+              "UB 254x102x25",
+              "UB 254x102x28",
+              "UB 254x146x31",
+              "UB 254x146x37",
+              "UB 254x146x43",
+              "UB 305x102x25",
+              "UB 305x102x28",
+              "UB 305x102x33",
+              "UB 305x127x37",
+              "UB 305x127x42",
+              "UB 305x127x48",
+              "UB 305x165x40",
+              "UB 305x165x46",
+              "UB 305x165x54",
+              "UB 356x127x33",
+              "UB 356x127x39",
+              "UB 356x171x45",
+              "UB 356x171x51",
+              "UB 356x171x57",
+              "UB 356x171x67",
+              "UB 406x140x39",
+              "UB 406x140x46",
+              "UB 406x140x53",
+              "UB 406x178x54",
+              "UB 406x178x60",
+              "UB 406x178x67",
+              "UB 406x178x74",
+              "UB 406x178x85",
+              "UB 457x152x52",
+              "UB 457x152x60",
+              "UB 457x152x67",
+              "UB 457x152x74",
+              "UB 457x152x82",
+              "UB 457x191x106",
+              "UB 457x191x67",
+              "UB 457x191x74",
+              "UB 457x191x82",
+              "UB 457x191x89",
+              "UB 457x191x98",
+              "UB 533x165x66",
+              "UB 533x165x74",
+              "UB 533x165x85",
+              "UB 533x210x101",
+              "UB 533x210x109",
+              "UB 533x210x122",
+              "UB 533x210x138",
+              "UB 533x210x82",
+              "UB 533x210x92",
+              "UB 610x178x82",
+              "UB 610x178x92",
+              "UB 610x229x101",
+              "UB 610x229x113",
+              "UB 610x229x125",
+              "UB 610x229x140",
+              "UB 610x229x153",
+              "UB 610x305x149",
+              "UB 610x305x179",
+              "UB 610x305x238",
+              "UB 686x254x125",
+              "UB 686x254x140",
+              "UB 686x254x152",
+              "UB 686x254x170",
+              "UB 686x254x192",
+              "UB 762x267x134",
+              "UB 762x267x147",
+              "UB 762x267x173",
+              "UB 762x267x197",
+              "UB 762x267x220",
+              "UB 838x292x176",
+              "UB 838x292x194",
+              "UB 838x292x226",
+              "UB 838x292x251",
+              "UB 914x305x201",
+              "UB 914x305x224",
+              "UB 914x305x238",
+              "UB 914x305x253",
+              "UB 914x305x271",
+              "UB 914x305x289",
+              "UB 914x305x313",
+              "UB 914x305x345",
+              "UB 914x305x381",
+              "UB 914x305x425",
+              "UB 914x305x474",
+              "UB 914x305x521",
+              "UB 914x305x576",
+              "UB 920x420x344",
+              "UB 920x420x368",
+              "UB 920x420x390",
+              "UB 920x420x420",
+              "UB 920x420x449",
+              "UB 920x420x491",
+              "UB 920x420x537",
+              "UB 920x420x588",
+              "UB 920x420x656",
+              "UB 920x420x725",
+              "UB 920x420x787",
+              "UBP 203x203x45",
+              "UBP 203x203x54",
+              "UBP 254x254x63",
+              "UBP 254x254x71",
+              "UBP 254x254x85",
+              "UBP 305x305x110",
+              "UBP 305x305x126",
+              "UBP 305x305x149",
+              "UBP 305x305x186",
+              "UBP 305x305x223",
+              "UBP 305x305x79",
+              "UBP 305x305x88",
+              "UBP 305x305x95",
+              "UBP 356x368x109",
+              "UBP 356x368x133",
+              "UBP 356x368x152",
+              "UBP 356x368x174",
+              "UC 152x152x23",
+              "UC 152x152x30",
+              "UC 152x152x37",
+              "UC 152x152x44",
+              "UC 152x152x51",
+              "UC 203x203x100",
+              "UC 203x203x46",
+              "UC 203x203x52",
+              "UC 203x203x60",
+              "UC 203x203x71",
+              "UC 203x203x86",
+              "UC 254x254x107",
+              "UC 254x254x132",
+              "UC 254x254x167",
+              "UC 254x254x73",
+              "UC 254x254x89",
+              "UC 305x305x118",
+              "UC 305x305x137",
+              "UC 305x305x158",
+              "UC 305x305x198",
+              "UC 305x305x240",
+              "UC 305x305x283",
+              "UC 305x305x313",
+              "UC 305x305x342",
+              "UC 305x305x97",
+              "UC 356x368x129",
+              "UC 356x368x153",
+              "UC 356x368x177",
+              "UC 356x368x202",
+              "UC 356x406x235",
+              "UC 356x406x287",
+              "UC 356x406x340",
+              "UC 356x406x393",
+              "UC 356x406x467",
+              "UC 356x406x509",
+              "UC 356x406x551",
+              "UC 356x406x592",
+              "UC 356x406x634"
+            ],
+            "title": "Section Name",
+            "description": "Standardized designation of the steel section based on industry specifications. This identifier corresponds to specific dimensional and structural properties in the steel section database.",
+            "default": "IPE 400"
+          }
+        },
+        "type": "object",
+        "title": "Section",
+        "description": "Database specifications for structural steel sections including section shape and standardized member designations. This configuration provides essential cross-sectional properties for structural steel design and analysis.",
+        "x-component-detail": {
+          "id": "moapy.dgnengine.eurocode4_composited_beam.CompositedGirderSpacing"
+        }
+      },
+      "CompositedMaterial": {
+        "properties": {
+          "girder": {
+            "properties": {
+              "code": {
+                "type": "string",
+                "title": "Code",
+                "description": "Unique code for the material as defined in the material database. This is used to identify the specific steel material.",
+                "readOnly": true
+              },
+              "name": {
+                "type": "string",
+                "enum": [
+                  "S235",
+                  "S275",
+                  "S355",
+                  "S450",
+                  "S275N/NL",
+                  "S355N/NL",
+                  "S420N/NL",
+                  "S460N/NL",
+                  "S275M/ML",
+                  "S355M/ML",
+                  "S420M/ML",
+                  "S460M/ML",
+                  "S235W",
+                  "S355W",
+                  "S460Q/QL/QL1"
+                ],
+                "title": "Name",
+                "description": "Name of the steel material. The material name is selected from a list of available materials.",
+                "default": "S235"
+              }
+            },
+            "type": "object",
+            "title": "Girder",
+            "description": "Defines the steel girder properties used in the composite beam, including the material properties.",
+            "x-component-detail": {
+              "id": "moapy.steel_pre.SteelMaterial"
+            }
+          },
+          "slab": {
+            "properties": {
+              "conc": {
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "title": "Value",
+                    "description": "Stress"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "enum": [
+                      "Pa",
+                      "KPa",
+                      "MPa",
+                      "psi",
+                      "ksi"
+                    ],
+                    "title": "enUnitStress"
+                  }
+                },
+                "type": "object",
+                "title": "Concrete Strength (fck)",
+                "description": "Compressive strength of the concrete in MPa, representing its ability to resist axial load.",
+                "x-component-detail": {
+                  "id": "moapy.data_pre.Stress"
+                }
+              }
+            },
+            "type": "object",
+            "title": "Slab",
+            "description": "Defines the concrete slab properties used in the composite beam, including the material properties.",
+            "x-component-detail": {
+              "id": "moapy.dgnengine.eurocode4_composited_beam.SlabMaterial"
+            }
+          },
+          "rebar": {
+            "properties": {
+              "prop": {
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "title": "Value",
+                    "description": "Stress"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "enum": [
+                      "Pa",
+                      "KPa",
+                      "MPa",
+                      "psi",
+                      "ksi"
+                    ],
+                    "title": "enUnitStress"
+                  }
+                },
+                "type": "object",
+                "title": "Rebar Strength (fsk)",
+                "description": "Yield strength of the rebar in MPa",
+                "x-component-detail": {
+                  "id": "moapy.data_pre.Stress"
+                }
+              }
+            },
+            "type": "object",
+            "title": "Rebar",
+            "description": "Defines the rebar properties used in the composite beam, including the material properties.",
+            "x-component-detail": {
+              "id": "moapy.dgnengine.eurocode4_composited_beam.RebarMaterial"
+            }
+          },
+          "shearConn": {
+            "properties": {
+              "code": {
+                "type": "string",
+                "title": "Code",
+                "description": "Unique code for the material as defined in the material database. This is used to identify the specific steel material.",
+                "readOnly": true
+              },
+              "name": {
+                "type": "string",
+                "enum": [
+                  "S235",
+                  "S275",
+                  "S355",
+                  "S450",
+                  "S275N/NL",
+                  "S355N/NL",
+                  "S420N/NL",
+                  "S460N/NL",
+                  "S275M/ML",
+                  "S355M/ML",
+                  "S420M/ML",
+                  "S460M/ML",
+                  "S235W",
+                  "S355W",
+                  "S460Q/QL/QL1"
+                ],
+                "title": "Name",
+                "description": "Name of the steel material. The material name is selected from a list of available materials.",
+                "default": "S235"
+              }
+            },
+            "type": "object",
+            "title": "Shear Connector",
+            "description": "Defines the shear connector properties used in the composite beam, including the material properties.",
+            "x-component-detail": {
+              "id": "moapy.steel_pre.SteelMaterial"
+            }
+          }
+        },
+        "type": "object",
+        "title": "Material",
+        "description": "Defines the material properties of the composite beam, including the steel girder and concrete slab.",
+        "x-component-detail": {
+          "id": "moapy.dgnengine.eurocode4_composited_beam.CompositedMaterial"
+        }
+      },
+      "CompositedParam": {
+        "properties": {
+          "span": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "title": "Value",
+                "description": "Length"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm",
+                  "cm",
+                  "m",
+                  "in",
+                  "ft"
+                ],
+                "title": "enUnitLength"
+              }
+            },
+            "type": "object",
+            "title": "Span Length",
+            "description": "The distance between two supports of the girder. This is a critical measurement in determining the load-carrying capacity of the girder.",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Length"
+            }
+          },
+          "spacing": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "title": "Value",
+                "description": "Length"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm",
+                  "cm",
+                  "m",
+                  "in",
+                  "ft"
+                ],
+                "title": "enUnitLength"
+              }
+            },
+            "type": "object",
+            "title": "Spacing",
+            "description": "The distance between adjacent girders. Proper spacing ensures optimal load distribution and stability of the structure.",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Length"
+            }
+          },
+          "lb": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "title": "Value",
+                "description": "Length"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm",
+                  "cm",
+                  "m",
+                  "in",
+                  "ft"
+                ],
+                "title": "enUnitLength"
+              }
+            },
+            "type": "object",
+            "title": "Unbraced Length",
+            "description": "The distance between points that are considered unbraced for lateral torsional buckling. This is a critical parameter in determining the stability of the girder.",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Length"
+            }
+          }
+        },
+        "type": "object",
+        "title": "Girder Length and Spacing",
+        "description": "Defines the span length and spacing between girders in a structure, crucial for ensuring proper load distribution and structural stability.",
+        "x-component-detail": {
+          "id": "moapy.rc_pre.CompositedParam"
+        }
+      },
+      "CompositedParameter": {
+        "properties": {
+          "leng": {
+            "properties": {
+              "span": {
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "title": "Value",
+                    "description": "Length"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "enum": [
+                      "mm",
+                      "cm",
+                      "m",
+                      "in",
+                      "ft"
+                    ],
+                    "title": "enUnitLength"
+                  }
+                },
+                "type": "object",
+                "title": "Span Length",
+                "description": "The distance between two supports of the girder. This is a critical measurement in determining the load-carrying capacity of the girder.",
+                "x-component-detail": {
+                  "id": "moapy.data_pre.Length"
+                }
+              },
+              "spacing": {
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "title": "Value",
+                    "description": "Length"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "enum": [
+                      "mm",
+                      "cm",
+                      "m",
+                      "in",
+                      "ft"
+                    ],
+                    "title": "enUnitLength"
+                  }
+                },
+                "type": "object",
+                "title": "Spacing",
+                "description": "The distance between adjacent girders. Proper spacing ensures optimal load distribution and stability of the structure.",
+                "x-component-detail": {
+                  "id": "moapy.data_pre.Length"
+                }
+              },
+              "lb": {
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "title": "Value",
+                    "description": "Length"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "enum": [
+                      "mm",
+                      "cm",
+                      "m",
+                      "in",
+                      "ft"
+                    ],
+                    "title": "enUnitLength"
+                  }
+                },
+                "type": "object",
+                "title": "Unbraced Length",
+                "description": "The distance between points that are considered unbraced for lateral torsional buckling. This is a critical parameter in determining the stability of the girder.",
+                "x-component-detail": {
+                  "id": "moapy.data_pre.Length"
+                }
+              }
+            },
+            "type": "object",
+            "title": "Girder",
+            "description": "Length of the girder in meters, representing the span of the composite beam.",
+            "x-component-detail": {
+              "id": "moapy.rc_pre.CompositedParam"
+            }
+          }
+        },
+        "type": "object",
+        "title": "Design Parameter",
+        "description": "Defines the design parameters for the composite beam, including the length of the girder.",
+        "x-component-detail": {
+          "id": "moapy.dgnengine.eurocode4_composited_beam.CompositedParameter"
+        }
+      },
+      "CompositedSect": {
+        "properties": {
+          "slab": {
+            "properties": {
+              "shape": {
+                "type": "string",
+                "enum": [
+                  "T-Shape",
+                  "Half T-Shape"
+                ],
+                "title": "Slab Shape",
+                "description": "Shape of the slab",
+                "default": "T-Shape"
+              },
+              "thickness": {
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "title": "Value",
+                    "description": "Length"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "enum": [
+                      "mm",
+                      "cm",
+                      "m",
+                      "in",
+                      "ft"
+                    ],
+                    "title": "enUnitLength"
+                  }
+                },
+                "type": "object",
+                "title": "Slab Thickness",
+                "description": "Thickness of the slab in millimeters, representing the depth of the concrete slab section.",
+                "x-component-detail": {
+                  "id": "moapy.data_pre.Length"
+                }
+              }
+            },
+            "type": "object",
+            "title": "Slab",
+            "description": "Defines the concrete slab properties used in the composite beam, including the thickness of the slab.",
+            "x-component-detail": {
+              "id": "moapy.dgnengine.eurocode4_composited_beam.CompositedSlab"
+            }
+          },
+          "girder": {
+            "properties": {
+              "shape": {
+                "type": "string",
+                "title": "Section Shape",
+                "description": "Structural steel section profile type (e.g., H-shape, T-shape, Channel, Angle). This parameter defines the fundamental cross-sectional geometry of the steel member.",
+                "default": "H",
+                "readOnly": true
+              },
+              "name": {
+                "type": "string",
+                "enum": [
+                  "HD 260x114",
+                  "HD 260x142",
+                  "HD 260x172",
+                  "HD 260x225",
+                  "HD 260x299",
+                  "HD 260x54.1",
+                  "HD 260x68.2",
+                  "HD 260x93",
+                  "HD 320x127",
+                  "HD 320x158",
+                  "HD 320x198",
+                  "HD 320x245",
+                  "HD 320x300",
+                  "HD 320x74.2",
+                  "HD 320x97.6",
+                  "HD 360x134",
+                  "HD 360x147",
+                  "HD 360x162",
+                  "HD 360x179",
+                  "HD 360x196",
+                  "HD 400x187",
+                  "HD 400x216",
+                  "HD 400x237",
+                  "HD 400x262",
+                  "HD 400x287",
+                  "HD 400x314",
+                  "HD 400x347",
+                  "HD 400x382",
+                  "HD 400x421",
+                  "HD 400x463",
+                  "HD 400x509",
+                  "HD 400x551",
+                  "HD 400x592",
+                  "HD 400x634",
+                  "HE 100 A",
+                  "HE 100 AA",
+                  "HE 100 B",
+                  "HE 100 C",
+                  "HE 100 M",
+                  "HE 1000 A",
+                  "HE 1000 AA",
+                  "HE 1000 B",
+                  "HE 1000 M",
+                  "HE 1000x249",
+                  "HE 1000x393",
+                  "HE 1000x415",
+                  "HE 1000x438",
+                  "HE 1000x494",
+                  "HE 1000x584",
+                  "HE 120 A",
+                  "HE 120 AA",
+                  "HE 120 B",
+                  "HE 120 C",
+                  "HE 120 M",
+                  "HE 140 A",
+                  "HE 140 AA",
+                  "HE 140 B",
+                  "HE 140 C",
+                  "HE 140 M",
+                  "HE 160 A",
+                  "HE 160 AA",
+                  "HE 160 B",
+                  "HE 160 C",
+                  "HE 160 M",
+                  "HE 180 A",
+                  "HE 180 AA",
+                  "HE 180 B",
+                  "HE 180 C",
+                  "HE 180 M",
+                  "HE 200 A",
+                  "HE 200 AA",
+                  "HE 200 B",
+                  "HE 200 C",
+                  "HE 200 M",
+                  "HE 220 A",
+                  "HE 220 AA",
+                  "HE 220 B",
+                  "HE 220 C",
+                  "HE 220 M",
+                  "HE 240 A",
+                  "HE 240 AA",
+                  "HE 240 B",
+                  "HE 240 C",
+                  "HE 240 M",
+                  "HE 260 A",
+                  "HE 260 AA",
+                  "HE 260 B",
+                  "HE 260 C",
+                  "HE 260 M",
+                  "HE 280 A",
+                  "HE 280 AA",
+                  "HE 280 B",
+                  "HE 280 C",
+                  "HE 280 M",
+                  "HE 300 A",
+                  "HE 300 AA",
+                  "HE 300 B",
+                  "HE 300 C",
+                  "HE 300 M",
+                  "HE 320 A",
+                  "HE 320 AA",
+                  "HE 320 B",
+                  "HE 320 C",
+                  "HE 320 M",
+                  "HE 340 A",
+                  "HE 340 AA",
+                  "HE 340 B",
+                  "HE 340 M",
+                  "HE 360 A",
+                  "HE 360 AA",
+                  "HE 360 B",
+                  "HE 360 M",
+                  "HE 400 A",
+                  "HE 400 AA",
+                  "HE 400 B",
+                  "HE 400 M",
+                  "HE 450 A",
+                  "HE 450 AA",
+                  "HE 450 B",
+                  "HE 450 M",
+                  "HE 500 A",
+                  "HE 500 AA",
+                  "HE 500 B",
+                  "HE 500 M",
+                  "HE 550 A",
+                  "HE 550 AA",
+                  "HE 550 B",
+                  "HE 550 M",
+                  "HE 600 A",
+                  "HE 600 AA",
+                  "HE 600 B",
+                  "HE 600 M",
+                  "HE 600x337",
+                  "HE 600x399",
+                  "HE 650 A",
+                  "HE 650 AA",
+                  "HE 650 B",
+                  "HE 650 M",
+                  "HE 650x343",
+                  "HE 650x407",
+                  "HE 700 A",
+                  "HE 700 AA",
+                  "HE 700 B",
+                  "HE 700 M",
+                  "HE 700x352",
+                  "HE 700x418",
+                  "HE 800 A",
+                  "HE 800 AA",
+                  "HE 800 B",
+                  "HE 800 M",
+                  "HE 800x373",
+                  "HE 800x444",
+                  "HE 900 A",
+                  "HE 900 AA",
+                  "HE 900 B",
+                  "HE 900 M",
+                  "HE 900x391",
+                  "HE 900x466",
+                  "HL 1000 A",
+                  "HL 1000 AA",
+                  "HL 1000 B",
+                  "HL 1000 M",
+                  "HL 1000x443",
+                  "HL 1000x483",
+                  "HL 1000x539",
+                  "HL 1000x554",
+                  "HL 1000x591",
+                  "HL 1000x642",
+                  "HL 1000x748",
+                  "HL 1100 A",
+                  "HL 1100 B",
+                  "HL 1100 M",
+                  "HL 1100 R",
+                  "HL 1100x548",
+                  "HL 1100x607",
+                  "HL 920x344",
+                  "HL 920x368",
+                  "HL 920x390",
+                  "HL 920x420",
+                  "HL 920x449",
+                  "HL 920x491",
+                  "HL 920x537",
+                  "HL 920x588",
+                  "HL 920x656",
+                  "HL 920x725",
+                  "HL 920x787",
+                  "HLZ 1100 A",
+                  "HLZ 1100 B",
+                  "HLZ 1100 C",
+                  "HLZ 1100 D",
+                  "IPE 100",
+                  "IPE 120",
+                  "IPE 140",
+                  "IPE 160",
+                  "IPE 180",
+                  "IPE 200",
+                  "IPE 220",
+                  "IPE 240",
+                  "IPE 270",
+                  "IPE 300",
+                  "IPE 330",
+                  "IPE 360",
+                  "IPE 400",
+                  "IPE 450",
+                  "IPE 500",
+                  "IPE 550",
+                  "IPE 600",
+                  "IPE 750x134",
+                  "IPE 750x147",
+                  "IPE 750x173",
+                  "IPE 750x196",
+                  "IPE 750x220",
+                  "IPE 80",
+                  "IPE A 100",
+                  "IPE A 120",
+                  "IPE A 140",
+                  "IPE A 160",
+                  "IPE A 180",
+                  "IPE A 200",
+                  "IPE A 220",
+                  "IPE A 240",
+                  "IPE A 270",
+                  "IPE A 300",
+                  "IPE A 330",
+                  "IPE A 360",
+                  "IPE A 400",
+                  "IPE A 450",
+                  "IPE A 500",
+                  "IPE A 550",
+                  "IPE A 600",
+                  "IPE A 80",
+                  "IPE AA 100",
+                  "IPE AA 120",
+                  "IPE AA 140",
+                  "IPE AA 160",
+                  "IPE AA 180",
+                  "IPE AA 200",
+                  "IPE AA 220",
+                  "IPE AA 240",
+                  "IPE AA 80",
+                  "IPE O 180",
+                  "IPE O 200",
+                  "IPE O 220",
+                  "IPE O 240",
+                  "IPE O 270",
+                  "IPE O 300",
+                  "IPE O 330",
+                  "IPE O 360",
+                  "IPE O 400",
+                  "IPE O 450",
+                  "IPE O 500",
+                  "IPE O 550",
+                  "IPE O 600",
+                  "IPE V 400",
+                  "IPE V 450",
+                  "IPE V 500",
+                  "IPE V 550",
+                  "IPE V 600",
+                  "IPN 100",
+                  "IPN 120",
+                  "IPN 140",
+                  "IPN 160",
+                  "IPN 180",
+                  "IPN 200",
+                  "IPN 220",
+                  "IPN 240",
+                  "IPN 260",
+                  "IPN 280",
+                  "IPN 300",
+                  "IPN 320",
+                  "IPN 340",
+                  "IPN 360",
+                  "IPN 380",
+                  "IPN 400",
+                  "IPN 450",
+                  "IPN 500",
+                  "IPN 550",
+                  "IPN 600",
+                  "IPN 80",
+                  "J 102x102x23",
+                  "J 102x44x7",
+                  "J 114x114x27",
+                  "J 127x114x27",
+                  "J 127x114x29",
+                  "J 127x76x16",
+                  "J 152x127x37",
+                  "J 76x76x13",
+                  "J 76x76x15",
+                  "J 89x89x19",
+                  "UB 1000x400x296",
+                  "UB 1000x400x321",
+                  "UB 1000x400x371",
+                  "UB 1000x400x412",
+                  "UB 1000x400x443",
+                  "UB 1000x400x483",
+                  "UB 1000x400x539",
+                  "UB 1000x400x554",
+                  "UB 1000x400x591",
+                  "UB 1000x400x642",
+                  "UB 1000x400x748",
+                  "UB 1016x305x222",
+                  "UB 1016x305x249",
+                  "UB 1016x305x272",
+                  "UB 1016x305x314",
+                  "UB 1016x305x350",
+                  "UB 1016x305x393",
+                  "UB 1016x305x415",
+                  "UB 1016x305x438",
+                  "UB 1016x305x494",
+                  "UB 1016x305x584",
+                  "UB 1100x400x343",
+                  "UB 1100x400x390",
+                  "UB 1100x400x433",
+                  "UB 1100x400x499",
+                  "UB 1100x400x548",
+                  "UB 1100x400x607",
+                  "UB 127x76x13",
+                  "UB 152x89x16",
+                  "UB 178x102x19",
+                  "UB 203x102x23",
+                  "UB 203x133x25",
+                  "UB 203x133x30",
+                  "UB 254x102x22",
+                  "UB 254x102x25",
+                  "UB 254x102x28",
+                  "UB 254x146x31",
+                  "UB 254x146x37",
+                  "UB 254x146x43",
+                  "UB 305x102x25",
+                  "UB 305x102x28",
+                  "UB 305x102x33",
+                  "UB 305x127x37",
+                  "UB 305x127x42",
+                  "UB 305x127x48",
+                  "UB 305x165x40",
+                  "UB 305x165x46",
+                  "UB 305x165x54",
+                  "UB 356x127x33",
+                  "UB 356x127x39",
+                  "UB 356x171x45",
+                  "UB 356x171x51",
+                  "UB 356x171x57",
+                  "UB 356x171x67",
+                  "UB 406x140x39",
+                  "UB 406x140x46",
+                  "UB 406x140x53",
+                  "UB 406x178x54",
+                  "UB 406x178x60",
+                  "UB 406x178x67",
+                  "UB 406x178x74",
+                  "UB 406x178x85",
+                  "UB 457x152x52",
+                  "UB 457x152x60",
+                  "UB 457x152x67",
+                  "UB 457x152x74",
+                  "UB 457x152x82",
+                  "UB 457x191x106",
+                  "UB 457x191x67",
+                  "UB 457x191x74",
+                  "UB 457x191x82",
+                  "UB 457x191x89",
+                  "UB 457x191x98",
+                  "UB 533x165x66",
+                  "UB 533x165x74",
+                  "UB 533x165x85",
+                  "UB 533x210x101",
+                  "UB 533x210x109",
+                  "UB 533x210x122",
+                  "UB 533x210x138",
+                  "UB 533x210x82",
+                  "UB 533x210x92",
+                  "UB 610x178x82",
+                  "UB 610x178x92",
+                  "UB 610x229x101",
+                  "UB 610x229x113",
+                  "UB 610x229x125",
+                  "UB 610x229x140",
+                  "UB 610x229x153",
+                  "UB 610x305x149",
+                  "UB 610x305x179",
+                  "UB 610x305x238",
+                  "UB 686x254x125",
+                  "UB 686x254x140",
+                  "UB 686x254x152",
+                  "UB 686x254x170",
+                  "UB 686x254x192",
+                  "UB 762x267x134",
+                  "UB 762x267x147",
+                  "UB 762x267x173",
+                  "UB 762x267x197",
+                  "UB 762x267x220",
+                  "UB 838x292x176",
+                  "UB 838x292x194",
+                  "UB 838x292x226",
+                  "UB 838x292x251",
+                  "UB 914x305x201",
+                  "UB 914x305x224",
+                  "UB 914x305x238",
+                  "UB 914x305x253",
+                  "UB 914x305x271",
+                  "UB 914x305x289",
+                  "UB 914x305x313",
+                  "UB 914x305x345",
+                  "UB 914x305x381",
+                  "UB 914x305x425",
+                  "UB 914x305x474",
+                  "UB 914x305x521",
+                  "UB 914x305x576",
+                  "UB 920x420x344",
+                  "UB 920x420x368",
+                  "UB 920x420x390",
+                  "UB 920x420x420",
+                  "UB 920x420x449",
+                  "UB 920x420x491",
+                  "UB 920x420x537",
+                  "UB 920x420x588",
+                  "UB 920x420x656",
+                  "UB 920x420x725",
+                  "UB 920x420x787",
+                  "UBP 203x203x45",
+                  "UBP 203x203x54",
+                  "UBP 254x254x63",
+                  "UBP 254x254x71",
+                  "UBP 254x254x85",
+                  "UBP 305x305x110",
+                  "UBP 305x305x126",
+                  "UBP 305x305x149",
+                  "UBP 305x305x186",
+                  "UBP 305x305x223",
+                  "UBP 305x305x79",
+                  "UBP 305x305x88",
+                  "UBP 305x305x95",
+                  "UBP 356x368x109",
+                  "UBP 356x368x133",
+                  "UBP 356x368x152",
+                  "UBP 356x368x174",
+                  "UC 152x152x23",
+                  "UC 152x152x30",
+                  "UC 152x152x37",
+                  "UC 152x152x44",
+                  "UC 152x152x51",
+                  "UC 203x203x100",
+                  "UC 203x203x46",
+                  "UC 203x203x52",
+                  "UC 203x203x60",
+                  "UC 203x203x71",
+                  "UC 203x203x86",
+                  "UC 254x254x107",
+                  "UC 254x254x132",
+                  "UC 254x254x167",
+                  "UC 254x254x73",
+                  "UC 254x254x89",
+                  "UC 305x305x118",
+                  "UC 305x305x137",
+                  "UC 305x305x158",
+                  "UC 305x305x198",
+                  "UC 305x305x240",
+                  "UC 305x305x283",
+                  "UC 305x305x313",
+                  "UC 305x305x342",
+                  "UC 305x305x97",
+                  "UC 356x368x129",
+                  "UC 356x368x153",
+                  "UC 356x368x177",
+                  "UC 356x368x202",
+                  "UC 356x406x235",
+                  "UC 356x406x287",
+                  "UC 356x406x340",
+                  "UC 356x406x393",
+                  "UC 356x406x467",
+                  "UC 356x406x509",
+                  "UC 356x406x551",
+                  "UC 356x406x592",
+                  "UC 356x406x634"
+                ],
+                "title": "Section Name",
+                "description": "Standardized designation of the steel section based on industry specifications. This identifier corresponds to specific dimensional and structural properties in the steel section database.",
+                "default": "IPE 400"
+              }
+            },
+            "type": "object",
+            "title": "Girder",
+            "description": "Defines the steel girder properties used in the composite beam, including the spacing of the girder.",
+            "x-component-detail": {
+              "id": "moapy.dgnengine.eurocode4_composited_beam.CompositedGirderSpacing"
+            }
+          }
+        },
+        "type": "object",
+        "title": "Section",
+        "description": "Defines the cross-sectional properties of the composite beam, including the steel girder and concrete slab.",
+        "x-component-detail": {
+          "id": "moapy.dgnengine.eurocode4_composited_beam.CompositedSect"
+        }
+      },
+      "CompositedSlab": {
+        "properties": {
+          "shape": {
+            "type": "string",
+            "enum": [
+              "T-Shape",
+              "Half T-Shape"
+            ],
+            "title": "Slab Shape",
+            "description": "Shape of the slab",
+            "default": "T-Shape"
+          },
+          "thickness": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "title": "Value",
+                "description": "Length"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm",
+                  "cm",
+                  "m",
+                  "in",
+                  "ft"
+                ],
+                "title": "enUnitLength"
+              }
+            },
+            "type": "object",
+            "title": "Slab Thickness",
+            "description": "Thickness of the slab in millimeters, representing the depth of the concrete slab section.",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Length"
+            }
+          }
+        },
+        "type": "object",
+        "title": "Slab",
+        "description": "Defines the cross-sectional properties of the composite beam, including the steel girder and concrete slab.",
+        "x-component-detail": {
+          "id": "moapy.dgnengine.eurocode4_composited_beam.CompositedSlab"
+        }
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "properties": {
+                "loc": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "integer"
+                      }
+                    ]
+                  },
+                  "type": "array",
+                  "title": "Location"
+                },
+                "msg": {
+                  "type": "string",
+                  "title": "Message"
+                },
+                "type": {
+                  "type": "string",
+                  "title": "Error Type"
+                }
+              },
+              "type": "object",
+              "required": [
+                "loc",
+                "msg",
+                "type"
+              ],
+              "title": "ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Length": {
+        "properties": {
+          "value": {
+            "type": "number",
+            "title": "Value",
+            "description": "Length"
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "mm",
+              "cm",
+              "m",
+              "in",
+              "ft"
+            ],
+            "title": "enUnitLength"
+          }
+        },
+        "type": "object",
+        "title": "Length",
+        "description": "Length",
+        "x-component-detail": {
+          "id": "moapy.data_pre.Length"
+        }
+      },
+      "Load": {
+        "properties": {
+          "value": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Value",
+            "description": "Load value"
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "kN/m^{2}",
+              "kip/ft^{2}"
+            ],
+            "title": "enUnitLoad"
+          }
+        },
+        "type": "object",
+        "title": "Load",
+        "description": "Load class",
+        "x-component-detail": {
+          "id": "moapy.data_pre.Load"
+        }
+      },
+      "RebarMaterial": {
+        "properties": {
+          "prop": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "title": "Value",
+                "description": "Stress"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "Pa",
+                  "KPa",
+                  "MPa",
+                  "psi",
+                  "ksi"
+                ],
+                "title": "enUnitStress"
+              }
+            },
+            "type": "object",
+            "title": "Rebar Strength (fsk)",
+            "description": "Yield strength of the rebar in MPa",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Stress"
+            }
+          }
+        },
+        "type": "object",
+        "title": "Rebar Material",
+        "description": "Defines the material properties of the rebar.",
+        "x-component-detail": {
+          "id": "moapy.dgnengine.eurocode4_composited_beam.RebarMaterial"
+        }
+      },
+      "ResultBytes": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "title": "Type",
+            "description": "Type",
+            "default": "xlsx"
+          },
+          "result": {
+            "type": "string",
+            "title": "Result",
+            "description": "have to base64 to binary data",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "title": "Bytes",
+        "description": "Result Bytes",
+        "x-component-detail": {
+          "id": "moapy.data_post.ResultBytes"
+        }
+      },
+      "ShearConnector_EC": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "enum": [
+              "M6",
+              "M8",
+              "M9",
+              "M13",
+              "M16",
+              "M19",
+              "M22",
+              "M25"
+            ],
+            "title": "Bolt Size",
+            "description": "The size of the bolt, typically denoted by the outer diameter (e.g., M20, M10)",
+            "default": "M19"
+          },
+          "num": {
+            "type": "integer",
+            "enum": [
+              1,
+              2,
+              3
+            ],
+            "maximum": 3.0,
+            "minimum": 0.0,
+            "title": "Number of Shear Connectors",
+            "description": "Number of shear connectors (stud bolts) used in the connection.",
+            "default": 1
+          },
+          "space": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "title": "Value",
+                "description": "Length"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm",
+                  "cm",
+                  "m",
+                  "in",
+                  "ft"
+                ],
+                "title": "enUnitLength"
+              }
+            },
+            "type": "object",
+            "title": "Shear Connector Spacing",
+            "description": "Spacing between adjacent shear connectors (studs).",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Length"
+            }
+          },
+          "length": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "title": "Value",
+                "description": "Length"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "mm",
+                  "cm",
+                  "m",
+                  "in",
+                  "ft"
+                ],
+                "title": "enUnitLength"
+              }
+            },
+            "type": "object",
+            "title": "Shear Connector Length",
+            "description": "Length of each shear connector (stud).",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Length"
+            }
+          }
+        },
+        "type": "object",
+        "title": "Shear Connector",
+        "description": "Shear connectors are critical in transferring forces between connected structural elements. They play a key role in ensuring the strength and stability of a structure, and are designed to meet specific requirements based on the materials, configuration, and design load. Proper selection and placement of shear connectors enhance the safety, strength, and durability of the structure.",
+        "x-component-detail": {
+          "id": "moapy.steel_pre.ShearConnector_EC"
+        }
+      },
+      "SlabMaterial": {
+        "properties": {
+          "conc": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "title": "Value",
+                "description": "Stress"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "Pa",
+                  "KPa",
+                  "MPa",
+                  "psi",
+                  "ksi"
+                ],
+                "title": "enUnitStress"
+              }
+            },
+            "type": "object",
+            "title": "Concrete Strength (fck)",
+            "description": "Compressive strength of the concrete in MPa, representing its ability to resist axial load.",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Stress"
+            }
+          }
+        },
+        "type": "object",
+        "title": "Slab Material",
+        "description": "Defines the material properties of the concrete slab.",
+        "x-component-detail": {
+          "id": "moapy.dgnengine.eurocode4_composited_beam.SlabMaterial"
+        }
+      },
+      "SteelMaterial": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code",
+            "description": "Unique code for the material as defined in the material database. This is used to identify the specific steel material.",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "enum": [
+              "S235",
+              "S275",
+              "S355",
+              "S450",
+              "S275N/NL",
+              "S355N/NL",
+              "S420N/NL",
+              "S460N/NL",
+              "S275M/ML",
+              "S355M/ML",
+              "S420M/ML",
+              "S460M/ML",
+              "S235W",
+              "S355W",
+              "S460Q/QL/QL1"
+            ],
+            "title": "Name",
+            "description": "Name of the steel material. The material name is selected from a list of available materials.",
+            "default": "S235"
+          }
+        },
+        "type": "object",
+        "title": "Material",
+        "description": "A steel material used in structural design, with customizable options for material code and name. The material properties are selected from a predefined list.",
+        "x-component-detail": {
+          "id": "moapy.steel_pre.SteelMaterial"
+        }
+      },
+      "Stress": {
+        "properties": {
+          "value": {
+            "type": "number",
+            "title": "Value",
+            "description": "Stress"
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "Pa",
+              "KPa",
+              "MPa",
+              "psi",
+              "ksi"
+            ],
+            "title": "enUnitStress"
+          }
+        },
+        "type": "object",
+        "title": "Stress",
+        "description": "Stress",
+        "x-component-detail": {
+          "id": "moapy.data_pre.Stress"
+        }
+      },
+      "UnitLoads": {
+        "properties": {
+          "construction": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "minimum": 0.0,
+                "title": "Value",
+                "description": "Load value"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "kN/m^{2}",
+                  "kip/ft^{2}"
+                ],
+                "title": "enUnitLoad"
+              }
+            },
+            "type": "object",
+            "title": "Construction Load",
+            "description": "Load associated with construction activities, such as temporary loads during building phases.",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Load"
+            }
+          },
+          "live": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "minimum": 0.0,
+                "title": "Value",
+                "description": "Load value"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "kN/m^{2}",
+                  "kip/ft^{2}"
+                ],
+                "title": "enUnitLoad"
+              }
+            },
+            "type": "object",
+            "title": "Live Load",
+            "description": "Load due to live or transient factors, including occupancy and usage of the structure over time.",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Load"
+            }
+          },
+          "finish": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "minimum": 0.0,
+                "title": "Value",
+                "description": "Load value"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "kN/m^{2}",
+                  "kip/ft^{2}"
+                ],
+                "title": "enUnitLoad"
+              }
+            },
+            "type": "object",
+            "title": "Finish Load",
+            "description": "Load from finishing activities, such as flooring, roofing, or interior elements added at the end of construction.",
+            "x-component-detail": {
+              "id": "moapy.data_pre.Load"
+            }
+          }
+        },
+        "type": "object",
+        "title": "Unit Loads",
+        "description": "You need to define the different loads that need to be considered in architectural and structural design. By providing specific information about each type of load, engineers can evaluate and design the safety and performance of structures.",
+        "x-component-detail": {
+          "id": "moapy.data_pre.UnitLoads"
+        }
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "enUnitLength": {
+        "type": "string",
+        "enum": [
+          "mm",
+          "cm",
+          "m",
+          "in",
+          "ft"
+        ],
+        "title": "enUnitLength"
+      },
+      "enUnitLoad": {
+        "type": "string",
+        "enum": [
+          "kN/m^{2}",
+          "kip/ft^{2}"
+        ],
+        "title": "enUnitLoad"
+      },
+      "enUnitStress": {
+        "type": "string",
+        "enum": [
+          "Pa",
+          "KPa",
+          "MPa",
+          "psi",
+          "ksi"
+        ],
+        "title": "enUnitStress"
+      },
+      "report_ec4_composited_beam": {
+        "properties": {
+          "matl": {
+            "properties": {
+              "girder": {
+                "properties": {
+                  "code": {
+                    "type": "string",
+                    "title": "Code",
+                    "description": "Unique code for the material as defined in the material database. This is used to identify the specific steel material.",
+                    "readOnly": true
+                  },
+                  "name": {
+                    "type": "string",
+                    "enum": [
+                      "S235",
+                      "S275",
+                      "S355",
+                      "S450",
+                      "S275N/NL",
+                      "S355N/NL",
+                      "S420N/NL",
+                      "S460N/NL",
+                      "S275M/ML",
+                      "S355M/ML",
+                      "S420M/ML",
+                      "S460M/ML",
+                      "S235W",
+                      "S355W",
+                      "S460Q/QL/QL1"
+                    ],
+                    "title": "Name",
+                    "description": "Name of the steel material. The material name is selected from a list of available materials.",
+                    "default": "S235"
+                  }
+                },
+                "type": "object",
+                "title": "Girder",
+                "description": "Defines the steel girder properties used in the composite beam, including the material properties.",
+                "x-component-detail": {
+                  "id": "moapy.steel_pre.SteelMaterial"
+                }
+              },
+              "slab": {
+                "properties": {
+                  "conc": {
+                    "properties": {
+                      "value": {
+                        "type": "number",
+                        "title": "Value",
+                        "description": "Stress"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "enum": [
+                          "Pa",
+                          "KPa",
+                          "MPa",
+                          "psi",
+                          "ksi"
+                        ],
+                        "title": "enUnitStress"
+                      }
+                    },
+                    "type": "object",
+                    "title": "Concrete Strength (fck)",
+                    "description": "Compressive strength of the concrete in MPa, representing its ability to resist axial load.",
+                    "x-component-detail": {
+                      "id": "moapy.data_pre.Stress"
+                    }
+                  }
+                },
+                "type": "object",
+                "title": "Slab",
+                "description": "Defines the concrete slab properties used in the composite beam, including the material properties.",
+                "x-component-detail": {
+                  "id": "moapy.dgnengine.eurocode4_composited_beam.SlabMaterial"
+                }
+              },
+              "rebar": {
+                "properties": {
+                  "prop": {
+                    "properties": {
+                      "value": {
+                        "type": "number",
+                        "title": "Value",
+                        "description": "Stress"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "enum": [
+                          "Pa",
+                          "KPa",
+                          "MPa",
+                          "psi",
+                          "ksi"
+                        ],
+                        "title": "enUnitStress"
+                      }
+                    },
+                    "type": "object",
+                    "title": "Rebar Strength (fsk)",
+                    "description": "Yield strength of the rebar in MPa",
+                    "x-component-detail": {
+                      "id": "moapy.data_pre.Stress"
+                    }
+                  }
+                },
+                "type": "object",
+                "title": "Rebar",
+                "description": "Defines the rebar properties used in the composite beam, including the material properties.",
+                "x-component-detail": {
+                  "id": "moapy.dgnengine.eurocode4_composited_beam.RebarMaterial"
+                }
+              },
+              "shearConn": {
+                "properties": {
+                  "code": {
+                    "type": "string",
+                    "title": "Code",
+                    "description": "Unique code for the material as defined in the material database. This is used to identify the specific steel material.",
+                    "readOnly": true
+                  },
+                  "name": {
+                    "type": "string",
+                    "enum": [
+                      "S235",
+                      "S275",
+                      "S355",
+                      "S450",
+                      "S275N/NL",
+                      "S355N/NL",
+                      "S420N/NL",
+                      "S460N/NL",
+                      "S275M/ML",
+                      "S355M/ML",
+                      "S420M/ML",
+                      "S460M/ML",
+                      "S235W",
+                      "S355W",
+                      "S460Q/QL/QL1"
+                    ],
+                    "title": "Name",
+                    "description": "Name of the steel material. The material name is selected from a list of available materials.",
+                    "default": "S235"
+                  }
+                },
+                "type": "object",
+                "title": "Shear Connector",
+                "description": "Defines the shear connector properties used in the composite beam, including the material properties.",
+                "x-component-detail": {
+                  "id": "moapy.steel_pre.SteelMaterial"
+                }
+              }
+            },
+            "type": "object",
+            "title": "Material",
+            "description": "Defines the material properties of the composite beam, including the steel girder and concrete slab.",
+            "x-component-detail": {
+              "id": "moapy.dgnengine.eurocode4_composited_beam.CompositedMaterial"
+            },
+            "default": {
+              "girder": {
+                "code": "EN10025",
+                "name": "S235"
+              },
+              "slab": {
+                "conc": {
+                  "unit": "MPa",
+                  "value": 24.0
+                }
+              },
+              "rebar": {
+                "prop": {
+                  "unit": "MPa",
+                  "value": 400.0
+                }
+              },
+              "shearConn": {
+                "code": "EN10025",
+                "name": "S235"
+              }
+            }
+          },
+          "sect": {
+            "properties": {
+              "slab": {
+                "properties": {
+                  "shape": {
+                    "type": "string",
+                    "enum": [
+                      "T-Shape",
+                      "Half T-Shape"
+                    ],
+                    "title": "Slab Shape",
+                    "description": "Shape of the slab",
+                    "default": "T-Shape"
+                  },
+                  "thickness": {
+                    "properties": {
+                      "value": {
+                        "type": "number",
+                        "title": "Value",
+                        "description": "Length"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "enum": [
+                          "mm",
+                          "cm",
+                          "m",
+                          "in",
+                          "ft"
+                        ],
+                        "title": "enUnitLength"
+                      }
+                    },
+                    "type": "object",
+                    "title": "Slab Thickness",
+                    "description": "Thickness of the slab in millimeters, representing the depth of the concrete slab section.",
+                    "x-component-detail": {
+                      "id": "moapy.data_pre.Length"
+                    }
+                  }
+                },
+                "type": "object",
+                "title": "Slab",
+                "description": "Defines the concrete slab properties used in the composite beam, including the thickness of the slab.",
+                "x-component-detail": {
+                  "id": "moapy.dgnengine.eurocode4_composited_beam.CompositedSlab"
+                }
+              },
+              "girder": {
+                "properties": {
+                  "shape": {
+                    "type": "string",
+                    "title": "Section Shape",
+                    "description": "Structural steel section profile type (e.g., H-shape, T-shape, Channel, Angle). This parameter defines the fundamental cross-sectional geometry of the steel member.",
+                    "default": "H",
+                    "readOnly": true
+                  },
+                  "name": {
+                    "type": "string",
+                    "enum": [
+                      "HD 260x114",
+                      "HD 260x142",
+                      "HD 260x172",
+                      "HD 260x225",
+                      "HD 260x299",
+                      "HD 260x54.1",
+                      "HD 260x68.2",
+                      "HD 260x93",
+                      "HD 320x127",
+                      "HD 320x158",
+                      "HD 320x198",
+                      "HD 320x245",
+                      "HD 320x300",
+                      "HD 320x74.2",
+                      "HD 320x97.6",
+                      "HD 360x134",
+                      "HD 360x147",
+                      "HD 360x162",
+                      "HD 360x179",
+                      "HD 360x196",
+                      "HD 400x187",
+                      "HD 400x216",
+                      "HD 400x237",
+                      "HD 400x262",
+                      "HD 400x287",
+                      "HD 400x314",
+                      "HD 400x347",
+                      "HD 400x382",
+                      "HD 400x421",
+                      "HD 400x463",
+                      "HD 400x509",
+                      "HD 400x551",
+                      "HD 400x592",
+                      "HD 400x634",
+                      "HE 100 A",
+                      "HE 100 AA",
+                      "HE 100 B",
+                      "HE 100 C",
+                      "HE 100 M",
+                      "HE 1000 A",
+                      "HE 1000 AA",
+                      "HE 1000 B",
+                      "HE 1000 M",
+                      "HE 1000x249",
+                      "HE 1000x393",
+                      "HE 1000x415",
+                      "HE 1000x438",
+                      "HE 1000x494",
+                      "HE 1000x584",
+                      "HE 120 A",
+                      "HE 120 AA",
+                      "HE 120 B",
+                      "HE 120 C",
+                      "HE 120 M",
+                      "HE 140 A",
+                      "HE 140 AA",
+                      "HE 140 B",
+                      "HE 140 C",
+                      "HE 140 M",
+                      "HE 160 A",
+                      "HE 160 AA",
+                      "HE 160 B",
+                      "HE 160 C",
+                      "HE 160 M",
+                      "HE 180 A",
+                      "HE 180 AA",
+                      "HE 180 B",
+                      "HE 180 C",
+                      "HE 180 M",
+                      "HE 200 A",
+                      "HE 200 AA",
+                      "HE 200 B",
+                      "HE 200 C",
+                      "HE 200 M",
+                      "HE 220 A",
+                      "HE 220 AA",
+                      "HE 220 B",
+                      "HE 220 C",
+                      "HE 220 M",
+                      "HE 240 A",
+                      "HE 240 AA",
+                      "HE 240 B",
+                      "HE 240 C",
+                      "HE 240 M",
+                      "HE 260 A",
+                      "HE 260 AA",
+                      "HE 260 B",
+                      "HE 260 C",
+                      "HE 260 M",
+                      "HE 280 A",
+                      "HE 280 AA",
+                      "HE 280 B",
+                      "HE 280 C",
+                      "HE 280 M",
+                      "HE 300 A",
+                      "HE 300 AA",
+                      "HE 300 B",
+                      "HE 300 C",
+                      "HE 300 M",
+                      "HE 320 A",
+                      "HE 320 AA",
+                      "HE 320 B",
+                      "HE 320 C",
+                      "HE 320 M",
+                      "HE 340 A",
+                      "HE 340 AA",
+                      "HE 340 B",
+                      "HE 340 M",
+                      "HE 360 A",
+                      "HE 360 AA",
+                      "HE 360 B",
+                      "HE 360 M",
+                      "HE 400 A",
+                      "HE 400 AA",
+                      "HE 400 B",
+                      "HE 400 M",
+                      "HE 450 A",
+                      "HE 450 AA",
+                      "HE 450 B",
+                      "HE 450 M",
+                      "HE 500 A",
+                      "HE 500 AA",
+                      "HE 500 B",
+                      "HE 500 M",
+                      "HE 550 A",
+                      "HE 550 AA",
+                      "HE 550 B",
+                      "HE 550 M",
+                      "HE 600 A",
+                      "HE 600 AA",
+                      "HE 600 B",
+                      "HE 600 M",
+                      "HE 600x337",
+                      "HE 600x399",
+                      "HE 650 A",
+                      "HE 650 AA",
+                      "HE 650 B",
+                      "HE 650 M",
+                      "HE 650x343",
+                      "HE 650x407",
+                      "HE 700 A",
+                      "HE 700 AA",
+                      "HE 700 B",
+                      "HE 700 M",
+                      "HE 700x352",
+                      "HE 700x418",
+                      "HE 800 A",
+                      "HE 800 AA",
+                      "HE 800 B",
+                      "HE 800 M",
+                      "HE 800x373",
+                      "HE 800x444",
+                      "HE 900 A",
+                      "HE 900 AA",
+                      "HE 900 B",
+                      "HE 900 M",
+                      "HE 900x391",
+                      "HE 900x466",
+                      "HL 1000 A",
+                      "HL 1000 AA",
+                      "HL 1000 B",
+                      "HL 1000 M",
+                      "HL 1000x443",
+                      "HL 1000x483",
+                      "HL 1000x539",
+                      "HL 1000x554",
+                      "HL 1000x591",
+                      "HL 1000x642",
+                      "HL 1000x748",
+                      "HL 1100 A",
+                      "HL 1100 B",
+                      "HL 1100 M",
+                      "HL 1100 R",
+                      "HL 1100x548",
+                      "HL 1100x607",
+                      "HL 920x344",
+                      "HL 920x368",
+                      "HL 920x390",
+                      "HL 920x420",
+                      "HL 920x449",
+                      "HL 920x491",
+                      "HL 920x537",
+                      "HL 920x588",
+                      "HL 920x656",
+                      "HL 920x725",
+                      "HL 920x787",
+                      "HLZ 1100 A",
+                      "HLZ 1100 B",
+                      "HLZ 1100 C",
+                      "HLZ 1100 D",
+                      "IPE 100",
+                      "IPE 120",
+                      "IPE 140",
+                      "IPE 160",
+                      "IPE 180",
+                      "IPE 200",
+                      "IPE 220",
+                      "IPE 240",
+                      "IPE 270",
+                      "IPE 300",
+                      "IPE 330",
+                      "IPE 360",
+                      "IPE 400",
+                      "IPE 450",
+                      "IPE 500",
+                      "IPE 550",
+                      "IPE 600",
+                      "IPE 750x134",
+                      "IPE 750x147",
+                      "IPE 750x173",
+                      "IPE 750x196",
+                      "IPE 750x220",
+                      "IPE 80",
+                      "IPE A 100",
+                      "IPE A 120",
+                      "IPE A 140",
+                      "IPE A 160",
+                      "IPE A 180",
+                      "IPE A 200",
+                      "IPE A 220",
+                      "IPE A 240",
+                      "IPE A 270",
+                      "IPE A 300",
+                      "IPE A 330",
+                      "IPE A 360",
+                      "IPE A 400",
+                      "IPE A 450",
+                      "IPE A 500",
+                      "IPE A 550",
+                      "IPE A 600",
+                      "IPE A 80",
+                      "IPE AA 100",
+                      "IPE AA 120",
+                      "IPE AA 140",
+                      "IPE AA 160",
+                      "IPE AA 180",
+                      "IPE AA 200",
+                      "IPE AA 220",
+                      "IPE AA 240",
+                      "IPE AA 80",
+                      "IPE O 180",
+                      "IPE O 200",
+                      "IPE O 220",
+                      "IPE O 240",
+                      "IPE O 270",
+                      "IPE O 300",
+                      "IPE O 330",
+                      "IPE O 360",
+                      "IPE O 400",
+                      "IPE O 450",
+                      "IPE O 500",
+                      "IPE O 550",
+                      "IPE O 600",
+                      "IPE V 400",
+                      "IPE V 450",
+                      "IPE V 500",
+                      "IPE V 550",
+                      "IPE V 600",
+                      "IPN 100",
+                      "IPN 120",
+                      "IPN 140",
+                      "IPN 160",
+                      "IPN 180",
+                      "IPN 200",
+                      "IPN 220",
+                      "IPN 240",
+                      "IPN 260",
+                      "IPN 280",
+                      "IPN 300",
+                      "IPN 320",
+                      "IPN 340",
+                      "IPN 360",
+                      "IPN 380",
+                      "IPN 400",
+                      "IPN 450",
+                      "IPN 500",
+                      "IPN 550",
+                      "IPN 600",
+                      "IPN 80",
+                      "J 102x102x23",
+                      "J 102x44x7",
+                      "J 114x114x27",
+                      "J 127x114x27",
+                      "J 127x114x29",
+                      "J 127x76x16",
+                      "J 152x127x37",
+                      "J 76x76x13",
+                      "J 76x76x15",
+                      "J 89x89x19",
+                      "UB 1000x400x296",
+                      "UB 1000x400x321",
+                      "UB 1000x400x371",
+                      "UB 1000x400x412",
+                      "UB 1000x400x443",
+                      "UB 1000x400x483",
+                      "UB 1000x400x539",
+                      "UB 1000x400x554",
+                      "UB 1000x400x591",
+                      "UB 1000x400x642",
+                      "UB 1000x400x748",
+                      "UB 1016x305x222",
+                      "UB 1016x305x249",
+                      "UB 1016x305x272",
+                      "UB 1016x305x314",
+                      "UB 1016x305x350",
+                      "UB 1016x305x393",
+                      "UB 1016x305x415",
+                      "UB 1016x305x438",
+                      "UB 1016x305x494",
+                      "UB 1016x305x584",
+                      "UB 1100x400x343",
+                      "UB 1100x400x390",
+                      "UB 1100x400x433",
+                      "UB 1100x400x499",
+                      "UB 1100x400x548",
+                      "UB 1100x400x607",
+                      "UB 127x76x13",
+                      "UB 152x89x16",
+                      "UB 178x102x19",
+                      "UB 203x102x23",
+                      "UB 203x133x25",
+                      "UB 203x133x30",
+                      "UB 254x102x22",
+                      "UB 254x102x25",
+                      "UB 254x102x28",
+                      "UB 254x146x31",
+                      "UB 254x146x37",
+                      "UB 254x146x43",
+                      "UB 305x102x25",
+                      "UB 305x102x28",
+                      "UB 305x102x33",
+                      "UB 305x127x37",
+                      "UB 305x127x42",
+                      "UB 305x127x48",
+                      "UB 305x165x40",
+                      "UB 305x165x46",
+                      "UB 305x165x54",
+                      "UB 356x127x33",
+                      "UB 356x127x39",
+                      "UB 356x171x45",
+                      "UB 356x171x51",
+                      "UB 356x171x57",
+                      "UB 356x171x67",
+                      "UB 406x140x39",
+                      "UB 406x140x46",
+                      "UB 406x140x53",
+                      "UB 406x178x54",
+                      "UB 406x178x60",
+                      "UB 406x178x67",
+                      "UB 406x178x74",
+                      "UB 406x178x85",
+                      "UB 457x152x52",
+                      "UB 457x152x60",
+                      "UB 457x152x67",
+                      "UB 457x152x74",
+                      "UB 457x152x82",
+                      "UB 457x191x106",
+                      "UB 457x191x67",
+                      "UB 457x191x74",
+                      "UB 457x191x82",
+                      "UB 457x191x89",
+                      "UB 457x191x98",
+                      "UB 533x165x66",
+                      "UB 533x165x74",
+                      "UB 533x165x85",
+                      "UB 533x210x101",
+                      "UB 533x210x109",
+                      "UB 533x210x122",
+                      "UB 533x210x138",
+                      "UB 533x210x82",
+                      "UB 533x210x92",
+                      "UB 610x178x82",
+                      "UB 610x178x92",
+                      "UB 610x229x101",
+                      "UB 610x229x113",
+                      "UB 610x229x125",
+                      "UB 610x229x140",
+                      "UB 610x229x153",
+                      "UB 610x305x149",
+                      "UB 610x305x179",
+                      "UB 610x305x238",
+                      "UB 686x254x125",
+                      "UB 686x254x140",
+                      "UB 686x254x152",
+                      "UB 686x254x170",
+                      "UB 686x254x192",
+                      "UB 762x267x134",
+                      "UB 762x267x147",
+                      "UB 762x267x173",
+                      "UB 762x267x197",
+                      "UB 762x267x220",
+                      "UB 838x292x176",
+                      "UB 838x292x194",
+                      "UB 838x292x226",
+                      "UB 838x292x251",
+                      "UB 914x305x201",
+                      "UB 914x305x224",
+                      "UB 914x305x238",
+                      "UB 914x305x253",
+                      "UB 914x305x271",
+                      "UB 914x305x289",
+                      "UB 914x305x313",
+                      "UB 914x305x345",
+                      "UB 914x305x381",
+                      "UB 914x305x425",
+                      "UB 914x305x474",
+                      "UB 914x305x521",
+                      "UB 914x305x576",
+                      "UB 920x420x344",
+                      "UB 920x420x368",
+                      "UB 920x420x390",
+                      "UB 920x420x420",
+                      "UB 920x420x449",
+                      "UB 920x420x491",
+                      "UB 920x420x537",
+                      "UB 920x420x588",
+                      "UB 920x420x656",
+                      "UB 920x420x725",
+                      "UB 920x420x787",
+                      "UBP 203x203x45",
+                      "UBP 203x203x54",
+                      "UBP 254x254x63",
+                      "UBP 254x254x71",
+                      "UBP 254x254x85",
+                      "UBP 305x305x110",
+                      "UBP 305x305x126",
+                      "UBP 305x305x149",
+                      "UBP 305x305x186",
+                      "UBP 305x305x223",
+                      "UBP 305x305x79",
+                      "UBP 305x305x88",
+                      "UBP 305x305x95",
+                      "UBP 356x368x109",
+                      "UBP 356x368x133",
+                      "UBP 356x368x152",
+                      "UBP 356x368x174",
+                      "UC 152x152x23",
+                      "UC 152x152x30",
+                      "UC 152x152x37",
+                      "UC 152x152x44",
+                      "UC 152x152x51",
+                      "UC 203x203x100",
+                      "UC 203x203x46",
+                      "UC 203x203x52",
+                      "UC 203x203x60",
+                      "UC 203x203x71",
+                      "UC 203x203x86",
+                      "UC 254x254x107",
+                      "UC 254x254x132",
+                      "UC 254x254x167",
+                      "UC 254x254x73",
+                      "UC 254x254x89",
+                      "UC 305x305x118",
+                      "UC 305x305x137",
+                      "UC 305x305x158",
+                      "UC 305x305x198",
+                      "UC 305x305x240",
+                      "UC 305x305x283",
+                      "UC 305x305x313",
+                      "UC 305x305x342",
+                      "UC 305x305x97",
+                      "UC 356x368x129",
+                      "UC 356x368x153",
+                      "UC 356x368x177",
+                      "UC 356x368x202",
+                      "UC 356x406x235",
+                      "UC 356x406x287",
+                      "UC 356x406x340",
+                      "UC 356x406x393",
+                      "UC 356x406x467",
+                      "UC 356x406x509",
+                      "UC 356x406x551",
+                      "UC 356x406x592",
+                      "UC 356x406x634"
+                    ],
+                    "title": "Section Name",
+                    "description": "Standardized designation of the steel section based on industry specifications. This identifier corresponds to specific dimensional and structural properties in the steel section database.",
+                    "default": "IPE 400"
+                  }
+                },
+                "type": "object",
+                "title": "Girder",
+                "description": "Defines the steel girder properties used in the composite beam, including the spacing of the girder.",
+                "x-component-detail": {
+                  "id": "moapy.dgnengine.eurocode4_composited_beam.CompositedGirderSpacing"
+                }
+              }
+            },
+            "type": "object",
+            "title": "Section",
+            "description": "Defines the cross-sectional properties of the composite beam, including the steel girder and concrete slab.",
+            "x-component-detail": {
+              "id": "moapy.dgnengine.eurocode4_composited_beam.CompositedSect"
+            },
+            "default": {
+              "slab": {
+                "shape": "T-Shape",
+                "thickness": {
+                  "unit": "mm",
+                  "value": 150.0
+                }
+              },
+              "girder": {
+                "name": "IPE 400",
+                "shape": "H"
+              }
+            }
+          },
+          "load": {
+            "properties": {
+              "construction": {
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "minimum": 0.0,
+                    "title": "Value",
+                    "description": "Load value"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "enum": [
+                      "kN/m^{2}",
+                      "kip/ft^{2}"
+                    ],
+                    "title": "enUnitLoad"
+                  }
+                },
+                "type": "object",
+                "title": "Construction Load",
+                "description": "Load associated with construction activities, such as temporary loads during building phases.",
+                "x-component-detail": {
+                  "id": "moapy.data_pre.Load"
+                }
+              },
+              "live": {
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "minimum": 0.0,
+                    "title": "Value",
+                    "description": "Load value"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "enum": [
+                      "kN/m^{2}",
+                      "kip/ft^{2}"
+                    ],
+                    "title": "enUnitLoad"
+                  }
+                },
+                "type": "object",
+                "title": "Live Load",
+                "description": "Load due to live or transient factors, including occupancy and usage of the structure over time.",
+                "x-component-detail": {
+                  "id": "moapy.data_pre.Load"
+                }
+              },
+              "finish": {
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "minimum": 0.0,
+                    "title": "Value",
+                    "description": "Load value"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "enum": [
+                      "kN/m^{2}",
+                      "kip/ft^{2}"
+                    ],
+                    "title": "enUnitLoad"
+                  }
+                },
+                "type": "object",
+                "title": "Finish Load",
+                "description": "Load from finishing activities, such as flooring, roofing, or interior elements added at the end of construction.",
+                "x-component-detail": {
+                  "id": "moapy.data_pre.Load"
+                }
+              }
+            },
+            "type": "object",
+            "title": "Unit Loads",
+            "description": "You need to define the different loads that need to be considered in architectural and structural design. By providing specific information about each type of load, engineers can evaluate and design the safety and performance of structures.",
+            "x-component-detail": {
+              "id": "moapy.data_pre.UnitLoads"
+            },
+            "default": {
+              "construction": {
+                "unit": "kN/m^{2}",
+                "value": 0.0
+              },
+              "live": {
+                "unit": "kN/m^{2}",
+                "value": 0.0
+              },
+              "finish": {
+                "unit": "kN/m^{2}",
+                "value": 0.0
+              }
+            }
+          },
+          "shear_conn": {
+            "properties": {
+              "name": {
+                "type": "string",
+                "enum": [
+                  "M6",
+                  "M8",
+                  "M9",
+                  "M13",
+                  "M16",
+                  "M19",
+                  "M22",
+                  "M25"
+                ],
+                "title": "Bolt Size",
+                "description": "The size of the bolt, typically denoted by the outer diameter (e.g., M20, M10)",
+                "default": "M19"
+              },
+              "num": {
+                "type": "integer",
+                "enum": [
+                  1,
+                  2,
+                  3
+                ],
+                "maximum": 3.0,
+                "minimum": 0.0,
+                "title": "Number of Shear Connectors",
+                "description": "Number of shear connectors (stud bolts) used in the connection.",
+                "default": 1
+              },
+              "space": {
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "title": "Value",
+                    "description": "Length"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "enum": [
+                      "mm",
+                      "cm",
+                      "m",
+                      "in",
+                      "ft"
+                    ],
+                    "title": "enUnitLength"
+                  }
+                },
+                "type": "object",
+                "title": "Shear Connector Spacing",
+                "description": "Spacing between adjacent shear connectors (studs).",
+                "x-component-detail": {
+                  "id": "moapy.data_pre.Length"
+                }
+              },
+              "length": {
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "title": "Value",
+                    "description": "Length"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "enum": [
+                      "mm",
+                      "cm",
+                      "m",
+                      "in",
+                      "ft"
+                    ],
+                    "title": "enUnitLength"
+                  }
+                },
+                "type": "object",
+                "title": "Shear Connector Length",
+                "description": "Length of each shear connector (stud).",
+                "x-component-detail": {
+                  "id": "moapy.data_pre.Length"
+                }
+              }
+            },
+            "type": "object",
+            "title": "Shear Connector",
+            "description": "Shear connectors are critical in transferring forces between connected structural elements. They play a key role in ensuring the strength and stability of a structure, and are designed to meet specific requirements based on the materials, configuration, and design load. Proper selection and placement of shear connectors enhance the safety, strength, and durability of the structure.",
+            "x-component-detail": {
+              "id": "moapy.steel_pre.ShearConnector_EC"
+            },
+            "default": {
+              "name": "M19",
+              "num": 1,
+              "space": {
+                "unit": "mm",
+                "value": 300.0
+              },
+              "length": {
+                "unit": "mm",
+                "value": 100.0
+              }
+            }
+          },
+          "param": {
+            "properties": {
+              "leng": {
+                "properties": {
+                  "span": {
+                    "properties": {
+                      "value": {
+                        "type": "number",
+                        "title": "Value",
+                        "description": "Length"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "enum": [
+                          "mm",
+                          "cm",
+                          "m",
+                          "in",
+                          "ft"
+                        ],
+                        "title": "enUnitLength"
+                      }
+                    },
+                    "type": "object",
+                    "title": "Span Length",
+                    "description": "The distance between two supports of the girder. This is a critical measurement in determining the load-carrying capacity of the girder.",
+                    "x-component-detail": {
+                      "id": "moapy.data_pre.Length"
+                    }
+                  },
+                  "spacing": {
+                    "properties": {
+                      "value": {
+                        "type": "number",
+                        "title": "Value",
+                        "description": "Length"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "enum": [
+                          "mm",
+                          "cm",
+                          "m",
+                          "in",
+                          "ft"
+                        ],
+                        "title": "enUnitLength"
+                      }
+                    },
+                    "type": "object",
+                    "title": "Spacing",
+                    "description": "The distance between adjacent girders. Proper spacing ensures optimal load distribution and stability of the structure.",
+                    "x-component-detail": {
+                      "id": "moapy.data_pre.Length"
+                    }
+                  },
+                  "lb": {
+                    "properties": {
+                      "value": {
+                        "type": "number",
+                        "title": "Value",
+                        "description": "Length"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "enum": [
+                          "mm",
+                          "cm",
+                          "m",
+                          "in",
+                          "ft"
+                        ],
+                        "title": "enUnitLength"
+                      }
+                    },
+                    "type": "object",
+                    "title": "Unbraced Length",
+                    "description": "The distance between points that are considered unbraced for lateral torsional buckling. This is a critical parameter in determining the stability of the girder.",
+                    "x-component-detail": {
+                      "id": "moapy.data_pre.Length"
+                    }
+                  }
+                },
+                "type": "object",
+                "title": "Girder",
+                "description": "Length of the girder in meters, representing the span of the composite beam.",
+                "x-component-detail": {
+                  "id": "moapy.rc_pre.CompositedParam"
+                }
+              }
+            },
+            "type": "object",
+            "title": "Design Parameter",
+            "description": "Defines the design parameters for the composite beam, including the length of the girder.",
+            "x-component-detail": {
+              "id": "moapy.dgnengine.eurocode4_composited_beam.CompositedParameter"
+            },
+            "default": {
+              "leng": {
+                "lb": {
+                  "unit": "m",
+                  "value": 10.0
+                },
+                "spacing": {
+                  "unit": "m",
+                  "value": 3.0
+                },
+                "span": {
+                  "unit": "m",
+                  "value": 10.0
+                }
+              }
+            }
+          }
+        },
+        "type": "object",
+        "title": "report ec4 composited beam"
+      }
+    }
+  }
+}

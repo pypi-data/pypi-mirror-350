@@ -1,0 +1,302 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.2.5"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    },
+    {
+      "url": "https://moa.rpm.kr-st-midasit.com/backend/function-executor/python-execute/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-designers_guide-func_execute-calc_content_33": {
+      "post": {
+        "summary": "Behaviour Factor Calculation for Bridges",
+        "description": "[EN1998-2] This guide outlines the process of calculating the seismic behaviour factor (q) for bridges, categorized by the type of ductile members in the structure. It focuses on how different bridge components, such as reinforced concrete and steel piers, and struts, influence the behaviour factor through their ability to dissipate energy during seismic events. Important variables, such as shear span ratio, plastic hinge behaviour, and the depth of cross-sections, are explained to help ensure that the correct q values are applied for accurate and safe seismic bridge design.",
+        "x-content-info": {
+          "standardType": "EUROCODE",
+          "codeName": "EN1998-2",
+          "codeTitle": "Eurocode 8 \u2014 Design of structures for earthquake resistance \u2014 Part 2: Bridges",
+          "title": "Behaviour Factor Calculation for Bridges",
+          "description": "[EN1998-2] This guide outlines the process of calculating the seismic behaviour factor (q) for bridges, categorized by the type of ductile members in the structure. It focuses on how different bridge components, such as reinforced concrete and steel piers, and struts, influence the behaviour factor through their ability to dissipate energy during seismic events. Important variables, such as shear span ratio, plastic hinge behaviour, and the depth of cross-sections, are explained to help ensure that the correct q values are applied for accurate and safe seismic bridge design.",
+          "edition": "2005+A2:2011 Incorporating corrigenda February 2010 and February 2012",
+          "figurePath": "https://moa.rpm.kr-dv-midasit.com/design-guide/figures/detail_content_33.png"
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "G33_COMP_1": {
+                    "title": "Ductility behavior selection",
+                    "type": "string",
+                    "description": "This selection allows the user to choose between ductile structures, which dissipate significant seismic energy through plastic deformations, and limited ductile structures, which have reduced energy dissipation capabilities during seismic events.",
+                    "default": "Limited Ductile",
+                    "enum": [
+                      "Limited Ductile",
+                      "Ductile"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-2"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "4.1.6(Table4.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "ducbehav"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$ducbehav$$",
+                            "Description"
+                          ],
+                          [
+                            "Limited Ductile",
+                            "The seismic behavior of bridges with limited energy dissipation, where plastic hinges do not form significantly under design seismic action."
+                          ],
+                          [
+                            "Ductile",
+                            "structure designed to dissipate significant amounts of seismic energy through plastic hinges or other mechanisms during strong seismic motions."
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G33_COMP_2": {
+                    "title": "Ductile member types for seismic design",
+                    "type": "string",
+                    "description": "This menu allows the user to select the type of ductile members involved in seismic design. Options include different structural elements such as reinforced concrete piers, steel piers, abutments, and bridges, categorized by their ductility behavior. Each option reflects specific structural characteristics, like higher mode effects, plastic hinge reliability, and bracing types. The menu also includes options for seismic analysis in the vertical direction.",
+                    "default": "Reinforced concrete piers with inclined struts in bending",
+                    "enum": [
+                      "Bridges dominated by higher mode effects (e.g. cable-stayed bridges)",
+                      "Bridges with unreliable plastic hinge detailing (e.g. due to high axial force or low shear-span ratio)",
+                      "Reinforced concrete vertical piers in bending",
+                      "Reinforced concrete piers with inclined struts in bending",
+                      "Steel vertical piers in bending",
+                      "Steel piers with inclined struts in bending",
+                      "Steel piers with normal bracing",
+                      "Steel piers with eccentric bracing",
+                      "Abutments rigidly connected to the deck in general",
+                      "Abutments rigidly connected to the deck in cases of locked-in structures",
+                      "Arches",
+                      "Seismic analysis in the vertical direction"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-2"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "4.1.6(Table4.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "ductmemb"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G33_COMP_6": {
+                    "title": "Distance from the plastic hinge to the point of zero moment",
+                    "type": "number",
+                    "description": "The distance from the plastic hinge to the point where the bending moment becomes zero in a structural member is used in the calculation of the shear span ratio. It helps assess the member\u2019s bending and shear behavior under load. This measurement is crucial for evaluating how bending and shear forces interact in the structural element.",
+                    "default": 3.0,
+                    "minimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-2"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "4.1.6(Table4.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "L_{s}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "m"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G33_COMP_7": {
+                    "title": "Depth of the cross-section in the direction of flexure of the plastic hinge",
+                    "type": "number",
+                    "description": "The depth of the cross-section in the direction of flexure of the plastic hinge refers to the vertical distance measured within the structural member's cross-section along the axis where bending occurs. This measurement is crucial in determining how the member behaves under bending forces and is a key parameter when calculating the shear span ratio, influencing both the strength and ductility of the member.",
+                    "default": 1.5,
+                    "exclusiveMinimum": 0,
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1998-2"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "4.1.6(Table4.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "h"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "m"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 3
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "G33_COMP_1",
+                  "G33_COMP_2",
+                  "G33_COMP_6",
+                  "G33_COMP_7"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "isInput": false,
+                    "codeName": "",
+                    "reference": [
+                      ""
+                    ],
+                    "title": "",
+                    "description": "",
+                    "figurePath": "",
+                    "descriptTable": [],
+                    "compType": "",
+                    "symbol": "",
+                    "result": {
+                      "value": "0.0",
+                      "table": [],
+                      "formula": [],
+                      "variables": {}
+                    },
+                    "refStd": "",
+                    "unit": "",
+                    "notation": "standard",
+                    "decimal": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

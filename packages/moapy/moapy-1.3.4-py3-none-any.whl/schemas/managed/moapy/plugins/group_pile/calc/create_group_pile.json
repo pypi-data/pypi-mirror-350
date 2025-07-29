@@ -1,0 +1,241 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.1.3"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    },
+    {
+      "url": "https://moa.rpm.kr-st-midasit.com/backend/function-executor/python-execute/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-plugins-group_pile-calc-create_group_pile": {
+      "post": {
+        "summary": "Create Group Pile",
+        "description": "Create Group Pile",
+        "operationId": "create group pile",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/create_group_pile"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "title": "Response Create Group Pile"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateGroupPile": {
+        "properties": {
+          "pile_matl_ID": {
+            "type": "integer",
+            "title": "Pile Matl Id",
+            "description": "pile material ID",
+            "default": 3
+          },
+          "pile_sect_ID": {
+            "type": "integer",
+            "title": "Pile Sect Id",
+            "description": "pile section ID",
+            "default": 6
+          },
+          "cap_matl_ID": {
+            "type": "integer",
+            "title": "Cap Matl Id",
+            "description": "cap material ID",
+            "default": 3
+          },
+          "cap_sect_ID": {
+            "type": "integer",
+            "title": "Cap Sect Id",
+            "description": "cap section ID",
+            "default": 5
+          },
+          "pile_start_nb": {
+            "type": "integer",
+            "title": "Pile Start Nb",
+            "description": "pile start node number",
+            "default": 1000
+          },
+          "cap_start_nb": {
+            "type": "integer",
+            "title": "Cap Start Nb",
+            "description": "cap start node number",
+            "default": 100
+          },
+          "pile_array_long": {
+            "type": "integer",
+            "title": "Pile Array Long",
+            "description": "pile array long",
+            "default": 2
+          },
+          "pile_array_tran": {
+            "type": "integer",
+            "title": "Pile Array Tran",
+            "description": "pile array tran",
+            "default": 3
+          },
+          "pile_spacing_long": {
+            "type": "number",
+            "title": "Pile Spacing Long",
+            "description": "pile spacing long",
+            "default": 2.5
+          },
+          "pile_spacing_tran": {
+            "type": "number",
+            "title": "Pile Spacing Tran",
+            "description": "pile spacing tran",
+            "default": 2.5
+          },
+          "cap_edge_spacing_long": {
+            "type": "number",
+            "title": "Cap Edge Spacing Long",
+            "description": "cap edge spacing long",
+            "default": 1.25
+          },
+          "cap_edge_spacing_tran": {
+            "type": "number",
+            "title": "Cap Edge Spacing Tran",
+            "description": "cap edge spacing tran",
+            "default": 1.25
+          },
+          "spacing_style_int": {
+            "type": "integer",
+            "title": "Spacing Style Int",
+            "description": "spacing style int",
+            "default": 1
+          },
+          "pile_dia": {
+            "type": "number",
+            "title": "Pile Dia",
+            "description": "pile diameter",
+            "default": 1.2
+          },
+          "pile_length": {
+            "type": "number",
+            "title": "Pile Length",
+            "description": "pile length",
+            "default": 15.5
+          },
+          "cap_height": {
+            "type": "number",
+            "title": "Cap Height",
+            "description": "cap height",
+            "default": 2
+          },
+          "cap_modeling": {
+            "type": "string",
+            "title": "Cap Modeling",
+            "description": "cap modeling",
+            "default": "true"
+          },
+          "grup_ID": {
+            "type": "integer",
+            "title": "Grup Id",
+            "description": "group ID",
+            "default": 5
+          },
+          "bngr_ID": {
+            "type": "integer",
+            "title": "Bngr Id",
+            "description": "boundary group ID",
+            "default": 2
+          }
+        },
+        "type": "object",
+        "title": "CreateGroupPile",
+        "description": "Create Group Pile Input Class\n\nArgs:\n    pile_matl_ID (int): pile material ID\n    pile_sect_ID (int): pile section ID\n    cap_matl_ID (int): cap material ID\n    cap_sect_ID (int): cap section ID\n    pile_start_nb (int): pile start node number\n    cap_start_nb (int): cap start node number\n    pile_array_long (int): pile array long\n    pile_array_tran (int): pile array tran\n    pile_spacing_long (float): pile spacing long\n    pile_spacing_tran (float): pile spacing tran\n    cap_edge_spacing_long (float): cap edge spacing long\n    cap_edge_spacing_tran (float): cap edge spacing tran\n    spacing_style_int (int): spacing style int\n    pile_dia (float): pile diameter\n    pile_length (float): pile length\n    cap_height (float): cap height\n    cap_modeling (str): cap modeling\n    grup_ID (int): group ID\n    bngr_ID (int): boundary group ID"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "create_group_pile": {
+        "properties": {
+          "input": {
+            "$ref": "#/components/schemas/CreateGroupPile"
+          }
+        },
+        "type": "object",
+        "required": [
+          "input"
+        ],
+        "title": "create group pile"
+      }
+    }
+  }
+}

@@ -1,0 +1,797 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.2.5"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    },
+    {
+      "url": "https://moa.rpm.kr-st-midasit.com/backend/function-executor/python-execute/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-designers_guide-func_execute-calc_content_19": {
+      "post": {
+        "summary": "Reinforced Concrete Cover Calculation According to Eurocode",
+        "description": "[EN1992-1-1] This calculation guide provides a step-by-step process for selecting appropriate exposure classes and determining the minimum concrete cover to ensure the durability of reinforced concrete structures. It is based on the Eurocode standards for durability and cover to reinforcement. The guide includes considerations for environmental conditions, exposure to aggressive elements, and other factors that could affect the long-term performance of the concrete and reinforcement.",
+        "x-content-info": {
+          "standardType": "EUROCODE",
+          "codeName": "EN1992-1-1",
+          "codeTitle": "Eurocode 2: Design of concrete structures \u2014 Part 1-1: General rules and rules for buildings",
+          "title": "Reinforced Concrete Cover Calculation According to Eurocode",
+          "description": "[EN1992-1-1] This calculation guide provides a step-by-step process for selecting appropriate exposure classes and determining the minimum concrete cover to ensure the durability of reinforced concrete structures. It is based on the Eurocode standards for durability and cover to reinforcement. The guide includes considerations for environmental conditions, exposure to aggressive elements, and other factors that could affect the long-term performance of the concrete and reinforcement.",
+          "edition": "2004",
+          "figurePath": null
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "G14_COMP_4": {
+                    "title": "Compressive strength classes",
+                    "type": "string",
+                    "description": "Compressive strength classes categorize concrete based on its compressive strength, typically indicated by a standard notation such as C30/37, where the first number represents the cylinder strength and the second the cube strength. For more detailed information, refer toEN 206-1 (Table 7).",
+                    "default": "C12/15",
+                    "enum": [
+                      "C12/15",
+                      "C16/20",
+                      "C20/25",
+                      "C25/30",
+                      "C30/37",
+                      "C35/45",
+                      "C40/50",
+                      "C45/55",
+                      "C50/60",
+                      "C55/67",
+                      "C60/75",
+                      "C70/85",
+                      "C80/95",
+                      "C90/105"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "3.1.3(Table 3.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "C"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G19_COMP_1": {
+                    "title": "Classification of exposure classes based on environmental conditions",
+                    "type": "string",
+                    "description": "Exposure classes define the environmental conditions that influence the durability of concrete structures. These classes range from environments with no corrosion risk (X0) to those with risks of carbonation (XC), chloride ingress (XD), or marine exposure (XS). They guide the selection of materials and design measures to ensure long-term performance.",
+                    "default": "X0 (No risk of corrosion or attack)",
+                    "enum": [
+                      "X0 (No risk of corrosion or attack)",
+                      "XC1 (Dry or permanently wet)",
+                      "XC2 (Wet, rarely dry)",
+                      "XC3 (Moderate humidity)",
+                      "XC4 (Cyclic wet and dry)",
+                      "XD1 (Moderate humidity, exposure to airborne chlorides)",
+                      "XD2 (Wet, rarely dry, exposure to chlorides)",
+                      "XD3 (Cyclic wet and dry, exposure to chlorides)",
+                      "XS1 (Exposed to airborne salt but not in direct contact with sea water)",
+                      "XS2 (Permanently submerged)",
+                      "XS3 (Tidal, splash, and spray zones)"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "4.2(Table 4.1)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "expoclass"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": [
+                          [
+                            "$$expoclass$$",
+                            "Description",
+                            "Situations",
+                            "Structures"
+                          ],
+                          [
+                            "X0 (No risk of corrosion or attack)",
+                            "This class applies to concrete without reinforcement or embedded metal, in all exposures where there is no risk of freeze/thaw cycles, abrasion, or chemical attack. The X0 class is for situations where no corrosion or degradation of metal materials is expected due to the absence of moisture or aggressive environments.",
+                            "Concrete inside buildings with very low air humidity, such as in heated or well-ventilated indoor spaces. For instance, concrete used in office buildings, industrial facilities, or residential buildings where exposure to moisture or external weather conditions is minimal.",
+                            "- Interior columns, walls, or floors of commercial or residential buildings\n- Foundations or walls in sheltered areas, such as parking garages or storage facilities"
+                          ],
+                          [
+                            "XC1 (Dry or permanently wet)",
+                            "This class applies to environments where concrete is either always dry or permanently submerged in water, with no significant moisture variation.",
+                            "- Concrete inside buildings with low air humidity, such as offices or residential spaces.\n- Concrete structures permanently submerged in water, like water tanks or underwater elements.",
+                            "- Interior walls, floors, or columns of buildings in controlled low humidity conditions.\n- Underwater Foundations or water tanks."
+                          ],
+                          [
+                            "XC2 (Wet, rarely dry)",
+                            "Concrete is typically wet and rarely dries, being in long-term contact with water.",
+                            "- Concrete surfaces subject to continuous contact with water, such as water storage areas.\n- Foundations or structures exposed to groundwater.",
+                            "- Water reservoirs, tanks, or other storage structures.\n- Foundations and footings in areas with high groundwater levels."
+                          ],
+                          [
+                            "XC3 (Moderate humidity)",
+                            "Concrete is exposed to environments with moderate or high humidity but not subjected to direct rain exposure.",
+                            "- Concrete inside buildings with moderate to high humidity, such as basements or garages.\n- External concrete surfaces that are protected from direct rain exposure.",
+                            "- Parking garages, basements, or garages with moderate humidity.\n- Covered walkways or facades of buildings."
+                          ],
+                          [
+                            "XC4 (Cyclic wet and dry)",
+                            "Concrete experiences alternating cycles of wet and dry conditions but does not fit into the XC2 class (long-term water contact).",
+                            "- Concrete surfaces exposed to intermittent water contact, such as exterior walls, facades, or bridges.\n- Structures subject to seasonal or periodic wetting and drying.",
+                            "- Building facades, bridges, or outdoor platforms.\n- Coastal structures or parking decks exposed to periodic wet and dry conditions."
+                          ],
+                          [
+                            "XD1 (Moderate humidity, exposure to airborne chlorides)",
+                            "Concrete exposed to environments with moderate humidity where airborne chlorides are present, which can lead to corrosion of reinforcement.",
+                            "- Concrete surfaces in coastal areas where chlorides from sea air are present.\n- Structures near roads treated with de-icing salts during winter.",
+                            "- Concrete facades or walls exposed to airborne chlorides.\n- Building exteriors in coastal or highway-adjacent areas."
+                          ],
+                          [
+                            "XD2 (Wet, rarely dry, exposure to chlorides)",
+                            "Concrete in contact with water that contains chlorides, typically in industrial or swimming pool environments where concrete is wet most of the time and rarely dries.",
+                            "- Swimming pools with chloride-containing water.\n- Industrial facilities where water with dissolved chlorides is present.",
+                            "- Concrete surfaces in swimming pools.\n- Structural elements exposed to industrial waters containing chlorides, such as tanks or pipelines."
+                          ],
+                          [
+                            "XD3 (Cyclic wet and dry, exposure to chlorides)",
+                            "Concrete that experiences cycles of wet and dry conditions, and is exposed to chlorides, often from road salts or seawater spray.",
+                            "- Bridge components exposed to spray from roads treated with de-icing salts.\n- Surfaces of roads, pavements, or parking decks where chlorides are present.",
+                            "- Bridge piers and other components exposed to chloride spray.\n- Pavements, parking slabs, and other exposed flat concrete surfaces subject to wet/dry cycles and chloride exposure."
+                          ],
+                          [
+                            "XS1 (Exposed to airborne salt but not in direct contact with sea water)",
+                            "Concrete is exposed to airborne salt from the sea, but not in direct contact with seawater. Typically, this includes coastal areas where structures are near the sea but not submerged.",
+                            "- Structures located near the coast that are exposed to sea air containing salts.\n- Buildings and infrastructure within a certain distance from the shoreline.",
+                            "- Coastal buildings, piers, and bridges not directly in contact with seawater.\n- Infrastructure such as roads and retaining walls near the coastline."
+                          ],
+                          [
+                            "XS2 (Permanently submerged)",
+                            "Concrete that is permanently submerged in seawater, such as parts of marine structures that are constantly underwater.",
+                            "- Marine structures that are submerged below the waterline, such as sea walls and offshore platforms.\n- Foundations or parts of structures that are always in contact with seawater.",
+                            "- Submerged parts of marine structures like jetties, offshore platforms, and piers.\n- Underwater foundations of bridges and coastal structures."
+                          ],
+                          [
+                            "XS3 (Tidal, splash, and spray zones)",
+                            "Concrete is exposed to tidal action, splash, and spray zones where the structure may be alternately wet and dry due to tidal movements or splashing seawater.",
+                            "- Marine structures exposed to wave splash or tides, such as the base of coastal structures.\n- Areas exposed to seawater spray during high tides or storms.",
+                            "- Parts of marine structures like sea walls, jetties, or piers in tidal zones.\n- Coastal bridges and infrastructure exposed to tidal action and seawater spray."
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  "G19_COMP_2": {
+                    "title": "Concrete casting conditions",
+                    "type": "string",
+                    "description": "The Concrete Casting Conditions table outlines three scenarios: the general case, where standard deviation is considered; prepared ground, which requires additional cover for flat surfaces like blinding layers; and direct soil casting, where a larger cover is needed due to the irregularity of the soil.",
+                    "default": "General case",
+                    "enum": [
+                      "General case",
+                      "Prepared ground",
+                      "Direct soil"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "4.4.1.3(4)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "castcond"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G19_COMP_8": {
+                    "title": "Select uneven surface type for minimum cover adjustment",
+                    "type": "string",
+                    "description": "Choose the type of uneven surface to adjust the minimum cover requirement. Based on the surface condition (e.g., exposed aggregate or smooth surface), the cover thickness will be increased as per the specified values.",
+                    "default": "Exposed Aggregate",
+                    "enum": [
+                      "Exposed Aggregate",
+                      "None"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "4.4.1.2(11)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "unsurtype"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "mm"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G19_COMP_10": {
+                    "title": "Select concrete abrasion class for cover",
+                    "type": "string",
+                    "description": "Choose the appropriate abrasion class to adjust the concrete cover based on the expected wear and tear. This selection will affect the required concrete cover thickness depending on the abrasion conditions, such as moderate, heavy, or extreme abrasion.",
+                    "default": "None",
+                    "enum": [
+                      "None",
+                      "XM1 (Moderate abrasion: vehicles with air tires)",
+                      "XM2 (Heavy abrasion: forklifts with air or rubber tires)",
+                      "XM3 (Extreme abrasion: forklifts with steel tires or track vehicles)"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "4.4.1.2(13)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "abraclass"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G19_COMP_15": {
+                    "title": "Arrangement of bars",
+                    "type": "string",
+                    "description": "This table allows the selection of how the reinforcement bars are arranged in the concrete structure. Bars can either be separated, where individual bars are spaced apart, or bundled, where multiple bars are grouped together. The arrangement affects the concrete cover, bonding, and overall strength of the structure.",
+                    "default": "Separated",
+                    "enum": [
+                      "Separated",
+                      "Bundled"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "4.4.1.2(Table4.2)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "bararrange"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G19_COMP_16": {
+                    "title": "Maximum diameter of reinforcement",
+                    "type": "string",
+                    "description": "This refers to the maximum diameter of the reinforcing steel bars used in the concrete structure. It is a critical parameter in determining the necessary concrete cover to ensure proper bonding and protection against environmental factors. The diameter is selected based on design requirements and structural loads.",
+                    "default": "8",
+                    "enum": [
+                      "8",
+                      "10",
+                      "12",
+                      "16",
+                      "20",
+                      "25",
+                      "32",
+                      "40"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "7.3.3 (Table7.2N)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "\\phi"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "mm"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 0
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G19_COMP_17": {
+                    "title": "Number of bars in a bundle",
+                    "type": "string",
+                    "description": "This refers to the total number of reinforcement bars grouped together in a bundle. The number of bars in a bundle is allowed to range from a minimum of 2 to a maximum of 4, depending on the specific application.",
+                    "default": "2",
+                    "enum": [
+                      "2",
+                      "3",
+                      "4"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "8.9.1(2)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "n_{b}"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": "ea"
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "standard"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": 0
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G19_COMP_19": {
+                    "title": "Select aggregate size for minimum cover",
+                    "type": "string",
+                    "description": "Choose the aggregate size to adjust the minimum concrete cover for bond. Larger aggregate sizes may require an increase in the cover thickness to ensure proper bonding.",
+                    "default": "exceeds 32 mm",
+                    "enum": [
+                      "exceeds 32 mm",
+                      "does not exceed 32 mm"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "4.4.1.2(Table4.2)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "maxaggre"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G19_COMP_23": {
+                    "title": "Select design working life for structural class",
+                    "type": "string",
+                    "description": "Choose the design working life of the structure to adjust the structural class. Structures with a design life of 100 years or more require additional adjustments to ensure long-term durability.",
+                    "default": "less than 100 years",
+                    "enum": [
+                      "less than 100 years",
+                      "100 years or more"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "4.4.1.2(Table4.3N)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "wolife"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G19_COMP_26": {
+                    "title": "Select slab option for structural class",
+                    "type": "string",
+                    "description": "Choose the appropriate slab option to adjust the structural class based on the geometry. Selecting \"Slab Geometry\" will reduce the structural class by 1, while \"Non-Slab Geometry\" will have no effect on the structural class.",
+                    "default": "Slab Geometry",
+                    "enum": [
+                      "Slab Geometry",
+                      "Non-Slab Geometry"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "4.4.1.2(Table4.3N)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "slabop"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  },
+                  "G19_COMP_28": {
+                    "title": "Select quality control option for structural class",
+                    "type": "string",
+                    "description": "Choose the appropriate quality control option to adjust the structural class. Selecting \"Special quality control ensured\" will reduce the structural class by 1, while \"Standard quality control\" will maintain the current structural class without adjustments.",
+                    "default": "Special quality control ensured",
+                    "enum": [
+                      "Special quality control ensured",
+                      "Standard quality control"
+                    ],
+                    "x-component-detail": {
+                      "codeName": {
+                        "type": "string",
+                        "default": "EN1992-1-1"
+                      },
+                      "reference": {
+                        "type": "array",
+                        "default": [
+                          "4.4.1.2(Table4.3N)"
+                        ]
+                      },
+                      "compType": {
+                        "type": "string",
+                        "default": "table(dropdown)"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "default": "qualcon"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "default": ""
+                      },
+                      "notation": {
+                        "type": "string",
+                        "default": "text"
+                      },
+                      "decimal": {
+                        "type": "number",
+                        "default": null
+                      },
+                      "figurePath": {
+                        "type": "string",
+                        "value": null
+                      },
+                      "descriptTable": {
+                        "type": "array",
+                        "value": null
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "G14_COMP_4",
+                  "G19_COMP_1",
+                  "G19_COMP_2",
+                  "G19_COMP_8",
+                  "G19_COMP_10",
+                  "G19_COMP_15",
+                  "G19_COMP_16",
+                  "G19_COMP_17",
+                  "G19_COMP_19",
+                  "G19_COMP_23",
+                  "G19_COMP_26",
+                  "G19_COMP_28"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "isInput": false,
+                    "codeName": "",
+                    "reference": [
+                      ""
+                    ],
+                    "title": "",
+                    "description": "",
+                    "figurePath": "",
+                    "descriptTable": [],
+                    "compType": "",
+                    "symbol": "",
+                    "result": {
+                      "value": "0.0",
+                      "table": [],
+                      "formula": [],
+                      "variables": {}
+                    },
+                    "refStd": "",
+                    "unit": "",
+                    "notation": "standard",
+                    "decimal": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

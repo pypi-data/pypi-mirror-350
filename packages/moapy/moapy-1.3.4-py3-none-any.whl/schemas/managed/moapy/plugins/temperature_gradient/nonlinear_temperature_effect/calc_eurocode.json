@@ -1,0 +1,4615 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "moapy",
+    "description": "Schema for moapy",
+    "version": "1.1.3"
+  },
+  "servers": [
+    {
+      "url": "https://moa.rpm.kr-dv-midasit.com/backend/python-executor/"
+    },
+    {
+      "url": "https://moa.rpm.kr-st-midasit.com/backend/function-executor/python-execute/"
+    }
+  ],
+  "paths": {
+    "/execute?functionId=moapy-plugins-temperature_gradient-nonlinear_temperature_effect-calc_eurocode": {
+      "post": {
+        "summary": "Eurocode 0 Calculate Temperature Gradient",
+        "description": "Calculate Temperature Gradient from Section",
+        "operationId": "calc eurocode",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/calc_eurocode"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultNonlinearTemperatureEffect"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CompositeBoxGirderInput": {
+        "properties": {
+          "deck_type": {
+            "type": "string",
+            "enum": [
+              "2 - Composite Decks"
+            ],
+            "const": "2 - Composite Decks",
+            "title": "Deck Type",
+            "default": "2 - Composite Decks"
+          },
+          "section_type": {
+            "type": "string",
+            "enum": [
+              "Steel Box Girder"
+            ],
+            "const": "Steel Box Girder",
+            "title": "Section Type",
+            "default": "Steel Box Girder"
+          },
+          "section": {
+            "$ref": "#/components/schemas/CompositeBoxGirderSection",
+            "default": {
+              "girder_section": {
+                "material": {
+                  "elastic_modulus": {
+                    "unit": "MPa",
+                    "value": 210000.0
+                  },
+                  "thermal_expansion": {
+                    "unit": "1/\u00b0C",
+                    "value": 1.2e-05
+                  }
+                },
+                "shape": {
+                  "b1": {
+                    "unit": "mm",
+                    "value": 150.0
+                  },
+                  "b2": {
+                    "unit": "mm",
+                    "value": 900.0
+                  },
+                  "b3": {
+                    "unit": "mm",
+                    "value": 150.0
+                  },
+                  "b4": {
+                    "unit": "mm",
+                    "value": 150.0
+                  },
+                  "b5": {
+                    "unit": "mm",
+                    "value": 700.0
+                  },
+                  "b6": {
+                    "unit": "mm",
+                    "value": 150.0
+                  },
+                  "bot": {
+                    "unit": "mm",
+                    "value": 100.0
+                  },
+                  "h": {
+                    "unit": "mm",
+                    "value": 1000.0
+                  },
+                  "t1": {
+                    "unit": "mm",
+                    "value": 25.0
+                  },
+                  "t2": {
+                    "unit": "mm",
+                    "value": 25.0
+                  },
+                  "top": {
+                    "unit": "mm",
+                    "value": 0.0
+                  },
+                  "tw1": {
+                    "unit": "mm",
+                    "value": 30.0
+                  },
+                  "tw2": {
+                    "unit": "mm",
+                    "value": 30.0
+                  }
+                }
+              },
+              "slab_section": {
+                "material": {
+                  "elastic_modulus": {
+                    "unit": "MPa",
+                    "value": 210000.0
+                  },
+                  "thermal_expansion": {
+                    "unit": "1/\u00b0C",
+                    "value": 1.2e-05
+                  }
+                },
+                "shape": {
+                  "bc": {
+                    "unit": "mm",
+                    "value": 1800.0
+                  },
+                  "hh": {
+                    "unit": "mm",
+                    "value": 0.0
+                  },
+                  "sg": {
+                    "unit": "mm",
+                    "value": 0.0
+                  },
+                  "tc": {
+                    "unit": "mm",
+                    "value": 150.0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "type": "object",
+        "title": "Steel Box Girder"
+      },
+      "CompositeBoxGirderSection": {
+        "properties": {
+          "girder_section": {
+            "$ref": "#/components/schemas/SteelBoxGirderSection",
+            "default": {
+              "shape": {
+                "b1": {
+                  "unit": "mm",
+                  "value": 150.0
+                },
+                "b2": {
+                  "unit": "mm",
+                  "value": 900.0
+                },
+                "b3": {
+                  "unit": "mm",
+                  "value": 150.0
+                },
+                "b4": {
+                  "unit": "mm",
+                  "value": 150.0
+                },
+                "b5": {
+                  "unit": "mm",
+                  "value": 700.0
+                },
+                "b6": {
+                  "unit": "mm",
+                  "value": 150.0
+                },
+                "bot": {
+                  "unit": "mm",
+                  "value": 100.0
+                },
+                "h": {
+                  "unit": "mm",
+                  "value": 1000.0
+                },
+                "t1": {
+                  "unit": "mm",
+                  "value": 25.0
+                },
+                "t2": {
+                  "unit": "mm",
+                  "value": 25.0
+                },
+                "top": {
+                  "unit": "mm",
+                  "value": 0.0
+                },
+                "tw1": {
+                  "unit": "mm",
+                  "value": 30.0
+                },
+                "tw2": {
+                  "unit": "mm",
+                  "value": 30.0
+                }
+              },
+              "material": {
+                "elastic_modulus": {
+                  "unit": "MPa",
+                  "value": 210000.0
+                },
+                "thermal_expansion": {
+                  "unit": "1/\u00b0C",
+                  "value": 1.2e-05
+                }
+              }
+            }
+          },
+          "slab_section": {
+            "$ref": "#/components/schemas/SlabSection",
+            "default": {
+              "shape": {
+                "bc": {
+                  "unit": "mm",
+                  "value": 1800.0
+                },
+                "hh": {
+                  "unit": "mm",
+                  "value": 0.0
+                },
+                "sg": {
+                  "unit": "mm",
+                  "value": 0.0
+                },
+                "tc": {
+                  "unit": "mm",
+                  "value": 150.0
+                }
+              },
+              "material": {
+                "elastic_modulus": {
+                  "unit": "MPa",
+                  "value": 210000.0
+                },
+                "thermal_expansion": {
+                  "unit": "1/\u00b0C",
+                  "value": 1.2e-05
+                }
+              }
+            }
+          }
+        },
+        "type": "object",
+        "title": "CompositeBoxGirderSection"
+      },
+      "CompositeIGirderInput": {
+        "properties": {
+          "deck_type": {
+            "type": "string",
+            "enum": [
+              "2 - Composite Decks"
+            ],
+            "const": "2 - Composite Decks",
+            "title": "Deck Type",
+            "default": "2 - Composite Decks"
+          },
+          "section_type": {
+            "type": "string",
+            "enum": [
+              "Steel I Girder"
+            ],
+            "const": "Steel I Girder",
+            "title": "Section Type",
+            "default": "Steel I Girder"
+          },
+          "section": {
+            "$ref": "#/components/schemas/CompositeIGirderSection",
+            "default": {
+              "girder_section": {
+                "material": {
+                  "elastic_modulus": {
+                    "unit": "MPa",
+                    "value": 210000.0
+                  },
+                  "thermal_expansion": {
+                    "unit": "1/\u00b0C",
+                    "value": 1.2e-05
+                  }
+                },
+                "shape": {
+                  "b1": {
+                    "unit": "mm",
+                    "value": 150.0
+                  },
+                  "b2": {
+                    "unit": "mm",
+                    "value": 900.0
+                  },
+                  "b3": {
+                    "unit": "mm",
+                    "value": 150.0
+                  },
+                  "b4": {
+                    "unit": "mm",
+                    "value": 150.0
+                  },
+                  "bot": {
+                    "unit": "mm",
+                    "value": 100.0
+                  },
+                  "h": {
+                    "unit": "mm",
+                    "value": 1000.0
+                  },
+                  "t1": {
+                    "unit": "mm",
+                    "value": 25.0
+                  },
+                  "t2": {
+                    "unit": "mm",
+                    "value": 25.0
+                  },
+                  "top": {
+                    "unit": "mm",
+                    "value": 0.0
+                  },
+                  "tw": {
+                    "unit": "mm",
+                    "value": 30.0
+                  }
+                }
+              },
+              "slab_section": {
+                "material": {
+                  "elastic_modulus": {
+                    "unit": "MPa",
+                    "value": 210000.0
+                  },
+                  "thermal_expansion": {
+                    "unit": "1/\u00b0C",
+                    "value": 1.2e-05
+                  }
+                },
+                "shape": {
+                  "bc": {
+                    "unit": "mm",
+                    "value": 1800.0
+                  },
+                  "hh": {
+                    "unit": "mm",
+                    "value": 0.0
+                  },
+                  "sg": {
+                    "unit": "mm",
+                    "value": 0.0
+                  },
+                  "tc": {
+                    "unit": "mm",
+                    "value": 150.0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "type": "object",
+        "title": "Steel I Girder"
+      },
+      "CompositeIGirderSection": {
+        "properties": {
+          "girder_section": {
+            "$ref": "#/components/schemas/SteelIGirderSection",
+            "default": {
+              "shape": {
+                "b1": {
+                  "unit": "mm",
+                  "value": 150.0
+                },
+                "b2": {
+                  "unit": "mm",
+                  "value": 900.0
+                },
+                "b3": {
+                  "unit": "mm",
+                  "value": 150.0
+                },
+                "b4": {
+                  "unit": "mm",
+                  "value": 150.0
+                },
+                "bot": {
+                  "unit": "mm",
+                  "value": 100.0
+                },
+                "h": {
+                  "unit": "mm",
+                  "value": 1000.0
+                },
+                "t1": {
+                  "unit": "mm",
+                  "value": 25.0
+                },
+                "t2": {
+                  "unit": "mm",
+                  "value": 25.0
+                },
+                "top": {
+                  "unit": "mm",
+                  "value": 0.0
+                },
+                "tw": {
+                  "unit": "mm",
+                  "value": 30.0
+                }
+              },
+              "material": {
+                "elastic_modulus": {
+                  "unit": "MPa",
+                  "value": 210000.0
+                },
+                "thermal_expansion": {
+                  "unit": "1/\u00b0C",
+                  "value": 1.2e-05
+                }
+              }
+            }
+          },
+          "slab_section": {
+            "$ref": "#/components/schemas/SlabSection",
+            "default": {
+              "shape": {
+                "bc": {
+                  "unit": "mm",
+                  "value": 1800.0
+                },
+                "hh": {
+                  "unit": "mm",
+                  "value": 0.0
+                },
+                "sg": {
+                  "unit": "mm",
+                  "value": 0.0
+                },
+                "tc": {
+                  "unit": "mm",
+                  "value": 150.0
+                }
+              },
+              "material": {
+                "elastic_modulus": {
+                  "unit": "MPa",
+                  "value": 210000.0
+                },
+                "thermal_expansion": {
+                  "unit": "1/\u00b0C",
+                  "value": 1.2e-05
+                }
+              }
+            }
+          }
+        },
+        "type": "object",
+        "title": "CompositeIGirderSection"
+      },
+      "CompositeTubGirderInput": {
+        "properties": {
+          "deck_type": {
+            "type": "string",
+            "enum": [
+              "2 - Composite Decks"
+            ],
+            "const": "2 - Composite Decks",
+            "title": "Deck Type",
+            "default": "2 - Composite Decks"
+          },
+          "section_type": {
+            "type": "string",
+            "enum": [
+              "Steel Tub Girder"
+            ],
+            "const": "Steel Tub Girder",
+            "title": "Section Type",
+            "default": "Steel Tub Girder"
+          },
+          "section": {
+            "$ref": "#/components/schemas/CompositeTubSection",
+            "default": {
+              "girder_section": {
+                "material": {
+                  "elastic_modulus": {
+                    "unit": "MPa",
+                    "value": 210000.0
+                  },
+                  "thermal_expansion": {
+                    "unit": "1/\u00b0C",
+                    "value": 1.2e-05
+                  }
+                },
+                "shape": {
+                  "b1": {
+                    "unit": "mm",
+                    "value": 300.0
+                  },
+                  "b2": {
+                    "unit": "mm",
+                    "value": 600.0
+                  },
+                  "b3": {
+                    "unit": "mm",
+                    "value": 300.0
+                  },
+                  "b4": {
+                    "unit": "mm",
+                    "value": 150.0
+                  },
+                  "b5": {
+                    "unit": "mm",
+                    "value": 600.0
+                  },
+                  "b6": {
+                    "unit": "mm",
+                    "value": 150.0
+                  },
+                  "bf1": {
+                    "unit": "mm",
+                    "value": 200.0
+                  },
+                  "bf2": {
+                    "unit": "mm",
+                    "value": 200.0
+                  },
+                  "bot": {
+                    "unit": "mm",
+                    "value": 250.0
+                  },
+                  "h": {
+                    "unit": "mm",
+                    "value": 900.0
+                  },
+                  "t1": {
+                    "unit": "mm",
+                    "value": 26.0
+                  },
+                  "t2": {
+                    "unit": "mm",
+                    "value": 26.0
+                  },
+                  "top": {
+                    "unit": "mm",
+                    "value": 100.0
+                  },
+                  "tw1": {
+                    "unit": "mm",
+                    "value": 28.0
+                  },
+                  "tw2": {
+                    "unit": "mm",
+                    "value": 28.0
+                  }
+                }
+              },
+              "slab_section": {
+                "material": {
+                  "elastic_modulus": {
+                    "unit": "MPa",
+                    "value": 210000.0
+                  },
+                  "thermal_expansion": {
+                    "unit": "1/\u00b0C",
+                    "value": 1.2e-05
+                  }
+                },
+                "shape": {
+                  "bc": {
+                    "unit": "mm",
+                    "value": 1800.0
+                  },
+                  "hh": {
+                    "unit": "mm",
+                    "value": 0.0
+                  },
+                  "sg": {
+                    "unit": "mm",
+                    "value": 0.0
+                  },
+                  "tc": {
+                    "unit": "mm",
+                    "value": 150.0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "type": "object",
+        "title": "Steel Tub Girder"
+      },
+      "CompositeTubSection": {
+        "properties": {
+          "girder_section": {
+            "$ref": "#/components/schemas/SteelTubSection",
+            "default": {
+              "shape": {
+                "b1": {
+                  "unit": "mm",
+                  "value": 300.0
+                },
+                "b2": {
+                  "unit": "mm",
+                  "value": 600.0
+                },
+                "b3": {
+                  "unit": "mm",
+                  "value": 300.0
+                },
+                "b4": {
+                  "unit": "mm",
+                  "value": 150.0
+                },
+                "b5": {
+                  "unit": "mm",
+                  "value": 600.0
+                },
+                "b6": {
+                  "unit": "mm",
+                  "value": 150.0
+                },
+                "bf1": {
+                  "unit": "mm",
+                  "value": 200.0
+                },
+                "bf2": {
+                  "unit": "mm",
+                  "value": 200.0
+                },
+                "bot": {
+                  "unit": "mm",
+                  "value": 250.0
+                },
+                "h": {
+                  "unit": "mm",
+                  "value": 900.0
+                },
+                "t1": {
+                  "unit": "mm",
+                  "value": 26.0
+                },
+                "t2": {
+                  "unit": "mm",
+                  "value": 26.0
+                },
+                "top": {
+                  "unit": "mm",
+                  "value": 100.0
+                },
+                "tw1": {
+                  "unit": "mm",
+                  "value": 28.0
+                },
+                "tw2": {
+                  "unit": "mm",
+                  "value": 28.0
+                }
+              },
+              "material": {
+                "elastic_modulus": {
+                  "unit": "MPa",
+                  "value": 210000.0
+                },
+                "thermal_expansion": {
+                  "unit": "1/\u00b0C",
+                  "value": 1.2e-05
+                }
+              }
+            }
+          },
+          "slab_section": {
+            "$ref": "#/components/schemas/SlabSection",
+            "default": {
+              "shape": {
+                "bc": {
+                  "unit": "mm",
+                  "value": 1800.0
+                },
+                "hh": {
+                  "unit": "mm",
+                  "value": 0.0
+                },
+                "sg": {
+                  "unit": "mm",
+                  "value": 0.0
+                },
+                "tc": {
+                  "unit": "mm",
+                  "value": 150.0
+                }
+              },
+              "material": {
+                "elastic_modulus": {
+                  "unit": "MPa",
+                  "value": 210000.0
+                },
+                "thermal_expansion": {
+                  "unit": "1/\u00b0C",
+                  "value": 1.2e-05
+                }
+              }
+            }
+          }
+        },
+        "type": "object",
+        "title": "CompositeTubSection"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Length": {
+        "properties": {
+          "value": {
+            "type": "number",
+            "title": "Value",
+            "description": "Length",
+            "default": 0.0
+          },
+          "unit": {
+            "$ref": "#/components/schemas/enUnitLength",
+            "default": "mm"
+          }
+        },
+        "type": "object",
+        "title": "Length",
+        "description": "Length"
+      },
+      "NonlinearTemperatureInput": {
+        "properties": {
+          "section_input": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SteelBoxGirderInput"
+              },
+              {
+                "$ref": "#/components/schemas/SteelIGirderInput"
+              },
+              {
+                "$ref": "#/components/schemas/CompositeBoxGirderInput"
+              },
+              {
+                "$ref": "#/components/schemas/CompositeIGirderInput"
+              },
+              {
+                "$ref": "#/components/schemas/CompositeTubGirderInput"
+              },
+              {
+                "$ref": "#/components/schemas/PSC1CellInput"
+              },
+              {
+                "$ref": "#/components/schemas/PSC2CellInput"
+              },
+              {
+                "$ref": "#/components/schemas/PSC_I_Input"
+              },
+              {
+                "$ref": "#/components/schemas/PSC_T_Input"
+              }
+            ],
+            "title": "Section Input",
+            "default": {
+              "deck_type": "2 - Composite Decks",
+              "section_type": "Steel Box Girder",
+              "section": {
+                "girder_section": {
+                  "material": {
+                    "elastic_modulus": {
+                      "unit": "MPa",
+                      "value": 210000.0
+                    },
+                    "thermal_expansion": {
+                      "unit": "1/\u00b0C",
+                      "value": 1.2e-05
+                    }
+                  },
+                  "shape": {
+                    "b1": {
+                      "unit": "mm",
+                      "value": 150.0
+                    },
+                    "b2": {
+                      "unit": "mm",
+                      "value": 900.0
+                    },
+                    "b3": {
+                      "unit": "mm",
+                      "value": 150.0
+                    },
+                    "b4": {
+                      "unit": "mm",
+                      "value": 150.0
+                    },
+                    "b5": {
+                      "unit": "mm",
+                      "value": 700.0
+                    },
+                    "b6": {
+                      "unit": "mm",
+                      "value": 150.0
+                    },
+                    "bot": {
+                      "unit": "mm",
+                      "value": 100.0
+                    },
+                    "h": {
+                      "unit": "mm",
+                      "value": 1000.0
+                    },
+                    "t1": {
+                      "unit": "mm",
+                      "value": 25.0
+                    },
+                    "t2": {
+                      "unit": "mm",
+                      "value": 25.0
+                    },
+                    "top": {
+                      "unit": "mm",
+                      "value": 0.0
+                    },
+                    "tw1": {
+                      "unit": "mm",
+                      "value": 30.0
+                    },
+                    "tw2": {
+                      "unit": "mm",
+                      "value": 30.0
+                    }
+                  }
+                },
+                "slab_section": {
+                  "material": {
+                    "elastic_modulus": {
+                      "unit": "MPa",
+                      "value": 210000.0
+                    },
+                    "thermal_expansion": {
+                      "unit": "1/\u00b0C",
+                      "value": 1.2e-05
+                    }
+                  },
+                  "shape": {
+                    "bc": {
+                      "unit": "mm",
+                      "value": 1800.0
+                    },
+                    "hh": {
+                      "unit": "mm",
+                      "value": 0.0
+                    },
+                    "sg": {
+                      "unit": "mm",
+                      "value": 0.0
+                    },
+                    "tc": {
+                      "unit": "mm",
+                      "value": 150.0
+                    }
+                  }
+                }
+              }
+            },
+            "discriminator": {
+              "propertyName": "section_type",
+              "mapping": {
+                "Box Girder": "#/components/schemas/SteelBoxGirderInput",
+                "I Girder": "#/components/schemas/SteelIGirderInput",
+                "PSC-1Cell": "#/components/schemas/PSC1CellInput",
+                "PSC-2Cell": "#/components/schemas/PSC2CellInput",
+                "PSC-I": "#/components/schemas/PSC_I_Input",
+                "PSC-T": "#/components/schemas/PSC_T_Input",
+                "Steel Box Girder": "#/components/schemas/CompositeBoxGirderInput",
+                "Steel I Girder": "#/components/schemas/CompositeIGirderInput",
+                "Steel Tub Girder": "#/components/schemas/CompositeTubGirderInput"
+              }
+            }
+          },
+          "surfacing_input": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/UnSurfacedTypeInput"
+              },
+              {
+                "$ref": "#/components/schemas/WaterProofedTypeInput"
+              },
+              {
+                "$ref": "#/components/schemas/SurfacedTypeInput"
+              }
+            ],
+            "title": "Surfacing Type",
+            "default": {
+              "surfacing_type": "Thickness",
+              "surfacing_thickness": {
+                "unit": "mm",
+                "value": 30.0
+              }
+            },
+            "discriminator": {
+              "propertyName": "surfacing_type",
+              "mapping": {
+                "Thickness": "#/components/schemas/SurfacedTypeInput",
+                "Unsurfaced": "#/components/schemas/UnSurfacedTypeInput",
+                "Waterproofed": "#/components/schemas/WaterProofedTypeInput"
+              }
+            }
+          }
+        },
+        "type": "object",
+        "title": "NonlinearTemperatureInput",
+        "description": "Input"
+      },
+      "PSC1CellInput": {
+        "properties": {
+          "deck_type": {
+            "type": "string",
+            "enum": [
+              "3 - Concrete Decks"
+            ],
+            "const": "3 - Concrete Decks",
+            "title": "Deck Type",
+            "default": "3 - Concrete Decks"
+          },
+          "section_type": {
+            "type": "string",
+            "enum": [
+              "PSC-1Cell"
+            ],
+            "const": "PSC-1Cell",
+            "title": "Section Type",
+            "default": "PSC-1Cell"
+          },
+          "section": {
+            "$ref": "#/components/schemas/PSC1CellSection",
+            "default": {
+              "shape": {
+                "bi1": {
+                  "unit": "mm",
+                  "value": 1910.0
+                },
+                "bi1_1": {
+                  "unit": "mm",
+                  "value": 890.0
+                },
+                "bi1_2": {
+                  "unit": "mm",
+                  "value": 1560.0
+                },
+                "bi2_1": {
+                  "unit": "mm",
+                  "value": 1690.0
+                },
+                "bi3": {
+                  "unit": "mm",
+                  "value": 1480.0
+                },
+                "bi3_1": {
+                  "unit": "mm",
+                  "value": 570.0
+                },
+                "bi3_2": {
+                  "unit": "mm",
+                  "value": 1100.0
+                },
+                "bo1": {
+                  "unit": "mm",
+                  "value": 1230.0
+                },
+                "bo1_1": {
+                  "unit": "mm",
+                  "value": 440.0
+                },
+                "bo1_2": {
+                  "unit": "mm",
+                  "value": 900.0
+                },
+                "bo2": {
+                  "unit": "mm",
+                  "value": 600.0
+                },
+                "bo2_1": {
+                  "unit": "mm",
+                  "value": 20.0
+                },
+                "bo3": {
+                  "unit": "mm",
+                  "value": 1800.0
+                },
+                "hi1": {
+                  "unit": "mm",
+                  "value": 220.0
+                },
+                "hi2": {
+                  "unit": "mm",
+                  "value": 440.0
+                },
+                "hi2_1": {
+                  "unit": "mm",
+                  "value": 50.0
+                },
+                "hi2_2": {
+                  "unit": "mm",
+                  "value": 140.0
+                },
+                "hi3": {
+                  "unit": "mm",
+                  "value": 1230.0
+                },
+                "hi3_1": {
+                  "unit": "mm",
+                  "value": 880.0
+                },
+                "hi4": {
+                  "unit": "mm",
+                  "value": 200.0
+                },
+                "hi4_1": {
+                  "unit": "mm",
+                  "value": 25.0
+                },
+                "hi4_2": {
+                  "unit": "mm",
+                  "value": 90.0
+                },
+                "hi5": {
+                  "unit": "mm",
+                  "value": 210.0
+                },
+                "ho1": {
+                  "unit": "mm",
+                  "value": 250.0
+                },
+                "ho2": {
+                  "unit": "mm",
+                  "value": 420.0
+                },
+                "ho2_1": {
+                  "unit": "mm",
+                  "value": 55.0
+                },
+                "ho2_2": {
+                  "unit": "mm",
+                  "value": 180.0
+                },
+                "ho3": {
+                  "unit": "mm",
+                  "value": 1680.0
+                },
+                "ho3_1": {
+                  "unit": "mm",
+                  "value": 230.0
+                },
+                "ji1": true,
+                "ji2": true,
+                "ji3": true,
+                "ji4": true,
+                "ji5": true,
+                "jo1": true,
+                "jo2": true,
+                "jo3": true
+              },
+              "material": {
+                "elastic_modulus": {
+                  "unit": "MPa",
+                  "value": 210000.0
+                },
+                "thermal_expansion": {
+                  "unit": "1/\u00b0C",
+                  "value": 1.2e-05
+                }
+              }
+            }
+          }
+        },
+        "type": "object",
+        "title": "PSC-1Cell"
+      },
+      "PSC1CellSection": {
+        "properties": {
+          "shape": {
+            "$ref": "#/components/schemas/PSC1CellSectionShape",
+            "default": {
+              "jo1": true,
+              "jo2": true,
+              "jo3": true,
+              "ji1": true,
+              "ji2": true,
+              "ji3": true,
+              "ji4": true,
+              "ji5": true,
+              "ho1": {
+                "unit": "mm",
+                "value": 250.0
+              },
+              "ho2": {
+                "unit": "mm",
+                "value": 420.0
+              },
+              "ho2_1": {
+                "unit": "mm",
+                "value": 55.0
+              },
+              "ho2_2": {
+                "unit": "mm",
+                "value": 180.0
+              },
+              "ho3": {
+                "unit": "mm",
+                "value": 1680.0
+              },
+              "ho3_1": {
+                "unit": "mm",
+                "value": 230.0
+              },
+              "bo1": {
+                "unit": "mm",
+                "value": 1230.0
+              },
+              "bo1_1": {
+                "unit": "mm",
+                "value": 440.0
+              },
+              "bo1_2": {
+                "unit": "mm",
+                "value": 900.0
+              },
+              "bo2": {
+                "unit": "mm",
+                "value": 600.0
+              },
+              "bo2_1": {
+                "unit": "mm",
+                "value": 20.0
+              },
+              "bo3": {
+                "unit": "mm",
+                "value": 1800.0
+              },
+              "hi1": {
+                "unit": "mm",
+                "value": 220.0
+              },
+              "hi2": {
+                "unit": "mm",
+                "value": 440.0
+              },
+              "hi2_1": {
+                "unit": "mm",
+                "value": 50.0
+              },
+              "hi2_2": {
+                "unit": "mm",
+                "value": 140.0
+              },
+              "hi3": {
+                "unit": "mm",
+                "value": 1230.0
+              },
+              "hi3_1": {
+                "unit": "mm",
+                "value": 880.0
+              },
+              "hi4": {
+                "unit": "mm",
+                "value": 200.0
+              },
+              "hi4_1": {
+                "unit": "mm",
+                "value": 25.0
+              },
+              "hi4_2": {
+                "unit": "mm",
+                "value": 90.0
+              },
+              "hi5": {
+                "unit": "mm",
+                "value": 210.0
+              },
+              "bi1": {
+                "unit": "mm",
+                "value": 1910.0
+              },
+              "bi1_1": {
+                "unit": "mm",
+                "value": 890.0
+              },
+              "bi1_2": {
+                "unit": "mm",
+                "value": 1560.0
+              },
+              "bi2_1": {
+                "unit": "mm",
+                "value": 1690.0
+              },
+              "bi3": {
+                "unit": "mm",
+                "value": 1480.0
+              },
+              "bi3_1": {
+                "unit": "mm",
+                "value": 570.0
+              },
+              "bi3_2": {
+                "unit": "mm",
+                "value": 1100.0
+              }
+            }
+          },
+          "material": {
+            "$ref": "#/components/schemas/SectionMaterial",
+            "default": {
+              "thermal_expansion": {
+                "unit": "1/\u00b0C",
+                "value": 1.2e-05
+              },
+              "elastic_modulus": {
+                "unit": "MPa",
+                "value": 210000.0
+              }
+            }
+          }
+        },
+        "type": "object",
+        "title": "PSC1CellSection"
+      },
+      "PSC1CellSectionShape": {
+        "properties": {
+          "jo1": {
+            "type": "boolean",
+            "title": "Jo1",
+            "description": "JO1",
+            "default": true
+          },
+          "jo2": {
+            "type": "boolean",
+            "title": "Jo2",
+            "description": "JO2",
+            "default": true
+          },
+          "jo3": {
+            "type": "boolean",
+            "title": "Jo3",
+            "description": "JO3",
+            "default": true
+          },
+          "ji1": {
+            "type": "boolean",
+            "title": "Ji1",
+            "description": "JI1",
+            "default": true
+          },
+          "ji2": {
+            "type": "boolean",
+            "title": "Ji2",
+            "description": "JI2",
+            "default": true
+          },
+          "ji3": {
+            "type": "boolean",
+            "title": "Ji3",
+            "description": "JI3",
+            "default": true
+          },
+          "ji4": {
+            "type": "boolean",
+            "title": "Ji4",
+            "description": "JI4",
+            "default": true
+          },
+          "ji5": {
+            "type": "boolean",
+            "title": "Ji5",
+            "description": "JI5",
+            "default": true
+          },
+          "ho1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HO1",
+            "default": {
+              "value": 250.0,
+              "unit": "mm"
+            }
+          },
+          "ho2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HO2",
+            "default": {
+              "value": 420.0,
+              "unit": "mm"
+            }
+          },
+          "ho2_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HO2-1",
+            "default": {
+              "value": 55.0,
+              "unit": "mm"
+            }
+          },
+          "ho2_2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HO2-2",
+            "default": {
+              "value": 180.0,
+              "unit": "mm"
+            }
+          },
+          "ho3": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HO3",
+            "default": {
+              "value": 1680.0,
+              "unit": "mm"
+            }
+          },
+          "ho3_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HO3-1",
+            "default": {
+              "value": 230.0,
+              "unit": "mm"
+            }
+          },
+          "bo1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BO1",
+            "default": {
+              "value": 1230.0,
+              "unit": "mm"
+            }
+          },
+          "bo1_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BO1-1",
+            "default": {
+              "value": 440.0,
+              "unit": "mm"
+            }
+          },
+          "bo1_2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BO1-2",
+            "default": {
+              "value": 900.0,
+              "unit": "mm"
+            }
+          },
+          "bo2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BO2",
+            "default": {
+              "value": 600.0,
+              "unit": "mm"
+            }
+          },
+          "bo2_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BO2-1",
+            "default": {
+              "value": 20.0,
+              "unit": "mm"
+            }
+          },
+          "bo3": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BO3",
+            "default": {
+              "value": 1800.0,
+              "unit": "mm"
+            }
+          },
+          "hi1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HI1",
+            "default": {
+              "value": 220.0,
+              "unit": "mm"
+            }
+          },
+          "hi2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HI2",
+            "default": {
+              "value": 440.0,
+              "unit": "mm"
+            }
+          },
+          "hi2_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HI2-1",
+            "default": {
+              "value": 50.0,
+              "unit": "mm"
+            }
+          },
+          "hi2_2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HI2-2",
+            "default": {
+              "value": 140.0,
+              "unit": "mm"
+            }
+          },
+          "hi3": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HI3",
+            "default": {
+              "value": 1230.0,
+              "unit": "mm"
+            }
+          },
+          "hi3_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HI3-1",
+            "default": {
+              "value": 880.0,
+              "unit": "mm"
+            }
+          },
+          "hi4": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HI4",
+            "default": {
+              "value": 200.0,
+              "unit": "mm"
+            }
+          },
+          "hi4_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HI4-1",
+            "default": {
+              "value": 25.0,
+              "unit": "mm"
+            }
+          },
+          "hi4_2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HI4-2",
+            "default": {
+              "value": 90.0,
+              "unit": "mm"
+            }
+          },
+          "hi5": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HI5",
+            "default": {
+              "value": 210.0,
+              "unit": "mm"
+            }
+          },
+          "bi1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BI1",
+            "default": {
+              "value": 1910.0,
+              "unit": "mm"
+            }
+          },
+          "bi1_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BI1-1",
+            "default": {
+              "value": 890.0,
+              "unit": "mm"
+            }
+          },
+          "bi1_2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BI1-2",
+            "default": {
+              "value": 1560.0,
+              "unit": "mm"
+            }
+          },
+          "bi2_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BI2-1",
+            "default": {
+              "value": 1690.0,
+              "unit": "mm"
+            }
+          },
+          "bi3": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BI3",
+            "default": {
+              "value": 1480.0,
+              "unit": "mm"
+            }
+          },
+          "bi3_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BI3-1",
+            "default": {
+              "value": 570.0,
+              "unit": "mm"
+            }
+          },
+          "bi3_2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BI3-2",
+            "default": {
+              "value": 1100.0,
+              "unit": "mm"
+            }
+          }
+        },
+        "type": "object",
+        "title": "PSC1CellSectionShape"
+      },
+      "PSC2CellInput": {
+        "properties": {
+          "deck_type": {
+            "type": "string",
+            "enum": [
+              "3 - Concrete Decks"
+            ],
+            "const": "3 - Concrete Decks",
+            "title": "Deck Type",
+            "default": "3 - Concrete Decks"
+          },
+          "section_type": {
+            "type": "string",
+            "enum": [
+              "PSC-2Cell"
+            ],
+            "const": "PSC-2Cell",
+            "title": "Section Type",
+            "default": "PSC-2Cell"
+          },
+          "section": {
+            "$ref": "#/components/schemas/PSC2CellSection",
+            "default": {
+              "shape": {
+                "bi1": {
+                  "unit": "mm",
+                  "value": 1910.0
+                },
+                "bi1_1": {
+                  "unit": "mm",
+                  "value": 890.0
+                },
+                "bi1_2": {
+                  "unit": "mm",
+                  "value": 1560.0
+                },
+                "bi2_1": {
+                  "unit": "mm",
+                  "value": 1690.0
+                },
+                "bi3": {
+                  "unit": "mm",
+                  "value": 1480.0
+                },
+                "bi3_1": {
+                  "unit": "mm",
+                  "value": 570.0
+                },
+                "bi3_2": {
+                  "unit": "mm",
+                  "value": 1100.0
+                },
+                "bi4": {
+                  "unit": "mm",
+                  "value": 100.0
+                },
+                "bo1": {
+                  "unit": "mm",
+                  "value": 1230.0
+                },
+                "bo1_1": {
+                  "unit": "mm",
+                  "value": 440.0
+                },
+                "bo1_2": {
+                  "unit": "mm",
+                  "value": 900.0
+                },
+                "bo2": {
+                  "unit": "mm",
+                  "value": 600.0
+                },
+                "bo2_1": {
+                  "unit": "mm",
+                  "value": 20.0
+                },
+                "bo3": {
+                  "unit": "mm",
+                  "value": 1800.0
+                },
+                "hi1": {
+                  "unit": "mm",
+                  "value": 220.0
+                },
+                "hi2": {
+                  "unit": "mm",
+                  "value": 440.0
+                },
+                "hi2_1": {
+                  "unit": "mm",
+                  "value": 50.0
+                },
+                "hi2_2": {
+                  "unit": "mm",
+                  "value": 140.0
+                },
+                "hi3": {
+                  "unit": "mm",
+                  "value": 1230.0
+                },
+                "hi3_1": {
+                  "unit": "mm",
+                  "value": 880.0
+                },
+                "hi4": {
+                  "unit": "mm",
+                  "value": 200.0
+                },
+                "hi4_1": {
+                  "unit": "mm",
+                  "value": 25.0
+                },
+                "hi4_2": {
+                  "unit": "mm",
+                  "value": 90.0
+                },
+                "hi5": {
+                  "unit": "mm",
+                  "value": 210.0
+                },
+                "ho1": {
+                  "unit": "mm",
+                  "value": 230.0
+                },
+                "ho2": {
+                  "unit": "mm",
+                  "value": 420.0
+                },
+                "ho2_1": {
+                  "unit": "mm",
+                  "value": 55.0
+                },
+                "ho2_2": {
+                  "unit": "mm",
+                  "value": 180.0
+                },
+                "ho3": {
+                  "unit": "mm",
+                  "value": 1680.0
+                },
+                "ho3_1": {
+                  "unit": "mm",
+                  "value": 230.0
+                },
+                "ji1": true,
+                "ji2": true,
+                "ji3": true,
+                "ji4": true,
+                "ji5": true,
+                "jo1": true,
+                "jo2": true,
+                "jo3": true
+              },
+              "material": {
+                "elastic_modulus": {
+                  "unit": "MPa",
+                  "value": 210000.0
+                },
+                "thermal_expansion": {
+                  "unit": "1/\u00b0C",
+                  "value": 1.2e-05
+                }
+              }
+            }
+          }
+        },
+        "type": "object",
+        "title": "PSC-2Cell"
+      },
+      "PSC2CellSection": {
+        "properties": {
+          "shape": {
+            "$ref": "#/components/schemas/PSC2CellSectionShape",
+            "default": {
+              "jo1": true,
+              "jo2": true,
+              "jo3": true,
+              "ji1": true,
+              "ji2": true,
+              "ji3": true,
+              "ji4": true,
+              "ji5": true,
+              "ho1": {
+                "unit": "mm",
+                "value": 230.0
+              },
+              "ho2": {
+                "unit": "mm",
+                "value": 420.0
+              },
+              "ho2_1": {
+                "unit": "mm",
+                "value": 55.0
+              },
+              "ho2_2": {
+                "unit": "mm",
+                "value": 180.0
+              },
+              "ho3": {
+                "unit": "mm",
+                "value": 1680.0
+              },
+              "ho3_1": {
+                "unit": "mm",
+                "value": 230.0
+              },
+              "bo1": {
+                "unit": "mm",
+                "value": 1230.0
+              },
+              "bo1_1": {
+                "unit": "mm",
+                "value": 440.0
+              },
+              "bo1_2": {
+                "unit": "mm",
+                "value": 900.0
+              },
+              "bo2": {
+                "unit": "mm",
+                "value": 600.0
+              },
+              "bo2_1": {
+                "unit": "mm",
+                "value": 20.0
+              },
+              "bo3": {
+                "unit": "mm",
+                "value": 1800.0
+              },
+              "hi1": {
+                "unit": "mm",
+                "value": 220.0
+              },
+              "hi2": {
+                "unit": "mm",
+                "value": 440.0
+              },
+              "hi2_1": {
+                "unit": "mm",
+                "value": 50.0
+              },
+              "hi2_2": {
+                "unit": "mm",
+                "value": 140.0
+              },
+              "hi3": {
+                "unit": "mm",
+                "value": 1230.0
+              },
+              "hi3_1": {
+                "unit": "mm",
+                "value": 880.0
+              },
+              "hi4": {
+                "unit": "mm",
+                "value": 200.0
+              },
+              "hi4_1": {
+                "unit": "mm",
+                "value": 25.0
+              },
+              "hi4_2": {
+                "unit": "mm",
+                "value": 90.0
+              },
+              "hi5": {
+                "unit": "mm",
+                "value": 210.0
+              },
+              "bi1": {
+                "unit": "mm",
+                "value": 1910.0
+              },
+              "bi1_1": {
+                "unit": "mm",
+                "value": 890.0
+              },
+              "bi1_2": {
+                "unit": "mm",
+                "value": 1560.0
+              },
+              "bi2_1": {
+                "unit": "mm",
+                "value": 1690.0
+              },
+              "bi3": {
+                "unit": "mm",
+                "value": 1480.0
+              },
+              "bi3_1": {
+                "unit": "mm",
+                "value": 570.0
+              },
+              "bi3_2": {
+                "unit": "mm",
+                "value": 1100.0
+              },
+              "bi4": {
+                "unit": "mm",
+                "value": 100.0
+              }
+            }
+          },
+          "material": {
+            "$ref": "#/components/schemas/SectionMaterial",
+            "default": {
+              "thermal_expansion": {
+                "unit": "1/\u00b0C",
+                "value": 1.2e-05
+              },
+              "elastic_modulus": {
+                "unit": "MPa",
+                "value": 210000.0
+              }
+            }
+          }
+        },
+        "type": "object",
+        "title": "PSC2CellSection"
+      },
+      "PSC2CellSectionShape": {
+        "properties": {
+          "jo1": {
+            "type": "boolean",
+            "title": "Jo1",
+            "description": "JO1",
+            "default": true
+          },
+          "jo2": {
+            "type": "boolean",
+            "title": "Jo2",
+            "description": "JO2",
+            "default": true
+          },
+          "jo3": {
+            "type": "boolean",
+            "title": "Jo3",
+            "description": "JO3",
+            "default": true
+          },
+          "ji1": {
+            "type": "boolean",
+            "title": "Ji1",
+            "description": "JI1",
+            "default": true
+          },
+          "ji2": {
+            "type": "boolean",
+            "title": "Ji2",
+            "description": "JI2",
+            "default": true
+          },
+          "ji3": {
+            "type": "boolean",
+            "title": "Ji3",
+            "description": "JI3",
+            "default": true
+          },
+          "ji4": {
+            "type": "boolean",
+            "title": "Ji4",
+            "description": "JI4",
+            "default": true
+          },
+          "ji5": {
+            "type": "boolean",
+            "title": "Ji5",
+            "description": "JI5",
+            "default": true
+          },
+          "ho1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HO1",
+            "default": {
+              "value": 230.0,
+              "unit": "mm"
+            }
+          },
+          "ho2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HO2",
+            "default": {
+              "value": 420.0,
+              "unit": "mm"
+            }
+          },
+          "ho2_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HO2-1",
+            "default": {
+              "value": 55.0,
+              "unit": "mm"
+            }
+          },
+          "ho2_2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HO2-2",
+            "default": {
+              "value": 180.0,
+              "unit": "mm"
+            }
+          },
+          "ho3": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HO3",
+            "default": {
+              "value": 1680.0,
+              "unit": "mm"
+            }
+          },
+          "ho3_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HO3-1",
+            "default": {
+              "value": 230.0,
+              "unit": "mm"
+            }
+          },
+          "bo1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BO1",
+            "default": {
+              "value": 1230.0,
+              "unit": "mm"
+            }
+          },
+          "bo1_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BO1-1",
+            "default": {
+              "value": 440.0,
+              "unit": "mm"
+            }
+          },
+          "bo1_2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BO1-2",
+            "default": {
+              "value": 900.0,
+              "unit": "mm"
+            }
+          },
+          "bo2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BO2",
+            "default": {
+              "value": 600.0,
+              "unit": "mm"
+            }
+          },
+          "bo2_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BO2-1",
+            "default": {
+              "value": 20.0,
+              "unit": "mm"
+            }
+          },
+          "bo3": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BO3",
+            "default": {
+              "value": 1800.0,
+              "unit": "mm"
+            }
+          },
+          "hi1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HI1",
+            "default": {
+              "value": 220.0,
+              "unit": "mm"
+            }
+          },
+          "hi2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HI2",
+            "default": {
+              "value": 440.0,
+              "unit": "mm"
+            }
+          },
+          "hi2_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HI2-1",
+            "default": {
+              "value": 50.0,
+              "unit": "mm"
+            }
+          },
+          "hi2_2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HI2-2",
+            "default": {
+              "value": 140.0,
+              "unit": "mm"
+            }
+          },
+          "hi3": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HI3",
+            "default": {
+              "value": 1230.0,
+              "unit": "mm"
+            }
+          },
+          "hi3_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HI3-1",
+            "default": {
+              "value": 880.0,
+              "unit": "mm"
+            }
+          },
+          "hi4": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HI4",
+            "default": {
+              "value": 200.0,
+              "unit": "mm"
+            }
+          },
+          "hi4_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HI4-1",
+            "default": {
+              "value": 25.0,
+              "unit": "mm"
+            }
+          },
+          "hi4_2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HI4-2",
+            "default": {
+              "value": 90.0,
+              "unit": "mm"
+            }
+          },
+          "hi5": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HI5",
+            "default": {
+              "value": 210.0,
+              "unit": "mm"
+            }
+          },
+          "bi1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BI1",
+            "default": {
+              "value": 1910.0,
+              "unit": "mm"
+            }
+          },
+          "bi1_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BI1-1",
+            "default": {
+              "value": 890.0,
+              "unit": "mm"
+            }
+          },
+          "bi1_2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BI1-2",
+            "default": {
+              "value": 1560.0,
+              "unit": "mm"
+            }
+          },
+          "bi2_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BI2-1",
+            "default": {
+              "value": 1690.0,
+              "unit": "mm"
+            }
+          },
+          "bi3": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BI3",
+            "default": {
+              "value": 1480.0,
+              "unit": "mm"
+            }
+          },
+          "bi3_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BI3-1",
+            "default": {
+              "value": 570.0,
+              "unit": "mm"
+            }
+          },
+          "bi3_2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BI3-2",
+            "default": {
+              "value": 1100.0,
+              "unit": "mm"
+            }
+          },
+          "bi4": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BI4",
+            "default": {
+              "value": 100.0,
+              "unit": "mm"
+            }
+          }
+        },
+        "type": "object",
+        "title": "PSC2CellSectionShape"
+      },
+      "PSC_ISection": {
+        "properties": {
+          "shape": {
+            "$ref": "#/components/schemas/PSC_ISectionShape",
+            "default": {
+              "j1": true,
+              "jl1": true,
+              "jl2": true,
+              "jl3": true,
+              "jl4": true,
+              "jr1": true,
+              "jr2": true,
+              "jr3": true,
+              "jr4": true,
+              "h1": {
+                "unit": "mm",
+                "value": 2450.0
+              },
+              "hl1": {
+                "unit": "mm",
+                "value": 260.0
+              },
+              "hl2": {
+                "unit": "mm",
+                "value": 440.0
+              },
+              "hl2_1": {
+                "unit": "mm",
+                "value": 50.0
+              },
+              "hl2_2": {
+                "unit": "mm",
+                "value": 200.0
+              },
+              "hl3": {
+                "unit": "mm",
+                "value": 1130.0
+              },
+              "hl4": {
+                "unit": "mm",
+                "value": 400.0
+              },
+              "hl4_1": {
+                "unit": "mm",
+                "value": 70.0
+              },
+              "hl4_2": {
+                "unit": "mm",
+                "value": 220.0
+              },
+              "hl5": {
+                "unit": "mm",
+                "value": 270.0
+              },
+              "bl1": {
+                "unit": "mm",
+                "value": 160.0
+              },
+              "bl2": {
+                "unit": "mm",
+                "value": 1360.0
+              },
+              "bl2_1": {
+                "unit": "mm",
+                "value": 440.0
+              },
+              "bl2_2": {
+                "unit": "mm",
+                "value": 900.0
+              },
+              "bl4": {
+                "unit": "mm",
+                "value": 800.0
+              },
+              "bl4_1": {
+                "unit": "mm",
+                "value": 290.0
+              },
+              "bl4_2": {
+                "unit": "mm",
+                "value": 520.0
+              },
+              "hr1": {
+                "unit": "mm",
+                "value": 260.0
+              },
+              "hr2": {
+                "unit": "mm",
+                "value": 480.0
+              },
+              "hr2_1": {
+                "unit": "mm",
+                "value": 30.0
+              },
+              "hr2_2": {
+                "unit": "mm",
+                "value": 220.0
+              },
+              "hr3": {
+                "unit": "mm",
+                "value": 1090.0
+              },
+              "hr4": {
+                "unit": "mm",
+                "value": 440.0
+              },
+              "hr4_1": {
+                "unit": "mm",
+                "value": 50.0
+              },
+              "hr4_2": {
+                "unit": "mm",
+                "value": 240.0
+              },
+              "hr5": {
+                "unit": "mm",
+                "value": 250.0
+              },
+              "br1": {
+                "unit": "mm",
+                "value": 180.0
+              },
+              "br2": {
+                "unit": "mm",
+                "value": 1340.0
+              },
+              "br2_1": {
+                "unit": "mm",
+                "value": 460.0
+              },
+              "br2_2": {
+                "unit": "mm",
+                "value": 850.0
+              },
+              "br4": {
+                "unit": "mm",
+                "value": 820.0
+              },
+              "br4_1": {
+                "unit": "mm",
+                "value": 350.0
+              },
+              "br4_2": {
+                "unit": "mm",
+                "value": 570.0
+              }
+            }
+          },
+          "material": {
+            "$ref": "#/components/schemas/SectionMaterial",
+            "default": {
+              "thermal_expansion": {
+                "unit": "1/\u00b0C",
+                "value": 1.2e-05
+              },
+              "elastic_modulus": {
+                "unit": "MPa",
+                "value": 210000.0
+              }
+            }
+          }
+        },
+        "type": "object",
+        "title": "PSC_ISection"
+      },
+      "PSC_ISectionShape": {
+        "properties": {
+          "j1": {
+            "type": "boolean",
+            "title": "J1",
+            "description": "J1",
+            "default": true
+          },
+          "jl1": {
+            "type": "boolean",
+            "title": "Jl1",
+            "description": "JL1",
+            "default": true
+          },
+          "jl2": {
+            "type": "boolean",
+            "title": "Jl2",
+            "description": "JL2",
+            "default": true
+          },
+          "jl3": {
+            "type": "boolean",
+            "title": "Jl3",
+            "description": "JL3",
+            "default": true
+          },
+          "jl4": {
+            "type": "boolean",
+            "title": "Jl4",
+            "description": "JL4",
+            "default": true
+          },
+          "jr1": {
+            "type": "boolean",
+            "title": "Jr1",
+            "description": "JR1",
+            "default": true
+          },
+          "jr2": {
+            "type": "boolean",
+            "title": "Jr2",
+            "description": "JR2",
+            "default": true
+          },
+          "jr3": {
+            "type": "boolean",
+            "title": "Jr3",
+            "description": "JR3",
+            "default": true
+          },
+          "jr4": {
+            "type": "boolean",
+            "title": "Jr4",
+            "description": "JR4",
+            "default": true
+          },
+          "h1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "H1",
+            "default": {
+              "value": 2450.0,
+              "unit": "mm"
+            }
+          },
+          "hl1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HL1",
+            "default": {
+              "value": 260.0,
+              "unit": "mm"
+            }
+          },
+          "hl2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HL2",
+            "default": {
+              "value": 440.0,
+              "unit": "mm"
+            }
+          },
+          "hl2_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HL2-1",
+            "default": {
+              "value": 50.0,
+              "unit": "mm"
+            }
+          },
+          "hl2_2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HL2-2",
+            "default": {
+              "value": 200.0,
+              "unit": "mm"
+            }
+          },
+          "hl3": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HL3",
+            "default": {
+              "value": 1130.0,
+              "unit": "mm"
+            }
+          },
+          "hl4": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HL4",
+            "default": {
+              "value": 400.0,
+              "unit": "mm"
+            }
+          },
+          "hl4_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HL4-1",
+            "default": {
+              "value": 70.0,
+              "unit": "mm"
+            }
+          },
+          "hl4_2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HL4-2",
+            "default": {
+              "value": 220.0,
+              "unit": "mm"
+            }
+          },
+          "hl5": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HL5",
+            "default": {
+              "value": 270.0,
+              "unit": "mm"
+            }
+          },
+          "bl1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BL1",
+            "default": {
+              "value": 160.0,
+              "unit": "mm"
+            }
+          },
+          "bl2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BL2",
+            "default": {
+              "value": 1360.0,
+              "unit": "mm"
+            }
+          },
+          "bl2_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BL2-1",
+            "default": {
+              "value": 440.0,
+              "unit": "mm"
+            }
+          },
+          "bl2_2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BL2-2",
+            "default": {
+              "value": 900.0,
+              "unit": "mm"
+            }
+          },
+          "bl4": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BL4",
+            "default": {
+              "value": 800.0,
+              "unit": "mm"
+            }
+          },
+          "bl4_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BL4-1",
+            "default": {
+              "value": 290.0,
+              "unit": "mm"
+            }
+          },
+          "bl4_2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BL4-2",
+            "default": {
+              "value": 520.0,
+              "unit": "mm"
+            }
+          },
+          "hr1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HR1",
+            "default": {
+              "value": 260.0,
+              "unit": "mm"
+            }
+          },
+          "hr2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HR2",
+            "default": {
+              "value": 480.0,
+              "unit": "mm"
+            }
+          },
+          "hr2_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HR2-1",
+            "default": {
+              "value": 30.0,
+              "unit": "mm"
+            }
+          },
+          "hr2_2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HR2-2",
+            "default": {
+              "value": 220.0,
+              "unit": "mm"
+            }
+          },
+          "hr3": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HR3",
+            "default": {
+              "value": 1090.0,
+              "unit": "mm"
+            }
+          },
+          "hr4": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HR4",
+            "default": {
+              "value": 440.0,
+              "unit": "mm"
+            }
+          },
+          "hr4_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HR4-1",
+            "default": {
+              "value": 50.0,
+              "unit": "mm"
+            }
+          },
+          "hr4_2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HR4-2",
+            "default": {
+              "value": 240.0,
+              "unit": "mm"
+            }
+          },
+          "hr5": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HR5",
+            "default": {
+              "value": 250.0,
+              "unit": "mm"
+            }
+          },
+          "br1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BR1",
+            "default": {
+              "value": 180.0,
+              "unit": "mm"
+            }
+          },
+          "br2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BR2",
+            "default": {
+              "value": 1340.0,
+              "unit": "mm"
+            }
+          },
+          "br2_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BR2-1",
+            "default": {
+              "value": 460.0,
+              "unit": "mm"
+            }
+          },
+          "br2_2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BR2-2",
+            "default": {
+              "value": 850.0,
+              "unit": "mm"
+            }
+          },
+          "br4": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BR4",
+            "default": {
+              "value": 820.0,
+              "unit": "mm"
+            }
+          },
+          "br4_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BR4-1",
+            "default": {
+              "value": 350.0,
+              "unit": "mm"
+            }
+          },
+          "br4_2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BR4-2",
+            "default": {
+              "value": 570.0,
+              "unit": "mm"
+            }
+          }
+        },
+        "type": "object",
+        "title": "PSC_ISectionShape"
+      },
+      "PSC_I_Input": {
+        "properties": {
+          "deck_type": {
+            "type": "string",
+            "enum": [
+              "3 - Concrete Decks"
+            ],
+            "const": "3 - Concrete Decks",
+            "title": "Deck Type",
+            "default": "3 - Concrete Decks"
+          },
+          "section_type": {
+            "type": "string",
+            "enum": [
+              "PSC-I"
+            ],
+            "const": "PSC-I",
+            "title": "Section Type",
+            "default": "PSC-I"
+          },
+          "section": {
+            "$ref": "#/components/schemas/PSC_ISection",
+            "default": {
+              "shape": {
+                "bl1": {
+                  "unit": "mm",
+                  "value": 160.0
+                },
+                "bl2": {
+                  "unit": "mm",
+                  "value": 1360.0
+                },
+                "bl2_1": {
+                  "unit": "mm",
+                  "value": 440.0
+                },
+                "bl2_2": {
+                  "unit": "mm",
+                  "value": 900.0
+                },
+                "bl4": {
+                  "unit": "mm",
+                  "value": 800.0
+                },
+                "bl4_1": {
+                  "unit": "mm",
+                  "value": 290.0
+                },
+                "bl4_2": {
+                  "unit": "mm",
+                  "value": 520.0
+                },
+                "br1": {
+                  "unit": "mm",
+                  "value": 180.0
+                },
+                "br2": {
+                  "unit": "mm",
+                  "value": 1340.0
+                },
+                "br2_1": {
+                  "unit": "mm",
+                  "value": 460.0
+                },
+                "br2_2": {
+                  "unit": "mm",
+                  "value": 850.0
+                },
+                "br4": {
+                  "unit": "mm",
+                  "value": 820.0
+                },
+                "br4_1": {
+                  "unit": "mm",
+                  "value": 350.0
+                },
+                "br4_2": {
+                  "unit": "mm",
+                  "value": 570.0
+                },
+                "h1": {
+                  "unit": "mm",
+                  "value": 2450.0
+                },
+                "hl1": {
+                  "unit": "mm",
+                  "value": 260.0
+                },
+                "hl2": {
+                  "unit": "mm",
+                  "value": 440.0
+                },
+                "hl2_1": {
+                  "unit": "mm",
+                  "value": 50.0
+                },
+                "hl2_2": {
+                  "unit": "mm",
+                  "value": 200.0
+                },
+                "hl3": {
+                  "unit": "mm",
+                  "value": 1130.0
+                },
+                "hl4": {
+                  "unit": "mm",
+                  "value": 400.0
+                },
+                "hl4_1": {
+                  "unit": "mm",
+                  "value": 70.0
+                },
+                "hl4_2": {
+                  "unit": "mm",
+                  "value": 220.0
+                },
+                "hl5": {
+                  "unit": "mm",
+                  "value": 270.0
+                },
+                "hr1": {
+                  "unit": "mm",
+                  "value": 260.0
+                },
+                "hr2": {
+                  "unit": "mm",
+                  "value": 480.0
+                },
+                "hr2_1": {
+                  "unit": "mm",
+                  "value": 30.0
+                },
+                "hr2_2": {
+                  "unit": "mm",
+                  "value": 220.0
+                },
+                "hr3": {
+                  "unit": "mm",
+                  "value": 1090.0
+                },
+                "hr4": {
+                  "unit": "mm",
+                  "value": 440.0
+                },
+                "hr4_1": {
+                  "unit": "mm",
+                  "value": 50.0
+                },
+                "hr4_2": {
+                  "unit": "mm",
+                  "value": 240.0
+                },
+                "hr5": {
+                  "unit": "mm",
+                  "value": 250.0
+                },
+                "j1": true,
+                "jl1": true,
+                "jl2": true,
+                "jl3": true,
+                "jl4": true,
+                "jr1": true,
+                "jr2": true,
+                "jr3": true,
+                "jr4": true
+              },
+              "material": {
+                "elastic_modulus": {
+                  "unit": "MPa",
+                  "value": 210000.0
+                },
+                "thermal_expansion": {
+                  "unit": "1/\u00b0C",
+                  "value": 1.2e-05
+                }
+              }
+            }
+          }
+        },
+        "type": "object",
+        "title": "PSC-I"
+      },
+      "PSC_TSection": {
+        "properties": {
+          "shape": {
+            "$ref": "#/components/schemas/PSC_TSectionShape",
+            "default": {
+              "j1": true,
+              "jl1": true,
+              "jl2": true,
+              "jl3": true,
+              "jl4": true,
+              "jr1": true,
+              "jr2": true,
+              "jr3": true,
+              "jr4": true,
+              "h1": {
+                "unit": "mm",
+                "value": 2170.0
+              },
+              "hl1": {
+                "unit": "mm",
+                "value": 290.0
+              },
+              "hl2": {
+                "unit": "mm",
+                "value": 130.0
+              },
+              "hl3": {
+                "unit": "mm",
+                "value": 1800.0
+              },
+              "bl1": {
+                "unit": "mm",
+                "value": 210.0
+              },
+              "bl2": {
+                "unit": "mm",
+                "value": 130.0
+              },
+              "bl3": {
+                "unit": "mm",
+                "value": 1630.0
+              },
+              "bl4": {
+                "unit": "mm",
+                "value": 1830.0
+              },
+              "hl2_1": {
+                "unit": "mm",
+                "value": 25.0
+              },
+              "hl2_2": {
+                "unit": "mm",
+                "value": 80.0
+              },
+              "hl3_1": {
+                "unit": "mm",
+                "value": 1430.0
+              },
+              "hl3_2": {
+                "unit": "mm",
+                "value": 850.0
+              },
+              "bl2_1": {
+                "unit": "mm",
+                "value": 60.0
+              },
+              "bl2_2": {
+                "unit": "mm",
+                "value": 30.0
+              },
+              "bl3_1": {
+                "unit": "mm",
+                "value": 810.0
+              },
+              "bl3_2": {
+                "unit": "mm",
+                "value": 1420.0
+              },
+              "hr1": {
+                "unit": "mm",
+                "value": 290.0
+              },
+              "hr2": {
+                "unit": "mm",
+                "value": 280.0
+              },
+              "hr3": {
+                "unit": "mm",
+                "value": 1700.0
+              },
+              "br1": {
+                "unit": "mm",
+                "value": 190.0
+              },
+              "br2": {
+                "unit": "mm",
+                "value": 160.0
+              },
+              "br3": {
+                "unit": "mm",
+                "value": 1600.0
+              },
+              "br4": {
+                "unit": "mm",
+                "value": 1850.0
+              },
+              "hr2_1": {
+                "unit": "mm",
+                "value": 50.0
+              },
+              "hr2_2": {
+                "unit": "mm",
+                "value": 160.0
+              },
+              "hr3_1": {
+                "unit": "mm",
+                "value": 1400.0
+              },
+              "hr3_2": {
+                "unit": "mm",
+                "value": 850.0
+              },
+              "br2_1": {
+                "unit": "mm",
+                "value": 60.0
+              },
+              "br2_2": {
+                "unit": "mm",
+                "value": 20.0
+              },
+              "br3_1": {
+                "unit": "mm",
+                "value": 800.0
+              },
+              "br3_2": {
+                "unit": "mm",
+                "value": 1390.0
+              }
+            }
+          },
+          "material": {
+            "$ref": "#/components/schemas/SectionMaterial",
+            "default": {
+              "thermal_expansion": {
+                "unit": "1/\u00b0C",
+                "value": 1.2e-05
+              },
+              "elastic_modulus": {
+                "unit": "MPa",
+                "value": 210000.0
+              }
+            }
+          }
+        },
+        "type": "object",
+        "title": "PSC_TSection"
+      },
+      "PSC_TSectionShape": {
+        "properties": {
+          "j1": {
+            "type": "boolean",
+            "title": "J1",
+            "description": "J1",
+            "default": true
+          },
+          "jl1": {
+            "type": "boolean",
+            "title": "Jl1",
+            "description": "JL1",
+            "default": true
+          },
+          "jl2": {
+            "type": "boolean",
+            "title": "Jl2",
+            "description": "JL2",
+            "default": true
+          },
+          "jl3": {
+            "type": "boolean",
+            "title": "Jl3",
+            "description": "JL3",
+            "default": true
+          },
+          "jl4": {
+            "type": "boolean",
+            "title": "Jl4",
+            "description": "JL4",
+            "default": true
+          },
+          "jr1": {
+            "type": "boolean",
+            "title": "Jr1",
+            "description": "JR1",
+            "default": true
+          },
+          "jr2": {
+            "type": "boolean",
+            "title": "Jr2",
+            "description": "JR2",
+            "default": true
+          },
+          "jr3": {
+            "type": "boolean",
+            "title": "Jr3",
+            "description": "JR3",
+            "default": true
+          },
+          "jr4": {
+            "type": "boolean",
+            "title": "Jr4",
+            "description": "JR4",
+            "default": true
+          },
+          "h1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "H1",
+            "default": {
+              "value": 2170.0,
+              "unit": "mm"
+            }
+          },
+          "hl1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HL1",
+            "default": {
+              "value": 290.0,
+              "unit": "mm"
+            }
+          },
+          "hl2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HL2",
+            "default": {
+              "value": 130.0,
+              "unit": "mm"
+            }
+          },
+          "hl3": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HL3",
+            "default": {
+              "value": 1800.0,
+              "unit": "mm"
+            }
+          },
+          "bl1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BL1",
+            "default": {
+              "value": 210.0,
+              "unit": "mm"
+            }
+          },
+          "bl2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BL2",
+            "default": {
+              "value": 130.0,
+              "unit": "mm"
+            }
+          },
+          "bl3": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BL3",
+            "default": {
+              "value": 1630.0,
+              "unit": "mm"
+            }
+          },
+          "bl4": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BL4",
+            "default": {
+              "value": 1830.0,
+              "unit": "mm"
+            }
+          },
+          "hl2_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HL2-1",
+            "default": {
+              "value": 25.0,
+              "unit": "mm"
+            }
+          },
+          "hl2_2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HL2-2",
+            "default": {
+              "value": 80.0,
+              "unit": "mm"
+            }
+          },
+          "hl3_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HL3-1",
+            "default": {
+              "value": 1430.0,
+              "unit": "mm"
+            }
+          },
+          "hl3_2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HL3-2",
+            "default": {
+              "value": 850.0,
+              "unit": "mm"
+            }
+          },
+          "bl2_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BL2-1",
+            "default": {
+              "value": 60.0,
+              "unit": "mm"
+            }
+          },
+          "bl2_2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BL2-2",
+            "default": {
+              "value": 30.0,
+              "unit": "mm"
+            }
+          },
+          "bl3_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BL3-1",
+            "default": {
+              "value": 810.0,
+              "unit": "mm"
+            }
+          },
+          "bl3_2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BL3-2",
+            "default": {
+              "value": 1420.0,
+              "unit": "mm"
+            }
+          },
+          "hr1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HR1",
+            "default": {
+              "value": 290.0,
+              "unit": "mm"
+            }
+          },
+          "hr2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HR2",
+            "default": {
+              "value": 280.0,
+              "unit": "mm"
+            }
+          },
+          "hr3": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HR3",
+            "default": {
+              "value": 1700.0,
+              "unit": "mm"
+            }
+          },
+          "br1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BR1",
+            "default": {
+              "value": 190.0,
+              "unit": "mm"
+            }
+          },
+          "br2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BR2",
+            "default": {
+              "value": 160.0,
+              "unit": "mm"
+            }
+          },
+          "br3": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BR3",
+            "default": {
+              "value": 1600.0,
+              "unit": "mm"
+            }
+          },
+          "br4": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BR4",
+            "default": {
+              "value": 1850.0,
+              "unit": "mm"
+            }
+          },
+          "hr2_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HR2-1",
+            "default": {
+              "value": 50.0,
+              "unit": "mm"
+            }
+          },
+          "hr2_2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HR2-2",
+            "default": {
+              "value": 160.0,
+              "unit": "mm"
+            }
+          },
+          "hr3_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HR3-1",
+            "default": {
+              "value": 1400.0,
+              "unit": "mm"
+            }
+          },
+          "hr3_2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "HR3-2",
+            "default": {
+              "value": 850.0,
+              "unit": "mm"
+            }
+          },
+          "br2_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BR2-1",
+            "default": {
+              "value": 60.0,
+              "unit": "mm"
+            }
+          },
+          "br2_2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BR2-2",
+            "default": {
+              "value": 20.0,
+              "unit": "mm"
+            }
+          },
+          "br3_1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BR3-1",
+            "default": {
+              "value": 800.0,
+              "unit": "mm"
+            }
+          },
+          "br3_2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "BR3-2",
+            "default": {
+              "value": 1390.0,
+              "unit": "mm"
+            }
+          }
+        },
+        "type": "object",
+        "title": "PSC_TSectionShape"
+      },
+      "PSC_T_Input": {
+        "properties": {
+          "deck_type": {
+            "type": "string",
+            "enum": [
+              "3 - Concrete Decks"
+            ],
+            "const": "3 - Concrete Decks",
+            "title": "Deck Type",
+            "default": "3 - Concrete Decks"
+          },
+          "section_type": {
+            "type": "string",
+            "enum": [
+              "PSC-T"
+            ],
+            "const": "PSC-T",
+            "title": "Section Type",
+            "default": "PSC-T"
+          },
+          "section": {
+            "$ref": "#/components/schemas/PSC_TSection",
+            "default": {
+              "shape": {
+                "bl1": {
+                  "unit": "mm",
+                  "value": 210.0
+                },
+                "bl2": {
+                  "unit": "mm",
+                  "value": 130.0
+                },
+                "bl2_1": {
+                  "unit": "mm",
+                  "value": 60.0
+                },
+                "bl2_2": {
+                  "unit": "mm",
+                  "value": 30.0
+                },
+                "bl3": {
+                  "unit": "mm",
+                  "value": 1630.0
+                },
+                "bl3_1": {
+                  "unit": "mm",
+                  "value": 810.0
+                },
+                "bl3_2": {
+                  "unit": "mm",
+                  "value": 1420.0
+                },
+                "bl4": {
+                  "unit": "mm",
+                  "value": 1830.0
+                },
+                "br1": {
+                  "unit": "mm",
+                  "value": 190.0
+                },
+                "br2": {
+                  "unit": "mm",
+                  "value": 160.0
+                },
+                "br2_1": {
+                  "unit": "mm",
+                  "value": 60.0
+                },
+                "br2_2": {
+                  "unit": "mm",
+                  "value": 20.0
+                },
+                "br3": {
+                  "unit": "mm",
+                  "value": 1600.0
+                },
+                "br3_1": {
+                  "unit": "mm",
+                  "value": 800.0
+                },
+                "br3_2": {
+                  "unit": "mm",
+                  "value": 1390.0
+                },
+                "br4": {
+                  "unit": "mm",
+                  "value": 1850.0
+                },
+                "h1": {
+                  "unit": "mm",
+                  "value": 2170.0
+                },
+                "hl1": {
+                  "unit": "mm",
+                  "value": 290.0
+                },
+                "hl2": {
+                  "unit": "mm",
+                  "value": 130.0
+                },
+                "hl2_1": {
+                  "unit": "mm",
+                  "value": 25.0
+                },
+                "hl2_2": {
+                  "unit": "mm",
+                  "value": 80.0
+                },
+                "hl3": {
+                  "unit": "mm",
+                  "value": 1800.0
+                },
+                "hl3_1": {
+                  "unit": "mm",
+                  "value": 1430.0
+                },
+                "hl3_2": {
+                  "unit": "mm",
+                  "value": 850.0
+                },
+                "hr1": {
+                  "unit": "mm",
+                  "value": 290.0
+                },
+                "hr2": {
+                  "unit": "mm",
+                  "value": 280.0
+                },
+                "hr2_1": {
+                  "unit": "mm",
+                  "value": 50.0
+                },
+                "hr2_2": {
+                  "unit": "mm",
+                  "value": 160.0
+                },
+                "hr3": {
+                  "unit": "mm",
+                  "value": 1700.0
+                },
+                "hr3_1": {
+                  "unit": "mm",
+                  "value": 1400.0
+                },
+                "hr3_2": {
+                  "unit": "mm",
+                  "value": 850.0
+                },
+                "j1": true,
+                "jl1": true,
+                "jl2": true,
+                "jl3": true,
+                "jl4": true,
+                "jr1": true,
+                "jr2": true,
+                "jr3": true,
+                "jr4": true
+              },
+              "material": {
+                "elastic_modulus": {
+                  "unit": "MPa",
+                  "value": 210000.0
+                },
+                "thermal_expansion": {
+                  "unit": "1/\u00b0C",
+                  "value": 1.2e-05
+                }
+              }
+            }
+          }
+        },
+        "type": "object",
+        "title": "PSC-T"
+      },
+      "Point": {
+        "properties": {
+          "x": {
+            "$ref": "#/components/schemas/Length"
+          },
+          "y": {
+            "$ref": "#/components/schemas/Length"
+          }
+        },
+        "type": "object",
+        "required": [
+          "x",
+          "y"
+        ],
+        "title": "Point",
+        "dataclassname": "moapy.data_pre.Point"
+      },
+      "ResultNonlinearTemperatureEffect": {
+        "properties": {
+          "height": {
+            "$ref": "#/components/schemas/Length",
+            "description": "Height"
+          },
+          "outer": {
+            "items": {
+              "items": {
+                "$ref": "#/components/schemas/Point"
+              },
+              "type": "array"
+            },
+            "type": "array",
+            "title": "Outer",
+            "description": "Outer polygon"
+          },
+          "inner": {
+            "items": {
+              "items": {
+                "$ref": "#/components/schemas/Point"
+              },
+              "type": "array"
+            },
+            "type": "array",
+            "title": "Inner",
+            "description": "Inner polygon"
+          },
+          "heating": {
+            "$ref": "#/components/schemas/ResultThermal",
+            "description": "Heating"
+          },
+          "cooling": {
+            "$ref": "#/components/schemas/ResultThermal",
+            "description": "Cooling"
+          },
+          "temperature_heating": {
+            "items": {
+              "$ref": "#/components/schemas/Point"
+            },
+            "type": "array",
+            "title": "Temperature Heating",
+            "description": "Temperature Heating"
+          },
+          "temperature_cooling": {
+            "items": {
+              "$ref": "#/components/schemas/Point"
+            },
+            "type": "array",
+            "title": "Temperature Cooling",
+            "description": "Temperature Cooling"
+          }
+        },
+        "type": "object",
+        "title": "ResultNonlinearTemperatureEffect",
+        "description": "Result Nonlinear Temperature Effect"
+      },
+      "ResultThermal": {
+        "properties": {
+          "y": {
+            "items": {
+              "$ref": "#/components/schemas/Length"
+            },
+            "type": "array",
+            "title": "Y",
+            "description": "Y"
+          },
+          "z": {
+            "items": {
+              "$ref": "#/components/schemas/Length"
+            },
+            "type": "array",
+            "title": "Z",
+            "description": "Z"
+          },
+          "temp": {
+            "items": {
+              "$ref": "#/components/schemas/Temperature"
+            },
+            "type": "array",
+            "title": "Temp",
+            "description": "Temperature"
+          },
+          "stress": {
+            "items": {
+              "$ref": "#/components/schemas/Stress"
+            },
+            "type": "array",
+            "title": "Stress",
+            "description": "Stress"
+          }
+        },
+        "type": "object",
+        "title": "ResultThermal",
+        "description": "Result Thermal"
+      },
+      "SectionMaterial": {
+        "properties": {
+          "thermal_expansion": {
+            "$ref": "#/components/schemas/ThermalExpansionCoeff",
+            "description": "Thermal Expansion",
+            "default": {
+              "value": 1.2e-05,
+              "unit": "1/\u00b0C"
+            }
+          },
+          "elastic_modulus": {
+            "$ref": "#/components/schemas/Stress",
+            "description": "Elastic Modulus",
+            "default": {
+              "value": 210000.0,
+              "unit": "MPa"
+            }
+          }
+        },
+        "type": "object",
+        "title": "SectionMaterial",
+        "description": "Section Material"
+      },
+      "SlabSection": {
+        "properties": {
+          "shape": {
+            "$ref": "#/components/schemas/SlabSectionShape",
+            "default": {
+              "sg": {
+                "unit": "mm",
+                "value": 0.0
+              },
+              "bc": {
+                "unit": "mm",
+                "value": 1800.0
+              },
+              "tc": {
+                "unit": "mm",
+                "value": 150.0
+              },
+              "hh": {
+                "unit": "mm",
+                "value": 0.0
+              }
+            }
+          },
+          "material": {
+            "$ref": "#/components/schemas/SectionMaterial",
+            "default": {
+              "thermal_expansion": {
+                "unit": "1/\u00b0C",
+                "value": 1.2e-05
+              },
+              "elastic_modulus": {
+                "unit": "MPa",
+                "value": 210000.0
+              }
+            }
+          }
+        },
+        "type": "object",
+        "title": "SlabSection"
+      },
+      "SlabSectionShape": {
+        "properties": {
+          "sg": {
+            "$ref": "#/components/schemas/Length",
+            "description": "Sg",
+            "default": {
+              "value": 0.0,
+              "unit": "mm"
+            }
+          },
+          "bc": {
+            "$ref": "#/components/schemas/Length",
+            "description": "Bc",
+            "default": {
+              "value": 1800.0,
+              "unit": "mm"
+            }
+          },
+          "tc": {
+            "$ref": "#/components/schemas/Length",
+            "description": "tc",
+            "default": {
+              "value": 150.0,
+              "unit": "mm"
+            }
+          },
+          "hh": {
+            "$ref": "#/components/schemas/Length",
+            "description": "Hh",
+            "default": {
+              "value": 0.0,
+              "unit": "mm"
+            }
+          }
+        },
+        "type": "object",
+        "title": "SlabSectionShape",
+        "description": "Slab Section Shape"
+      },
+      "SteelBoxGirderInput": {
+        "properties": {
+          "deck_type": {
+            "type": "string",
+            "enum": [
+              "1a - Steel Decks"
+            ],
+            "const": "1a - Steel Decks",
+            "title": "Deck Type",
+            "default": "1a - Steel Decks"
+          },
+          "section_type": {
+            "type": "string",
+            "enum": [
+              "Box Girder"
+            ],
+            "const": "Box Girder",
+            "title": "Section Type",
+            "default": "Box Girder"
+          },
+          "section": {
+            "$ref": "#/components/schemas/SteelBoxGirderSection",
+            "default": {
+              "shape": {
+                "b1": {
+                  "unit": "mm",
+                  "value": 150.0
+                },
+                "b2": {
+                  "unit": "mm",
+                  "value": 900.0
+                },
+                "b3": {
+                  "unit": "mm",
+                  "value": 150.0
+                },
+                "b4": {
+                  "unit": "mm",
+                  "value": 150.0
+                },
+                "b5": {
+                  "unit": "mm",
+                  "value": 700.0
+                },
+                "b6": {
+                  "unit": "mm",
+                  "value": 150.0
+                },
+                "bot": {
+                  "unit": "mm",
+                  "value": 100.0
+                },
+                "h": {
+                  "unit": "mm",
+                  "value": 1000.0
+                },
+                "t1": {
+                  "unit": "mm",
+                  "value": 25.0
+                },
+                "t2": {
+                  "unit": "mm",
+                  "value": 25.0
+                },
+                "top": {
+                  "unit": "mm",
+                  "value": 0.0
+                },
+                "tw1": {
+                  "unit": "mm",
+                  "value": 30.0
+                },
+                "tw2": {
+                  "unit": "mm",
+                  "value": 30.0
+                }
+              },
+              "material": {
+                "elastic_modulus": {
+                  "unit": "MPa",
+                  "value": 210000.0
+                },
+                "thermal_expansion": {
+                  "unit": "1/\u00b0C",
+                  "value": 1.2e-05
+                }
+              }
+            }
+          }
+        },
+        "type": "object",
+        "title": "Box Girder"
+      },
+      "SteelBoxGirderSection": {
+        "properties": {
+          "shape": {
+            "$ref": "#/components/schemas/SteelBoxGirderSectionShape",
+            "default": {
+              "top": {
+                "unit": "mm",
+                "value": 0.0
+              },
+              "bot": {
+                "unit": "mm",
+                "value": 100.0
+              },
+              "b1": {
+                "unit": "mm",
+                "value": 150.0
+              },
+              "b2": {
+                "unit": "mm",
+                "value": 900.0
+              },
+              "b3": {
+                "unit": "mm",
+                "value": 150.0
+              },
+              "b4": {
+                "unit": "mm",
+                "value": 150.0
+              },
+              "b5": {
+                "unit": "mm",
+                "value": 700.0
+              },
+              "b6": {
+                "unit": "mm",
+                "value": 150.0
+              },
+              "h": {
+                "unit": "mm",
+                "value": 1000.0
+              },
+              "t1": {
+                "unit": "mm",
+                "value": 25.0
+              },
+              "t2": {
+                "unit": "mm",
+                "value": 25.0
+              },
+              "tw1": {
+                "unit": "mm",
+                "value": 30.0
+              },
+              "tw2": {
+                "unit": "mm",
+                "value": 30.0
+              }
+            }
+          },
+          "material": {
+            "$ref": "#/components/schemas/SectionMaterial",
+            "default": {
+              "thermal_expansion": {
+                "unit": "1/\u00b0C",
+                "value": 1.2e-05
+              },
+              "elastic_modulus": {
+                "unit": "MPa",
+                "value": 210000.0
+              }
+            }
+          }
+        },
+        "type": "object",
+        "title": "SteelBoxGirderSection"
+      },
+      "SteelBoxGirderSectionShape": {
+        "properties": {
+          "top": {
+            "$ref": "#/components/schemas/Length",
+            "description": "Top",
+            "default": {
+              "value": 0.0,
+              "unit": "mm"
+            }
+          },
+          "bot": {
+            "$ref": "#/components/schemas/Length",
+            "description": "Bot",
+            "default": {
+              "value": 100.0,
+              "unit": "mm"
+            }
+          },
+          "b1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "B1",
+            "default": {
+              "value": 150.0,
+              "unit": "mm"
+            }
+          },
+          "b2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "B2",
+            "default": {
+              "value": 900.0,
+              "unit": "mm"
+            }
+          },
+          "b3": {
+            "$ref": "#/components/schemas/Length",
+            "description": "B3",
+            "default": {
+              "value": 150.0,
+              "unit": "mm"
+            }
+          },
+          "b4": {
+            "$ref": "#/components/schemas/Length",
+            "description": "B4",
+            "default": {
+              "value": 150.0,
+              "unit": "mm"
+            }
+          },
+          "b5": {
+            "$ref": "#/components/schemas/Length",
+            "description": "B5",
+            "default": {
+              "value": 700.0,
+              "unit": "mm"
+            }
+          },
+          "b6": {
+            "$ref": "#/components/schemas/Length",
+            "description": "B6",
+            "default": {
+              "value": 150.0,
+              "unit": "mm"
+            }
+          },
+          "h": {
+            "$ref": "#/components/schemas/Length",
+            "description": "H",
+            "default": {
+              "value": 1000.0,
+              "unit": "mm"
+            }
+          },
+          "t1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "T1",
+            "default": {
+              "value": 25.0,
+              "unit": "mm"
+            }
+          },
+          "t2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "T2",
+            "default": {
+              "value": 25.0,
+              "unit": "mm"
+            }
+          },
+          "tw1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "tw1",
+            "default": {
+              "value": 30.0,
+              "unit": "mm"
+            }
+          },
+          "tw2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "tw2",
+            "default": {
+              "value": 30.0,
+              "unit": "mm"
+            }
+          }
+        },
+        "type": "object",
+        "title": "SteelBoxGirderSectionShape",
+        "description": "Steel Box Girder Section Shape"
+      },
+      "SteelIGirderInput": {
+        "properties": {
+          "deck_type": {
+            "type": "string",
+            "enum": [
+              "1b - Steel Decks"
+            ],
+            "const": "1b - Steel Decks",
+            "title": "Deck Type",
+            "default": "1b - Steel Decks"
+          },
+          "section_type": {
+            "type": "string",
+            "enum": [
+              "I Girder"
+            ],
+            "const": "I Girder",
+            "title": "Section Type",
+            "default": "I Girder"
+          },
+          "section": {
+            "$ref": "#/components/schemas/SteelIGirderSection",
+            "default": {
+              "shape": {
+                "b1": {
+                  "unit": "mm",
+                  "value": 150.0
+                },
+                "b2": {
+                  "unit": "mm",
+                  "value": 900.0
+                },
+                "b3": {
+                  "unit": "mm",
+                  "value": 150.0
+                },
+                "b4": {
+                  "unit": "mm",
+                  "value": 150.0
+                },
+                "bot": {
+                  "unit": "mm",
+                  "value": 100.0
+                },
+                "h": {
+                  "unit": "mm",
+                  "value": 1000.0
+                },
+                "t1": {
+                  "unit": "mm",
+                  "value": 25.0
+                },
+                "t2": {
+                  "unit": "mm",
+                  "value": 25.0
+                },
+                "top": {
+                  "unit": "mm",
+                  "value": 0.0
+                },
+                "tw": {
+                  "unit": "mm",
+                  "value": 30.0
+                }
+              },
+              "material": {
+                "elastic_modulus": {
+                  "unit": "MPa",
+                  "value": 210000.0
+                },
+                "thermal_expansion": {
+                  "unit": "1/\u00b0C",
+                  "value": 1.2e-05
+                }
+              }
+            }
+          }
+        },
+        "type": "object",
+        "title": "I Girder"
+      },
+      "SteelIGirderSection": {
+        "properties": {
+          "shape": {
+            "$ref": "#/components/schemas/SteelIGirderSectionShape",
+            "default": {
+              "top": {
+                "unit": "mm",
+                "value": 0.0
+              },
+              "bot": {
+                "unit": "mm",
+                "value": 100.0
+              },
+              "b1": {
+                "unit": "mm",
+                "value": 150.0
+              },
+              "b2": {
+                "unit": "mm",
+                "value": 900.0
+              },
+              "b3": {
+                "unit": "mm",
+                "value": 150.0
+              },
+              "b4": {
+                "unit": "mm",
+                "value": 150.0
+              },
+              "h": {
+                "unit": "mm",
+                "value": 1000.0
+              },
+              "t1": {
+                "unit": "mm",
+                "value": 25.0
+              },
+              "t2": {
+                "unit": "mm",
+                "value": 25.0
+              },
+              "tw": {
+                "unit": "mm",
+                "value": 30.0
+              }
+            }
+          },
+          "material": {
+            "$ref": "#/components/schemas/SectionMaterial",
+            "default": {
+              "thermal_expansion": {
+                "unit": "1/\u00b0C",
+                "value": 1.2e-05
+              },
+              "elastic_modulus": {
+                "unit": "MPa",
+                "value": 210000.0
+              }
+            }
+          }
+        },
+        "type": "object",
+        "title": "SteelIGirderSection"
+      },
+      "SteelIGirderSectionShape": {
+        "properties": {
+          "top": {
+            "$ref": "#/components/schemas/Length",
+            "description": "Top",
+            "default": {
+              "value": 0.0,
+              "unit": "mm"
+            }
+          },
+          "bot": {
+            "$ref": "#/components/schemas/Length",
+            "description": "Bot",
+            "default": {
+              "value": 100.0,
+              "unit": "mm"
+            }
+          },
+          "b1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "B1",
+            "default": {
+              "value": 150.0,
+              "unit": "mm"
+            }
+          },
+          "b2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "B2",
+            "default": {
+              "value": 900.0,
+              "unit": "mm"
+            }
+          },
+          "b3": {
+            "$ref": "#/components/schemas/Length",
+            "description": "B3",
+            "default": {
+              "value": 150.0,
+              "unit": "mm"
+            }
+          },
+          "b4": {
+            "$ref": "#/components/schemas/Length",
+            "description": "B4",
+            "default": {
+              "value": 150.0,
+              "unit": "mm"
+            }
+          },
+          "h": {
+            "$ref": "#/components/schemas/Length",
+            "description": "H",
+            "default": {
+              "value": 1000.0,
+              "unit": "mm"
+            }
+          },
+          "t1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "t1",
+            "default": {
+              "value": 25.0,
+              "unit": "mm"
+            }
+          },
+          "t2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "t2",
+            "default": {
+              "value": 25.0,
+              "unit": "mm"
+            }
+          },
+          "tw": {
+            "$ref": "#/components/schemas/Length",
+            "description": "tw",
+            "default": {
+              "value": 30.0,
+              "unit": "mm"
+            }
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "SteelIGirderSectionShape",
+        "description": "Steel I Girder Section Shape"
+      },
+      "SteelTubSection": {
+        "properties": {
+          "shape": {
+            "$ref": "#/components/schemas/SteelTubSectionShape",
+            "default": {
+              "top": {
+                "unit": "mm",
+                "value": 100.0
+              },
+              "bot": {
+                "unit": "mm",
+                "value": 250.0
+              },
+              "b1": {
+                "unit": "mm",
+                "value": 300.0
+              },
+              "b2": {
+                "unit": "mm",
+                "value": 600.0
+              },
+              "b3": {
+                "unit": "mm",
+                "value": 300.0
+              },
+              "b4": {
+                "unit": "mm",
+                "value": 150.0
+              },
+              "b5": {
+                "unit": "mm",
+                "value": 600.0
+              },
+              "b6": {
+                "unit": "mm",
+                "value": 150.0
+              },
+              "h": {
+                "unit": "mm",
+                "value": 900.0
+              },
+              "t1": {
+                "unit": "mm",
+                "value": 26.0
+              },
+              "t2": {
+                "unit": "mm",
+                "value": 26.0
+              },
+              "tw1": {
+                "unit": "mm",
+                "value": 28.0
+              },
+              "tw2": {
+                "unit": "mm",
+                "value": 28.0
+              },
+              "bf1": {
+                "unit": "mm",
+                "value": 200.0
+              },
+              "bf2": {
+                "unit": "mm",
+                "value": 200.0
+              }
+            }
+          },
+          "material": {
+            "$ref": "#/components/schemas/SectionMaterial",
+            "default": {
+              "thermal_expansion": {
+                "unit": "1/\u00b0C",
+                "value": 1.2e-05
+              },
+              "elastic_modulus": {
+                "unit": "MPa",
+                "value": 210000.0
+              }
+            }
+          }
+        },
+        "type": "object",
+        "title": "SteelTubSection"
+      },
+      "SteelTubSectionShape": {
+        "properties": {
+          "top": {
+            "$ref": "#/components/schemas/Length",
+            "description": "Top",
+            "default": {
+              "value": 100.0,
+              "unit": "mm"
+            }
+          },
+          "bot": {
+            "$ref": "#/components/schemas/Length",
+            "description": "Bot",
+            "default": {
+              "value": 250.0,
+              "unit": "mm"
+            }
+          },
+          "b1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "B1",
+            "default": {
+              "value": 300.0,
+              "unit": "mm"
+            }
+          },
+          "b2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "B2",
+            "default": {
+              "value": 600.0,
+              "unit": "mm"
+            }
+          },
+          "b3": {
+            "$ref": "#/components/schemas/Length",
+            "description": "B3",
+            "default": {
+              "value": 300.0,
+              "unit": "mm"
+            }
+          },
+          "b4": {
+            "$ref": "#/components/schemas/Length",
+            "description": "B4",
+            "default": {
+              "value": 150.0,
+              "unit": "mm"
+            }
+          },
+          "b5": {
+            "$ref": "#/components/schemas/Length",
+            "description": "B5",
+            "default": {
+              "value": 600.0,
+              "unit": "mm"
+            }
+          },
+          "b6": {
+            "$ref": "#/components/schemas/Length",
+            "description": "B6",
+            "default": {
+              "value": 150.0,
+              "unit": "mm"
+            }
+          },
+          "h": {
+            "$ref": "#/components/schemas/Length",
+            "description": "H",
+            "default": {
+              "value": 900.0,
+              "unit": "mm"
+            }
+          },
+          "t1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "t1",
+            "default": {
+              "value": 26.0,
+              "unit": "mm"
+            }
+          },
+          "t2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "t2",
+            "default": {
+              "value": 26.0,
+              "unit": "mm"
+            }
+          },
+          "tw1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "tw1",
+            "default": {
+              "value": 28.0,
+              "unit": "mm"
+            }
+          },
+          "tw2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "tw2",
+            "default": {
+              "value": 28.0,
+              "unit": "mm"
+            }
+          },
+          "bf1": {
+            "$ref": "#/components/schemas/Length",
+            "description": "Bf1",
+            "default": {
+              "value": 200.0,
+              "unit": "mm"
+            }
+          },
+          "bf2": {
+            "$ref": "#/components/schemas/Length",
+            "description": "Bf2",
+            "default": {
+              "value": 200.0,
+              "unit": "mm"
+            }
+          }
+        },
+        "type": "object",
+        "title": "SteelTubSectionShape"
+      },
+      "Stress": {
+        "properties": {
+          "value": {
+            "type": "number",
+            "title": "Value",
+            "description": "Stress",
+            "default": 0.0
+          },
+          "unit": {
+            "$ref": "#/components/schemas/enUnitStress",
+            "default": "MPa"
+          }
+        },
+        "type": "object",
+        "title": "Stress",
+        "description": "Stress"
+      },
+      "SurfacedTypeInput": {
+        "properties": {
+          "surfacing_type": {
+            "type": "string",
+            "enum": [
+              "Thickness"
+            ],
+            "const": "Thickness",
+            "title": "Surfacing Type",
+            "description": "Surfacing Type",
+            "default": "Thickness"
+          },
+          "surfacing_thickness": {
+            "$ref": "#/components/schemas/Length",
+            "description": "Surfacing Thickness",
+            "default": {
+              "value": 30.0,
+              "unit": "mm"
+            }
+          }
+        },
+        "type": "object",
+        "title": "Thickness"
+      },
+      "Temperature": {
+        "properties": {
+          "value": {
+            "type": "number",
+            "title": "Value",
+            "description": "Temperature",
+            "default": 0.0
+          },
+          "unit": {
+            "$ref": "#/components/schemas/enUnitTemperature",
+            "default": "celsius"
+          }
+        },
+        "type": "object",
+        "title": "Temperature",
+        "description": "Thermal"
+      },
+      "ThermalExpansionCoeff": {
+        "properties": {
+          "value": {
+            "type": "number",
+            "title": "Value",
+            "description": "Thermal Expansion Coefficient",
+            "default": 1.0
+          },
+          "unit": {
+            "$ref": "#/components/schemas/enUnitThermalExpansion",
+            "default": "1/\u00b0C"
+          }
+        },
+        "type": "object",
+        "title": "ThermalExpansionCoeff",
+        "description": "Thermal Expansion Coefficient"
+      },
+      "UnSurfacedTypeInput": {
+        "properties": {
+          "surfacing_type": {
+            "type": "string",
+            "enum": [
+              "Unsurfaced"
+            ],
+            "const": "Unsurfaced",
+            "title": "Surfacing Type",
+            "description": "Surfacing Type",
+            "default": "Unsurfaced"
+          }
+        },
+        "type": "object",
+        "title": "Unsurfaced"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "WaterProofedTypeInput": {
+        "properties": {
+          "surfacing_type": {
+            "type": "string",
+            "enum": [
+              "Waterproofed"
+            ],
+            "const": "Waterproofed",
+            "title": "Surfacing Type",
+            "description": "Surfacing Type",
+            "default": "Waterproofed"
+          }
+        },
+        "type": "object",
+        "title": "Waterproofed"
+      },
+      "calc_eurocode": {
+        "properties": {
+          "nonlinear_temperature_input": {
+            "$ref": "#/components/schemas/NonlinearTemperatureInput"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nonlinear_temperature_input"
+        ],
+        "title": "calc eurocode"
+      },
+      "enUnitLength": {
+        "type": "string",
+        "enum": [
+          "mm",
+          "m",
+          "in",
+          "ft"
+        ],
+        "title": "enUnitLength"
+      },
+      "enUnitStress": {
+        "type": "string",
+        "enum": [
+          "MPa",
+          "ksi"
+        ],
+        "title": "enUnitStress"
+      },
+      "enUnitTemperature": {
+        "type": "string",
+        "enum": [
+          "celsius",
+          "fahrenheit"
+        ],
+        "title": "enUnitTemperature"
+      },
+      "enUnitThermalExpansion": {
+        "type": "string",
+        "enum": [
+          "1/\u00b0C"
+        ],
+        "const": "1/\u00b0C",
+        "title": "enUnitThermalExpansion",
+        "description": "Thermal Expansion Coefficient units"
+      }
+    }
+  }
+}
