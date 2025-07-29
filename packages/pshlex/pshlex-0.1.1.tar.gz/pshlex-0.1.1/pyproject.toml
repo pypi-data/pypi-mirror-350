@@ -1,0 +1,261 @@
+# SPDX-FileCopyrightText: Peter Pentchev <roam@ringlet.net>
+# SPDX-License-Identifier: BSD-2-Clause
+
+[build-system]
+requires = [
+  "hatchling >= 1.26, < 2",
+]
+build-backend = "hatchling.build"
+
+[project]
+name = "pshlex"
+description = "Join various stringifiable objects and quote them for the shell"
+readme = "README.md"
+license = "BSD-2-Clause"
+license-files = ["LICENSES/BSD-2-Clause.txt"]
+requires-python = ">= 3.8"
+dynamic = ["version"]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Software Development :: Libraries",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Typing :: Typed",
+]
+
+[[project.authors]]
+name = "Peter Pentchev"
+email = "roam@ringlet.net"
+
+[project.urls]
+Homepage = "https://devel.ringlet.net/textproc/pshlex/"
+Changes = "https://devel.ringlet.net/textproc/pshlex/changes/"
+"Issue Tracker" = "https://gitlab.com/ppentchev/pshlex/-/issues"
+"Source Code" = "https://gitlab.com/ppentchev/pshlex"
+
+[dependency-groups]
+docs = [
+  "mkdocs >= 1.4.2, < 2",
+  "mkdocs-material >= 9.1.2, < 10",
+  "mkdocstrings >= 0.26, < 0.30",
+  "mkdocstrings-python >= 1, < 2; python_version < '3.14'",
+  "mkdocstrings-python >= 1.4, < 2; python_version >= '3.14'",
+]
+pyupgrade = [
+  "pyupgrade >= 3, < 4",
+]
+testenv-mypy = [
+  {include-group = "testenv-unit-tests"},
+  "mypy >= 1, < 2; python_version < '3.14'",
+  "mypy >= 1.5, < 2; python_version >= '3.14'",
+]
+testenv-reuse = [
+  "reuse >= 4.0.3, < 5; python_version < '3.9'",
+  "reuse >= 5, < 6; python_version >= '3.9'",
+]
+testenv-ruff = [
+  "ruff == 0.11.11",
+]
+testenv-unit-tests = [
+  "packaging >= 21.3, < 26",
+  "pygments >= 2.7, < 3",
+  "pytest >= 8, < 9",
+]
+testenv-uvoxen = [
+  "uvoxen >= 0.2, < 0.3; python_version >= '3.11'",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pshlex"]
+
+[tool.hatch.version]
+path = "src/pshlex/__init__.py"
+pattern = '(?x) ^ VERSION \s* (?: : \s* Final \s* )? = \s* " (?P<version> [^\s"]+ ) " \s* $'
+
+[tool.mypy]
+strict = true
+
+[tool.publync]
+mediaType = "vnd.ringlet.misc.publync.config/publync.v0.1+toml"
+
+[tool.publync.build.tox]
+
+[tool.publync.sync.rsync]
+remote = "marla.ludost.net:vhosts/devel.ringlet.net/public_html/textproc/pshlex"
+
+[tool.ruff]
+extend = "ruff-base.toml"
+output-format = "concise"
+preview = true
+
+[tool.ruff.lint]
+select = ["ALL"]
+
+[tool.test-stages]
+stages = [
+  "(@check or @docs) and @quick and not @manual",
+  "(@check or @docs) and not @manual",
+  "@tests and not @manual",
+]
+
+[tool.uvoxen]
+mediaType = "vnd.ringlet.devel.uvoxen.config/uvoxen.v0.3+toml"
+envlist = [
+  "ruff",
+  "format",
+  "reuse",
+  "mypy",
+  "docs",
+  "unit-tests",
+  "uvoxen-sync-check",
+]
+
+[tool.uvoxen.defs]
+pyfiles = [
+  "src/pshlex",
+  "tests/unit",
+]
+
+[tool.uvoxen.req]
+header = """
+# SPDX-FileCopyrightText: Peter Pentchev <roam@ringlet.net>
+# SPDX-License-Identifier: BSD-2-Clause
+
+"""
+
+[tool.uvoxen.tox]
+env-order = [
+  "ruff",
+  "format",
+  "reformat",
+]
+
+header = """
+# SPDX-FileCopyrightText: Peter Pentchev <roam@ringlet.net>
+# SPDX-License-Identifier: BSD-2-Clause
+
+"""
+
+[tool.uvoxen.env.ruff]
+tags = [
+  "check",
+  "ruff",
+  "quick",
+]
+dependency-groups = [
+  "testenv-ruff",
+]
+commands = [
+  "ruff check -- {[defs]pyfiles}",
+]
+
+[tool.uvoxen.env.format]
+tags = [
+  "check",
+  "quick",
+]
+dependency-groups = [
+  "testenv-ruff",
+]
+commands = [
+  "ruff check --config ruff-base.toml --select=D,I --diff -- {[defs]pyfiles}",
+  "ruff format --config ruff-base.toml --check --diff -- {[defs]pyfiles}",
+]
+
+[tool.uvoxen.env.reformat]
+tags = [
+  "format",
+  "manual",
+]
+dependency-groups = [
+  "testenv-ruff",
+]
+commands = [
+  "ruff check --config ruff-base.toml --select=D,I --fix -- {[defs]pyfiles}",
+  "ruff format --config ruff-base.toml -- {[defs]pyfiles}",
+]
+
+[tool.uvoxen.env.reuse]
+tags = [
+  "check",
+  "quick",
+]
+dependency-groups = [
+  "testenv-reuse",
+]
+commands = [
+  "reuse lint",
+]
+
+[tool.uvoxen.env.mypy]
+tags = [
+  "check",
+]
+dependency-groups = [
+  "testenv-mypy",
+]
+commands = [
+  "mypy {[defs]pyfiles}",
+]
+
+[tool.uvoxen.env.pyupgrade]
+tags = [
+  "check",
+  "manual",
+]
+dependency-groups = [
+  "pyupgrade",
+]
+allowlist-externals = [
+  "sh",
+]
+commands = [
+  "sh -c 'pyupgrade --py311-plus src/pshlex/*.py tests/unit/*.py'",
+]
+
+[tool.uvoxen.env.unit-tests]
+tags = [
+  "tests",
+]
+dependency-groups = [
+  "testenv-unit-tests",
+]
+install-project = true
+commands = [
+  "pytest {posargs} tests/unit",
+]
+
+[tool.uvoxen.env.docs]
+tags = [
+  "docs",
+]
+dependency-groups = [
+  "docs",
+]
+commands = [
+  "mkdocs build",
+]
+
+[tool.uvoxen.env.uvoxen-sync-check]
+tags = [
+  "check",
+  "quick",
+]
+dependency-groups = [
+  "testenv-uvoxen",
+]
+commands = [
+  "uvoxen req generate --check -g docs",
+  "uvoxen tox generate --check",
+]
