@@ -1,0 +1,979 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+SPDX-FileCopyrightText: 2017 Open Architects Consulting SPRL
+SPDX-FileCopyrightText: 2018 Coop IT Easy SC
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+-->
+<odoo>
+    <record id="menu_contract" model="website.menu">
+        <field name="name">Contrata la luz</field>
+        <field name="url">/contract-application</field>
+        <field name="parent_id" ref="website.main_menu" />
+        <field name="sequence" type="int">65</field>
+    </record>
+
+    <template id="supply_point_template" name="supply_point_template">
+        <h4>Identifica el punto de suministro</h4>
+        <div class="mb-3 field-cups" name="cups_container">
+            <label for="cups" class="form-label">Indica el código CUPS * (código universal de punto de suministro)</label>
+            <input
+                t-attf-class="form-control{{ error and 'cups' in error and ' is-invalid' or '' }}"
+                type="text"
+                name="cups"
+                id="cups"
+                required="true"
+                t-att-value="cups"
+            />
+            <div class="invalid-feedback">
+                CUPS inválido.
+            </div>
+            <a target="_blank" href="https://es.support.somenergia.coop/article/210-que-es-el-cups">¿Dónde puedo encontrar el código CUPS?</a>
+        </div>
+        <div class="row">
+            <div class="mb-3" name="is_light_container">
+                <label>
+                    <input
+                        type="checkbox"
+                        t-att-value="is_light"
+                        name="is_light"
+                        id="is_light"
+                    />
+                    ¿Hay luz actualmente?
+                </label>
+                <p>Marca la casilla si tienes luz con otra compañía y quieres cambiar a Energetica, déjala sin marcar si es una conexión nueva directamente con Energetica.</p>
+            </div>
+        </div>
+        <script type="text/javascript">
+            document.addEventListener("DOMContentLoaded", function () {
+                const isLight = document.getElementById("is_light");
+                const isPreviousTitular = document.getElementById("is_previous_titular");
+                const voltagePower = document.getElementById("voltage_and_power_div");
+
+                isLight.addEventListener("change", function () {
+                    isPreviousTitular.style.display = isLight.checked ? "none" : "block";
+                    voltagePower.style.display = isLight.checked ? "none" : "block";
+                });
+            });
+        </script>
+    </template>
+
+    <template id="service_point_template" name="service_point_template">
+        <h4>Punto de suministro</h4>
+        <div class="row">
+            <div class="mb-3 field-service_street" name="service_street_container">
+                <label for="service_street" class="form-label">Dirección *</label>
+                <input
+                    t-attf-class="form-control{{ error and 'service_street' in error and ' is-invalid' or '' }}"
+                    type="text"
+                    name="service_street"
+                    id="service_street"
+                    required="true"
+                    t-att-value="service_street"
+                />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="mb-3 field-service_floor" name="service_floor_container">
+                    <label for="service_floor" class="form-label">Piso</label>
+                    <input
+                        t-attf-class="form-control{{ error and 'service_floor' in error and ' is-invalid' or '' }}"
+                        id="service_floor"
+                        type="text"
+                        name="service_floor"
+                        t-att-value="service_floor"
+                    />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="mb-3 field-service_door" name="service_door_container">
+                    <label for="service_door" class="form-label">Puerta</label>
+                    <input
+                        t-attf-class="form-control{{ error and 'service_door' in error and ' is-invalid' or '' }}"
+                        id="service_door"
+                        type="text"
+                        name="service_door"
+                        t-att-value="service_door"
+                    />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="mb-3 field-service_zip_code" name="service_zip_code_container">
+                    <label for="service_zip_code" class="form-label">Código postal *</label>
+                    <input
+                        t-attf-class="form-control{{ error and 'service_zip_code' in error and ' is-invalid' or '' }}"
+                        id="service_zip_code"
+                        type="text"
+                        name="service_zip_code"
+                        required="true"
+                        t-att-value="service_zip_code"
+                    />
+                    <div class="invalid-feedback">
+                        Código Postal inválido.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3 field-service_city" name="service_city_container">
+                    <label for="service_city" class="form-label">Municipio *</label>
+                    <input
+                        t-attf-class="form-control{{ error and 'service_city' in error and ' is-invalid' or '' }}"
+                        id="service_city"
+                        type="text"
+                        name="service_city"
+                        required="true"
+                        t-att-value="service_city"
+                    />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3 field-service_state" name="service_state_container">
+                    <label for="service_state_id" class="form-label">Provincia *</label>
+                    <select
+                        t-attf-class="form-select{{ error and 'service_state_id' in error and ' is-invalid' or '' }}"
+                        id="service_state_id"
+                        name="service_state_id"
+                        required="true"
+                    >
+                        <option value=""/>
+                        <t t-foreach="service_states or []" t-as="service_state">
+                            <option t-att-value="service_state.id">
+                                <t t-out="service_state.name" />
+                            </option>
+                        </t>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="mb-3" name="is_home_container">
+                <label>
+                    <input
+                        type="checkbox"
+                        t-att-value="is_home"
+                        name="is_home"
+                    />
+                    ¿Es una vivienda?
+                </label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3 field-cnae" name="cnae_container">
+                    <label for="cnae" class="form-label">CNAE *</label>
+                    <input
+                        t-attf-class="form-control{{ error and 'cnae' in error and ' is-invalid' or '' }}"
+                        id="cnae"
+                        type="number"
+                        name="cnae"
+                        required="true"
+                        t-att-value="cnae"
+                        maxlength="4"
+                    />
+                    <a target="_blank" href="https://es.support.somenergia.coop/article/252-que-es-el-numero-cnae">CNAE de vuestra actividad económica.</a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3 field-cadastral_reference" name="cadastral_reference_container">
+                    <label for="cadastral_reference" class="form-label">Referencia Catastral</label>
+                    <input
+                        t-attf-class="form-control{{ error and 'cadastral_reference' in error and ' is-invalid' or '' }}"
+                        id="cadastral_reference"
+                        type="text"
+                        name="cadastral_reference"
+                        t-att-value="cadastral_reference"
+                    />
+                    <div class="invalid-feedback">
+                        Referencia Catastral inválida.
+                    </div>
+                    <a target="_blank" href="https://es.support.somenergia.coop/article/1339-que-es-y-donde-encontrar-la-referencia-catastral">¿Qué es la referencia catastral y dónde puedo encontrarla?</a>
+                </div>
+            </div>
+        </div>
+        <div class="mb-3 field-file" name="latest_invoice_container">
+            <label for="latest_invoice" class="form-label">Adjunta la última factura eléctrica (PDF o JPG)</label>
+            <div class="col-md-7 col-sm-8">
+                <input
+                    type="file"
+                    t-attf-class="form-control{{ error and 'latest_invoice' in error and ' is-invalid' or '' }}"
+                    name="latest_invoice"
+                    t-att-value="latest_invoice"
+                />
+            </div>
+        </div>
+        <div class="row">
+            <div class="mb-3" name="statement_container">
+                <label>
+                    <input
+                        type="checkbox"
+                        t-att-value="statement"
+                        name="statement"
+                        required="True"
+                    />
+                    Declaración responsable del justo título *
+                </label>
+                <p>Declaro responsablemente que yo (o la entidad a la que represento) dispongo de un justo título sobre la vivienda o local (contrato de arrendamiento, escritura de propiedad u otro) relacionado con el punto de suministro y / o CUPS de referencia del cual soy usuario efectivo, asumiendo toda la responsabilidad en relación con la veracidad de los datos aportados. Asimismo, declaro que estoy en disposición de aportar la documentación acreditativa del mencionado justo título cuando me sea requerida.</p>
+            </div>
+        </div>
+    </template>
+
+    <template id="power_template" name="Power Template">
+        <div id="voltage_and_power_div">
+            <h4>Tensión y potencia</h4>
+            <p>Indica qué tipo de instalación tienes y qué potencia quieres contratar.</p>
+            <div class="mb-3 field-voltage_installation_type" name="voltage_installation_type_container">
+                <label for="voltage_installation_type" class="form-label">¿Qué tipo de instalación tienes? *</label>
+                <select
+                    t-attf-class="form-select{{ error and 'voltage_installation_type' in error and ' is-invalid' or '' }}"
+                    id="voltage_installation_type"
+                    name="voltage_installation_type"
+                >
+                    <option value=""></option>
+                    <option value="1">Monofásica</option>
+                    <option value="2">Trifásica</option>
+                </select>
+                <a target="_blank" href="http://es.support.somenergia.coop/article/483-como-puedo-saber-si-tengo-una-instalacion-monofasica-o-trifasica">Cómo identificar si una instalación es trifásica o monofásica</a>
+            </div>
+        </div>
+        <h4>¿Qué potencia tienes contratada?</h4>
+        <p>Para evitar problemas de tramitación, pon la misma potencia que aparece en la factura actual.</p>
+        <p>Podrás solicitar el cambio de potencia una vez esté el contrato activado con Energetica.</p>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-check mb-3" name="is_inferior_of_15kw">
+                    <label>
+                        <input 
+                            type="radio"
+                            t-att-value="is_inferior_of_15kw"
+                            name="power_type"
+                            id="is_inferior_of_15kw"
+                            required="required"
+                        />
+                        Potencia inferior o igual a 15 kW
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-check mb-3" name="is_superior_of_15kw">
+                    <label>
+                        <input 
+                            type="radio"
+                            t-att-value="is_superior_of_15kw"
+                            name="power_type"
+                            id="is_superior_of_15kw"
+                            required="required"
+                        />
+                        Potencia superior a 15 kW
+                    </label>
+                </div>
+            </div>
+        </div>
+        <p>Más información sobre los períodos de las potencias de la tarifa 
+            <a target="_blank" href="https://es.support.somenergia.coop/article/1116-la-tarifa-3-0td">períodos</a> o 
+            <a target="_blank" href="https://es.support.somenergia.coop/article/1326-la-tarifa-3-0td-indexada">indexada</a>.
+        </p>
+        <div style="display: none;" id="inferior_of_15kw_div">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3 field-current_power_point" name="current_power_point_container">
+                        <label for="current_power_point" class="form-label">¿Que potencia tienes contratada? *<br/> Punta</label>
+                        <input
+                            t-attf-class="form-control{{ error and 'current_power_point' in error and ' is-invalid' or '' }}"
+                            id="current_power_point"
+                            type="number"
+                            name="current_power_point"
+                        />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3 field-current_power_valley" name="current_power_valley_container">
+                        <label for="current_power_valley" class="form-label">¿Que potencia tienes contratada? *<br/> Valle</label>
+                        <input
+                            t-attf-class="form-control{{ error and 'current_power_valley' in error and ' is-invalid' or '' }}"
+                            id="current_power_valley"
+                            type="number"
+                            name="current_power_valley"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="display: none;" id="superior_of_15kw_div">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3 field-current_power_p1" name="current_power_p1_container">
+                        <label for="current_power_p1" class="form-label">¿Que potencia tienes contratada? *<br/> P1</label>
+                        <input
+                            t-attf-class="form-control{{ error and 'current_power_p1' in error and ' is-invalid' or '' }}"
+                            id="current_power_p1"
+                            type="number"
+                            name="current_power_p1"
+                        />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3 field-current_power_p2" name="current_power_p2_container">
+                        <label for="current_power_p2" class="form-label">¿Que potencia tienes contratada? *<br/> P2</label>
+                        <input
+                            t-attf-class="form-control{{ error and 'current_power_p2' in error and ' is-invalid' or '' }}"
+                            id="current_power_p2"
+                            type="number"
+                            name="current_power_p2"
+                        />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3 field-current_power_p3" name="current_power_p3_container">
+                        <label for="current_power_p3" class="form-label">¿Que potencia tienes contratada? *<br/> P3</label>
+                        <input
+                            t-attf-class="form-control{{ error and 'current_power_p3' in error and ' is-invalid' or '' }}"
+                            id="current_power_p3"
+                            type="number"
+                            name="current_power_p3"
+                        />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3 field-current_power_p4" name="current_power_p4_container">
+                        <label for="current_power_p4" class="form-label">¿Que potencia tienes contratada? *<br/> P4</label>
+                        <input
+                            t-attf-class="form-control{{ error and 'current_power_p4' in error and ' is-invalid' or '' }}"
+                            id="current_power_p4"
+                            type="number"
+                            name="current_power_p4"
+                        />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3 field-current_power_p5" name="current_power_p5_container">
+                        <label for="current_power_p5" class="form-label">¿Que potencia tienes contratada? *<br/> P5</label>
+                        <input
+                            t-attf-class="form-control{{ error and 'current_power_p5' in error and ' is-invalid' or '' }}"
+                            id="current_power_p5"
+                            type="number"
+                            name="current_power_p5"
+                        />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3 field-current_power_p5" name="current_power_p5_container">
+                        <label for="current_power_p5" class="form-label">¿Que potencia tienes contratada? *<br/> P6</label>
+                        <input
+                            t-attf-class="form-control{{ error and 'current_power_p5' in error and ' is-invalid' or '' }}"
+                            id="current_power_p6"
+                            type="number"
+                            name="current_power_p6"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            document.addEventListener("DOMContentLoaded", function () {
+                const radioButtons = document.querySelectorAll("input[name='power_type']");
+                const inferiorField = document.getElementById("inferior_of_15kw_div");
+                const superiorField = document.getElementById("superior_of_15kw_div");
+
+                radioButtons.forEach((radio) => {
+                    radio.addEventListener("click", function (ev) {
+                        if (ev.target.getAttribute('id') === "is_inferior_of_15kw") {
+                            ev.target.value = "is_inferior_of_15kw";
+                            inferiorField.style.display = "block";
+                            superiorField.style.display = "none";
+                            document.getElementById("current_power_point").required = true;
+                            document.getElementById("current_power_valley").required = true;
+                            document.getElementById("current_power_p1").required = false;
+                            document.getElementById("current_power_p2").required = false;
+                            document.getElementById("current_power_p3").required = false;
+                            document.getElementById("current_power_p4").required = false;
+                            document.getElementById("current_power_p5").required = false;
+                            document.getElementById("current_power_p6").required = false;
+                        } else {
+                            ev.target.value = "is_superior_of_15kw";
+                            inferiorField.style.display = "none";
+                            superiorField.style.display = "block";
+                            document.getElementById("current_power_point").required = false;
+                            document.getElementById("current_power_valley").required = false;
+                            document.getElementById("current_power_p1").required = true;
+                            document.getElementById("current_power_p2").required = true;
+                            document.getElementById("current_power_p3").required = true;
+                            document.getElementById("current_power_p4").required = true;
+                            document.getElementById("current_power_p5").required = true;
+                            document.getElementById("current_power_p6").required = true;
+                        }
+                    });
+                });
+            });
+        </script>
+    </template>
+
+    <template id="tariff_template" name="tariff_template">
+        <h4>Tariff</h4>
+        <div class="row">
+            <div class="mb-3 field-tariff" name="tariff_container">
+                <p>
+                    <strong>Tarifa 2.0TD periodos</strong>: Esta tarifa tiene dos periodos horarios para la potencia con precios diferentes y tres periodos horarios para la energía con precios también diferentes. Puedes consultar nuestros precios en el apartado de tarifas del web. Puedes consultar aquí más información sobre la tarifa 2.0TD periodos.
+                </p>
+                <p>
+                    <strong>Tarifa 2.0TD indexada</strong>: Se trata de una tarifa variable que traslada directamente a las personas y empresas consumidoras el precio de la energía en el mercado mayorista diario (OMIE para la Península y Red Eléctrica para Baleares y Canarias). Así pues, las variaciones de precio que hay se repercuten en el momento a las usuarias. Por lo tanto, cada día y cada hora el precio es diferente (en función de las variaciones del precio de la energía en el mercado diario). Puedes consultar el método de cálculo de la tarifa indexada y todas sus variables en este enlace.
+                </p>
+                <label for="tariff" class="form-label">¿Qué tarifa quieres contratar?</label>
+                <select
+                    t-attf-class="form-select{{ error and 'tariff' in error and ' is-invalid' or '' }}"
+                    id="tariff"
+                    name="tariff"
+                    required="true"
+                >
+                    <option value=""/>
+                    <t t-foreach="products or []" t-as="product">
+                        <option t-att-value="product.id">
+                            <t t-out="product.name" />
+                        </option>
+                    </t>
+                </select>
+            </div>
+        </div>
+    </template>
+
+    <template id="selfconsume_template" name="Self Consume Template">
+        <h4>Autoconsumo</h4>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-check mb-3" name="selfconsume_active">
+                    <label>
+                        <input 
+                            type="radio"
+                            t-att-value="selfconsume_active"
+                            name="selfconsume"
+                            id="selfconsume_active"
+                            required="required"
+                        />
+                        Sí, tengo una modalidad de autoconsumo activa
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-check mb-3" name="selfconsume_nonactive">
+                    <label>
+                        <input 
+                            type="radio"
+                            t-att-value="selfconsume_nonactive"
+                            name="selfconsume"
+                            id="selfconsume_nonactive"
+                            required="required"
+                        />
+                        No, no tengo ninguna modalidad de autoconsumo activa
+                    </label>
+                </div>
+            </div>
+            <a target="_blank" href="https://es.support.somenergia.coop/article/780-que-es-la-autoproduccion">¿Qué es la autoproducción?</a>
+        </div>
+        <div style="display: none;" id="selfconsume_active_div">
+            <div class="row">
+                <p>
+                    No indiques esta opción si aún no has finalizado los trámites con la comercializadora actual, aunque tengas la instalación realizada y registrada ante tu comunidad autónoma.
+                </p>
+                <h4>¿Cómo es tu instalación?</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-check mb-3" name="individual_installation">
+                            <label>
+                                <input 
+                                    type="radio"
+                                    t-att-value="individual_installation"
+                                    name="installation"
+                                    id="individual_installation"
+                                />
+                                Instalación individual
+                            </label>
+                            <span>En este tipo de instalación únicamente se beneficia un punto de suministro</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-check mb-3" name="collective_installation">
+                            <label>
+                                <input 
+                                    type="radio"
+                                    t-att-value="collective_installation"
+                                    name="installation"
+                                    id="collective_installation"
+                                />
+                                Instalación colectiva
+                            </label>
+                            <span>En este tipo de instalación se pueden beneficiar un conjunto de puntos de suministro</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 field-cau" name="cau_container">
+                    <label for="cau" class="form-label">Indica el código CAU * (Codigo de Autoconsumo Unificado)</label>
+                    <input
+                        t-attf-class="form-control{{ error and 'cau' in error and ' is-invalid' or '' }}"
+                        type="text"
+                        name="cau"
+                        id="cau"
+                        required="true"
+                        t-att-value="cau"
+                    />
+                    <div class="invalid-feedback">
+                        CAU inválido.
+                    </div>
+                    <a target="_blank" href="https://es.support.somenergia.coop/article/1144-que-debo-tener-en-cuenta-si-quiero-contratar-con-la-cooperativa-y-tengo-autoproduccion#cau">¿Dónde puedo obtener el código CAU?</a>
+                </div>
+                <div class="mb-3 field-installation_power" name="installation_power_container">
+                    <label for="installation_power" class="form-label">¿Qué potencia tiene tu instalación de autoproducción? *</label>
+                    <input
+                        t-attf-class="form-control{{ error and 'installation_power' in error and ' is-invalid' or '' }}"
+                        type="number"
+                        name="installation_power"
+                        id="installation_power"
+                        required="true"
+                        t-att-value="installation_power"
+                    />
+                    <a target="_blank" href="https://es.support.somenergia.coop/article/1144-que-debo-tener-en-cuenta-si-quiero-contratar-con-la-cooperativa-y-tengo-autoproduccion#power">¿Cómo puedo saber qué potencia tiene mi instalación?</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3 field-installation_situation" name="installation_situation_container">
+                        <label for="installation_situation" class="form-label">Situación de la instalación *</label>
+                        <select
+                            t-attf-class="form-select{{ error and 'installation_situation' in error and ' is-invalid' or '' }}"
+                            id="installation_situation"
+                            name="installation_situation"
+                            required="true"
+                        >
+                            <option value=""></option>
+                            <option value="1">Red interior</option>
+                            <option value="2">Red interior da varios consumidores (instalación de enlace)</option>
+                            <option value="3">Próxima a través de red</option>
+                            <option value="4">En red interior pero próxima a través de red del resto de los CUPS del colectivo</option>
+                            <option value="5">Próxima a traves de red pero en red interior de otro de los CUPS del colectivo</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3 field-installation_type" name="installation_type_container">
+                        <label for="installation_type" class="form-label">Tipo de instalación *</label>
+                        <select
+                            t-attf-class="form-select{{ error and 'installation_type' in error and ' is-invalid' or '' }}"
+                            id="installation_type"
+                            name="installation_type"
+                            required="true"
+                        >
+                            <option value=""></option>
+                            <option value="1">[B11] - Instalaciones que únicamente utilicen la radiación solar como energía primaria mediante la tecnología fotovoltaica</option>
+                            <option value="2">[B21] - Instalaciones eólicas ubicadas en tierra</option>
+                            <option value="3">Otras tecnologias</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <h4>¿Dispones de algún servicio auxiliar? *</h4>
+            <div class="mb-3" name="auxiliar_service_container">
+                <label>
+                    <input
+                        type="checkbox"
+                        t-att-value="auxiliar_service"
+                        name="auxiliar_service"
+                    />
+                    Sí, tengo servicios auxiliares (Ejemplo baterias u otros acumuladores)
+                </label>
+            </div>
+            <div class="mb-3 field-file" name="documentation_container">
+                <label for="documentation" class="form-label">Adjunta la documentación relacionada</label>
+                <div class="col-md-7 col-sm-8">
+                    <input
+                        type="file"
+                        t-attf-class="form-control{{ error and 'documentation' in error and ' is-invalid' or '' }}"
+                        name="documentation"
+                        t-att-value="documentation"
+                    />
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            document.addEventListener("DOMContentLoaded", function () {
+                const selfconsumeRadioButtons = document.querySelectorAll("input[name='selfconsume']");
+                const installationRadioButtons = document.querySelectorAll("input[name='installation']");
+                const noteField = document.getElementById("selfconsume_active_div");
+
+                selfconsumeRadioButtons.forEach((radio) => {
+                    radio.addEventListener("click", function (ev) {
+                        if (ev.target.getAttribute('id') === "selfconsume_active") {
+                            ev.target.value = "selfconsume_active";
+                            noteField.style.display = "block";
+                            installationRadioButtons.required = true;
+                        } else {
+                            ev.target.value = "selfconsume_nonactive";
+                            noteField.style.display = "none";
+                            document.getElementById("cau").required = false;
+                            document.getElementById("installation_power").required = false;
+                            document.getElementById("installation_situation").required = false;
+                            document.getElementById("installation_type").required = false;
+                        }
+                    });
+                });
+
+                installationRadioButtons.forEach((radio) => {
+                    radio.addEventListener("click", function (ev) {
+                        if (ev.target.getAttribute('id') === "individual_installation") {
+                            ev.target.value = "individual_installation";
+                        } else {
+                            ev.target.value = "collective_installation";
+                        }
+                    });
+                });
+            });
+        </script>
+    </template>
+
+    <template id="titularity_info_template" name="titularity_info_template">
+        <h4>Identificación del titular</h4>
+            <div class="row">
+                <div class="mb-3 field-titular_nif" name="titular_nif_container">
+                    <label for="titular_nif" class="form-label">Introduce el NIF de la persona o entidad jurídica que será la titular del contrato:<br/> Número de identificación fiscal (NIF) *</label>
+                    <input
+                        t-attf-class="form-control{{ error and 'titular_nif' in error and ' is-invalid' or '' }}"
+                        id="titular_nif"
+                        type="text"
+                        required="True"
+                        name="titular_nif"
+                    />
+                    <div class="invalid-feedback">
+                        NIF inválido.
+                    </div>
+                </div>
+                <div class="mb-3" name="is_previous_titular" id="is_previous_titular" style="display: none;">
+                <label>
+                    <input
+                        type="checkbox"
+                        t-att-value="is_previous_titular"
+                        name="is_previous_titular"
+                    />
+                    ¿Eras el titular con la anterior comercializadora?
+                </label>
+                <p>Marca la casilla si eras la persona titular del contrato con la anterior comercializadora.</p>
+            </div>
+        </div>
+        <h4>Datos personales de la nueva persona titular</h4>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3 field-titular_firstname" name="titular_firstname_container">
+                    <label for="titular_firstname" class="form-label">Nombre *</label>
+                    <input
+                        t-attf-class="form-control{{ error and 'titular_firstname' in error and ' is-invalid' or '' }}"
+                        id="titular_firstname"
+                        type="text"
+                        required="True"
+                        name="titular_firstname"
+                        minlength="2"
+                    />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3 field-titular_lastname" name="titular_lastname_container">
+                    <label for="titular_lastname" class="form-label">Apellidos *</label>
+                    <input
+                        t-attf-class="form-control{{ error and 'titular_lastname' in error and ' is-invalid' or '' }}"
+                        id="titular_lastname"
+                        type="text"
+                        required="True"
+                        name="titular_lastname"
+                        minlength="2"
+                    />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="mb-3 field-titular_street" name="titular_street_container">
+                <label for="titular_street" class="form-label">Dirreción *</label>
+                <input
+                    t-attf-class="form-control{{ error and 'titular_street' in error and ' is-invalid' or '' }}"
+                    type="text"
+                    name="titular_street"
+                    id="titular_street"
+                    required="true"
+                    t-att-value="titular_street"
+                />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="mb-3 field-titular_floor" name="titular_floor_container">
+                    <label for="titular_floor" class="form-label">Piso</label>
+                    <input
+                        t-attf-class="form-control{{ error and 'titular_floor' in error and ' is-invalid' or '' }}"
+                        id="titular_floor"
+                        type="text"
+                        name="titular_floor"
+                        t-att-value="titular_floor"
+                    />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="mb-3 field-titular_door" name="titular_door_container">
+                    <label for="titular_door" class="form-label">Puerta</label>
+                    <input
+                        t-attf-class="form-control{{ error and 'titular_door' in error and ' is-invalid' or '' }}"
+                        id="titular_door"
+                        type="text"
+                        name="titular_door"
+                        t-att-value="titular_door"
+                    />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="mb-3 field-titular_zip_code" name="titular_zip_code_container">
+                    <label for="titular_zip_code" class="form-label">Código Postal *</label>
+                    <input
+                        t-attf-class="form-control{{ error and 'titular_zip_code' in error and ' is-invalid' or '' }}"
+                        id="titular_zip_code"
+                        type="text"
+                        name="titular_zip_code"
+                        required="true"
+                        t-att-value="titular_zip_code"
+                    />
+                    <div class="invalid-feedback">
+                        Código Postal inválido. Debe ser un número de 5 dígitos válido para España.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3 field-titular_city" name="titular_city_container">
+                    <label for="titular_city" class="form-label">Municipio *</label>
+                    <input
+                        t-attf-class="form-control{{ error and 'titular_city' in error and ' is-invalid' or '' }}"
+                        id="titular_city"
+                        type="text"
+                        name="titular_city"
+                        required="true"
+                        t-att-value="titular_city"
+                    />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3 field-titular_state" name="titular_state_container">
+                    <label for="titular_state_id" class="form-label">Provincia *</label>
+                    <select
+                        t-attf-class="form-select{{ error and 'titular_state_id' in error and ' is-invalid' or '' }}"
+                        id="titular_state_id"
+                        name="titular_state_id"
+                        required="true"
+                    >
+                        <option value=""/>
+                        <t t-foreach="titular_states or []" t-as="titular_state">
+                            <option t-att-value="titular_state.id">
+                                <t t-out="titular_state.name" />
+                            </option>
+                        </t>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3 field-titular_email" name="titular_email_container">
+                    <label for="titular_email" class="form-label">Correo electrónico *</label>
+                    <input
+                        t-attf-class="form-control{{ error and 'titular_email' in error and ' is-invalid' or '' }}"
+                        id="titular_email"
+                        type="email"
+                        required="True"
+                        name="titular_email"
+                        t-att-value="titular_email"
+                    />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3 field-titular_confirm_email" name="titular_confirm_email_container">
+                    <label for="titular_confirm_email" class="form-label">Repite el correo electrónico *</label>
+                    <input
+                        t-attf-class="form-control{{ error and 'titular_confirm_email' in error and ' is-invalid' or '' }}"
+                        id="titular_confirm_email"
+                        type="email"
+                        required="True"
+                        name="titular_confirm_email"
+                    />
+                    <div class="invalid-feedback" id="email-mismatch-feedback">
+                        Los correos electrónicos no coinciden.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mb-3 field-titular_phone" name="titular_phone_container">
+            <label for="titular_phone" class="form-label">Teléfono *</label>
+            <input
+                t-attf-class="form-control{{ error and 'titular_phone' in error and ' is-invalid' or '' }}"
+                id="titular_phone"
+                type="tel"
+                required="True"
+                name="titular_phone"
+                t-att-value="titular_phone"
+                maxlength="9"
+            />
+            <div class="invalid-feedback">
+                Número de teléfono inválido.
+            </div>
+        </div>
+    </template>
+
+    <template id="payment_info_template" name="payment_info_template">
+        <h4>Datos de pago</h4>
+        <div class="row">
+            <div class="mb-3 field-iban" name="iban_container">
+                <label for="iban" class="form-label">IBAN *</label>
+                <input
+                    t-attf-class="form-control{{ error and 'iban' in error and ' is-invalid' or '' }}"
+                    id="iban"
+                    type="text"
+                    required="True"
+                    name="iban"
+                />
+                <div class="invalid-feedback">
+                    IBAN inválido.
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="mb-3" name="iban_statement_container">
+                <label>
+                    <input
+                        type="checkbox"
+                        t-att-value="iban_statement"
+                        name="iban_statement"
+                        required="True"
+                    />
+                    Confirmo que la persona titular de la cuenta bancaria, yo misma o una tercera persona, autoriza la domiciliación de las facturas de electricidad. *
+                </label>
+                <p>El pago de las facturas se efectuará mediante domiciliación bancaria a la cuenta que designe la contratante, que consta en el formulario de contratación que consta en las condiciones particulares. Este pago deberá poderse hacer efectivo a partir de los 7 días posteriores a la fecha de la factura.
+                La contratante declara y garantiza haber realizado los trámites necesarios ante la entidad bancaria, con el objetivo de que las presentes condiciones de pago sean efectivas durante el periodo íntegro de vigencia del presente contrato.</p>
+            </div>
+        </div>
+    </template>
+
+    <template id="terms_and_conditions_template" name="terms_and_conditions_template">
+        <h4>Terminos y condiciones</h4>
+        <div class="row">
+            <div class="mb-3" name="conditions_container">
+                <label>
+                    <input
+                        type="checkbox"
+                        t-att-value="conditions"
+                        name="conditions"
+                        required="True"
+                    />
+                    He leído y acepto las condiciones de Energetica. *
+                </label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="mb-3" name="payment_conditions_container">
+                <label>
+                    <input
+                        type="checkbox"
+                        t-att-value="payment_conditions"
+                        name="payment_conditions"
+                        required="True"
+                    />
+                    Con la aceptación de estas condiciones particulares, la persona o empresa contratante se obliga al pago de su consumo al precio que resulte de la aplicación de la tarifa contratada. *
+                </label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="mb-3" name="privacy_policy_container">
+                <label>
+                    <input
+                        type="checkbox"
+                        t-att-value="privacy_policy"
+                        name="privacy_policy"
+                        required="True"
+                    />
+                    He leído y acepto la política de privacidad de Energetica. *
+                </label>
+            </div>
+        </div>
+    </template>
+
+    <template id="error_message_template" name="error_message_template">
+        <p style="color:red;">
+            <t t-out="error_msg" />
+        </p>
+    </template>
+
+    <template id="csrf_template" name="csrf_template">
+        <div name="csrf_token_container">
+            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+        </div>
+    </template>
+
+    <template id="main_form_template" name="main_form_template">
+        <div id="wrap" class="o_portal_wrap">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-xs-12 col-sm-10  col-md-8 col-lg-6">
+                        <h1 class="mt-4 text-center" t-out="title" />
+                        <form
+                            action="/contract-application-created"
+                            method="post"
+                            class="form-horizontal mt32"
+                            enctype="multipart/form-data"
+                        >
+                            <t t-call="energetica_website_sale_order.supply_point_template" />
+                            <t t-call="energetica_website_sale_order.service_point_template" />
+                            <t t-call="energetica_website_sale_order.power_template" />
+                            <t t-call="energetica_website_sale_order.tariff_template" />
+                            <t t-call="energetica_website_sale_order.selfconsume_template" />
+                            <t t-call="energetica_website_sale_order.titularity_info_template" />
+                            <t t-call="energetica_website_sale_order.payment_info_template" />
+                            <t t-call="energetica_website_sale_order.terms_and_conditions_template" />
+                            <t t-call="energetica_website_sale_order.error_message_template" />
+                            <t t-call="energetica_website_sale_order.csrf_template" />
+                            <div class="mt-3 mb-3 text-center">
+                                <button class="btn btn-primary">Enviar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="contract_template" name="contract_template">
+        <t name="Contract" t-name="contract">
+            <t t-call="website.layout">
+                <t t-call="energetica_website_sale_order.main_form_template">
+                    <t t-set="title">Contrata la luz</t>
+                </t>
+                <input t-if='website.plausible_shared_key' type='hidden' class='js_plausible_push' data-event-name='Lead Generation' data-event-params='{"CTA": "Contact Us"}' />
+                <script src="/energetica_website_sale_order/static/src/js/FormValidation.js"></script>
+            </t>
+        </t>
+    </template>
+
+    <template
+        id="energetica_thanks"
+        name="Thanks (Energetica)"
+        inherit_id="website.contactus_thanks_ir_ui_view"
+        primary="True"
+        priority="100"
+    >
+        <xpath expr="/t[@t-name='website.contactus_thanks']" position="attributes">
+            <attribute name="name">Gracias (Energetica)</attribute>
+        </xpath>
+        <xpath
+            expr="//div[@id='wrap']/section/div/div/div[1]/h5/span[2]"
+            position="replace"
+        >
+            <span>Tu solicitud se ha enviado <b>correctamente</b>.</span>
+        </xpath>
+    </template>
+</odoo>
