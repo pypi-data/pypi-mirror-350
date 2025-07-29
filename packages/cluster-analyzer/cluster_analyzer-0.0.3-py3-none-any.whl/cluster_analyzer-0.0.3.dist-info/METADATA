@@ -1,0 +1,109 @@
+Metadata-Version: 2.4
+Name: cluster_analyzer
+Version: 0.0.3
+Summary: A library to analyze critical behavior, self-similarity, and fractal dimension of clusters in cellular automata.
+Project-URL: homepage, https://github.com/HakanAkgn/ClusterAnalyzer
+Project-URL: repository, https://github.com/HakanAkgn/ClusterAnalyzer
+Project-URL: bug tracker, https://github.com/HakanAkgn/ClusterAnalyzer/issues
+Author-email: Hakan Akgün <hakanakgun317@gmail.com>, "Xianquan (Sarinstein) Yan" <xianquanyan@gmail.com>
+Maintainer-email: Hakan Akgün <hakanakgun317@gmail.com>
+License: MIT License
+        
+        Copyright (c) 2024 Hakan Akgün
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+License-File: LICENSE
+Classifier: Development Status :: 3 - Alpha
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3 :: Only
+Requires-Python: >=3.6
+Requires-Dist: matplotlib~=3.7.5
+Requires-Dist: numba
+Requires-Dist: pandas
+Requires-Dist: powerlaw
+Requires-Dist: sympy
+Requires-Dist: tqdm
+Provides-Extra: all
+Requires-Dist: imageio; extra == 'all'
+Requires-Dist: joblib; extra == 'all'
+Provides-Extra: dev
+Requires-Dist: hatch; extra == 'dev'
+Description-Content-Type: text/markdown
+
+# Cluster_Analyzer [![arXiv](https://img.shields.io/badge/arXiv-2412.00568---?logo=arXiv&labelColor=b31b1b&color=grey)](https://arxiv.org/abs/2411.07189)
+
+`cluster_analyzer` is a Python library designed to analyze critical behavior, self-similarity, and fractal dimensions of clusters in cellular automata. It provides tools for simulating cluster formation, performing statistical analyses, and visualizing results.
+
+<p align="center">
+    <img src="https://raw.githubusercontent.com/HakanAkgn/ClusterAnalyzer/main/assets/fractal_latest.png" width="800" />
+</p>
+
+## Features
+- Optimized cluster detection
+- Simulate Logistic Game of Life (LGOL) and find polynomial solutions.
+- Analyze cluster sizes and their distributions.
+- Perform power-law fitting and goodness-of-fit tests and visualizations based on [powerlaw package](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0085777) developed in on the statistical methods developed in [Clauset et al. 2007](https://arxiv.org/abs/0706.1062) and [Klaus et al. 2011](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0019779).
+- Generate Probability Density Function (PDF) and Complementary Cumulative Distribution Function (CCDF) plots.
+
+## Installation
+
+You can install ClusterAnalyzer via pip:
+
+```bash
+$ pip install cluster-analyzer
+```
+
+or clone the repository and install it manually:
+```bash
+$ git clone https://github.com/HakanAkgn/ClusterAnalyzer.git
+$ cd ClusterAnalyzer
+$ pip install . 
+```
+to install optional dependencies to reproduce all the figures in the paper, run:
+```bash
+$ pip install .[all]
+```
+
+Check the installation:
+```python
+import cluster_analyzer as ca
+print(ca.__version__)
+```
+
+## Usage
+
+See the [Demo Notebook](https://github.com/HakanAkgn/ClusterAnalyzer/blob/main/ClusterAnalyzerDemo.ipynb) for examples of each function.
+
+See the [Data Display Notebook](https://github.com/HakanAkgn/ClusterAnalyzer/blob/main/Paper_Data/Data_Display.ipynb) for a detailed view of the dataset and visualizations used in the paper.
+
+## Citation
+If you find this work useful, please cite our paper:
+
+```bibtex
+@misc{akgün2024deterministiccriticalitycluster,
+      title={Deterministic criticality & cluster dynamics hidden in the Game of Life}, 
+      author={Hakan Akgün and Xianquan Yan and Tamer Taşkıran and Muhamet Ibrahimi and Arash Mobaraki and Ching Hua Lee and Seymur Jahangirov},
+      year={2024},
+      eprint={2411.07189},
+      archivePrefix={arXiv},
+      primaryClass={cond-mat.stat-mech},
+      url={https://arxiv.org/abs/2411.07189}, 
+}
+```
