@@ -1,0 +1,12 @@
+spec: "1.2"
+devices:
+  GPIB0::8::INSTR:
+    manufacturer: "SRS"
+    model: "SR844"
+    state: { freq: 10000, r: 2.3e-6, theta: 15.2 }
+    responses:
+      "*IDN?": '"SRS,SR844,12345,1.04"'
+      "FREQ?": "${{ state['freq'] }}"
+      "FREQ {value}": "${{ set('freq', value|float) }}"
+      "OUTP? 3": "${{ '{:.6e}'.format(state['r'] * (1+noise(0,1e-3))) }}"
+      "OUTP? 4": "${{ state['theta'] }}"
