@@ -1,0 +1,114 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "Sikertelen csatlakoz\u00e1s",
+            "invalid_auth": "\u00c9rv\u00e9nytelen hiteles\u00edt\u00e9s",
+            "unknown": "V\u00e1ratlan hiba"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API kulcs"
+                }
+            }
+        }
+    },
+    "exceptions": {
+        "invalid_config_entry": {
+            "message": "\u00c9rv\u00e9nytelen konfigur\u00e1ci\u00f3s bejegyz\u00e9st adott meg. Kapott bejegyz\u00e9s: {config_entry}"
+        }
+    },
+    "options": {
+        "error": {
+            "model_not_supported": "Ez a modell nem t\u00e1mogatott, k\u00e9rj\u00fck, v\u00e1lasszon egy m\u00e1sik modellt",
+            "web_search_not_supported": "Ez a modell nem t\u00e1mogatja a webes keres\u00e9st"
+        },
+        "step": {
+            "init": {
+                "data": {
+                    "chat_model": "Modell",
+                    "llm_hass_api": "Home Assistant vez\u00e9rl\u00e9se",
+                    "max_tokens": "A v\u00e1laszk\u00e9nt visszak\u00fcldhet\u0151 tokenek maxim\u00e1lis sz\u00e1ma",
+                    "prompt": "Utas\u00edt\u00e1sok",
+                    "reasoning_effort": "\u00c9rvel\u00e9si r\u00e1ford\u00edt\u00e1s",
+                    "recommended": "Aj\u00e1nlott modellspecifik\u00e1ci\u00f3k",
+                    "search_context_size": "Keres\u00e9si kontextus m\u00e9rete",
+                    "temperature": "H\u0151m\u00e9rs\u00e9klet",
+                    "top_p": "Top P",
+                    "user_location": "Otthoni helysz\u00edn figyelembev\u00e9tele",
+                    "web_search": "Webes keres\u00e9s enged\u00e9lyez\u00e9se"
+                },
+                "data_description": {
+                    "prompt": "Adja meg, hogyan kell a nagy nyelvi modellnek (LLM) v\u00e1laszolnia. Ez lehet egy sablon.",
+                    "reasoning_effort": "H\u00e1ny \u00e9rvel\u00e9si tokent gener\u00e1ljon a modell a v\u00e1lasz l\u00e9trehoz\u00e1sa el\u0151tt (bizonyos \u00e9rvel\u00e9si modellek eset\u00e9n)",
+                    "search_context_size": "Ir\u00e1nyelv a keres\u00e9shez haszn\u00e1lt kontextusablak m\u00e9ret\u00e9re vonatkoz\u00f3an",
+                    "user_location": "Keres\u00e9si eredm\u00e9nyek pontos\u00edt\u00e1sa f\u00f6ldrajzi adatok alapj\u00e1n",
+                    "web_search": "Enged\u00e9lyezi a modell sz\u00e1m\u00e1ra a legfrissebb inform\u00e1ci\u00f3k keres\u00e9s\u00e9t az interneten a v\u00e1lasz gener\u00e1l\u00e1sa el\u0151tt"
+                }
+            }
+        }
+    },
+    "selector": {
+        "reasoning_effort": {
+            "options": {
+                "high": "Magas",
+                "low": "Alacsony",
+                "medium": "K\u00f6zepes"
+            }
+        },
+        "search_context_size": {
+            "options": {
+                "high": "Magas",
+                "low": "Alacsony",
+                "medium": "K\u00f6zepes"
+            }
+        }
+    },
+    "services": {
+        "generate_content": {
+            "description": "Besz\u00e9lget\u00e9si lek\u00e9rdez\u00e9st k\u00fcld a ChatGPT-nek, bele\u00e9rtve a csatolt k\u00e9p- vagy pdff\u00e1jlokat is",
+            "fields": {
+                "config_entry": {
+                    "description": "A m\u0171velethez haszn\u00e1land\u00f3 konfigur\u00e1ci\u00f3s bejegyz\u00e9s",
+                    "name": "Konfigur\u00e1ci\u00f3s bejegyz\u00e9s"
+                },
+                "filenames": {
+                    "description": "A felt\u00f6ltend\u0151 f\u00e1jlok list\u00e1ja",
+                    "name": "F\u00e1jlok"
+                },
+                "prompt": {
+                    "description": "Az elk\u00fcldend\u0151 feladat",
+                    "name": "Feladat"
+                }
+            },
+            "name": "Tartalom gener\u00e1l\u00e1sa"
+        },
+        "generate_image": {
+            "description": "Egy megadott le\u00edr\u00e1s alapj\u00e1n k\u00e9pet hoz l\u00e9tre",
+            "fields": {
+                "config_entry": {
+                    "description": "A konfigur\u00e1ci\u00f3s bejegyz\u00e9s, amelyet ehhez a m\u0171velethez haszn\u00e1lni kell",
+                    "name": "Konfigur\u00e1ci\u00f3s bejegyz\u00e9s"
+                },
+                "prompt": {
+                    "description": "A sz\u00f6veg, amit k\u00e9pp\u00e9 szeretne alak\u00edtani",
+                    "example": "Egy macska fot\u00f3ja",
+                    "name": "Kiindul\u00e1si sz\u00f6veg"
+                },
+                "quality": {
+                    "description": "A gener\u00e1lt k\u00e9p min\u0151s\u00e9ge",
+                    "name": "Min\u0151s\u00e9g"
+                },
+                "size": {
+                    "description": "A gener\u00e1lt k\u00e9p m\u00e9rete",
+                    "name": "M\u00e9ret"
+                },
+                "style": {
+                    "description": "A gener\u00e1lt k\u00e9p st\u00edlusa",
+                    "name": "St\u00edlus"
+                }
+            },
+            "name": "K\u00e9p gener\u00e1l\u00e1sa"
+        }
+    }
+}

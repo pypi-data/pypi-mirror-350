@@ -1,0 +1,771 @@
+{
+    "config": {
+        "abort": {
+            "addon_connection_failed": "No se pudo conectar con el complemento {addon}. Comprueba el estado del complemento y vuelve a intentarlo m\u00e1s tarde.",
+            "addon_info_failed": "No se pudo obtener informaci\u00f3n para el complemento {addon}.",
+            "addon_install_failed": "No se pudo instalar el complemento {addon}.",
+            "addon_start_failed": "No se pudo iniciar el complemento {addon}.",
+            "already_configured": "El servicio ya est\u00e1 configurado",
+            "reauth_successful": "La autenticaci\u00f3n se volvi\u00f3 a realizar correctamente",
+            "reconfigure_successful": "Se volvi\u00f3 a configurar correctamente",
+            "single_instance_allowed": "Ya est\u00e1 configurado. Solo es posible una \u00fanica configuraci\u00f3n."
+        },
+        "error": {
+            "bad_birth": "Tema de nacimiento no v\u00e1lido",
+            "bad_certificate": "El certificado de la CA no es v\u00e1lido",
+            "bad_client_cert": "Certificado de cliente no v\u00e1lido, aseg\u00farate de que se proporcione un archivo v\u00e1lido",
+            "bad_client_cert_key": "El certificado de cliente y la clave privada no son un par v\u00e1lido",
+            "bad_discovery_prefix": "Prefijo de descubrimiento no v\u00e1lido",
+            "bad_will": "Tema de voluntad no v\u00e1lido",
+            "bad_ws_headers": "Proporciona cabeceras HTTP v\u00e1lidas como un objeto JSON",
+            "cannot_connect": "No se pudo conectar",
+            "client_key_error": "Archivo de clave privada no v\u00e1lido o contrase\u00f1a suministrada no v\u00e1lida",
+            "invalid_auth": "Autenticaci\u00f3n no v\u00e1lida",
+            "invalid_inclusion": "El certificado del cliente y la clave privada deben configurarse juntos"
+        },
+        "step": {
+            "broker": {
+                "data": {
+                    "advanced_options": "Opciones avanzadas",
+                    "broker": "Br\u00f3ker",
+                    "certificate": "Subir archivo de certificado de la CA personalizado",
+                    "client_cert": "Subir archivo de certificado de cliente",
+                    "client_id": "ID de cliente (dejar vac\u00edo para generar uno aleatoriamente)",
+                    "client_key": "Subir archivo de clave privada",
+                    "client_key_password": "Contrase\u00f1a",
+                    "keepalive": "El tiempo entre el env\u00edo de mensajes keep alive",
+                    "password": "Contrase\u00f1a",
+                    "port": "Puerto",
+                    "protocol": "Protocolo MQTT",
+                    "set_ca_cert": "Validaci\u00f3n del certificado del br\u00f3ker",
+                    "set_client_cert": "Utilizar un certificado de cliente",
+                    "tls_insecure": "Ignorar la validaci\u00f3n del certificado del br\u00f3ker",
+                    "transport": "Transporte MQTT",
+                    "username": "Nombre de usuario",
+                    "ws_headers": "Cabeceras WebSocket en formato JSON",
+                    "ws_path": "Ruta del WebSocket"
+                },
+                "data_description": {
+                    "advanced_options": "Habilita y selecciona **Siguiente** para configurar opciones avanzadas.",
+                    "broker": "El nombre de host o direcci\u00f3n IP de tu broker MQTT.",
+                    "certificate": "El archivo de certificado de CA personalizado para validar el certificado del broker MQTT.",
+                    "client_cert": "El certificado de cliente para autenticarse con tu broker MQTT.",
+                    "client_id": "El ID \u00fanico para identificar la API MQTT de Home Assistant como cliente MQTT. Se recomienda dejar esta opci\u00f3n en blanco.",
+                    "client_key": "El archivo de clave privada que pertenece a tu certificado de cliente.",
+                    "client_key_password": "La contrase\u00f1a para el archivo de clave privada (si est\u00e1 configurada).",
+                    "keepalive": "Se recomienda un valor inferior a 90 segundos.",
+                    "port": "El puerto en el que escucha tu broker MQTT. Por ejemplo 1883.",
+                    "protocol": "El protocolo MQTT en el que opera tu broker. Por ejemplo 3.1.1.",
+                    "set_ca_cert": "Selecciona **Auto** para la validaci\u00f3n autom\u00e1tica de CA, o **Personalizado** y haz clic en **Siguiente** para configurar un certificado de CA personalizado, para permitir la validaci\u00f3n del certificado de tu broker MQTT.",
+                    "set_client_cert": "Habilita y haz clic en **Siguiente** para configurar un certificado de cliente y una clave privada para autenticarse con tu broker MQTT.",
+                    "tls_insecure": "Opci\u00f3n para ignorar la validaci\u00f3n del certificado de tu broker MQTT.",
+                    "transport": "El transporte que se utilizar\u00e1 para la conexi\u00f3n con tu broker MQTT.",
+                    "ws_path": "La ruta del WebSocket que se utilizar\u00e1 para la conexi\u00f3n a tu agente MQTT."
+                },
+                "description": "Por favor, introduce la informaci\u00f3n de conexi\u00f3n de tu br\u00f3ker MQTT."
+            },
+            "hassio_confirm": {
+                "description": "\u00bfQuieres configurar Home Assistant para conectar con el agente MQTT proporcionado por el complemento {addon}?"
+            },
+            "install_addon": {
+                "title": "Instalando el complemento"
+            },
+            "reauth_confirm": {
+                "data": {
+                    "password": "Contrase\u00f1a",
+                    "username": "Nombre de usuario"
+                },
+                "data_description": {
+                    "password": "La contrase\u00f1a para iniciar sesi\u00f3n en tu broker MQTT.",
+                    "username": "El nombre de usuario para iniciar sesi\u00f3n en tu broker MQTT."
+                },
+                "description": "El broker MQTT ha informado de un error de autenticaci\u00f3n. Por favor, confirma que el nombre de usuario y la contrase\u00f1a son correctos.",
+                "title": "Es necesario volver a autenticarse con el broker MQTT"
+            },
+            "start_addon": {
+                "title": "Iniciando el complemento"
+            },
+            "user": {
+                "description": "Por favor, elige c\u00f3mo quieres conectar con el br\u00f3ker MQTT:",
+                "menu_options": {
+                    "addon": "Usar el complemento oficial {addon}.",
+                    "broker": "Introduce los datos de conexi\u00f3n del br\u00f3ker MQTT de forma manual"
+                }
+            }
+        }
+    },
+    "config_subentries": {
+        "device": {
+            "abort": {
+                "reconfigure_successful": "Se volvi\u00f3 a configurar correctamente"
+            },
+            "create_entry": {
+                "default": "El dispositivo MQTT con la entidad \"{entity}\" de {platform} se configur\u00f3 correctamente. \n \nTen en cuenta que puedes volver a configurar el dispositivo MQTT en cualquier momento, por ejemplo, para a\u00f1adir m\u00e1s entidades."
+            },
+            "entry_type": "Dispositivo MQTT",
+            "error": {
+                "invalid_input": "Valor no v\u00e1lido",
+                "invalid_subscribe_topic": "Topic de suscripci\u00f3n no v\u00e1lido",
+                "invalid_template": "Plantilla no v\u00e1lida",
+                "invalid_uom": "La unidad de medida \"{unit_of_measurement}\" no es compatible con la clase de dispositivo seleccionada; por favor, elimina la clase de dispositivo, selecciona una clase de dispositivo que admita \"{unit_of_measurement}\" o elige una unidad de medida compatible de la lista.",
+                "invalid_url": "URL no v\u00e1lida",
+                "options_device_class_enum": "La opci\u00f3n \"Opciones\" debe utilizarse con la clase de dispositivo Enumeraci\u00f3n. Si contin\u00faas, se restablecer\u00e1n las opciones existentes",
+                "options_not_allowed_with_state_class_or_uom": "La configuraci\u00f3n de 'Opciones' no est\u00e1 permitida cuando se utilizan la clase de estado o la unidad de medida",
+                "options_with_enum_device_class": "Configurar opciones para el sensor de enumeraci\u00f3n",
+                "uom_required_for_device_class": "La clase de dispositivo seleccionada requiere una unidad"
+            },
+            "initiate_flow": {
+                "reconfigure": "Volver a configurar el dispositivo MQTT",
+                "user": "A\u00f1adir dispositivo MQTT"
+            },
+            "step": {
+                "availability": {
+                    "data": {
+                        "availability_template": "Plantilla de disponibilidad",
+                        "availability_topic": "Topic de disponibilidad",
+                        "payload_available": "Payload disponible",
+                        "payload_not_available": "Payload no disponible"
+                    },
+                    "data_description": {
+                        "availability_template": "Una [plantilla](https://www.home-assistant.io/docs/configuration/templating/#using-templates-with-the-mqtt-integration) para representar el payload de disponibilidad recibida en el topic de disponibilidad",
+                        "availability_topic": "Topic para recibir el payload de disponibilidad",
+                        "payload_available": "El payload que indica que el dispositivo est\u00e1 disponible (predeterminado en \"en l\u00ednea\")",
+                        "payload_not_available": "El payload que indica que el dispositivo no est\u00e1 disponible (predeterminado en \"fuera de l\u00ednea\")"
+                    },
+                    "description": "La funci\u00f3n de disponibilidad permite que un dispositivo informe su disponibilidad.",
+                    "title": "Opciones de disponibilidad"
+                },
+                "delete_entity": {
+                    "data": {
+                        "component": "Entidad"
+                    },
+                    "data_description": {
+                        "component": "Selecciona la entidad que quieres eliminar. Se requiere al menos una entidad."
+                    },
+                    "description": "Eliminar una entidad. Esta se eliminar\u00e1 del dispositivo. Eliminar una entidad interrumpir\u00e1 cualquier automatizaci\u00f3n o script que dependa de ella.",
+                    "title": "Eliminar entidad"
+                },
+                "device": {
+                    "data": {
+                        "configuration_url": "URL de configuraci\u00f3n",
+                        "hw_version": "Versi\u00f3n del hardware",
+                        "model": "Modelo",
+                        "model_id": "ID del modelo",
+                        "name": "Nombre",
+                        "sw_version": "Versi\u00f3n del software"
+                    },
+                    "data_description": {
+                        "configuration_url": "Un enlace a la p\u00e1gina web que permite gestionar la configuraci\u00f3n de este dispositivo. Puede ser una URL \"http://\", \"https://\" o una URL interna \"homeassistant://\".",
+                        "hw_version": "La versi\u00f3n de hardware del dispositivo. Por ejemplo, 'v1.0 rev a'.",
+                        "model": "Por ejemplo, 'Cleanmaster Pro'.",
+                        "model_id": "Por ejemplo, \"123NK2PRO\".",
+                        "name": "El nombre del dispositivo MQTT a\u00f1adido manualmente.",
+                        "sw_version": "La versi\u00f3n del software del dispositivo. Por ejemplo, '2025.1.0'."
+                    },
+                    "description": "Introduce los detalles del dispositivo MQTT:",
+                    "sections": {
+                        "mqtt_settings": {
+                            "data": {
+                                "qos": "QoS"
+                            },
+                            "data_description": {
+                                "qos": "El valor de Calidad de Servicio que deben utilizar las entidades del dispositivo."
+                            }
+                        }
+                    },
+                    "title": "Configurar los detalles del dispositivo MQTT"
+                },
+                "entity": {
+                    "data": {
+                        "entity_picture": "Imagen de la entidad",
+                        "name": "Nombre de la entidad",
+                        "platform": "Tipo de la entidad"
+                    },
+                    "data_description": {
+                        "entity_picture": "Una URL a una imagen que se asignar\u00e1.",
+                        "name": "El nombre de la entidad. D\u00e9jalo en blanco para establecerlo como \"Ninguno\" y marcarlo como funci\u00f3n principal del dispositivo MQTT (https://www.home-assistant.io/integrations/mqtt/#naming-of-mqtt-entities).",
+                        "platform": "El tipo de entidad a configurar."
+                    },
+                    "description": "Configurar los ajustes b\u00e1sicos de la entidad {platform_label} {entity_name_label}",
+                    "title": "Configurar el dispositivo MQTT \"{mqtt_device}\""
+                },
+                "entity_platform_config": {
+                    "data": {
+                        "device_class": "Clase de dispositivo",
+                        "options": "A\u00f1adir opci\u00f3n",
+                        "state_class": "Clase de estado",
+                        "unit_of_measurement": "Unidad de medida"
+                    },
+                    "data_description": {
+                        "device_class": "La clase de dispositivo de la entidad {platform}. [M\u00e1s informaci\u00f3n.]({url}#device_class)",
+                        "options": "Opciones para los valores de estado permitidos del sensor. La clase de dispositivo del sensor debe estar configurada como Enumeraci\u00f3n. La opci\u00f3n \"Opciones\" no se puede usar junto con la clase de estado ni la unidad de medida.",
+                        "state_class": "La [clase de estado](https://developers.home-assistant.io/docs/core/entity/sensor/#available-state-classes) del sensor. [M\u00e1s informaci\u00f3n.]({url}#state_class)",
+                        "unit_of_measurement": "Define la unidad de medida del sensor, si la hay."
+                    },
+                    "description": "Por favor, configura los detalles espec\u00edficos para la entidad \"{entity}\" de {platform}:",
+                    "sections": {
+                        "advanced_settings": {
+                            "data": {
+                                "suggested_display_precision": "Precisi\u00f3n de visualizaci\u00f3n sugerida"
+                            },
+                            "data_description": {
+                                "suggested_display_precision": "El n\u00famero de decimales que se deben usar en el estado de la entidad {platform} despu\u00e9s del redondeo. [M\u00e1s informaci\u00f3n.]({url}#suggested_display_precision)"
+                            },
+                            "name": "Opciones avanzadas"
+                        }
+                    },
+                    "title": "Configurar el dispositivo MQTT \"{mqtt_device}\""
+                },
+                "mqtt_platform_config": {
+                    "data": {
+                        "blue_template": "Plantilla azul",
+                        "brightness_template": "Plantilla de brillo",
+                        "color_temp_template": "Plantilla de temperatura de color",
+                        "command_off_template": "Plantilla de comando \"Apagado\"",
+                        "command_on_template": "Plantilla de comando \"Encendido\"",
+                        "command_template": "Plantilla del comando",
+                        "command_topic": "Topic del comando",
+                        "force_update": "Forzar actualizaci\u00f3n",
+                        "green_template": "Plantilla verde",
+                        "last_reset_value_template": "Plantilla de \u00faltimo valor de restablecimiento",
+                        "optimistic": "Optimista",
+                        "payload_off": "Payload \"off\"",
+                        "payload_on": "Payload \"on\"",
+                        "qos": "QoS",
+                        "retain": "Retener",
+                        "state_topic": "Topic de estado",
+                        "value_template": "Plantilla de valor"
+                    },
+                    "data_description": {
+                        "color_temp_template": "[Plantilla](https://www.home-assistant.io/docs/configuration/templating/#using-value-templates-with-mqtt) para extraer la temperatura de color en grados Kelvin del valor del payload de estado. El resultado esperado de la plantilla es un entero.",
+                        "command_off_template": "La [plantilla](https://www.home-assistant.io/docs/configuration/templating/#using-command-templates-with-mqtt) para cambios de estado \"off\". Las variables disponibles son: `state` y `transition`.",
+                        "command_on_template": "La [plantilla](https://www.home-assistant.io/docs/configuration/templating/#using-command-templates-with-mqtt) para los cambios de estado \"activado\". Variables disponibles: `state`, `brightness`, `color_temp`, `red`, `green`, `blue`, `hue`, `sat`, `flash`, `transition` y `effect`. Los valores `red`, `green`, `blue` y `brightness` se proporcionan como enteros en el rango de 0 a 255. El valor de `hue` se proporciona como un valor de punto flotante en el rango de 0 a 360. El valor de `sat` se proporciona como un valor de punto flotante en el rango de 0 a 100. El valor de `color_temp` se proporciona como un entero que representa las unidades Kelvin.",
+                        "command_template": "Una [plantilla](https://www.home-assistant.io/docs/configuration/templating/#using-command-templates-with-mqtt) para representar el payload que se publicar\u00e1 en el topic del comando.",
+                        "command_topic": "El topic de publicaci\u00f3n que se usar\u00e1 para controlar la entidad {platform}. [M\u00e1s informaci\u00f3n.]({url}#command_topic)",
+                        "force_update": "Env\u00eda eventos de actualizaci\u00f3n incluso si el valor no ha cambiado. \u00datil si quieres tener gr\u00e1ficos de valores significativos en el historial. [M\u00e1s informaci\u00f3n.]({url}#force_update)",
+                        "green_template": "[Plantilla](https://www.home-assistant.io/docs/configuration/templating/#using-value-templates-with-mqtt) para extraer el color verde del valor del payload de estado. El resultado esperado de la plantilla es un n\u00famero entero entre 0 y 255.",
+                        "last_reset_value_template": "Define una [plantilla](https://www.home-assistant.io/docs/configuration/templating/#using-value-templates-with-mqtt) para extraer el \u00faltimo restablecimiento. Cuando se configura la plantilla de \u00faltimo restablecimiento, la opci\u00f3n de Clase de estado debe ser Total. [M\u00e1s informaci\u00f3n.]({url}#last_reset_value_template)",
+                        "on_command_type": "Define cu\u00e1ndo se env\u00eda el payload \"on\". Al usar \"Last\" (predeterminado), se enviar\u00e1n primero los temas de estilo (brillo, color, etc.) y luego el payload \"on\" al tema de comando. Al usar \"First\" se enviar\u00e1 el payload \"on\" y luego los temas de estilo. Al usar \"Brightness\" solo se enviar\u00e1n comandos de brillo en lugar del payload \"on\" para encender la luz.",
+                        "optimistic": "Indicador que define si la entidad {platform} funciona en modo optimista. [M\u00e1s informaci\u00f3n.]({url}#optimistic)",
+                        "payload_off": "El payload que representa el estado \"apagado\".",
+                        "payload_on": "El payload que representa el estado \"encendido\".",
+                        "red_template": "[Plantilla](https://www.home-assistant.io/docs/configuration/templating/#using-value-templates-with-mqtt) para extraer el color rojo del valor del payload de estado. El resultado esperado de la plantilla es un n\u00famero entero entre 0 y 255.",
+                        "retain": "Selecciona si los valores publicados por la entidad {platform} deben conservarse en el br\u00f3ker MQTT.",
+                        "state_template": "[Plantilla](https://www.home-assistant.io/docs/configuration/templating/#using-value-templates-with-mqtt) para extraer el estado del valor del payload del estado.",
+                        "state_topic": "El topic MQTT al que suscribirse para recibir valores de estado de {platform}. [M\u00e1s informaci\u00f3n.]({url}#state_topic)",
+                        "supported_color_modes": "Lista de modos de color compatibles con la luz. Los modos de color posibles son: Encendido/Apagado, Brillo, Temperatura de color, HS, XY, RGB, RGBW, RGBWW y Blanco. Ten en cuenta que si se utilizas Encendido/Apagado o Brillo, ese debe ser el \u00fanico valor de la lista. [M\u00e1s informaci\u00f3n.]({url}#supported_color_modes)"
+                    },
+                    "description": "Por favor, configura los detalles espec\u00edficos de MQTT para la entidad \"{entity}\" de {platform}:",
+                    "sections": {
+                        "advanced_settings": {
+                            "data": {
+                                "expire_after": "Expirar despu\u00e9s de",
+                                "flash": "Compatibilidad con Flash",
+                                "flash_time_long": "Tiempo de flash largo",
+                                "flash_time_short": "Tiempo de flash corto",
+                                "max_kelvin": "M\u00e1x. Kelvin",
+                                "min_kelvin": "M\u00edn. Kelvin",
+                                "transition": "Compatibilidad con transici\u00f3n"
+                            },
+                            "data_description": {
+                                "expire_after": "Si se configura, define el n\u00famero de segundos que transcurren tras la expiraci\u00f3n del estado del sensor, si no se actualiza. Tras la expiraci\u00f3n, el estado del sensor deja de estar disponible. Si no se configura, el estado del sensor nunca expira. [M\u00e1s informaci\u00f3n.]({url}#expire_after)",
+                                "flash": "Habilita la funci\u00f3n de flash para esta luz",
+                                "flash_time_long": "La duraci\u00f3n, en segundos, de un destello \"largo\".",
+                                "flash_time_short": "La duraci\u00f3n, en segundos, de un destello \"corto\".",
+                                "max_kelvin": "La temperatura de color m\u00e1xima en Kelvin.",
+                                "min_kelvin": "La temperatura de color m\u00ednima en Kelvin.",
+                                "transition": "Habilitar la funci\u00f3n de transici\u00f3n para esta luz"
+                            },
+                            "name": "Configuraci\u00f3n avanzada"
+                        },
+                        "light_brightness_settings": {
+                            "data": {
+                                "brightness": "Brillo separado",
+                                "brightness_command_template": "Plantilla de comando de brillo",
+                                "brightness_command_topic": "Topic del comando de brillo",
+                                "brightness_scale": "Escala de brillo",
+                                "brightness_state_topic": "Topic del estado de brillo",
+                                "brightness_value_template": "Plantilla de valor de brillo"
+                            },
+                            "data_description": {
+                                "brightness": "Bandera que define si la luz admite brillo cuando se admite el modo de color RGB, RGBW o RGBWW.",
+                                "brightness_command_template": "Una [plantilla](https://www.home-assistant.io/docs/configuration/templating/#using-command-templates-with-mqtt) para componer el payload que se publicar\u00e1 en el topic del comando de brillo.",
+                                "brightness_command_topic": "El topic de publicaci\u00f3n que se usar\u00e1 para controlar el brillo. [M\u00e1s informaci\u00f3n.]({url}#brightness_command_topic)",
+                                "brightness_scale": "Define el valor de brillo m\u00e1ximo (es decir, 100%) del brillo m\u00e1ximo.",
+                                "brightness_state_topic": "El topic MQTT al que suscribirse para recibir valores de estado de brillo. [M\u00e1s informaci\u00f3n.]({url}#brightness_state_topic)",
+                                "brightness_value_template": "Define una [plantilla](https://www.home-assistant.io/docs/configuration/templating/#using-value-templates-with-mqtt) para extraer el valor de brillo."
+                            },
+                            "name": "Configuraci\u00f3n de brillo"
+                        },
+                        "light_color_mode_settings": {
+                            "data": {
+                                "color_mode_state_topic": "Topic de estado del modo de color",
+                                "color_mode_value_template": "Plantilla de valor del modo de color"
+                            },
+                            "data_description": {
+                                "color_mode_state_topic": "El topic MQTT al que suscribirse para recibir actualizaciones del modo de color. Si no se configura, el modo de color se establecer\u00e1 autom\u00e1ticamente seg\u00fan el \u00faltimo color o temperatura de color v\u00e1lidos recibidos.",
+                                "color_mode_value_template": "Define una [plantilla](https://www.home-assistant.io/docs/configuration/templating/#using-value-templates-with-mqtt) para extraer el valor del modo de color."
+                            },
+                            "name": "Configuraci\u00f3n del modo de color"
+                        },
+                        "light_color_temp_settings": {
+                            "data": {
+                                "color_temp_command_template": "Plantilla de comando de temperatura de color",
+                                "color_temp_command_topic": "Topic del comando de temperatura de color",
+                                "color_temp_state_topic": "Topic del estado de la temperatura del color",
+                                "color_temp_value_template": "Plantilla de valores de temperatura de color"
+                            },
+                            "data_description": {
+                                "color_temp_command_template": "Una [plantilla](https://www.home-assistant.io/docs/configuration/templating/#using-command-templates-with-mqtt) para componer el payload que se publicar\u00e1 en el topic del comando de temperatura de color.",
+                                "color_temp_command_topic": "El topic de publicaci\u00f3n que se usar\u00e1 para controlar la temperatura del color. [M\u00e1s informaci\u00f3n.]({url}#color_temp_command_topic)",
+                                "color_temp_state_topic": "El tema MQTT al que suscribirse para recibir actualizaciones del estado de la temperatura de color. [M\u00e1s informaci\u00f3n.]({url}#color_temp_state_topic)",
+                                "color_temp_value_template": "Define una [plantilla](https://www.home-assistant.io/docs/configuration/templating/#using-value-templates-with-mqtt) para extraer el valor de temperatura de color."
+                            },
+                            "name": "Configuraci\u00f3n de temperatura de color"
+                        },
+                        "light_effect_settings": {
+                            "data": {
+                                "effect": "Efecto",
+                                "effect_command_template": "Plantilla de comando de efecto",
+                                "effect_command_topic": "Topic del comando de efecto",
+                                "effect_list": "Lista de efectos",
+                                "effect_state_topic": "Topic del estado de efecto",
+                                "effect_template": "Plantilla de efectos",
+                                "effect_value_template": "Plantilla de valor de efecto"
+                            },
+                            "data_description": {
+                                "effect": "Bandera que define si la luz admite efectos.",
+                                "effect_command_template": "Una [plantilla](https://www.home-assistant.io/docs/configuration/templating/#using-command-templates-with-mqtt) para componer el payload que se publicar\u00e1 en el topic del comando de efecto.",
+                                "effect_command_topic": "El topic de publicaci\u00f3n que se usar\u00e1 para controlar el estado del efecto de la luz. [M\u00e1s informaci\u00f3n.]({url}#effect_command_topic)",
+                                "effect_list": "La lista de efectos que admite la luz.",
+                                "effect_state_topic": "El topic MQTT al que suscribirse para recibir actualizaciones del estado del efecto. [M\u00e1s informaci\u00f3n.]({url}#effect_state_topic)"
+                            },
+                            "name": "Configuraciones de efectos"
+                        },
+                        "light_hs_settings": {
+                            "data": {
+                                "hs_command_template": "Plantilla de comando HS",
+                                "hs_command_topic": "Topic del comando HS",
+                                "hs_state_topic": "Topic de estado HS",
+                                "hs_value_template": "Plantilla de valor HS"
+                            },
+                            "data_description": {
+                                "hs_command_template": "Define una [plantilla](https://www.home-assistant.io/docs/configuration/templating/#using-command-templates-with-mqtt) para componer el mensaje que se enviar\u00e1 al topic de comandos HS. Variables disponibles: `hue` y `sat`.",
+                                "hs_command_topic": "El topic MQTT para publicar comandos que cambian el estado de color de la luz en formato HS (Tono/Saturaci\u00f3n). Rango de tono: 0\u00b0 a 360\u00b0, Rango de saturaci\u00f3n: 0 a 100. Nota: El brillo se env\u00eda por separado en el tema del comando de brillo. [M\u00e1s informaci\u00f3n.]({url}#hs_command_topic)",
+                                "hs_state_topic": "El topic MQTT al que suscribirse para recibir actualizaciones de estado de color en formato HS. El payload esperado son los valores de tono y saturaci\u00f3n separados por comas, por ejemplo, `359.5,100.0`. Nota: El brillo se recibe por separado en el tema de estado de brillo. [M\u00e1s informaci\u00f3n.]({url}#hs_state_topic)",
+                                "hs_value_template": "Define una [plantilla](https://www.home-assistant.io/docs/configuration/templating/#using-value-templates-with-mqtt) para extraer el valor HS."
+                            },
+                            "name": "Configuraci\u00f3n del modo de color HS"
+                        },
+                        "light_rgb_settings": {
+                            "data": {
+                                "rgb_command_template": "Plantilla de comando RGB",
+                                "rgb_command_topic": "Topic de comando RGB",
+                                "rgb_state_topic": "Topic de estado RGB",
+                                "rgb_value_template": "Plantilla de valor RGB"
+                            },
+                            "data_description": {
+                                "rgb_command_template": "Define una [plantilla](https://www.home-assistant.io/docs/configuration/templating/#using-command-templates-with-mqtt) para componer el mensaje que se enviar\u00e1 al tema del comando RGB. Variables disponibles: `red`, `green` y `blue`.",
+                                "rgb_command_topic": "El topic MQTT para publicar comandos para cambiar el estado RGB de la luz. [M\u00e1s informaci\u00f3n.]({url}#rgb_command_topic)",
+                                "rgb_state_topic": "El topic MQTT al que suscribirse para recibir actualizaciones de estado RGB. El payload esperado son los valores RGB separados por comas, por ejemplo, `255,0,127`. [M\u00e1s informaci\u00f3n.]({url}#rgb_state_topic)",
+                                "rgb_value_template": "Define una [plantilla](https://www.home-assistant.io/docs/configuration/templating/#using-value-templates-with-mqtt) para extraer el valor RGB."
+                            },
+                            "name": "Configuraci\u00f3n del modo de color RGB"
+                        },
+                        "light_rgbw_settings": {
+                            "data": {
+                                "rgbw_command_template": "Plantilla de comando RGBW",
+                                "rgbw_command_topic": "Topic de comando RGBW",
+                                "rgbw_state_topic": "Topic de estado RGBW",
+                                "rgbw_value_template": "Plantilla de valor RGBW"
+                            },
+                            "data_description": {
+                                "rgbw_command_template": "Define una [plantilla](https://www.home-assistant.io/docs/configuration/templating/#using-command-templates-with-mqtt) para componer el mensaje que se enviar\u00e1 al tema del comando RGBW. Variables disponibles: `red`, `green`, `blue` y `white`.",
+                                "rgbw_command_topic": "El topic MQTT para publicar comandos para cambiar el estado RGBW de la luz. [M\u00e1s informaci\u00f3n.]({url}#rgbw_command_topic)",
+                                "rgbw_state_topic": "El topic MQTT al que suscribirse para recibir actualizaciones de estado RGBW. El payload esperado son los valores RGBW separados por comas, por ejemplo, `255,0,127,64`. [M\u00e1s informaci\u00f3n.]({url}#rgbw_state_topic)",
+                                "rgbw_value_template": "Define una [plantilla](https://www.home-assistant.io/docs/configuration/templating/#using-value-templates-with-mqtt) para extraer el valor RGBW."
+                            },
+                            "name": "Configuraci\u00f3n del modo de color RGBW"
+                        },
+                        "light_rgbww_settings": {
+                            "data": {
+                                "rgbww_command_template": "Plantilla de comando RGBWW",
+                                "rgbww_command_topic": "Topic de comando RGBWW",
+                                "rgbww_state_topic": "Topic de estado RGBWW",
+                                "rgbww_value_template": "Plantilla de valor RGBWW"
+                            },
+                            "data_description": {
+                                "rgbww_command_template": "Define una [plantilla](https://www.home-assistant.io/docs/configuration/templating/#using-command-templates-with-mqtt) para componer el mensaje que se enviar\u00e1 al topic del comando RGBWW. Variables disponibles: `red`, `green`, `blue`, `cold_white` y `warm_white`.",
+                                "rgbww_command_topic": "El topic MQTT para publicar comandos para cambiar el estado RGBWW de la luz. [M\u00e1s informaci\u00f3n.]({url} #rgbww_command_topic)",
+                                "rgbww_state_topic": "El topic MQTT al que suscribirse para recibir actualizaciones de estado RGBWW. El payload esperado son los valores RGBWW separados por comas, por ejemplo, `255,0,127,64,32`. [M\u00e1s informaci\u00f3n.]({url}#rgbww_state_topic)",
+                                "rgbww_value_template": "Define una [plantilla](https://www.home-assistant.io/docs/configuration/templating/#using-value-templates-with-mqtt) para extraer el valor RGBWW."
+                            },
+                            "name": "Configuraci\u00f3n del modo de color RGBWW"
+                        },
+                        "light_white_settings": {
+                            "data": {
+                                "white_command_topic": "Topic de la orden para blancos",
+                                "white_scale": "Escala de blancos"
+                            },
+                            "data_description": {
+                                "white_command_topic": "El topic MQTT para publicar comandos para cambiar la luz a modo blanco con un brillo determinado. [M\u00e1s informaci\u00f3n]({url}#white_command_topic)",
+                                "white_scale": "Define el nivel de blanco m\u00e1ximo (es decir, 100%) del m\u00e1ximo."
+                            },
+                            "name": "Configuraci\u00f3n del modo de color blanco"
+                        },
+                        "light_xy_settings": {
+                            "data": {
+                                "xy_command_template": "Plantilla de comando XY",
+                                "xy_command_topic": "Topic del comando XY",
+                                "xy_state_topic": "Topic del estado XY",
+                                "xy_value_template": "Plantilla de valor XY"
+                            },
+                            "data_description": {
+                                "xy_command_template": "Define una [plantilla](https://www.home-assistant.io/docs/configuration/templating/#using-command-templates-with-mqtt) para componer el mensaje que se enviar\u00e1 al topic de comandos XY. Variables disponibles: `x` e `y`.",
+                                "xy_command_topic": "El topic MQTT para publicar comandos para cambiar el estado XY de la luz. [M\u00e1s informaci\u00f3n.]({url}#xy_command_topic)",
+                                "xy_state_topic": "El topic MQTT al que suscribirse para recibir actualizaciones de estado XY. El payload esperado son los valores de color X e Y separados por comas, por ejemplo, `0.675,0.322`. [M\u00e1s informaci\u00f3n.]({url}#xy_state_topic)",
+                                "xy_value_template": "Define una [plantilla](https://www.home-assistant.io/docs/configuration/templating/#using-value-templates-with-mqtt) para extraer el valor XY."
+                            },
+                            "name": "Configuraci\u00f3n del modo de color XY"
+                        }
+                    },
+                    "title": "Configurar el dispositivo MQTT \"{mqtt_device}\""
+                },
+                "summary_menu": {
+                    "description": "Entidades configuradas:\n{mqtt_items} \n \nDecide qu\u00e9 hacer a continuaci\u00f3n:",
+                    "menu_options": {
+                        "availability": "Configurar la disponibilidad",
+                        "delete_entity": "Eliminar una entidad",
+                        "device": "Actualizar las propiedades del dispositivo",
+                        "entity": "A\u00f1adir otra entidad a \"{mqtt_device}\"",
+                        "save_changes": "Guardar cambios",
+                        "update_entity": "Actualizar las propiedades de la entidad"
+                    },
+                    "title": "Volver a configurar \"{mqtt_device}\""
+                },
+                "update_entity": {
+                    "data": {
+                        "component": "Entidad"
+                    },
+                    "data_description": {
+                        "component": "Selecciona la entidad que quieres actualizar."
+                    },
+                    "description": "Selecciona la entidad que quieres actualizar",
+                    "title": "Seleccionar entidad"
+                }
+            }
+        }
+    },
+    "device_automation": {
+        "trigger_subtype": {
+            "button_1": "Primer bot\u00f3n",
+            "button_2": "Segundo bot\u00f3n",
+            "button_3": "Tercer bot\u00f3n",
+            "button_4": "Cuarto bot\u00f3n",
+            "button_5": "Quinto bot\u00f3n",
+            "button_6": "Sexto bot\u00f3n",
+            "turn_off": "Apagar",
+            "turn_on": "Encender"
+        },
+        "trigger_type": {
+            "button_double_press": "\"{subtype}\" doble pulsaci\u00f3n",
+            "button_long_press": "\"{subtype}\" pulsado continuamente",
+            "button_long_release": "\"{subtype}\" soltado despu\u00e9s de pulsaci\u00f3n larga",
+            "button_quadruple_press": "\"{subtype}\" cu\u00e1druple pulsaci\u00f3n",
+            "button_quintuple_press": "\"{subtype}\" qu\u00edntuple pulsaci\u00f3n",
+            "button_short_press": "\"{subtype}\" pulsado",
+            "button_short_release": "\"{subtype}\" soltado",
+            "button_triple_press": "\"{subtype}\" triple pulsaci\u00f3n"
+        }
+    },
+    "exceptions": {
+        "addon_start_failed": {
+            "message": "No se pudo iniciar correctamente el complemento {addon}."
+        },
+        "command_template_error": {
+            "message": "El an\u00e1lisis de la plantilla `{command_template}` para la entidad `{entity_id}` fall\u00f3 con el error: {error}."
+        },
+        "invalid_platform_config": {
+            "message": "Error al volver a cargar la configuraci\u00f3n YAML para el elemento MQTT ` {domain} ` configurado manualmente. Consulta los registros para obtener m\u00e1s detalles."
+        },
+        "invalid_publish_topic": {
+            "message": "No se puede publicar: la plantilla de topic `{topic_template}` produjo un topic no v\u00e1lido `{topic}` despu\u00e9s de renderizar ({error})"
+        },
+        "mqtt_broker_error": {
+            "message": "Error al comunicarse con MQTT: {error_message}."
+        },
+        "mqtt_not_setup_cannot_publish": {
+            "message": "No se puede publicar en el tema \"{topic}\", aseg\u00farate de que MQTT est\u00e9 configurado correctamente."
+        },
+        "mqtt_not_setup_cannot_subscribe": {
+            "message": "No se puede suscribir al tema \"{topic}\", aseg\u00farate de que MQTT est\u00e1 configurado correctamente."
+        },
+        "mqtt_not_setup_cannot_unsubscribe_twice": {
+            "message": "No se puede cancelar la suscripci\u00f3n al topic \"{topic}\" dos veces."
+        },
+        "mqtt_topic_not_a_string": {
+            "message": "\u00a1El topic debe ser una cadena! Se obtuvo: {topic}."
+        },
+        "mqtt_trigger_cannot_remove_twice": {
+            "message": "No se puede quitar el disparador dos veces."
+        }
+    },
+    "issues": {
+        "invalid_platform_config": {
+            "description": "Home Assistant detect\u00f3 una configuraci\u00f3n no v\u00e1lida para un elemento configurado manualmente. \n\n Dominio de plataforma: **{domain}**\n Archivo de configuraci\u00f3n: **{config_file}**\n L\u00ednea cercana: **{line}**\n Configuraci\u00f3n encontrada:\n ```yaml\n {config}\n ```\n Error: **{error}**. \n\nAseg\u00farate de que la configuraci\u00f3n sea v\u00e1lida y [recarga](/developer-tools/yaml) los elementos MQTT configurados manualmente o reinicia Home Assistant para solucionar este problema."
+        },
+        "invalid_unit_of_measurement": {
+            "description": "La entidad de sensor configurada manualmente **{entity_id}** tiene una unidad de medida configurada **{uom}** que no es v\u00e1lida para la clase de dispositivo configurada **{device_class}**. Aseg\u00farate de que la unidad de medida configurada sea v\u00e1lida o elimina la clase de dispositivo, y recarga los elementos MQTT configurados manualmente o reinicia Home Assistant para solucionar este problema.",
+            "title": "Sensor con unidad de medida no v\u00e1lida"
+        }
+    },
+    "options": {
+        "error": {
+            "bad_birth": "Tema de nacimiento no v\u00e1lido",
+            "bad_certificate": "El certificado de la CA no es v\u00e1lido",
+            "bad_client_cert": "Certificado de cliente no v\u00e1lido, aseg\u00farate de que se proporcione un archivo v\u00e1lido",
+            "bad_client_cert_key": "El certificado de cliente y la clave privada no son un par v\u00e1lido",
+            "bad_discovery_prefix": "Prefijo de descubrimiento no v\u00e1lido",
+            "bad_will": "Tema de voluntad no v\u00e1lido",
+            "bad_ws_headers": "Proporciona cabeceras HTTP v\u00e1lidas como un objeto JSON",
+            "cannot_connect": "No se pudo conectar",
+            "client_key_error": "Archivo de clave privada no v\u00e1lido o contrase\u00f1a suministrada no v\u00e1lida",
+            "invalid_inclusion": "El certificado del cliente y la clave privada deben configurarse juntos"
+        },
+        "step": {
+            "broker": {
+                "data": {
+                    "advanced_options": "Opciones avanzadas",
+                    "broker": "Br\u00f3ker",
+                    "certificate": "Subir archivo de certificado de la CA personalizado",
+                    "client_cert": "Subir archivo de certificado de cliente",
+                    "client_id": "ID de cliente (dejar vac\u00edo para generar uno aleatoriamente)",
+                    "client_key": "Subir archivo de clave privada",
+                    "keepalive": "El tiempo entre el env\u00edo de mensajes keep alive",
+                    "password": "Contrase\u00f1a",
+                    "port": "Puerto",
+                    "protocol": "Protocolo MQTT",
+                    "set_ca_cert": "Validaci\u00f3n del certificado del br\u00f3ker",
+                    "set_client_cert": "Utilizar un certificado de cliente",
+                    "tls_insecure": "Ignorar la validaci\u00f3n del certificado del br\u00f3ker",
+                    "transport": "Transporte MQTT",
+                    "username": "Nombre de usuario",
+                    "ws_headers": "Cabeceras WebSocket en formato JSON",
+                    "ws_path": "Ruta del WebSocket"
+                },
+                "data_description": {
+                    "advanced_options": "Habilita y selecciona **Siguiente** para configurar opciones avanzadas.",
+                    "broker": "El nombre de host o direcci\u00f3n IP de tu broker MQTT.",
+                    "certificate": "El archivo de certificado de CA personalizado para validar el certificado del broker MQTT.",
+                    "client_cert": "El certificado de cliente para autenticarse con tu broker MQTT.",
+                    "client_id": "El ID \u00fanico para identificar la API MQTT de Home Assistant como cliente MQTT. Se recomienda dejar esta opci\u00f3n en blanco.",
+                    "client_key": "El archivo de clave privada que pertenece a tu certificado de cliente.",
+                    "keepalive": "Se recomienda un valor inferior a 90 segundos.",
+                    "password": "La contrase\u00f1a para iniciar sesi\u00f3n en tu broker MQTT.",
+                    "port": "El puerto en el que escucha tu broker MQTT. Por ejemplo 1883.",
+                    "protocol": "El protocolo MQTT en el que opera tu broker. Por ejemplo 3.1.1.",
+                    "set_ca_cert": "Selecciona **Auto** para la validaci\u00f3n autom\u00e1tica de CA, o **Personalizado** y haz clic en **Siguiente** para configurar un certificado de CA personalizado, para permitir la validaci\u00f3n del certificado de tu broker MQTT.",
+                    "set_client_cert": "Habilita y haz clic en **Siguiente** para configurar un certificado de cliente y una clave privada para autenticarse con tu broker MQTT.",
+                    "tls_insecure": "Opci\u00f3n para ignorar la validaci\u00f3n del certificado de tu broker MQTT.",
+                    "transport": "El transporte que se utilizar\u00e1 para la conexi\u00f3n con tu broker MQTT.",
+                    "username": "El nombre de usuario para iniciar sesi\u00f3n en tu broker MQTT.",
+                    "ws_headers": "Los encabezados de WebSocket para pasar a trav\u00e9s de la conexi\u00f3n basada en WebSocket a tu agente MQTT.",
+                    "ws_path": "La ruta del WebSocket que se utilizar\u00e1 para la conexi\u00f3n a tu agente MQTT."
+                },
+                "description": "Por favor, introduce la informaci\u00f3n de conexi\u00f3n de tu br\u00f3ker MQTT.",
+                "title": "Opciones del br\u00f3ker"
+            },
+            "options": {
+                "data": {
+                    "birth_enable": "Habilitar mensaje de nacimiento",
+                    "birth_payload": "Carga del mensaje de nacimiento",
+                    "birth_qos": "QoS del mensaje de nacimiento",
+                    "birth_retain": "Retenci\u00f3n del mensaje de nacimiento",
+                    "birth_topic": "Tema del mensaje de nacimiento",
+                    "discovery": "Habilitar descubrimiento",
+                    "discovery_prefix": "Prefijo de descubrimiento",
+                    "will_enable": "Habilitar mensaje de voluntad",
+                    "will_payload": "Carga del mensaje de voluntad",
+                    "will_qos": "QoS del mensaje de voluntad",
+                    "will_retain": "Retenci\u00f3n del mensaje de voluntad",
+                    "will_topic": "Tema del mensaje de voluntad"
+                },
+                "data_description": {
+                    "birth_enable": "Cuando est\u00e9 configurado, Home Assistant publicar\u00e1 un mensaje en l\u00ednea a tu agente MQTT cuando MQTT est\u00e9 listo.",
+                    "birth_payload": "El mensaje de \"birth\" que se publica cuando MQTT est\u00e1 listo y conectado.",
+                    "birth_qos": "La calidad del servicio del mensaje de \"birth\" que se publica cuando MQTT est\u00e1 listo y conectado",
+                    "birth_retain": "Cuando se configura, Home Assistant conservar\u00e1 el mensaje \"birth\" publicado en tu br\u00f3ker MQTT.",
+                    "birth_topic": "El topic MQTT donde Home Assistant publicar\u00e1 un mensaje \"birth\".",
+                    "discovery": "Opci\u00f3n para habilitar el descubrimiento autom\u00e1tico MQTT.",
+                    "discovery_prefix": "El prefijo de los temas de configuraci\u00f3n a los que se suscribir\u00e1 la integraci\u00f3n MQTT.",
+                    "will_enable": "Cuando se configura, Home Assistant le pedir\u00e1 a tu br\u00f3ker que publique un mensaje \"will\" cuando MQTT se detenga o cuando pierda la conexi\u00f3n con tu br\u00f3ker.",
+                    "will_payload": "El mensaje que tu br\u00f3ker MQTT publicar\u00e1 cuando se detenga la integraci\u00f3n MQTT o cuando se pierda la conexi\u00f3n.",
+                    "will_qos": "La calidad del servicio del mensaje \"will\" que publica tu br\u00f3ker MQTT.",
+                    "will_retain": "Cuando se configura, tu br\u00f3ker MQTT conservar\u00e1 el mensaje \"will\".",
+                    "will_topic": "El topic MQTT en el cual tu br\u00f3ker MQTT publicar\u00e1 un mensaje \"will\"."
+                },
+                "description": "Descubrimiento: si el descubrimiento est\u00e1 habilitado (recomendado), Home Assistant descubrir\u00e1 autom\u00e1ticamente los dispositivos y entidades que publican su configuraci\u00f3n en el agente MQTT. Si el descubrimiento est\u00e1 deshabilitado, toda la configuraci\u00f3n debe realizarse manualmente.\nPrefijo de descubrimiento: el prefijo con el que debe comenzar un tema de configuraci\u00f3n para el descubrimiento autom\u00e1tico.\nMensaje de nacimiento: el mensaje de nacimiento se enviar\u00e1 cada vez que Home Assistant se (re)conecte con el br\u00f3ker MQTT.\nMensaje de voluntad: el mensaje de voluntad se enviar\u00e1 cada vez que Home Assistant pierda su conexi\u00f3n con el br\u00f3ker, tanto en caso de desconexi\u00f3n limpia (por ejemplo, que Home Assistant se apague) como no limpia (por ejemplo, Home Assistant se cuelgue o pierda su conexi\u00f3n de red).",
+                "title": "Opciones de MQTT"
+            }
+        }
+    },
+    "selector": {
+        "device_class_sensor": {
+            "options": {
+                "apparent_power": "Potencia aparente",
+                "aqi": "\u00cdndice de calidad del aire",
+                "area": "\u00c1rea",
+                "atmospheric_pressure": "Presi\u00f3n atmosf\u00e9rica",
+                "battery": "Bater\u00eda",
+                "blood_glucose_concentration": "Concentraci\u00f3n de glucosa en sangre",
+                "carbon_dioxide": "Di\u00f3xido de carbono",
+                "carbon_monoxide": "Mon\u00f3xido de carbono",
+                "conductivity": "Conductividad",
+                "current": "Intensidad de corriente",
+                "data_rate": "Velocidad de datos",
+                "data_size": "Tama\u00f1o de datos",
+                "date": "Fecha",
+                "distance": "Distancia",
+                "duration": "Duraci\u00f3n",
+                "energy": "Energ\u00eda",
+                "energy_distance": "Energ\u00eda por distancia",
+                "energy_storage": "Energ\u00eda almacenada",
+                "enum": "Enumeraci\u00f3n",
+                "frequency": "Frecuencia",
+                "gas": "Gas",
+                "humidity": "Humedad",
+                "illuminance": "Iluminancia",
+                "irradiance": "Irradiancia",
+                "moisture": "Humedad",
+                "monetary": "Saldo",
+                "nitrogen_dioxide": "Di\u00f3xido de nitr\u00f3geno",
+                "nitrogen_monoxide": "Mon\u00f3xido de nitr\u00f3geno",
+                "nitrous_oxide": "\u00d3xido nitroso",
+                "ozone": "Ozono",
+                "ph": "pH",
+                "pm1": "PM1",
+                "pm10": "PM10",
+                "pm25": "PM2.5",
+                "power": "Potencia",
+                "power_factor": "Factor de potencia",
+                "precipitation": "Precipitaci\u00f3n",
+                "precipitation_intensity": "Intensidad de precipitaci\u00f3n",
+                "pressure": "Presi\u00f3n",
+                "reactive_power": "Potencia reactiva",
+                "signal_strength": "Intensidad de se\u00f1al",
+                "sound_pressure": "Presi\u00f3n sonora",
+                "speed": "Velocidad",
+                "sulphur_dioxide": "Di\u00f3xido de azufre",
+                "temperature": "Temperatura",
+                "timestamp": "Marca de tiempo",
+                "volatile_organic_compounds": "Compuestos org\u00e1nicos vol\u00e1tiles",
+                "volatile_organic_compounds_parts": "Partes de compuestos org\u00e1nicos vol\u00e1tiles",
+                "voltage": "Voltaje",
+                "volume": "Volumen",
+                "volume_flow_rate": "Caudal volum\u00e9trico",
+                "volume_storage": "Volumen almacenado",
+                "water": "Agua",
+                "weight": "Peso",
+                "wind_direction": "Direcci\u00f3n del viento",
+                "wind_speed": "Velocidad del viento"
+            }
+        },
+        "device_class_switch": {
+            "options": {
+                "outlet": "Enchufe",
+                "switch": "Interruptor"
+            }
+        },
+        "light_schema": {
+            "options": {
+                "basic": "Esquema predeterminado",
+                "json": "JSON",
+                "template": "Plantilla"
+            }
+        },
+        "on_command_type": {
+            "options": {
+                "brightness": "Brillo",
+                "first": "Primero",
+                "last": "\u00daltimo"
+            }
+        },
+        "platform": {
+            "options": {
+                "light": "Luz"
+            }
+        },
+        "set_ca_cert": {
+            "options": {
+                "custom": "Personalizado",
+                "off": "Apagado"
+            }
+        },
+        "state_class": {
+            "options": {
+                "measurement": "Medici\u00f3n",
+                "total": "Total",
+                "total_increasing": "Aumento total"
+            }
+        },
+        "supported_color_modes": {
+            "options": {
+                "brightness": "S\u00f3lo brillo",
+                "color_temp": "Temperatura de color",
+                "hs": "HS",
+                "onoff": "Encendido/Apagado",
+                "rgb": "RGB",
+                "rgbw": "RGBW",
+                "rgbww": "RGBWW",
+                "white": "Blanco",
+                "xy": "XY"
+            }
+        }
+    },
+    "services": {
+        "dump": {
+            "description": "Escribe todos los mensajes sobre un topic espec\u00edfico en el archivo `mqtt_dump.txt` en tu carpeta de configuraci\u00f3n.",
+            "fields": {
+                "duration": {
+                    "description": "Cu\u00e1nto tiempo debemos escuchar los mensajes en segundos.",
+                    "name": "Duraci\u00f3n"
+                },
+                "topic": {
+                    "description": "Topic a escuchar.",
+                    "name": "Topic"
+                }
+            },
+            "name": "Exportar"
+        },
+        "publish": {
+            "description": "Publica un mensaje en un topic de MQTT.",
+            "fields": {
+                "evaluate_payload": {
+                    "description": "Si 'Payload' es un literal de bytes de Python, eval\u00faa el literal de bytes y publica los datos sin procesar.",
+                    "name": "Evaluar payload"
+                },
+                "payload": {
+                    "description": "El payload que se publicar\u00e1. Publica un mensaje vac\u00edo si no se proporciona.",
+                    "name": "Payload"
+                },
+                "qos": {
+                    "description": "Calidad de Servicio a utilizar. 0: Como m\u00e1ximo una vez. 1: Al menos una vez. 2: Exactamente una vez.",
+                    "name": "QoS"
+                },
+                "retain": {
+                    "description": "Si el mensaje debe tener el indicador de retenci\u00f3n establecido. Si se establece, el broker almacena el mensaje m\u00e1s reciente sobre un topic.",
+                    "name": "Retener"
+                },
+                "topic": {
+                    "description": "Topic en el que publicar.",
+                    "name": "Topic"
+                }
+            },
+            "name": "Publicar"
+        },
+        "reload": {
+            "description": "Recarga entidades MQTT desde la configuraci\u00f3n YAML.",
+            "name": "Recargar"
+        }
+    }
+}
