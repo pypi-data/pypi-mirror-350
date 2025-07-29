@@ -1,0 +1,74 @@
+name: Python Tests with Coverage
+
+on:
+  workflow_call:
+    inputs:
+      coverage_threshold:
+        description: "Minimum percentage of coverage required"
+        required: false
+        default: "80"
+        type: string
+      target_folder:
+        description: "Directory to be scanned by the linter."
+        required: false
+        type: string
+        default: "bisslog"
+      target_tests:
+        description: "Directory containing the tests."
+        required: false
+        type: string
+        default: "tests/"
+  workflow_dispatch:
+    inputs:
+      coverage_threshold:
+        description: "Minimum percentage of coverage required"
+        required: false
+        default: "80"
+        type: string
+      target_folder:
+        description: "Directory to be scanned by the linter."
+        required: false
+        type: string
+        default: "bisslog"
+      target_tests:
+        description: "Directory containing the tests."
+        required: false
+        type: string
+        default: "tests/"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install pytest pytest-cov
+      - name: Install dependencies if requirements folder exists
+        run: |
+          if [ -d "requirements" ] && [ "$(ls -A requirements)" ]; then
+            for req_file in requirements/*.txt; do
+              pip install -r $req_file
+            done
+          else
+            echo "No requirements folder or files found. Skipping dependency installation."
+          fi
+
+      - name: Run Tests with Coverage
+        run: |
+          COV_THRESHOLD=${{ inputs.coverage_threshold }}  # Convertir a variable de shell
+          pytest --cov=${{ inputs.target_folder }} --cov-report=term --cov-fail-under=$COV_THRESHOLD ${{ inputs.target_tests }}

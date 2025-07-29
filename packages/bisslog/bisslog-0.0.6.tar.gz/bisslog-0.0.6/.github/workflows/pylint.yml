@@ -1,0 +1,57 @@
+name: Python Linting with Pylint
+
+on:
+  workflow_call:
+    inputs:
+      pylint_threshold:
+        description: "Minimum pylint quality score required"
+        required: false
+        default: "9.0"
+        type: string
+      target_folder:
+        description: "Directory to be scanned by the linter."
+        required: false
+        type: string
+        default: "bisslog"
+  workflow_dispatch:
+    inputs:
+      pylint_threshold:
+        description: "Mínimo puntaje de calidad requerido"
+        required: false
+        default: "9.0"
+        type: string
+      target_folder:
+        description: "Directory to be scanned by the linter."
+        required: false
+        type: string
+        default: "bisslog"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"  # Usa la última versión disponible de Python
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install pylint
+
+      - name: Run Pylint
+        run: |
+          SCORE=$(pylint ${{ inputs.target_folder }} --fail-under=${{ inputs.pylint_threshold }} | tee pylint_output.txt | grep -oP '(?<=rated at )\d+\.\d+' | tail -1)
+          
+          echo "Pylint Score: $SCORE"
+          
+          if (( $(echo "$SCORE < ${{ inputs.pylint_threshold }}" | bc -l) )); then
+            echo "❌ Pylint score is below the threshold!"
+            exit 1
+          fi

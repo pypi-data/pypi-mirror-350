@@ -1,0 +1,61 @@
+name: Complexity Analysis with Radon
+
+on:
+  workflow_call:
+    inputs:
+      radon_threshold:
+        description: "Maximum allowed complexity (A-F)"
+        required: false
+        default: "C"
+        type: string
+      target_folder:
+        description: "Directory to be scanned by the linter."
+        required: false
+        type: string
+        default: "bisslog"
+  workflow_dispatch:
+    inputs:
+      radon_threshold:
+        description: "Maximum allowed complexity (A-F)"
+        required: false
+        default: "C"
+        type: string
+      target_folder:
+        description: "Directory to be scanned by the linter."
+        required: false
+        type: string
+        default: "bisslog"
+
+jobs:
+  complexity:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install radon
+
+      - name: Run complexity analysis with Radon
+        run: |
+          echo "🔍 Running Radon complexity analysis (threshold: ${{ inputs.radon_threshold }})..."
+          
+          # Run Radon and store results in a variable
+          RESULT=$(radon cc ${{ inputs.target_folder }} -nc --min ${{ inputs.radon_threshold }})
+
+          if [ -n "$RESULT" ]; then
+            echo "❌ Found functions exceeding the complexity threshold ${{ inputs.radon_threshold }}:"
+            echo "$RESULT"
+            exit 1
+          else
+            echo "✅ All code meets the allowed complexity threshold."
+          fi
