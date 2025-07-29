@@ -1,0 +1,388 @@
+Metadata-Version: 2.4
+Name: frekil
+Version: 0.1.9
+Summary: Official Python SDK for Frekil API
+Author-email: Notate <support@notatehq.com>
+License: MIT
+Project-URL: Homepage, https://notatehq.com
+Project-URL: Documentation, https://notatehq.com/docs
+Project-URL: Repository, https://github.com/notatehq/frekil-python-sdk
+Project-URL: Issues, https://github.com/notatehq/frekil-python-sdk/issues
+Keywords: frekil,sdk,api,notate,medical,imaging
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests>=2.25.0
+Dynamic: license-file
+
+# Frekil SDK
+
+The official Python SDK for the Frekil API.
+
+## Installation
+
+```bash
+pip install frekil
+```
+
+## Usage
+
+### Authentication
+
+To use the SDK, you'll need an API key from your Frekil account:
+
+```python
+from frekil import FrekilClient
+
+# Initialize the client with your API key
+client = FrekilClient(api_key="your-api-key")
+
+# Optionally specify a custom base URL (e.g., for development)
+client = FrekilClient(
+    api_key="your-api-key",
+    base_url="https://dev.notatehq.com/api/sdk"
+)
+```
+
+### Working with Projects
+
+#### List Projects
+
+Get all projects the authenticated user has access to:
+
+```python
+# Get all projects
+projects = client.projects.list()
+
+# Example response:
+# [
+#     {
+#         "id": "uuid",
+#         "name": "Project Name",
+#         "description": "Project Description",
+#         "role": "ADMIN",  # User's role in the project
+#         "created_at": "2024-03-21T10:00:00Z",
+#         "updated_at": "2024-03-21T10:00:00Z",
+#         "is_ct_scan": true,
+#         "tags": ["tag1", "tag2"]
+#     },
+#     ...
+# ]
+```
+
+#### Get Project Membership
+
+Get membership details for a specific project including user roles and status:
+
+```python
+# Get project membership
+project_id = "project-uuid"
+memberships = client.projects.get_membership(project_id)
+
+# Example response:
+# [
+#     {
+#         "user_id": "uuid",
+#         "email": "user@example.com",
+#         "name": "User Name",  # Full name or email if name not set
+#         "role": "ADMIN",      # User's role in the project
+#         "percentage": 100,    # User's allocation percentage
+#         "is_active": true,    # Whether the user is active
+#         "is_project_admin": true,  # Whether user is project admin
+#         "created_at": "2024-03-21T10:00:00Z",
+#         "updated_at": "2024-03-21T10:00:00Z"
+#     },
+#     ...
+# ]
+```
+
+#### Get Project Images
+
+Get all images in a project:
+
+```python
+# Get project images
+project_id = "project-uuid"
+images = client.projects.get_images(project_id)
+
+# Example response:
+# [
+#     {
+#         "id": "images/image1.dcm",  # Full image key
+#         "filename": "image1.dcm",   # Just the filename
+#         "created_at": "2024-03-21T10:00:00Z",
+#         "updated_at": "2024-03-21T10:00:00Z"
+#     },
+#     ...
+# ]
+```
+
+#### Get Project Allocations
+
+Get all allocations in a project, including user roles for both annotators and reviewers:
+
+```python
+# Get project allocations
+project_id = "project-uuid"
+allocations = client.projects.get_allocations(project_id)
+
+# Example response:
+# [
+#     {
+#         "allocation_id": "uuid",
+#         "image_id": "images/image1.dcm",  # Full image key
+#         "image_filename": "image1.dcm",   # Just the filename
+#         "annotator_email": "annotator@example.com",  # May be null
+#         "reviewer_email": "reviewer@example.com",    # May be null
+#         "status": "PENDING",  # One of: PENDING, PENDING_REVIEW, APPROVED, REJECTED
+#         "created_at": "2024-03-21T10:00:00Z",
+#         "is_ground_truth": false
+#     },
+#     ...
+# ]
+```
+
+### Working with Allocations
+
+The SDK provides a dedicated `allocations` API for managing image allocations with more granular control.
+
+#### Create Allocation
+
+Create a single allocation:
+
+```python
+# Create a new allocation
+allocation = client.allocations.create(
+    project_id="project-uuid",
+    image_key="images/image1.dcm",
+    annotator="annotator@example.com",
+    reviewer="reviewer@example.com",
+    is_ground_truth=False
+)
+```
+
+#### Get Allocation
+
+Get details of a specific allocation:
+
+```python
+# Get allocation details
+allocation = client.allocations.get(
+    project_id="project-uuid",
+    allocation_id="allocation-uuid"
+)
+```
+
+#### List Allocations with Filtering
+
+List allocations with optional filtering:
+
+```python
+# List allocations with filters
+allocations = client.allocations.list(
+    project_id="project-uuid",
+    image_key="images/image1.dcm",  # Optional: filter by image
+    annotator="annotator@example.com",  # Optional: filter by annotator
+    reviewer="reviewer@example.com",  # Optional: filter by reviewer
+    status="PENDING"  # Optional: filter by status
+)
+```
+
+#### Update Allocation
+
+Update an existing allocation:
+
+```python
+# Update an allocation
+updated = client.allocations.update(
+    project_id="project-uuid",
+    allocation_id="allocation-uuid",
+    annotator="new_annotator@example.com",  # Optional: new annotator
+    reviewer="new_reviewer@example.com",    # Optional: new reviewer
+    is_ground_truth=True,                   # Optional: new ground truth status
+    override_existing_work=False            # Whether to override existing work
+)
+```
+
+#### Delete Allocation
+
+Delete an allocation:
+
+```python
+# Delete an allocation
+client.allocations.delete(
+    project_id="project-uuid",
+    allocation_id="allocation-uuid",
+    override_existing_work=False  # Whether to override existing work
+)
+```
+
+#### Bulk Create Allocations
+
+Create multiple allocations in a single request:
+
+```python
+# Bulk create allocations
+allocations = [
+    {
+        "image_key": "images/image1.dcm",
+        "annotator": "annotator1@example.com",
+        "reviewer": "reviewer1@example.com",
+        "is_ground_truth": False
+    },
+    {
+        "image_key": "images/image2.dcm",
+        "annotator": "annotator2@example.com",
+        "reviewer": "reviewer2@example.com"
+    }
+]
+
+result = client.allocations.bulk_create(
+    project_id="project-uuid",
+    allocations=allocations,
+    override_existing_work=False
+)
+```
+
+#### Bulk Update Reviewers
+
+Update reviewers for multiple allocations:
+
+```python
+# Bulk update reviewers
+updates = [
+    {
+        "image_key": "images/image1.dcm",
+        "annotator": "annotator1@example.com",
+        "new_reviewer": "new_reviewer1@example.com"
+    },
+    {
+        "image_key": "images/image2.dcm",
+        "annotator": "annotator2@example.com",
+        "new_reviewer": "new_reviewer2@example.com"
+    }
+]
+
+result = client.allocations.bulk_update_reviewers(
+    project_id="project-uuid",
+    updates=updates,
+    override_existing_work=False
+)
+
+# Example response:
+# {
+#     "status": "success",
+#     "results": {
+#         "updated": [
+#             {
+#                 "allocation_id": "uuid",
+#                 "image_key": "images/image1.dcm",
+#                 "annotator": "annotator1@example.com",
+#                 "old_reviewer": "old_reviewer1@example.com",
+#                 "new_reviewer": "new_reviewer1@example.com",
+#                 "status": "updated"
+#             }
+#         ],
+#         "skipped": [
+#             {
+#                 "image_key": "images/image2.dcm",
+#                 "annotator": "annotator2@example.com",
+#                 "reason": "Existing review found",
+#                 "can_override": true
+#             }
+#         ],
+#         "failed": [
+#             {
+#                 "image_key": "images/image3.dcm",
+#                 "annotator": "annotator3@example.com",
+#                 "reason": "Invalid reviewer role",
+#                 "details": "User is not a project reviewer"
+#             }
+#         ]
+#     },
+#     "summary": {
+#         "total_updates": 3,
+#         "successfully_updated": 1,
+#         "skipped": 1,
+#         "failed": 1
+#     }
+# }
+```
+
+#### Bulk Update by Filter
+
+Update multiple allocations based on filter criteria:
+
+```python
+# Bulk update by filter
+filter_criteria = {
+    "image_keys": ["images/image1.dcm", "images/image2.dcm"],
+    "annotators": ["annotator1@example.com"],
+    "reviewers": ["old_reviewer@example.com"],
+    "status": "PENDING"
+}
+
+update_data = {
+    "reviewer": "new_reviewer@example.com",
+    "is_ground_truth": True
+}
+
+result = client.allocations.bulk_update_by_filter(
+    project_id="project-uuid",
+    filter_criteria=filter_criteria,
+    update_data=update_data,
+    override_existing_work=False
+)
+```
+
+## Error Handling
+
+The SDK uses custom exception classes to handle API errors:
+
+```python
+from frekil.exceptions import FrekilAPIError, FrekilClientError
+
+try:
+    projects = client.projects.list()
+except FrekilClientError as e:
+    # Handle client errors (e.g., authentication issues, invalid parameters)
+    print(f"Client error: {e} (Status: {e.status_code})")
+    print(f"Error details: {e.error_details}")
+except FrekilAPIError as e:
+    # Handle API errors (e.g., server issues)
+    print(f"API error: {e} (Status: {e.status_code})")
+    print(f"Error details: {e.error_details}")
+```
+
+## Development
+
+### Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/notatehq/frekil-python-sdk.git
+cd frekil-python-sdk
+
+# Install dependencies
+pip install -e ".[dev]"
+```
+
+### Testing
+
+```bash
+pytest
+```
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
