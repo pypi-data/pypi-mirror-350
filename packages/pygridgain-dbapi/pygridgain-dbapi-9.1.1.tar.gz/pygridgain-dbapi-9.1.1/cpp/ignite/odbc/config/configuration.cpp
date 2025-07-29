@@ -1,0 +1,94 @@
+/*
+ *  Copyright (C) GridGain Systems. All Rights Reserved.
+ *  _________        _____ __________________        _____
+ *  __  ____/___________(_)______  /__  ____/______ ____(_)_______
+ *  _  / __  __  ___/__  / _  __  / _  / __  _  __ `/__  / __  __ \
+ *  / /_/ /  _  /    _  /  / /_/ /  / /_/ /  / /_/ / _  /  _  / / /
+ *  \____/   /_/     /_/   \_,__/   \____/   \__,_/  /_/   /_/ /_/
+ */
+
+#include "ignite/odbc/config/configuration.h"
+#include "ignite/odbc/config/config_tools.h"
+#include "ignite/odbc/odbc_error.h"
+#include "ignite/common/detail/string_utils.h"
+
+#include <string>
+
+/** Configuration keys . */
+namespace key {
+/** Key for fetch results page size attribute. */
+static inline const std::string page_size{"page_size"};
+
+/** Key for Driver attribute. */
+static inline const std::string host{"host"};
+
+/** Key for TCP port attribute. */
+static inline const std::string port{"port"};
+
+/** Key for address attribute. */
+static inline const std::string address{"address"};
+
+/** Key for address attribute. */
+static inline const std::string schema{"schema"};
+
+/** Key for authentication identity. */
+static inline const std::string identity{"identity"};
+
+/** Key for authentication secret. */
+static inline const std::string secret{"secret"};
+
+/** Key for timezone. */
+static inline const std::string timezone{"timezone"};
+
+} // namespace key
+
+namespace ignite {
+
+void try_get_string_param(
+    value_with_default<std::string> &dst, const config_map &config_params, const std::string &key) {
+    auto it = config_params.find(key);
+    if (it != config_params.end()) {
+        dst = {it->second, true};
+    }
+}
+
+void configuration::from_config_map(const config_map &config_params) {
+    *this = configuration();
+
+    auto page_size_it = config_params.find(key::page_size);
+    if (page_size_it != config_params.end()) {
+        auto page_size_opt = detail::parse_int<std::int32_t>(page_size_it->second);
+        if (!page_size_opt)
+            throw odbc_error(sql_state::S01S00_INVALID_CONNECTION_STRING_ATTRIBUTE,
+                "Invalid page size value: " + page_size_it->second);
+
+        m_page_size = {*page_size_opt, true};
+    }
+
+    auto address_it = config_params.find(key::address);
+    if (address_it != config_params.end())
+        m_end_points = {parse_address(address_it->second), true};
+    else {
+        end_point ep;
+        auto host_it = config_params.find(key::host);
+        if (host_it == config_params.end())
+            throw odbc_error(
+                sql_state::S01S00_INVALID_CONNECTION_STRING_ATTRIBUTE, "Connection address is not specified");
+
+        auto host = host_it->second;
+        uint16_t port = default_value::port;
+
+        auto port_it = config_params.find(key::port);
+        if (port_it != config_params.end())
+            port = parse_port(port_it->second);
+
+        m_end_points = {{{host, port}}, true};
+    }
+
+    try_get_string_param(m_schema, config_params, key::schema);
+    try_get_string_param(m_auth_identity, config_params, key::identity);
+    try_get_string_param(m_auth_secret, config_params, key::secret);
+    try_get_string_param(m_timezone, config_params, key::timezone);
+}
+
+} // namespace ignite
