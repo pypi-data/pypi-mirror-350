@@ -1,0 +1,36 @@
+[workspace]
+
+resolver = "2"
+
+members = [
+    "grpc-server",
+    "pyo3",
+    "rust",
+    "tools/counters",
+    "tools/topology",
+]
+
+[workspace.package]
+repository = "https://gitlab.softwareheritage.org/swh/devel/swh-graph"
+license = "GPL-3.0-or-later"
+version = "6.7.0"
+
+[workspace.dependencies]
+anyhow = { version="1.0.79", features=["backtrace"] }
+itertools = { version = "0.11.0" }
+swh-graph = { version = "6.1.0", path = "./rust/" }
+
+# CLI
+env_logger = "0.11.5"
+clap = { version = "4.1.6", features = ["derive"] }
+dsi-progress-logger = "0.8.0"
+log = "0.4.17"
+
+
+[profile.release] # Used for the examples
+opt-level = 3             # like --release
+lto = "fat"               # Full LTO
+overflow-checks = false   # Disable integer overflow checks.
+debug = true              # Include debug info.
+debug-assertions = false  # Disables debug assertions.
+codegen-units=1           # slower compile times, but maybe better perf
