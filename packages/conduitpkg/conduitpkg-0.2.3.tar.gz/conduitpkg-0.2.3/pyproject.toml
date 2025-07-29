@@ -1,0 +1,64 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "conduitpkg"
+dynamic = ["version"]
+description = 'A simple packet manager, works with github to upload packets.'
+readme = "README.md"
+requires-python = ">=3.7"
+license = "GPL-3.0-or-later"
+keywords = []
+authors = [
+  { name = "Guille on a Raspberry pi", email = "guilleleiratemes@gmail.com" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = ["zynk-lite>=0.1.6", "GitPython"]
+
+[project.urls]
+Documentation = "https://github.com/Guille on a Raspberry pi/conduitpkg#readme"
+Issues = "https://github.com/Guille on a Raspberry pi/conduitpkg/issues"
+Source = "https://github.com/Guille on a Raspberry pi/conduitpkg"
+
+[tool.hatch.version]
+path = "src/conduitpkg/__about__.py"
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+  "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/conduitpkg tests}"
+
+[tool.coverage.run]
+source_pkgs = ["conduitpkg", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/conduitpkg/__about__.py",
+]
+
+[tool.coverage.paths]
+conduitpkg = ["src/conduitpkg", "*/conduitpkg/src/conduitpkg"]
+tests = ["tests", "*/conduitpkg/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
+
+[project.scripts]
+cpkg = "conduitpkg.cpkg_cli:main"
