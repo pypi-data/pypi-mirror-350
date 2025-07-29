@@ -1,0 +1,128 @@
+.. -------------------------------------------------------------------------
+.. pyCGNS - CFD General Notation System - 
+.. See license.txt file in the root directory of this Python module source  
+.. -------------------------------------------------------------------------
+
+About pyCGNS
+++++++++++++
+
+CGNS Standard
+-------------
+
+The purpose of these pages is not to describe the standard. There is
+the :term:`cgns.org` web site with a lot of documentation. Anyway, there is
+a set of :ref:`How to's <cgnshowto>` using *pyCGNS* you can browse and learn
+a bit about this standard.
+
+.. toctree::
+   :hidden:
+
+   ch2/cgnshowto
+
+Package contents
+----------------
+
+The pyCGNS Python module is a collection of 7 modules around the
+CGNS standard. Before v4, these modules were independent Python modules
+with more or less dependancies to each other. We gather all of them to
+have a common build/install/doc and test process, moreover this insures a
+better consistency between them.
+
+.. warning:
+  pyCGNS is released under the LGPL license
+  See file COPYING in the root directory of this Python module source 
+  tree for license information. 
+
+The pyCGNS module now includes (former package names)
+
+ - `MAP <MAP/readme.html>`_, the Mapper, new in v4 gives basic load/save 
+   function from/to *CGNS/SIDS* and *CGNS/HDF5*. This very sinple module is
+   able to read/write GCNS/HDF5 files and translate them to CGNS/Python.
+   This is the main feature of pyCGNS v4.0.
+
+ - `PAT <PAT/readme.html>`_, the PatterMaker, a full *CGNS/SIDS* patterns using
+   the *CGNS/Python* mapping. This is pure python module, it creates and modify
+   CGNS/Python trees without the help of any HDF5 or even ADf calls.
+
+ - `NAV <NAV/readme.html>`_, the Navigater (was pyS7), a graphical browser that can
+   handle *CGNS/Python*, *CGNS/HDF5* and *CGNS/ADF* file formats. It is slightly
+   different to *cgnsviewer* because it actually is a tree editor, you can 
+   copy/cut/paste CGNS/Python trees and quickly draft or modify your CGNS tree.
+
+ - VAL,the Validater (was pyC5), an XML grammar based validation of a *CGNS/Python*
+   tree, for example produced using *MAP* or *PAT*.
+
+ - DAT, the DataTracer (was pyDAX), some DBMS services for *CGNS/HDF5* files.
+   *Not maintained anymore in v4.0 (to be resumed 2014/2015)*
+
+ - APP, the ApplicationSampler, a set of applications using other modules.
+
+Quick start
+-----------
+
+Loading a CGNS/HDF file with MAP
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The *CGNS.MAP* module implements the *CGNS/Python* mapping. You can 
+load/save a *CGNS/HDF5* file using the simple *MAP* functions (below, 
+the ``>>>`` string is the python interpreter prompt)::
+
+   >>> import CGNS.MAP
+   >>> (tree,links,paths)=CGNS.MAP.load("./001Disk.hdf")
+   >>> print tree
+   ['CGNSTree', None, [['CGNSLibraryVersion',array([ 2.4000001],dtype=float32),
+   [], 'CGNSLibraryVersion_t'], ['Disk', array([3, 3], dtype=int32), 
+   [['.Solver#Command', ... ]
+
+Now ``tree`` is a Python list with ``./001Disk.hdf`` CGNS tree
+into, with the data structure as described 
+in :ref:`SIDS-to-Python <mapix:reference_sids_to_python>`.
+
+Using PAT to modify a CGNS tree
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The previously loaded *CGNS/Python* tree is modified using plain Python
+functions and types. The *CGNS.APP* module contains utilities, we use the
+``getNodeByPath`` function which returns a *CGNS/Python* node with the
+target tree and the target node path as parameters. In the example hereafter,
+we are loading a sample tree from the *pyCGNS* test suite::
+
+  import CGNS.PAT.cgnsutils as CGU
+  import CGNS.PAT.test.disk as data
+
+  node=CGU.getNodeByPath(data.T,"/{Base#1}/{Zone-D1}/ZoneGridConnectivity/{CT-D1-D2}")
+  print node[1]
+  print node[1].tostring()
+
+The returned node is a list of 4 Python values, the name (a string),
+the value of the node (a *Numpy* array), the list of children and
+the CGNS type of the node (string). The returned node of the example is a string
+array, you may want to use the ``tostring`` function to make it more readable.
+
+
+Using PAT to create a CGNS tree
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+We want to create a *CGNS/HDF5* file with a simple *base* and a *reference 
+state*::
+
+  import CGNS.PAT.cgnslib as CGL
+
+  T=CGL.newCGNSTree()
+  CGL.newBase(T,'Test Case 01',3,3) # name, physical dim, topological dim
+  CGL.newSimulationType(T)
+  CGL.newReferenceState(T)
+
+Each time you call a function you pass the parent node and some parameters.
+The tree is built as a python list, the top list is referenced by the ``T``
+variable here. As it is passed as argument to each call the new nodes are
+added to ``T`` into the function. The the resulting ``T`` is changed in place.
+
+
+Browsing your CGNS tree with NAV
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The CGNS.NAV tool is a CGNS tree brower. You start it typing ``CGNS.NAV``
+(or ``cg_look``) and you can open several views on your file. 
+
+.. image:: ../images/cgnsnav_quick_1.png
+   :width: 24cm
+   :align: center
+
+.. -------------------------------------------------------------------------

@@ -1,0 +1,222 @@
+.. -------------------------------------------------------------------------
+.. pyCGNS - CFD General Notation System - 
+.. See license.txt file in the root directory of this Python module source  
+.. -------------------------------------------------------------------------
+
+Build and Install
++++++++++++++++++
+
+.. index::
+   single: CHLone
+   pair: Installation; Python
+   pair: Installation; numpy
+   pair: Installation; hdf5
+   pair: Installation; CHLone
+
+The installation described here is for UNIX platforms only. The MS-Windows version is distributed as
+a self-installable Windows package. You can also use an *Anaconda* prebuilt package, see below.
+
+The installation process is easy in the case you already have the required
+libraries and a standard configuration.
+
+Required libraries
+~~~~~~~~~~~~~~~~~~
+
+The first step of the installation is to make sure you have the required
+libraries. We have now a quite large set of libraries, we are trying hard to
+use well known and easy to install libraries but we must admit this could
+be a difficult task to install all by yourself...
+
+The mandatory libs are *Python*, *numpy*, *HDF5*, *Cython*.
+The libs *PyQT*, *Qt*, *VTK* are optional.
+
+.. warning::
+
+  The *libcgns* (:term:`CGNS/MLL`) is **NOT** used by pyCGNS.
+
+The complete set of required tools/modules/libraries contains Python, HDF5
+and other graphical toolkits:
+
+* `Python <http://www.python.org>`_ (starting from v2.7 or v3.6)
+* `numpy <http://numpy.scipy.org>`_ (v1.1 +)
+* `cython <http://www.cython.org>`_ (v0.19 +)
+* `hdf5 <http://www.hdfgroup.org>`_ (v1.8.5 +)
+* `VTK <http://www.vtk.org>`_ (v8.0 +)
+* `Qt <http://www.qt.io/download>`_ (v4.7 +)
+
+The *VTK* and the *Qt* graphical toolkits need to have a Python binding.
+The important point is to use the **native** Python binding of these toolkits,
+not any other (see installation details hereafter). 
+
+No Python binding is required for HDF5.
+
+.. index::
+   single: CGNS/MLL
+   single: CGNS/ADF
+   pair: Installation; CGNS/MLL
+
+
+Installation process
+~~~~~~~~~~~~~~~~~~~~
+
+Once you have these installed you can proceed with pyCGNS.
+You go into the top directory and you edit the ``pyCGNSconfig.py.in``
+(see :ref:`pycgnsconfigpyin`).
+You have to set the correct paths and various values such as directory search
+libs or flags.
+
+.. index::
+   single: Installation
+
+Then you run::
+
+  python setup.py build
+
+and then::
+
+  python setup.py install
+
+or::
+
+  python setup.py install --prefix=/local/tools/installation
+
+All the modules of the pyCGNS package are installed and you can now
+proceed with tutorial examples.
+
+.. warning:
+   The *install* command runs the *build* as first step. If you run first the
+   *build* with specific options you *DO NOT SET AGAIN* in the *install command
+   line you will have a *NEW* build.
+
+Single module installation
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can ask for a single module installation::
+
+  python setup.py build --single-module=MAP
+  python setup.py install
+
+You have to check that this installation doesn't overwrite an existing
+installation with the other pyCGNS modules.
+
+.. _pycgnsconfigpyin:
+
+Configuration file contents
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. index::
+   pair: Installation; pyCGNSconfig_user.py
+
+The ``pyCGNSconfig_user.py`` should work with no modification if you have
+a standard installation. All you have to declare is the directory in which
+we can find *Python/numpy/hdf5/CHLone/cgns* libraries.
+
+If you have specific installations you can change some paths/flags for each
+external library: *hdf5*, *numpy*. The configuration
+file is a Python file, it is imported after the default configuration. The
+changes you make in the configuration file will overwrite the defaults::
+
+  # --- stuff to add for HDF5 
+
+  #HDF5_VERSION          = ''
+  HDF5_PATH_INCLUDES    = ['/home/myself/hdf5/include']
+  HDF5_PATH_LIBRARIES   = ['/home/myself/hdf5/lib']
+  #HDF5_LINK_LIBRARIES   = []
+  #HDF5_EXTRA_ARGS       = []
+
+To avoid overwriting, use Python to update the config::
+
+  # --- stuff to add for HDF5 
+
+  #HDF5_VERSION          = ''
+  HDF5_PATH_INCLUDES    = ['/home/myself/hdf5/include']
+  HDF5_PATH_LIBRARIES   = ['/home/myself/hdf5/lib']
+  #HDF5_LINK_LIBRARIES   = []
+  HDF5_EXTRA_ARGS       = HDF5_EXTRA_ARGS + ['-DMYFLAG']
+
+You do not have to specify the VTK nor the Qt libraries, there is no direct
+link to these libraries: the Python modules will do that.
+
+Anaconda installation
+---------------------
+
+Anaconda framework is a good options for your windows installation.
+You have to carefully check your Anaconda/HDF5 version:
+
+ * with HDF5 v1.8 you are 100% compatible CGNS/HDF5
+ * with HDF5 v1.10.1 not yet compatible would require on the fly translation
+ * with HDF5 v1.10.2 (some checks still on the way...)
+ 
+If you have version issues, check this thread:
+https://groups.google.com/forum/#!topic/h5py/j6wolQ1vJgE
+
+Module dependancies
+-------------------
+
+The pyCGNS modules have dependancies with their brothers. The list below
+gives you the required modules (or optional) for each of them.
+
+ - MAP : None
+ - PAT : MAP
+ - APP : PAT MAP
+ - NAV : PAT MAP APP
+
+NAV depends
+~~~~~~~~~~~
+The CGNS.NAV tool uses two graphical toolkits, one for the GUI (Qt) and another
+one for the graphical view window (VTK). The VTK toolkit must have its
+Python binding installed. You should not use `pyVTK` but the native Python
+binding of VTK. To do so, edit the VTK configuration file to set the Python
+wrapping and all associated paths. And example of production could be::
+
+  cd VTK
+  mkdir B
+  cd B
+  cmake ..
+
+Then edit the `CMakeCache.txt` file::
+
+  //Wrap VTK classes into the Python language.
+  VTK_WRAP_PYTHON:BOOL=ON
+
+And build/install...
+
+The Qt toolkit is used with the qtpy package and provides support for PyQt5 or PySide Python bindings, which are official
+binding with this langage. You can check you have the 
+correct bindings by typing::
+
+  python
+  >>>import vtk
+  >>>import qtpy
+
+Both should not fail...
+
+MAP depends
+~~~~~~~~~~~
+
+The embedded *CHLone* library is required and thus *HDF5* is required.
+
+Map also depends on *Cython*.
+
+.. _testsupport:
+
+Test
+++++
+
+Some of the pyCGNS modules have embedded tests. Once you have installed
+pyCGNS, you can run each test suite from another user account/directory::
+
+  python -c 'import CGNS.MAP.test;CGNS.MAP.test.run()'
+
+All modules tests can be run the same way, replace ``MAP`` by any of
+``PAT``, ``VAL``, ``NAV``, ``APP``. You can run all the
+tests by importing ``CGNS.test``::
+
+  python -c 'import CGNS.PAT.test;CGNS.PAT.test.run()'
+
+  python -c 'import CGNS.test'
+
+The tests are running silently, if there is a problem you would see a stack
+error on the output.
+
+.. -------------------------------------------------------------------------

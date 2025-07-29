@@ -1,0 +1,242 @@
+.. -------------------------------------------------------------------------
+.. pyCGNS - CFD General Notation System - 
+.. See license.txt file in the root directory of this Python module source  
+.. -------------------------------------------------------------------------
+
+CGNS.MAP
+========
+
+The MAP module is one of the most important modules of *pyCGNS*.
+MAP is the translator to get :term:`CGNS/Python` trees from 
+a :term:`CGNS/HDF5` file and back, to save :term:`CGNS/Python` trees
+as a :term:`CGNS/HDF5` file. MAP uses :term:`CHLone` and has no dependancy
+to :term:`CGNS/MLL` or :term:`CGNS/ADF`.
+
+Quick start
+-----------
+The MAPper is a module implementing 
+the :term:`CGNS/Python` mapping.
+There are only two functions in the module: the **load** and the **save**.
+A simple exemple to load a *CGNS/HDF5* file as a :term:`CGNS/Python` tree::
+
+  import CGNS.MAP
+
+  (tree,links,paths)=CGNS.MAP.load("T0.cgns")
+
+The ``tree`` value contains the actual CGNS/Python tree, 
+``links`` value is a list of links found during the *HDF5* file parse.
+The default behavior of the load is to follow linked-to files.
+The ``paths`` has the list of linked-to nodes that failed.
+Now we can use the `CGNS.PAT` module to handle this tree. For example
+you can print the whole tree path hierarchy::
+
+  
+  import CGNS.MAP
+  import CGNS.PAT.cgnsutils as CGU
+
+  (tree,links,paths)=CGNS.MAP.load("T0.cgns")
+
+  for p in CGU.getAllPaths(tree): print p
+
+See the `CGNS.PAT` documentation on how to browse, modify 
+such a GCNS/Python tree.
+
+User interface
+--------------
+MAP is a lightweight module, its purpose is to be as small as possible
+in order to be embedded separatly in an application 
+(not yet available).
+It uses the :term:`CHLone` library and its Python binding.
+`MAP` is a powerful reader/writer of CGNS/HDF5 and CGNS/Python trees. The
+use of `CGNS.PAT` and the flags combination can help to achieve complex
+operations on a CGNS tree with a fast access and a low memory footprint.
+See the :ref:`examples <mapexamples>`.  
+
+Functions
+~~~~~~~~~
+There are two functions: the ``load`` and the ``save``. The ``load`` reads
+a *CGNS/HDF5* file and produces a *CGNS/Python* tree. The ``save`` takes a 
+*CGNS/Python* tree and writes the contents in a *CGNS/HDF5* file::
+
+ (tree,links,paths)=CGNS.MAP.load(filename,flags,depth,maxdata,subtree,linkpaths,updatepaths)
+
+ status=CGNS.MAP.save(filename,tree,links,flags,depth,linkpaths,updatepaths,skiplist)
+
+The ``load`` and ``save`` arguments are python *named* arguments, you have
+to set them with the correct key. Except ``filename`` for ``load`` 
+and ``filename`` and ``tree`` for ``save``, all others arguments are optional.
+The arguments and the return values are:
+
+ * **tree**:
+   The ``tree`` is the list representing the CGNS/Python tree. 
+   The structure of a ``tree`` list is detailled 
+   in :ref:`SIDS-to-Python <reference_sids_to_python>`.
+   There is no link information in this tree either for *load* or for *save*. 
+
+   During the *load*, the links are silently replaced by the linked-to tree 
+   they are referring. The ``links`` value keeps track of these link 
+   references found while parsing the *CGNS/HDF5* file. 
+
+   During the *save*, the tree is splitted into separate files/nodes depending
+   on the references found in the ``links`` value.
+
+ * **links**:
+   The ``links`` is a list with the link node information. It is returned
+   by a *load* and used as command parameters during the *save*. You can write
+   your own ``links`` list or change the list you obtain after a *load*.
+   The structure of a ``links`` list is detailled 
+   in :ref:`SIDS-to-Python <reference_sids_to_python>`.
+   See also 'about links'
+
+ * **filename**:
+   The name of the target file, to read or to write. The ``filename`` can
+   be absolute or relative, it should be accessible in read/write depending
+   on the action you perform on it. The file extension is unused.
+
+ * **flags**:
+   You can control the behavior of a load/save using the 
+   :ref:`flags <mapflags>`. You have to look a these carefully, the same
+   tree can load/save in a completely different way depending 
+   on these ``flags``.
+
+ * **maxdata**:
+   Sets the threshold for array creation. If the array size (``ndarray.size``)
+   is greater than ``maxdata``, the returned node value is ``None`` and the
+   path is added into the ``paths`` return of the ``load``.
+
+ * **depth**:
+   This positive integer value sets the level of children the load/save
+   takes into account. For example, a depth of 2 would stop load/save
+   the CGNS tree once the children of the children of the start node
+   is reached. This level two child is used, its children are not.
+   If you want to have all the children, use a 0 ``depth`` which means
+   no limit on depth.
+
+ * **subtree**:
+   This ``path`` defines the start node of the load/save. It should be
+   an absolute path of an existing node in the argument filename.
+   All the nodes along this path are taken into account for load/save
+   actions.
+
+ * **linkpaths**:
+   The load may need a *link files search path* if your linked-to files
+   are not in the current directory. The ``linkpath`` argument is a list
+   of strings, during the load *CGNS.MAP* will look for linked-to files using
+   this list: it is parsed from the first element to the last,
+   the selected file is the first found in this directory list.
+
+ * **updatepaths**:
+   A dictionnary of paths (string) as keys and CGNS/Python nodes as values.
+   When the load reaches a node with the path in the keys, the numpy value
+   is updated instead of creating a new array. You can pass your own array
+   with an already allocated memory zone or update and already loaded numpy.
+
+ * **skiplist**:
+   A list of paths of nodes that should not be updated. For exemple if you
+   ``load`` a tree without data, you do not want the ``save`` to overwrite
+   actual data on disk with empty arrays. This list can be retrieved from
+   the ``paths`` return of the ``load`` function.
+
+.. warning::
+   The current directory is **not** in the link search path. So if your
+   linked-to file is in current directory, you should add `.` in the
+   link search path list.
+   If the filename is an absolute path name (not recommended !) then
+   you should add and empty path in the search path list.
+
+.. _mapflags:
+
+Flags
+~~~~~
+The flags are integers that can be OR-ed or XOR-ed to set/unset specific
+behavior during the load and the save.
+The boolean operators are used for the flag settings::
+
+ flags=CGNS.MAP.S2P_FOLLOWLINKS|CGNS.MAP.S2P_TRACE
+
+ flags =flags&~CGNS.MAP.S2P_TRACE
+ flags&=~CGNS.MAP.S2P_TRACE  
+
+The table below gives the `CGNS.MAP` flags.
+
+ +-----------------------+------------------------------------------------------+
+ | *Flag variable*       | *Function*                                           |
+ +=======================+======================================================+
+ | ``S2P_NONE``          | Clear all flags, set to zero.                        |
+ +-----------------------+------------------------------------------------------+
+ | ``S2P_ALL``           | Set all flags, set to one.                           |
+ +-----------------------+------------------------------------------------------+
+ | ``S2P_TRACE``         | Set the trace on, messages are sent to 'stdout'      |
+ +-----------------------+------------------------------------------------------+
+ | ``S2P_FOLLOWLINKS``   | Continue to parse the linked-to tree \(1)            |
+ +-----------------------+------------------------------------------------------+
+ | ``S2P_MERGELINKS``    | Forget all link specifications.  \(2)                |
+ +-----------------------+------------------------------------------------------+
+ | ``S2P_COMPRESS``      | Sets the compress flag for 'DataArray_t' \(2)        |
+ +-----------------------+------------------------------------------------------+
+ | ``S2P_NOOWNDATA``     | Forces the `numpy` flag ``\~NPY_OWNDATA`` \(1) \(3)  |
+ +-----------------------+------------------------------------------------------+
+ | ``S2P_NODATA``        | Do not load large 'DataArray_t' \(1)                 |
+ +-----------------------+------------------------------------------------------+
+ | ``S2P_UPDATE``        | Save updates existing file \(6)                      |
+ +-----------------------+------------------------------------------------------+
+ | ``S2P_DELETEMISSING`` | not used                                             |
+ +-----------------------+------------------------------------------------------+
+
+The ``S2P_DEFAULT`` flag corresponds to ``S2P_NONE | S2P_FOLLOWLINKS & S2P_REVERSEDIMS``.
+
+There is no requirements or check on which flag can or cannot be associated
+with another flag.
+
+**Remarks:**
+  
+  (1) Only when you are *loading* a tree. 
+
+  (2) Only when you are *saving* a tree.
+
+  (3) Which means all ``DataArray_t`` actual memory zones will **NOT** be
+      released by Python.
+
+  (3) The term `large` has to be defined. The *save* will **NOT** check if
+      the CGNS/Python tree was performed with the ``S2P_NODATA`` flag on,
+      then you have to check by yourself that your *save* will not overwrite
+      an existing file with empty data!
+
+  (4) The default behavior is to transpose array and dimensions of an array if
+      this is not a ``NPY_FORTRAN`` array. If you set this 
+      flag to 1, no transpose
+      would be performed and the array and its dimensions would be stored 
+      without modification even if the ``NY_FORTRAN`` flag is not there.
+
+  (6) The file should exist, all new nodes are added, thus modifying the
+      children list of their parents. Existing nodes are updated only in 
+      the case of value change. There no children removal, name or label
+      change.
+
+SIDS-to-Python Mapping
+----------------------
+
+.. toctree::
+
+   sids-to-python
+
+Examples
+--------
+
+.. toctree::
+
+   links
+   examples
+
+.. include:: ../../Intro/glossary.txt
+   
+.. _map_index:
+
+MAP Index
+---------
+
+* :ref:`genindex`
+
+.. -------------------------------------------------------------------------
+
+
