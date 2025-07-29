@@ -1,0 +1,175 @@
+[project]
+name = "llmwhisperer-client"
+dynamic = ["version"]
+description = "Client library for LLM Whisperer"
+readme = "README.md"
+urls = { Homepage = "https://unstract.com/llmwhisperer/", Source = "https://github.com/Zipstack/llm-whisperer-python-client" }
+license = { text = "AGPL v3" }
+authors = [{ name = "Zipstack Inc", email = "devsupport@zipstack.com" }]
+keywords = ["llmwhisperer tools-development-kit apps development-kit sdk"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU Affero General Public License v3",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.12"
+dependencies = ["requests>=2"]
+
+[dependency-groups]
+test = [
+    "pytest>=8.2.2",
+    "pytest-mock>=3.14.0",
+    "pytest-dotenv>=0.5.2",
+    "pytest-cov>=5.0.0",
+    "pytest-md-report>=0.6.2",
+]
+dev = [
+    "docutils~=0.20.1",
+    "mypy~=1.2.0",
+    "pre-commit~=3.3.1",
+    "yamllint>=1.35.1",
+    "ruff<1.0.0,>=0.2.2",
+    "pytest>=8.0.1",
+    "pycln>=2.5.0",
+    "poethepoet>=0.34.0",
+]
+
+[tool.poe.tasks]
+test.cmd = "pytest -s -v"
+test.envfile = "tests/.env"
+test.help = "Runs pytests for LLM Whisperer client"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "src/unstract/llmwhisperer/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/unstract"]
+
+#Added pyright to detect vertual environment in IDE.
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+
+# === Development tool configurations ===
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle (formatting)
+    "F",   # Pyflakes (static analysis)
+    "I",   # isort (import sorting)
+    "B",   # bugbear (security/performance)
+    "W",   # warnings
+    "C90", # mccabe complexity
+    "N",   # pep8-naming
+    "D",   # pydocstyle
+    "UP",  # pyupgrade
+    "ANN", # flake8-annotations
+    "TCH", # flake8-type-checking
+    "PYI", # flake8-pyi
+]
+fixable = ["ALL"]
+ignore = [
+    "D205",
+    "D100",   # Missing docstring in public module
+    "D101",   # Missing docstring in public class
+    "D102",   # Missing docstring in public method
+    "D104",   # Missing docstring in public package
+    "D103",   # Missing docstring in public function
+    "D106",   # Missing docstring in public nested class
+    "D417",   # Missing argument description in the docstring
+    "ANN101", # Missing type annotation for self
+    "ANN102", # Missing type annotation for cls
+    "N818",
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+docstring-code-format = true
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.pycln]
+all = true
+expand-stars = true
+no-gitignore = false
+verbose = true
+
+[tool.pyupgrade]
+keep-runtime-typing = true
+py39-plus = true
+keep-dict-typing = true
+
+[tool.pytest.ini_options]
+python_files = ["tests.py", "test_*.py", "*_tests.py", "*_test.py"]
+testpaths = ["tests"]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration (deselect with '-m \"not integration\"')",
+]
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = false
+no_implicit_optional = true
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+allow_untyped_globals = false
+allow_redefinition = false
+local_partial_types = true
+implicit_reexport = true
+follow_imports = "silent"
+ignore_missing_imports = true
+pretty = true
+show_column_numbers = true
+show_error_codes = true
+exclude = ["venv", ".venv"]
