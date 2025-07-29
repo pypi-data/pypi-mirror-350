@@ -1,0 +1,33 @@
+
+{% extends 'generic/object.html' %}
+{% load render_table from django_tables2 %}
+
+{% block content %}
+  <div class="row mb-3">
+    <div class="col col-md-6">
+      <div class="card">
+
+        <h5 class="card-header">NetBox netauto Plugin</h5>
+
+        <table class="table table-hover attr-table">
+          <tr>
+            <th scope="row">Name</th>
+            <td>{{ object.name }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Type</th>
+            <td>{% badge object.get_type_display bg_color=object.get_type_color %}</td>
+          </tr>
+          <tr>
+            <th scope="row">Cluster</th>
+            <td>{{ object.cluster|linkify|placeholder }}</td>
+        </table>
+      </div>
+      {% include 'inc/panels/custom_fields.html' %}
+    </div>
+    <div class="col col-md-6">
+      {% include 'inc/panels/tags.html' %}
+      {% include 'inc/panels/comments.html' %}
+    </div>
+  </div>
+{% endblock content %}
