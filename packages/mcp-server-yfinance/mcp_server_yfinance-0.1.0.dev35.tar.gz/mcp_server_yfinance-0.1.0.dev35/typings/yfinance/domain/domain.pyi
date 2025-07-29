@@ -1,0 +1,27 @@
+import abc
+from abc import ABC
+
+import pandas as _pd
+from _typeshed import Incomplete
+
+from ..data import YfData as YfData
+from ..ticker import Ticker as Ticker
+from ..utils import print_once as print_once
+
+class Domain(ABC, metaclass=abc.ABCMeta):
+    session: Incomplete
+    def __init__(self, key: str, session: Incomplete | None = None, proxy=...) -> None: ...
+    @property
+    def key(self) -> str: ...
+    @property
+    def name(self) -> str: ...
+    @property
+    def symbol(self) -> str: ...
+    @property
+    def ticker(self) -> Ticker: ...
+    @property
+    def overview(self) -> dict: ...
+    @property
+    def top_companies(self) -> _pd.DataFrame | None: ...
+    @property
+    def research_reports(self) -> list[dict[str, str]]: ...
