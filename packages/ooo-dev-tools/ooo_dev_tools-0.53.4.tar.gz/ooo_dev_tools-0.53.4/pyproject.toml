@@ -1,0 +1,179 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "ooo-dev-tools"
+version = "0.53.4"
+
+description = "LibreOffice Developer Tools"
+license = "Apache Software License"
+readme = "README.rst"
+authors = [
+    ":Barry-Thomas-Paul: Moss <ooodevtools@pm.amourspirit.net>"
+]
+keywords = ["ooodev", "libreoffice", "openoffice", "macro", "uno", "ooouno", "pyuno"]
+homepage = "https://github.com/Amourspirit/python_ooo_dev_tools"
+documentation = "https://python-ooo-dev-tools.readthedocs.io/en/latest/index.html"
+repository = "https://github.com/Amourspirit/python_ooo_dev_tools"
+packages = [
+    { include = "ooodev" }
+]
+classifiers = [
+    "Topic :: Office/Business",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+ooouno = ">=3.0.0"
+typing-extensions = ">=4.12.2"
+
+
+[[tool.poetry.source]]
+name = "pypi-test"
+url = "https://test.pypi.org/legacy/"
+priority = "supplemental"
+
+
+[[tool.poetry.source]]
+name = "PyPI"
+priority = "primary"
+
+[tool.poetry.group.dev.dependencies]
+pytest = ">=7.2.0"
+hypothesis = ">=6.75.3"
+thefuzz = ">=0.19.0"
+python-Levenshtein = ">=0.20.7"
+lo-dev-search = {version = ">=2.0.2", platform = "linux"}
+ruff = ">=0.7.0"
+oooenv = ">=0.2.4"
+pytest-mock = ">=3.10"
+pyright = ">=1.1.343"
+pytest-dotenv = "^0.5.2"
+sphobjinv = "^2.3.1"
+ooo-dev-odh = "^0.1.6"
+pydeps = "^1.12.18"
+oooscript = "^1.1.4"
+pytest-ruff = "^0.4.1"
+
+
+[tool.poetry.group.docs.dependencies]
+sphinx = "^6.2"
+sphinx-toolbox = ">=3.2.0"
+sphinx-tabs = ">=3.4.1"
+sphinx-rtd-dark-mode = ">=1.2.4"
+sphinx-autodoc-typehints = "1.19.4"
+sphinxcontrib-spelling = "^8.0.0"
+sphinxcontrib-apidoc = "^0.3.0"
+esbonio = ">=0.16.1"
+sphinx-substitution-extensions = ">=2022.2.16"
+sphinx-copybutton = "^0.5.2"
+sphinx-design = "^0.5.0"
+sphinx-build-compatibility = { git = "https://github.com/readthedocs/sphinx-build-compatibility#egg=sphinx-build-compatibility", branch = "main" }
+
+
+[tool.poetry.group.dev_extra.dependencies]
+verr = ">=1.1.2"
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
+]
+markers = [
+    "skip_headless: skips a test in headless mode",
+    "skip_not_headless_os: skips a test in GUI mode for give os"
+]
+
+# https://pypi.org/project/pytest-dotenv/
+env_files = [
+    ".test.env"
+]
+
+[tool.pylint.'MESSAGES CONTROL']
+max-line-length = 120
+disable = """
+    no-name-in-module,
+    no-self-argument,
+    attribute-defined-outside-init,
+    line-too-long,
+    unnecessary-pass,
+    missing-docstring,
+    W2301
+"""
+[tool.pylint.format]
+allow-reexport-from-package=true
+
+[tool.pyright]
+pythonVersion = "3.8"
+venvPath = "."
+venv = ".venv"
+include = ["ooodev", "src"]
+exclude = ["tests",
+    "docs",
+    "build",
+    "dist",
+    "cmds",
+    "tmp",
+    "**/__pycache__",
+    ".venv"
+]
+
+# https://docs.astral.sh/ruff/configuration/
+[tool.ruff]
+line-length = 119
+
+target-version = "py38"
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    ".venv",
+    "venv",
+    "tmp",
+]
+src = ["ooodev"]
+
+[tool.ruff.lint]
+exclude = ["tmp", ".devcontainer", ".githooks", ".github", ".hypothesis", ".idea", ".pytest_cache", ".venv", ".vscode", "cmds", "dist", "docs"]
+
+[tool.ruff.lint.pylint]
+max-args = 10
+max-returns = 10
+
+[tool.pydeps]
+max_bacon = 2
+no_show = true
+verbose = 0
+pylib = false
+exclude = [
+    "os",
+    "re",
+    "sys",
+    "collections",
+    "__future__",
+]
