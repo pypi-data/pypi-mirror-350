@@ -1,0 +1,27 @@
+"""
+Contains linters used to check the database for improvements.
+"""
+# expose linters
+from .linter_0002_not_used_indices import check_not_used_indices
+from .linter_0004_redundant_indices import check_redundant_indices
+from .linter_0006_not_used_columns_and_tables import check_not_used_tables, check_not_used_columns
+from .linter_0019_queries_not_using_indices import check_queries_not_using_indices
+from .linter_0020_filesort_temporary_table import \
+    check_queries_using_filesort, check_queries_using_temporary
+from .linter_0026_full_table_scan import check_full_table_scan
+from .linter_0027_selects_with_like import check_selects_with_like
+from .linter_0028_data_too_old import check_data_too_old
+from .linter_0028_data_not_updated_recently import check_data_not_updated_recently
+from .linter_0032_utf_latin_columns import check_latin_columns
+from .linter_0034_missing_primary_index import check_missing_primary_index
+from .linter_0036_use_innodb import check_use_innodb
+from .linter_0070_insert_ignore import check_insert_ignore_queries
+from .linter_0074_single_column import check_single_column
+from .linter_0075_test_tables import check_test_tables
+from .linter_0089_empty_tables import check_empty_tables
+from .linter_0092_select_star import check_select_star
+from .linter_0093_having_clause import check_having_clause
+from .linter_0094_generic_primary_key import check_generic_primary_key
+from .linter_0118_high_offset_selects import check_high_offset_selects
+from .linter_0164_empty_database import check_empty_database
+from .linter_0031_low_cardinality_index import check_low_cardinality_index
