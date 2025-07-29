@@ -1,0 +1,51 @@
+[project]
+name = "cvxsimulator"
+version = "v1.3.12"
+description = "Simple simulator for investors"
+authors = [{name = "Thomas Schmelzer", email = "thomas.schmelzer@gmail.com"}]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "cvxpy-base>=1.6.0",
+    "jquantstats>=0.0.14",
+    "numpy>=2.1.3",
+    "pandas>=2.2.3",
+    "polars>=1.29.0",
+]
+
+[project.urls]
+repository = "https://github.com/cvxgrp/simulator"
+
+[project.optional-dependencies]
+dev = [
+    "pytest-cov>=6.0.0",
+    "pytest>=8.3.3",
+    "pre-commit>=4.0.1",
+    "clarabel>=0.9.0",
+    "loguru",
+    "tinycta"
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+exclude = [
+    "*__init__.py"
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/cvx"]
+
+[tool.deptry.per_rule_ignores]
+DEP002 = ["cvxpy-base", "polars", "jquantstats"]
+
+[tool.deptry]
+# see https://deptry.com/usage/#pep-621-dev-dependency-groups
+pep621_dev_dependency_groups = ["dev"]
