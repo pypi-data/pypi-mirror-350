@@ -1,0 +1,13 @@
+{% extends "layout.html.j2" %}
+
+{% block scripts %}
+<script async src="{{ url_for('static', path='tournament_display.js') }}" type="module"></script>
+{% endblock%}
+
+{% block content %}
+{% if tournament %}
+<div id="tournamentDisplay" data-tournament='{{ tournament | jsonable | tojson }}'></div>
+{% else %}
+<div id="tournamentDisplay"></div>
+{% endif %}
+{% endblock %}
