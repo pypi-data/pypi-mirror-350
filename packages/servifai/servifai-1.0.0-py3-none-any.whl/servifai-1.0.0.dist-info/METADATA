@@ -1,0 +1,289 @@
+Metadata-Version: 2.4
+Name: servifai
+Version: 1.0.0
+Summary: AI-powered PDF parsing and retrieval with multiple subscription tiers for python
+Project-URL: Homepage, https://syntheialabs.ai
+Project-URL: Documentation, https://docs.syntheialabs.ai
+Project-URL: Repository, https://github.com/Syntheialabs/servifai-py
+Project-URL: API, https://api.syntheialabs.ai
+Author-email: Syntheialabs Team <team@syntheialabs.ai>
+License: MIT
+Keywords: ai,document-intelligence,ocr,parsing,pdf,rag
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.9
+Requires-Dist: httpx>=0.25.0
+Requires-Dist: pydantic>=2.0.0
+Requires-Dist: python-dotenv>=1.0.0
+Requires-Dist: rich>=13.0.0
+Requires-Dist: typing-extensions>=4.0.0
+Provides-Extra: dev
+Requires-Dist: black>=23.0.0; extra == 'dev'
+Requires-Dist: flake8>=6.0.0; extra == 'dev'
+Requires-Dist: mypy>=1.0.0; extra == 'dev'
+Requires-Dist: pytest-asyncio>=0.21.0; extra == 'dev'
+Requires-Dist: pytest-httpx>=0.21.0; extra == 'dev'
+Requires-Dist: pytest>=7.0.0; extra == 'dev'
+Description-Content-Type: text/markdown
+
+# ServifAI 🚀
+
+**AI-Powered PDF Parsing and Retrieval with Multiple Subscription Tiers**
+
+ServifAI is a powerful Python library that transforms PDF documents into intelligent, searchable knowledge bases using three specialized AI engines optimized for different use cases.
+
+## ✨ Features
+
+- 🚀 **Three Subscription Tiers**:
+  - **QUICKEST**: Fastest processing
+  - **BALANCED**: Optimal speed/accuracy balance
+  - **SECURED**: Enterprise security
+  
+- 🔍 **Advanced PDF Processing**: Extracts text, images, tables with AI
+- 🧠 **Intelligent Search**: Semantic search with citations and assets
+- 🤖 **LLM-Ready**: Formatted outputs for seamless AI integration
+- ☁️ **Cloud-Powered**: API-based architecture for scalability
+- 🔒 **Enterprise Security**: SOC2 compliant with audit logs
+
+## 🚀 Quick Start
+
+### Installation
+
+```bash
+# Install with uv (recommended)
+uv add servifai
+
+# Or with pip
+pip install servifai
+```
+
+### Setup
+
+Create a `.env` file:
+
+```env
+SERVIFAI_API_KEY=sai_your_api_key_here
+```
+
+Get your API key from: https://servifai.syntheialabs.ai
+
+### Basic Usage
+
+```python
+from servifai import ServifAI, SubscriptionTier
+
+# Initialize client
+client = ServifAI()
+
+# Process PDFs with specific tier
+result = client.process_pdfs(
+    ["document.pdf", "report.pdf"], 
+    tier=SubscriptionTier.BALANCED
+)
+
+print(f"Processed {result.total_pages} pages")
+print(f"Extracted {result.total_images} images, {result.total_tables} tables")
+
+# Search with AI
+search_result = client.search("financial metrics", top_k=5)
+
+# Get LLM-ready context
+context = client.get_context_for_llm(search_result)
+citations = client.get_citations(search_result)
+
+# Use with any LLM
+llm_prompt = f"""
+Based on this context: {context}
+
+Question: What are the key financial metrics?
+
+Answer with citations: {citations}
+"""
+```
+
+## 🎯 Subscription Tiers
+
+| Tier | Best For | Speed | Accuracy | Security |
+|------|----------|-------|----------|----------|
+| **QUICKEST** | Rapid prototyping | ⚡⚡⚡ | ⭐⭐⭐ | ⭐ |
+| **BALANCED** | Production apps | ⚡⚡ | ⭐⭐⭐ | ⭐⭐ |
+| **SECURED** | Enterprise | ⚡ | ⭐⭐ | ⭐⭐⭐ |
+
+## 🤖 LLM Integration Examples
+
+### OpenAI Integration
+```python
+import openai
+from servifai import ServifAI
+
+client = ServifAI()
+result = client.process_pdfs(["document.pdf"])
+search_result = client.search("key insights")
+context = client.get_context_for_llm(search_result)
+
+response = openai.ChatCompletion.create(
+    model="gpt-4",
+    messages=[{"role": "user", "content": f"Context: {context}\n\nQuestion: What are the key insights?"}]
+)
+```
+
+### Anthropic Claude
+```python
+import anthropic
+from servifai import ServifAI, SubscriptionTier
+
+client = ServifAI()
+client.process_pdfs(["doc.pdf"], tier=SubscriptionTier.SECURED)
+search_result = client.search("analysis")
+context = client.get_context_for_llm(search_result)
+
+claude = anthropic.Anthropic()
+response = claude.messages.create(
+    model="claude-3-sonnet-20240229",
+    messages=[{"role": "user", "content": f"Analyze: {context}"}]
+)
+```
+
+### Local LLMs (Ollama)
+```python
+import ollama
+from servifai import ServifAI, SubscriptionTier
+
+client = ServifAI()
+client.process_pdfs(["doc.pdf"], tier=SubscriptionTier.QUICKEST)
+search_result = client.search("summary", top_k=3)
+context = client.get_context_for_llm(search_result, max_length=4000)
+
+response = ollama.chat(
+    model='llama2',
+    messages=[{'role': 'user', 'content': f"Summarize: {context}"}]
+)
+```
+
+## 📊 Advanced Features
+
+### Session Management
+```python
+# Create persistent session
+session_id = client.create_session("my-analysis-2024")
+
+# Process multiple batches
+batch1 = client.process_pdfs(["q1-report.pdf"], session_id=session_id)
+batch2 = client.process_pdfs(["q2-report.pdf"], session_id=session_id)
+
+# Search across all documents in session
+results = client.search("revenue growth", session_id=session_id)
+```
+
+### Tier Comparison
+```python
+from servifai import SubscriptionTier
+
+tiers = [SubscriptionTier.QUICKEST, SubscriptionTier.BALANCED, SubscriptionTier.SECURED]
+
+for tier in tiers:
+    result = client.process_pdfs(["test.pdf"], tier=tier)
+    print(f"{tier}: {result.processing_time_seconds:.2f}s")
+```
+
+### Asset Access
+```python
+search_result = client.search("charts and graphs", include_assets=True)
+
+for citation in search_result.citations:
+    for asset in citation.assets:
+        print(f"Found {asset.asset_type}: {asset.url}")
+```
+
+## 📚 API Reference
+
+### ServifAI Class
+
+#### `__init__(config=None, config_file=".env")`
+Initialize ServifAI client.
+
+#### `process_pdfs(pdf_files, session_id=None, tier=None, show_progress=True)`
+Process PDF files with AI parsing.
+- **pdf_files**: File path(s) to process
+- **tier**: SubscriptionTier to use
+- **Returns**: ProcessingResult
+
+#### `search(query, session_id=None, top_k=5, tier=None)`
+Search documents with AI retrieval.
+- **query**: Search query string
+- **top_k**: Number of results
+- **Returns**: SearchResult with citations
+
+#### `get_context_for_llm(search_result, max_length=8000)`
+Format search results for LLM consumption.
+- **Returns**: Formatted context string
+
+#### `get_citations(search_result)`
+Format citations as readable strings.
+- **Returns**: List of citation strings
+
+## 🔧 Configuration
+
+| Environment Variable | Description | Default |
+|---------------------|-------------|---------|
+| `SERVIFAI_API_KEY` | Your ServifAI API key | Required |
+| `SERVIFAI_API_URL` | API base URL | `https://api.syntheialabs.ai` |
+| `SERVIFAI_TIMEOUT` | Request timeout (seconds) | `300` |
+| `SERVIFAI_MAX_RETRIES` | Max retry attempts | `3` |
+| `SERVIFAI_LOG_LEVEL` | Logging level | `INFO` |
+
+## 💡 Use Cases
+
+- **📈 Financial Analysis**: Extract data from annual reports
+- **📋 Legal Document Review**: Parse contracts and agreements  
+- **🔬 Research Papers**: Analyze academic publications
+- **📊 Business Intelligence**: Process market research reports
+- **🏥 Medical Records**: Extract patient information (HIPAA compliant)
+- **📚 Educational Content**: Create Q&A from textbooks
+
+## 🛡️ Security & Compliance
+
+- **🔒 SOC 2 Type II Certified**
+- **🛡️ GDPR & CCPA Compliant** 
+- **🔐 End-to-end Encryption**
+- **📋 Audit Logs** (Secured tier)
+- **🏢 Enterprise SSO** (Secured tier)
+
+## 📈 Performance
+
+| Tier | Pages/Min | Accuracy | Use Case |
+|------|-----------|----------|----------|
+| QUICKEST | ~50 | ⭐⭐⭐ | Rapid prototyping, bulk processing |
+| BALANCED | ~25 | ⭐⭐⭐ | Production applications |
+| SECURED | ~15 | ⭐⭐ | Enterprise, compliance-critical |
+
+## 🎯 Getting Started
+
+1. **Sign up**: https://servifai.syntheialabs.ai
+2. **Get API key**: Copy from dashboard
+3. **Install library**: `uv add servifai`
+4. **Create `.env`**: Add your API key
+5. **Start coding**: Process your first PDF!
+
+## 🔗 Links
+
+- [Dashboard](https://servifai.syntheialabs.ai) - Manage your account
+- [Documentation](https://docs.servifai.syntheialabs.ai) - Full API docs
+- [Examples](https://github.com/Syntheialabs/servifai-py/examples) - Code samples
+- [Support](mailto:team@syntheialabs.ai) - Get help
+
+## 📄 License
+
+MIT License - see LICENSE file for details.
+
+---
+
+**Ready to transform your PDFs into intelligent knowledge?** Get started with ServifAI today! 🚀
