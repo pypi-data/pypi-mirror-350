@@ -1,0 +1,78 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nicknamer"
+version = "0.0.3"
+authors = [
+  { name="Mobius Logic, Inc.", email="145808634+dm-ackerman@users.noreply.github.com" },
+]
+description = "A random name generator"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+dependencies = [
+    "typing_extensions",
+]
+
+[project.urls]
+Homepage = "https://github.com/mobius-logic/nicknamer"
+Issues = "https://github.com/mobius-logic/nicknamer/issues"
+
+[project.optional-dependencies]
+dev = [
+    "pre-commit",
+    "pytest",
+]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["nicknamer", "nicknamer.*"]
+where = ["src"]
+
+[tool.setuptools.package-data]
+nicknamer = ["resources/*", "py.typed"]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = [
+    "tests",
+]
+
+[tool.ruff.lint]
+select = [
+    "ALL",
+]
+preview = true
+
+# these are normally disabled for google doc convention
+extend-select = [
+    "D400",
+    "D401",
+    "D404",
+]
+
+ignore = [
+    "S311",
+    "PYI041",
+    "ANN401",
+]
+
+[tool.ruff.lint.pydoclint]
+# Skip docstrings which fit on a single line.
+ignore-one-line-docstrings = true
+
+[tool.ruff.lint.pycodestyle]
+max-line-length = 120
+
+[tool.ruff.lint.pydocstyle]
+ignore-decorators = ["override"]
+convention = "google"
