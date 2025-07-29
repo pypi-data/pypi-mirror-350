@@ -1,0 +1,68 @@
+[build-system]
+requires = ["hatchling >= 1.14.0"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "strqa/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/strqa",
+    "/code_snippets",
+    "README.md",
+    "NEWS.md",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["strqa"]
+
+[project]
+name = "strqa-py"
+authors = [{ name = "Strategy One", email = "bkaczynski@strategy.com" }]
+requires-python = ">=3.10,<3.14"
+license = { text = "Apache License 2.0" }
+license-files = ["LICENSE"]
+readme = "README.md"
+dynamic = ["version"]
+
+classifiers = [
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3 :: Only",
+    "Intended Audience :: System Administrators",
+    "Intended Audience :: End Users/Desktop",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development",
+]
+
+dependencies = [
+    "mstrio-py >= 11.5.3.101"
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff == 0.11.1",
+    "coverage == 7.7.0",
+    "pytest == 8.3.5",
+    "pytest-cov == 6.0.0",
+    "python-dotenv[cli] == 1.0.1",
+    "pre-commit == 4.2.0",
+    "flaky == 3.8.1",
+    "python-decouple == 3.8",
+    "notebook == 6.5.7",
+    "setuptools==78.1.0", # required by notebook <7
+    "tox == 4.24.2", # if you change this version, update Dockerfile as well
+]
+
+[project.urls]
+"Bug Tracker" = "https://github.com/MicroStrategy/strqa-py/issues"
+"Documentation" = "https://www2.microstrategy.com/producthelp/Current/strqa-py/"
+"Source Code" = "https://github.com/MicroStrategy/strqa-py"
+# TODO Replace with the correct link
+"Quick Manual" = "https://www2.microstrategy.com/producthelp/current/FederatedAnalytics/en-us/Content/mstr_for_jupyter.htm"
