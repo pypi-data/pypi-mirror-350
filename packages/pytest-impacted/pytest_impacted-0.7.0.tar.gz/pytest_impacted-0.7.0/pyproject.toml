@@ -1,0 +1,67 @@
+[build-system]
+requires = ["setuptools>=80", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pytest-impacted"
+description = "A pytest plugin that selectively runs tests impacted by codechanges via git introspection, ASL parsing, and dependency graph analysis."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+    { name = "PromptRomp", email = "promptromp.contact@gmail.com" },
+]
+maintainers = [
+    { name = "PromptRomp", email = "promptromp.contact@gmail.com" },
+]
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+classifiers = [
+    "Framework :: Pytest",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Testing",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = [
+    "astroid>=3.3.10",
+    "click>=8.2.0",
+    "gitpython>=3.1.44",
+    "networkx>=3.4.2",
+    "pytest>=8.0.0",
+    "rich>=14.0.0",
+]
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/promptromp/pytest-impacted"
+Issues = "https://github.com/promptromp/pytest-impacted/issues"
+
+[project.entry-points.pytest11]
+impacted = "pytest_impacted.plugin"
+
+[project.scripts]
+impacted-tests = "pytest_impacted.cli:impacted_tests_cli"
+
+[dependency-groups]
+dev = [
+    "coverage>=7.8.0",
+    "mypy>=1.15.0",
+    "pytest-cov>=6.1.1",
+    "ruff>=0.11.9",
+]
+
+[tool.setuptools_scm]
+# can be empty if no extra settings are needed, presence enables setuptools-scm
+
+[tool.mypy]
+namespace_packages = true
+ignore_missing_imports = true
+
+[tool.ruff.lint]
