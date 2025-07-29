@@ -1,0 +1,113 @@
+# uvi - 基于UV和PyInstaller的Python项目自动打包工具
+
+## 项目简介
+uvi是一个简化的Python项目自动打包工具，结合了UV的快速依赖管理和PyInstaller的可执行文件生成能力。
+
+### 核心功能
+- 自动检测和读取项目依赖（requirements.txt）
+- 使用UV创建和管理虚拟环境
+- 自动执行PyInstaller打包流程，生成单个可执行文件
+- 自动清理临时文件和目录
+
+## 安装指南
+
+### 系统要求
+- Python 3.8+
+- UV包管理器
+- pyinstaller
+
+### 安装步骤
+```bash
+# 安装命令
+pip install uvinstaller
+```
+
+## 快速开始
+
+### 基本用法
+```bash
+# 基本打包命令
+uvi your_project.py
+```
+
+## 功能详解
+
+### 1. 依赖检测与管理
+- 支持requirements.txt文件
+- 自动使用UV安装依赖
+
+### 2. UV虚拟环境管理
+- 自动创建隔离的虚拟环境
+- 依赖解析和安装优化
+
+### 3. PyInstaller打包流程
+- 自动生成单个可执行文件
+- 固定使用--onefile参数
+
+### 4. 文件清理机制
+- 自动清理build目录
+- 自动删除.spec文件
+
+## 命令行接口
+
+### 基本命令
+```bash
+# 打包命令
+uvi <entry_point>
+```
+
+### 使用示例
+```bash
+# 打包main.py为可执行文件
+uvi main.py
+
+# 打包app.py为可执行文件  
+uvi app.py
+```
+
+## 工作流程
+
+1. 检查入口文件是否存在
+2. 检测项目依赖（requirements.txt）
+3. 创建UV虚拟环境
+4. 安装项目依赖
+5. 执行PyInstaller打包（--onefile模式）
+6. 清理临时文件
+7. 输出到dist目录
+
+## 开发指南
+
+### 项目结构
+```
+uvinstaller/
+├── core/           # 核心功能模块
+│   └── installer.py
+├── cli/            # 命令行接口
+│   └── main.py
+└── __init__.py
+```
+
+## API参考
+
+### 核心类和方法
+
+```python
+from uvinstaller import UVInstaller
+
+# 基本使用示例
+installer = UVInstaller()
+installer.pack("main.py")
+```
+
+## 更新日志
+
+### v0.1.0
+- 基本打包功能
+- UV环境管理
+- PyInstaller集成
+
+## 许可证
+待定
+
+## 联系方式
+待定 
