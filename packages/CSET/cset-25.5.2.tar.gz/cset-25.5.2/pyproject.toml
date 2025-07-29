@@ -1,0 +1,79 @@
+[project]
+name = "CSET"
+dynamic = ["version"]
+description = "Toolkit for evaluation and investigation of numerical models for weather and climate applications."
+authors = [{ name = "Met Office" }, { name = "NIWA" }]
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.11"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python",
+    "Topic :: Scientific/Engineering :: Atmospheric Science",
+    "Topic :: Scientific/Engineering :: GIS",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "Topic :: Scientific/Engineering",
+]
+dependencies = [
+    "numpy",
+    "scitools-iris >= 3.12.2",
+    "ruamel.yaml >= 0.17",
+    "pygraphviz >= 1.11",
+    "mo_pack >= 0.3.0",
+    "isodate",
+    "markdown-it-py >= 3.0",
+    "nc-time-axis",
+    "iris-grib",
+]
+
+[project.urls]
+Documentation = "https://metoffice.github.io/CSET"
+Source = "https://github.com/MetOffice/CSET"
+
+[project.scripts]
+cset = "CSET:main"
+
+[build-system]
+requires = ["setuptools>=80", "setuptools_scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+
+[tool.pytest.ini_options]
+addopts = ["--import-mode=importlib"]
+filterwarnings = [
+    "ignore:numpy.ndarray size changed:RuntimeWarning",
+    # Cartopy downloads coastlines, etc. Caching does not catch this for the
+    # first CI run on each branch.
+    "ignore::cartopy.io.DownloadWarning",
+]
+markers = ["network: marks tests that use external network resources"]
+minversion = "7"
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+relative_files = true
+source = ["src"]
+omit = ["__main__.py"]
+
+[tool.codespell]
+ignore-words-list = "lazyness,meaned,runn"
+skip = "build,*.css,*.ipynb,*.js,*.html,*.svg,*.xml,.git"
+
+[tool.ruff]
+line-length = 88
+src = ["src", "test"]
+
+[tool.ruff.lint]
+extend-select = ["B", "D", "I"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
