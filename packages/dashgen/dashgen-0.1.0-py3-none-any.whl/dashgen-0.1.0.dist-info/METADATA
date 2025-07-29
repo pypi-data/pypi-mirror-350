@@ -1,0 +1,179 @@
+Metadata-Version: 2.4
+Name: dashgen
+Version: 0.1.0
+Summary: Gere dashboards visuais como imagens usando HTML/CSS e Playwright.
+Home-page: https://github.com/77-Indicadores/dashgen
+Author: Vinicius Moreira
+Author-email: vinicius@77indicadores.com.br
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: playwright
+Requires-Dist: jinja2
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+
+
+# Dashgen
+
+📊 Gere **dashboards visuais como imagens (PNG)** diretamente do Python com HTML, CSS e Chart.js.
+
+---
+
+## ✨ O que é?
+
+`dashgen` é um micro-framework que permite montar dashboards com:
+
+- ✅ **Cards com indicadores e progresso**
+- ✅ **Tabelas com dados estruturados**
+- ✅ **Gráficos de barra e linha com Chart.js**
+- ✅ **Sistema de layout com `Row()` e `Column()`**
+- ✅ **Temas personalizados com variáveis CSS**
+- ✅ **Exportação como imagem via Playwright**
+
+---
+
+## 🚀 Instalação
+
+```bash
+pip install dashgen
+playwright install
+````
+
+---
+
+## 🧪 Exemplo Rápido
+
+```python
+from dashgen import Dashboard
+from dashgen.core.layout import Row, Column
+
+db = Dashboard(
+    title="Relatório de Vendas",
+    logo_path="logo.png",
+    size=(1080, 1080),
+    theme={
+        "primary": "#005f73",
+        "accent": "#94d2bd",
+        "bg": "#fefae0",
+        "text": "#001219"
+    }
+)
+
+# Cards
+db.add(Row(
+    Column(6).add_card("Receita Acumulada", 8200000, 10000000),
+    Column(6).add_card("Unidades Vendidas", 320, 400)
+))
+
+# Tabela + Gráfico
+empreendimentos = [
+    {"Nome": "Projeto A", "Meta": "R$ 2M", "Realizado": "R$ 1.6M", "Variação": "-20%"},
+    {"Nome": "Projeto B", "Meta": "R$ 3M", "Realizado": "R$ 3.1M", "Variação": "+3%"},
+]
+grafico_barras = [
+    {"label": "Jan", "value": 120},
+    {"label": "Fev", "value": 135},
+    {"label": "Mar", "value": 160},
+]
+db.add(Row(
+    Column(6).add_table("Receita por Empreendimento", empreendimentos, ["Nome", "Meta", "Realizado", "Variação"]),
+    Column(6).add_chart("bar", "Vendas Mensais", grafico_barras)
+))
+
+# Gráfico de linha
+grafico_linha = [
+    {"label": "Jan", "value": 1200000},
+    {"label": "Fev", "value": 1450000},
+    {"label": "Mar", "value": 1600000},
+]
+db.add(Row(
+    Column(12).add_chart("line", "Receita Total (R$)", grafico_linha)
+))
+
+# Exportar imagem
+db.generate("output_dashboard.png")
+```
+
+---
+
+## 🧱 Componentes disponíveis
+
+### ✅ `Dashboard`
+
+Classe principal que coordena a montagem e renderização da imagem.
+
+### ✅ `Row()` e `Column(width)`
+
+Sistema de layout baseado em grid de 12 colunas.
+
+```python
+Row(Column(6), Column(6))  # duas colunas lado a lado
+Row(Column(12))            # elemento ocupando 100%
+```
+
+### ✅ `add_card(title, value, target)`
+
+Componente com barra de progresso e KPI.
+
+### ✅ `add_table(title, data, headers)`
+
+Tabela com cabeçalho fixo e linhas formatadas.
+
+### ✅ `add_chart(chart_type, title, data)`
+
+Suporta:
+
+* `"bar"`: gráfico de barras
+* `"line"`: gráfico de linhas
+
+---
+
+## 🎨 Temas Personalizados
+
+Via argumento `theme={...}` no `Dashboard()`:
+
+| Chave     | Variável CSS | Exemplo   |
+| --------- | ------------ | --------- |
+| `primary` | `--primary`  | `#005f73` |
+| `accent`  | `--accent`   | `#94d2bd` |
+| `bg`      | `--bg`       | `#fefae0` |
+| `text`    | `--text`     | `#001219` |
+
+---
+
+## 📦 Build e Publicação
+
+Para empacotar o projeto:
+
+```bash
+pip install build
+python -m build
+```
+
+Para publicar:
+
+```bash
+pip install twine
+twine upload dist/*
+```
+
+---
+
+## 🛠 Requisitos
+
+* Python 3.7+
+* `playwright` (com `playwright install`)
+* `jinja2`
+
+---
