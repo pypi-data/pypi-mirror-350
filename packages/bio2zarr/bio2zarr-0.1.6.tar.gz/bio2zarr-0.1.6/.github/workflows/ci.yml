@@ -1,0 +1,199 @@
+name: CI
+
+on:
+  merge_group:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  pre-commit:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: pre-commit/action@v3.0.1
+  test:
+    name: Test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        # Use macos-13 because pip binary packages for ARM aren't
+        # available for many dependencies
+        os: [macos-13, macos-14, ubuntu-latest]
+        python-version: ["3.10", "3.11", "3.12"]
+        exclude:
+          # Just run macos tests on one Python version
+          - os: macos-13
+            python-version: "3.10"
+          - os: macos-13
+            python-version: "3.11"
+          - os: macos-13
+            python-version: "3.12"
+          - os: macos-14
+            python-version: "3.10"
+          - os: macos-14
+            python-version: "3.12"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install '.[dev]'
+      - name: Run basic vcf2zarr example
+        run: |
+          python -m bio2zarr vcf2zarr convert tests/data/vcf/sample.vcf.gz sample.vcz -f
+      - name: Run two-pass vcf2zarr example
+        run: |
+          python -m bio2zarr vcf2zarr explode tests/data/vcf/sample.vcf.gz sample.icf -f
+          python -m bio2zarr vcf2zarr encode sample.icf sample.vcz -f
+      - name: Run distributed explode example
+        run: |
+          python -m bio2zarr vcf2zarr dexplode-init tests/data/vcf/sample.vcf.gz sample.icf -fn 3
+          python -m bio2zarr vcf2zarr dexplode-partition sample.icf 0
+          python -m bio2zarr vcf2zarr dexplode-partition sample.icf 1
+          python -m bio2zarr vcf2zarr dexplode-partition sample.icf 2
+          python -m bio2zarr vcf2zarr dexplode-finalise sample.icf
+      - name: Run distributed encode example
+        run: |
+          python -m bio2zarr vcf2zarr dencode-init sample.icf sample.vcz -fn 3 --variants-chunk-size=3
+          python -m bio2zarr vcf2zarr dencode-partition sample.vcz 0
+          python -m bio2zarr vcf2zarr dencode-partition sample.vcz 1
+          python -m bio2zarr vcf2zarr dencode-partition sample.vcz 2
+          python -m bio2zarr vcf2zarr dencode-finalise sample.vcz
+      - name: Run tskit2zarr example
+        run: |
+          python -m bio2zarr tskit2zarr convert tests/data/tskit/example.trees sample.vcz -f
+      - name: Run plink2zarr example
+        run: |
+          python -m bio2zarr plink2zarr convert tests/data/plink/example sample.vcz -f
+      - name: Run tests
+        run: |
+          pytest --cov=bio2zarr
+      - name: Upload coverage to Coveralls
+        uses: coverallsapp/github-action@v2.3.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          # The first coveralls upload will succeed and others seem to fail now.
+          # This is a quick workaround for doing a proper "parallel" setup:
+          # https://github.com/coverallsapp/github-action
+          fail-on-error: false
+
+  optional_dependencies:
+    name: Optional dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Test optional dependencies
+        run: |
+          python -m venv env-tskit
+          source env-tskit/bin/activate
+          python -m pip install .
+          python -m bio2zarr tskit2zarr convert tests/data/tskit/example.trees ts.vcz > ts.txt 2>&1 || echo $? > ts_exit.txt
+          test "$(cat ts_exit.txt)" = "1"
+            grep -q "This process requires the optional tskit module. Install it with: pip install bio2zarr\[tskit\]" ts.txt
+          python -m pip install '.[tskit]'
+          python -m bio2zarr tskit2zarr convert tests/data/tskit/example.trees ts.vcz
+          deactivate
+
+          python -m venv env-vcf
+          source env-vcf/bin/activate
+          python -m pip install .
+          python -m bio2zarr vcf2zarr convert tests/data/vcf/sample.vcf.gz sample.vcz > vcf.txt 2>&1 || echo $? > vcf_exit.txt
+          test "$(cat vcf_exit.txt)" = "1"
+          grep -q "This process requires the optional cyvcf2 module. Install it with: pip install bio2zarr\[vcf\]" vcf.txt
+          python -m pip install '.[vcf]'
+          python -m bio2zarr vcf2zarr convert tests/data/vcf/sample.vcf.gz sample.vcz
+          deactivate
+
+  packaging:
+    name: Packaging
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install build twine validate-pyproject[all]
+      - name: Check and install package
+        run: |
+          validate-pyproject pyproject.toml
+          python -m build
+          python -m twine check --strict dist/*
+          python -m pip install dist/*.whl
+      - name: Check vcf2zarr CLI
+        run: |
+          vcf2zarr --help
+          python -m bio2zarr vcf2zarr --help
+      - name: Check vcfpartition CLI
+        run: |
+          vcfpartition --help
+          python -m bio2zarr vcfpartition --help
+      - name: Check tskit2zarr CLI
+        run: |
+          tskit2zarr --help
+          python -m bio2zarr tskit2zarr --help
+      - name: Check plink2zarr CLI
+        run: |
+          plink2zarr --help
+          python -m bio2zarr plink2zarr --help
+
+  test-numpy-version:
+    name: Test numpy versions
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        numpy: ["==1.26", ">=2"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install '.[dev]'
+      - name: Install numpy${{ matrix.numpy }}
+        run: |
+          python -m pip install 'numpy${{ matrix.numpy }}'
+      - name: Run tests
+        run: |
+          # We just run the CLI tests here because it doesn't require other upstream
+          # packages like sgkit (which are tangled up with the numpy 2 dependency)
+          python -m pytest tests/test_cli.py
+
+  test-zarr-version:
+    name: Test Zarr versions
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        zarr: ["==2.18.3", ">=3.0.3"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install '.[dev]'
+      - name: Install zarr${{ matrix.zarr }}
+        run: |
+          python -m pip install 'zarr${{ matrix.zarr }}'
+      - name: Run tests
+        run: |
+          python -m pytest

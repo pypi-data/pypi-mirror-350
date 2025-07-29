@@ -1,0 +1,67 @@
+name: Docs
+
+on:
+  merge_group:
+  pull_request:
+  push:
+    branches:
+      - main
+    tags:
+      - '*'
+
+jobs:
+  build-docs:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.12.1
+        with:
+          access_token: ${{ github.token }}
+
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+          cache: 'pip'
+
+      - name: Create venv and install deps
+        run: |
+          pip install --upgrade pip wheel
+          pip install -r docs/requirements.txt
+          python3 -m bash_kernel.install
+
+      - name: Install bcftools
+        run: |
+          sudo apt-get install bcftools jq
+
+      - name: Install package
+        run: |
+          python3 -m pip install '.[all]'
+
+      - name: Build Docs
+        run: |
+          make -C docs
+
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/_build/html
+
+  deploy:
+    needs: build-docs
+    if: github.event_name != 'pull_request' && github.event_name != 'merge_group'
+    permissions:
+        pages: write
+        id-token: write
+
+    environment:
+        name: github-pages
+        url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+    steps:
+        - name: Deploy to GitHub Pages
+          id: deployment
+          uses: actions/deploy-pages@v4
