@@ -1,0 +1,72 @@
+[tool.poetry]
+name = "SnoParallel"
+version = "1.0.0"
+description = "Simplified parallelism with Python."
+repository = "https://dev.azure.com/snomax/snoparallel"
+documentation = "https://thesecondsnomax.github.io/SnoParallel"
+license = "MIT"
+readme = "README.md"
+authors = ["Max Snoodijk <max_snoodijk@live.nl>",]
+maintainers = ["Max Snoodijk <max_snoodijk@live.nl>",]
+
+[tool.poetry.dependencies]
+python = ">=3.10, <3.13"
+numpy = "^2.2"
+
+[tool.poetry.group.dev.dependencies]
+black = "^25.1"
+coverage = "^7.8"
+docformatter = "^1.7"
+isort = "^6.0"
+mkdocs = "^1.6"
+mkdocs-material = "^9.6"
+mkdocs-puml = "^2.3"
+mkdocstrings = "^0.29"
+mkdocstrings-python = "^1.16"
+mypy = "^1.15"
+pylint = "^3.3"
+pytest = "^8.3"
+
+[tool.black]
+line-length = 120
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 100
+
+[tool.coverage.run]
+omit = ["tests/*"]
+data_file = "local/coverage/data"
+concurrency = ["multiprocessing"]
+disable_warnings = ["no-data-collected"]
+
+[tool.docformatter]
+line-length = 120
+wrap-summaries = 120
+wrap-descriptions = 120
+make-summary-multi-line = true
+pre-summary-newline = true
+in-place = true
+recursive = true
+
+[tool.isort]
+profile = "black"
+combine_as_imports = true
+
+[tool.mypy]
+strict = true
+cache_dir = "local/mypy"
+exclude = ["tests"]
+
+[tool.pylint]
+max-line-length = 120
+disable = [
+    "too-few-public-methods",
+    "consider-using-with",
+    "too-many-instance-attributes"
+]
+ignore = ["tests"]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
