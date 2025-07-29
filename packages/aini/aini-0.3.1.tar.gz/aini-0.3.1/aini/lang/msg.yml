@@ -1,0 +1,56 @@
+msg_state:
+  class: langgraph.graph.MessagesState
+  init: false
+
+# Content type: Union[str, list[Union[str, dict]]]
+
+sys:
+  class: langchain_core.messages.SystemMessage
+  params:
+    content: ${content}
+
+human:
+  class: langchain_core.messages.HumanMessage
+  params:
+    content: ${content}
+
+user:
+  messages:
+    class: langchain_core.messages.HumanMessage
+    params:
+      content: ${content}
+
+ai:
+  class: langchain_core.messages.AIMessage
+  params:
+    content: ${content}
+
+invoke:
+  input:
+    messages:
+      - class: langchain_core.messages.HumanMessage
+        params:
+          content: ${content}
+  config:
+    configurable:
+      thread_id: ${thread_id}
+
+prompt:
+  class: langchain_core.prompts.ChatPromptTemplate
+  init: from_messages
+  params:
+    messages:
+      - class: langchain_core.messages.SystemMessage
+        params:
+          content: ${system}
+      - class: langchain_core.prompts.MessagesPlaceholder
+        params:
+          variable_name: messages
+
+trim:
+  class: langchain_core.messages.trim_messages
+  params:
+    messages: ${messages}
+    strategy: ${strategy|'last'}
+    max_tokens: ${max_tokens}
+    start_on: ${start_on|'human'}
