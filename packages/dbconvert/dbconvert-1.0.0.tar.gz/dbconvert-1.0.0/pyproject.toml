@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dbconvert"
+version = "1.0.0"
+description = "A CLI tool to convert PostgreSQL/MySQL databases to SQLite"
+readme = "README.md"
+requires-python = ">=3.8"
+authors = [
+  {name = "ysskrishna", email = "sivasaikrishnassk@gmail.com"}
+]
+license = {text = "MIT"}
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Typing :: Typed",
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Topic :: Database",
+  "Topic :: Software Development :: Libraries :: Python Modules"
+]
+keywords = ["database", "sqlite", "postgresql", "mysql", "conversion", "cli"]
+dependencies = [
+  "typer==0.15.4",
+  "rich==14.0.0",
+  "SQLAlchemy==2.0.41",
+  "psycopg2-binary==2.9.10",
+  "PyMySQL==1.1.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/ysskrishna/dbconvert"
+Documentation = "https://github.com/ysskrishna/dbconvert#readme"
+Repository = "https://github.com/ysskrishna/dbconvert.git"
+Issues = "https://github.com/ysskrishna/dbconvert/issues"
+
+[project.scripts]
+dbconvert = "dbconvert.cli:app"
+
+[tool.setuptools]
+packages = ["dbconvert"]
