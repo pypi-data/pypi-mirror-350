@@ -1,0 +1,109 @@
+Metadata-Version: 2.4
+Name: logdash
+Version: 1.0.1
+Summary: Python SDK for logdash logging and metrics service
+Home-page: https://logdash.io
+Author: logdash
+Author-email: info@logdash.io
+Keywords: logging,metrics,monitoring
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: System :: Logging
+Classifier: Topic :: System :: Monitoring
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests>=2.25.0
+Requires-Dist: colorama>=0.4.4
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# logdash - Python SDK
+
+Logdash is a zero-config observability platform. This package serves as a Python interface to use it.
+
+## Pre-requisites
+
+Setup your free project in less than 2 minutes at [logdash.io](https://logdash.io/)
+
+## Installation
+
+```bash
+pip install logdash
+```
+
+## Logging
+
+```python
+from logdash import create_logdash
+
+# Initialize with your API key
+logdash = create_logdash({
+    # optional, but recommended to see your logs in the dashboard
+    "api_key": "<your-api-key>",
+})
+
+# Access the logger
+logger = logdash.logger
+
+logger.info("Application started successfully")
+logger.error("An unexpected error occurred")
+logger.warn("Low disk space warning")
+```
+
+## Metrics
+
+```python
+from logdash import create_logdash
+
+# Initialize with your API key
+logdash = create_logdash({
+    # optional, but recommended as metrics are only hosted remotely
+    "api_key": "<your-api-key>",
+})
+
+# Access metrics
+metrics = logdash.metrics
+
+# to set absolute value
+metrics.set("users", 0)
+
+# to modify existing metric
+metrics.mutate("users", 1)
+```
+
+## View
+
+To see the logs or metrics, go to your project dashboard
+
+![logs](docs/logs.png)
+![delta](docs/delta.png)
+
+## License
+
+This project is licensed under the MIT License.
+
+## Contributing
+
+Contributions are welcome! Feel free to open issues or submit pull requests.
+
+## Support
+
+If you encounter any issues, please open an issue on GitHub or let us know at [contact@logdash.io](mailto:contact@logdash.io).
