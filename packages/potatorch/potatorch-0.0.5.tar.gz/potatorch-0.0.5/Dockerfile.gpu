@@ -1,0 +1,14 @@
+FROM nvcr.io/nvidia/pytorch:24.08-py3
+RUN apt-get update -y && apt-get install git -y
+RUN pip install pandas numpy pkbar einops pathos
+RUN pip install wandb
+
+WORKDIR /root
+RUN mkdir -p potatorch
+COPY ./src ./potatorch/src
+COPY ./setup.py ./potatorch/setup.py
+COPY ./examples ./potatorch/examples
+
+RUN pip install -e potatorch
+
+CMD ["python3", "./potatorch/examples/mlp.py"]
