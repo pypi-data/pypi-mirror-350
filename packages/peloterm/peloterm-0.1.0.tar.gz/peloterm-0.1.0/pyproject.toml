@@ -1,0 +1,65 @@
+[project]
+name = "peloterm"
+version = "0.1.0"
+description = "A terminal-based cycling metrics visualization tool"
+authors = [{ name = "Your Name", email = "your.email@example.com" }]
+readme = "README.md"
+license = { text = "MIT" }
+keywords = ["cycling", "bluetooth", "terminal", "metrics", "peloton"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Utilities",
+]
+dependencies = [
+    "typer>=0.9.0",
+    "rich>=13.7.0",
+    "bleak>=0.21.1",
+    "pyyaml>=6.0.1",
+    "fastapi>=0.110.0",
+    "uvicorn>=0.27.1",
+    "websockets>=12.0",
+    "fitparse>=1.2.0",
+    "requests>=2.28.0",
+    "stravalib>=1.6.0",
+]
+requires-python = ">=3.10"
+
+[project.urls]
+Homepage = "https://github.com/yourusername/peloterm"
+Repository = "https://github.com/yourusername/peloterm"
+Issues = "https://github.com/yourusername/peloterm/issues"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project.scripts]
+peloterm = "peloterm.cli:app"
+
+[tool.ruff]
+select = ["E", "F", "I"]
+ignore = []
+line-length = 100
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "httpx>=0.24.0",
+    "websockets>=11.0.0",
+    "fitparse>=1.2.0",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short" 
