@@ -1,0 +1,1 @@
+. "/home/cclark/Code/sync/projects/retina-therm/wasm/marcum-q-function/build/generators/conanbuildenv-release-wasm.sh"

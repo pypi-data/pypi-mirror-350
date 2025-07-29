@@ -1,0 +1,52 @@
+{
+    "version": 3,
+    "vendor": {
+        "conan": {}
+    },
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 15,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "conan-default",
+            "displayName": "'conan-default' config",
+            "description": "'conan-default' configure using 'Ninja Multi-Config' generator",
+            "generator": "Ninja Multi-Config",
+            "cacheVariables": {
+                "CMAKE_POLICY_DEFAULT_CMP0091": "NEW"
+            },
+            "environment": {
+                "EMSDK": "/home/cclark/.conan2/p/b/emsdk629b3f8c78cdf/p/bin",
+                "EMSCRIPTEN": "/home/cclark/.conan2/p/b/emsdk629b3f8c78cdf/p/bin/upstream/emscripten",
+                "EM_CONFIG": "/home/cclark/.conan2/p/b/emsdk629b3f8c78cdf/p/bin/.emscripten",
+                "EM_CACHE": "/home/cclark/.conan2/p/b/emsdk629b3f8c78cdf/p/bin/.emscripten_cache",
+                "CC": "/home/cclark/.conan2/p/b/emsdk629b3f8c78cdf/p/bin/upstream/emscripten/emcc",
+                "CXX": "/home/cclark/.conan2/p/b/emsdk629b3f8c78cdf/p/bin/upstream/emscripten/em++",
+                "AR": "/home/cclark/.conan2/p/b/emsdk629b3f8c78cdf/p/bin/upstream/emscripten/emar",
+                "NM": "/home/cclark/.conan2/p/b/emsdk629b3f8c78cdf/p/bin/upstream/emscripten/emnm",
+                "RANLIB": "/home/cclark/.conan2/p/b/emsdk629b3f8c78cdf/p/bin/upstream/emscripten/emranlib",
+                "STRIP": "/home/cclark/.conan2/p/b/emsdk629b3f8c78cdf/p/bin/upstream/emscripten/emstrip",
+                "PATH": "/home/cclark/.conan2/p/b/emsdk629b3f8c78cdf/p/bin:/home/cclark/.conan2/p/b/emsdk629b3f8c78cdf/p/bin/upstream/emscripten:$penv{PATH}"
+            },
+            "toolchainFile": "generators/conan_toolchain.cmake",
+            "binaryDir": "/home/cclark/Code/sync/projects/retina-therm/wasm/marcum-q-function/build"
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "conan-release",
+            "configurePreset": "conan-default",
+            "configuration": "Release",
+            "jobs": 20
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "conan-release",
+            "configurePreset": "conan-default",
+            "configuration": "Release"
+        }
+    ]
+}

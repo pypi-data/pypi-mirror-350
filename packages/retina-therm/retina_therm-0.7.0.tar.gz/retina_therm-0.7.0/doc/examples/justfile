@@ -1,0 +1,46 @@
+run-simple:
+  just run-simple-cw
+  just run-simple-mp
+run-simple-cw:
+  uv run retina-therm temperature-rise  CONFIG-simple.yml
+run-simple-mp:
+  uv run retina-therm multiple-pulse  CONFIG-simple.yml
+
+run-batch:
+  just run-batch-cw
+  just run-batch-mp
+  just run-batch-damage
+
+run-batch-cw:
+  uv run retina-therm temperature-rise  CONFIG-batch.yml --skip-existing-outputs
+run-batch-mp:
+  uv run retina-therm multiple-pulse  CONFIG-batch.yml --skip-existing-outputs
+run-batch-damage:
+  uv run retina-therm damage  CONFIG-batch.yml --skip-existing-outputs --write-threshold-profiles
+
+run-large_batch:
+  just run-large_batch-cw
+  just run-large_batch-mp
+run-large_batch-cw:
+  uv run retina-therm temperature-rise  CONFIG-large_batch.yml --skip-existing-outputs
+run-large_batch-mp:
+  uv run retina-therm multiple-pulse  CONFIG-large_batch.yml --skip-existing-outputs
+
+run-mainster:
+  just run-mainster-cw
+  just run-mainster-mp
+run-mainster-cw:
+  uv run retina-therm temperature-rise  CONFIG-mainster.yml
+run-mainster-mp:
+  uv run retina-therm multiple-pulse  CONFIG-mainster.yml
+
+run-mainster-batch:
+  just run-mainster-batch-cw
+  just run-mainster-batch-mp
+run-mainster-batch-cw:
+  uv run retina-therm temperature-rise  CONFIG-mainster-batch.yml
+run-mainster-batch-mp:
+  uv run retina-therm multiple-pulse  CONFIG-mainster-batch.yml
+
+clean:
+  rm output-* -r

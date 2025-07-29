@@ -1,0 +1,49 @@
+thermal:
+    k: 1.5e-3 cal / K / s / cm
+    rho: 1 g/cm^3
+    c: 1 cal / K /g
+layers:
+  - mua: 310 1/cm
+    d: 10 um
+    z0: 0 um
+    absorption_coefficient: 310 1/cm
+    thickness: 10 um
+    position: 0 um
+  - mua: 53 1/cm
+    d: 100 um
+    z0: 10 um
+    absorption_coefficient: 53 1/cm
+    thickness: 100 um
+    position: 10 um
+laser:
+  wavelength: 700 nm
+  duration: 10 s
+  E0: 1 cal/s/cm^2
+  R: 10 um
+  irradiance: 1 cal/s/cm^2
+  one_over_e_radius: 10 um
+
+temperature_rise:
+  sensor:
+    z: 1 um
+    r: 0 um
+  time:
+    - max: 100 ms
+      resolution: 100 us
+  output_file : output-simple/CW/Tvst-$(${/laser/one_over_e_radius}).txt
+  output_config_file : output-simple/CW/CONFIG-$(${/laser/one_over_e_radius}).txt
+
+multiple_pulse:
+  input_file: $(${/temperature_rise/output_file})
+  output_file: $(${/temperature_rise/output_file}.replace("CW","MP"))
+  output_config_file: $(${/temperature_rise/output_config_file}.replace("CW","MP"))
+  time:
+    resolution: 200 us
+    max: 75 ms
+  pulses:
+    - arrival_time: 0 ms
+      duration: 10 ms
+      scale: 1
+    - arrival_time: 20 ms
+      duration: 10 ms
+      scale: 2
