@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "clickframes"
+version = "0.1.0a1"
+description = "ClickFrames is an innovative library designed to provide a pandas-compatible interface for working with ClickHouse. Unlike traditional pandas operations that load data into memory, ClickFrame generates optimized SQL queries that execute directly within ClickHouse, leveraging its superior performance characteristics for large-scale data operations."
+readme = "README.md"
+license = {text = "Apache-2.0"}
+authors = [
+    {name = "Badr Ouali", email = "badr@clickhouse.com"}
+]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+dependencies = [
+    "requests>=2.25.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov>=3.0",
+    "flake8>=6.0",
+    "black",
+    "isort",
+]
+
+[project.urls]
+Homepage = "https://github.com/ClickHouse/ClickFrames"
+Repository = "https://github.com/ClickHouse/ClickFrames"
+
+# [tool.setuptools_scm]
+# write_to = "src/clickframes/_version.py"
+
+[tool.setuptools.packages.find]
+where = ["src"]
