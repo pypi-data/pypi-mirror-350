@@ -1,0 +1,71 @@
+#include <Keyboard.h>
+{{ "#include <Keyboard_" + keyboard_layout + ".h>\n\n" if keyboard_layout != "en_US" else "\n" -}}
+
+#define KEYPRESS_DELAY {{ (1000 / ((wpm * 5) / 60)) | int if wpm else 0 }}
+#define LENGTH {{ keystrokes | length }}
+
+const char KEYSTROKES[LENGTH] = {
+{%- for key in keystrokes %}
+  {%- if key|length == 1 -%}
+    '{{ key | replace("\0", "\\0") | replace("\f","\\f") | replace("\n","\\n") | replace("\r","\\r") | replace("\t","\\t") | replace("\v","\\v") }}'
+  {%- else -%}
+    {{ key }}
+  {%- endif -%}
+
+  {{ ", " if not loop.last else "" }}
+{%- endfor -%}
+};
+
+unsigned int i = 0;
+bool isPressed = false;
+
+
+void setup() {
+  randomSeed(analogRead(0));
+
+  Keyboard.begin(KeyboardLayout_{{ keyboard_layout }});
+  delay(2000);
+}
+
+
+void loop() {
+  {%- if interval_mapping|length != 0 %}
+  // delays.
+  switch (i) {
+  {%- for index, sleep_interval in interval_mapping %}
+    case {{ index }}:
+      delay({{ sleep_interval }});
+  {%- endfor %}
+  }
+  {%- endif -%}
+
+  // injection complete.
+  if (i == LENGTH) {
+    {%- if do_repeat is not false %}
+    i = 0;
+    {{- " delay(" ~ do_repeat ~ ");" if do_repeat != 0 }}
+    return;
+    {%- else %}
+    Keyboard.end();
+    while (1) {}  // zzz.
+    {%- endif %}
+  }
+
+  if (KEYSTROKES[i] == 0) {
+    if (isPressed) {
+      Keyboard.releaseAll();
+    }
+
+    isPressed = !isPressed;
+  } else {
+    if (isPressed) {
+      Keyboard.press(KEYSTROKES[i]);
+    } else {
+      Keyboard.write(KEYSTROKES[i]);
+    }
+
+    delay(KEYPRESS_DELAY + random((int) (0.1 * KEYPRESS_DELAY)));
+  }
+
+  i++;
+}

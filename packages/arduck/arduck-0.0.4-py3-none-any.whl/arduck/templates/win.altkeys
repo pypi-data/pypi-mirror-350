@@ -1,0 +1,140 @@
+#include <Keyboard.h>
+{{ "#include <Keyboard_" + keyboard_layout + ".h>\n\n" if keyboard_layout != "en_US" else "\n" -}}
+
+#define KEYPRESS_DELAY {{ (1000 / ((wpm * 5) / 60)) | int if wpm else 0 }}
+#define LENGTH {{ keystrokes | length }}
+
+{% set vars = namespace(is_pressed=false, special_keys=[]) %}
+const char KEYSTROKES[LENGTH] = {
+{%- for key in keystrokes %}
+  {%- if key|length == 1 -%}
+    {%- set char = key | replace("\0", "\\0") | replace("\f","\\f") | replace("\n","\\n") | replace("\r","\\r") | replace("\t","\\t") | replace("\v","\\v") -%}
+
+    {%- if key == "\0" -%}
+      {%- set vars.is_pressed = not vars.is_pressed -%}
+      '{{ char }}'
+
+    {%- else -%}
+      {%- if vars.is_pressed -%}
+        '{{ char }}'
+
+      {%- else -%}
+        {%- if char | encode("cp1252") | btoi > 255 -%}
+          '{{ char }}'
+          {%- set _ = vars.special_keys.append(loop.index - 1) -%}
+
+        {%- else -%}
+          {{ char | encode("cp1252") | btoi}}
+
+        {%- endif -%}
+      {%- endif -%}
+    {%- endif -%}
+  {%- else -%}
+
+    {%- if not vars.is_pressed -%}
+      {%- set _ = vars.special_keys.append(loop.index - 1) -%}
+
+    {%- endif -%}
+    {{ key }}
+
+  {%- endif -%}
+
+  {{ ", " if not loop.last else "" }}
+{%- endfor -%}
+};
+
+unsigned int i = 0;
+bool isPressed = false;
+
+
+unsigned int numberToKp(unsigned int number) {
+  unsigned int digit = number % 10;
+
+  return (digit > 0) ? digit + KEY_KP_1 - 1 : KEY_KP_0;
+}
+
+
+void writeAltCode(char code) {
+  unsigned int u = code % 10, v = code % 100;
+  unsigned int n[3] = {(code - v) / 100, (v - u) / 10, u};
+
+
+  Keyboard.press(KEY_LEFT_ALT);
+
+  Keyboard.press(KEY_KP_0);
+  Keyboard.release(KEY_KP_0);
+
+  for (unsigned int i = 0; i < 3; i++) {
+    Keyboard.press(numberToKp(n[i]));
+    Keyboard.release(numberToKp(n[i]));
+  }
+
+  Keyboard.release(KEY_LEFT_ALT);
+}
+
+
+void setup() {
+  randomSeed(analogRead(0));
+
+  Keyboard.begin(KeyboardLayout_{{ keyboard_layout }});
+  delay(2000);
+}
+
+
+void loop() {
+  {%- if interval_mapping|length != 0 %}
+  // delays.
+  switch (i) {
+  {%- for index, sleep_interval in interval_mapping %}
+    case {{ index }}:
+      delay({{ sleep_interval }});
+  {%- endfor %}
+  }
+  {%- endif -%}
+
+  {{ "\n\n  " if interval_mapping|length != 0 else "\n  " }}// begin.
+  if (i == 0) {
+    Keyboard.write(KEY_NUM_LOCK);
+  }
+
+  // end.
+  if (i == LENGTH) {
+    {%- if do_repeat is not false %}
+    Keyboard.write(KEY_NUM_LOCK);
+    i = 0;
+    {{- " delay(" ~ do_repeat ~ ");" if do_repeat != 0 }}
+    return;
+    {%- else %}
+    Keyboard.write(KEY_NUM_LOCK);
+    Keyboard.end();
+    while (1) {}  // zzz.
+    {%- endif %}
+  }
+
+  if (KEYSTROKES[i] == 0) {
+    if (isPressed) {
+      Keyboard.releaseAll();
+    }
+
+    Keyboard.write(KEY_NUM_LOCK);
+    isPressed = !isPressed;
+  } else {
+    if (isPressed) {
+      Keyboard.press(KEYSTROKES[i]);
+    } else {
+      switch (i) {
+      {%- for index in vars.special_keys %}
+        case {{ index }}:
+      {%- endfor %}
+          Keyboard.write(KEYSTROKES[i]);
+          break;
+        default:
+          writeAltCode(KEYSTROKES[i]);
+      }
+    }
+
+    delay(KEYPRESS_DELAY + random((int) (0.1 * KEYPRESS_DELAY)));
+  }
+
+  i++;
+}
