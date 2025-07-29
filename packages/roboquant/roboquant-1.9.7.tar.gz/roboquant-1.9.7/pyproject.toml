@@ -1,0 +1,83 @@
+[tool.ruff]
+line-length = 127
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "roboquant/__init__.py"
+
+[tool.ruff.lint]
+select = ["E", "F", "W"]
+
+[tool.pyright]
+typeCheckingMode = "standard"
+# typeCheckingMode = "strict"
+
+[project]
+name = "roboquant"
+dynamic = ["version"]
+authors = [{ name = "roboquant team", email = "info@roboquant.org" }]
+description = "A fast algorithmic trading platform with support for AI based strategies"
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+requires-python = ">=3.11, <3.14"
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+  "Topic :: Office/Business :: Financial",
+  "Topic :: Office/Business :: Financial :: Investment",
+]
+keywords = [
+  "algorithmic",
+  "trading",
+  "machine learning",
+  "AI",
+  "investment",
+  "finance",
+  "crypto",
+  "stocks",
+  "exchange",
+  "forex",
+]
+dependencies = [
+  "numpy>=2.2.5",
+  "requests>=2.32.0",
+  "yfinance~=0.2.58",
+  "pyarrow>=20.0.0",
+]
+
+[project.optional-dependencies]
+torch = [
+  "torch>=2.6.0",
+  "tensorboard>=2.19.0",
+  "stable-baselines3[extra]>=2.6.0",
+  "sb3-contrib>=2.6.0",
+]
+ibkr = ["ibind[oauth]>=0.1.14"]
+alpaca = ["alpaca-py>=0.39.4"]
+
+[project.urls]
+Homepage = "https://roboquant.org"
+Repository = "https://github.com/neurallayer/roboquant.py.git"
+Issues = "https://github.com/neurallayer/roboquant.py/issues"
+
+[dependency-groups]
+dev = [
+  "matplotlib>=3.10.1",
+  "python-dotenv>=1.1.0",
+  "pyright>=1.1.399",
+  "ipykernel>=6.29.5",
+  "ipywidgets>=8.1.6",
+]
+talib = ["ta-lib==0.6.3"]
