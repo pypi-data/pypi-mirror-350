@@ -1,0 +1,2 @@
+def spiderman():
+    return "Spiderman"
