@@ -1,0 +1,28 @@
+syntax = "proto3";
+package topk.data.v1;
+
+import "topk/data/v1/document.proto";
+
+service WriteService {
+  // Upsert
+  rpc UpsertDocuments(UpsertDocumentsRequest) returns (UpsertDocumentsResponse);
+
+  // Delete
+  rpc DeleteDocuments(DeleteDocumentsRequest) returns (DeleteDocumentsResponse);
+}
+
+// Upsert
+message UpsertDocumentsRequest {
+  repeated Document docs = 1;
+}
+message UpsertDocumentsResponse {
+  string lsn = 1;
+}
+
+// Delete
+message DeleteDocumentsRequest {
+  repeated string ids = 1;
+}
+message DeleteDocumentsResponse {
+  string lsn = 1;
+}

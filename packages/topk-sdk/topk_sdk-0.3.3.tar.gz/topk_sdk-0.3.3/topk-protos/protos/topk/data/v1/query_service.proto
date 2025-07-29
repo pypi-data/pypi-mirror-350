@@ -1,0 +1,42 @@
+syntax = "proto3";
+package topk.data.v1;
+
+import "topk/data/v1/document.proto";
+import "topk/data/v1/query.proto";
+
+service QueryService {
+  // Query
+  rpc Query(QueryRequest) returns (QueryResponse);
+
+  // Get document (by ID)
+  rpc Get(GetRequest) returns (GetResponse);
+}
+
+enum ConsistencyLevel {
+  CONSISTENCY_LEVEL_UNSPECIFIED = 0;
+  CONSISTENCY_LEVEL_INDEXED = 1;
+  CONSISTENCY_LEVEL_STRONG = 2;
+}
+
+// Query
+message QueryRequest {
+  string collection = 1;
+  Query query = 2;
+  optional string required_lsn = 3;
+  optional ConsistencyLevel consistency_level = 4;
+}
+
+message QueryResponse {
+  repeated Document results = 1;
+}
+
+// Get documents by IDs
+message GetRequest {
+  repeated string ids = 1;
+  repeated string fields = 2;
+  optional string required_lsn = 3;
+  optional ConsistencyLevel consistency_level = 4;
+}
+message GetResponse {
+  map<string, Document> docs = 1;
+}
