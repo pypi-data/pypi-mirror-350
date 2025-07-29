@@ -1,0 +1,30 @@
+[package]
+name = "cratermaker"
+version = "2025.5.10-a0"
+edition = "2021"
+
+[lib]
+name = "cratermaker"
+crate-type = [ "cdylib",]
+
+[dependencies]
+itertools = "0.14.0"
+numpy = "0.24.0"
+pyo3 = "0.24.0"
+rand = "0.9.1"
+rayon = "1.10.0"
+noise = "0.9.0"
+rand_chacha = "0.9.0"
+
+[dependencies.ndarray]
+version = "0.16.1"
+features = [ "rayon",]
+
+[profile.release]
+codegen-units = 1
+lto = "fat"
+opt-level = 3
+
+[target.'cfg(not(target_env = "msvc"))'.dependencies.tikv-jemallocator]
+version = "0.6"
+features = [ "disable_initial_exec_tls",]
