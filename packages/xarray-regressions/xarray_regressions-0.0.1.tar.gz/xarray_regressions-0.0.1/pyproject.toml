@@ -1,0 +1,37 @@
+[project]
+name = "xarray-regressions"
+version = "0.0.1"
+description = "pytest-regressions plugin for xarray"
+readme = "README.md"
+authors = [
+    { name = "Aaron Zuspan", email = "aa.zuspan@gmail.com" }
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Framework :: Pytest",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Testing",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "netcdf4",
+    "pytest",
+    "pytest-regressions",
+    "xarray",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.2.0",
+    "ruff>=0.11.11",
+]
+
+[project.entry-points.pytest11]
+xarray-regressions = "xarray_regressions.plugin"
