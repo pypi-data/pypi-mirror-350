@@ -1,0 +1,59 @@
+[build-system]
+
+requires = [
+    "setuptools>=42",
+    "wheel"
+]
+
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "Ligare.programming"
+requires-python = ">=3.10"
+authors = [
+    {name = 'Aaron Holmes', email = 'aholmes@mednet.ucla.edu'}
+]
+description = 'Libraries for writing software.'
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License (GPL)",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "Development Status :: 4 - Beta",
+    "Natural Language :: English"
+]
+
+dependencies = [
+    "injector",
+    "pydantic",
+    "toml"
+]
+
+dynamic = ["version", "readme"]
+[tool.setuptools.dynamic]
+version = {attr = "Ligare.programming.__version__"}
+readme = {file = ["README.md"], content-type = "text/markdown"}
+
+[project.urls]
+"Homepage" = "https://github.com/uclahs-cds/Ligare"
+"Bug Tracker" = "https://github.com/uclahs-cds/Ligare/issues"
+"Repository" = "https://github.com/uclahs-cds/Ligare.git"
+"Changelog" = "https://github.com/uclahs-cds/Ligare/blob/main/CHANGELOG.md"
+
+[project.optional-dependencies]
+AWS = [
+    "Ligare.AWS"
+]
+
+[tool.setuptools.package-dir]
+"Ligare.programming" = "Ligare/programming"
+
+[tool.setuptools.packages.find]
+exclude = ["build*"]
+
+[tool.setuptools.package-data]
+"Ligare.programming" = ["Ligare/programming/py.typed"]
