@@ -1,0 +1,108 @@
+Metadata-Version: 2.4
+Name: pripy-utils
+Version: 0.1.0
+Summary: 个人python工具集
+Author-email: JAYSENLIN <jaysen.lin@foxmail.com>
+License-Expression: MIT AND (Apache-2.0 OR BSD-2-Clause)
+Project-URL: Homepage, https://github.com/linjonh/my-pyutils
+Project-URL: Documentation, https://deepseeksblog.web.app/
+Keywords: utils,mylog,zip,sqlite3,database
+Requires-Python: >=3.13
+Description-Content-Type: text/markdown
+Requires-Dist: requests>=2.31.0
+
+# My python util collections
+我的个人python工具集,模块构建流程：
+
+## 项目结构
+```bash
+├── README.md
+├── pyproject.toml
+├── src
+│   └── pyutils
+│       ├── __init__.py
+│       ├── base_sqlite_db.py
+│       ├── my_log.py
+│       ├── utils.py
+│       └── zip.py
+└── tests
+    └── test.py
+```
+
+## Module模块构建
+
+- **1、示例（使用 setuptools）：**
+    
+    ```toml
+    #在pyproject.toml文件
+
+    [build-system]
+    requires = ["setuptools>=61.0"]
+    build-backend = "setuptools.build_meta"
+
+    [project]
+    name = "your-package-name"
+    version = "0.1.0"
+    description = "简短描述"
+    readme = "README.md"
+    requires-python = ">=3.7"
+    license = {text = "MIT"}
+    authors = [
+    {name = "你的名字", email = "你@邮箱.com"}
+    ]
+    dependencies = [
+    "requests>=2.0",  # 依赖示例
+    ]
+
+    [project.urls]
+    Homepage = "https://github.com/yourname/yourproject"
+    ```
+- **2、构建包**
+    - 先安装打包工具（一次性操作）：
+    ```bash
+    pip install build
+    ```
+
+    - 然后在项目根目录运行：
+    ```bash
+    python -m build
+    ```
+    - 会生成：
+
+    ```pgsql
+    dist/
+    ├── your_package_name-0.1.0.tar.gz
+    └── your_package_name-0.1.0-py3-none-any.whl
+    ```
+
+# 上传到 PyPI
+## 安装上传工具：
+
+```bash
+pip install twine
+```
+## 注册并获取 [PyPI](https://pypi.org/account/register/) 账号
+
+上传：
+
+```bash
+twine upload dist/*
+```
+输入你的 PyPI 用户名和密码即可。
+
+💡 建议先上传到测试环境 Test PyPI：
+
+💡 Because TestPyPI has a separate database from the live PyPI, you’ll need a separate user account specifically for TestPyPI. Go to https://test.pypi.org/account/register/ to register your account.
+```bash
+twine upload --repository testpypi dist/*
+```
+
+# 在其他项目中安装
+```bash
+pip install your-package-name
+```
+或者从 Test PyPI：
+
+```bash
+pip install --index-url https://test.pypi.org/simple/ your-package-name
+```
