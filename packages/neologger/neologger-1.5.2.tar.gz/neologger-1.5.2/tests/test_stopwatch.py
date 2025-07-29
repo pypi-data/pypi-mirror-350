@@ -1,0 +1,35 @@
+from neologger import Stopwatch
+import time
+
+print("Testing NeoLogger's Stopwatch class.")
+
+
+# stopwatch = Stopwatch()
+# stopwatch.lap()
+# time.sleep(1.25)  
+# stopwatch.lap()
+# time.sleep(2.55) 
+# stopwatch.lap()
+# time.sleep(0.35)  
+# stopwatch.lap()
+# time.sleep(1.87)
+# stopwatch.lap()
+# time.sleep(0.32)
+# stopwatch.lap()
+# print(stopwatch.stop())
+
+stopwatch = Stopwatch("Tracking checkpoints using labels.")
+stopwatch.lap("Starting.")
+time.sleep(1.15)
+stopwatch.lap("Database connection with default driver.")
+time.sleep(3.25)
+stopwatch.lap("Post request completed. Call to SP defaultLoggingFunction.")
+time.sleep(2.3)
+stopwatch.lap("Beggining to process data from Database.")
+time.sleep(1.87)
+stopwatch.lap("End processing data from Database.")
+time.sleep(2.04)
+stopwatch.lap("Another process completed.")
+time.sleep(0.32)
+stopwatch.lap("Function completed.")
+print(stopwatch.stop())
