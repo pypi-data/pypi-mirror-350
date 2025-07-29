@@ -1,0 +1,55 @@
+[tool.poetry]
+name = "labonneboite-datamodel"
+version = "2.3.0"
+description = "Datamodel for labonneboite"
+authors = ["La Bonne Boite <labonneboite@pole-emploi.fr>"]
+license = "MIT"
+packages = [{ include = "labonneboite_datamodel" }]
+
+[tool.poetry.dependencies]
+python = ">=3.11,<4.0"
+pydantic = "^2.5.3" 
+sqlmodel = "^0.0.22"
+pymysql = "^1.0.2"
+email-validator = "^2.2.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.2.1"
+pytest-cov = "^3.0.0"
+flake8 = "^5.0.4"
+flake8-junit-report = "^2.1.0"
+coverage = "^6.4.4"
+pytest-html = "^3.1.1"
+pandas = "^2.2.2"
+
+[tool.poetry.group.help.dependencies]
+mkdocs = "^1.4.1"
+mkdocs-material = "^8.5.6"
+mkdocstrings = { extras = ["python"], version = "^0.26.2" }
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-s --cov --disable-pytest-warnings --verbose --junitxml=pytest.xml --html=pytest.html"
+testpaths = ["labonneboite_datamodel/tests"]
+python_files = "test_*.py"
+
+
+[tool.coverage.run]
+branch = true
+parallel = true
+concurrency = ["multiprocessing"]
+
+[tool.coverage.report]
+precision = 1
+show_missing = true
+ignore_errors = true
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+]
+omit = ["*/test*"]
