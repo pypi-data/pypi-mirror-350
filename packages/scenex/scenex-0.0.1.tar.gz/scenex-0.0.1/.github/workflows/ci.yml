@@ -1,0 +1,110 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: [v*]
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    # run every week (for --pre release tests)
+    - cron: "0 0 * * 0"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check-manifest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pipx run check-manifest
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - run: uv sync
+      - uses: pre-commit/action@v3.0.1
+        with:
+          extra_args: --all-files --verbose
+
+  test:
+    name: test ${{ matrix.os }} py${{ matrix.python-version }} ${{ matrix.gfx }}
+    runs-on: ${{ matrix.os }}
+    env:
+      UV_FROZEN: 1
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+        gfx: [pygfx, vispy]
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+          enable-cache: true
+      - uses: pyvista/setup-headless-display-action@v4
+        with:
+          qt: true
+      - name: Install llvmpipe and lavapipe for offscreen canvas
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update -y -qq
+          sudo apt install -y libegl1-mesa-dev libgl1-mesa-dri libxcb-xfixes0-dev mesa-vulkan-drivers
+
+      - name: Install dependencies
+        run: uv sync --no-dev --group test --extra ${{ matrix.gfx }}
+
+      - name: Test
+        shell: bash
+        run: uv run --no-sync coverage run -p -m pytest -v
+
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: covreport-${{ matrix.os }}-py${{ matrix.python-version }}-${{ matrix.gfx }}
+          path: ./.coverage*
+          include-hidden-files: true
+
+  upload_coverage:
+    if: always()
+    needs: [test]
+    uses: pyapp-kit/workflows/.github/workflows/upload-coverage.yml@v2
+    secrets:
+      codecov_token: ${{ secrets.CODECOV_TOKEN }}
+
+  deploy:
+    name: Deploy
+    needs: test
+    if: success() && startsWith(github.ref, 'refs/tags/') && github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - run: uv build
+
+      - uses: pypa/gh-action-pypi-publish@release/v1
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: "./dist/*"

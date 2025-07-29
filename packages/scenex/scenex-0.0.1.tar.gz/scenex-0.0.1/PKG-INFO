@@ -1,0 +1,56 @@
+Metadata-Version: 2.4
+Name: scenex
+Version: 0.0.1
+Summary: Declarative scene graph model and backend abstraction.
+Project-URL: homepage, https://github.com/pyapp-kit/scenex
+Project-URL: repository, https://github.com/pyapp-kit/scenex
+Author-email: Talley Lambert <talley.lambert@gmail.com>
+License: BSD-3-Clause
+License-File: LICENSE
+Classifier: Development Status :: 3 - Alpha
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Typing :: Typed
+Requires-Python: >=3.10
+Requires-Dist: cmap>=0.5
+Requires-Dist: numpy>=1.24
+Requires-Dist: psygnal>=0.11.1
+Requires-Dist: pydantic>=2.10
+Provides-Extra: pygfx
+Requires-Dist: pygfx>=0.9.0; extra == 'pygfx'
+Provides-Extra: vispy
+Requires-Dist: pyopengl; extra == 'vispy'
+Requires-Dist: vispy>=0.15.0; extra == 'vispy'
+Description-Content-Type: text/markdown
+
+# scenex
+
+[![License](https://img.shields.io/pypi/l/scenex.svg?color=green)](https://github.com/pyapp-kit/scenex/raw/main/LICENSE)
+[![PyPI](https://img.shields.io/pypi/v/scenex.svg?color=green)](https://pypi.org/project/scenex)
+[![Python Version](https://img.shields.io/pypi/pyversions/scenex.svg?color=green)](https://python.org)
+[![CI](https://github.com/pyapp-kit/scenex/actions/workflows/ci.yml/badge.svg)](https://github.com/pyapp-kit/scenex/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/pyapp-kit/scenex/branch/main/graph/badge.svg)](https://codecov.io/gh/pyapp-kit/scenex)
+
+*Declarative, reactive scene graph model, with backend adapter abstraction*
+
+---------
+
+Scenex is a Python API for creating and manipulating 3D scenes.
+
+It does not implement any rendering or graphics directly, but rather serves
+as a high-level interface and adaptor for existing scene-graph libraries,
+such as [vispy](https://vispy.org/) and [pygfx](https://pygfx.org/), and
+hopefully others (like [datovis](https://datoviz.org/)) in the future.
+
+The goal is to provide a clear scene graph model (backed by [pydantic](https://docs.pydantic.dev)
+), with backend adaptors that connect the model to the actual rendering
+engine.  The models emit events upon mutation (using [psygnal](https://psygnal.readthedocs.io)),
+and the adaptors listen to these events and update the scene graph.
+
+Because the models are backed by pydantic, they can be easily serialized to JSON
+and other formats, making it easy to save and load scenes, and define them
+declaratively.
