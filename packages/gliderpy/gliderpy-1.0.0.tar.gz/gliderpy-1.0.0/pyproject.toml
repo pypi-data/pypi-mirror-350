@@ -1,0 +1,98 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = [
+  "setuptools>=42",
+  "setuptools-scm[toml]>=3.4",
+  "wheel",
+]
+
+[project]
+name = "gliderpy"
+description = "Glider Data Fetcher"
+readme = "README.md"
+license = { file = "LICENSE.txt" }
+maintainers = [
+  { name = "Callum Rollo", email = "c.rollo@outlook.com" },
+  { name = "Lindsay Abrams" },
+  { name = "Filipe Fernandes" },
+]
+requires-python = ">=3.10"
+classifiers = [
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+dynamic = [
+  "version",
+]
+
+dependencies = [ "erddapy", "httpx", "pandas", "pandas-flavor", "stamina", "xarray" ]
+
+optional-dependencies.docs = [ "jupyter", "nbconvert", "nbsphinx", "palettable", "sphinx" ]
+optional-dependencies.plotting = [ "cartopy", "gsw", "matplotlib" ]
+optional-dependencies.test = [
+  "check-manifest",
+  "pre-commit",
+  "pytest",
+  "pytest-cov",
+  "pytest-mpl",
+  "pytest-sugar",
+  "pytest-vcr",
+  "pytest-xdist",
+]
+urls.documentation = "https://ioos.github.io/gliderpy"
+urls.homepage = "https://github.com/ioos/gliderpy"
+urls.repository = "https://github.com/ioos/gliderpy"
+
+[tool.setuptools]
+packages = [
+  "gliderpy",
+]
+include-package-data = true
+
+[tool.setuptools.dynamic]
+readme = { file = "README.md", content-type = "text/markdown" }
+
+[tool.setuptools_scm]
+write_to = "gliderpy/_version.py"
+write_to_template = "__version__ = '{version}'"
+tag_regex = "^(?P<prefix>v)?(?P<version>[^\\+]+)(?P<suffix>.*)?$"
+
+[tool.check-manifest]
+ignore = [
+  "*.yml",
+  "*.yaml",
+  ".coveragerc",
+  "docs",
+  "docs/*",
+  "notebooks",
+  "notebooks/*",
+  "tests",
+  "tests/*",
+]
+
+[tool.pytest.ini_options]
+filterwarnings = [
+  "error:::gliderpy.*",
+  "ignore::UserWarning",
+  "ignore::RuntimeWarning",
+]
+
+[tool.interrogate]
+ignore-init-method = true
+ignore-init-module = false
+ignore-magic = false
+ignore-semiprivate = false
+ignore-private = false
+ignore-module = false
+fail-under = 95
+exclude = [
+  "setup.py",
+  "docs",
+  "tests",
+]
+verbose = 1
+quiet = false
+color = true
