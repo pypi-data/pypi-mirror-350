@@ -1,0 +1,65 @@
+Metadata-Version: 2.4
+Name: dtools.queues
+Version: 2.0.0
+Summary: ### Developer Tools - Queue based data structures
+Keywords: queue,fifo,lifo,dqueue
+Author-email: "Geoffrey R. Scheller" <geoffrey@scheller.com>
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Framework :: Pytest
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Typing :: Typed
+License-File: LICENSE
+Requires-Dist: dtools.circular-array >= 3.15.0, < 3.16
+Requires-Dist: dtools.containers >=1.0.0, <1.1
+Requires-Dist: dtools.fp >=2.0.0, <2.1
+Requires-Dist: pytest >=8.3.5 ; extra == "test"
+Project-URL: Changelog, https://github.com/grscheller/dtools-queues/blob/main/CHANGELOG.md
+Project-URL: Documentation, https://grscheller.github.io/dtools-namespace-projects/queues
+Project-URL: Homepage, https://github.com/grscheller/dtools-namespace-projects/blob/main/README.md
+Project-URL: Source, https://github.com/grscheller/dtools-queues
+Provides-Extra: test
+
+# Developer Tools - Queues
+
+Python package containing modules implementing queue-like data
+structures. This project is part of the [Developer Tools for Python][4]
+**dtools.** namespace project.
+
+- **Repositories**
+  - [dtools.queues][1] project on *PyPI*
+  - [Source code][2] on *GitHub*
+- **Detailed documentation**
+  - [Detailed API documentation][3] on *GH-Pages*
+
+## Overview
+
+Classic queue data structures:
+
+- *module* dtools.queues
+  - *module* fifo: First-In-First-Out Queue - FIFOQueue
+  - *module* lifo: Last-In-First-Out Queue - LIFOQueue
+  - *module* de: Double-Ended Queue - DEQueue
+
+These queues allow iterators to leisurely iterate over inaccessible
+copies of their current state while the queues themselves are free to
+safely mutate. They are designed to be reasonably "atomic" without
+introducing inordinate complexity.
+
+All are more restrictive then the underlying circular array data
+structure used to implement them. Developers can focus on the queue's
+use case instead of all the "bit fiddling" required to implement
+behavior, perform memory management, and handle coding edge cases.
+Sometimes the real power of a data structure comes not from what it
+empowers you to do, but from what it prevents you from doing to
+yourself.
+
+[1]: https://pypi.org/project/dtools.queues/
+[2]: https://github.com/grscheller/dtools-queues/
+[3]: https://grscheller.github.io/dtools-namespace-projects/queues/
+[4]: https://github.com/grscheller/dtools-namespace-projects/blob/main/README.md
+
