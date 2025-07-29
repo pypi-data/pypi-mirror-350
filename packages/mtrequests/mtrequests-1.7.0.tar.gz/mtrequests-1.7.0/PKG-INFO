@@ -1,0 +1,29 @@
+Metadata-Version: 2.1
+Name: mtrequests
+Version: 1.7.0
+Summary: threading for requests
+Home-page: https://github.com/dail45/mtrequests
+Author: dail45
+Keywords: requests threading
+Classifier: Programming Language :: Python :: 3.11
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires: requests
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests
+
+# mtrequests
+threading for requests
+
+
+```python
+import mtrequests
+
+pp = mtrequests.PendingPool()
+
+print(mtrequests.get("https://example.com").send())
+print(mtrequests.get("https://example.com").wrap(pp).send())
+print(pp.wrap(mtrequests.get("https://example.com")).send())
+```
