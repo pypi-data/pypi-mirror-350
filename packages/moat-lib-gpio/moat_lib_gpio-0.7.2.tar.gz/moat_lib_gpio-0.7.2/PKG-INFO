@@ -1,0 +1,45 @@
+Metadata-Version: 2.4
+Name: moat-lib-gpio
+Version: 0.7.2
+Summary: Easy async access to GPIO pins
+Author-email: Matthias Urlichs <matthias@urlichs.de>
+Project-URL: homepage, https://m-o-a-t.org
+Project-URL: repository, https://github.com/M-o-a-T/moat
+Keywords: MoaT
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 3
+Classifier: Framework :: AsyncIO
+Classifier: Framework :: Trio
+Classifier: Framework :: AnyIO
+Classifier: Development Status :: 4 - Beta
+Requires-Python: >=3.8
+Description-Content-Type: text/x-rst
+License-File: LICENSE.APACHE2
+License-File: LICENSE.MIT
+License-File: LICENSE.txt
+Requires-Dist: anyio~=4.2
+Requires-Dist: cffi
+Dynamic: license-file
+
+moat-lib-gpio
+=============
+
+MoaT-lib-GPIO allows easy access to the GPIO pins on your Raspberry Pi or
+similar embedded computer.
+
+It is based on libgpiod and its CFFI adapter by Steven P. Goldsmith
+<sgjava@gmail.com>, as downloaded from
+`github <https://github.com/sgjava/userspaceio.git>`_.
+
+To run examples, make sure to install `trio` first.
+
+Testing MoaT-lib-GPIO requires a Linux distribution that enables the
+mock-lib-GPIO module. As of mid-2020, Debian's kernel does not include this
+module, but Raspbian's does.
+
+If you can compile your own kernel: the option is named CONFIG_GPIO_MOCKUP,
+in Device Drivers / GPIO support / Memory mapped GPIO drivers / GPIO
+Testing Driver.
+
+Writing an actual test suite is TODO. There is a more elaborate test script
+in `MoaT-KV-GPIO <https://github.com/smurfix/moat>`_.
