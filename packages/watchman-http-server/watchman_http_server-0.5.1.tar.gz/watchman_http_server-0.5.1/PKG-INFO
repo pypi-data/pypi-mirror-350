@@ -1,0 +1,142 @@
+Metadata-Version: 2.4
+Name: watchman_http_server
+Version: 0.5.1
+Summary: Un serveur HTTP FastAPI pour récupérer les applications installées
+Author: Watchman
+Author-email: support@watchman.bj
+Classifier: Programming Language :: Python :: 3
+Classifier: Framework :: FastAPI
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: annotated-types==0.7.0
+Requires-Dist: anyio==4.9.0
+Requires-Dist: APScheduler==3.11.0
+Requires-Dist: click==8.2.1
+Requires-Dist: colorama==0.4.6
+Requires-Dist: django-environ==0.12.0
+Requires-Dist: fastapi==0.115.12
+Requires-Dist: getmac==0.9.5
+Requires-Dist: h11==0.16.0
+Requires-Dist: idna==3.10
+Requires-Dist: psutil==7.0.0
+Requires-Dist: pydantic==2.11.5
+Requires-Dist: pydantic_core==2.33.2
+Requires-Dist: python-dotenv==1.1.0
+Requires-Dist: setuptools==80.8.0
+Requires-Dist: sniffio==1.3.1
+Requires-Dist: starlette==0.46.2
+Requires-Dist: typing-inspection==0.4.1
+Requires-Dist: typing_extensions==4.13.2
+Requires-Dist: tzdata==2025.2
+Requires-Dist: tzlocal==5.3.1
+Requires-Dist: uvicorn==0.34.2
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# Watchman HTTP Server
+
+Watchman HTTP Server est un serveur FastAPI qui expose la liste des applications installÃ©es ainsi que des informations sur le systÃ¨me.
+
+## Installation
+
+Installez le package via pip :
+```sh
+pip install watchman_http_server
+```
+
+Ou depuis le code source :
+```sh
+git clone https://github.com/votre-repo/watchman_http_server.git
+cd watchman_http_server
+pip install -e .
+```
+
+## Utilisation
+
+Lancer le serveur avec un port et une clÃ© API spÃ©cifiÃ©s :
+```sh
+watchman-http-server runserver --port 8000 --api-key "VOTRE_CLE_API"
+```
+
+## Configuration
+
+- `--port` : DÃ©finit le port d'Ã©coute du serveur (par dÃ©faut : 8001).
+- `--api-key` : SpÃ©cifie la clÃ© API requise pour accÃ©der aux endpoints.
+- `--hour` : L'heure Ã  laquelle dÃ©marrer le serveur (0-23).
+- `--minute` : La minute Ã  laquelle dÃ©marrer le serveur (0-59).
+- `--day` : Jour du mois (1-31), * pour chaque jour.
+- `--month` : Mois (1-12), * pour chaque mois.
+- `--ip` : Adresses IPs pour autorisÃ©es pour accÃ©der au serveur.
+- `-d` : ExÃ©cuter en arriÃ¨re-plan.
+
+## Endpoints
+
+### `GET /apps`
+Retourne la liste des applications installÃ©es et les informations du systÃ¨me.
+
+#### Headers requis
+```http
+WATCHMAN-API-KEY: VOTRE_CLE_API
+```
+
+#### Exemple de rÃ©ponse
+```json
+{
+  "system_info": {
+    "hostname": "mon-pc",
+    "ip": "192.168.1.10",
+    "mac": "A1:B2:C3:D4:E5:F6",
+    "architecture": "x86_64",
+    "os": "Windows 10"
+  },
+  "applications": [
+    {
+      "name": "Google Chrome",
+      "version": "99.0.4844.84",
+      "vendor": "Google LLC",
+      "type": "application"
+    }
+  ]
+}
+```
+
+## DÃ©ploiement sur un rÃ©seau local
+
+Pour rendre le serveur accessible sur un rÃ©seau local :
+1. Lancer le serveur avec `0.0.0.0` comme hÃ´te :
+   ```sh
+   watchman-http-server runserver --port 8000 --api-key "VOTRE_CLE_API"
+   ```
+2. Planifier une tÃ¢che pour lancer le serveur en arriÃ¨re plan avec `0.0.0.0` comme hÃ´te :
+     ```sh
+   watchman-http-server schedule --port 8000 --api-key "VOTRE_CLE_API" --hour "heure" --minute "minute" --day "day" --month "month" --d
+   ```
+   
+3. Stoper le serveur en cours d'Ã©xÃ©cution  en arriÃ¨re plan:
+     ```sh
+   watchman-http-server stopserver
+   ```
+4. Assurez-vous que le port est ouvert dans le pare-feu :
+   - **Windows** :
+     ```sh
+     netsh advfirewall firewall add rule name="Watchman" dir=in action=allow protocol=TCP localport=8000
+     ```
+   - **Linux** :
+     ```sh
+     sudo ufw allow 8000/tcp
+     ```
+
+## Contributions
+
+Les contributions sont les bienvenues ! Clonez le projet, crÃ©ez une branche et proposez vos modifications via une pull request.
+
+## Licence
+
+Ce projet est sous licence MIT.
