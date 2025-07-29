@@ -1,0 +1,29 @@
+"""Init file for gasflux package."""
+
+__version__ = "0.2.2"  # managed by semantic versioning
+
+from . import (
+    background,
+    cli,
+    gas,
+    interpolation,
+    ml,
+    plotting,
+    pre_processing,
+    processing,
+    processing_pipelines,
+    reporting,
+)
+
+__all__ = [
+    "background",
+    "cli",
+    "gas",
+    "interpolation",
+    "ml",
+    "plotting",
+    "pre_processing",
+    "processing",
+    "processing_pipelines",
+    "reporting",
+]

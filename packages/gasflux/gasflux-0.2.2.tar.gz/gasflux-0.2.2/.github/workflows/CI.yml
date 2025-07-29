@@ -1,0 +1,75 @@
+name: CI
+
+on: [push]
+
+jobs:
+
+  qa:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: ['3.10', '3.11', '3.12']
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+        if: steps.cache.outputs.cache-hit != 'true'
+
+      - name: Install package
+        run: pip install -e .
+
+      - name: Install Development Dependencies
+        run: pip install -r dev-requirements.txt
+        if: steps.cache.outputs.cache-hit != 'true'
+
+      - name: ruff
+        run: ruff check .
+        
+      - name: safety
+        uses: pyupio/safety-action@v1
+        with:
+          api-key: ${{ secrets.SAFETY_API_KEY }}
+        # run: safety scan  --ignore=70612
+
+  tests:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: ['3.10', '3.11', '3.12']
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          # architecture: x64
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+        if: steps.cache.outputs.cache-hit != 'true'
+
+      - name: Install package
+        run: pip install -e .
+
+      - name: Install Development Dependencies
+        run: pip install -r dev-requirements.txt
+        if: steps.cache.outputs.cache-hit != 'true'
+
+      - name: pytest
+        run: PYTHONPATH=$PWD pytest tests/
