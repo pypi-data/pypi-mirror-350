@@ -1,0 +1,82 @@
+# pyproject.toml
+
+[build-system]
+requires = ["setuptools>=61.0", "setuptools-scm>=8.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "arduck"
+description = "Easy-to-use keystroke injection payload generator for the Arduino."
+readme = "README.md"
+requires-python = ">=3.12"
+license = {file = "LICENSE"}
+keywords = ["arduino", "keyboard", "keystroke injection", "rubber"]
+authors = [
+    { name = "Stefano Cuizza", email = "stefano.cuizza@protonmail.com" },
+]
+maintainers = [
+    { name = "Stefano Cuizza", email = "stefano.cuizza@protonmail.com" },
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+]
+dependencies = [
+    "colorama",
+    "jinja2",
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+docs = ["myst_parser", "sphinx", "sphinx-argparse", "sphinx_autodoc_typehints", "sphinx_rtd_theme"]
+testing = ["pylint", "pytest", "pytest-cov", "ruff", "tox"]
+
+[project.urls]
+"Github" = "https://github.com/x55xaa/arduck"
+
+[project.scripts]
+duck = "arduck.__main__:main"
+
+[tool.pylint.basic]
+include-naming-hint = true
+
+[tool.pylint.format]
+ignore-long-lines = "^[^#]*#.*$"
+indent-after-paren = 4
+indent-string = "    "
+max-line-length = 99
+
+[tool.pytest.ini_options]
+log_format = "[%(levelname)s] %(filename)s:%(lineno)d %(message)s"
+testpaths = ["tests"]
+
+[tool.ruff]
+indent-width = 4
+line-length = 99
+output-format = "full"
+
+[tool.ruff.lint]
+# ...
+
+[tool.ruff.lint.pycodestyle]
+ignore-overlong-task-comments = true
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.format]
+indent-style = "space"
+line-ending = "auto"
+quote-style = "single"
+skip-magic-trailing-comma = false
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools_scm]
+version_scheme = "guess-next-dev"
+local_scheme = "no-local-version"  # local version not supported by PyPI.
