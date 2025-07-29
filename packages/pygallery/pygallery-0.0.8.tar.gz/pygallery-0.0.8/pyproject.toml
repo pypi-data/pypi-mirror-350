@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=40.8.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pygallery"
+version = "0.0.8"
+description = "Python Static Photo Gallery Generator"
+readme = "README.md"
+license = {file = "LICENSE.txt"}
+requires-python = ">=3.13"
+dependencies = [
+    "jinja2", "pillow"
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Development Status :: 3 - Alpha",
+    "Natural Language :: English",
+    "Operating System :: POSIX :: Linux",
+    "Topic :: Utilities"
+]
+authors = [
+  {name = "David", email = "c0d3@gpobox.net"},
+]
+maintainers = [
+  {name = "David", email = "c0d3@gpobox.net"}
+]
+keywords = ["photos"]
+
+[project.urls]
+"Homepage" = "https://github.com/bbc6502/pygallery"
+"Bug Tracker" = "https://github.com/bbc6502/pygallery/issues"
+
+[project.scripts]
+pygallery = "pygallery.main:main"
+
+[project.optional-dependencies]
+dev = [
+    "wheel", "build", "twine"
+]
+test = [
+    "pytest", "pytest-cov", "coverage"
+]
+
+[tool.setuptools]
+packages = ["pygallery"]
+
+[tool.setuptools.package-data]
+pygallery = [
+    "templates/*",
+    "*.json"
+]
