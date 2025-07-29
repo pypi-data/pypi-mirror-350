@@ -1,0 +1,277 @@
+{% extends "wagtailadmin/base.html" %}
+{% load wagtailadmin_tags i18n static %}
+{% block titletag %}{% blocktrans trimmed with snippet_type_name=model_opts.verbose_name %}Editing
+    {{ snippet_type_name }} - {{ object }}{% endblocktrans %}{% endblock %}
+{% block bodyclass %}webstory-editor {% if locked_for_user %}content-locked{% endif %}{% endblock %}
+{% block content %}
+    {% include 'wagtailadmin/shared/headers/slim_header.html' %}
+    <div style="display: flex;flex-direction: column;height: 100%">
+        <div id="webstory-editor-container" style="flex: 1;height: 100%"></div>
+    </div>
+    <form id="webstory-form" action="{{ action_url }}" method="POST" novalidate{% if form.is_multipart %}
+          enctype="multipart/form-data"{% endif %} data-edit-form>
+        {% csrf_token %}
+        <div style="display: none">
+            {{ panel.render_form_content }}
+        </div>
+        <footer class="footer">
+            <nav aria-label="{% trans 'Actions' %}">
+                <ul>
+                    <li class="actions actions--primary footer__container">
+                        <div class="dropdown dropup dropdown-button match-width {% if view.view_name == 'revisions_revert' %}warning{% endif %}">
+                            {{ action_menu.render_html }}
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+        </footer>
+    </form>
+
+{% endblock %}
+
+{% block extra_css %}
+    {{ block.super }}
+    {{ media.css }}
+
+    <style>
+        .webstory-editor .content-wrapper .content {
+            height: 100%;
+            padding: 0 !important;
+        }
+
+        .webstory-editor .footer .actions {
+            width: 250px !important;
+        }
+
+        div[class^='constants__PopupContainer'] {
+            z-index: 9999 !important;
+        }
+
+
+        .webstory-editor input {
+            background-color: transparent;
+        }
+
+        .webstory-editor input[type=search], .webstory-editor input[type=url] {
+            height: 100%;
+            width: 100%;
+            background-color: transparent;
+            outline: none;
+            cursor: pointer;
+            font-family: "Google Sans", sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            letter-spacing: 0;
+            line-height: 20px;
+            text-decoration: none;
+            color: rgb(228, 229, 230);
+            border: 1px solid rgb(57, 61, 63);
+            padding: 8px 20px 8px 40px;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+
+    </style>
+
+
+{% endblock %}
+{% block extra_js %}
+    {{ block.super }}
+    {% include "wagtailadmin/pages/_editor_js.html" %}
+    {{ media.js }}
+
+    <script src="{% static 'wagtailimages/js/image-chooser-modal.js' %}"></script>
+    <script src="{% static 'wagtailimages/js/image-chooser.js' %}"></script>
+
+    <script src="{% static 'wagtaildocs/js/document-chooser-modal.js' %}"></script>
+    <script src="{% static 'wagtaildocs/js/document-chooser.js' %}"></script>
+
+    <script src="{% static 'wagtailmedia/js/tabs.js' %}"></script>
+    <script src="{% static 'wagtailmedia/js/media-chooser-modal.js' %}"></script>
+    <script src="{% static 'wagtailmedia/js/media-chooser.js' %}"></script>
+
+
+    <script src="{% static 'wagtail_webstories_editor/js/story-editor/editor.js' %}"></script>
+    <script src="{% static 'wagtail_webstories_editor/js/common.js' %}"></script>
+
+    <script>
+        // Set wagtailConfig.ACTIVE_CONTENT_LOCALE if this is a translated page
+        // This value may be used by JS widgets on the form
+        {% if locale %}
+            window.wagtailConfig = window.wagtailConfig || {};
+            window.wagtailConfig.ACTIVE_CONTENT_LOCALE = '{{ locale.language_code|escapejs }}';
+        {% endif %}
+    </script>
+
+    <script>
+
+        const serviceWorkerScriptUrl = "{% static 'wagtail_webstories_editor/js/story-editor/sw.js' %}";
+        const elementId = "webstory-editor-container"
+        const apiImagesUrl = "{% url 'wagtailapi:images:listing' %}";
+        const apiMediaUrl = "{% url 'wagtailapi:media:listing' %}";
+
+        window.mediaAudioChooserUrl = "{% url 'wagtailmedia:chooser_typed' media_type='audio' %}"
+        window.mediaVideoChooserUrl = "{% url 'wagtailmedia:chooser_typed' media_type='video' %}"
+        window.wagtailImageApiUrl = "{% url 'wagtailapi:images:listing' %}";
+        window.wagtailMediaApiUrl = "{% url 'wagtailapi:media:listing' %}";
+        window.wagtailDocumentApiUrl = "{% url 'wagtailapi:documents:listing' %}";
+
+        window.imageChooserUrl = "{{ imageChooserUrl }}";
+        window.documentChooserUrl = "{{ documentChooserUrl }}";
+
+        const publisherLogosUrl = "{% url 'web_stories_publisher_logos' %}";
+
+        const storyConfig = {{ object.json_config|safe }};
+        const storyHtml = "{{ object.html|escapejs }}";
+        const permalinkTemplate = "{{ permalink_template }}"
+        const storyLink = "{{ story_link }}";
+        const isLive = {{ object.live|yesno:"true,false" }};
+        const slug = "{{ object.slug|default_if_none:""}}";
+
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        const storyId = "{{ object.pk }}";
+
+
+        storyConfig.storyId = storyId
+
+        const story = {
+            ...storyConfig,
+            content: storyHtml,
+        }
+
+        if (slug) {
+            story.slug = slug
+        }
+
+        if (storyLink && isLive) {
+            story.link = storyLink
+        }
+
+        if (permalinkTemplate) {
+            story.permalinkTemplate = permalinkTemplate
+        }
+
+
+        const options = {
+            serviceWorkerScriptUrl,
+            initialEdits: {story},
+            storyId: "{{ object.pk }}",
+        }
+
+        const getMedia = async ({mediaType, searchTerm}) => {
+            let media
+            if (mediaType === "video") {
+                media = await getVideos(apiMediaUrl)
+            } else {
+                media = await getImages(apiImagesUrl)
+            }
+
+            return {
+                data: media.items,
+                headers: {
+                    totalItems: media.meta.totalItems,
+                    totalPages: media.meta.totalPages,
+                },
+            };
+        };
+
+        const onSaveStory = (story) => {
+            const storyData = WebStories.getStorySaveData(story)
+            const {content, ...rest} = storyData
+            const {title: {raw: storyTitle}, slug} = rest
+
+            if (storyTitle) {
+                $("#id_title").val(storyTitle)
+            } else {
+                rest.title.raw = $("#id_title").val()
+            }
+
+            if (slug && slug !== storyId) {
+                $("#id_slug").val(slug)
+            }
+
+            $("#id_config").val(JSON.stringify(rest))
+            $("#id_html").val(content)
+
+        }
+
+        const editorConfig = {
+            apiCallbacks: {
+                saveStoryById: (story) => {
+                    onSaveStory(story)
+                },
+                getMedia: getMedia,
+                getPublisherLogos: (logosPath) => {
+                    return fetch(logosPath).then((res => res.json()))
+                },
+                addPublisherLogo: (logosPath, logoId) => {
+                    const payload = {
+                        id: logoId
+                    }
+
+                    let props = {
+                        method: "POST",
+                        body: JSON.stringify(payload),
+                        headers: {
+                            "X-CSRFToken": getCookie("csrftoken"),
+                            "Content-Type": "application/json;charset=UTF-8"
+                        },
+                        mode: "same-origin",
+                    }
+                    return fetch(logosPath, props).then(res => res.json())
+                }
+            },
+            api: {
+                publisherLogos: publisherLogosUrl
+            },
+            allowedMimeTypes: {
+                image: [
+                    'image/webp',
+                    'image/png',
+                    'image/jpeg',
+                    'image/gif',
+                    'image/svg+xml',
+                ],
+                audio: [
+                    'audio/mpeg',
+                    'audio/aac',
+                    'audio/wav',
+                    'audio/ogg',
+                ],
+                video: [
+                    'video/mp4', 'video/webm'
+                ],
+                vector: ['image/svg+xml'],
+                caption: ['text/vtt'],
+            }
+        }
+
+        const initialEdits = {story}
+
+        $(document).ready(() => {
+            // initialize editor
+            WebStories.initializeStoryEditor(elementId, editorConfig, initialEdits, options)
+        })
+
+    </script>
+    {% if workflow_enabled %}
+        {% include "wagtailadmin/shared/_workflow_init.html" %}
+    {% endif %}
+{% endblock %}
