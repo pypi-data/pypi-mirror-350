@@ -1,0 +1,42 @@
+[project]
+name = "xync-script"
+requires-python = ">=3.11"
+authors = [
+    {name = "Mike Artemiev", email = "mixartemev@gmail.com"},
+]
+dependencies = ["xn-auth", "xync-schema", "xync-client"]
+keywords = ["cex"]
+description = 'Automate scripts for XyncNet'
+readme = "README.md"
+license = {text = "EULA"}
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://gitlab.com/XyncNet/script"
+Repository = "https://gitlab.com/XyncNet/script"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm[toml]>=8"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["xync_script"]
+
+[tool.setuptools_scm]
+version_scheme = "python-simplified-semver" # if "feature" in `branch_name` SEMVER_MINOR++ else SEMVER_PATCH++
+local_scheme = "no-local-version"
+
+[project.optional-dependencies]
+dev = [
+    "pytest-asyncio",
+    "build",
+    "pre-commit",
+    "python-dotenv",
+    "twine",
+]
+
+[tool.ruff]
+line-length = 120
