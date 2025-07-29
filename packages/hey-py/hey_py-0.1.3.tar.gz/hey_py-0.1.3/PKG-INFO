@@ -1,0 +1,96 @@
+Metadata-Version: 2.4
+Name: hey-py
+Version: 0.1.3
+Summary: A command-line tool to interact with DuckDuckGo Chat API from your terminal
+Home-page: https://github.com/leen2233/hey-py
+Author: Arslan Rejepow
+Author-email: leen2233 <arslanrejepow223@gmail.com>
+Project-URL: Homepage, https://github.com/leen2233/hey-py
+Project-URL: Bug Tracker, https://github.com/leen2233/hey-py/issues
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Internet :: WWW/HTTP :: Dynamic Content
+Classifier: Topic :: Utilities
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: httpx[socks]<0.28,>=0.24.1
+Requires-Dist: toml>=0.10.2
+Requires-Dist: rich>=13.7.0
+Requires-Dist: click>=8.1.7
+Requires-Dist: InquirerPy
+Dynamic: author
+Dynamic: home-page
+Dynamic: requires-python
+
+# hey-py
+
+Python port of [hey](https://github.com/b1ek/hey), a command-line interface for DuckDuckGo's AI Chat with enhanced features.
+
+## ✨ Features
+
+### 🤖 AI Models
+- Multiple model support:
+  - Claude 3 Haiku (default)
+  - GPT-4o Mini
+  - Mistral 8x7B
+  - Llama 3.1 70B
+- Customizable system prompts
+
+### 💬 Chat Experience
+- Rich markdown support in responses
+- Conversation memory with auto-expiry
+  - Stores last 10 messages
+  - 24-hour automatic expiration
+  - Manual clearing with `hey --clear`
+  - Persistent storage in `~/.cache/hey`
+- Real-time streaming responses
+
+### 🛠️ Configuration
+- Easy configuration via `hey config`
+- HTTP and SOCKS proxy support
+- Persistent settings in `~/.config/hey`
+- Verbose mode for debugging
+
+## 🚀 Installation
+
+```bash
+pip install hey-py
+```
+
+## 📖 Usage
+
+### Basic Usage
+```bash
+# Ask a question
+hey What is Python?
+
+# Clear conversation history
+hey --clear
+
+# Configure settings
+hey config
+```
+
+### Configuration Options
+- Select AI model
+- Set system prompt
+- Configure proxy settings
+- Accept Terms of Service
+
+### Environment Variables
+- `HEY_CONFIG_PATH`: Custom config directory (default: `~/.config/hey`)
+- `HEY_CACHE_PATH`: Custom cache directory (default: `~/.cache/hey`)
+- `HEY_CONFIG_FILENAME`: Custom config filename (default: `conf.toml`)
+- `HEY_CACHE_FILENAME`: Custom cache filename (default: `messages.json`)
+
+## 📝 License
+GPLv3
