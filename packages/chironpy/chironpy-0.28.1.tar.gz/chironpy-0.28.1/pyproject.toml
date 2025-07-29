@@ -1,0 +1,54 @@
+[tool.poetry]
+name = "chironpy"
+version = "0.28.1"
+description = "Workout analysis"
+license = "MIT"
+authors = ["Clive Gross <clive@chironapp.com>"]
+readme = "README.md"
+homepage = "https://chironapp.github.io/chironpy/"
+repository = "https://github.com/chironapp/chironpy"
+documentation = "https://chironapp.github.io/chironpy/"
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0.0"
+fitparse = "^1.1.0"
+lmfit = "^1.0.0"
+scipy = "^1.4.1"
+pandas = "^1.5.2"
+requests = "^2.23.0"
+pydantic = "^2.0"
+pyyaml = "^6.0.0"
+scikit-learn = ">= 0.23.1"
+stravalib = "^2.0.0"
+matplotlib = "^3.3.4"
+numpy = ">=1.21,<1.24"
+mkdocs-material = {extras = ["icons"], version = "^9.6.12"}
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.10.0"
+pytest = ">=6.2.4,<8.0.0"
+mkdocs = "*"
+mkdocs-material = "*"
+mknotebooks = "*"
+openpyxl = "^3.0.7"
+typing-extensions = "^4.12.2"
+vcrpy = "^6.0.2"
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+isolated_build = true
+envlist = py39,py3.10
+
+[testenv]
+whitelist_externals = poetry
+passenv = PYTHONDONTWRITEBYTECODE
+commands =
+    # About the --no-root flag: https://github.com/python-poetry/poetry/issues/1204
+    poetry install -v --no-root
+    poetry run pytest tests/ {posargs}
+"""
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
