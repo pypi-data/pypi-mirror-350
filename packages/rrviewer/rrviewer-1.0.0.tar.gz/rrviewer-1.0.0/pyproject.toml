@@ -1,0 +1,50 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "rrviewer"
+version = "1.0.0"
+dependencies = [
+  "httpx",
+  "gidgethub[httpx]>4.0.0",
+  "django>2.1; os_name != 'nt'",
+  "django>2.0; os_name == 'nt'",
+]
+requires-python = ">=3.8"
+authors = [
+  {name = "Fakai Wang", email = "fakaiwang@sjtu.edu.cn"},
+]
+maintainers = [
+  {name = "Fakai Wang", email = "fakaiwang@sjtu.edu.cn"}
+]
+description = "Ruijin Radiology Viewer"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICEN[CS]E.*"]
+keywords = ["Radiology", "NifTi", "3D Medical Imaging", "Multi-modality", "Segmentation Mask"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python"
+]
+
+[project.optional-dependencies]
+gui = ["PySide6"]
+cli = [
+  "rich",
+  "click",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/rrviewer"]
+
+[project.urls]
+Homepage = "http://ruijin-imit.cn/software/rrviewer"
+Documentation = "http://ruijin-imit.cn/software/rrviewer/docs"
+Repository = "https://github.com/ruijin-imit/rrviewer.git"
+"Bug Tracker" = "https://github.com/ruijin-imit/rrviewer/issues"
+Changelog = "https://github.com/ruijin-imit/rrviewer/blob/master/CHANGELOG.md"
+
+
+[project.gui-scripts]
+rrviewer-gui = "rrviewer:main_gui"
