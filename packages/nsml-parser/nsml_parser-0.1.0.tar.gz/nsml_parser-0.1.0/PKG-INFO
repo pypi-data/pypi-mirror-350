@@ -1,0 +1,54 @@
+Metadata-Version: 2.4
+Name: nsml-parser
+Version: 0.1.0
+Summary: NSML++: Neuro-Symbolic Memory Lattice for Intelligent Log Parsing
+Home-page: https://github.com/catchmaurya/nsml-parser
+Author: catchmaurya(catchmaurya@gmail.com) and NeuroBujandar
+Author-email: catchmaurya@gmail.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-python
+Dynamic: summary
+
+# NSMLParser (Neuro-Symbolic Memory Lattice Parser)
+
+NSMLParser is a lightweight, intelligent log parser designed to extract structured key-value fields from unstructured logs using a hybrid of fuzzy matching, positional reasoning, and heuristic inference. It includes:
+
+- Fuzzy key correction
+- Backfilled value inference
+- Canonical semantic mapping
+- Confidence scoring
+- Lightweight tokenizer (no spaCy or heavy dependencies)
+
+## Features
+
+- ✅ Intelligent tokenization and parsing
+- ✅ Fuzzy matching for variant key names (`case_number`, `casenum` → `caseNumber`)
+- ✅ Heuristic inference for misplaced or missing key-value pairs
+- ✅ Positional backtracking for unstructured logs
+- ✅ Confidence scoring per field
+- ✅ Designed to work without external APIs or heavyweight NLP libraries
+
+## Example
+
+```python
+from nsml_parser import NSMLParser
+
+parser = NSMLParser()
+
+log = """Running HTTPS_PROXY='http://proxy.net:8080' /opt/radar/bin/apprise -consumers "FUNNYTEAM_AUDIT" -cluster "POD109" -product "blah-base" -sp "KP" -dc "MM" -caseNumber -release "rrrrr" -event "ERROR_RUNNING_PLSQL_TARGET" -eventTime "2023-06-09_04:31:04" -stage "some issue here" -status "FAILED" -type "ERROR" -source "ops0-release2-2-RR" "123456" --message "something" """
+
+result = parser.parse(log)
+
+print(result)
