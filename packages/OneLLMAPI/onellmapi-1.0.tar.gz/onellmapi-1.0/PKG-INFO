@@ -1,0 +1,991 @@
+Metadata-Version: 2.4
+Name: OneLLMAPI
+Version: 1.0
+Summary: A package that integrates the APIs of multiple major language model manufacturers.
+Home-page: https://gitee.com/DragonLan666/OneLLM
+Author: Zhang Lan,Zhou Yu Qing
+Author-email: dragonlan6@outlook.com
+License: MIT
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: copy
+Requires-Dist: requests
+Requires-Dist: hashlib
+Requires-Dist: time
+Requires-Dist: json
+Requires-Dist: openai
+Requires-Dist: dashscope
+Requires-Dist: baidubce
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+<<<<<<< HEAD
+# OneLLM使用手册
+
+## 1.1项目整体介绍：
+OneLLM是集成大模型会话API接口工具，目前支持智谱清言、通义千问、火山方舟、讯飞星火、百度千帆、月之暗面的大模型会话服务。旨在简化用户请求过程，提高开发效率。
+
+## 1.2项目安装及使用方法：
+### 1.2.1安装方法：
+通过pip进行安装：
+```
+pip install OneLLM
+```
+### 1.2.2使用方法(以智谱清言为例)：
+导入包
+```
+import OneLLM
+```
+实例化模型
+```
+model="glm-4" #选择模型
+api_key=" your api key " #填入你的API Key
+
+zhipu=OneLLM.Zhipu(api_key,model)  #实例化模型
+```
+发送请求
+```
+msg=input("请输入：")
+content=Doubao.send(msg)
+print(content)
+```
+调试模式发送请求
+```
+msg=input("请输入：")
+content=Doubao.send_debug(msg)
+print(content)
+```
+多重对话
+```
+while True:
+    msg=input("请输入：")
+    content=Doubao.send(msg)
+    print(content)
+```
+## 1.3主要方法：
+### 1.3.1 send(msg)
+普通模式发送请求，返回模型的回复。
+### 1.3.2 send_debug(msg)
+调试模式发送请求，返回模型的回复和模型的原始输出。
+### 1.3.3 set_model(model)
+设置模型，默认为glm-4。
+### 1.3.4 get_model()
+获取当前模型。
+### 1.3.5 set_api_key(api_key)
+设置API Key。
+### 1.3.6 get_api_key()
+获取当前API Key。
+### 1.3.7 getRequestId()
+获取当前请求的ID。
+
+### 除此之外，对于实例化模型需要初始化传入的参数均可调用**get/set**方法进行使用。
+
+## 2.1示例模型的调用方法：
+### 火山方舟大模型：
+
+**模型/应用调用API鉴权**<br> 
+
+**API Key 签名鉴权**
+
+**前提条件**<br>
+**获取API Key：<br>**
+1.打开并登录方舟控制台-API Key 管理。<br>
+2.单击创建 API Key 按钮。<br>
+3.在弹出框的名称文本框中确认/更改 API Key 名称，单击创建。<br>
+![img.png](image/img.png)
+
+**获取 Model ID 作为推理接入点 用于模型调用:（此方式目前仅支持 API Key 鉴权）<br>**
+您可以在[模型卡片页面](https://www.volcengine.com/docs/82379/1099522#c95c138d)获取模型 Model ID，格式为“模型名称-版本号”。<br>
+目前除“视频生成”以外的模型均可通过此方式调用，调用之前请确认模型已开通（参见开通管理）。
+![img_1.png](image/img_1.png)
+**签名构造**<br>
+API Key 签名鉴权方式要求在 HTTP 请求 header 中按如下方式添加 Authorization header:<br>
+
+```
+Authorization: Bearer <ARK_API_KEY>
+```
+**API 调用示例**<br>
+```
+curl https://ark.cn-beijing.volces.com/api/v3/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <ARK_API_KEY>" \
+  -d '{
+    "model": "<Model ID>",
+    "messages": [
+        {
+            "role": "system",
+            "content": "You are a helpful assistant."
+        },
+        {
+            "role": "user",
+            "content": "Hello!"
+        }
+    ]
+  }'
+```
+#### 火山方舟调用示例<br>
+```
+#导入包
+import OneLLM
+
+model="glm-4" #选择模型
+api_key=" your api key " #填入你的API Key
+
+Doubao=OneLLM.Zhipu(api_key,model)  #实例化模型
+
+#普通模式发送会话
+msg=input("请输入：")
+content=Doubao.send(msg)
+print(content)
+
+#调试模式发送会话
+msg=input("请输入：")
+content=Doubao.send_debug(msg)
+print(content)
+
+#多重对话
+while True:
+    msg=input("请输入：")
+    content=Doubao.send(msg)
+    print(content)
+
+```
+参考文档：https://www.volcengine.com/docs/82379/1298459
+
+
+
+### 讯飞星火大模型：
+**创建新的应用**<br>
+1.访问[讯飞官网](https://www.xfyun.cn/),进入开发者中心：<br>
+在页面顶部导航栏中找到“开发者中心”或者“我的应用”。
+点击进入，查看你的应用列表（如果之前创建过应用）。
+<br>
+
+2.填写应用基本信息，包括：
+* 应用名称：为你的应用选择一个唯一且简洁的名称。
+* 应用类型：根据模型的使用场景选择相应的应用类型（如：文本处理、语音识别等）。
+* 应用描述：简要描述应用的功能和目标。<br>
+完成填写后，点击“提交”按钮。
+创建成功后，你将看到新创建的应用出现在应用列表中。
+![img.png](image/img_7.png)
+
+3.获取API Key<br>
+应用创建成功后，你需要获取API Key以方便后续的调用：
+在应用列表中找到你刚创建的应用, 点击该应用进入应用详情页面，找到左侧详情页找到“可定制化API”
+![img.png](image/img_8.png)
+
+**生成最终URL**<br>
+
+将鉴权参数组合成最终的键值对，并urlencode生成最终的握手url。开发者可先根据[WebSocket协议通用鉴权](https://www.xfyun.cn/doc/spark/general_url_authentication.html)，确保生成的参数无误。
+```
+from urllib.parse import urlencode
+
+v = {
+		"authorization": authorization, # 上方鉴权生成的authorization
+        "date": date,  # 步骤1生成的date
+    	"host": "spark-api.xf-yun.com" # 请求的主机名，根据具体接口替换
+}
+url = "wss://spark-api.xf-yun.com/v1.1/chat?" + urlencode(v)
+"""生成的最终url如下
+wss://spark-api.xf-yun.com/v1.1/chat?authorization=YXBpX2tleT0iYWRkZDIyNzJiNmQ4YjdjOGFiZGQ3OTUzMTQyMGNhM2IiLCBhbGdvcml0aG09ImhtYWMtc2hhMjU2IiwgaGVhZGVycz0iaG9zdCBkYXRlIHJlcXVlc3QtbGluZSIsIHNpZ25hdHVyZT0iejVnSGR1M3B4VlY0QURNeWs0Njd3T1dEUTlxNkJRelIzbmZNVGpjL0RhUT0i&date=Fri%2C+05+May+2023+10%3A43%3A39+GMT&host=spark-api.xf-yun.com
+"""
+```
+#### 讯飞星火调用示例<br>
+```
+#导入包
+import OneLLM
+
+model="glm-4" #选择模型
+api_key=" your api key " #填入你的API Key
+
+Spark=OneLLM.Zhipu(api_key,model)  #实例化模型
+
+
+#普通模式发送会话
+msg=input("请输入：")
+content=Spark.send(msg)
+print(content)
+
+#调试模式发送会话
+msg=input("请输入：")
+content=Spark.send_debug(msg)
+print(content)
+
+#多重对话
+while True:
+    msg=input("请输入：")
+    content=Spark.send(msg)
+    print(content)
+
+```
+参考文档：https://www.xfyun.cn/doc/spark/general_url_authentication.html
+
+
+
+### 智谱清言大模型：
+**获取您的API Key：<br>**
+登录到智谱AI开放平台[API Keys 页面](https://bigmodel.cn/login?redirect=%2Fusercenter%2Fproj-mgmt%2Fapikeys) 获取最新版生成的用户 API Key
+<br>
+
+新版机制中平台颁发的 API Key 同时包含 “用户标识 id” 和 “签名密钥 secret”，即格式为 {id}.{secret}
+<br>
+
+**使用 API Key 进行请求<br>**
+用户需要将 API Key 放入 HTTP 的 Authorization header 头中。
+```
+curl --location 'https://open.bigmodel.cn/api/paas/v4/chat/completions' \
+--header 'Authorization: Bearer <你的apikey>' \
+--header 'Content-Type: application/json' \
+--data '{
+    "model": "glm-4",
+    "messages": [
+        {
+            "role": "user",
+            "content": "你好"
+        }
+    ]
+}'
+```
+**鉴权 token 组装过程<br>**
+```
+import time
+import jwt
+ 
+def generate_token(apikey: str, exp_seconds: int):
+    try:
+        id, secret = apikey.split(".")
+    except Exception as e:
+        raise Exception("invalid apikey", e)
+ 
+    payload = {
+        "api_key": id,
+        "exp": int(round(time.time() * 1000)) + exp_seconds * 1000,
+        "timestamp": int(round(time.time() * 1000)),
+    }
+ 
+    return jwt.encode(
+        payload,
+        secret,
+        algorithm="HS256",
+        headers={"alg": "HS256", "sign_type": "SIGN"},
+    )
+```
+用户需要将生成的鉴权 token 放入 HTTP 的 Authorization header 头中：
+```
+Authorization: 鉴权token
+```
+**Curl请求中的token参数示例<br>**
+```
+curl --location 'https://open.bigmodel.cn/api/paas/v4/chat/completions' \
+--header 'Authorization: Bearer <你的token>' \
+--header 'Content-Type: application/json' \
+--data '{
+    "model": "glm-4",
+    "messages": [
+        {
+            "role": "user",
+            "content": "你好"
+        }
+    ]
+}'
+```
+#### 智谱清言调用示例<br>
+```
+#导入包
+import OneLLM
+
+model="glm-4" #选择模型
+api_key=" your api key " #填入你的API Key
+
+zhipu=OneLLM.Zhipu(api_key,model)  #实例化模型
+
+
+#普通模式发送会话
+msg=input("请输入：")
+content=zhipu.send(msg)
+print(content)
+
+#调试模式发送会话
+msg=input("请输入：")
+content=zhipu.send_debug(msg)
+print(content)
+
+#连续对话
+while True:
+    msg=input("请输入：")
+    content=zhipu.send(msg)
+    print(content)
+
+```
+参考文档：https://bigmodel.cn/dev/api/http-call/http-auth
+
+
+
+### 百度千帆大模型：
+**创建API Key**<br>
+1.子用户登录百度云控制台后，访问[API Key管理控制台](https://console.bce.baidu.com/iam/#/iam/apikey/list)
+![img_2.png](image/img_2.png)
+2.点击创建API Key
+![img_3.png](image/img_3.png)
+3.按需配置百度智能云千帆ModelBuilder、百度智能云千帆AppBuilder、 AI开放能力的相关权限
+![img_4.png](image/img_4.png)
+
+**查看API Key**<br>
+1.在API key列表页，点击显示，经过二次身份验证后，可以查看API Key明文
+![img_5.png](image/img_5.png)
+
+**获取AKSK**<br>
+成功登录管理控制台后，系统会自动分配一对AK/SK，可通过控制台申请并管理自己的访问密钥，操作方法如下：
+<br>
+1.登录[管理控制台](https://login.bce.baidu.com/?account=&redirect=http://console.bce.baidu.com/)，点击“用户账号->安全认证”进入Access Key管理界面。
+![img.png](image/img_6.png)
+2.点击Access Key ID右侧的“显示”，可查看其对应的Secret Access Key，点击“隐藏”可隐藏对应的Secret Access Key。<br>
+3.在密钥列表页中，根据需要可点击“创建Access Key”来创建新的Access Key ID / Secret Access Key密钥对。<br>
+
+**签名API请求**<br>
+在请求签名之前，请先计算请求的哈希(摘要)。然后，您使用哈希值、来自请求的其他信息以及您的秘密访问密钥(Secret Access Key，SK)，计算另一个称为签名(Signature) 的哈希, 得到签名后，进行一定规则的拼装成最终的认证字符串，也就是最终您需要包含在API请求中的Authorization字段。<br>
+您可以通过以下方式携带认证字符串：<br>
+* 在HTTP Header中包含认证字符串
+* 在URL中包含认证字符串
+<br>
+用户也可以将认证字符串放在HTTP请求Query String的authorization参数中。常用于生成URL给第三方使用的场景，例如要临时把某个数据开放给他人下载。
+
+#### 百度千帆调用示例<br>
+```
+#导入包
+import OneLLM
+
+model="glm-4" #选择模型
+api_key=" your api key " #填入你的API Key
+
+Ernie=OneLLM.Zhipu(api_key,model)  #实例化模型
+
+
+#普通模式发送会话
+msg=input("请输入：")
+content=Ernie.send(msg)
+print(content)
+
+#调试模式发送会话
+msg=input("请输入：")
+content=Ernie.send_debug(msg)
+print(content)
+
+#多重对话
+while True:
+    msg=input("请输入：")
+    content=Ernie.send(msg)
+    print(content)
+
+```
+参考文档：https://cloud.baidu.com/doc/Reference/s/1m5qi1m4y
+
+
+
+### Kimi大模型：
+
+**获取API Key**<br>
+
+你需要一个 API 密钥来使用我们的服务。你可以在我们的[控制台](https://login.moonshot.cn/?source=https%3A%2F%2Fplatform.moonshot.cn%2Fredirect&appid=dev-workbench)中创建一个 API 密钥
+![img.png](image/img_9.png)
+
+**发送请求**<br>
+
+你可以使用我们的 Chat Completions API 来发送请求。你需要提供一个 API 密钥和一个模型名称。你可以选择是否使用默认的 max_tokens 参数，或者自定义 max_tokens 参数。可以参考 [API 文档](https://platform.moonshot.cn/docs/api/chat#%E5%85%AC%E5%BC%80%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%9C%B0%E5%9D%80)中的调用方法。
+
+**公开的服务地址**<br>
+```
+https://api.moonshot.cn
+```
+
+#### Moonshot调用示例<br>
+```
+#导入包
+import OneLLM
+
+model="glm-4" #选择模型
+api_key=" your api key " #填入你的API Key
+
+Moonshot=OneLLM.Zhipu(api_key,model)  #实例化模型
+
+
+#普通模式发送会话
+msg=input("请输入：")
+content=Moonshot.send(msg)
+print(content)
+
+#调试模式发送会话
+msg=input("请输入：")
+content=Moonshot.send_debug(msg)
+print(content)
+
+#多重对话
+while True:
+    msg=input("请输入：")
+    content=Moonshot.send(msg)
+    print(content)
+
+```
+参考文档：https://platform.moonshot.cn/docs/intro#%E8%8E%B7%E5%8F%96-api-%E5%AF%86%E9%92%A5
+
+
+
+## 1.3大模型参照列表：
+### 火山方舟大模型：
+* Doubao-pro-4k
+* Doubao-pro-32k
+* Doubao-pro-128k
+
+
+### 讯飞星火大模型：
+* Spark4.0 Ultra 
+* Spark Max-32K
+* Spark Max
+* Spark Pro-128K
+* Spark Pro
+* Spark Lite
+
+### 智谱清言大模型：
+* glm-4-plus
+* glm-4-air
+* glm-4-air-0111 
+* Preview 
+* glm-4-airx
+* glm-4-long 
+* glm-4-flashx 
+* glm-4-flash
+* glm-4v-plus-0111 
+* glm-4v-plus 
+* glm-4v
+* glm-4v-flash
+* glm-zero-preview
+
+### Kimi大模型：
+* moonshot-v1-8k
+* moonshot-v1-32k
+* moonshot-v1-128k
+* moonshot-v1-8k-vision-preview
+* moonshot-v1-32k-vision-preview
+* moonshot-v1-128k-vision-preview
+
+### 百度千帆大模型：
+* ERNIE 4.0
+* ERNIE 4.0 Turbo
+* ERNIE 3.5
+* ERNIE Speed Pro
+=======
+# OneLLM使用手册
+
+## 1.1项目整体介绍：
+OneLLM是集成大模型会话API接口工具，目前支持智谱清言、通义千问、火山方舟、讯飞星火、百度千帆、月之暗面的大模型会话服务。旨在简化用户请求过程，提高开发效率。
+
+## 1.2项目安装及使用方法：
+### 1.2.1安装方法：
+通过pip进行安装：
+```
+pip install OneLLM
+```
+### 1.2.2使用方法(以智谱清言为例)：
+导入包
+```
+import OneLLM
+```
+实例化模型
+```
+model="glm-4" #选择模型
+api_key=" your api key " #填入你的API Key
+
+zhipu=OneLLM.Zhipu(api_key,model)  #实例化模型
+```
+发送请求
+```
+msg=input("请输入：")
+content=Doubao.send(msg)
+print(content)
+```
+调试模式发送请求
+```
+msg=input("请输入：")
+content=Doubao.send_debug(msg)
+print(content)
+```
+多重对话
+```
+while True:
+    msg=input("请输入：")
+    content=Doubao.send(msg)
+    print(content)
+```
+## 1.3主要方法：
+### 1.3.1 send(msg)
+普通模式发送请求，返回模型的回复。
+### 1.3.2 send_debug(msg)
+调试模式发送请求，返回模型的回复和模型的原始输出。
+### 1.3.3 set_model(model)
+设置模型，默认为glm-4。
+### 1.3.4 get_model()
+获取当前模型。
+### 1.3.5 set_api_key(api_key)
+设置API Key。
+### 1.3.6 get_api_key()
+获取当前API Key。
+### 1.3.7 getRequestId()
+获取当前请求的ID。
+
+### 除此之外，对于实例化模型需要初始化传入的参数均可调用**get/set**方法进行使用。
+
+## 1.4示例模型的调用方法：
+### 阿里千问大模型：
+
+**开通百炼的模型服务**<br>
+登录[阿里云百炼大模型服务平台](https://account.aliyun.com/login/login.htm?oauth_callback=https%3A%2F%2Fbailian.console.aliyun.com%2F%3Fspm%3Da2c4g.11186623.0.0.7bae4823FnrsIq&clearRedirectCookie=1&lang=zh)后，如果页面顶部显示如下消息，您需要开通百炼的模型服务，以获得免费额度。开通百炼不会产生费用，仅调用、部署、调优模型会产生相应费用（超出免费额度后）。
+![img.png](image/img_10.png)<br>
+**获取API Key**<br>
+1.前往[API-KEY](https://bailian.console.aliyun.com/?spm=a2c4g.11186623.0.0.7bae4823FnrsIq&apiKey=1#/api-key-center)页面，单击创建我的API-KEY。<br>
+2.在已创建的API Key操作列，单击查看，获取API KEY。
+![img.png](image/img_11.png)
+3.获得API Key后，建议您将其配置到环境变量中，以便在调用模型或应用时使用。这样可以避免在代码中显式地配置API Key，从而降低API Key泄漏的风险。在环境变量中配置API Key的具体操作，请参见[配置API Key到环境变量](https://help.aliyun.com/zh/model-studio/developer-reference/configure-api-key-through-environment-variables?spm=a2c4g.11186623.0.0.7bae4823FnrsIq)。
+
+#### 千问调用示例<br>
+```
+#导入包
+import OneLLM
+
+model="glm-4" #选择模型
+api_key=" your api key " #填入你的API Key
+
+Qwen=OneLLM.Zhipu(api_key,model)  #实例化模型
+
+
+#普通模式发送会话
+msg=input("请输入：")
+content=Qwen.send(msg)
+print(content)
+
+#调试模式发送会话
+msg=input("请输入：")
+content=Qwen.send_debug(msg)
+print(content)
+
+#多重对话
+while True:
+    msg=input("请输入：")
+    content=Qwen.send(msg)
+    print(content)
+
+```
+参考文档：https://help.aliyun.com/zh/model-studio/developer-reference/get-api-key?spm=a2c4g.11186623.help-menu-2400256.d_3_0.168b44ceFz04D8&scm=20140722.H_2712195._.OR_help-T_cn~zh-V_1
+
+### 火山方舟大模型：
+
+**模型/应用调用API鉴权**<br> 
+
+**API Key 签名鉴权**
+
+**前提条件**<br>
+**获取API Key：<br>**
+1.打开并登录方舟控制台-API Key 管理。<br>
+2.单击创建 API Key 按钮。<br>
+3.在弹出框的名称文本框中确认/更改 API Key 名称，单击创建。<br>
+![img.png](image/img.png)
+
+**获取 Model ID 作为推理接入点 用于模型调用:（此方式目前仅支持 API Key 鉴权）<br>**
+您可以在[模型卡片页面](https://www.volcengine.com/docs/82379/1099522#c95c138d)获取模型 Model ID，格式为“模型名称-版本号”。<br>
+目前除“视频生成”以外的模型均可通过此方式调用，调用之前请确认模型已开通（参见开通管理）。
+![img_1.png](image/img_1.png)
+**签名构造**<br>
+API Key 签名鉴权方式要求在 HTTP 请求 header 中按如下方式添加 Authorization header:<br>
+
+```
+Authorization: Bearer <ARK_API_KEY>
+```
+**API 调用示例**<br>
+```
+curl https://ark.cn-beijing.volces.com/api/v3/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <ARK_API_KEY>" \
+  -d '{
+    "model": "<Model ID>",
+    "messages": [
+        {
+            "role": "system",
+            "content": "You are a helpful assistant."
+        },
+        {
+            "role": "user",
+            "content": "Hello!"
+        }
+    ]
+  }'
+```
+#### 火山方舟调用示例<br>
+```
+#导入包
+import OneLLM
+
+model="glm-4" #选择模型
+api_key=" your api key " #填入你的API Key
+
+Doubao=OneLLM.Zhipu(api_key,model)  #实例化模型
+
+#普通模式发送会话
+msg=input("请输入：")
+content=Doubao.send(msg)
+print(content)
+
+#调试模式发送会话
+msg=input("请输入：")
+content=Doubao.send_debug(msg)
+print(content)
+
+#多重对话
+while True:
+    msg=input("请输入：")
+    content=Doubao.send(msg)
+    print(content)
+
+```
+参考文档：https://www.volcengine.com/docs/82379/1298459
+
+
+
+### 讯飞星火大模型：
+**创建新的应用**<br>
+1.访问[讯飞官网](https://www.xfyun.cn/),进入开发者中心：<br>
+在页面顶部导航栏中找到“开发者中心”或者“我的应用”。
+点击进入，查看你的应用列表（如果之前创建过应用）。
+<br>
+
+2.填写应用基本信息，包括：
+* 应用名称：为你的应用选择一个唯一且简洁的名称。
+* 应用类型：根据模型的使用场景选择相应的应用类型（如：文本处理、语音识别等）。
+* 应用描述：简要描述应用的功能和目标。<br>
+完成填写后，点击“提交”按钮。
+创建成功后，你将看到新创建的应用出现在应用列表中。
+![img.png](image/img_7.png)
+
+3.获取API Key<br>
+应用创建成功后，你需要获取API Key以方便后续的调用：
+在应用列表中找到你刚创建的应用, 点击该应用进入应用详情页面，找到左侧详情页找到“可定制化API”
+![img.png](image/img_8.png)
+
+**生成最终URL**<br>
+
+将鉴权参数组合成最终的键值对，并urlencode生成最终的握手url。开发者可先根据[WebSocket协议通用鉴权](https://www.xfyun.cn/doc/spark/general_url_authentication.html)，确保生成的参数无误。
+```
+from urllib.parse import urlencode
+
+v = {
+		"authorization": authorization, # 上方鉴权生成的authorization
+        "date": date,  # 步骤1生成的date
+    	"host": "spark-api.xf-yun.com" # 请求的主机名，根据具体接口替换
+}
+url = "wss://spark-api.xf-yun.com/v1.1/chat?" + urlencode(v)
+"""生成的最终url如下
+wss://spark-api.xf-yun.com/v1.1/chat?authorization=YXBpX2tleT0iYWRkZDIyNzJiNmQ4YjdjOGFiZGQ3OTUzMTQyMGNhM2IiLCBhbGdvcml0aG09ImhtYWMtc2hhMjU2IiwgaGVhZGVycz0iaG9zdCBkYXRlIHJlcXVlc3QtbGluZSIsIHNpZ25hdHVyZT0iejVnSGR1M3B4VlY0QURNeWs0Njd3T1dEUTlxNkJRelIzbmZNVGpjL0RhUT0i&date=Fri%2C+05+May+2023+10%3A43%3A39+GMT&host=spark-api.xf-yun.com
+"""
+```
+#### 讯飞星火调用示例<br>
+```
+#导入包
+import OneLLM
+
+model="glm-4" #选择模型
+api_key=" your api key " #填入你的API Key
+
+Spark=OneLLM.Zhipu(api_key,model)  #实例化模型
+
+
+#普通模式发送会话
+msg=input("请输入：")
+content=Spark.send(msg)
+print(content)
+
+#调试模式发送会话
+msg=input("请输入：")
+content=Spark.send_debug(msg)
+print(content)
+
+#多重对话
+while True:
+    msg=input("请输入：")
+    content=Spark.send(msg)
+    print(content)
+
+```
+参考文档：https://www.xfyun.cn/doc/spark/general_url_authentication.html
+
+
+
+### 智谱清言大模型：
+**获取您的API Key：<br>**
+登录到智谱AI开放平台[API Keys 页面](https://bigmodel.cn/login?redirect=%2Fusercenter%2Fproj-mgmt%2Fapikeys) 获取最新版生成的用户 API Key
+<br>
+
+新版机制中平台颁发的 API Key 同时包含 “用户标识 id” 和 “签名密钥 secret”，即格式为 {id}.{secret}
+<br>
+
+**使用 API Key 进行请求<br>**
+用户需要将 API Key 放入 HTTP 的 Authorization header 头中。
+```
+curl --location 'https://open.bigmodel.cn/api/paas/v4/chat/completions' \
+--header 'Authorization: Bearer <你的apikey>' \
+--header 'Content-Type: application/json' \
+--data '{
+    "model": "glm-4",
+    "messages": [
+        {
+            "role": "user",
+            "content": "你好"
+        }
+    ]
+}'
+```
+**鉴权 token 组装过程<br>**
+```
+import time
+import jwt
+ 
+def generate_token(apikey: str, exp_seconds: int):
+    try:
+        id, secret = apikey.split(".")
+    except Exception as e:
+        raise Exception("invalid apikey", e)
+ 
+    payload = {
+        "api_key": id,
+        "exp": int(round(time.time() * 1000)) + exp_seconds * 1000,
+        "timestamp": int(round(time.time() * 1000)),
+    }
+ 
+    return jwt.encode(
+        payload,
+        secret,
+        algorithm="HS256",
+        headers={"alg": "HS256", "sign_type": "SIGN"},
+    )
+```
+用户需要将生成的鉴权 token 放入 HTTP 的 Authorization header 头中：
+```
+Authorization: 鉴权token
+```
+**Curl请求中的token参数示例<br>**
+```
+curl --location 'https://open.bigmodel.cn/api/paas/v4/chat/completions' \
+--header 'Authorization: Bearer <你的token>' \
+--header 'Content-Type: application/json' \
+--data '{
+    "model": "glm-4",
+    "messages": [
+        {
+            "role": "user",
+            "content": "你好"
+        }
+    ]
+}'
+```
+#### 智谱清言调用示例<br>
+```
+#导入包
+import OneLLM
+
+model="glm-4" #选择模型
+api_key=" your api key " #填入你的API Key
+
+zhipu=OneLLM.Zhipu(api_key,model)  #实例化模型
+
+
+#普通模式发送会话
+msg=input("请输入：")
+content=zhipu.send(msg)
+print(content)
+
+#调试模式发送会话
+msg=input("请输入：")
+content=zhipu.send_debug(msg)
+print(content)
+
+#连续对话
+while True:
+    msg=input("请输入：")
+    content=zhipu.send(msg)
+    print(content)
+
+```
+参考文档：https://bigmodel.cn/dev/api/http-call/http-auth
+
+
+
+### 百度千帆大模型：
+**创建API Key**<br>
+1.子用户登录百度云控制台后，访问[API Key管理控制台](https://console.bce.baidu.com/iam/#/iam/apikey/list)
+![img_2.png](image/img_2.png)
+2.点击创建API Key
+![img_3.png](image/img_3.png)
+3.按需配置百度智能云千帆ModelBuilder、百度智能云千帆AppBuilder、 AI开放能力的相关权限
+![img_4.png](image/img_4.png)
+
+**查看API Key**<br>
+1.在API key列表页，点击显示，经过二次身份验证后，可以查看API Key明文
+![img_5.png](image/img_5.png)
+
+**获取AKSK**<br>
+成功登录管理控制台后，系统会自动分配一对AK/SK，可通过控制台申请并管理自己的访问密钥，操作方法如下：
+<br>
+1.登录[管理控制台](https://login.bce.baidu.com/?account=&redirect=http://console.bce.baidu.com/)，点击“用户账号->安全认证”进入Access Key管理界面。
+![img.png](image/img_6.png)
+2.点击Access Key ID右侧的“显示”，可查看其对应的Secret Access Key，点击“隐藏”可隐藏对应的Secret Access Key。<br>
+3.在密钥列表页中，根据需要可点击“创建Access Key”来创建新的Access Key ID / Secret Access Key密钥对。<br>
+
+**签名API请求**<br>
+在请求签名之前，请先计算请求的哈希(摘要)。然后，您使用哈希值、来自请求的其他信息以及您的秘密访问密钥(Secret Access Key，SK)，计算另一个称为签名(Signature) 的哈希, 得到签名后，进行一定规则的拼装成最终的认证字符串，也就是最终您需要包含在API请求中的Authorization字段。<br>
+您可以通过以下方式携带认证字符串：<br>
+* 在HTTP Header中包含认证字符串
+* 在URL中包含认证字符串
+<br>
+用户也可以将认证字符串放在HTTP请求Query String的authorization参数中。常用于生成URL给第三方使用的场景，例如要临时把某个数据开放给他人下载。
+
+#### 百度千帆调用示例<br>
+```
+#导入包
+import OneLLM
+
+model="glm-4" #选择模型
+api_key=" your api key " #填入你的API Key
+
+Ernie=OneLLM.Zhipu(api_key,model)  #实例化模型
+
+
+#普通模式发送会话
+msg=input("请输入：")
+content=Ernie.send(msg)
+print(content)
+
+#调试模式发送会话
+msg=input("请输入：")
+content=Ernie.send_debug(msg)
+print(content)
+
+#多重对话
+while True:
+    msg=input("请输入：")
+    content=Ernie.send(msg)
+    print(content)
+
+```
+参考文档：https://cloud.baidu.com/doc/Reference/s/1m5qi1m4y
+
+
+
+### Kimi大模型：
+
+**获取API Key**<br>
+
+你需要一个 API 密钥来使用我们的服务。你可以在我们的[控制台](https://login.moonshot.cn/?source=https%3A%2F%2Fplatform.moonshot.cn%2Fredirect&appid=dev-workbench)中创建一个 API 密钥
+![img.png](image/img_9.png)
+
+**发送请求**<br>
+
+你可以使用我们的 Chat Completions API 来发送请求。你需要提供一个 API 密钥和一个模型名称。你可以选择是否使用默认的 max_tokens 参数，或者自定义 max_tokens 参数。可以参考 [API 文档](https://platform.moonshot.cn/docs/api/chat#%E5%85%AC%E5%BC%80%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%9C%B0%E5%9D%80)中的调用方法。
+
+**公开的服务地址**<br>
+```
+https://api.moonshot.cn
+```
+
+#### Moonshot调用示例<br>
+```
+#导入包
+import OneLLM
+
+model="glm-4" #选择模型
+api_key=" your api key " #填入你的API Key
+
+Moonshot=OneLLM.Zhipu(api_key,model)  #实例化模型
+
+
+#普通模式发送会话
+msg=input("请输入：")
+content=Moonshot.send(msg)
+print(content)
+
+#调试模式发送会话
+msg=input("请输入：")
+content=Moonshot.send_debug(msg)
+print(content)
+
+#多重对话
+while True:
+    msg=input("请输入：")
+    content=Moonshot.send(msg)
+    print(content)
+
+```
+参考文档：https://platform.moonshot.cn/docs/intro#%E8%8E%B7%E5%8F%96-api-%E5%AF%86%E9%92%A5
+
+
+
+## 1.5大模型参照列表：
+### 阿里千问大模型：
+* qwen-max
+* qwen-plus
+* qwen-turbo
+* qwen-long
+
+
+
+### 火山方舟大模型：
+* Doubao-pro-4k
+* Doubao-pro-32k
+* Doubao-pro-128k
+
+
+### 讯飞星火大模型：
+* Spark4.0 Ultra 
+* Spark Max-32K
+* Spark Max
+* Spark Pro-128K
+* Spark Pro
+* Spark Lite
+
+### 智谱清言大模型：
+* glm-4-plus
+* glm-4-air
+* glm-4-air-0111 
+* Preview 
+* glm-4-airx
+* glm-4-long 
+* glm-4-flashx 
+* glm-4-flash
+* glm-4v-plus-0111 
+* glm-4v-plus 
+* glm-4v
+* glm-4v-flash
+* glm-zero-preview
+
+### Kimi大模型：
+* moonshot-v1-8k
+* moonshot-v1-32k
+* moonshot-v1-128k
+* moonshot-v1-8k-vision-preview
+* moonshot-v1-32k-vision-preview
+* moonshot-v1-128k-vision-preview
+
+### 百度千帆大模型：
+* ERNIE 4.0
+* ERNIE 4.0 Turbo
+* ERNIE 3.5
+* ERNIE Speed Pro
+>>>>>>> e6068a1a1599727c76be7b5e8f21684f06786bf2
+* ERNIE Lite Pro
