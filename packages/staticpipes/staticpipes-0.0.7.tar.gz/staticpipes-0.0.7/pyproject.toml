@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools"]
+
+[project]
+name = "staticpipes"
+description = "StaticPipes, the flexible and extendable static site website generator in Python"
+readme = "README.md"
+version = "0.0.7"
+requires-python = ">=3.9"
+dependencies = [
+]
+
+[project.optional-dependencies]
+allbuild=[
+    # For JS Minification
+    "rjsmin",
+    # For CSS Minification
+    "rcssmin",
+    # For pipeline jinja2
+    "jinja2",
+    # For Markdown
+    "markdown-it-py",
+    # For YAML
+    "pyyaml",
+]
+dev= [
+    "watchdog",
+]
+staticpipesdev = ["pytest", "black", "isort", "mypy", "flake8", "sphinx"]
+
+[project.urls]
+Homepage = "https://github.com/StaticPipes/StaticPipes"
+#Documentation = "https://readthedocs.org"
+Repository = "https://github.com/StaticPipes/StaticPipes"
+Issues = "https://github.com/StaticPipes/StaticPipes/issues"
+Changelog = "https://github.com/StaticPipes/StaticPipes/blob/main/CHANGELOG.md"
+
+[tool.isort]
+profile = "black"
+
+[[tool.mypy.overrides]]
+module = ["rjsmin.*","rcssmin.*"]
+ignore_missing_imports = true
+follow_imports = "skip"
+
