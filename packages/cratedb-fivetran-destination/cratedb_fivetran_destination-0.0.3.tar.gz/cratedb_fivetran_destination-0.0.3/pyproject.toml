@@ -1,0 +1,218 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = [
+  "grpcio-tools<1.71",
+  "setuptools>=42",
+  "versioningit",
+]
+
+[project]
+name = "cratedb-fivetran-destination"
+description = "CrateDB Fivetran Destination"
+readme = "README.md"
+keywords = [
+  "cdc",
+  "cratedb",
+  "database destination adapter",
+  "fivetran",
+]
+license = "Apache-2.0"
+license-files = [ "LICENSE" ]
+authors = [ { name = "CrateDB Developers", email = "office@crate.io" } ]
+requires-python = ">=3.9"
+classifiers = [
+  "Development Status :: 2 - Pre-Alpha",
+  "Environment :: Console",
+  "Environment :: No Input/Output (Daemon)",
+  "Environment :: Plugins",
+  "Environment :: Web Environment",
+  "Intended Audience :: Customer Service",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Education",
+  "Intended Audience :: End Users/Desktop",
+  "Intended Audience :: Information Technology",
+  "Intended Audience :: Science/Research",
+  "Operating System :: MacOS",
+  "Operating System :: POSIX",
+  "Operating System :: Unix",
+  "Programming Language :: ML",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Communications",
+  "Topic :: Database",
+  "Topic :: Documentation",
+  "Topic :: Internet",
+  "Topic :: Internet :: WWW/HTTP :: Indexing/Search",
+  "Topic :: Printing",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Topic :: Scientific/Engineering :: Human Machine Interfaces",
+  "Topic :: Scientific/Engineering :: Image Processing",
+  "Topic :: Scientific/Engineering :: Image Recognition",
+  "Topic :: Scientific/Engineering :: Information Analysis",
+  "Topic :: Scientific/Engineering :: Interface Engine/Protocol Translator",
+  "Topic :: Software Development :: Code Generators",
+  "Topic :: Software Development :: Libraries",
+  "Topic :: Software Development :: Libraries :: Application Frameworks",
+  "Topic :: Software Development :: Pre-processors",
+  "Topic :: System :: Archiving",
+  "Topic :: Text Processing",
+  "Topic :: Text Processing :: Filters",
+  "Topic :: Text Processing :: Indexing",
+  "Topic :: Text Processing :: Linguistic",
+  "Topic :: Utilities",
+]
+
+dynamic = [
+  "version",
+]
+
+dependencies = [
+  "attrs<26",
+  "click<9",
+  "google<3.1",
+  "grpcio<1.71",
+  "grpcio-tools<1.71",
+  "protobuf<6.31",
+  "pycryptodome<3.24",
+  "sqlalchemy-cratedb==0.42.0.dev2",
+  "toolz<2",
+  "zstandard<0.24",
+]
+
+optional-dependencies.develop = [
+  "mypy<1.15",
+  "poethepoet<1",
+  "pyproject-fmt<3",
+  "ruff<0.12",
+  "validate-pyproject<1",
+]
+optional-dependencies.release = [
+  "build<2",
+  "poethepoet<1",
+  "pyinstaller<7",
+  "twine<7",
+]
+optional-dependencies.test = [
+  "pretend<2",
+  "pytest<9",
+  "pytest-cov<7",
+  "pytest-mock<4",
+]
+urls."Release Notes" = "https://github.com/crate/cratedb-fivetran-destination/releases"
+
+urls.Repository = "https://github.com/crate/cratedb-fivetran-destination"
+
+scripts.cratedb-fivetran-destination = "cratedb_fivetran_destination.cli:main"
+
+[tool.ruff]
+line-length = 100
+extend-exclude = [
+  "src/fivetran_sdk",
+]
+
+lint.select = [
+  # Builtins
+  "A",
+  # Bugbear
+  "B",
+  # comprehensions
+  "C4",
+  # Pycodestyle
+  "E",
+  # eradicate
+  "ERA",
+  # Pyflakes
+  "F",
+  # isort
+  "I",
+  # pandas-vet
+  "PD",
+  # return
+  "RET",
+  # Bandit
+  "S",
+  # print
+  "T20",
+  "W",
+  # flake8-2020
+  "YTT",
+]
+lint.per-file-ignores."tests/*" = [ "S101" ] # Use of `assert` detected
+
+[tool.pytest.ini_options]
+minversion = "2.0"
+addopts = """
+  -rfEX -p pytester --strict-markers --verbosity=3
+  --cov --cov-report=term-missing --cov-report=xml
+  --capture=no
+  """
+log_level = "DEBUG"
+log_cli_level = "DEBUG"
+testpaths = [ "tests" ]
+xfail_strict = true
+markers = [
+]
+
+[tool.coverage.run]
+omit = [
+  "src/cratedb_fivetran_destination/dictx.py",
+  "tests/*",
+]
+source = [ "cratedb_fivetran_destination" ]
+
+[tool.coverage.report]
+fail_under = 0
+show_missing = true
+
+[tool.mypy]
+packages = [ "cratedb_fivetran_destination" ]
+check_untyped_defs = true
+exclude = [
+]
+explicit_package_bases = true
+ignore_missing_imports = true
+implicit_optional = true
+install_types = true
+non_interactive = true
+no_strict_optional = true
+pretty = true
+
+[tool.versioningit.vcs]
+method = "git-archive"
+default-tag = "v0.0.0"
+describe-subst = "$Format:%(describe:tags,match=v*)$"
+
+# ===================
+# Tasks configuration
+# ===================
+
+[tool.poe.tasks]
+build-app = { cmd = "pyinstaller --name cratedb-fivetran-destination --onefile --strip src/cratedb_fivetran_destination/__main__.py" }
+build-pkg = { cmd = "python -m build" }
+build-requirements = { cmd = "uv export --format=requirements.txt --no-annotate --no-hashes", capture_stdout = "requirements.txt" }
+check = [ "lint", "test" ]
+format = [
+  { cmd = "ruff format ." },
+  # Configure Ruff not to auto-fix (remove!):
+  # Ignore unused imports (F401), unused variables (F841), `print` statements (T201), and commented-out code (ERA001).
+  { cmd = "ruff check --fix --ignore=ERA --ignore=F401 --ignore=F841 --ignore=T20 --ignore=ERA001 ." },
+  { cmd = "pyproject-fmt --keep-full-version pyproject.toml" },
+]
+lint = [
+  { cmd = "ruff format --check ." },
+  { cmd = "ruff check ." },
+  { cmd = "validate-pyproject pyproject.toml" },
+  { cmd = "mypy" },
+]
+test = [
+  { cmd = "pytest" },
+]
+release-pkg = [
+  "build-pkg",
+  { cmd = "twine upload --skip-existing dist/*.tar.gz dist/*.whl" },
+]
