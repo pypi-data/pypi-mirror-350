@@ -1,0 +1,468 @@
+{% extends "base.html" %}
+
+{% block title %}AtlasServer - New Application{% endblock %}
+{% block header_title %}New Application{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mb-8">
+        <h1 class="text-4xl font-bold mb-2">Register New Application</h1>
+        <p class="text-xl text-gray-400">Complete the form to register a new Flask, Django or FastAPI application.</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2">
+            <div class="rounded-lg glass-effect overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-800">
+                    <h2 class="text-xl font-semibold">Application Information</h2>
+                </div>
+                
+                <div class="p-6">
+                    {% if error %}
+                    <div class="mb-6 p-4 rounded-md bg-red-500/10 border border-red-500/30 text-red-400 flex gap-3 items-start">
+                        <i data-lucide="alert-triangle" class="w-5 h-5 flex-shrink-0 mt-0.5"></i>
+                        <div>
+                            <p>{{ error }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <form action="/applications/new" method="post" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label for="name" class="block text-sm font-medium text-gray-300">Application Name</label>
+                                <input 
+                                    type="text" 
+                                    class="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none" 
+                                    id="name" 
+                                    name="name" 
+                                    required
+                                    value="{{ form_data.name if form_data else '' }}"
+                                >
+                                <p class="text-xs text-gray-400">A descriptive name to identify the application.</p>
+                            </div>
+                            
+                            <div class="space-y-2">
+                                <label for="app_type" class="block text-sm font-medium text-gray-300">Application Type</label>
+                                <select 
+                                    class="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none" 
+                                    id="app_type" 
+                                    name="app_type" 
+                                    required
+                                >
+                                    <option value="" disabled {% if not form_data or not form_data.app_type %}selected{% endif %}>Select a type</option>
+                                    <option value="flask" {% if form_data and form_data.app_type == 'flask' %}selected{% endif %}>Flask (Waitress)</option>
+                                    <option value="fastapi" {% if form_data and form_data.app_type == 'fastapi' %}selected{% endif %}>FastAPI (Uvicorn)</option>
+                                    <option value="django" {% if form_data and form_data.app_type == 'django' %}selected{% endif %}>Django (Gunicorn)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <label for="directory" class="block text-sm font-medium text-gray-300">Application Directory</label>
+                            <input 
+                                type="text" 
+                                class="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none" 
+                                id="directory" 
+                                name="directory" 
+                                required
+                                value="{{ form_data.directory if form_data else '' }}"
+                            >
+                            <p class="text-xs text-gray-400">Absolute path to the application directory (e.g.: C:\projects\my-app).</p>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <label for="main_file" class="block text-sm font-medium text-gray-300">Main File</label>
+                            <input 
+                                type="text" 
+                                class="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none" 
+                                id="main_file" 
+                                name="main_file" 
+                                required
+                                value="{{ form_data.main_file if form_data else '' }}"
+                            >
+                            <p class="text-xs text-gray-400">Name of the main file relative to the directory (e.g.: app.py).</p>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <label for="port" class="block text-sm font-medium text-gray-300">Port (optional)</label>
+                            <input 
+                                type="number" 
+                                class="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none" 
+                                id="port" 
+                                name="port" 
+                                min="1024" 
+                                max="65535"
+                                value="{{ form_data.port if form_data else '' }}"
+                            >
+                            <p class="text-xs text-gray-400">If left empty, an available port will be automatically assigned.</p>
+                        </div>
+                        
+                        <div class="flex justify-end space-x-4 pt-4">
+                            <a href="/" class="px-4 py-2 rounded-md border border-gray-700 text-gray-300 hover:bg-gray-800 transition-colors flex items-center gap-2">
+                                <i data-lucide="x" class="w-4 h-4"></i>
+                                <span>Cancel</span>
+                            </a>
+                            <button type="submit" class="px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white transition-colors flex items-center gap-2">
+                                <i data-lucide="save" class="w-4 h-4"></i>
+                                <span>Register Application</span>
+                            </button>
+                        </div>
+                        <div class="border-t border-gray-800 pt-6 mt-6">
+                            <h3 class="text-lg font-medium mb-4">Advanced Options</h3>
+                            
+                            <!-- Selector de entorno Python -->
+                            <div class="space-y-2 mb-4">
+                                <label for="environment_type" class="block text-sm font-medium text-gray-300">Python Environment</label>
+                                <select 
+                                    class="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none" 
+                                    id="environment_type" 
+                                    name="environment_type"
+                                >
+                                    <option value="system" selected>System (Global)</option>
+                                    {% if environments %}
+                                        {% for env_id, env in environments.items() %}
+                                            {% if env_id != "system" %}
+                                                <option value="{{ env_id }}">{{ env.name }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                </select>
+                                <p class="text-xs text-gray-400">Select the Python environment to execute this application. Virtual environments in the project directory will be automatically detected.</p>
+                            </div>
+                            
+                            <!-- Opción ngrok existente -->
+                            <div class="flex items-center gap-2 mt-4">
+                                <input 
+                                    type="checkbox" 
+                                    id="ngrok_enabled" 
+                                    name="ngrok_enabled" 
+                                    class="h-4 w-4 rounded bg-gray-800 border-gray-700 text-blue-600 focus:ring-blue-500"
+                                    {% if form_data and form_data.ngrok_enabled %}checked{% endif %}
+                                >
+                                <div>
+                                    <label for="ngrok_enabled" class="text-sm font-medium text-gray-300">
+                                        Expose to Internet with ngrok
+                                    </label>
+                                    <p class="text-xs text-gray-400">
+                                        Creates a secure tunnel to access this application from the Internet.
+                                        <a href="/config" class="text-blue-400 hover:underline">Configure ngrok token</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="space-y-6">
+            <!-- Información sobre tipos -->
+            <div class="rounded-lg glass-effect overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-800 bg-blue-900/20">
+                    <h2 class="text-lg font-semibold text-blue-400">Information about Types</h2>
+                </div>
+                <div class="p-6 space-y-6">
+                    <div>
+                        <div class="flex items-center gap-2 mb-2">
+                            <i data-lucide="info" class="w-5 h-5 text-blue-400"></i>
+                            <h3 class="font-medium">Flask with Waitress</h3>
+                        </div>
+                        <p class="text-sm text-gray-400 mb-2">For Flask applications, the main file must contain a variable called <code>app</code>:</p>
+                        <pre class="code-block"><code>from flask import Flask
+app = Flask(__name__)</code></pre>
+                    </div>
+                    
+                    <div>
+                        <div class="flex items-center gap-2 mb-2">
+                            <i data-lucide="info" class="w-5 h-5 text-green-400"></i>
+                            <h3 class="font-medium">FastAPI with Uvicorn</h3>
+                        </div>
+                        <p class="text-sm text-gray-400 mb-2">For FastAPI applications, the main file must contain a variable called <code>app</code>:</p>
+                        <pre class="code-block"><code>from fastapi import FastAPI
+app = FastAPI()</code></pre>
+                    </div>
+
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <i data-lucide="info" class="w-5 h-5 text-purple-400"></i>
+                        <h3 class="font-medium">Django with Gunicorn</h3>
+                    </div>
+                    <p class="text-sm text-gray-400 mb-2">For Django applications, configure your project like this:</p>
+                    <pre class="code-block"><code>
+                # Project structure
+                myproject/
+                ├── manage.py            # ← Main file to specify
+                ├── myproject/
+                │   ├── settings.py
+                │   └── wsgi.py          # Used by Gunicorn
+                
+                # Make sure to:
+                # 1. Have gunicorn installed: pip install gunicorn
+                # 2. Configure ALLOWED_HOSTS = [''] in settings.py
+                    </code></pre>
+                </div>
+                </div>
+            </div>
+            
+            <!-- Consejos -->
+            <div class="rounded-lg glass-effect overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-800 bg-purple-900/20">
+                    <h2 class="text-lg font-semibold text-purple-400">Tips</h2>
+                </div>
+                <div class="p-6">
+                    <ul class="space-y-4">
+                        <li class="flex gap-3">
+                            <i data-lucide="check" class="w-5 h-5 text-green-400 flex-shrink-0"></i>
+                            <span class="text-sm text-gray-300">Make sure that files and directories exist before registering the application.</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <i data-lucide="check" class="w-5 h-5 text-green-400 flex-shrink-0"></i>
+                            <span class="text-sm text-gray-300">Verify that all dependencies are installed for your application.</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <i data-lucide="check" class="w-5 h-5 text-green-400 flex-shrink-0"></i>
+                            <span class="text-sm text-gray-300">If the application requires environment variables, configure them manually in the system.</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <i data-lucide="check" class="w-5 h-5 text-green-400 flex-shrink-0"></i>
+                            <span class="text-sm text-gray-300">Ports between 1024 and 65535 are available for use.</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <i data-lucide="check" class="w-5 h-5 text-green-400 flex-shrink-0"></i>
+                            <span class="text-sm text-gray-300">Avoid using Emojis in print or logging, to ensure a safe deployment.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // ===== VALIDACIÓN DEL FORMULARIO =====
+        const form = document.querySelector('form');
+        
+        form.addEventListener('submit', function(event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                
+                // Resaltar campos inválidos
+                const invalidInputs = form.querySelectorAll(':invalid');
+                invalidInputs.forEach(input => {
+                    input.classList.add('border-red-500', 'ring-red-500');
+                    
+                    // Añadir mensaje de error si no existe
+                    const parent = input.parentElement;
+                    if (!parent.querySelector('.error-message')) {
+                        const errorMsg = document.createElement('p');
+                        errorMsg.className = 'text-xs text-red-400 mt-1 error-message';
+                        errorMsg.textContent = input.validationMessage || 'This field is required';
+                        parent.appendChild(errorMsg);
+                    }
+                });
+            }
+        });
+        
+        // Limpiar errores cuando se interactúa con el campo
+        const inputs = form.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            input.addEventListener('input', function() {
+                this.classList.remove('border-red-500', 'ring-red-500');
+                const errorMsg = this.parentElement.querySelector('.error-message');
+                if (errorMsg) {
+                    errorMsg.remove();
+                }
+            });
+        });
+        
+        // ===== DETECCIÓN DE ENTORNOS VIRTUALES =====
+        const directoryInput = document.getElementById('directory');
+        const environmentSelect = document.getElementById('environment_type');
+        
+        // Solo configurar si ambos elementos existen
+        if (directoryInput && environmentSelect) {
+            let debounceTimer;
+            
+            directoryInput.addEventListener('input', function() {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(detectEnvironments, 500);
+            });
+            
+            function detectEnvironments() {
+                const directory = directoryInput.value.trim();
+                if (!directory) return;
+                
+                // Mostrar indicador de carga
+                const loadingIndicator = document.createElement('div');
+                loadingIndicator.id = 'env-loading';
+                loadingIndicator.className = 'text-xs text-blue-400 mt-1 animate-pulse';
+                loadingIndicator.textContent = 'Detecting virtual environments...';
+                
+                const existingIndicator = document.getElementById('env-loading');
+                if (existingIndicator) existingIndicator.remove();
+                
+                directoryInput.parentNode.appendChild(loadingIndicator);
+                
+                // Realizar solicitud AJAX
+                fetch(`/api/detect-environments?directory=${encodeURIComponent(directory)}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Error in server response');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Eliminar indicador de carga
+                        const indicator = document.getElementById('env-loading');
+                        if (indicator) indicator.remove();
+                        
+                        if (!data.success) {
+                            console.error('Error detecting environments:', data.error);
+                            return;
+                        }
+                        
+                        // Limpiar select actual, preservando la opción "sistema"
+                        while (environmentSelect.options.length > 1) {
+                            environmentSelect.remove(1);
+                        }
+                        
+                        // Asegurar que la opción de sistema esté presente
+                        if (environmentSelect.options.length === 0) {
+                            const systemOption = document.createElement('option');
+                            systemOption.value = 'system';
+                            systemOption.textContent = 'System (Global)';
+                            environmentSelect.appendChild(systemOption);
+                        }
+                        
+                        // Grupo para entornos del proyecto
+                        const projectGroup = document.createElement('optgroup');
+                        projectGroup.label = 'Project Environments';
+                        
+                        // Grupo para otros entornos
+                        const otherGroup = document.createElement('optgroup');
+                        otherGroup.label = 'Other Environments';
+                        
+                        let hasProjectEnvs = false;
+                        let hasOtherEnvs = false;
+                        
+                        // Agregar entornos detectados
+                        for (const [envId, env] of Object.entries(data.environments)) {
+                            if (envId === 'system') continue;
+                            
+                            const option = document.createElement('option');
+                            option.value = envId;
+                            option.textContent = env.name;
+                            
+                            if (env.local) {
+                                projectGroup.appendChild(option);
+                                hasProjectEnvs = true;
+                            } else {
+                                otherGroup.appendChild(option);
+                                hasOtherEnvs = true;
+                            }
+                            
+                            // Seleccionar automáticamente el entorno preferido
+                            if (data.preferred === envId) {
+                                option.selected = true;
+                            }
+                        }
+                        
+                        // Agregar grupos al select
+                        if (hasProjectEnvs) {
+                            environmentSelect.appendChild(projectGroup);
+                        }
+                        
+                        if (hasOtherEnvs) {
+                            environmentSelect.appendChild(otherGroup);
+                        }
+                        
+                        // Notificar al usuario sobre entorno detectado
+                        if (data.preferred) {
+                            const notification = document.createElement('div');
+                            notification.className = 'text-xs text-green-400 mt-1 flex items-center gap-1';
+                            
+                            // Crear un icono para la notificación
+                            const icon = document.createElement('span');
+                            icon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>';
+                            
+                            const text = document.createElement('span');
+                            text.textContent = 'Virtual environment automatically detected';
+                            
+                            notification.appendChild(icon);
+                            notification.appendChild(text);
+                            
+                            const existingNotification = document.getElementById('env-notification');
+                            if (existingNotification) existingNotification.remove();
+                            
+                            notification.id = 'env-notification';
+                            environmentSelect.parentNode.appendChild(notification);
+                            
+                            // Desvanecer la notificación después de 5 segundos
+                            setTimeout(() => {
+                                notification.style.opacity = '0';
+                                notification.style.transition = 'opacity 1s';
+                                setTimeout(() => {
+                                    if (notification.parentNode) {
+                                        notification.remove();
+                                    }
+                                }, 1000);
+                            }, 5000);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error en la solicitud:', error);
+                        const indicator = document.getElementById('env-loading');
+                        if (indicator) {
+                            indicator.textContent = 'Error detecting environments';
+                            indicator.className = 'text-xs text-red-400 mt-1';
+                            
+                            // Remover después de 3 segundos
+                            setTimeout(() => {
+                                if (indicator.parentNode) {
+                                    indicator.remove();
+                                }
+                            }, 3000);
+                        }
+                    });
+            }
+            
+            // Detectar entornos inmediatamente si hay un directorio en el campo
+            if (directoryInput.value.trim()) {
+                detectEnvironments();
+            }
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const appTypeSelect = document.getElementById('app_type');
+      const mainFileInput = document.getElementById('main_file');
+  
+      function toggleMainFileField() {
+        if (appTypeSelect.value === 'django') {
+          mainFileInput.value = 'manage.py';
+          mainFileInput.setAttribute('readonly', 'readonly');
+          mainFileInput.classList.add('cursor-not-allowed', 'bg-gray-700');
+        } else {
+          // Si cambias a otro tipo, restaura el campo
+          mainFileInput.removeAttribute('readonly');
+          mainFileInput.classList.remove('cursor-not-allowed', 'bg-gray-700');
+          // Opcional: limpia o restaura valor previo
+          mainFileInput.value = '';
+        }
+      }
+  
+      // Reactiva el comportamiento al cargar la página
+      toggleMainFileField();
+  
+      // Cada vez que cambie el tipo de app
+      appTypeSelect.addEventListener('change', toggleMainFileField);
+    });
+  </script>
+  
+{% endblock %}
