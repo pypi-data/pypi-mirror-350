@@ -1,0 +1,127 @@
+[project]
+name = "pysportbot"
+version = "v0.0.17"
+description = "A python-based bot for automatic resasports slot booking"
+authors = [
+  { name = "Joshua Falco Beirer", email = "jbeirer@cern.ch" }
+]
+repository = "https://github.com/jbeirer/resasports-bot"
+documentation = "https://jbeirer.github.io/resasports-bot/"
+readme = "README.md"
+packages = [
+  { include = "pysportbot" }
+]
+dynamic = ["requires-python", "dependencies"]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.14"
+requests = "^2.32.3"
+beautifulsoup4 = "^4.13.3"
+pandas = "^2.2.3"
+pytz = "^2025.2"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.5"
+pytest-cov = "^6.0.0"
+deptry = "^0.23.0"
+mypy = "^1.15.0"
+pre-commit = "^4.2.0"
+tox = "^4.24.2"
+ipykernel = "^6.29.5"
+types-pytz = "^2025.1.0.20250318"
+types-requests = "^2.32.0.20250306"
+
+[tool.poetry.group.docs.dependencies]
+mkdocs = "^1.6.1"
+mkdocs-material = "^9.6.9"
+mkdocstrings = {extras = ["python"], version = "^0.29.0"}
+
+[build-system]
+requires = ["poetry-core>=2.1.3"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 120
+target-version = ['py313']
+preview = true
+
+[tool.mypy]
+files = ["pysportbot"]
+disallow_untyped_defs = "True"
+no_implicit_optional = "True"
+check_untyped_defs = "True"
+warn_return_any = "True"
+warn_unused_ignores = "True"
+show_error_codes = "True"
+ignore_missing_imports= "True"
+disallow_any_unimported = "False"
+
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# filter deprecation warnings from external packages
+filterwarnings = [
+    "ignore::DeprecationWarning:(?!pysportbot).*",
+]
+
+[tool.ruff]
+target-version = "py313"
+line-length = 120
+fix = true
+lint.select = [
+    # flake8-2020
+    "YTT",
+    # flake8-bandit
+    "S",
+    # flake8-bugbear
+    "B",
+    # flake8-builtins
+    "A",
+    # flake8-comprehensions
+    "C4",
+    # flake8-debugger
+    "T10",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
+    # mccabe
+    "C90",
+    # pycodestyle
+    "E", "W",
+    # pyflakes
+    "F",
+    # pygrep-hooks
+    "PGH",
+    # pyupgrade
+    "UP",
+    # ruff
+    "RUF",
+    # tryceratops
+    "TRY",
+]
+lint.ignore = [
+    # LineTooLong
+    "E501",
+    # DoNotAssignLambda
+    "E731",
+    # Comparison to true should be 'if cond is true:'
+    "E712",
+    # Long exception message
+    "TRY003",
+    # Module shadows a Python standard-library module
+    "A005",
+    # Use `logging.exception` instead of `logging.error`
+    "TRY400"
+]
+
+[tool.coverage.report]
+skip_empty = true
+
+[tool.coverage.run]
+branch = true
+source = ["pysportbot"]
+
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]
