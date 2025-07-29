@@ -1,0 +1,301 @@
+Metadata-Version: 2.4
+Name: metaworkflows
+Version: 0.1.7
+Summary: A metadata-driven ETL framework
+Author: tuanlxa, kiendt
+Author-email: atuabk58@mbbank.com.vn
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: PyYAML>=6.0
+Requires-Dist: pandas>=1.0.0
+Requires-Dist: sqlalchemy>=1.4.0
+Requires-Dist: jsonschema==4.23.0
+Provides-Extra: spark
+Requires-Dist: pyspark>=3.0.0; extra == "spark"
+Provides-Extra: postgres
+Requires-Dist: psycopg2-binary>=2.9.0; extra == "postgres"
+Provides-Extra: gcp
+Requires-Dist: google-cloud-storage>=2.0.0; extra == "gcp"
+Requires-Dist: google-cloud-secret-manager==2.23.0; extra == "gcp"
+Requires-Dist: pyarrow>=1.0.0; extra == "gcp"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: license-file
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# MetaWorkflows
+
+[![PyPI version](https://badge.fury.io/py/metaworkflows.svg)](https://badge.fury.io/py/metaworkflows)
+[![Python Versions](https://img.shields.io/pypi/pyversions/metaworkflows.svg)](https://pypi.org/project/metaworkflows/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+<!-- Add other badges as appropriate: build status, coverage, etc. -->
+<!-- e.g., [![Build Status](https://travis-ci.org/your_username/metaworkflows.svg?branch=main)](https://travis-ci.org/your_username/metaworkflows) -->
+
+**MetaWorkflows** is a Python framework designed to declaratively build and execute Extract, Transform, Load (ETL) jobs using simple and intuitive YAML configurations. It abstracts away the boilerplate code typically associated with data pipelines, allowing data engineers and analysts to focus on the logic of their data transformations.
+
+Currently, MetaWorkflows provides robust support for Apache Spark as an execution engine, with a flexible architecture designed for future expansion to other engines and connectors.
+
+## Table of Contents
+
+- [Key Features & Benefits](#key-features--benefits)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+  - [1. Project Structure](#1-project-structure)
+  - [2. Define Connections](#2-define-connections)
+  - [3. Define Your Job](#3-define-your-job)
+  - [4. Run the Pipeline](#5-run-the-pipeline)
+- [YAML Configuration Deep Dive](#yaml-configuration-deep-dive)
+  - [Job Definition](#job-definition-jobyaml)
+  - [Connections](#connections-connectionsyaml)
+- [Supported Components](#supported-components)
+- [License](#license)
+- [Roadmap (Potential Future Enhancements)](#roadmap-potential-future-enhancements)
+
+## Key Features & Benefits
+
+*   **Declarative ETL:** Define complex data pipelines using human-readable YAML.
+*   **Reduced Boilerplate:** Focus on *what* data operations to perform, not *how* to code them from scratch.
+*   **Engine Agnostic (Design):** While currently focused on Spark, the framework is designed to be extensible to other processing engines (e.g., Pandas, Dask).
+*   **Connector Abstraction:** Easily read from and write to various data sources (databases, file systems, object storage) by defining connections separately.
+*   **Reproducibility & Versioning:** YAML configurations can be version-controlled alongside your code, ensuring reproducible ETL jobs.
+*   **Rapid Development:** Quickly prototype and iterate on ETL workflows.
+*   **Spark Integration:** Leverage the power of Apache Spark for distributed data processing.
+*   **SQL Transformations:** Define complex transformations using familiar SQL syntax directly within your Spark jobs.
+
+## Prerequisites
+
+*   Python 3.10+
+*   `pip` for installing packages
+*   **Apache Spark:** If using the `spark` engine, you need a working Spark installation (local mode or a cluster). Ensure `SPARK_HOME` is set and Spark binaries are in your `PATH`, or that your Python environment is configured to find PySpark.
+*   **Java Development Kit (JDK):** Required by Spark.
+*   **Database Drivers:** If connecting to databases (e.g., PostgreSQL, MySQL), ensure the necessary JDBC driver JARs are accessible to Spark. You can specify them in the `spark.jars.packages` configuration within your job YAML.
+
+## Installation
+
+Install MetaWorkflows using pip:
+
+```bash
+pip install metaworkflows
+```
+
+## Quick Start
+Let's walk through setting up and running a simple ETL job.
+
+### 1. Project Structure
+Organize your project as follows:
+
+```
+my_etl_project/
+├── connections/
+│   └── connections.yaml      # Database, filesystem, etc. credentials and settings
+├── jobs/
+│   └── etl/
+│       └── spark_job.yaml    # Your ETL job definition
+└── main.py           # Your Python script to execute the job
+```
+
+### 2. Define Connections
+
+Create a connections/connections.yaml file. This file stores connection details for your data sources and sinks, keeping them separate from your job logic.
+
+##### Example connections/connections.yaml:
+
+```
+connections:
+  my_postgres_db:
+    type: postgresql # or jdbc for generic
+    host: "localhost"
+    port: 5432
+    database: "mydatabase"
+    user: "user"
+    password: "password" # Consider using environment variables or a secrets manager for production
+    # driver: "org.postgresql.Driver" # Usually auto-detected for known types
+
+  my_mysql_db:
+    type: mysql # or jdbc
+    host: "localhost"
+    port: 3306
+    database: "magedb"
+    user: "user"
+    password: "password"
+    # driver: "com.mysql.cj.jdbc.Driver"
+
+  local_filesystem:
+    type: file_system # A conceptual type, actual path used in write step
+    base_path: "/tmp/metaworkflows_output/" # Optional base path
+```
+Note: For production, always use a secure way to manage secrets (e.g., environment variables, HashiCorp Vault, AWS Secrets Manager).
+
+### 3. Define Your Job
+Create your job definition file, for example, jobs/etl/spark_job.yaml (using the example you provided):
+
+```
+# jobs/etl/spark_job.yaml
+job_name: process_sales_data_spark
+description: "ETL job to process sales data using Spark, transform with SQL, and write to object storage."
+version: "1.0"
+
+engine:
+  type: spark
+  config: # Spark specific configurations
+    spark.app.name: "SalesDataProcessing"
+    spark.master: "local[*]" # Or your cluster URL yarn, mesos, etc.
+    spark.executor.memory: "1g"
+    spark.driver.memory: "1g"
+    # Ensure necessary JDBC drivers are available for Spark
+    spark.jars.packages: "org.postgresql:postgresql:42.7.5,com.mysql:mysql-connector-j:8.3.0"
+
+steps:
+  - step_name: read_candidates_data
+    type: read
+    connector: database
+    connection_ref: "my_postgres_db" # Reference to connections.yaml
+    options:
+      query: "SELECT id, name, phone, date, address, city, region FROM public.candidates WHERE city <> 'Hạ Long'"
+    output_alias: "df_candidates"
+
+  - step_name: read_emp_banks
+    type: read
+    connector: database
+    connection_ref: "my_mysql_db"
+    options:
+      query: "SELECT id, id_emp, bank_acc, bank_name FROM mageai.emp_banks"
+    output_alias: "df_emp_banks"
+
+  - step_name: transform_candidates_full
+    type: transform
+    engine_specific:
+      spark_sql:
+        temp_views:
+          - alias: candidates
+            dataframe: "df_candidates"
+          - alias: emp_banks
+            dataframe: "df_emp_banks"
+        query: |
+          SELECT
+            c.*,
+            e.bank_acc,
+            e.bank_name
+          FROM candidates as c
+          LEFT JOIN emp_banks as e
+          on c.id = e.id_emp
+    input_aliases: ["df_candidates", "df_emp_banks"]
+    output_alias: "df_transformed_candidates_banks"
+
+  - step_name: write_transformed_data
+    type: write
+    connector: file # Could also be 'object_storage' or 'database'
+    connection_ref: "local_filesystem" # Refer to a connection if it provides base paths or credentials
+    input_alias: "df_transformed_candidates_banks"
+    options:
+      path: "processed_candidates/" # Relative to local_filesystem.base_path or absolute
+      format: "parquet"
+      mode: "overwrite"
+```
+
+### 4. Run the Pipeline
+Test job configuration file:
+```python
+from metaworkflows.utils import JobValidator
+
+print(JobValidator.validate_yaml_file("jobs/etl/your_job.yaml"))
+```
+
+To run an ETL job via the command line:
+
+```bash
+python -m metaworkflows.main run_job --job-path jobs/etl/your_job.yaml
+```
+
+Or programmatically from main file:
+
+```python
+from metaworkflows.core.pipeline import Pipeline
+from metaworkflows.core.job import Job
+
+# Ensure your current working directory is the project root
+job_definition = Job.from_yaml("jobs/etl/spark_job.yaml")
+pipeline = Pipeline(job_definition)
+pipeline.run()
+```
+
+## YAML Configuration Deep Dive
+
+### Job Definition (`job.yaml`)
+
+The core of MetaWorkflows is the job YAML file. It has the following main sections:
+
+*   **`job_name`**: (string) A unique identifier for your job.
+*   **`description`**: (string) A brief description of what the job does.
+*   **`version`**: (string) Version of the job definition.
+*   **`engine`**: (object) Defines the execution engine.
+    *   `type`: (string) The type of engine (e.g., `spark`).
+    *   `config`: (object) Engine-specific configurations. For Spark, these are standard Spark configurations (e.g., `spark.app.name`, `spark.master`, `spark.jars.packages`).
+*   **`steps`**: (list) A list of steps to be executed sequentially. Each step has:
+    *   `step_name`: (string) A unique name for the step.
+    *   `type`: (string) Type of operation: `read`, `transform`, `write`.
+    *   `connector`: (string, for `read`/`write` types) Specifies the connector type (e.g., `database`, `file`, `object_storage`).
+    *   `connection_ref`: (string, for `read`/`write` types) A reference to an entry in your `connections.yaml` file.
+    *   `options`: (object) Connector-specific options.
+        *   For `read` (database): `query` or `dbtable`.
+        *   For `read` (file): `path`, `format`, `header`, `inferSchema`, etc.
+        *   For `write` (file): `path`, `format`, `mode` (`overwrite`, `append`, `ignore`, `error`).
+    *   `output_alias`: (string) A name to register the output DataFrame of this step, making it available for subsequent steps.
+    *   `input_aliases`: (list of strings, for `transform`/`write` types) Specifies which previously aliased DataFrames are inputs to this step.
+    *   `engine_specific`: (object, for `transform` type) Contains transformation logic specific to the chosen engine.
+        *   For `spark_sql`:
+            *   `temp_views`: (list) Defines temporary views from input DataFrames. Each item has `alias` (view name) and `dataframe` (input alias).
+            *   `query`: (string) The SQL query to execute.
+
+### Connections (`connections.yaml`)
+```
+connections:
+  <connection_name_1>:
+    type: <connector_type> # e.g., postgresql, mysql, jdbc, s3, gcs, local_file_system
+    # ... type-specific parameters (host, port, user, password, bucket, etc.) ...
+  <connection_name_2>:
+    # ...
+```
+Using `connection_ref` in your job steps allows MetaWorkflows to look up these details.
+
+## Supported Components
+
+(As of current version - this section should be updated as the framework evolves)
+
+*   **Engines:**
+    *   Apache Spark
+*   **Connectors (for Read/Write):**
+    *   **Database:**
+        *   PostgreSQL (via JDBC)
+        *   MySQL (via JDBC)
+        *   Generic JDBC
+    *   **File System:**
+        *   Local files
+        *   Formats: Parquet, CSV (others can be added)
+    *   **Object Storage:** (Conceptual, to be implemented - e.g., S3, GCS, Azure Blob Storage)
+
+## License
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Roadmap (Potential Future Enhancements)
+
+*   Support for other execution engines (e.g., Pandas for smaller datasets, Dask for distributed Python)
+*   Wider range of built-in connectors (e.g., Kafka, S3, Google Cloud Storage, Azure Blob Storage, APIs)
+*   Schema validation and evolution capabilities
+*   Parameterization of jobs (passing runtime variables)
+*   Integration with orchestration tools (e.g., Apache Airflow)
+*   Support for more complex transformation types beyond SQL
+*   Visualization
