@@ -1,0 +1,46 @@
+# pyproject.toml
+# Purpose: Defines build system requirements and configures tools like Black, Pytest.
+
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.black]
+# Configuration for the Black code formatter
+line-length = 88
+target-version = ['py311', 'py312', 'py313']
+# include = '\.pyi?$'
+# exclude = '''
+# /(
+#     \.eggs         # exclude a few common directories in the
+#   | \.git          # root of the project
+#   | \.hg
+#   | \.mypy_cache
+#   | \.tox
+#   | \.venv
+#   | _build
+#   | buck-out
+#   | build
+#   | dist
+#   | node_modules
+# )/
+# '''
+
+# The [tool.flake8] section has been removed.
+
+[tool.pytest.ini_options]
+# Configuration for Pytest test runner
+minversion = "6.0"
+addopts = "-ra -q --cov=dep_guardian --cov-report=term-missing" # Show summary info, quiet, add coverage
+testpaths = [
+    "tests", # Directory where tests are located
+]
+pythonpath = "." # Add project root to PYTHONPATH for imports
+
+[tool.coverage.run]
+branch = true
+source = ["dep_guardian"]
+
+[tool.coverage.report]
+#fail_under = 80 # Optional: Fail CI if coverage drops below 80% (You had this commented, keeping it so)
+show_missing = true
