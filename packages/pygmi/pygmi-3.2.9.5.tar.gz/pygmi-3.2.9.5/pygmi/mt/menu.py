@@ -1,0 +1,140 @@
+# -----------------------------------------------------------------------------
+# Name:        menu.py (part of PyGMI)
+#
+# Author:      Patrick Cole
+# E-Mail:      pcole@geoscience.org.za
+#
+# Copyright:   (c) 2019 Council for Geoscience
+# Licence:     GPL-3.0
+#
+# This file is part of PyGMI
+#
+# PyGMI is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# PyGMI is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# -----------------------------------------------------------------------------
+"""MT Menu Routines."""
+
+from PySide6 import QtWidgets, QtGui
+
+from pygmi.mt import iodefs
+from pygmi.mt import dataprep
+from pygmi.mt import graphs
+from pygmi.mt import birrp
+
+
+class MenuWidget():
+    """
+    Widget class to call the main interface.
+
+    This widget class creates menus to be found on the main
+    interface. Normal as well as context menus are defined here.
+
+    Parameters
+    ----------
+    parent : pygmi.main.MainWidget, optional
+        Reference to MainWidget class found in main.py. Default is None.
+
+    """
+
+    def __init__(self, parent=None):
+
+        self.parent = parent
+        self.parent.add_to_context('MT - EDI')
+        context_menu = self.parent.context_menu
+
+        # Normal menus
+        self.menu = QtWidgets.QMenu('MT')
+        parent.menubar.addAction(self.menu.menuAction())
+
+        # self.action_birrp = QtGui.QAction('BIRRP - Beta')
+        # self.menu.addAction(self.action_birrp)
+        # self.action_birrp.triggered.connect(self.birrp)
+
+        self.menu.addSeparator()
+
+        self.action_import_data = QtGui.QAction('Import EDI Data')
+        self.menu.addAction(self.action_import_data)
+        self.action_import_data.triggered.connect(self.import_data)
+
+        self.menu.addSeparator()
+
+        self.action_rotate_data = QtGui.QAction('Rotate EDI Data')
+        self.menu.addAction(self.action_rotate_data)
+        self.action_rotate_data.triggered.connect(self.rotate_data)
+
+        self.action_sshift_data = QtGui.QAction('Remove Static Shift')
+        self.menu.addAction(self.action_sshift_data)
+        self.action_sshift_data.triggered.connect(self.sshift_data)
+
+        self.action_mi_data = QtGui.QAction('Mask and Interpolate')
+        self.menu.addAction(self.action_mi_data)
+        self.action_mi_data.triggered.connect(self.mi_data)
+
+        self.menu.addSeparator()
+
+        self.action_occam1d = QtGui.QAction('Occam 1D Inversion')
+        self.menu.addAction(self.action_occam1d)
+        self.action_occam1d.triggered.connect(self.occam1d)
+
+        # Context menus
+        context_menu['MT - EDI'].addSeparator()
+
+        self.action_metadata = QtGui.QAction('Display/Edit Metadata')
+        context_menu['MT - EDI'].addAction(self.action_metadata)
+        self.action_metadata.triggered.connect(self.metadata)
+
+        self.action_show_graphs = QtGui.QAction('Show Graphs')
+        context_menu['MT - EDI'].addAction(self.action_show_graphs)
+        self.action_show_graphs.triggered.connect(self.show_graphs)
+
+        self.action_export_data = QtGui.QAction('Export EDI')
+        context_menu['MT - EDI'].addAction(self.action_export_data)
+        self.action_export_data.triggered.connect(self.export_data)
+
+    def birrp(self):
+        """BIRRP."""
+        self.parent.item_insert('Step', 'BIRRP', birrp.BIRRP)
+
+    def export_data(self):
+        """Export data."""
+        self.parent.launch_context_item(iodefs.ExportEDI)
+
+    def import_data(self):
+        """Import data."""
+        self.parent.item_insert('Io', 'Import EDI Data', iodefs.ImportEDI)
+
+    def occam1d(self):
+        """Occam 1D inversion."""
+        self.parent.item_insert('Step', 'Occam 1D Inversion', dataprep.Occam1D)
+
+    def rotate_data(self):
+        """Rotate data."""
+        self.parent.item_insert('Step', 'Rotate EDI Data', dataprep.RotateEDI)
+
+    def sshift_data(self):
+        """Calculate Static Shift."""
+        self.parent.item_insert('Step', 'Static Shift EDI Data',
+                                dataprep.StaticShiftEDI)
+
+    def mi_data(self):
+        """Mask and interpolate data."""
+        self.parent.item_insert('Step', 'Mask and Interpolate EDI Data',
+                                dataprep.EditEDI)
+
+    def metadata(self):
+        """Metadata."""
+        self.parent.launch_context_item(dataprep.Metadata)
+
+    def show_graphs(self):
+        """Show graphs."""
+        self.parent.launch_context_item(graphs.PlotPoints)

@@ -1,0 +1,1886 @@
+# -----------------------------------------------------------------------------
+# Name:        iodefs.py (part of PyGMI)
+#
+# Author:      Patrick Cole
+# E-Mail:      pcole@geoscience.org.za
+#
+# Copyright:   (c) 2013 Council for Geoscience
+# Licence:     GPL-3.0
+#
+# This file is part of PyGMI
+#
+# PyGMI is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# PyGMI is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# -----------------------------------------------------------------------------
+"""Import and export routines for raster data."""
+
+import warnings
+import os
+import copy
+import datetime
+import xml.etree.ElementTree as ET
+from PySide6 import QtWidgets
+import numpy as np
+from natsort import natsorted
+import rasterio
+from rasterio.windows import Window
+from pyproj.crs import CRS
+
+from pygmi.raster.datatypes import Data
+from pygmi.raster.misc import lstack
+from pygmi.misc import ProgressBarText, ContextModule, BasicModule
+
+warnings.filterwarnings("ignore",
+                        category=rasterio.errors.NotGeoreferencedWarning)
+
+
+class BandSelect(ContextModule):
+    """
+    A combobox to select data bands.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle('Band Selection')
+
+        self.vbl = QtWidgets.QVBoxLayout()
+        self.setLayout(self.vbl)
+
+        self.lw_1 = QtWidgets.QListWidget()
+        self.lw_1.setSelectionMode(
+            QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
+
+        self.vbl.addWidget(self.lw_1)
+        self.buttonbox.htmlfile = 'raster.cm.selectbands'
+
+        # self.buttonbox = QtWidgets.QDialogButtonBox()
+        # self.buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        # self.buttonbox.setCenterButtons(True)
+        # self.buttonbox.setStandardButtons(
+        #     self.buttonbox.StandardButton.Cancel |
+        #     self.buttonbox.StandardButton.Ok)
+
+        self.vbl.addWidget(self.buttonbox)
+
+        # self.buttonbox.accepted.connect(self.accept)
+        # self.buttonbox.rejected.connect(self.reject)
+
+    def run(self):
+        """
+        Entry point into the routine, used to run context menu item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        self.parent.scene.selectedItems()[0].update_indata()
+        my_class = self.parent.scene.selectedItems()[0].my_class
+
+        data = my_class.indata.copy()
+
+        tmp = []
+        for i in data['Raster']:
+            tmp.append(i.dataid)
+        self.lw_1.clear()
+        self.lw_1.addItems(tmp)
+
+        if not tmp:
+            return False
+
+        tmp = self.exec()
+
+        if tmp != 1:
+            return False
+
+        atmp = [i.row() for i in self.lw_1.selectedIndexes()]
+
+        if atmp:
+            dtmp = []
+            for i in atmp:
+                dtmp.append(data['Raster'][i])
+            data['Raster'] = dtmp
+
+        my_class.indata = data
+        if hasattr(my_class, 'data_reset'):
+            my_class.data_reset()
+
+        if hasattr(my_class, 'data_init'):
+            my_class.data_init()
+
+        self.parent.scene.selected_item_info()
+        return True
+
+
+class ImportData(BasicModule):
+    """
+    Import Data GUI - Interfaces with rasterio routines.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+    ifile : str, optional
+        Input file. The default is ''.
+    filt : str, optional
+        File filter. The default is ''.
+
+    """
+
+    def __init__(self, parent=None, ifile='', filt=''):
+        super().__init__(parent)
+
+        self.ifile = ifile
+        self.filt = filt
+        self.is_import = True
+
+    def settings(self, nodialog=False):
+        """
+        Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        if not nodialog:
+            ext = ('Common formats (*.ers *.hdr *.tif *.tiff *.sdat *.img '
+                   '*.pix *.bil);;'
+                   'ArcGIS BIL (*.bil);;'
+                   'Arcinfo Binary Grid (hdr.adf);;'
+                   'ASCII with .hdr header (*.asc);;'
+                   'ASCII XYZ (*.xyz);;'
+                   'ENVI (*.hdr);;'
+                   'ESRI ASCII (*.asc);;'
+                   'ERMapper (*.ers);;'
+                   'ERDAS Imagine (*.img);;'
+                   'GeoPak grid (*.grd);;'
+                   'Geosoft UNCOMPRESSED grid (*.grd);;'
+                   'Geosoft (*.gxf);;'
+                   'GeoTIFF (*.tif *.tiff);;'
+                   'GMT netCDF grid (*.grd);;'
+                   'PCI Geomatics Database File (*.pix);;'
+                   'SAGA binary grid (*.sdat);;'
+                   'Surfer grid (*.grd);;'
+                   )
+
+            ifilelist, self.filt = QtWidgets.QFileDialog.getOpenFileNames(
+                self.parent, 'Open File(s)', '.', ext)
+            if not ifilelist:
+                return False
+
+            self.ifile = ifilelist.pop(0)
+
+            for ifile in ifilelist:
+                self.parent.item_insert('Io', 'Import Raster Data', ImportData,
+                                        ifile=ifile, filt=self.filt,
+                                        nodialog=True)
+
+        os.chdir(os.path.dirname(self.ifile))
+
+        if self.parent is not None:
+            self.parent.process_is_active(True)
+
+        if self.filt == 'GeoPak grid (*.grd)':
+            dat = get_geopak(self.ifile)
+        elif self.filt == 'Geosoft UNCOMPRESSED grid (*.grd)':
+            dat = get_geosoft(self.ifile)
+        elif self.filt == 'ASCII with .hdr header (*.asc)':
+            dat = get_ascii(self.ifile)
+        elif self.filt == 'ESRI ASCII (*.asc)':
+            dat = get_ascii(self.ifile)
+        elif self.filt == 'ASCII XYZ (*.xyz)':
+            nval = 0.0
+            nval, ok = QtWidgets.QInputDialog.getDouble(self.parent,
+                                                        'Null Value',
+                                                        'Enter Null Value',
+                                                        nval)
+            if not ok:
+                nval = 0.0
+            dat = get_raster(self.ifile, nval=nval, piter=self.piter,
+                             showlog=self.showlog)
+        else:
+            dat = get_raster(self.ifile, piter=self.piter,
+                             showlog=self.showlog)
+
+        if dat is None:
+            if self.filt == 'Geosoft UNCOMPRESSED grid (*.grd)':
+                QtWidgets.QMessageBox.warning(
+                    self.parent, 'Error',
+                    'Could not import the grid. Please make sure it is a '
+                    'Geosoft FLOAT grid, and not a compressed grid. You can '
+                    'export your grid to this format using the Geosoft '
+                    'Viewer.', QtWidgets.QMessageBox.StandardButton.Ok)
+            else:
+                QtWidgets.QMessageBox.warning(
+                    self.parent, 'Error', 'Could not import the data.',
+                    QtWidgets.QMessageBox.StandardButton.Ok)
+            return False
+
+        output_type = 'Raster'
+
+        if 'Cluster' in dat[0].dataid:
+            dat = clusterprep(dat)
+            output_type = 'Cluster'
+
+        self.outdata[output_type] = dat
+
+        if dat[0].crs is None:
+            self.showlog('Warning: Your data has no projection. '
+                         'Please add a projection in the Display/Edit '
+                         'Metadata interface.')
+
+        return True
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+        Returns
+        -------
+        None
+
+        """
+        self.saveobj(self.ifile)
+        self.saveobj(self.filt)
+
+
+class ImportRGBData(BasicModule):
+    """
+    Import RGB Image GUI- Interfaces with rasterio routines.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.is_import = True
+
+    def settings(self, nodialog=False):
+        """
+        Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        ext = 'GeoTIFF (*.tif)'
+
+        if not nodialog:
+            self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
+                self.parent, 'Open File', '.', ext)
+            if self.ifile == '':
+                return False
+
+        os.chdir(os.path.dirname(self.ifile))
+
+        dat = get_raster(self.ifile, piter=self.piter,
+                         showlog=self.showlog)
+
+        if dat is None:
+            QtWidgets.QMessageBox.warning(self.parent, 'Error',
+                                          'Could not import the image.',
+                                          QtWidgets.QMessageBox.StandardButton.Ok)
+            return False
+
+        if len(dat) < 3:
+            QtWidgets.QMessageBox.warning(self.parent, 'Error',
+                                          'Not RGB Image, less than 3 bands.',
+                                          QtWidgets.QMessageBox.StandardButton.Ok)
+            return False
+
+        output_type = 'Raster'
+
+        if len(dat) == 4:
+            dat2 = np.ma.transpose([dat[0].data.T, dat[1].data.T,
+                                    dat[2].data.T, dat[3].data.T])
+        else:
+            dat2 = np.ma.transpose([dat[0].data.T, dat[1].data.T,
+                                    dat[2].data.T])
+        dat = [dat[0]]
+        dat[0].data = dat2
+        dat[0].isrgb = True
+
+        if dat[0].data.dtype == np.uint16:
+            iidat = np.iinfo(dat[0].data.dtype)
+            dat[0].data = dat[0].data.astype(float)
+            dat[0].data = (dat[0].data - iidat.min) / (iidat.max - iidat.min)
+
+        self.outdata[output_type] = dat
+
+        return True
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.saveobj(self.ifile)
+
+
+def clusterprep(dat):
+    """
+    Prepare Cluster data from raster data.
+
+    Parameters
+    ----------
+    dat : list of pygmi.raster.datatypes.Data
+        List of PyGMI datasets.
+
+    Returns
+    -------
+    dat2 : list of pygmi.raster.datatypes.Data
+        List of PyGMI datasets.
+
+    """
+    dat2 = []
+    for i in dat:
+        if 'Cluster' in i.dataid and 'Membership' not in i.dataid:
+            numclus = int(i.data.max())
+            i.metadata['Cluster']['no_clusters'] = numclus
+            i.metadata['Cluster']['memdat'] = [[]] * numclus
+            for j in dat:
+                if 'Membership' in j.dataid and i.dataid in j.dataid:
+                    cnt = int(j.dataid.split(':')[0].split()[-1]) - 1
+                    i.metadata['Cluster']['memdat'][cnt] = j.data
+            dat2.append(i)
+
+    return dat2
+
+
+def get_ascii(ifile):
+    """
+    Import ascii raster dataset.
+
+    Parameters
+    ----------
+    ifile : str
+        filename to import
+
+    Returns
+    -------
+    dat : PyGMI raster Data
+        dataset imported
+    """
+    isESRI = False
+
+    with open(ifile, 'r', encoding='utf-8') as afile:
+        adata = afile.readline()
+
+    # The test below is valid since we only read the first line.
+    if 'ncols' in adata:
+        isESRI = True
+
+    if isESRI:
+        with open(ifile, 'r', encoding='utf-8') as afile:
+            adata = afile.read()
+
+        adata = adata.split()
+
+        nbands = 1
+        ncols = int(adata[1])
+        nrows = int(adata[3])
+        xdim = float(adata[9])
+        ydim = float(adata[9])
+        nval = adata[11]
+
+        if nval == 'None':
+            nval = None
+        else:
+            nval = float(nval)
+
+        ulxmap = float(adata[5])
+        ulymap = float(adata[7]) + ydim * nrows
+        if 'center' in adata[4].lower():
+            ulxmap = ulxmap - xdim / 2
+        if 'center' in adata[6].lower():
+            ulymap = ulymap - ydim / 2
+        adata = adata[12:]
+    else:
+        with open(ifile[:-3] + 'hdr', 'r', encoding='utf-8') as hfile:
+            tmp = hfile.readlines()
+
+        xdim = float(tmp[0].split()[-1])
+        ydim = float(tmp[1].split()[-1])
+        ncols = int(tmp[2].split()[-1])
+        nrows = int(tmp[3].split()[-1])
+        nbands = int(tmp[4].split()[-1])
+        ulxmap = float(tmp[5].split()[-1])
+        ulymap = float(tmp[6].split()[-1])
+        nval = -9999.0
+
+        adata = np.loadtxt(ifile)
+
+    bandid = ifile[:-4].rsplit('/')[-1]
+
+    adata = np.array(adata, dtype=float)
+    adata.shape = (nrows, ncols)
+
+    if nbands > 1:
+        warnings.warn('PyGMI only supports single band ASCII files. '
+                      'Only first band will be exported.')
+
+    dat = [Data()]
+    i = 0
+
+    dat[i].data = np.ma.masked_equal(adata, nval)
+    if dat[i].data.mask.size == 1:
+        dat[i].data.mask = (np.ma.make_mask_none(dat[i].data.shape) +
+                            dat[i].data.mask)
+
+    dat[i].dataid = bandid
+    dat[i].nodata = nval
+    dat[i].filename = ifile
+
+    xmin = ulxmap
+    ymax = ulymap
+
+    dat[i].set_transform(xdim, xmin, ydim, ymax)
+
+    dat[i].crs = CRS.from_string('LOCAL_CS["Arbitrary",UNIT["metre",1,'
+                                 'AUTHORITY["EPSG","9001"]],'
+                                 'AXIS["Easting",EAST],'
+                                 'AXIS["Northing",NORTH]]')
+
+    return dat
+
+
+def get_raster(ifile, *, nval=None, piter=None, showlog=print,
+               iraster=None, driver=None, bounds=None,
+               tnames=None, metaonly=False, out_shape=None):
+    """
+    Get raster dataset.
+
+    This function loads a raster dataset off the disk using the rasterio
+    libraries. It returns the data in a PyGMI data object.
+
+    Parameters
+    ----------
+    ifile : str
+        filename to import
+    nval : float, optional
+        Nodata/null value. The default is None.
+    piter : function, optional
+        progress bar iterable, default is None.
+    showlog : function, optional
+        Routine to show text messages. The default is print.
+    iraster : None or tuple
+        Incremental raster import, to import a section of a file.
+        The tuple is (xoff, yoff, xsize, ysize). The default is None.
+    driver : str
+        GDAL raster driver name. The default is None.
+    bounds : tuple
+        Bounds of data to import as (left, bottom, right, top)
+    tnames : list, optional
+        list of band names to import, in order. The default is None.
+    metaonly : bool, optional
+        Retrieve only the metadata for the file. The default is False.
+    out_shape : tuple, optional
+        Tuple describing the output array's shape.
+
+    Returns
+    -------
+    dat : list of pygmi.raster.datatypes.Data
+        Raster dataset imported
+    """
+    # Exclusions
+    if 'AG1' in ifile and 'h5' in ifile.lower():
+        return None
+
+    if piter is None:
+        piter = ProgressBarText().iter
+
+    dat = []
+    bname = os.path.basename(ifile).rpartition('.')[0]
+    ext = ifile[-3:]
+    custom_wkt = ''
+    filename = ifile
+
+    # ENVI Case
+    if ext == 'hdr':
+        ifile = ifile[:-4]
+        if os.path.exists(ifile + '.dat'):
+            ifile = ifile + '.dat'
+        elif os.path.exists(ifile + '.raw'):
+            ifile = ifile + '.raw'
+        elif os.path.exists(ifile + '.img'):
+            ifile = ifile + '.img'
+        elif not os.path.exists(ifile):
+            return None
+    # ER Mapper case
+    if ext == 'ers':
+        with open(ifile, encoding='utf-8') as f:
+            metadata = f.read()
+            if 'STMLO' in metadata:
+                clong = metadata.split('STMLO')[1][:2]
+
+                if 'CAPE' in metadata:
+                    custom_wkt = ('PROJCS["Cape / TM' + clong + '",'
+                                  'GEOGCS["Cape",'
+                                  'DATUM["Cape",'
+                                  'SPHEROID["Clarke 1880 (Arc)",'
+                                  '6378249.145,293.4663077,'
+                                  'AUTHORITY["EPSG","7013"]],'
+                                  'AUTHORITY["EPSG","6222"]],'
+                                  'PRIMEM["Greenwich",0,'
+                                  'AUTHORITY["EPSG","8901"]],'
+                                  'UNIT["degree",0.0174532925199433,'
+                                  'AUTHORITY["EPSG","9122"]],'
+                                  'AUTHORITY["EPSG","4222"]],'
+                                  'PROJECTION["Transverse_Mercator"],'
+                                  'PARAMETER["latitude_of_origin",0],'
+                                  'PARAMETER["central_meridian",' +
+                                  clong + '],'
+                                  'PARAMETER["scale_factor",1],'
+                                  'PARAMETER["false_easting",0],'
+                                  'PARAMETER["false_northing",0],'
+                                  'UNIT["metre",1,AUTHORITY["EPSG","9001"]],'
+                                  'AXIS["Easting",EAST],'
+                                  'AXIS["Northing",NORTH]]')
+
+                elif 'WGS84' in metadata:
+                    custom_wkt = ('PROJCS["Hartebeesthoek94 / TM' + clong + '",'
+                                  'GEOGCS["Hartebeesthoek94",'
+                                  'DATUM["Hartebeesthoek94",'
+                                  'SPHEROID["WGS 84",6378137,298.257223563,'
+                                  'AUTHORITY["EPSG","7030"]],'
+                                  'AUTHORITY["EPSG","6148"]],'
+                                  'PRIMEM["Greenwich",0,'
+                                  'AUTHORITY["EPSG","8901"]],'
+                                  'UNIT["degree",0.0174532925199433,'
+                                  'AUTHORITY["EPSG","9122"]],'
+                                  'AUTHORITY["EPSG","4148"]],'
+                                  'PROJECTION["Transverse_Mercator"],'
+                                  'PARAMETER["latitude_of_origin",0],'
+                                  'PARAMETER["central_meridian",' +
+                                  clong + '],'
+                                  'PARAMETER["scale_factor",1],'
+                                  'PARAMETER["false_easting",0],'
+                                  'PARAMETER["false_northing",0],'
+                                  'UNIT["metre",1,AUTHORITY["EPSG","9001"]],'
+                                  'AXIS["Easting",EAST],'
+                                  'AXIS["Northing",NORTH]]')
+
+    envimeta = {}
+    rdate = datetime.datetime(1900, 1, 1)
+    try:
+        with rasterio.open(ifile, driver=driver) as dataset:
+            if dataset is None:
+                return None
+            # allns = dataset.tag_namespaces()
+
+            gmeta = dataset.tags()
+            istruct = dataset.tags(ns='IMAGE_STRUCTURE')
+            driver = dataset.driver
+            if 'TIFFTAG_DATETIME' in gmeta:
+                dtimestr = gmeta['TIFFTAG_DATETIME']
+                rdate = datetime.datetime.strptime(dtimestr,
+                                                   '%Y:%m:%d %H:%M:%S')
+
+            if driver == 'ENVI':
+                envimeta = dataset.tags(ns='ENVI')
+                if 'fwhm' in envimeta:
+                    envimeta['fwhm'] = [float(i) for i in
+                                        envimeta['fwhm'][1:-1].split(',')]
+
+            if nval is None:
+                nval = dataset.nodata
+
+    except rasterio.errors.RasterioIOError:
+        return None
+
+    dtype = rasterio.band(dataset, 1).dtype
+
+    if bounds is not None:
+        xdim, ydim = dataset.res
+        xmin, ymin, xmax, ymax = dataset.bounds
+        xmin1, ymin1, xmax1, ymax1 = bounds
+
+        if xmin1 >= xmax or xmax1 <= xmin or ymin1 >= ymax or ymax1 <= ymin:
+            showlog('Warning: No data in polygon.')
+            return None
+
+        xmin2 = max(xmin, xmin1)
+        ymin2 = max(ymin, ymin1)
+        xmax2 = min(xmax, xmax1)
+        ymax2 = min(ymax, ymax1)
+
+        xoff = int((xmin2 - xmin) // xdim)
+        yoff = int((ymax - ymax2) // ydim)
+
+        xsize = int((xmax2 - xmin2) // xdim)
+        ysize = int((ymax2 - ymin2) // xdim)
+
+        iraster = (xoff, yoff, xsize, ysize)
+        newbounds = (xmin + xoff * xdim,
+                     ymax - yoff * ydim - ysize * ydim,
+                     xmin + xoff * xdim + xsize * xdim,
+                     ymax - yoff * ydim)
+    elif iraster is not None:
+        xdim, ydim = dataset.res
+        xmin, ymin, xmax, ymax = dataset.bounds
+        xoff, yoff, xsize, ysize = iraster
+        newbounds = (xmin + xoff * xdim,
+                     ymax - yoff * ydim - ysize * ydim,
+                     xmin + xoff * xdim + xsize * xdim,
+                     ymax - yoff * ydim)
+    else:
+        newbounds = None
+
+    # Projection
+    if custom_wkt == '' and dataset.crs is not None:
+        custom_wkt = dataset.crs.to_wkt()
+    if custom_wkt != '':
+        crs = CRS.from_string(custom_wkt)
+    else:
+        # showlog('Warning: Your data does not have a projection. '
+        #         'Assigning local coordinate system.')
+        crs = CRS.from_string('LOCAL_CS["Arbitrary",UNIT["metre",1,'
+                              'AUTHORITY["EPSG","9001"]],'
+                              'AXIS["Easting",EAST],'
+                              'AXIS["Northing",NORTH]]')
+
+    # Perform BIL or BIP with internal routine, because its faster.
+    isbil = False
+    datin = None
+    if ('INTERLEAVE' in istruct and driver in ['ENVI', 'ERS', 'EHdr'] and
+            tnames is None and metaonly is False):
+        interleave = istruct['INTERLEAVE']
+        if interleave in ['LINE', 'PIXEL']:
+            isbil = True
+            cols = dataset.width
+            rows = dataset.height
+            bands = dataset.count
+            datin = get_bil(ifile, bands, cols, rows, dtype, piter=piter,
+                            iraster=iraster, interleave=interleave)
+
+    with rasterio.open(ifile) as dataset:
+        for i in piter(range(dataset.count)):
+            index = dataset.indexes[i]
+            bandid = dataset.descriptions[i]
+            dest = dataset.tags(index)
+            for j in ['Wavelength', 'WAVELENGTH']:
+                if j in dest:
+                    dest['wavelength'] = dest[j]
+                    del dest[j]
+
+            if 'AcquisitionDate' in dest:
+                dtimestr = dest['AcquisitionDate']
+                rdate = datetime.datetime.strptime(dtimestr,
+                                                   '%Y-%m-%d %H:%M:%S')
+
+            if bandid == '' or bandid is None:
+                bandid = 'Band ' + str(index) + ' ' + bname
+
+            if tnames is not None and bandid not in tnames:
+                continue
+
+            dat.append(Data())
+
+            # Determine units
+            if dataset.units[i] is not None:
+                dat[-1].units = dataset.units[i]
+
+            # Get data
+            try:
+                if isbil is True and metaonly is False:
+                    dat[-1].data = datin[i]
+                elif iraster is None and metaonly is False:
+                    dat[-1].data = dataset.read(index, out_shape=out_shape)
+                elif metaonly is False:
+                    xoff, yoff, xsize, ysize = iraster
+                    dat[-1].data = dataset.read(index,
+                                                window=Window(xoff, yoff,
+                                                              xsize, ysize),
+                                                out_shape=out_shape)
+            except rasterio.errors.RasterioIOError:
+                showlog('Error: Problem reading the file.')
+                return None
+
+            # Set Null Value
+            if nval is None:
+                nval = dataset.nodata
+            if dtype == 'float32':
+                nval = np.float32(nval)
+
+            if nval is not None and np.isnan(nval):
+                nval = None
+
+            if ('int' not in dataset.meta['dtype'] and nval is None and
+                    ext == 'ers'):
+                nval = 1e+20
+
+            if 'int' not in dataset.meta['dtype'] and nval is not None:
+                nval = float(nval)
+                if nval not in dat[-1].data and np.isclose(dat[-1].data.min(),
+                                                           nval):
+                    nval = dat[-1].data.min()
+                    showlog(f'{bandid}: Adjusting nodata value to {nval}')
+
+                if nval not in dat[-1].data and np.isclose(dat[-1].data.max(),
+                                                           nval):
+                    nval = dat[-1].data.max()
+                    showlog(f'{bandid}: Adjusting nodata value to {nval}')
+
+            if ext == 'ers' and nval == -1.0e+32 and metaonly is False:
+                dat[-1].data[dat[-1].data <= nval] = -1.0e+32
+
+            if metaonly is False:
+                dat[-1].data = np.ma.masked_invalid(dat[-1].data)
+                dat[-1].data = dat[-1].data.filled(nval)
+                dat[-1].data = np.ma.masked_equal(dat[-1].data, nval)
+                dat[-1].data.set_fill_value(nval)
+                rows = None
+                cols = None
+            else:
+                rows = dataset.height
+                cols = dataset.width
+
+            if newbounds is not None:
+                xmin, _, _, ymax = newbounds
+                xdim, ydim = dataset.res
+                dat[-1].set_transform(xdim, xmin, ydim, ymax,
+                                      rows=rows, cols=cols)
+            else:
+                dat[-1].set_transform(transform=dataset.transform,
+                                      rows=rows, cols=cols)
+
+            if driver == 'netCDF' and dataset.crs is None:
+                if 'x#actual_range' in gmeta and 'y#actual_range' in gmeta:
+                    xrng = gmeta['x#actual_range']
+                    xrng = xrng.strip('}{').split(',')
+                    xrng = [float(i) for i in xrng]
+                    xmin = min(xrng)
+                    xdim = (xrng[1] - xrng[0]) / cols
+
+                    yrng = gmeta['y#actual_range']
+                    yrng = yrng.strip('}{').split(',')
+                    yrng = [float(i) for i in yrng]
+                    ymin = min(yrng)
+                    ydim = (yrng[1] - yrng[0]) / rows
+                    dat[-1].set_transform(xdim, xmin, ydim, ymin)
+
+            dat[-1].dataid = bandid
+            dat[-1].nodata = nval
+            dat[-1].filename = filename
+            dat[-1].crs = crs
+            dat[-1].meta = dataset.meta
+            dat[-1].datetime = rdate
+
+            if 'wavelength' in dest:
+                dest['wavelength'] = float(dest['wavelength'])
+                dest['wavelength_units'] = 'nanometers'
+
+                if 'fwhm' in envimeta:
+                    dest['fwhm'] = envimeta['fwhm'][index - 1]
+                    dest['WavelengthMin'] = dest['wavelength'] - \
+                        dest['fwhm'] / 2
+                    dest['WavelengthMax'] = dest['wavelength'] + \
+                        dest['fwhm'] / 2
+
+                # Convert micrometers to nanometers
+                if dest['wavelength'] < 100.:
+                    dest['wavelength'] = dest['wavelength'] * 1000.
+                    if 'fwhm' in dest:
+                        dest['fwhm'] = dest['fwhm'] * 1000.
+                    if 'WavelengthMin' in dest:
+                        dest['WavelengthMin'] = dest['WavelengthMin'] * 1000
+                        dest['WavelengthMax'] = dest['WavelengthMax'] * 1000
+
+            if '.raw' in ifile and 'reflectance_scale_factor' not in envimeta:
+                dest['reflectance_scale_factor'] = 10000.
+            if 'reflectance scale factor' in envimeta:
+                dest['reflectance_scale_factor'] = envimeta['reflectance scale factor']
+            elif 'reflectance_scale_factor' in envimeta:
+                dest['reflectance_scale_factor'] = envimeta['reflectance_scale_factor']
+
+            dat[-1].metadata['Raster'].update(dest)
+
+    return dat
+
+
+def get_bil(ifile, bands, cols, rows, dtype, *, piter=iter, iraster=None,
+            interleave='LINE'):
+    """
+    Get BIL format file.
+
+    This routine is called from get_raster
+
+    Parameters
+    ----------
+    ifile : str
+        filename to import
+    bands : int
+        Number of bands.
+    cols : int
+        Number of columns.
+    rows : int
+        Number of rows.
+    dtype : data type
+        Data type.
+    piter : function
+        progress bar iterable.
+    iraster : None or tuple
+        Incremental raster import, to import a section of a file.
+        The tuple is (xoff, yoff, xsize, ysize). The default is None.
+    interleave : str
+        Band interleave. Default is 'LINE'
+
+    Returns
+    -------
+    datin : PyGMI raster Data
+        dataset imported
+
+    """
+    if iraster is not None:
+        xoff, yoff, xsize, ysize = iraster
+    else:
+        xoff = 0
+        yoff = 0
+        ysize = rows
+        xsize = cols
+
+    dtype = np.dtype(dtype)
+    dsize = dtype.itemsize
+
+    count = bands * cols * ysize
+    offset = yoff * dsize
+
+    icount = count // 10
+    datin = []
+    for _ in piter(range(0, 10)):
+        tmp = np.fromfile(ifile, dtype=dtype, sep='', count=icount,
+                          offset=offset)
+        offset += icount * dsize
+        datin.append(tmp)
+
+    extra = int(count - offset / dsize)
+    if extra > 0:
+        tmp = np.fromfile(ifile, dtype=dtype, sep='', count=extra,
+                          offset=offset)
+        datin.append(tmp)
+
+    datin = np.concatenate(datin)
+
+    if interleave == 'LINE':
+        datin.shape = (ysize, bands, cols)
+        datin = np.swapaxes(datin, 0, 1)
+    else:
+        datin.shape = (ysize, cols, bands)
+        datin = np.moveaxis(datin, [0, 1, 2], [1, 2, 0])
+
+    if iraster is not None:
+        datin = datin[:, :, xoff:xoff + xsize]
+
+    return datin
+
+
+def get_geopak(hfile):
+    """
+    Geopak Import.
+
+    Parameters
+    ----------
+    hfile : str
+        filename to import
+
+    Returns
+    -------
+    dat : list of pygmi.raster.datatypes.Data
+        PyGMI raster dataset.
+
+    """
+    with open(hfile, 'rb') as fin:
+        fall = fin.read()
+
+    off = 0
+    fnew = []
+    while off < len(fall):
+        off += 1
+        breclen = np.frombuffer(fall, dtype=np.uint8, count=1, offset=off)[0]
+
+        if breclen == 130:
+            break
+
+        reclen = breclen
+
+        if breclen == 129:
+            reclen = 128
+
+        off += 1
+
+        fnew.append(fall[off:off + reclen])
+        off += reclen
+
+    fnew = b''.join(fnew)
+    header = np.frombuffer(fnew, dtype=np.float32, count=32, offset=0)
+
+#     Lines in grid      1
+#     Points per line    2
+#     Grid factor        3
+#     Grid base value    4
+#     Grid X origin      5
+#     Grid Y origin      6
+#     Grid rotation      7
+#     Grid dummy value   8
+#     Map scale          9
+#     Cell size (X)     10
+#     Cell size (Y)     11
+#     Inches/unit       12
+#     Grid X offset     13
+#     Grid Y offset     14
+#     Grid hdr version  15
+#
+#     Lines in grid     17
+#     Points per line   18
+#     Grid factor       21
+#     Grid base value   22
+#     Z maximum         23
+#     Z minimum         24
+#
+#     Grid dummy value  26
+
+    nrows = int(header[0])
+    ncols = int(header[1])
+    gfactor = header[2]
+    gbase = header[3]
+    x0 = header[4]
+    y0 = header[5]
+    # rotation = header[6]
+    nval = header[7]
+    # mapscale = header[8]
+    dx = header[9]
+    dy = header[10]
+    # inches_per_unit = header[11]
+    # xoffset = header[12]
+    # yoffset = header[13]
+    # hver = header[14]
+    # zmax = header[22]
+    # zmin = header[23]
+
+    data = np.frombuffer(fnew, dtype=np.int16,
+                         count=(nrows * ncols), offset=128)
+
+    data = np.ma.masked_equal(data, nval)
+    data = data / gfactor + gbase
+    data.shape = (nrows, ncols)
+    data = data[::-1]
+
+    dat = []
+    dat.append(Data())
+    i = 0
+
+    dat[i].data = data
+    dat[i].dataid = hfile[:-4]
+
+    dat[i].nodata = nval
+
+    xmin = x0
+    ymax = y0 + dy * nrows
+
+    dat[i].set_transform(dx, xmin, dy, ymax)
+
+    dat[i].filename = hfile
+    dat[i].crs = CRS.from_string('LOCAL_CS["Arbitrary",UNIT["metre",1,'
+                                 'AUTHORITY["EPSG","9001"]],'
+                                 'AXIS["Easting",EAST],'
+                                 'AXIS["Northing",NORTH]]')
+
+    return dat
+
+
+def get_geosoft(hfile):
+    """
+    Get Geosoft file.
+
+    Parameters
+    ----------
+    ifile : str
+        filename to import
+
+    Returns
+    -------
+    dat : list of pygmi.raster.datatypes.Data
+        Dataset imported
+    """
+    with open(hfile, mode='rb') as f:
+
+        es = np.fromfile(f, dtype=np.int32, count=1)[0]  # 4
+        sf = np.fromfile(f, dtype=np.int32, count=1)[0]  # signf
+        # ne - number of elements per vector or ncols
+        ncols = np.fromfile(f, dtype=np.int32, count=1)[0]  # ncol/ne
+        # nv - number of vectors or nrows
+        nrows = np.fromfile(f, dtype=np.int32, count=1)[0]  # nrow/nv
+        kx = np.fromfile(f, dtype=np.int32, count=1)[0]  # 1
+
+        dx = np.fromfile(f, dtype=np.float64, count=1)[0]  # dx
+        dy = np.fromfile(f, dtype=np.float64, count=1)[0]  # dy
+        x0 = np.fromfile(f, dtype=np.float64, count=1)[0]  # xllcor
+        y0 = np.fromfile(f, dtype=np.float64, count=1)[0]  # yllcor
+        rot = np.fromfile(f, dtype=np.float64, count=1)[0]  # rot
+        zbase = np.fromfile(f, dtype=np.float64, count=1)[0]  # zbase
+        zmult = np.fromfile(f, dtype=np.float64, count=1)[0]  # zmult
+
+        label = np.fromfile(f, dtype='a48', count=1)[0]
+        mapno = np.fromfile(f, dtype='a16', count=1)[0]
+
+        proj = np.fromfile(f, dtype=np.int32, count=1)[0]
+        unitx = np.fromfile(f, dtype=np.int32, count=1)[0]
+        unity = np.fromfile(f, dtype=np.int32, count=1)[0]
+        unitz = np.fromfile(f, dtype=np.int32, count=1)[0]
+        nvpts = np.fromfile(f, dtype=np.int32, count=1)[0]
+        izmin = np.fromfile(f, dtype=np.int32, count=1)[0]
+        izmax = np.fromfile(f, dtype=np.int32, count=1)[0]
+        izmed = np.fromfile(f, dtype=np.int32, count=1)[0]
+        izmea = np.fromfile(f, dtype=np.int32, count=1)[0]
+
+        zvar = np.fromfile(f, dtype=np.float64, count=1)[0]
+
+        prcs = np.fromfile(f, dtype=np.int32, count=1)[0]
+
+        temspc = np.fromfile(f, dtype='a324', count=1)[0]
+
+        if es == 2:
+            nval = -32767
+            data = np.fromfile(f, dtype=np.int16, count=nrows * ncols)
+
+        elif es == 4:
+            data = np.fromfile(f, dtype=np.float32, count=nrows * ncols)
+            nval = np.float32(-1.0E+32)
+
+        # elif es > 1024:
+        #     esb = es-1024
+        #     sig = np.fromfile(f, dtype=np.int32, count=1)[0]
+        #     comp_type = np.fromfile(f, dtype=np.int32, count=1)[0]
+        #     nb = np.fromfile(f, dtype=np.int32, count=1)[0]
+        #     vpb = np.fromfile(f, dtype=np.int32, count=1)[0]
+
+        #     ob = np.fromfile(f, dtype=np.int64, count=nb)
+        #     cbs = np.fromfile(f, dtype=np.int32, count=nb)
+
+        #     for i in range(nb):
+        #         blk = f.read(cbs[i])
+        #         blk2 = lzrw1.decompress_chunk(blk)
+
+        else:
+            return None
+
+        data = np.ma.masked_equal(data, nval)
+
+        data = data / zmult + zbase
+        data.shape = (nrows, ncols)
+        data = data[::-1]
+
+    dat = []
+    dat.append(Data())
+    i = 0
+
+    dat[i].data = data
+    dat[i].dataid = hfile[:-4]
+    dat[i].nodata = nval
+
+    xmin = x0
+    ymax = y0 + dy * nrows
+
+    dat[i].set_transform(dx, xmin, dy, ymax)
+    dat[i].filename = hfile
+
+    dat[i].crs = CRS.from_string('LOCAL_CS["Arbitrary",UNIT["metre",1,'
+                                 'AUTHORITY["EPSG","9001"]],'
+                                 'AXIS["Easting",EAST],'
+                                 'AXIS["Northing",NORTH]]')
+
+    return dat
+
+
+class ExportData(ContextModule):
+    """
+    Export Data GUI.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    Attributes
+    ----------
+    ofile : str
+        output file name.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self.ofile = ''
+        self.ofilt = ''
+        self.exportdata = None
+
+        self.cmb_ofilt = QtWidgets.QComboBox()
+        self.le_ofile = QtWidgets.QLineEdit('')
+        self.cb_bandsort = QtWidgets.QCheckBox('Sort output bands')
+        self.lw_1 = QtWidgets.QListWidget()
+
+        self.setupui()
+
+    def setupui(self):
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
+        gl_main = QtWidgets.QGridLayout(self)
+        self.buttonbox.htmlfile = 'raster.cm.export'
+        pb_ofile = QtWidgets.QPushButton('Output File')
+
+        self.cb_bandsort.setChecked(False)
+        self.lw_1.setSelectionMode(
+            QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
+
+        self.setWindowTitle(r'Export Raster Data')
+
+        gl_main.addWidget(self.le_ofile, 0, 0, 1, 1)
+        gl_main.addWidget(pb_ofile, 0, 1, 1, 1)
+
+        gl_main.addWidget(QtWidgets.QLabel('Output Bands:'), 1, 0, 1, 2)
+        gl_main.addWidget(self.lw_1, 2, 0, 1, 2)
+        gl_main.addWidget(self.cb_bandsort, 3, 0, 1, 2)
+
+        gl_main.addWidget(self.buttonbox, 8, 0, 1, 4)
+
+        self.buttonbox.buttonbox.accepted.connect(self.acceptall)
+        pb_ofile.pressed.connect(self.get_ofile)
+
+    def run(self):
+        """
+        Entry point into the routine, used to run context menu item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        self.process_is_active(True)
+
+        if 'Cluster' in self.indata:
+            data = self.indata['Cluster']
+            newdat = [i.copy() for i in data]
+            for i in data:
+                if 'memdat' not in i.metadata['Cluster']:
+                    continue
+                for j, val in enumerate(i.metadata['Cluster']['memdat']):
+                    tmp = copy.deepcopy(i)
+                    tmp.memdat = None
+                    tmp.data = val
+                    tmp.dataid = ('Membership of class ' + str(j + 1) +
+                                  ': ' + tmp.dataid)
+                    newdat.append(tmp)
+            self.exportdata = newdat
+
+        elif 'Raster' in self.indata:
+            self.exportdata = self.indata['Raster']
+        else:
+            self.showlog('No raster data')
+            self.parent.process_is_active(False)
+            return
+
+        tmp = []
+        for i in self.exportdata:
+            tmp.append(i.dataid)
+        self.lw_1.clear()
+        self.lw_1.addItems(tmp)
+
+        for i in range(self.lw_1.count()):
+            item = self.lw_1.item(i)
+            item.setSelected(True)
+
+        self.exec()
+
+    def acceptall(self):
+        """Accept choice."""
+        self.hide()
+        if self.ofile == '':
+            self.showlog('No output file')
+            return
+
+        os.chdir(os.path.dirname(self.ofile))
+
+        self.showlog('Export Data Busy...')
+
+        atmp = [i.row() for i in self.lw_1.selectedIndexes()]
+
+        if atmp:
+            dtmp = []
+            for i in atmp:
+                dtmp.append(self.exportdata[i])
+            data = dtmp
+        else:
+            self.showlog('No bands selected')
+            return
+
+        filt = self.ofilt
+        # Pop up save dialog box
+        if filt == 'ArcInfo ASCII (*.asc)':
+            self.export_ascii(data)
+        if filt == 'ASCII XYZ (*.xyz)':
+            self.export_ascii_xyz(data)
+        if filt == 'Geosoft (*.gxf)':
+            self.export_gxf(data)
+        if filt == 'Surfer grid (*.grd)':
+            self.export_surfer(data)
+        if filt == 'ERDAS Imagine (*.img)':
+            export_raster(self.ofile, data, drv='HFA', piter=self.piter,
+                          showlog=self.showlog)
+        if filt == 'ERMapper (*.ers)':
+            export_raster(self.ofile, data, drv='ERS', piter=self.piter,
+                          showlog=self.showlog)
+        if filt == 'SAGA binary grid (*.sdat)':
+            if len(data) > 1:
+                for i, dat in enumerate(data):
+                    file_out = self.get_filename(dat, 'sdat')
+                    export_raster(file_out, [dat], drv='SAGA',
+                                  piter=self.piter,
+                                  showlog=self.showlog)
+            else:
+                export_raster(self.ofile, data, drv='SAGA', piter=self.piter,
+                              showlog=self.showlog,
+                              bandsort=self.cb_bandsort.isChecked())
+        if 'GeoTIFF' in filt:
+            if 'ZSTD' in filt:
+                compression = 'ZSTD'
+            elif 'DEFLATE' in filt:
+                compression = 'DEFLATE'
+            else:
+                compression = 'NONE'
+            export_raster(self.ofile, data, drv='GTiff', piter=self.piter,
+                          compression=compression, showlog=self.showlog)
+        if filt == 'ENVI (*.hdr)':
+            export_raster(self.ofile, data, drv='ENVI', piter=self.piter,
+                          showlog=self.showlog)
+        if filt == 'ArcGIS BIL (*.bil)':
+            export_raster(self.ofile, data, drv='EHdr', piter=self.piter,
+                          showlog=self.showlog)
+
+        self.showlog('Export Data Finished!')
+        self.process_is_active(False)
+
+        self.accept()
+
+    def export_gxf(self, data):
+        """
+        Export GXF data.
+
+        Parameters
+        ----------
+        data : PyGMI raster Data
+            dataset to export
+
+        Returns
+        -------
+        None.
+
+        """
+        if len(data) > 1:
+            self.showlog('Band names will be appended to the output '
+                         'filenames since you have a multiple band '
+                         'image')
+
+        file_out = self.ofile.rpartition('.')[0] + '.gxf'
+        for k in data:
+            if len(data) > 1:
+                file_out = self.get_filename(k, 'gxf')
+
+            with open(file_out, 'w', encoding='utf-8') as fno:
+                xmin = k.extent[0]
+                ymin = k.extent[2]
+
+                krows, kcols = k.data.shape
+
+                fno.write('#TITLE\n')
+                fno.write('Export Data')
+                fno.write('\n#POINTS\n')
+                fno.write(str(kcols))
+                fno.write('\n#ROWS\n')
+                fno.write(str(krows))
+                fno.write('\n#PTSEPARATION\n')
+                fno.write(str(k.xdim))
+                fno.write('\n#RWSEPARATION\n')
+                fno.write(str(k.ydim))
+                fno.write('\n#XORIGIN\n')
+                fno.write(str(xmin))
+                fno.write('\n#YORIGIN\n')
+                fno.write(str(ymin))
+                fno.write('\n#SENSE\n')
+                fno.write('1')
+                fno.write('\n#DUMMY\n')
+                fno.write(str(k.nodata))
+                fno.write('\n#GRID\n')
+                tmp = k.data.filled(k.nodata)
+
+                for i in range(k.data.shape[0] - 1, -1, -1):
+                    kkk = 0
+                    # write only 5 numbers in a row
+                    for j in range(k.data.shape[1]):
+                        if kkk == 5:
+                            kkk = 0
+                        if kkk == 0:
+                            fno.write('\n')
+
+                        fno.write(str(tmp[i, j]) + '  ')
+                        kkk += 1
+
+    def export_surfer(self, data):
+        """
+        Routine to export a surfer binary grid.
+
+        Parameters
+        ----------
+        data : PyGMI raster Data
+            dataset to export
+
+        Returns
+        -------
+        None.
+
+        """
+        if len(data) > 1:
+            self.showlog('Band names will be appended to the output '
+                         'filenames since you have a multiple band '
+                         'image')
+
+        file_out = self.ofile.rpartition('.')[0] + '.grd'
+        for k0 in data:
+            k = k0.copy()
+            if len(data) > 1:
+                file_out = self.get_filename(k, 'grd')
+
+            k.data = k.data.filled(1.701410009187828e+38)
+            k.nodata = 1.701410009187828e+38
+
+            export_raster(file_out, [k], drv='GS7BG', piter=self.piter)
+
+    def export_ascii(self, data):
+        """
+        Export ASCII file.
+
+        Parameters
+        ----------
+        data : PyGMI raster Data
+            dataset to export
+
+        Returns
+        -------
+        None.
+
+        """
+        if len(data) > 1:
+            self.showlog('Band names will be appended to the output '
+                         'filenames since you have a multiple band '
+                         'image')
+
+        file_out = self.ofile.rpartition('.')[0] + '.asc'
+        for k in data:
+            if len(data) > 1:
+                file_out = self.get_filename(k, 'asc')
+            with open(file_out, 'w', encoding='utf-8') as fno:
+                extent = k.extent
+                xmin = extent[0]
+                ymin = extent[2]
+                krows, kcols = k.data.shape
+
+                fno.write('ncols \t\t\t' + str(kcols))
+                fno.write('\nnrows \t\t\t' + str(krows))
+                fno.write('\nxllcorner \t\t\t' + str(xmin))
+                fno.write('\nyllcorner \t\t\t' + str(ymin))
+                fno.write('\ncellsize \t\t\t' + str(k.xdim))
+                fno.write('\nnodata_value \t\t' + str(k.nodata))
+
+                tmp = k.data.filled(k.nodata)
+                krows, kcols = k.data.shape
+
+                for j in range(krows):
+                    fno.write('\n')
+                    for i in range(kcols):
+                        fno.write(str(tmp[j, i]) + ' ')
+
+    def export_ascii_xyz(self, data):
+        """
+        Export and xyz file.
+
+        Parameters
+        ----------
+        data : PyGMI raster Data
+            dataset to export
+
+        Returns
+        -------
+        None.
+
+        """
+        if len(data) > 1:
+            self.showlog('Band names will be appended to the output '
+                         'filenames since you have a multiple band '
+                         'image')
+
+        file_out = self.ofile.rpartition('.')[0] + '.xyz'
+        for k in data:
+            if len(data) > 1:
+                file_out = self.get_filename(k, 'xyz')
+            with open(file_out, 'w', encoding='utf-8') as fno:
+                tmp = k.data.filled(k.nodata)
+
+                xmin = k.extent[0]
+                ymax = k.extent[-1]
+                krows, kcols = k.data.shape
+
+                for j in range(krows):
+                    for i in range(kcols):
+                        fno.write(str(xmin + i * k.xdim) + ' ' +
+                                  str(ymax - j * k.ydim) + ' ' +
+                                  str(tmp[j, i]) + '\n')
+
+    def get_filename(self, data, ext):
+        """
+        Get a valid filename in the case of multi band image.
+
+        Parameters
+        ----------
+        data : PyGMI raster Data
+            dataset to get filename from
+        ext : str
+            filename extension to use
+
+        Returns
+        -------
+        file_out : str
+            Output filename.
+
+        """
+        file_band = data.dataid.strip('"')
+        file_band = file_band.replace('/', '')
+        file_band = file_band.replace(':', '')
+
+        file_out = self.ofile.rpartition('.')[0] + '_' + file_band + '.' + ext
+
+        return file_out
+
+    def get_ofile(self):
+        """Get output directory."""
+        ext = ('GeoTIFF compressed using DEFLATE (*.tif);;'
+               'GeoTIFF compressed using ZSTD (*.tif);;'
+               'GeoTIFF (*.tif);;'
+               'ENVI (*.hdr);;'
+               'ERMapper (*.ers);;'
+               'Geosoft (*.gxf);;'
+               'ERDAS Imagine (*.img);;'
+               'SAGA binary grid (*.sdat);;'
+               'Surfer grid (*.grd);;'
+               'ArcInfo ASCII (*.asc);;'
+               'ASCII XYZ (*.xyz);;'
+               'ArcGIS BIL (*.bil)')
+
+        self.ofile, self.ofilt = QtWidgets.QFileDialog.getSaveFileName(
+            self.parent, 'Save File', '.', ext)
+        if self.ofile == '':
+            self.parent.process_is_active(False)
+            return
+
+        self.le_ofile.setText(self.ofile)
+
+
+def export_raster(ofile, dat, *, drv='GTiff', piter=None, compression='NONE',
+                  bandsort=True, showlog=print, updatestats=True):
+    """
+    Export to rasterio format.
+
+    Parameters
+    ----------
+    ofile : str
+        Output file name.
+    dat : list or dictionary of PyGMI raster Data
+        dataset to export
+    drv : str
+        name of the rasterio driver to use
+    piter : function, optional
+        Progressbar iterable. The default is None.
+    compression : str, optional
+        Compression for GeoTIFF. Can be NONE, DEFLATE or ZSTD. The default is
+        NONE.
+    bandsort : bool, optional
+        sort the bands by dataid. The default is True
+    showlog : function, optional
+        Show information using a function. The default is print.
+    updatestats : bool, optional
+        Update statistics in exported file.
+
+    Returns
+    -------
+    None.
+
+    """
+    if piter is None:
+        piter = ProgressBarText().iter
+
+    if isinstance(dat, dict):
+        dat2 = []
+        for i in dat:
+            dat2.append(dat[i])
+    else:
+        dat2 = dat
+
+    data = lstack(dat2, piter=piter, nodeepcopy=True)
+
+    # Sort in band order.
+    if bandsort is True:
+        dataid = [i.dataid for i in data]
+        data = [i for _, i in natsorted(zip(dataid, data))]
+
+    dtype = data[0].data.dtype
+    nodata = data[0].nodata
+    trans = data[0].transform
+    crs = data[0].crs
+
+    if dtype == np.int64:
+        for i in data:
+            i.data = i.data.astype(np.int32)
+        dtype = data[0].data.dtype
+
+    if nodata is not None:
+        try:
+            nodata = dtype.type(nodata)
+        except OverflowError:
+            showlog(f'Invalid nodata for {dtype}, resetting to None')
+            nodata = None
+
+    if trans is None:
+        trans = rasterio.transform.from_origin(data[0].extent[0],
+                                               data[0].extent[3],
+                                               data[0].xdim, data[0].ydim)
+
+    tmp = os.path.splitext(ofile)
+
+    xfile = None
+    if drv == 'GTiff':
+        tmpfile = tmp[0] + '.tif'
+    elif drv == 'EHdr':
+        dtype = np.float32
+        tmpfile = tmp[0] + '.bil'
+    elif drv == 'GSBG':
+        tmpfile = tmp[0] + '.grd'
+        dtype = np.float32
+    elif drv == 'SAGA':
+        tmpfile = tmp[0] + '.sdat'
+        nodata = -99999.0
+    elif drv == 'HFA':
+        tmpfile = tmp[0] + '.img'
+        updatestats = False
+    elif drv == 'ENVI':
+        tmpfile = tmp[0] + '.dat'
+    elif drv == 'ERS':
+        tmpfile = tmp[0]
+        xfile = tmpfile + '.ers.aux.xml'
+    else:
+        tmpfile = ofile
+
+    drows, dcols = data[0].data.shape
+
+    kwargs = {}
+    if drv == 'GTiff':
+        kwargs = {'COMPRESS': compression,
+                  'ZLEVEL': '1',
+                  'BIGTIFF': 'IF_SAFER',
+                  # 'BIGTIFF': 'YES',
+                  'INTERLEAVE': 'BAND',
+                  'TFW': 'YES',
+                  'PROFILE': 'GeoTIFF'}
+        # if compression == 'NONE':
+        #     kwargs['BIGTIFF'] = 'IF_NEEDED'
+        if compression == 'ZSTD':
+            kwargs['ZSTD_LEVEL'] = '1'
+        if dtype in (np.float32, np.float64):
+            kwargs['PREDICTOR'] = '3'
+        else:
+            kwargs['PREDICTOR'] = '2'
+        if compression == 'JPEG':
+            kwargs['TILED'] = 'YES'
+            kwargs['JPEG_QUALITY'] = '75'
+            # kwargs['PHOTOMETRIC'] = 'YCBCR'
+            # kwargs['INTERLEAVE'] = 'PIXEL'
+
+    with rasterio.open(tmpfile, 'w', driver=drv,
+                       width=int(dcols), height=int(drows), count=len(data),
+                       dtype=dtype, transform=trans, crs=crs,
+                       nodata=nodata, **kwargs) as out:
+        numbands = len(data)
+        wavelength = []
+        fwhm = []
+
+        for i in piter(range(numbands)):
+            datai = data[i]
+
+            out.set_band_description(i + 1, datai.dataid)
+            out.set_band_unit(i + 1, datai.units)
+
+            if nodata is None:
+                dtmp = datai.data
+            else:
+                dtmp = np.ma.array(datai.data)
+                dtmp.set_fill_value(nodata)
+                dtmp = dtmp.filled()
+
+            out.write(dtmp, i + 1)
+
+            del dtmp
+
+            if 'Raster' in datai.metadata:
+                rmeta = datai.metadata['Raster']
+
+                out.update_tags(i + 1, **rmeta)
+
+                if 'wavelength' in rmeta:
+                    # out.update_tags(i+1, wavelength=str(rmeta['wavelength']))
+                    wavelength.append(rmeta['wavelength'])
+
+                # if 'fwhm' in rmeta:
+                #     fwhm.append(rmeta['fwhm'])
+
+                # if 'reflectance_scale_factor' in rmeta:
+                #     out.update_tags(i+1,
+                #                     reflectance_scale_factor=str(rmeta['reflectance_scale_factor']))
+
+                # if 'WavelengthMin' in rmeta:
+                #     out.update_tags(i+1,
+                #                     WavelengthMin=str(rmeta['WavelengthMin']))
+                #     out.update_tags(i+1,
+                #                     WavelengthMax=str(rmeta['WavelengthMax']))
+
+                if datai.datetime != datetime.datetime(1900, 1, 1):
+                    adatetxt = datai.datetime.strftime('%Y-%m-%d %H:%M:%S')
+                    out.update_tags(i + 1, AcquisitionDate=adatetxt)
+
+                if updatestats is True:
+                    out.update_tags(i + 1, STATISTICS_EXCLUDEDVALUES='')
+
+    if updatestats is True:
+        dcov = None  # Disabled because it uses too much memory.
+        # dcov = calccov(data, showlog)
+
+        if xfile is None:
+            xfile = tmpfile + '.aux.xml'
+        tree = ET.parse(xfile)
+        root = tree.getroot()
+
+        # showlog('Calculating statistics...')
+        # for child in piter(root):
+        for child in piter(root.findall('PAMRasterBand')):
+            band = int(child.attrib['band']) - 1
+            datai = data[band]
+            if np.ma.is_masked(datai.data):
+                donly = datai.data.compressed()
+            else:
+                donly = datai.data.flatten()
+            donly = np.ma.masked_invalid(donly)
+            donly = donly.compressed()
+
+            if donly.size == 0:
+                showlog(f'No data in band {band + 1}, skipping '
+                        'statistics for this band')
+                continue
+
+            # Histogram section
+            dhist = np.histogram(donly, 256)
+            dmin = str(dhist[1][0])
+            dmax = str(dhist[1][-1])
+            dhist = str(dhist[0].tolist()).replace(', ', '|')[1:-1]
+
+            hist = ET.SubElement(child, 'Histograms')
+            histitem = ET.SubElement(hist, 'HistItem')
+            ET.SubElement(histitem, 'HistMin').text = dmin
+            ET.SubElement(histitem, 'HistMax').text = dmax
+            ET.SubElement(histitem, 'BucketCount').text = '256'
+            ET.SubElement(histitem, 'IncludeOutOfRange').text = '1'
+            ET.SubElement(histitem, 'Approximate').text = '0'
+            ET.SubElement(histitem, 'HistCounts').text = dhist
+
+            # Metadata, statistics
+            dmin = str(donly.min())
+            dmax = str(donly.max())
+            dmean = str(donly.mean())
+            dmedian = str(np.median(donly))
+            dstd = str(donly.std())
+
+            meta = child.find('Metadata')
+            if meta is None:
+                meta = ET.SubElement(child, 'Metadata')
+            if dcov is not None:
+                dcovi = str(dcov[:, band].tolist()).replace(' ', '')[1:-1]
+                ET.SubElement(meta, 'MDI',
+                              key='STATISTICS_COVARIANCES').text = dcovi
+            # ET.SubElement(meta, 'MDI', key='STATISTICS_EXCLUDEDVALUES')
+            ET.SubElement(meta, 'MDI', key='STATISTICS_MAXIMUM').text = dmax
+            ET.SubElement(meta, 'MDI', key='STATISTICS_MEAN').text = dmean
+            ET.SubElement(meta, 'MDI', key='STATISTICS_MEDIAN').text = dmedian
+            ET.SubElement(meta, 'MDI', key='STATISTICS_MINIMUM').text = dmin
+            ET.SubElement(meta, 'MDI', key='STATISTICS_SKIPFACTORX').text = '1'
+            ET.SubElement(meta, 'MDI', key='STATISTICS_SKIPFACTORY').text = '1'
+            ET.SubElement(meta, 'MDI', key='STATISTICS_STDDEV').text = dstd
+
+            # meta[:] = sorted(meta, key=lambda x: x.tag)
+            child[:] = sorted(child, key=lambda x: x.tag)
+
+        ET.indent(tree)
+        tree.write(xfile, encoding='utf-8')
+
+    if drv == 'ENVI':
+        wout = ''
+        if wavelength:
+            wout = str(wavelength)
+            wout = wout.replace('[', '{')
+            wout = wout.replace(']', '}')
+            wout = wout.replace("'", '')
+            wout = 'wavelength = ' + wout + '\n'
+            wout += 'wavelength_units = nanometers\n'
+
+        if fwhm:
+            fwhm = str(fwhm)
+            fwhm = fwhm.replace('[', '{')
+            fwhm = fwhm.replace(']', '}')
+            fwhm = fwhm.replace("'", '')
+
+            wout += 'fwhm = ' + fwhm + '\n'
+        if 'reflectance_scale_factor' in datai.metadata['Raster']:
+            wout += ('reflectance scale factor = ' +
+                     str(datai.metadata['Raster']['reflectance_scale_factor']) +
+                     '\n')
+
+        with open(tmpfile[:-4] + '.hdr', 'a', encoding='utf-8') as myfile:
+            myfile.write(wout)
+
+
+def calccov(data, showlog=print):
+    """
+    Calculate covariance from PyGMI Data.
+
+    This routine assumes all bands are co-located, with the same size.
+    Otherwise, run lstack first.
+
+    Parameters
+    ----------
+    data : list of pygmi.raster.datatypes.Data
+        List of PyGMI data.
+    showlog : function, optional
+        Show information using a function. The default is print.
+
+    Returns
+    -------
+    dcov : numpy array
+        Covariances.
+
+    """
+    showlog('Calculating covariances...')
+
+    mask = np.ma.getmaskarray(data[0].data)
+    for band in data:
+        mask2 = np.ma.getmaskarray(band.data)
+        mask = np.logical_or(mask, mask2)
+
+    data2 = []
+    for band in data:
+        data2.append(band.data[~mask])
+
+    try:
+        dcov = np.cov(data2)
+    except MemoryError:
+        showlog('Cannot calculate covariance: ran out of memory')
+        return None
+
+    del data2
+
+    if dcov.size == 1:
+        dcov.shape = (1, 1)
+
+    return dcov
+
+
+def _filespeedtest():
+    """Test."""
+    import sys
+    from pygmi.misc import getinfo
+
+    _ = QtWidgets.QApplication(sys.argv)
+
+    print('Starting')
+
+    ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.hdr"
+    ifile = r"D:\2621CC_ESRI_TRUE_COLOUR_geo.tif"
+    # ifile = ifile[:-4]+'_zstd.tif'
+
+    # dat = get_ascii(ifile)
+
+    dataset = get_raster(ifile)
+
+    print(dataset[0].data.max())
+    # return
+
+    getinfo('Start')
+
+    # export_raster(ifile[:-4]+'_NONE.tif', dataset, 'GTiff')  # 65s
+    # export_raster(ifile[:-4]+'_PACKBITS.tif', dataset, 'GTiff', compression='PACKBITS')  # 82s
+    # export_raster(ifile[:-4]+'_LZW.tif', dataset, 'GTiff', compression='LZW') # 132
+    # export_raster(ifile[:-4]+'_LZWA.tif', dataset, 'GTiff', compression='LZMA')  #>900s
+    # export_raster(ifile[:-4]+'_ZSTD.tif', dataset, 'GTiff', compression='ZSTD')  # 74s
+
+    # export_raster(ifile[:-4]+'_DEFLATE.tif', dataset, 'GTiff', compression='DEFLATE', bandsort=True)  # 104s, 4,246,330
+    # export_raster(ifile[:-4]+'_JPEG75.tif', dataset, 'GTiff', compression='JPEG')
+    # export_raster(ifile[:-4]+'_JXL.tif', dataset, 'GTiff', compression='JXL')
+
+    tmp = ExportData()
+    tmp.indata['Raster'] = dataset
+    tmp.run()
+
+    getinfo('End')
+
+
+if __name__ == "__main__":
+    _filespeedtest()
