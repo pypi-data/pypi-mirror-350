@@ -1,0 +1,107 @@
+Metadata-Version: 2.4
+Name: py2hackCraft
+Version: 0.1.0
+Summary: Python client library for hackCraft2
+Home-page: https://github.com/0x48lab/hackCraft2-python
+Author: masafumi_t
+Author-email: masafumi_t@0x48lab.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: websocket-client>=1.6.0
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# py2hackCraft
+
+Python client library for hackCraft2
+
+## ドキュメント
+
+詳細なAPIリファレンスと使用例は[ドキュメント](https://github.com/0x48lab/hackCraft2-python)を参照してください。
+
+## デプロイ手順
+
+### 事前準備
+
+1. PyPIアカウントの設定
+   - [PyPI](https://pypi.org)でアカウントを作成（まだの場合）
+   - Account Settings → API tokens で新しいトークンを生成
+   - トークンをGitHubリポジトリのSecretsに追加
+     - GitHubリポジトリの Settings → Secrets → New repository secret
+     - 名前: `PYPI_API_TOKEN`
+     - 値: PyPIで生成したトークン
+
+2. パッケージ情報の更新
+   - `setup.py`の以下の項目を確認・更新
+     - `version`: 新しいバージョン番号（セマンティックバージョニング推奨）
+     - `author`: 作者名
+     - `author_email`: 連絡先メールアドレス
+     - `url`: GitHubリポジトリのURL
+     - `description`: パッケージの説明
+   - `README.md`の更新（必要に応じて）
+   - ドキュメントの更新（必要に応じて）
+
+### デプロイ方法
+
+1. 変更をコミット
+   ```bash
+   git add .
+   git commit -m "Update package information and documentation"
+   git push origin main
+   ```
+
+2. 新しいバージョンのタグを作成してプッシュ
+   ```bash
+   git tag v0.1.0  # バージョン番号を適切に設定
+   git push origin v0.1.0
+   ```
+
+3. GitHub Actionsの実行
+   - タグがプッシュされると、自動的にGitHub Actionsが実行されます
+   - Actionsタブでデプロイの進行状況を確認できます
+   - 成功すると、新しいバージョンがPyPIに公開されます
+   - ドキュメントがGitHub Pagesに自動的にデプロイされます
+
+### 注意事項
+
+- バージョン番号は必ず更新してください（同じバージョンでの再デプロイはできません）
+- PyPIトークンは安全に管理し、GitHub Secretsとして保存してください
+- デプロイ前に`setup.py`と`README.md`の内容が正しいことを確認してください
+- テストを実行して、パッケージが正しく動作することを確認してください
+- ドキュメントの更新が必要な場合は、`docs/`ディレクトリ内のファイルを編集してください
+
+## インストール方法
+
+```bash
+pip install py2hackCraft
+```
+
+## 使用方法
+
+```python
+from py2hackCraft.modules import Player, Volume, LocationFactory
+
+# プレイヤーの接続
+player = Player("your_name")
+player.login("localhost", 25570)
+
+# エンティティの取得と操作
+entity = player.get_entity("entity_name")
+entity.set_event_area(Volume.local(10, 10, 10, -10, -10, -10))
+
+# その他の操作...
+```
+
+## ライセンス
+
+MIT License
