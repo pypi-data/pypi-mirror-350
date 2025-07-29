@@ -1,0 +1,141 @@
+Metadata-Version: 2.2
+Name: assistants-framework
+Version: 0.6.9
+Summary: AI Assistant Framework with CLI and Telegram Bot
+Author-email: Michael Jarvis <nihilok@jarv.dev>
+License: MIT License
+Project-URL: Homepage, https://github.com/nihilok/assistants
+Project-URL: Bug Tracker, https://github.com/nihilok/assistants/issues
+Keywords: openai,gpt3,gpt3.5,gpt4,o1,chatgpt,chatbot,assistant,assistants,claude,anthropic,cli,telegram,llm,bot,ui,tui,coding-assistant,coding,programming
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: openai==1.71.0
+Requires-Dist: aiosqlite==0.20.0
+Requires-Dist: loguru==0.7.3
+Requires-Dist: pyperclip==1.9.0
+Requires-Dist: prompt-toolkit==3.0.48
+Requires-Dist: pygments-tsx==1.0.3
+Requires-Dist: pyyaml==6.0.2
+Requires-Dist: anthropic==0.49.0
+Requires-Dist: aiofiles==24.1.0
+Requires-Dist: aiohttp==3.11.11
+Requires-Dist: setproctitle==1.3.5
+Requires-Dist: tiktoken==0.9.0
+Requires-Dist: pydantic~=2.9.2
+Provides-Extra: telegram
+Requires-Dist: python-telegram-bot==21.10; extra == "telegram"
+Provides-Extra: dev
+Requires-Dist: black; extra == "dev"
+Requires-Dist: isort; extra == "dev"
+Requires-Dist: flake8; extra == "dev"
+Requires-Dist: pytest==8.3.4; extra == "dev"
+Requires-Dist: pytest-mock; extra == "dev"
+
+# Assistants Framework
+
+A flexible framework for creating AI assistants with multiple frontend interfaces.
+
+## Features
+
+- **Multi-Front-End Support**: CLI and Telegram interfaces built on the same core framework
+- **CLI Features**: Code highlighting, thread management, editor integration, file input, image generation
+- **Multiple LLM Support**: OpenAI (`gpt-*`, `o*`), Anthropic (`claude-*`), and image generation (DALL-E)
+
+## Installation
+
+Requires Python 3.10+
+
+```bash
+pip install assistants-framework
+```
+
+For Telegram bot functionality:
+
+```bash
+pip install assistants-framework[telegram]
+```
+
+Add commands to your PATH:
+
+```bash
+ai-cli install
+```
+
+
+
+## Usage
+
+### Command Line Interface
+
+```bash
+ai-cli --help
+```
+
+Key CLI commands (prefixed with `/`):
+- `/help` - Show help message
+- `/editor` - Open editor for prompt composition
+- `/image <prompt>` - Generate an image
+- `/copy` - Copy response to clipboard
+- `/new` - Start new thread
+- `/threads` - List and select threads
+- `/last` - Retrieve last message
+
+Use the `claude` command for Anthropic models (Now defaults to Claude 4):
+
+```bash
+claude -e  # Open editor for Claude
+```
+
+Rebuild the database:
+
+```bash
+ai-cli rebuild
+```
+
+### Telegram Interface
+
+The framework includes a Telegram bot interface with the following features:
+
+- **User Management**: Authorize/deauthorize users and chats, promote/demote users
+- **Thread Management**: Start new conversation threads
+- **Auto-Reply Toggle**: Enable/disable automatic responses
+- **Media Generation**: Generate images from text prompts
+- **Voice Responses**: Generate audio responses with the `/voice` command
+
+Key Telegram commands:
+- `/new_thread` - Clear conversation history and start a new thread
+- `/auto_reply` - Toggle automatic responses on/off
+- `/image <prompt>` - Generate an image from a text prompt
+- `/voice <text>` - Generate an audio response.
+
+## Environment Variables
+
+- `ASSISTANT_INSTRUCTIONS` - System message (default: "You are a helpful assistant")
+- `ASSISTANTS_API_KEY_NAME` - API key variable name (default: `OPENAI_API_KEY`)
+- `ANTHROPIC_API_KEY_NAME` - Anthropic API key variable (default: `ANTHROPIC_API_KEY`)
+- `DEFAULT_MODEL` - Default model (default: `gpt-4o-mini`)
+- `CODE_MODEL` - Reasoning model (default: `o3-mini`)
+- `IMAGE_MODEL` - Image model (default: `dall-e-3`)
+- `ASSISTANTS_DATA_DIR` - Data directory (default: `~/.local/share/assistants`)
+- `ASSISTANTS_CONFIG_DIR` - Config directory (default: `~/.config/assistants`)
+- `TG_BOT_TOKEN` - Telegram bot token
+- `OPEN_IMAGES_IN_BROWSER` - Open images automatically (default: `true`)
+- `DEFAULT_MAX_RESPONSE_TOKENS` - Default max response tokens (default: `4096`)
+- `DEFAULT_MAX_HISTORY_TOKENS` - Default max history tokens (default: `10000`)
+
+## Contributing
+
+Contributions welcome! Fork the repository, make changes, and submit a pull request.
+
+#### TODOs:
+- Improved conversation handling/truncation for token limits
+- Additional model/API support
+- Additional database support
+
+## License
+
+MIT License
