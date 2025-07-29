@@ -1,0 +1,81 @@
+site_name: Blackfish
+site_url: https://princeton-ddss.github.io/blackfish
+repo_url: https://github.com/princeton-ddss/blackfish
+copyright: Copyright &copy; 2024 Colin Swaney and The Trustees of Princeton University
+theme:
+  name: "material"
+  logo: assets/img/logo.png
+  favicon: assets/img/favicon.png
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+      primary:  white
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-2
+        name: Switch to light mode
+      primary:  white
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.footer
+    - content.footnote.tooltips
+    - content.code.copy
+    - content.code.select
+    - content.code.annotate
+nav:
+  - 'Home': 'index.md'
+  - 'Getting Started': 'getting_started.md'
+  - 'Examples':
+    - Text Generation: 'examples/text_generation.md'
+    - Speech Recognition: 'examples/speech_recognition.md'
+  - 'Platform': 'admin_guide.md'
+  - 'Contributing':
+    - Guidelines: 'contrib/guidelines.md'
+    - 'Developer Guide': 'contrib/developer_guide.md'
+  - 'API Documentation':
+    - 'Jobs': 'api/jobs.md'
+    - 'Services': 'api/services.md'
+    - 'OpenAPI (Swagger)': 'api/swagger.md'
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            docstring_section_style: list
+            show_root_heading: true
+            show_source: false
+            show_signature_annotations: true
+  # - git-revision-date-localized:
+  #     enable_creation_date: true
+  - swagger-ui-tag:
+      supportedSubmitMethods: []
+  - mike
+markdown_extensions:
+  - footnotes
+  - admonition
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+extra:
+  version:
+    provider: mike
+  consent:
+    title: Cookie consent
+    description: >-
+      We use cookies to recognize your repeated visits and preferences, as well
+      as to measure the effectiveness of our documentation and whether users
+      find what they're searching for. With your consent, you're helping us to
+      make our documentation better.
+extra_css:
+  - assets/css/extra.css
