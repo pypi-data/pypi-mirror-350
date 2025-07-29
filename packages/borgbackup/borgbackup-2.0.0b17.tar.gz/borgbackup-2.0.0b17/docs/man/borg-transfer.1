@@ -1,0 +1,190 @@
+.\" Man page generated from reStructuredText.
+.
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.TH "BORG-TRANSFER" "1" "2025-05-22" "" "borg backup tool"
+.SH NAME
+borg-transfer \- archives transfer from other repository, optionally upgrade data format
+.SH SYNOPSIS
+.sp
+borg [common options] transfer [options]
+.SH DESCRIPTION
+.sp
+This command transfers archives from one repository to another repository.
+Optionally, it can also upgrade the transferred data.
+Optionally, it can also recompress the transferred data.
+Optionally, it can also re\-chunk the transferred data using different chunker parameters.
+.sp
+It is easiest (and fastest) to give \fB\-\-compression=COMPRESSION \-\-recompress=never\fP using
+the same COMPRESSION mode as in the SRC_REPO \- borg will use that COMPRESSION for metadata (in
+any case) and keep data compressed \(dqas is\(dq (saves time as no data compression is needed).
+.sp
+If you want to globally change compression while transferring archives to the DST_REPO,
+give \fB\-\-compress=WANTED_COMPRESSION \-\-recompress=always\fP\&.
+.sp
+The default is to transfer all archives.
+.sp
+You could use the misc. archive filter options to limit which archives it will
+transfer, e.g. using the \fB\-a\fP option. This is recommended for big
+repositories with multiple data sets to keep the runtime per invocation lower.
+.SS General purpose archive transfer
+.sp
+Transfer borg2 archives into a related other borg2 repository:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.EX
+# create a related DST_REPO (reusing key material from SRC_REPO), so that
+# chunking and chunk id generation will work in the same way as before.
+borg \-\-repo=DST_REPO repo\-create \-\-encryption=DST_ENC \-\-other\-repo=SRC_REPO
+
+# transfer archives from SRC_REPO to DST_REPO
+borg \-\-repo=DST_REPO transfer \-\-other\-repo=SRC_REPO \-\-dry\-run  # check what it would do
+borg \-\-repo=DST_REPO transfer \-\-other\-repo=SRC_REPO            # do it!
+borg \-\-repo=DST_REPO transfer \-\-other\-repo=SRC_REPO \-\-dry\-run  # check! anything left?
+.EE
+.UNINDENT
+.UNINDENT
+.SS Data migration / upgrade from borg 1.x
+.sp
+To migrate your borg 1.x archives into a related, new borg2 repository, usage is quite similar
+to the above, but you need the \fB\-\-from\-borg1\fP option:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.EX
+borg \-\-repo=DST_REPO repocreate \-\-encryption=DST_ENC \-\-other\-repo=SRC_REPO \-\-from\-borg1
+
+# to continue using lz4 compression as you did in SRC_REPO:
+borg \-\-repo=DST_REPO transfer \-\-other\-repo=SRC_REPO \-\-from\-borg1 \e
+     \-\-compress=lz4 \-\-recompress=never
+
+# alternatively, to recompress everything to zstd,3:
+borg \-\-repo=DST_REPO transfer \-\-other\-repo=SRC_REPO \-\-from\-borg1 \e
+     \-\-compress=zstd,3 \-\-recompress=always
+
+# to re\-chunk using different chunker parameters:
+borg \-\-repo=DST_REPO transfer \-\-other\-repo=SRC_REPO \e
+     \-\-chunker\-params=buzhash,19,23,21,4095
+.EE
+.UNINDENT
+.UNINDENT
+.SH OPTIONS
+.sp
+See \fIborg\-common(1)\fP for common options of Borg commands.
+.SS options
+.INDENT 0.0
+.TP
+.B  \-n\fP,\fB  \-\-dry\-run
+do not change repository, just check
+.TP
+.BI \-\-other\-repo \ SRC_REPOSITORY
+transfer archives from the other repository
+.TP
+.B  \-\-from\-borg1
+other repository is borg 1.x
+.TP
+.BI \-\-upgrader \ UPGRADER
+use the upgrader to convert transferred data (default: no conversion)
+.TP
+.BI \-C \ COMPRESSION\fR,\fB \ \-\-compression \ COMPRESSION
+select compression algorithm, see the output of the \(dqborg help compression\(dq command for details.
+.TP
+.BI \-\-recompress \ MODE
+recompress data chunks according to \fIMODE\fP and \fB\-\-compression\fP\&. Possible modes are \fIalways\fP: recompress unconditionally; and \fInever\fP: do not recompress (faster: re\-uses compressed data chunks w/o change).If no MODE is given, \fIalways\fP will be used. Not passing \-\-recompress is equivalent to \(dq\-\-recompress never\(dq.
+.TP
+.BI \-\-chunker\-params \ PARAMS
+rechunk using given chunker parameters (ALGO, CHUNK_MIN_EXP, CHUNK_MAX_EXP, HASH_MASK_BITS, HASH_WINDOW_SIZE) or \fIdefault\fP to use the chunker defaults. default: do not rechunk
+.UNINDENT
+.SS Archive filters
+.INDENT 0.0
+.TP
+.BI \-a \ PATTERN\fR,\fB \ \-\-match\-archives \ PATTERN
+only consider archives matching all patterns. see \(dqborg help match\-archives\(dq.
+.TP
+.BI \-\-sort\-by \ KEYS
+Comma\-separated list of sorting keys; valid keys are: timestamp, archive, name, id, tags, host, user; default is: timestamp
+.TP
+.BI \-\-first \ N
+consider first N archives after other filters were applied
+.TP
+.BI \-\-last \ N
+consider last N archives after other filters were applied
+.TP
+.BI \-\-oldest \ TIMESPAN
+consider archives between the oldest archive\(aqs timestamp and (oldest + TIMESPAN), e.g. 7d or 12m.
+.TP
+.BI \-\-newest \ TIMESPAN
+consider archives between the newest archive\(aqs timestamp and (newest \- TIMESPAN), e.g. 7d or 12m.
+.TP
+.BI \-\-older \ TIMESPAN
+consider archives older than (now \- TIMESPAN), e.g. 7d or 12m.
+.TP
+.BI \-\-newer \ TIMESPAN
+consider archives newer than (now \- TIMESPAN), e.g. 7d or 12m.
+.UNINDENT
+.SH EXAMPLES
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.EX
+# 0. Have borg 2.0 installed on client AND server, have a b12 repo copy for testing.
+
+# 1. Create a new \(dqrelated\(dq repository:
+# here, the existing borg 1.2 repo used repokey\-blake2 (and aes\-ctr mode),
+# thus we use repokey\-blake2\-aes\-ocb for the new borg 2.0 repo.
+# staying with the same chunk id algorithm (blake2) and with the same
+# key material (via \-\-other\-repo <oldrepo>) will make deduplication work
+# between old archives (copied with borg transfer) and future ones.
+# the AEAD cipher does not matter (everything must be re\-encrypted and
+# re\-authenticated anyway), you could also choose repokey\-blake2\-chacha20\-poly1305.
+# in case your old borg repo did not use blake2, just remove the \(dq\-blake2\(dq.
+$ borg \-\-repo       ssh://borg2@borgbackup/./tests/b20 repo\-create \e
+       \-\-other\-repo ssh://borg2@borgbackup/./tests/b12 \-e repokey\-blake2\-aes\-ocb
+
+# 2. Check what and how much it would transfer:
+$ borg \-\-repo       ssh://borg2@borgbackup/./tests/b20 transfer \-\-upgrader=From12To20 \e
+       \-\-other\-repo ssh://borg2@borgbackup/./tests/b12 \-\-dry\-run
+
+# 3. Transfer (copy) archives from old repo into new repo (takes time and space!):
+$ borg \-\-repo       ssh://borg2@borgbackup/./tests/b20 transfer \-\-upgrader=From12To20 \e
+       \-\-other\-repo ssh://borg2@borgbackup/./tests/b12
+
+# 4. Check if we have everything (same as 2.):
+$ borg \-\-repo       ssh://borg2@borgbackup/./tests/b20 transfer \-\-upgrader=From12To20 \e
+       \-\-other\-repo ssh://borg2@borgbackup/./tests/b12 \-\-dry\-run
+.EE
+.UNINDENT
+.UNINDENT
+.SH SEE ALSO
+.sp
+\fIborg\-common(1)\fP
+.SH AUTHOR
+The Borg Collective
+.\" Generated by docutils manpage writer.
+.
