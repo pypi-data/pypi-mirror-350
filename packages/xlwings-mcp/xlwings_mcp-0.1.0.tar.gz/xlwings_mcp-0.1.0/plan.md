@@ -1,0 +1,7 @@
+- publish on pypi w uv
+- test
+- CI
+- README.md
+- high level editing - cut, paste, move, delete, insert rows/columns
+- cell formatting
+- auto locale - could advise to first check Excel locale settings; Excel formulas are locale dependent
