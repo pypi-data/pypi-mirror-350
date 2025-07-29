@@ -1,0 +1,78 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "irspectrum-sim"
+version = "0.0.3"
+description = "Infrared Spectrum Simulator using Streamlit, Psi4 and ORCA"
+requires-python = ">=3.10"
+license = {file = "LICENSE"}
+dependencies = [
+     "rdkit",
+     "streamlit",
+     "pubchempy",
+     "numpy",
+     "matplotlib",
+     "py3Dmol"
+]
+authors = [
+    {name = "Hugo Praz", email = "hugo.praz@epfl.ch"},
+    {name = "Ryans Chen", email = "ryans.chen@epfl.ch"},
+    {name = "Anders Eggen", email = "anders.eggen@epfl.ch"}
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+
+[project.urls]
+source = "https://github.com/ryanschen0/IRS"
+tracker = "https://github.com/ryanschen0/IRS/issues"
+
+[project.optional-dependencies]
+test = [
+    "hypothesis",
+    "pytest",
+    "pytest-cov",
+    "tox",
+    "genbadge[coverage]",
+]
+doc = [
+    "furo",
+    "myst-parser",
+    "sphinx>=5",
+    "sphinx-copybutton",
+]
+
+[tool.hatch.version]
+path = "src/irs/__init__.py"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+packages = ["irs"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"irs" = ["data/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
+]
+
+[tool.coverage.run]
+omit = [
+    '__init__.py'
+]
+
+[tool.coverage.report]
+exclude_also = [
+    "if __name__ == .__main__.:",
+]
+
