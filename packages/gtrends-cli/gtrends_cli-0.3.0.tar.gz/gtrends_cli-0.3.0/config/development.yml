@@ -1,0 +1,47 @@
+# Development Environment Configuration
+
+# API Settings
+api:
+  host: "localhost"
+  port: 8000
+  debug: true
+  reload: true
+  workers: 1
+  cors:
+    allow_origins: ["*"]
+    allow_methods: ["*"]
+    allow_headers: ["*"]
+  rate_limiting:
+    enabled: false
+
+# CLI Settings
+cli:
+  default_export_format: "console"
+  default_export_path: "./gtrends-exports"
+  default_region: ""
+  default_timeframe: "today 12-m"
+  default_category: 0
+  max_results: 20
+  console:
+    use_colors: true
+    show_progress: true
+
+# Logging
+logging:
+  level: "DEBUG"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/gtrends-dev.log"
+  console: true
+
+# Cache Settings
+cache:
+  enabled: true
+  ttl: 3600  # Cache lifetime in seconds (1 hour)
+  backend: "memory"
+  max_size: 1000  # Maximum number of items in cache
+
+# Google Trends API
+trends_api:
+  timeout: 30  # Request timeout in seconds
+  retries: 3   # Number of retries for failed requests
+  backoff: 2   # Exponential backoff factor for retries 

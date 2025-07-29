@@ -1,0 +1,48 @@
+# Testing Environment Configuration
+
+# API Settings
+api:
+  host: "localhost"
+  port: 8001  # Different from dev port to avoid conflicts
+  debug: true
+  reload: false
+  workers: 1
+  cors:
+    allow_origins: ["*"]
+    allow_methods: ["*"]
+    allow_headers: ["*"]
+  rate_limiting:
+    enabled: false
+
+# CLI Settings
+cli:
+  default_export_format: "console"
+  default_export_path: "./test-exports"
+  default_region: ""
+  default_timeframe: "today 12-m"
+  default_category: 0
+  max_results: 10
+  console:
+    use_colors: false  # Disable colors for cleaner test output
+    show_progress: false  # Disable progress for faster tests
+
+# Logging
+logging:
+  level: "ERROR"  # Minimal logging for tests
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/gtrends-test.log"
+  console: false  # Don't pollute test output with logs
+
+# Cache Settings
+cache:
+  enabled: false  # Disable caching for predictable tests
+  ttl: 1  # Minimal TTL for tests that do use cache
+  backend: "memory"
+  max_size: 100
+
+# Google Trends API
+trends_api:
+  timeout: 5  # Shorter timeout for faster test failures
+  retries: 1  # Minimal retries for faster tests
+  backoff: 1  # No backoff for faster tests
+  # For tests, we'll use mock responses instead of real API calls 

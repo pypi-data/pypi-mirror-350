@@ -1,0 +1,63 @@
+# Production Environment Configuration
+
+# API Settings
+api:
+  host: "0.0.0.0"
+  port: 8000
+  debug: false
+  reload: false
+  workers: 4
+  cors:
+    allow_origins: ["https://your-domain.com", "https://api.your-domain.com"]
+    allow_methods: ["GET", "POST"]
+    allow_headers: ["X-API-Key", "Content-Type", "Accept"]
+  rate_limiting:
+    enabled: true
+    default_limit: 60  # requests per minute
+    by_ip: true
+    by_key: true
+  security:
+    api_key_required: true
+    allowed_ips: []  # Empty means all IPs allowed
+
+# CLI Settings
+cli:
+  default_export_format: "console"
+  default_export_path: "/var/lib/gtrends/exports"
+  default_region: ""
+  default_timeframe: "today 12-m"
+  default_category: 0
+  max_results: 50
+  console:
+    use_colors: true
+    show_progress: true
+
+# Logging
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "/var/log/gtrends/gtrends.log"
+  console: false
+  rotate:
+    when: "midnight"
+    interval: 1
+    backup_count: 30
+
+# Cache Settings
+cache:
+  enabled: true
+  ttl: 3600  # Cache lifetime in seconds (1 hour)
+  backend: "redis"
+  redis:
+    host: "redis"
+    port: 6379
+    db: 0
+    password: ""  # Set via environment variable in production
+  max_size: 10000  # Maximum number of items in cache
+
+# Google Trends API
+trends_api:
+  timeout: 30  # Request timeout in seconds
+  retries: 3   # Number of retries for failed requests
+  backoff: 2   # Exponential backoff factor for retries
+  proxy: ""    # Set via environment variable in production if needed 

@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  # API service
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.api
+    image: gtrends-api:latest
+    container_name: gtrends-api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - gtrends_logs:/app/logs
+      - gtrends_exports:/app/exports
+    environment:
+      - GTRENDS_ENV=docker
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+      - API_WORKERS=2
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+      - LOG_LEVEL=INFO
+    depends_on:
+      - redis
+    networks:
+      - gtrends-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # Redis for caching
+  redis:
+    image: redis:7-alpine
+    container_name: gtrends-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-}
+    volumes:
+      - redis_data:/data
+    networks:
+      - gtrends-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+
+  # CLI service (for running CLI commands in the container)
+  cli:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.cli
+    image: gtrends-cli:latest
+    container_name: gtrends-cli
+    volumes:
+      - gtrends_exports:/app/exports
+    environment:
+      - GTRENDS_ENV=docker
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+    depends_on:
+      - redis
+    networks:
+      - gtrends-network
+    # This will keep the container running but idle
+    # Use docker exec to run commands
+    entrypoint: ["tail", "-f", "/dev/null"]
+
+networks:
+  gtrends-network:
+    driver: bridge
+
+volumes:
+  gtrends_logs:
+  gtrends_exports:
+  redis_data: 

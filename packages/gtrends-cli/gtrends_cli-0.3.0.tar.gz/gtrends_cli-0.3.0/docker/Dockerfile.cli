@@ -1,0 +1,64 @@
+# Multi-stage build for the Google Trends CLI
+
+# Stage 1: Build dependencies
+FROM python:3.10-slim AS builder
+
+# Set working directory
+WORKDIR /app
+
+# Install build dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements files
+COPY requirements/base.txt requirements/base.txt
+COPY requirements/production.txt requirements/production.txt
+
+# Install dependencies
+RUN pip wheel --no-cache-dir --wheel-dir /app/wheels -r requirements/production.txt
+
+# Stage 2: Runtime
+FROM python:3.10-slim
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    GTRENDS_ENV=docker
+
+# Set working directory
+WORKDIR /app
+
+# Install runtime dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy wheels from builder stage
+COPY --from=builder /app/wheels /wheels
+RUN pip install --no-cache-dir --no-index --find-links=/wheels /wheels/* \
+    && rm -rf /wheels
+
+# Copy application code
+COPY . /app/
+
+# Create necessary directories
+RUN mkdir -p /app/logs /app/exports \
+    && chmod -R 755 /app/logs /app/exports
+
+# Create non-root user
+RUN groupadd -r gtrends && \
+    useradd -r -g gtrends -d /app -s /bin/bash gtrends && \
+    chown -R gtrends:gtrends /app
+
+# Switch to non-root user
+USER gtrends
+
+# Make the CLI command available
+RUN pip install -e .
+
+# Set entrypoint to the CLI
+ENTRYPOINT ["gtrends"]
+CMD ["--help"] 

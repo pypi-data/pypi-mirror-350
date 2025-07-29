@@ -1,0 +1,82 @@
+[build-system]
+requires = ["setuptools>=42", "wheel", "setuptools_scm>=6.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gtrends-cli"
+version = "0.3.0"
+description = "CLI and API tools for Google Trends data analysis and content suggestions"
+readme = "README.md"
+authors = [
+    {name = "Mohammed A. Al-Kebsi", email = "mohammed.k@mohammed-al-kebsi.space"}
+]
+license = {text = "MIT"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Science/Research",
+    "Topic :: Internet :: WWW/HTTP :: Indexing/Search",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.8"
+
+[project.urls]
+Homepage = "https://github.com/Nao-30/google-trends-cli"
+Documentation = "https://github.com/Nao-30/google-trends-cli/tree/main/docs"
+Repository = "https://github.com/Nao-30/google-trends-cli.git"
+Issues = "https://github.com/Nao-30/google-trends-cli/issues"
+
+[tool.black]
+line-length = 100
+target-version = ['py38']
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+line_length = 100
+known_first_party = ["gtrends_core", "gtrends_cli", "gtrends_api"]
+sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+markers = [
+    "unit: unit tests",
+    "integration: integration tests",
+    "api: api tests",
+    "cli: cli tests",
+]
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+
+[[tool.mypy.overrides]]
+module = [
+    "pandas.*",
+    "trendspy.*",
+    "matplotlib.*",
+    "rich.*",
+]
+ignore_missing_imports = true
+
+[tool.coverage.run]
+source = ["src"]
+omit = ["tests/*", "scripts/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+]

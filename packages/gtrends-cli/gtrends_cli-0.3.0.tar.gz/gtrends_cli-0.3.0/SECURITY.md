@@ -1,0 +1,3 @@
+## Reporting a Vulnerability
+
+ If you discover any security related issues, please send an e-mail to the maintainer via mohammed.k@mohammed-al-kebsi.space instead of using the issue tracker...
