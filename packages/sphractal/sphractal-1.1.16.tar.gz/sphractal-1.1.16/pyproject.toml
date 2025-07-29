@@ -1,0 +1,55 @@
+[tool.poetry]
+name = "sphractal"
+version = "1.1.16"
+description = "Package to estimate fractal dimension of 3D surfaces formed from overlapping spheres via box-counting algorithm."
+authors = ["Jonathan Yik Chang Ting <jonting97@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/Jon-Ting/sphractal"
+repository = "https://github.com/Jon-Ting/sphractal"
+documentation = "https://sphractal.readthedocs.io/en/latest/"
+keywords = ["box-counting", "box-count", "fractal", "dimension", "sphere", "surface"]
+classifiers = [
+    "Intended Audience :: Science/Research", 
+    "Natural Language :: English", 
+    "Operating System :: OS Independent", 
+    "Programming Language :: C++", 
+    "Programming Language :: Python :: 3", 
+    "Topic :: Scientific/Engineering", 
+]
+include = ["tests/*", "setup.py"]
+
+[tool.poetry.dependencies]
+python = ">=3.9"
+matplotlib = ">=3.7.1"
+statsmodels = ">=0.14.0"
+scipy = {version = ">=1.11.1", python = ">=3.9,<3.13"}
+numba = ">=0.57.1"
+numpy = ">=1.22,<1.25"
+
+[tool.poetry.group.dev.dependencies]
+pytest = ">=7.4.0"
+pytest-cov = ">=4.1.0"
+jupyter = ">=1.0.0"
+myst-nb = {version = ">=0.17.2", python = "^3.9"}
+sphinx-autoapi = ">=2.1.1"
+sphinx-rtd-theme = ">=1.2.2"
+python-semantic-release = ">=7.34.6"
+
+[tool.semantic_release]
+version_variable = [
+    "setup.py:__version__",
+    "pyproject.toml:version",
+]                                           # version location
+branch = "main"                             # branch to make releases of
+changelog_file = "CHANGELOG.md"             # changelog file
+build_command = "poetry build"              # build dists
+dist_path = "dist/"                         # where to put dists
+upload_to_release = true                    # auto-create GitHub release
+upload_to_pypi = false                      # don't auto-upload to PyPI
+remove_dist = false                         # don't remove dists
+patch_without_tag = true                    # patch release by default
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
