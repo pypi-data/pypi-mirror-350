@@ -1,0 +1,71 @@
+Metadata-Version: 2.4
+Name: digitalcircuit
+Version: 0.1.0
+Summary: A package for converting Boolean expressions to circuit diagrams
+Author: 19ueZ
+Author-email: phaman510910@gmail.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: openpyxl
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# DigiCircuit
+
+DigiCircuit is a Python library to convert Boolean expressions to circuit diagrams.
+
+## Installation
+
+```bash
+pip install digicircuit
+```
+
+## Usage
+
+1. Create an input file with Boolean expressions (e.g., `data.txt`):
+```
+1 f(a,b,c,d) = a'b'cd' + abc'd + ab'c'd
+2 f(a,b,c,d) = acd
+2 f(a,b,c,d) = (a+b+c+d)(a'+b'+d')
+```
+
+2. Run the command to create circuit diagrams:
+```bash
+digicircuit data.txt
+```
+
+The circuit diagrams will be created in the `circuits` directory in the form of LaTeX files.
+
+### Options
+
+- `--output_dir` or `-o`: Specify the output directory (default: `circuits`)
+- `--scale` or `-s`: The scale of the circuit diagrams (default: 1.0)
+
+Example:
+```bash
+digicircuit data.txt --output_dir my_circuits --scale 1.5
+```
+
+## Requirements
+
+- Python >= 3.6
+- numpy
+- pandas
+- openpyxl
+
+## License
+
+MIT License 
