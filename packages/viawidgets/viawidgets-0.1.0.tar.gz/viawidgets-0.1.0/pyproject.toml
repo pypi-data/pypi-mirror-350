@@ -1,0 +1,27 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "viawidgets"
+version = "0.1.0"
+description = "A collection of lightweight custom widgets built with AnyWidget."
+authors = [{ name = "Madhav Poddar", email = "madhav.poddar19@gmail.com" }]
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.8"
+dependencies = [
+  "anywidget>=0.9.0",
+  "traitlets>=5.0.0",
+  "pandas>=1.0.0",
+  "numpy>=1.21.0"
+]
+
+[project.optional-dependencies]
+dev = [
+  "anywidget[dev]",
+  "jupyterlab"
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/viawidgets"]
