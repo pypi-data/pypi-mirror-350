@@ -1,0 +1,75 @@
+name: 狼人杀
+description: ''
+blocks:
+  - type: internal:send_message
+    name: 0f54517e-c458-4399-bc45-75ce2b1fe34f
+    params:
+      im_name: ''
+    position:
+      x: 1365
+      y: 161
+  - type: internal:get_message
+    name: 98503178-9462-409a-bf6a-8d38dc0bd63f
+    params: {}
+    position:
+      x: 199
+      y: 185
+    connected_to:
+      - target: 623bac3c-1fe7-436b-9606-481b96ba6445
+        mapping:
+          from: msg
+          to: msg
+      - target: 107f62d1-a0d6-414f-a19c-e8d87af0155b
+        mapping:
+          from: sender
+          to: sender
+  - type: internal:im_message_to_text
+    name: 623bac3c-1fe7-436b-9606-481b96ba6445
+    params: {}
+    position:
+      x: 448
+      y: 156
+    connected_to:
+      - target: 0489c039-fec7-41e4-bd7d-903f32d88204
+        mapping:
+          from: text
+          to: text
+  - type: internal:text_block
+    name: f31336a8-512f-414b-8dbb-b184d1e24c43
+    params:
+      text: ''
+    position:
+      x: 154
+      y: 351
+    connected_to:
+      - target: 0489c039-fec7-41e4-bd7d-903f32d88204
+        mapping:
+          from: text
+          to: new_text
+  - type: internal:text_replace_block
+    name: 0489c039-fec7-41e4-bd7d-903f32d88204
+    params:
+      variable: '#狼人杀'
+    position:
+      x: 537
+      y: 317
+    connected_to:
+      - target: 107f62d1-a0d6-414f-a19c-e8d87af0155b
+        mapping:
+          from: text
+          to: speech
+  - type: game:game_werewolf
+    name: 107f62d1-a0d6-414f-a19c-e8d87af0155b
+    params:
+      model_name:
+      werewolf_count: 2
+      willager_count: 3
+      segment_messages: true
+    position:
+      x: 922
+      y: 189
+    connected_to:
+      - target: 0f54517e-c458-4399-bc45-75ce2b1fe34f
+        mapping:
+          from: message
+          to: msg
