@@ -1,0 +1,144 @@
+"""dundle.py - Convenient, non-standard package builder. No pyproject.toml, only dunders like __version__
+
+pip install dundle
+
+"dunders" (also known as magic names) are names with two leading and two trailing underscores.
+
+Supported module-level dunders
+==============================
+
+Note: PEP 8 suggests module dunders to be placed after the module docstring but before any import statements.
+
+__name__
+    The name of the project. Must be a string.
+
+__version__
+    The version of the project. Must be a string. Must conform to https://packaging.python.org/en/latest/specifications/version-specifiers/#version-scheme
+    e.g. "3.11.2"
+
+__description__
+    The short, one-line, description of the project. Must be a string. If __description__ is not present, the first line of the module docstring (__doc__) is used.
+    e.g. "Generate random cat GIFs!"
+
+__readme__
+    The long description of the project. If __readme__ is not present, the module docstring (__doc__) is used.
+    - May be a string (without newlines) containing a relative path to the README file.
+    - May be a dictionary. The key "file" must have a relative path to the README as value. The key "content-type" must have "text/plain", "text/x-rst" or "text/markdown" as value.
+    - May be a multi-line string containing the full description.
+    e.g. "README.rst"
+    e.g. {"file": "README.txt", "content-type": "text/markdown"}
+    e.g. "Features:\n - Easy to use\n - Easy to learn"
+
+__requires_python__
+    The Python version requirements of the project. Must be a string. Must conform to https://packaging.python.org/en/latest/specifications/version-specifiers/#id5
+    e.g. ">= 3.8"
+
+__dependencies__
+    The dependencies of the project. Must be an iterable of strings.
+    e.g. ["httpx", "gidgethub[httpx]>4.0.0", "django>2.1; os_name != 'nt'", "django>2.0; os_name == 'nt'"]
+
+__optional_dependencies__
+    The optional dependencies of the project. Must be an iterable of strings.
+    
+__urls__
+    The URLs relevant to the project. Must be a dictionary. Keys are labels. Values are URLs. Both are strings. See well-known labels: https://packaging.python.org/en/latest/specifications/well-known-project-urls/#well-known-labels
+    e.g. {"homepage": "https://example.com", "source": "https://git.example.com", "documentation": "https://example.com/doc"}
+
+__classifiers__
+    The trove classifiers (https://pypi.org/classifiers) relevant to the project. Must be an iterable of strings. License classifiers (i.e. License ::) are deprecated in favor of __license__
+    e.g. ["Development Status :: 5 - Production/Stable", "Topic :: Software Development :: Build Tools"]
+
+__keywords__
+    The keywords of the project. Must be an iterable of strings.
+    e.g. ["dog", "puppy"]
+
+__authors__
+__maintainers__
+
+__license__
+    SPDX license expression. Must be a string. See license identifiers: https://spdx.org/licenses
+    e.g. "0BSD"
+    e.g. "MIT"
+    e.g. "MIT OR 0BSD OR (Apache-2.0 AND BSD-2-Clause)"
+
+__license_files__
+    Files containing licenses and other legal notices. Must be an iterable of strings and/or (filename, contents) tuples.
+    - String elements must contain a relative path to a file as a valid glob pattern that conforms to https://packaging.python.org/en/latest/specifications/glob-patterns
+    - Tuple elements represent a file inline (i.e. no path) as (filename, contents). Both are strings.
+    e.g. ["LICENSE"]
+    e.g. ["LICEN[CS]E*", "vendored/licenses/*.txt", "AUTHORS.md"]
+    e.g. ["LICENSE", ("AUTHORS.txt", "alice, bob, charlie")]
+
+Command-line Usage
+======================
+
+Library Usage
+=================
+
+Source distribution (.sdist)
+============================
+
+Wheel/binary distribution (.whl)
+================================
+
+"""
+
+__version__ = "2025.5.22"
+__url__ = "https://github.com/python-dundle/dundle"
+__classifiers__ = ["Topic :: Software Development :: Build Tools"]
+__license__ = "0BSD"
+
+def format_pyproject(module):
+    toml = "[project]\n"
+    
+    toml += f'name = "{module.__name__}"\n'
+    toml += f'version = "{module.__version__}"\n'
+    
+    try:
+        toml += f'description = "{module.__doc__.splitlines()[0]}"\n'
+        toml += 'readme = "README"\n'
+    except:
+        pass
+    
+    try:
+        toml += "classifiers = [" + ','.join(f'"{e}"' for e in module.__classifiers__) + "]\n"
+    except:
+        pass
+    
+    try:
+        toml += "keywords = [" + ','.join(f'"{e}"' for e in module.__keywords__) + "]\n"
+    except:
+        pass
+    
+    try:
+        toml += f'license = "{module.__license__}"\n'
+    except:
+        pass
+
+    try:
+        toml += (
+            "\n[project.urls]\n"
+            + "".join(((f'"{label}"' if " " in label else label) + f' = "{url}"\n') for label, url in module.__urls__.items())
+        )
+    except:
+        pass
+    
+    toml += '\n[build-system]\n'
+    toml += 'requires = ["setuptools"]\n'
+    toml += 'build-backend = "setuptools.build_meta"\n'
+    
+    return toml
+
+def format_metadata():
+    raise NotImplementedError
+
+def format_record():
+    raise NotImplementedError
+
+def write_sdist(stream=None):
+    """Return bytes if stream is None."""
+    raise NotImplementedError
+
+def write_whl(stream=None):
+    """Return bytes if stream is None."""
+    raise NotImplementedError
