@@ -1,0 +1,113 @@
+# RAG-based MCP Server
+
+[English](#english) | [한국어](#한국어)
+
+---
+
+## English
+
+This package provides a Retrieval Augmented Generation (RAG)-based Model Context Protocol (MCP) server, which generates contextually accurate responses by leveraging PDF data. It uses OpenAI's embedding model (`text-embedding-3-small`) to create embeddings from PDF documents and performs hybrid search (keyword + semantic search) to retrieve relevant content.
+
+### Installation
+
+1. **Install UV (if you haven't already):**
+
+   * **For macOS or Linux:**
+
+     ```bash
+     curl -LsSf https://astral.sh/uv/install.sh | sh
+     ```
+
+   * **For Windows (using PowerShell):**
+
+     ```powershell
+     powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+     ```
+
+
+### Configuration
+
+To use this server in the Claude app, add the following configuration to your `claude_desktop_config.json` file:
+
+```json
+{
+  "rag-mcp": {
+    "command": "uvx",
+    "args": [
+      "mcp-hybrid-search",
+      "path/to/your/allowed/folder"
+    ],
+    "env": {
+      "OPENAI_API_KEY": "YOUR_OPENAI_API_KEY"
+    }
+  }
+}
+```
+
+* Replace `"path/to/your/allowed/folder"` with the actual folder path where your PDF files will be stored.
+* Create a subfolder named `data` within the specified folder, and place all PDF documents you want to use into this `data` folder.
+
+### Usage
+
+1. Complete the installation and configuration steps described above.
+2. Launch or restart the MCP host application (e.g., the Claude app). The RAG server will automatically start and process PDF embeddings.
+3. The server will now generate contextually accurate and relevant responses by referencing the PDF documents stored in the `data` folder.
+
+### License
+
+MIT
+
+---
+
+## 한국어
+
+이 패키지는 PDF 데이터를 활용하여 보다 정확한 답변을 생성할 수 있는 RAG(Retrieval Augmented Generation) 기반 MCP(Model Context Protocol) 서버입니다. OpenAI 임베딩 모델(text-embedding-3-small)을 사용해 PDF 데이터를 임베딩한 후, 하이브리드 서치 (키워드 + 시멘틱 서치) 방식으로 검색 기능을 제공합니다.
+
+### 설치 방법
+
+1. **UV 설치하기 (아직 설치하지 않았다면)**
+
+   * **macOS 또는 Linux의 경우**:
+
+     ```bash
+     curl -LsSf https://astral.sh/uv/install.sh | sh
+     ```
+
+   * **Windows의 경우 (PowerShell에서 실행)**:
+
+     ```powershell
+     powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+     ```
+
+
+### 설정 방법
+
+Claude 앱에서 이 서버를 사용하려면, `claude_desktop_config.json` 파일에 다음 설정을 추가해야 합니다:
+
+```json
+{
+  "rag-mcp": {
+    "command": "uvx",
+    "args": [
+      "mcp-hybrid-search",
+      "접근을 허용할 폴더 경로"
+    ],
+    "env": {
+      "OPENAI_API_KEY": "YOUR_OPENAI_API_KEY"
+    }
+  }
+}
+```
+
+* `"접근을 허용할 폴더 경로"` 부분에는 실제로 PDF 파일을 보관할 경로를 적어주세요.
+* 해당 경로 아래에 `data`라는 이름의 폴더를 만들어 주시고, 이 폴더 안에 자료로 사용할 PDF 파일을 넣어주세요.
+
+### 사용 방법
+
+1. 위의 설치와 설정 과정을 모두 완료한 후,
+2. MCP 호스트 애플리케이션(예 : Claude 앱)을 실행하거나 재시작하면 PDF 데이터 임베딩 후 자동으로 RAG 서버가 활성화됩니다.
+3. 이제 서버가 `data` 폴더에 넣어둔 PDF 파일의 내용을 참고하여 보다 정확하고 맥락에 맞는 답변을 생성해줍니다.
+
+### 라이센스
+
+MIT
