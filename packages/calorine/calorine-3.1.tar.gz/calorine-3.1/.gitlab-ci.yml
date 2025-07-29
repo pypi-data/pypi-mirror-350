@@ -1,0 +1,156 @@
+image: registry.gitlab.com/materials-modeling/calorine/cicd
+
+variables:
+  INSTDIR_LINUX: "local_installation_linux"
+
+before_script:
+  - export PYTHONPATH=$PWD/$INSTDIR_LINUX:${PYTHONPATH}
+
+#------------------- build stage -------------------
+
+build:linux:
+  stage: build
+  script:
+    - pip3 install --target=$INSTDIR_LINUX .
+  artifacts:
+    expire_in: 2 days
+    paths:
+      - local_installation_linux/
+  tags:
+    - linux
+
+#------------------- test stage -------------------
+
+style_check:
+  stage: test
+  tags:
+    - linux
+  script:
+    - flake8 calorine/ tests/ doc/
+
+.basic_tests:
+  stage: test
+  coverage: '/TOTAL.+ ([0-9]{1,3}%)/'
+  script:
+    #- xdoctest calorine   # commented out until we have fixed the doctests
+    - coverage run -m pytest --verbose --junitxml=report.xml tests/
+    - coverage report -m
+    - coverage html
+
+basic_tests:linux:
+  extends: .basic_tests
+  needs:
+    - build:linux
+  tags:
+    - linux
+    - GPU
+  artifacts:
+    expire_in: 2 days
+    paths:
+      - htmlcov/
+    reports:
+      junit: report.xml
+
+.test_tutorials:
+  stage: test
+  tags:
+    - linux
+    - GPU
+  needs:
+    - build:linux
+  script:
+    - cd tutorials
+    - pytest --nbmake --nbmake-timeout=3600 $(find . -name '*.ipynb' | grep -v thermal_conductivity_from_bte)
+
+test_tutorials:manual:
+  extends: .test_tutorials
+  when: manual
+
+test_tutorials:schedules:
+  extends: .test_tutorials
+  only:
+   - schedules
+
+test_documentation:
+  stage: test
+  tags:
+    - linux
+    - GPU
+  needs:
+    - build:linux
+  except:
+    - master
+  artifacts:
+    expire_in: 1 days
+    paths:
+      - public
+  script:
+    - sphinx-build -W doc/ public/
+    - ls -l public/
+
+
+#------------------- deploy stage -------------------
+
+pages:
+  stage: deploy
+  tags:
+    - linux
+  script:
+    # prepare homepage
+    - mkdir -p public/dev
+    # --------------------------
+    # DEVELOPMENT VERSION
+    - tag=$(git describe | tail -1)
+    - echo "tag= $tag"
+    # code coverage report
+    - cp -dr htmlcov/ public/dev/coverage/
+    # build user guide
+    - sed -i "s/version = ''/version = '$tag'/" doc/conf.py
+    - cat doc/conf.py
+    - sphinx-build -W doc/ public/dev/
+    # --------------------------
+    # STABLE VERSION
+    - git checkout -- doc/conf.py
+    - tag=$(git tag | tail -1)
+    - echo "tag= $tag"
+    - git checkout $tag
+    # reinstall to make sure we are referring to the correct version
+    - rm -fr $INSTDIR_LINUX
+    - pip3 install --target=$INSTDIR_LINUX .
+    # code coverage report
+    - cp -dr htmlcov/ public/coverage/
+    # build user guide
+    - sphinx-build -W doc/ public/
+    # --------------------------
+    # clean up
+    - ls -l public/
+    - chmod go-rwX -R public/
+  artifacts:
+    expire_in: 2 days
+    paths:
+      - public
+  only:
+    - master
+    - tags
+
+pypi:
+  stage: deploy
+  tags:
+    - linux
+  only:
+    - tags
+  except:
+    - schedules
+  when: manual
+  environment:
+      name: pypi-upload
+  script:
+    # check out the latest tag (redundant if job is limited to tags; still a sensible precaution)
+    - tag=$(git tag | tail -1)
+    - echo "tag= $tag"
+    - git checkout $tag
+    # create source distribution and push to PyPI
+    - python3 setup.py sdist
+    - ls -l dist/
+    - twine check dist/*
+    - twine upload dist/* -u __token__ -p "$PYPI_TOKEN"
