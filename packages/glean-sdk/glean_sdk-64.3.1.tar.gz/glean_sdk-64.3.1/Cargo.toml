@@ -1,0 +1,20 @@
+[workspace]
+resolver = "2"
+
+members = ["glean-core", "glean-core/bundle"]
+
+default-members = [
+  "glean-core",
+  "tools/embedded-uniffi-bindgen",
+]
+
+[profile.release]
+opt-level = "s"
+debug = false
+lto = true
+
+[profile.dev.package.miniz_oxide]
+opt-level = 3
+
+[profile.dev.package.flate2]
+opt-level = 3
