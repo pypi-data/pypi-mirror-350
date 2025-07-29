@@ -1,0 +1,6 @@
+from mantarix_web.fastapi.app import app
+from mantarix_web.fastapi.mantarix_app import MantarixApp
+from mantarix_web.fastapi.mantarix_app_manager import app_manager
+from mantarix_web.fastapi.mantarix_fastapi import FastAPI
+from mantarix_web.fastapi.mantarix_static_files import MantarixStaticFiles
+from mantarix_web.fastapi.mantarix_upload import MantarixUpload
