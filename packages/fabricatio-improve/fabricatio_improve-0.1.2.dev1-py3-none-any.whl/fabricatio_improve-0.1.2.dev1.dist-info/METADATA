@@ -1,0 +1,117 @@
+Metadata-Version: 2.4
+Name: fabricatio-improve
+Version: 0.1.2.dev1
+Summary: A Python library for content review, correction, and improvement in LLM applications.
+Project-URL: Homepage, https://github.com/Whth/fabricatio
+Project-URL: Repository, https://github.com/Whth/fabricatio
+Project-URL: Issues, https://github.com/Whth/fabricatio/issues
+Author-email: Whth <zettainspector@foxmail.com>
+License: MIT License
+        
+        Copyright (c) 2025 Whth Yotta
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+License-File: LICENSE
+Requires-Python: <3.14,>=3.12
+Requires-Dist: fabricatio-capabilities
+Requires-Dist: fabricatio-core
+Description-Content-Type: text/markdown
+
+# `fabricatio-improve`
+
+A Python library for content review, correction, and improvement in LLM applications.
+
+## 📦 Installation
+
+This package is part of the `fabricatio` monorepo and can be installed as an optional dependency:
+
+```bash
+pip install fabricatio[improve]
+```
+
+Or install all components:
+
+```bash
+pip install fabricatio[full]
+```
+
+## 🔍 Overview
+
+Provides tools for:
+
+- Content review and problem detection
+- Problem-solution pair generation
+- Text correction and refinement
+- Improvement prioritization based on severity
+- Interactive feedback loops with users
+
+Built on top of Fabricatio's agent framework with support for asynchronous execution.
+
+## 🧩 Usage Example
+
+```python
+from fabricatio_improve.capabilities.correct import Correct
+from fabricatio_improve.models.improve import Improvement
+from fabricatio_improve.models.problem import Problem, Solution
+
+
+async def improve_content():
+    # Initialize corrector
+    corrector = Correct()
+
+    # Sample problematic text
+    text = "Ths txt has many speling erors."
+
+    # Get improvement suggestions
+    improvement: Improvement = await corrector.correct(text)
+
+    print(f"Found {len(improvement.problem_solutions)} issues:")
+    for ps in improvement.problem_solutions:
+        print(f"\nProblem: {ps.problem.description}")
+        print(f"Location: {ps.problem.location}")
+        print(f"Severity: {ps.problem.severity_level}/10")
+        print(f"Solution: {ps.solution.description}")
+        print(f"Steps: {', '.join(ps.solution.execute_steps)}")
+```
+
+## 📁 Structure
+
+```
+fabricatio-improve/
+├── capabilities/     - Core improvement functionality
+│   ├── correct.py    - Text correction capabilities
+│   └── review.py     - Content review capabilities
+└── models/           - Data models for improvements
+    ├── improve.py    - Improvement result model
+    ├── kwargs_types.py - Validation argument types
+    └── problem.py    - Problem-solution pair definitions
+```
+
+## 🔗 Dependencies
+
+Built on top of other Fabricatio modules:
+
+- `fabricatio-core` - Core interfaces and utilities
+- `fabricatio-capabilities` - Base capability patterns
+
+## 📄 License
+
+MIT – see [LICENSE](LICENSE)
+
+GitHub: [github.com/Whth/fabricatio](https://github.com/Whth/fabricatio)
