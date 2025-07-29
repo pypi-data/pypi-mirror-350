@@ -1,0 +1,72 @@
+Metadata-Version: 2.4
+Name: mcp-glama-registry
+Version: 0.1.0
+Summary: MCP Registry Server for Glama MCP. Exposes a tool to search the Glama MCP registry for MCP servers.
+Author-email: Yuri Golikov <iurii.golikov@gmail.com>
+License-Expression: MIT
+Project-URL: Homepage, https://github.com/meetmatt/glama-mcp-registry-mcp-server
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: mcp[cli]>=1.9.1
+Requires-Dist: ruff>=0.11.11
+Dynamic: license-file
+
+# mcp-glama-registry
+
+MCP Registry Server for Glama MCP
+================================
+
+This package provides an MCP server that exposes a tool to search the Glama MCP registry for MCP servers matching a query string.
+
+## Installation
+
+Install using [uv](https://github.com/astral-sh/uv):
+
+```sh
+uvx install mcp "mcp[cli]"
+```
+
+## Usage
+
+You can run the server with:
+
+```sh
+python -m mcp_glama_registry
+```
+
+Or using MCP CLI:
+
+```sh
+mcp run mcp_glama_registry
+```
+
+Or directly with uv:
+
+```sh
+uv run main.py
+```
+
+## API
+
+The server exposes a single tool:
+
+- `search_mcp_servers(query: str) -> list`: Searches the Glama MCP registry for MCP servers matching the query string.
+
+## Development & Testing
+
+Install development dependencies:
+
+```sh
+uvx install -r requirements-dev.txt
+```
+
+Run tests with [pytest](https://pytest.org/):
+
+```sh
+pytest
+```
+
+## License
+
+MIT 
