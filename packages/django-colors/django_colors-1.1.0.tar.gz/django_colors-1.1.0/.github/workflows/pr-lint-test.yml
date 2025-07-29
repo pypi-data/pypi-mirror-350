@@ -1,0 +1,32 @@
+# This workflow will install Python dependencies, lint and run tests.
+
+name: Lint & Test 📦
+
+on:
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Sync the requirements
+        run: uv sync --extra dev
+
+      - name: Run pre-commit
+        run: uv run pre-commit
+
+      - name: Run Ruff
+        run: uv run ruff check
+
+      - name: Run Pytest
+        run: uv run pytest
