@@ -1,0 +1,91 @@
+[build-system]
+requires = ["scikit-build-core", "pybind11"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "musica"
+dynamic = ["version"]
+readme = "README.md"
+description = "MUSICA is a Python library for performing computational simulations in atmospheric chemistry."
+authors = [
+    { name = "Matthew Dawsom", email = "mattdawson@ucar.edu" },
+    { name = "Jiwon Gim", email = "jiwongim@ucar.edu" },
+    { name = "David Fillmore", email = "fillmore@ucar.edu" },
+    { name = "Kyle Shores", email = "kshores@ucar.edu" },
+    { name = "Montek Thind", email = "mthind@ucar.edu" }
+]
+maintainers = [{ name = "ACOM MUSICA Developers", email = "musica-support@ucar.edu" }]
+license = { file = "LICENSE" }
+
+dependencies = [
+]
+
+[project.optional-dependencies]
+test = [
+  "numpy",
+  "pytest",
+]
+
+gpu = [
+  "nvidia-cublas-cu12",
+  "nvidia-cuda-runtime-cu12",
+]
+
+[tool.scikit-build]
+cmake.build-type = "Release"
+cmake.define.MUSICA_ENABLE_PYTHON_LIBRARY = "ON"
+cmake.define.MUSICA_ENABLE_TUVX = "OFF"
+cmake.define.MUSICA_BUILD_FORTRAN_INTERFACE = "OFF"
+cmake.define.MUSICA_ENABLE_TESTS = "OFF"
+cmake.define.CMAKE_POLICY_VERSION_MINIMUM = "3.5"
+
+[[tool.scikit-build.overrides]]
+if.any.env.BUILD_GPU = true
+inherit.cmake.define = "append"
+cmake.define.MUSICA_SET_MICM_DEFAULT_VECTOR_SIZE = "1"
+cmake.define.MUSICA_GPU_TYPE = "all_major"
+
+# 32 bit linux cannot be built with CUDA support
+[[tool.scikit-build.overrides]]
+if.platform-system ="linux"
+if.platform-machine = "i686"
+inherit.cmake.define = "append"
+cmake.define.MUSICA_GPU_TYPE = "None"
+
+
+[project.urls]
+homepage = "https://wiki.ucar.edu/display/MUSICA/MUSICA+Home"
+
+# dynamically read the version: https://scikit-build-core.readthedocs.io/en/latest/configuration.html#dynamic-metadata
+[tool.scikit-build.metadata.version]
+provider = "scikit_build_core.metadata.regex"
+input = "CMakeLists.txt"
+regex = 'musica-distribution VERSION\s+(?P<value>[0-9.]+)'
+
+[[tool.scikit-build.generate]]
+path = "musica/_version.py"
+template = '''
+version = "${version}"
+'''
+
+# you can test cibuildwheel on any computer with docker directly. First, make a 
+# new python environment and install cibbuildwheel into it
+# then, run something like this:
+# CIBW_ARCHS=x86_64 CIBW_PLATFORM=linux CIBW_ENVIRONMENT="BUILD_GPU=1 CUDA_PATH=/usr/local/cuda PATH=/usr/local/cuda/bin:\$PATH LD_LIBRARY_PATH=/usr/local/cuda/lib64:\$LD_LIBRARY_PATH" cibuildwheel --output-dir wheelhouse > log.txt 2>&1
+[tool.cibuildwheel]
+# Increase pip debugging output
+build-verbosity = 3
+
+# Add your desired build configuration
+build = "cp37-* cp38-* cp39-* cp310-* cp311-* cp312-*"
+skip = "cp27-* cp34-* cp35-* cp36-* *musllinux*"
+archs = "auto"
+
+# Set up pre-build hook
+
+[tool.cibuildwheel.macos]
+environment.MACOSX_DEPLOYMENT_TARGET = "10.15"
+
+[tool.cibuildwheel.linux]
+before-all = "musica/tools/prepare_build_environment_linux.sh"
+repair-wheel-command = "bash musica/tools/repair_wheel_gpu.sh {wheel} {dest_dir}"

@@ -1,0 +1,90 @@
+name: Publish Python Package
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+  release:
+    types:
+      - published
+
+jobs:
+  build_sdist:
+    name: Build SDist
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
+
+    - name: Build SDist
+      run: pipx run build --sdist
+
+    - name: Check metadata
+      run: pipx run twine check dist/*
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: cibw-sdist
+        path: dist/*.tar.gz
+
+  build_wheels:
+    name: Build wheels on ${{ matrix.os }} with Python ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.12"]
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
+    
+    - uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: CI Build Wheels
+      uses: pypa/cibuildwheel@v2.17
+      env:
+        CIBW_ENVIRONMENT_PASS_LINUX: CIBW_ARCHS
+        CIBW_ENVIRONMENT_LINUX: >
+          CUDA_PATH=/usr/local/cuda
+          PATH=/usr/local/cuda/bin:$PATH
+          LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
+          BUILD_GPU=1
+
+    - name: Upload wheels
+      uses: actions/upload-artifact@v4
+      with:
+        name: cibw-wheels-${{ matrix.os }}-py${{ matrix.python-version }}
+        path: wheelhouse/*.whl
+
+  upload_all:
+    name: Upload release
+    needs: [build_wheels, build_sdist]
+    if: github.event_name == 'release' && github.event.action == 'published'
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/musica
+    permissions:
+      id-token: write
+
+    steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.x"
+
+    - uses: actions/download-artifact@v4
+      with:
+        pattern: cibw-*
+        path: dist
+        merge-multiple: true
+
+    - name: Publish package distributions to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1

@@ -1,0 +1,42 @@
+FROM fedora:latest
+
+ARG MUSICA_GIT_TAG=main
+ARG BUILD_TYPE=Release
+
+RUN dnf -y update \
+    && dnf -y install \
+        doxygen \
+        gcc-c++ \
+        gcc \
+        gdb \
+        git \
+        cmake \
+        make \
+        lcov \
+        valgrind \
+        pip \
+        python \
+        python-devel \
+    && dnf clean all
+
+COPY . /musica/
+
+RUN cd /musica &&  python -m pip install -e .
+
+RUN python -m pip install -r /musica/docs/requirements.txt 
+
+ARG SUFFIX=""
+ENV SWITCHER_SUFFIX=$SUFFIX
+
+RUN echo "The suffix is '$SWITCHER_SUFFIX'"
+
+RUN mkdir /build \
+      && cd /build \
+      && cmake -D MUSICA_BUILD_DOCS=ON \
+               -D MUSICA_ENABLE_TUVX=OFF \
+                -D MUSICA_GIT_TAG=${MUSICA_GIT_TAG} \
+                -D CMAKE_BUILD_TYPE=${BUILD_TYPE} \
+               /musica \
+      && make docs
+
+WORKDIR /build
