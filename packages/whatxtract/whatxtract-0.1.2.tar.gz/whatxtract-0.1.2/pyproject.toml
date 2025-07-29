@@ -1,0 +1,135 @@
+[build-system]
+requires = ["setuptools >= 76", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "whatxtract"
+authors = [
+  { name = "Hasan Rasel", email = "rrss.mahmud@gmail.com" }
+]
+description = "Extract and verify WhatsApp contact numbers via WhatsApp Web using an automation-powered Python toolkit."
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+keywords = [
+  "WhatsApp",
+  "WhatsApp Extractor",
+  "WhatsApp Number Checker",
+  "WhatsApp Validator",
+  "WhatsApp Automation",
+  "Contacts Extractor",
+  "WhatsApp User Checker",
+  "WhatsApp Web Scraper"
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Topic :: Communications :: Chat",
+  "Topic :: Communications :: Telephony",
+  "Topic :: Internet :: WWW/HTTP :: Browsers",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+  "tqdm",
+  "faker",
+  "colorlog",
+  "selenium",
+  "undetected-chromedriver",
+]
+dynamic = ["version"]
+
+[project.scripts]
+whatxtract = "whatxtract.wa_web:main"
+
+[tool.setuptools.dynamic]
+version = {attr = "whatxtract.__version__"}
+
+[tool.setuptools.packages.find]
+include = ["whatxtract*"]
+exclude = [
+  "docs*", "tests*", "local*", "dist*", "whatxtract.egg-info*", ".venv*", ".run*",
+  "whatxtract/WAProfiles/",
+  "whatxtract/.last_dep_check",
+  "whatxtract/whatxtract_logs/",
+  "whatxtract/logs/",
+  "whatxtract/output/"
+]
+
+[project.urls]
+Homepage = "https://github.com/bitbytelab/WhatXtract"
+Issues = "https://github.com/bitbytelab/WhatXtract/issues"
+
+[tool.ruff]
+builtins = ["_"]
+extend-exclude = [
+    ".run", "__pycache__", "build",
+    ".ruff_cache", ".pytest_cache"
+]
+fix = true
+force-exclude = true
+indent-width = 4
+line-length = 120
+show-fixes = true
+target-version = "py312"
+unsafe-fixes = true
+
+[tool.ruff.format]
+quote-style = "single"
+docstring-code-format = true
+
+[tool.ruff.lint]
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+logger-objects = ["logging_setup.logger"]
+unfixable = []
+select = [
+  "E",      # pycodestyle: code formatting
+  "F",      # pyflakes: undefined vars, unused imports
+  "B",      # bugbear: common bugs and anti patterns
+  "I",      # import sorting (built-in, replaces isort)
+  "N",      # pep8-naming: function/class naming
+  "D",      # pydocstyle: docstring format
+  "UP",     # pyupgrade: modernize Python syntax
+  "C4",     # flake8-comprehensions: simplify comprehensions
+  "SIM",    # flake8-simplify: remove redundant code
+  "TID",    # tidy imports: disallow relative imports
+  "RUF",    # Ruff-native: performance, cleanup
+]
+ignore = [
+  # "B013", # redundant-tuple-in-exception-handler
+  "D105",   # Missing docstring in magic methods like __init__, __str__, etc.
+  "D205",   # 1 blank line required between summary line and description in docstrings
+  "D212",   # Multi-line docstring summary should start at the first line
+  "N812",   # Lowercase imported as non-lowercase (e.g., `import mymodule as MyModule`)
+]
+
+[tool.ruff.lint.extend-per-file-ignores]
+"__init__.py" = ["E402"]
+
+[tool.ruff.lint.flake8-annotations]
+allow-star-arg-any = true
+
+[tool.ruff.lint.isort]
+length-sort = true
+order-by-type = true
+force-single-line = false
+combine-as-imports = true
+known-first-party = ["whatxtract"]      # package name
+section-order = [                       # Import section order
+    "future",
+    "standard-library",
+    "third-party",
+    "first-party",
+    "local-folder",
+]
+
+[tool.ruff.lint.pep8-naming]
+ignore-names = ["foo", "bar"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
