@@ -1,0 +1,47 @@
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "apogee-connect-rpi"
+# dynamic = ["version"] # This dynamic method of getting version isn't working anymore. Update version here and in version.py
+version = "1.1.3" # Also update version number in version.py
+description = "Automates data collection with Bluetooth sensors from Apogee Instruments, Inc. using a Raspberry Pi"
+authors = [{name = "Apogee Instruments, Inc.", email = "developer@apogeeinstruments.com"}]
+license = {file = "LICENSE"}
+readme = "README.md"
+dependencies = [
+    "numpy", 
+    "python-crontab", 
+    "bleak", 
+    "asyncio",
+    "filelock",
+    "packaging",
+    "requests",
+    "python-dateutil"
+]
+requires-python = ">=3.7"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+]
+
+[project.scripts]
+apogee = "apogee_connect_rpi.main:cli"
+
+[tool.setuptools]
+packages = ["apogee_connect_rpi"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"apogee_connect_rpi" = [
+    "Helpers/*.json", 
+    "Helpers/*.sh",
+    "Scripts/*.py"
+]
