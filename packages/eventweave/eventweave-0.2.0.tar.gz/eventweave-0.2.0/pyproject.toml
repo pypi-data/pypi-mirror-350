@@ -1,0 +1,47 @@
+[project]
+name = "eventweave"
+version = "0.2.0"
+description = "Weave multiple streams of intervals into combinations"
+authors = [{name = "Max Görner", email = "5477952+MaxG87@users.noreply.github.com"}]
+requires-python = ">=3.10"
+dependencies = []
+readme = "README.md"
+
+[dependency-groups]
+dev = [
+    "hypothesis>=6.131.15",
+    "mypy>=1.15.0",
+    "pdbpp>=0.11.6",
+    "pytest>=8.3.5",
+    "pytest-cov>=6.1.1",
+    "pytest-xdist>=3.6.1",
+    "ruff>=0.11.9",
+]
+
+[tool.mypy]
+warn_unreachable = true
+enable_error_code = [
+    "possibly-undefined"
+]
+strict = true
+
+[tool.pytest.ini_options]
+addopts = [
+    "--cov", "src",
+    "--cov-branch",
+    "--cov-fail-under", "85",
+    "--doctest-glob", "*.md",
+    "--doctest-modules",
+]
+
+[tool.ruff]
+src = [".", "src/"]
+
+[tool.ruff.lint]
+select = ["A", "B", "C", "F", "I", "ISC", "PIE", "PL", "Q", "RUF", "SIM", "TID", "W", "YTT"]
+ignore = ["E", "PLC1901", "SIM117"]
+mccabe.max-complexity = 6
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
