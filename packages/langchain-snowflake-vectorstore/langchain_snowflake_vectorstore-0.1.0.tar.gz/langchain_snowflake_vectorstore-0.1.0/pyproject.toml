@@ -1,0 +1,51 @@
+[tool.poetry]
+name = "langchain-snowflake-vectorstore"
+version = "0.1.0"
+description = "LangChain integration for Snowflake vector store"
+authors = ["Mark Boos <mboos04@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "langchain_snowflake_vectorstore"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+langchain-core = "^0.3.0"
+snowflake-connector-python = "^3.0.0"
+snowflake-sqlalchemy = "^1.5.0"
+sqlalchemy = "^2.0.0"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^7.0.0"
+pytest-asyncio = "^0.21.0"
+pytest-socket = "^0.6.0"
+langchain-tests = "^0.3.0"
+
+[tool.poetry.group.lint.dependencies]
+ruff = "^0.1.0"
+
+[tool.poetry.group.typing.dependencies]
+mypy = "^1.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+select = [
+  "E",  # pycodestyle
+  "F",  # pyflakes
+  "I",  # isort
+]
+
+[tool.mypy]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+markers = [
+    "integration: marks tests as integration tests (deselect with '-m \"not integration\"')",
+]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
