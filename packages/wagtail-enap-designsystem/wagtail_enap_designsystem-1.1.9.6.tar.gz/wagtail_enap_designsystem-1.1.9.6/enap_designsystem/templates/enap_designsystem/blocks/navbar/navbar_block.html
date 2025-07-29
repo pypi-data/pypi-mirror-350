@@ -1,0 +1,150 @@
+{% load wagtailcore_tags wagtailimages_tags %}
+{% load static %}
+
+<script src="https://kit.fontawesome.com/2e8803d931.js" crossorigin="anonymous"></script>
+
+<div style="background-color: #f8fafc;">
+	<nav class="navbar">
+		<div style="max-width: 1142px; width: 1142px; margin: auto; display: flex; align-items: center; justify-content: space-between;">
+					<!-- Menu Hamburguer + Logo -->
+		<div style="display: flex; gap: 30px; margin-right: 10px;">
+			<div class="menu-container">
+				<!-- Ícone do Menu -->
+				<button class="menu-icon" onclick="toggleMenu()">
+					<span style="color: #007D7A;" class="material-icons">menu</span>
+				</button>
+		
+				<!-- Dropdown do Menu -->
+				<div id="menu-dropdown" class="menu-dropdown hidden">
+					{% if navbar.links %}
+						{% for link in navbar.links %}
+							<a href="{{ link.value.url }}" class="nav-link" target="_blank">{{ link.value.label }}</a>
+						{% endfor %}
+					{% else %}
+						<span class="text-red-500">⚠️ Nenhum link cadastrado.</span>
+					{% endif %}
+				</div>
+			</div>
+		
+			<!-- Logo -->
+			{% for block in navbar.logo %}
+				{% if ".svg" in block.value.file.url|lower %}
+					<img src="{{ block.value.file.url }}" >
+				{% else %}
+					{% image block.value fill-118x18 format-webp as navbar_logo %}
+					<img src="{{ navbar_logo.url }}" alt="ENAP" class="logo-navbar">
+				{% endif %}
+			{% endfor %}
+		</div>
+	
+		<!-- Barra de Pesquisa -->
+		<div class="search-container">
+			<input type="text" placeholder="O que você procura ou quer aprender?">
+			<button><span class="material-icons">search</span></button>
+			<button><span class="material-icons">mic</span></button>
+		</div>
+	
+		<!-- Opções à Direita -->
+		<div class="options">
+			<!-- Seletor de Idioma -->
+			<button>
+				PT <span class="material-icons">expand_more</span>
+			</button>
+	
+			<!-- Botão de Contraste -->
+			<button>
+				<span class="material-icons">contrast</span>
+			</button>
+	
+			<!-- Botão de Login -->
+			<a href="/login" class="login-btn">
+				<i class="fa-solid fa-circle-user"></i>
+				<span>Entrar</span>
+			</a>
+		</div>
+		</div>
+	</nav>
+</div>
+
+
+<script>
+	function toggleMenu() {
+		const menu = document.getElementById("menu-dropdown");
+		menu.classList.toggle("dropdown-active");
+	}
+
+	window.addEventListener('scroll', function() {
+		const navbar = document.querySelector('.navbar');
+		
+		// Adiciona classe fixa quando rolar mais que a altura inicial da navbar
+		if (window.scrollY > navbar.offsetHeight) {
+			navbar.classList.add('navbar-fixed');
+		} else {
+			navbar.classList.remove('navbar-fixed');
+		}
+	});
+
+	function clearInput() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('searchInput').focus();
+        toggleClearButton();
+    }
+
+    function toggleClearButton() {
+        const input = document.getElementById('searchInput');
+        const clearButton = document.getElementById('clearButton');
+        clearButton.style.display = input.value ? 'block' : 'none';
+    }
+
+    // Função para verificar se é dispositivo móvel
+    function isMobile() {
+        return window.innerWidth <= 768; // Defina o breakpoint apropriado para seu site
+    }
+
+    // Quando o documento carrega, torna o search container visível apenas no desktop
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchContainer = document.querySelector('.search-container');
+        
+        if (!isMobile()) {
+            // Versão desktop - sempre visível
+            searchContainer.classList.add('visible');
+            searchContainer.classList.add('show');
+        }
+    });
+
+    // Durante o scroll, comportamento responsivo
+    window.addEventListener('scroll', function() {
+        const searchContainer = document.querySelector('.search-container');
+        const scrollPosition = window.scrollY;
+        
+        if (isMobile()) {
+            // Versão mobile - só visível após scroll
+            if (scrollPosition > 200) {
+                searchContainer.classList.add('show');
+            } else {
+                searchContainer.classList.remove('show');
+            }
+        } else {
+            // Versão desktop - sempre visível
+            searchContainer.classList.add('visible');
+            searchContainer.classList.add('show');
+        }
+    });
+
+    // Recalcular quando a janela for redimensionada
+    window.addEventListener('resize', function() {
+        const searchContainer = document.querySelector('.search-container');
+        
+        if (!isMobile()) {
+            // Versão desktop - sempre visível
+            searchContainer.classList.add('visible');
+            searchContainer.classList.add('show');
+        } else {
+            // Versão mobile - verificar posição de scroll
+            const scrollPosition = window.scrollY;
+            if (scrollPosition <= 200) {
+                searchContainer.classList.remove('show');
+            }
+        }
+    });
+</script>

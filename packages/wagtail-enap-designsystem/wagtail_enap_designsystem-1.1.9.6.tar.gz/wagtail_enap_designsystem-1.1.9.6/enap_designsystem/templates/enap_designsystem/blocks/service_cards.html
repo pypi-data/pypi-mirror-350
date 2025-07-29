@@ -1,0 +1,28 @@
+{% extends "enap_designsystem/base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+{% block content %}
+
+
+<div class="service-card-grid">
+    {% for card in value.cards %}
+        <div class="service-card-two">
+            {% if card.image %}
+                {% image card.image fill-400x300 class="service-card-two__image" %}
+            {% endif %}
+            {% if card.link %}
+                <a href="{{ card.link }}" class="service-card-two__link">
+            <div class="service-card-two__content">
+                <h3 class="service-card-two__title">{{ card.title }}</h3>
+                <div class="service-card-two__description">
+                    {{ card.description|richtext }}
+                </div>
+            </div>
+        
+                </a>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+
+
+{% endblock %}

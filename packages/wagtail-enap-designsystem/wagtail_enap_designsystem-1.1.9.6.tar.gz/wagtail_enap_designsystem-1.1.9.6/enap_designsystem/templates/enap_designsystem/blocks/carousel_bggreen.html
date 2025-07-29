@@ -1,0 +1,190 @@
+{% extends "enap_designsystem/base.html" %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load static %}
+
+
+{% block content %}
+
+<div style="background-color: #02333A; color: white; padding: 60px 0; position: relative;">
+    <div style="overflow: hidden;" class="container">
+        <!-- Cabeçalho do carrossel -->
+        <div style="margin-bottom: 40px; max-width: 700px;">
+            <h2 style="font-size: 32px; margin-bottom: 10px; line-height: 120%;">
+                {{ value.title|default:"Acervo para Servidores" }}
+            </h2>
+            <p style="font-size: 16px; margin-top: 0;">{{ value.subtitle|default:"Comprometidos com a Transformação" }}</p>
+        </div>
+        
+        <!-- Container do carrossel com largura controlada -->
+        <div style="position: relative; overflow: visible;">
+            <!-- Botão Anterior -->
+            <button id="prevBtn" style="position: absolute; left: -20px; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; background-color: white; border: none; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 10; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                <span style="font-size: 20px; line-height: 1; color: #02333A;">&#10094;</span>
+            </button>
+            
+            <!-- Wrapper do carrossel -->
+            <div id="carousel-wrapper" style="display: flex; transition: transform 0.4s ease; width: 100%;">
+                {% if value.items %}
+                    {% for item in value.items %}
+                        <div class="carousel-card" style="flex: 0 0 25%; width: 25%; padding: 0 10px; box-sizing: border-box;">
+                            <div style="background-color: white; border-radius: 20px; overflow: hidden; height: 100%;">
+                                <div style="padding: 15px;">
+                                    {% if item.image %}
+                                        {% image item.image fill-400x140 class="img-fluid rounded" style="width: 100%; height: 140px; object-fit: cover; border-radius: 20px;" %}
+                                    {% else %}
+                                        <div style="width: 100%; height: 140px; background-color: #eee; display: flex; align-items: center; justify-content: center; border-radius: 20px;">
+                                            <span>Imagem indisponível</span>
+                                        </div>
+                                    {% endif %}
+                                    <div style="height: 60%; display: flex; flex-direction: column; justify-content: space-between;">
+                                    <div>
+                                    <h3 style="line-height:120%; font-size: 1.25rem; font-weight: 600; margin: 15px 0 10px; color: #434A54;">{{ item.title }}</h3>
+                                    <p style="font-size: 0.95rem; color: #434A54;">{{ item.description }}</p>
+                                    </div>
+                                    <a href="{{ item.link_url }}" style="color: #007D7A; font-weight: 500; display: inline-flex; align-items: center; text-decoration: none;">
+                                        {{ item.link_text }} <i style="margin-left: 5px;" class="fa-solid fa-circle-chevron-right"></i>
+                                    </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <!-- Cards de demonstração quando não há itens -->
+                    <div class="carousel-card" style="flex: 0 0 25%; width: 25%; padding: 0 10px; box-sizing: border-box;">
+                        <div style="background-color: white; border-radius: 20px; overflow: hidden; height: 100%;">
+                            <div style="padding: 15px;">
+                                <div style="width: 100%; height: 140px; background-color: #eee; display: flex; align-items: center; justify-content: center; border-radius: 20px;">
+                                    <span>Imagem 1</span>
+                                </div>
+                                <h3 style="font-size: 1.25rem; font-weight: 600; margin: 15px 0 10px; color: #333;">Introdução à gestão</h3>
+                                <p style="font-size: 0.95rem; margin-bottom: 20px; color: #555;">Apresenta os procedimentos essenciais para lidar com questões éticas.</p>
+                                <a href="#" style="color: #0B8457; font-weight: 500; display: inline-flex; align-items: center; text-decoration: none;">
+                                    Acesse o curso <span style="margin-left: 5px;">→</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="carousel-card" style="flex: 0 0 25%; width: 25%; padding: 0 10px; box-sizing: border-box;">
+                        <div style="background-color: white; border-radius: 20px; overflow: hidden; height: 100%;">
+                            <div style="padding: 15px;">
+                                <div style="width: 100%; height: 200px; background-color: #eee; display: flex; align-items: center; justify-content: center; border-radius: 20px;">
+                                    <span>Imagem 2</span>
+                                </div>
+                                <h3 style="font-size: 1.25rem; font-weight: 600; margin: 15px 0 10px; color: #333;">Assédio moral</h3>
+                                <p style="font-size: 0.95rem; margin-bottom: 20px; color: #555;">Orienta servidores para identificação e prevenção de assédio.</p>
+                                <a href="#" style="color: #0B8457; font-weight: 500; display: inline-flex; align-items: center; text-decoration: none;">
+                                    Acesse o curso <span style="margin-left: 5px;">→</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="carousel-card" style="flex: 0 0 25%; width: 25%; padding: 0 10px; box-sizing: border-box;">
+                        <div style="background-color: white; border-radius: 20px; overflow: hidden; height: 100%;">
+                            <div style="padding: 15px;">
+                                <div style="width: 100%; height: 200px; background-color: #eee; display: flex; align-items: center; justify-content: center; border-radius: 4px;">
+                                    <span>Imagem 3</span>
+                                </div>
+                                <h3 style="font-size: 1.25rem; font-weight: 600; margin: 15px 0 10px; color: #333;">Gestão de conflitos</h3>
+                                <p style="font-size: 0.95rem; margin-bottom: 20px; color: #555;">Capacita servidores para gerir conflitos eficazmente.</p>
+                                <a href="#" style="color: #0B8457; font-weight: 500; display: inline-flex; align-items: center; text-decoration: none;">
+                                    Acesse o curso <span style="margin-left: 5px;">→</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="carousel-card" style="flex: 0 0 25%; width: 25%; padding: 0 10px; box-sizing: border-box;">
+                        <div style="background-color: white; border-radius: 8px; overflow: hidden; height: 100%;">
+                            <div style="padding: 15px;">
+                                <div style="width: 100%; height: 200px; background-color: #eee; display: flex; align-items: center; justify-content: center; border-radius: 4px;">
+                                    <span>Imagem 4</span>
+                                </div>
+                                <h3 style="font-size: 1.25rem; font-weight: 600; margin: 15px 0 10px; color: #333;">Times de alta performance</h3>
+                                <p style="font-size: 0.95rem; margin-bottom: 20px; color: #555;">Estimula habilidades gerenciais e trabalho em equipe.</p>
+                                <a href="#" style="color: #0B8457; font-weight: 500; display: inline-flex; align-items: center; text-decoration: none;">
+                                    Saiba mais <span style="margin-left: 5px;">→</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Botão Próximo -->
+            <button id="nextBtn" style="position: absolute; right: -20px; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; background-color: white; border: none; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 10; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                <span style="font-size: 20px; line-height: 1; color: #02333A;">&#10095;</span>
+            </button>
+        </div>
+        
+        <!-- Indicadores -->
+        <div style="display: none; justify-content: center; margin-top: 20px;">
+            {% if value.items %}
+                {% for item in value.items %}
+                    <span class="carousel-indicator" data-index="{{ forloop.counter0 }}" style="width: 10px; height: 10px; border-radius: 50%; background-color: {% if forloop.first %}white{% else %}rgba(255, 255, 255, 0.5){% endif %}; margin: 0 5px; cursor: pointer;"></span>
+                {% endfor %}
+            {% else %}
+                <span class="carousel-indicator active" data-index="0" style="width: 10px; height: 10px; border-radius: 50%; background-color: white; margin: 0 5px; cursor: pointer;"></span>
+                <span class="carousel-indicator" data-index="1" style="width: 10px; height: 10px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.5); margin: 0 5px; cursor: pointer;"></span>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Elementos do carrossel
+        var wrapper = document.getElementById('carousel-wrapper');
+        var prevBtn = document.getElementById('prevBtn');
+        var nextBtn = document.getElementById('nextBtn');
+        var indicators = document.querySelectorAll('.carousel-indicator');
+        var cards = document.querySelectorAll('.carousel-card');
+        
+        // Configuração do carrossel
+        var currentIndex = 0;
+        var cardWidth = 25; // 25% de largura para cada card (4 cards por linha)
+        var totalSlides = Math.ceil(cards.length / 4);
+        
+        // Função para mover o carrossel
+        function moveCarousel(index) {
+            if (index < 0) {
+                index = totalSlides - 1;
+            } else if (index >= totalSlides) {
+                index = 0;
+            }
+            
+            currentIndex = index;
+            var translateValue = -currentIndex * (cardWidth * 4);
+            wrapper.style.transform = 'translateX(' + translateValue + '%)';
+            
+            // Atualizar indicadores
+            indicators.forEach(function(indicator, i) {
+                if (i === currentIndex) {
+                    indicator.style.backgroundColor = 'white';
+                } else {
+                    indicator.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
+                }
+            });
+        }
+        
+        // Adicionar eventos de clique aos botões
+        prevBtn.addEventListener('click', function() {
+            moveCarousel(currentIndex - 1);
+        });
+        
+        nextBtn.addEventListener('click', function() {
+            moveCarousel(currentIndex + 1);
+        });
+        
+        // Adicionar eventos de clique aos indicadores
+        indicators.forEach(function(indicator, i) {
+            indicator.addEventListener('click', function() {
+                moveCarousel(i);
+            });
+        });
+    });
+</script>
+{% endblock %}
