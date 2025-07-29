@@ -1,0 +1,88 @@
+Metadata-Version: 2.1
+Name: encord
+Version: 0.1.163
+Summary: Encord Python SDK Client
+Home-page: https://github.com/encord-team/encord-client-python
+License: Apache Software License
+Keywords: encord
+Author: Cord Technologies Limited
+Author-email: hello@encord.com
+Requires-Python: >=3.8, !=2.7.*, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*, !=3.6.*, !=3.7.*
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: License :: Other/Proprietary License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Provides-Extra: coco
+Requires-Dist: cryptography (>=43.0.0)
+Requires-Dist: numpy (>=1.24,<2.0) ; (python_version < "3.12") and (extra == "coco")
+Requires-Dist: numpy (>=1.26,<2.0) ; (python_version >= "3.12") and (extra == "coco")
+Requires-Dist: opencv-python (>=4.11.0.86,<5.0.0.0) ; extra == "coco"
+Requires-Dist: orjson (>=2)
+Requires-Dist: pycocotools (>=2.0.7,<3.0.0) ; extra == "coco"
+Requires-Dist: pydantic (>=1.10.14)
+Requires-Dist: python-dateutil (>=2.8.2,<3.0.0)
+Requires-Dist: requests (>=2.25.0,<3.0.0)
+Requires-Dist: shapely (>=2.0.4,<3.0.0) ; extra == "coco"
+Requires-Dist: tqdm (>=4.32.1,<5.0.0)
+Project-URL: Documentation, https://python.docs.encord.com/
+Project-URL: Repository, https://github.com/encord-team/encord-client-python
+Description-Content-Type: text/markdown
+
+<h1 align="center">
+  <p align="center">Encord Python API Client</p>
+  <a href="https://encord.com">
+    <img src="https://storage.googleapis.com/docs-media.encord.com/encord.png" width="280" alt="Encord logo"/>
+  </a>
+</h1>
+
+[![license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
+# The data engine for computer vision
+
+## 💻 Features
+
+- Minimal low-level Python client that allows you to interact with Encord's API
+- Supports Python: `3.8`, `3.9`, `3.10` and `3.11`
+
+## ✨ Relevant Links
+
+* [Encord website](https://encord.com)
+* [Encord web app](https://app.encord.com)
+* [Encord documentation](https://docs.encord.com)
+
+## 💡 Getting Started
+
+For full documentation, please visit [Encord Python SDK](https://docs.encord.com/reference/installation-sdk).
+
+First, install Encord Python API Client using the [pip](https://pip.pypa.io/en/stable/installing) package manager:
+
+```bash
+python3 -m pip install encord
+```
+
+Then, generate an public-private key pair, and upload the public key to [Encord website](https://www.encord.com/).
+Detailed guide can be found in the [dedicated manual](https://docs.encord.com/docs/annotate-public-keys).
+
+Passing the private key to the factory, you can initialise the Encord client directly.
+
+```python
+# Import dependencies
+from encord import EncordUserClient
+
+# Authenticate with Encord using the path to your private key.  Replace <private_key_path> with the path to your private key.
+user_client = EncordUserClient.create_with_ssh_private_key(
+  ssh_private_key_path="<private_key_path>"
+  )
+```
+
+For detailed examples and API reference please refer to [Encord SDK documentation](https://python.docs.encord.com/)
+
+## 🐛 Troubleshooting
+
+Please report bugs to the [GitHub Issues](https://github.com/encord-team/encord-client-python/issues).
+Just make sure you read the [Encord documentation](https://docs.encord.com) and search for related issues first.
+
