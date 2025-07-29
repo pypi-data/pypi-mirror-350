@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "maven_check_versions"
+authors = [
+    { name = "Alexander Bulgakov" },
+]
+description = "Maven check versions package"
+readme = "PyPy.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+classifiers = [
+    "Topic :: Software Development :: Build Tools",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "requests", "beautifulsoup4", "python-dateutil", "pyyaml",
+    "redis", "tarantool", "pymemcache"
+]
+dynamic = ["version"]
+
+[tool.setuptools.dynamic]
+version = { file = "VERSION" }
+
+[project.urls]
+Homepage = "https://github.com/alexundros/maven-check-versions"
+Issues = "https://github.com/alexundros/maven-check-versions/issues"
+Source = "https://github.com/alexundros/maven-check-versions"
+
+[project.scripts]
+maven_check_versions = "maven_check_versions.__init__:main"
+
+[tool.mypy]
+exclude = "tests"
+python_version = "3.10"
+follow_untyped_imports = true
+ignore_missing_imports = true
