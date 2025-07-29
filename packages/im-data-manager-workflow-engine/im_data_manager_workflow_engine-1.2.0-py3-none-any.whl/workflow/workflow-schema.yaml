@@ -1,0 +1,270 @@
+---
+# The JSONSchema for 'Workflow' YAML files.
+#
+# See https://json-schema.org/understanding-json-schema/index.html
+
+$schema: http://json-schema.org/draft-07/schema#
+
+title: Data Manager Workflow Schema
+description: >-
+  The Schema for Data Manager Workflows
+
+# The root-level object -------------------------------------------------------
+
+type: object
+properties:
+  kind:
+    const: DataManagerWorkflow
+  kind-version:
+    enum:
+    - '2024.1'
+  name:
+    $ref: '#/definitions/rfc1035-label-name'
+  description:
+    type: string
+    description: A description of the workflow
+  steps:
+    type: array
+    items:
+      $ref: "#/definitions/step"
+  variables:
+    type: object
+    additionalProperties: false
+    properties:
+      inputs:
+        type: array
+        items:
+          $ref: "#/definitions/workflow-input-parameter"
+      outputs:
+        type: array
+        items:
+          $ref: "#/definitions/workflow-output-parameter"
+      options:
+        type: array
+        items:
+          $ref: "#/definitions/workflow-option-parameter"
+required:
+- kind
+- kind-version
+- name
+- steps
+
+# Sub-object definitions ------------------------------------------------------
+
+definitions:
+
+  # RFC 1035 Label Names (as used in Kubernetes)
+  # See https://kubernetes.io/docs/concepts/overview/working-with-objects/names/
+  rfc1035-label-name:
+    type: string
+    pattern: ^[a-z][a-z0-9-]{,63}(?<!-)$
+    description: >-
+      A value compatible with Kubernetes variables
+      to allow it to be used ins Pod Label
+
+  # What does a Job specification template variable look like?
+  # The values found in Jinja variables like '{{ x }}'.
+  # Stuff like 'candidateMolecules' or 'clustered_molecules'
+  template-variable-name:
+    type: string
+    pattern: ^[a-zA-Z_][a-zA-Z0-9_]*$
+
+  # What does a filename look like?
+  # We do not (at the moment) permit spaces!
+  file-name:
+    type: string
+    pattern: ^[a-zA-Z0-9._-]+$
+
+  # An input parameter has a name and a (MIME) type.
+  workflow-input-parameter:
+    type: object
+    additionalProperties: false
+    properties:
+      name:
+        $ref: '#/definitions/template-variable-name'
+      type:
+        type: string
+        description: The MIME type of the parameter
+    required:
+    - name
+    - type
+
+  # A workflow output parameter is essentially a file
+  # taken from the output of a step with a default (as) value.
+  workflow-output-parameter:
+    type: object
+    additionalProperties: false
+    properties:
+      name:
+        $ref: '#/definitions/template-variable-name'
+      from:
+        $ref: '#/definitions/from-step-output'
+      as:
+        $ref: '#/definitions/file-name'
+    required:
+    - name
+    - as
+
+  # Declaration of a step option value from a workflow option (variable)
+  as-step-option:
+    type: object
+    additionalProperties: false
+    properties:
+      option:
+        $ref: '#/definitions/template-variable-name'
+      step:
+        $ref: '#/definitions/rfc1035-label-name'
+    required:
+    - option
+    - step
+
+
+  # Declaration of a value from a workflow input (variable)
+  from-workflow-input:
+    type: object
+    additionalProperties: false
+    properties:
+      workflow-input:
+        $ref: '#/definitions/template-variable-name'
+    required:
+    - workflow-input
+
+  # Declaration of a value from another step
+  from-step-output:
+    type: object
+    additionalProperties: false
+    properties:
+      step:
+        $ref: '#/definitions/rfc1035-label-name'
+      output:
+        $ref: '#/definitions/template-variable-name'
+    required:
+    - step
+    - output
+
+  # A workflow option used as a step option
+  workflow-option-parameter:
+    type: object
+    additionalProperties: false
+    properties:
+      name:
+        $ref: '#/definitions/template-variable-name'
+      description:
+        type: string
+      default:
+        oneOf:
+        - type: string
+        - type: number
+        - type: boolean
+      minimum:
+        type: number
+      maximum:
+        type: number
+      as:
+        type: array
+        items:
+          $ref: '#/definitions/as-step-option'
+    required:
+    - name
+    - as
+
+  # A Step input (from an output of a prior step)
+  step-input-from-step:
+    type: object
+    additionalProperties: false
+    properties:
+      input:
+        $ref: '#/definitions/template-variable-name'
+      from:
+        $ref: '#/definitions/from-step-output'
+    required:
+    - input
+
+  # A Step input (from a workflow input)
+  step-input-from-workflow:
+    type: object
+    additionalProperties: false
+    properties:
+      input:
+        $ref: '#/definitions/template-variable-name'
+      from:
+        $ref: '#/definitions/from-workflow-input'
+    required:
+    - input
+    - from
+
+  # A Step output (with an 'as' - a declared value)
+  step-output-as:
+    type: object
+    additionalProperties: false
+    properties:
+      output:
+        $ref: '#/definitions/template-variable-name'
+      as:
+        $ref: '#/definitions/file-name'
+    required:
+    - output
+    - as
+
+
+  # A step specification variable
+  # (there must be at least one if a variables block is defined).
+  # Typical variable syntax based on Python's definition of a variable
+  # but with the inclusion of 'hyphen' within the variable.
+  # The value of the variable (the object itself) is quite relaxed...
+  # it simply needs to be a string, number (integer or float), or boolean.
+  step-specification-variable:
+    type: object
+    additionalProperties: false
+    patternProperties:
+      '^[a-zA-Z]{1}[a-zA-Z0-9_]{0,79}$':
+        oneOf:
+        - type: string
+        - type: integer
+        - type: boolean
+    minProperties: 1
+
+  # Step specification
+  step-specification:
+    type: object
+    additionalProperties: false
+    properties:
+      collection:
+        type: string
+      job:
+        type: string
+      version:
+        type: string
+      variables:
+        $ref: "#/definitions/step-specification-variable"
+    required:
+    - collection
+    - job
+    - version
+
+  # Steps (in a workflow)
+  step:
+    type: object
+    additionalProperties: false
+    properties:
+      name:
+        $ref: '#/definitions/rfc1035-label-name'
+      description:
+        type: string
+        description: A description of the step
+      specification:
+        $ref: '#/definitions/step-specification'
+      inputs:
+        type: array
+        items:
+          anyOf:
+          - $ref: "#/definitions/step-input-from-step"
+          - $ref: "#/definitions/step-input-from-workflow"
+      outputs:
+        type: array
+        items:
+          anyOf:
+          - $ref: "#/definitions/step-output-as"
+    required:
+    - name
+    - specification
