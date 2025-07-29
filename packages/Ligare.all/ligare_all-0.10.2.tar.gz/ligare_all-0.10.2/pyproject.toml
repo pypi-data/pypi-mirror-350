@@ -1,0 +1,323 @@
+[build-system]
+
+requires = [
+    "setuptools>=42",
+    "wheel"
+]
+
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "Ligare.all"
+requires-python = ">=3.10"
+authors = [
+    {name = 'Aaron Holmes', email = 'aholmes@mednet.ucla.edu'}
+]
+description = 'A framework for quickly developing new Python applications.'
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License (GPL)",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "Development Status :: 4 - Beta",
+    "Natural Language :: English"
+]
+dependencies = [
+    "Ligare.AWS",
+    "Ligare.database",
+    "Ligare.development",
+    "Ligare.GitHub",
+    "Ligare.identity",
+    "Ligare.platform",
+    "Ligare.programming",
+    "Ligare.testing",
+    "Ligare.web"
+]
+
+dynamic = ["version", "readme"]
+[tool.setuptools.dynamic]
+version = {attr = "Ligare.__version__"}
+readme = {file = ["README.md"], content-type = "text/markdown"}
+
+[project.urls]
+"Homepage" = "https://github.com/uclahs-cds/Ligare"
+"Bug Tracker" = "https://github.com/uclahs-cds/Ligare/issues"
+"Repository" = "https://github.com/uclahs-cds/Ligare.git"
+"Changelog" = "https://github.com/uclahs-cds/Ligare/blob/main/CHANGELOG.md"
+
+[tool.setuptools.package-dir]
+"Ligare" = "src"
+"Ligare.AWS" = "src/AWS/Ligare/AWS"
+"Ligare.database" = "src/database/Ligare/database"
+"Ligare.development" = "src/development/Ligare/development"
+"Ligare.GitHub" = "src/GitHub/Ligare/GitHub"
+"Ligare.identity" = "src/identity/Ligare/identity"
+"Ligare.platform" = "src/platform/Ligare/platform"
+"Ligare.programming" = "src/programming/Ligare/programming"
+"Ligare.testing" = "src/testing/Ligare/testing"
+"Ligare.web" = "src/web/Ligare/web"
+
+[tool.setuptools]
+packages = [
+    "Ligare",
+    "Ligare.AWS",
+    "Ligare.database",
+    "Ligare.development",
+    "Ligare.GitHub",
+    "Ligare.identity",
+    "Ligare.platform",
+    "Ligare.programming",
+    "Ligare.testing",
+    "Ligare.web"
+]
+
+[tool.setuptools.package-data]
+"Ligare" = ["py.typed"]
+
+#
+[project.optional-dependencies]
+dev-dependencies = [
+    "tox ~= 4.18",
+    "pytest ~= 8.0",
+    "pytest-mock",
+    "mock",
+    "pytest-cov >= 4.1,< 7.0",
+    "coverage ~= 7.4",
+    "junit2html >= 30.1,< 32.0",
+    "pyright == 1.1.400",
+    "isort >= 5.13,< 7.0",
+    "ruff ~= 0.3",
+    "bandit[sarif,toml] ~= 1.7",
+    "sphinx",
+    "sphinx-autodoc-typehints",
+    "sphinx_toolbox",
+    "sphinx-rtd-theme",
+    "sphinx-copybutton",
+    "sphinx-autobuild",
+    "sphinxcontrib-plantuml"
+]
+
+# Install if you want to use the Esbonio extension
+# in VSCode to write reStructuredText documents.
+vscode-sphinx = [
+    "esbonio"
+]
+
+[tool.pyright]
+pythonVersion = "3.10"
+
+include = [
+    "*.py",
+    "src/",
+    "test/"
+]
+
+exclude = [
+    "**/build",
+    "**/.venv",
+    "**/.github-venv",
+    "**/.pytest_cache",
+    ".github",
+    ".git",
+    "**/typings",
+    "**/node_modules",
+    "**/__pycache__",
+    "docs",
+    "sphinx-docs",
+    "examples",
+    "Ligare.wiki"
+]
+
+extraPaths = [
+    "src/AWS",
+    "src/database",
+    "src/development",
+    "src/GitHub",
+    "src/identity",
+    "src/platform",
+    "src/programming",
+    "src/testing",
+    "src/web"
+]
+
+stubPath = "./typings"
+
+useLibraryCodeForTypes = true
+
+typeCheckingMode = "strict"
+
+reportImportCycles = "information"
+reportCallInDefaultInitializer = "warning"
+reportImplicitOverride = "information"
+reportImplicitStringConcatenation = "warning"
+reportMissingSuperCall = "information"
+reportPropertyTypeMismatch = "error"
+reportShadowedImports = "information"
+reportUninitializedInstanceVariable = "information"
+reportUnnecessaryTypeIgnoreComment = "information"
+reportUnusedCallResult = "information"
+reportMissingTypeStubs = "information"
+reportWildcardImportFromLibrary = "warning"
+reportDeprecated = "error"
+
+[tool.pytest.ini_options]
+pythonpath = [
+    ".",
+    "src/AWS",
+    "src/database",
+    "src/development",
+    "src/GitHub",
+    "src/identity",
+    "src/platform",
+    "src/programming",
+    "src/testing",
+    "src/web",
+]
+
+testpaths = [
+    "test",
+    "src/AWS/test",
+    "src/database/test",
+    "src/development/test",
+    "src/GitHub/test",
+    "src/identity/test",
+    "src/platform/test",
+    "src/programming/test",
+    "src/testing/test",
+    "src/web/test"
+]
+
+addopts = [
+    "--import-mode=importlib",
+    # to debug tests without altering these options see
+    # https://pytest-cov.readthedocs.io/en/latest/debuggers.html
+    # For more information regarding doing this with VSCode see
+    # https://github.com/microsoft/vscode-python/issues/21255
+    # and
+    # https://github.com/microsoft/vscode-python/issues/21845
+    "--junitxml=reports/pytest/pytest.xml",
+    "-o=junit_family=xunit2",
+    "--cov-report=xml:reports/pytest/cov.xml",
+    "--cov-report=term-missing",
+    "-W=ignore::DeprecationWarning",
+    "--cov-context=test"
+]
+
+python_files = "test_*.py"
+
+norecursedirs = "__pycache__ build .pytest_cache *.egg-info .venv .github-venv docs sphinx-docs examples Ligare.wiki"
+
+[tool.tox]
+legacy_tox_ini = """
+    [tox]
+    envlist = py310
+
+    [testenv]
+    # these options make Tox use the existing .venv dir created by venv
+    envdir = {env:VENV:.venv}
+    recreate = false
+    skip_install = true
+
+    setenv =
+        # configure --cov here because we can't use
+        # envvars in pyproject.toml, and we want this
+        # to be configurable in order to test coverage
+        # for a subset of tests in the monorepo rather
+        # than for all tests in the repo.
+        PYTEST_ADDOPTS = --cov={env:PYTEST_TARGET:.}
+    commands =
+        # use `.` add the default --cov option if it's not specified
+        pytest {env:PYTEST_FLAGS} {env:PYTEST_ADDOPTS:--cov=.} {env:PYTEST_TARGET}
+"""
+
+[tool.coverage.report]
+include_namespace_packages = true
+
+[tool.coverage.html]
+directory = "reports/pytest/coverage"
+show_contexts = true
+
+[tool.coverage.run]
+data_file = "reports/pytest/.coverage"
+relative_files = true
+omit = [
+    ".venv/*",
+    "*/.venv/*",
+    ".github-venv/*",
+    "*/test/*",
+    "*/src/*/test/*",
+    "build/*",
+    "*/build/*",
+    ".pytest_cache/*",
+    ".github/*",
+    ".git/*",
+    "typings/*",
+    "*/typings/*",
+    "node_modules/*",
+    "__pycache__/*",
+    "*/__pycache__/*",
+    "docs/*",
+    "sphinx-docs",
+    "examples",
+    "Ligare.wiki"
+]
+branch = true
+
+[tool.bandit]
+exclude_dirs = [
+    "./build/*",
+    "./.github-venv/*",
+    "./.pytest_cache/*",
+    "./typings/*",
+    "./node_modules/*",
+    "./__pycache__/*",
+    "./.github/*",
+    "./.venv/*",
+    ".venv", # ignore any deeper .venv dirs too
+    "./.tox/*",
+    ".git",
+    "./.git/*",
+    "./test/*/test*.py",
+    "./src/*/test/*/test*.py",
+    "./docs/*",
+    "./sphinx-docs/*",
+    "./examples/*",
+    "./Ligare.wiki/*"
+]
+
+[tool.ruff]
+include = [
+    "pyproject.toml",
+    "src/**/*.py",
+    "src/**/*.pyi",
+    "test/**/*.py",
+    "test/**.*.pyi",
+]
+[tool.ruff.format]
+exclude = [
+    "typings/**/*.py",
+    "typings/**/*.pyi",
+    "src/**/typings/**/*.py",
+    "src/**/typings/**/*.pyi",
+    "src/**/build/**/*.py",
+    "src/**/build/**/*.pyi",
+]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = false
+docstring-code-line-length = "dynamic"
+[tool.ruff.lint.isort]
+split-on-trailing-comma = false
+
+[tool.isort]
+profile = "black"
+src_paths = ["src"]
+skip_glob = ["src/*/typings", "src/*/build"]
+split_on_trailing_comma = false
