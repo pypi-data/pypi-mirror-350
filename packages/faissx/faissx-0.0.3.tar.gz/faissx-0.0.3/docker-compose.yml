@@ -1,0 +1,27 @@
+services:
+  faissx:
+    build:
+      context: .
+      dockerfile: server/Dockerfile.dev
+    ports:
+      - "45678:45678"
+    volumes:
+      # Mount source code for development
+      - ./faissx:/app/faissx
+      - ./setup.py:/app/setup.py
+      - ./README.md:/app/README.md
+      - ./MANIFEST.in:/app/MANIFEST.in
+      - ./requirements.txt:/app/requirements.txt
+      - ./examples:/app/examples
+      # Mount data and auth for persistence
+      - ./data:/data
+      - ./examples/auth.json:/auth.json
+    environment:
+      - FAISSX_PORT=45678
+      - FAISSX_BIND_ADDRESS=0.0.0.0
+      - FAISSX_DATA_DIR=/data
+      # Use either FAISSX_AUTH_KEYS or FAISSX_AUTH_FILE, not both
+      # - FAISSX_AUTH_KEYS=key1:tenant1,key2:tenant2
+      - FAISSX_AUTH_FILE=/auth.json
+      - FAISSX_ENABLE_AUTH=true
+    restart: unless-stopped

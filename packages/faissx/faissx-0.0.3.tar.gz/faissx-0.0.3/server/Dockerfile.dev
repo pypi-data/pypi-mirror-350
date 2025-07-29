@@ -1,0 +1,40 @@
+FROM python:3.11-slim
+
+LABEL maintainer="Muxi AI"
+LABEL description="FAISS, Extended (Development) - A high-performance vector database proxy with ZeroMQ"
+LABEL version="0.0.2"
+
+WORKDIR /app
+
+# Install development dependencies
+RUN pip install --no-cache-dir pytest pytest-cov black flake8
+
+# Create data directory
+RUN mkdir -p /data
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV FAISSX_DATA_DIR=/data
+ENV FAISSX_PORT=45678
+ENV FAISSX_BIND_ADDRESS=0.0.0.0
+ENV FAISSX_ENABLE_AUTH=false
+# Prevent Python from writing .pyc files
+ENV PYTHONDONTWRITEBYTECODE=1
+
+# Create entrypoint script that installs package after volumes are mounted
+RUN echo '#!/bin/bash\n\
+echo "Installing faissx in development mode..."\n\
+pip install -e .\n\
+echo "Starting FAISSx server..."\n\
+if command -v faissx.server >/dev/null 2>&1; then\n\
+    faissx.server run\n\
+else\n\
+    echo "Console script not found, using Python module..."\n\
+    python -m faissx.server.cli run\n\
+fi' > /entrypoint.sh && chmod +x /entrypoint.sh
+
+# Expose the ZeroMQ port
+EXPOSE 45678
+
+# Use entrypoint to install package after volume mounts
+ENTRYPOINT ["/entrypoint.sh"]
