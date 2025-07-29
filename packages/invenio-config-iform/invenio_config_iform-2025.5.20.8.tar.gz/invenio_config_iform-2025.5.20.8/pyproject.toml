@@ -1,0 +1,150 @@
+[project]
+name = "invenio-config-iform"
+dynamic = ["version"]
+description = "Invenio module that adds I-Form configs."
+readme = { file = "README.rst", content-type = "text/x-rst" }
+license = "MIT"
+authors = [
+    { name = "I-Form Advanced Research Manufacturing Research Centre", email = "cian.hughes@dcu.ie" },
+]
+keywords = ["invenio", "config", "I-Form"]
+classifiers = [
+    "Environment :: Web Environment",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Development Status :: 3 - Alpha",
+]
+requires-python = ">=3.10,<3.14"
+dependencies = [
+    "invenio-cache>=1.1.1",
+    "invenio-i18n>=2.0.0",
+    "invenio-rdm-records>=4.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Cian-H/invenio-config-iform"
+Issues = "https://github.com/Cian-H/invenio-config-iform/issues"
+
+[project.scripts]
+test-docs = "scripts.test_docs:main"
+test-code = "pytest:console_main"
+test = "scripts.test:main"
+
+[project.entry-points."invenio_base.apps"]
+invenio_config_iform = "invenio_config_iform:InvenioConfigIform"
+
+[project.entry-points."invenio_base.blueprints"]
+invenio_config_iform = "invenio_config_iform.views:ui_blueprint"
+
+[project.entry-points."invenio_i18n.translations"]
+messages = "invenio_config_iform"
+
+[project.entry-points."invenio_config.module"]
+invenio_config_iform = "invenio_config_iform.config"
+
+[project.entry-points."invenio_base.finalize_app"]
+invenio_config_iform = "invenio_config_iform.ext:finalize_app"
+
+[dependency-groups]
+dev = [
+    "hatch>=1.14.1",
+    "pre-commit>=4.2.0",
+    "pydocstyle>=6.3.0",
+    "ruff>=0.11.7",
+]
+tests = [
+    "invenio-app>=1.5.0",
+    "invenio-search[opensearch2]>=2.1.0",
+    "pytest-invenio>=2.1.0",
+    "pytest-ruff>=0.4.1",
+    "ruff>=0.5.3",
+    "Sphinx>=4.5.0",
+]
+
+[build-system]
+requires = ["hatchling", "hatch-calver"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+scheme = "calver"
+path = "invenio_config_iform/__about__.py"
+
+[tool.hatch.build]
+include = ["invenio_config_iform"]
+exclude = [".venv", "tests/*", "*/tests/*", "*.rst", "run-tests.sh"]
+
+# Testing configuration
+[tool.pytest]
+addopts = "--ruff --ruff-format --pydocstyle --doctest-glob=\"*.rst\" --doctest-modules --cov=invenio_config_iform --cov-report=term-missing tests invenio_config_iform"
+testpaths = ["tests", "invenio_config_iform"]
+live_server_scope = "module"
+
+[tool.pytest.ini_options]
+addopts = "--ruff --ruff-format --pydocstyle --doctest-glob=\"*.rst\" --doctest-modules --cov=invenio_config_iform --cov-report=term-missing tests invenio_config_iform"
+testpaths = ["tests", "invenio_config_iform"]
+live_server_scope = "module"
+
+# Code style tools configuration
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+exclude = ["docs"]
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "D203",
+    "D211",
+    "D212",
+    "D213",
+    "E501",
+    "ERA001",
+    "FA102",
+    "FIX002",
+    "INP001",
+    "RUF005",
+    "RUF012",
+    "S101",
+    "TD002",
+    "TD003",
+    "UP009",
+]
+
+[tool.ruff.lint.isort]
+force-sort-within-sections = true
+lines-after-imports = -1
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
+[tool.pydocstyle]
+add_ignore = ["D401"]
+
+# Babel configuration
+[tool.babel.compile_catalog]
+directory = "invenio_config_iform/translations/"
+use-fuzzy = true
+
+[tool.babel.extract_messages]
+copyright_holder = "I-Form Advanced Research Manufacturing Research Centre"
+msgid_bugs_address = "cian.hughes@dcu.ie"
+mapping-file = "babel.ini"
+output-file = "invenio_config_iform/translations/messages.pot"
+add-comments = "NOTE"
+
+[tool.babel.init_catalog]
+input-file = "invenio_config_iform/translations/messages.pot"
+output-dir = "invenio_config_iform/translations/"
+
+[tool.babel.update_catalog]
+input-file = "invenio_config_iform/translations/messages.pot"
+output-dir = "invenio_config_iform/translations/"
