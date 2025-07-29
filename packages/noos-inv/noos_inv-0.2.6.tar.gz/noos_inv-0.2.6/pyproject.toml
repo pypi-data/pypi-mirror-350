@@ -1,0 +1,108 @@
+[build-system]
+requires = ["poetry>=1.0.0"]
+build-backend = "poetry.masonry.api"
+
+[tool.poetry]
+# Description
+name = "noos-inv"
+version = "0.2.6"
+description = "Shared workflows across CI/CD pipelines"
+# Credentials
+license = "MIT"
+authors = ["Noos Energy <contact@noos.energy>"]
+homepage = "https://github.com/noosenergy/noos-invoke"
+# Package data
+readme = "README.md"
+packages = [
+    { include = "noos_inv", from = "src" },
+]
+# Distribution
+classifiers = [
+    "Topic :: Software Development :: Build Tools",
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Environment :: Console",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3.12",
+    "Typing :: Typed",
+]
+
+[tool.poetry.scripts]
+noosinv = "noos_inv.__main__:main"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+invoke = "*"
+
+[tool.poetry.dev-dependencies]
+# Linter
+ruff = "*"
+mypy = "*"
+# Testing
+pytest = "*"
+pytest-cov = "*"
+pytest-mock = "*"
+# Debugging
+ipdb = "*"
+ipython = "*"
+
+[tool.ruff]
+line-length = 99
+src = ["src"]
+# Required if `requires-python` project meta missing
+target-version = "py312"
+
+[tool.ruff.lint]
+ignore = [
+    # Pydocstyle
+    "D100", "D101", "D102", "D103", "D104", "D105", "D106", "D107",
+    # Incompatible rules with D211 & D212
+    "D203", "D213",
+]
+select = [
+    # Flake8
+    "F", "C90",
+    # Pycodestyle
+    "E", "W",
+    # Pydocstyle
+    "D",
+    # Isort
+    "I",
+]
+
+[tool.ruff.lint.isort]
+lines-after-imports = 2
+default-section = "third-party"
+known-first-party = ["noos_inv", "tests"]
+section-order = ["standard-library", "third-party", "first-party", "local-folder"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.mccabe]
+# Nearly replacement for flake8 max-complexity
+max-complexity = 10
+
+[tool.mypy]
+install_types = true
+non_interactive = true
+incremental = true
+warn_unused_configs = false
+warn_unused_ignores = true
+check_untyped_defs = true
+warn_redundant_casts = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+python_files = "test_*.py"
+python_classes = "Test"
+python_functions = "test_*"
+filterwarnings = "error::RuntimeWarning"
+pythonpath = ["src"]
+junit_family = "xunit2"
+addopts = "--junitxml=.pytest_results/junit.xml"
+
+[tool.coverage.run]
+source = "noos_inv/*"
