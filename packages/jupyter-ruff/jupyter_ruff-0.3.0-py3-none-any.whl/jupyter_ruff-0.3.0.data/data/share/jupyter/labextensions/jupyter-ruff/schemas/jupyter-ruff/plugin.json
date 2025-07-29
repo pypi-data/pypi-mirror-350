@@ -1,0 +1,76 @@
+{
+  "title": "Jupyter Ruff",
+  "description": "Settings for the jupyter-ruff extension.",
+  "jupyter.lab.menus": {
+    "main": [
+      {
+        "id": "jp-mainmenu-edit",
+        "items": [
+          {
+            "command": "jupyter-ruff:format-cell",
+            "rank": 500
+          },
+          {
+            "command": "jupyter-ruff:format-all-cells",
+            "rank": 500
+          },
+          {
+            "command": "jupyter-ruff:format-editor",
+            "rank": 500
+          }
+        ]
+      }
+    ],
+    "context": [
+      {
+        "command": "jupyter-ruff:format-cell",
+        "selector": ".jp-CodeCell",
+        "rank": 999
+      },
+      {
+        "command": "jupyter-ruff:format-editor",
+        "selector": ".jp-Editor",
+        "rank": 999
+      }
+    ]
+  },
+  "jupyter.lab.shortcuts": [
+    {
+      "command": "jupyter-ruff:format-cell",
+      "keys": ["Alt Shift F"],
+      "selector": ".jp-CodeCell"
+    },
+    {
+      "command": "jupyter-ruff:format-all-cells",
+      "keys": ["Alt Shift A"],
+      "selector": "body"
+    },
+    {
+      "command": "jupyter-ruff:format-editor",
+      "keys": ["Alt Shift F"],
+      "selector": "body"
+    }
+  ],
+  "properties": {
+    "format-on-run": {
+      "type": "boolean",
+      "title": "Format on Run",
+      "description": "Format code cells when they are run.",
+      "default": false
+    },
+    "format-on-save": {
+      "type": "boolean",
+      "title": "Format on Save",
+      "description": "Format all code cells when the notebook is saved.",
+      "default": false
+    },
+    "sort-imports": {
+      "type": "boolean",
+      "title": "Sort Imports",
+      "description": "Also sort imports when formatting code.",
+      "default": true
+    }
+  },
+  "additionalProperties": false,
+  "type": "object"
+}
