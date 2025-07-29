@@ -1,0 +1,62 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "FastPluggy"
+version = "0.2.33"
+description = "A FastAPI-based framework with plugin management."
+#authors = [
+#    { name = "Jerome" }
+#]
+readme = "README.md"
+#license = { file = "LICENSE" }
+requires-python = ">=3.10"
+dependencies = [
+  "fastapi>=0.115.2",
+  "starlette",
+  "uvicorn>=0.31.1",
+  "python-multipart",
+  "pydantic",
+  "pydantic-settings",
+  "jinja2>=3.1.4",
+  "sqlalchemy>=2.0.35",
+  "loguru>=0.7.2",
+  "GitPython>=3.1.43",
+  "httpx>=0.27.2",
+  "itsdangerous>=2.1.0",
+  "wtforms>=3.0.0",
+  "werkzeug",
+  "semantic-version"
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent"
+]
+
+[project.urls]
+Homepage = "https://gitlab.ggcorp.fr/open/fastpluggy/fast_pluggy"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"fastpluggy" = [
+    "templates/*.html",
+    "templates/*.j2",
+    "static/*"
+]
+
+#[tool.setuptools.dynamic]
+#version = {attr = "FastPluggy.__version__"}
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
