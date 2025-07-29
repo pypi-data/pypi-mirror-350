@@ -1,0 +1,144 @@
+# ---------------------------------
+#   Build back-end configuration
+# ---------------------------------
+[build-system]
+requires = ["hatchling>=1.22"]
+build-backend = "hatchling.build"
+
+# ---------------------------------
+#   Core project metadata
+# ---------------------------------
+[project]
+name = "surrogate-index"
+dynamic = ["version"]                     # version read from __about__.py
+description = "Efficient-Influence-Function (EIF) utilities for surrogate-index causal inference."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+
+authors = [
+  { name = "Kideok Kwon", email = "kideokk16@gmail.com" },
+]
+
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Topic :: Scientific/Engineering :: Mathematics",
+  "Intended Audience :: Science/Research",
+  "Operating System :: OS Independent",
+]
+
+# ---- Runtime dependencies needed by every user ----
+dependencies = [
+  "numpy>=1.26",
+  "pandas>=2.2",
+  "scikit-learn>=1.4",
+]
+
+[project.urls]
+Homepage        = "https://github.com/kideokkwon/surrogate-index"
+Documentation   = "https://github.com/kideokkwon/surrogate-index#readme"
+Issues          = "https://github.com/kideokkwon/surrogate-index/issues"
+Source          = "https://github.com/kideokkwon/surrogate-index"
+
+# ---------------------------------
+#   Optional dependency groups
+# ---------------------------------
+[project.optional-dependencies]
+# Extra ML back-end (gradient-boosted trees)
+ml   = ["xgboost>=2.0"]
+
+# Dev / lint / type-check toolchain (for contributors)
+dev  = ["ruff>=0.4", "black>=24.3", "mypy>=1.9", "pytest>=8.1.1", "pandas-stubs>=2.1.1.230316"]
+
+# ---------------------------------
+#   Hatch version source
+# ---------------------------------
+[tool.hatch.version]
+path = "src/surrogate_index/__about__.py"
+
+# ---------------------------------
+#   Hatch build: include type-hint marker
+# ---------------------------------
+[tool.hatch.build]
+include = ["LICENSE", "src/surrogate_index/py.typed"]
+
+# ---------------------------------
+#   Tell Hatchling to grab the src/ package
+# ---------------------------------
+[tool.hatch.build.targets.wheel]
+packages = ["src/surrogate_index"]
+
+# (optional but tidy – include tests/docs/etc. in the sdist)
+[tool.hatch.build.targets.sdist]
+include = [
+  "src/surrogate_index/**",
+  "tests/**",
+]
+
+# ---------------------------------
+#   Hatch environments
+# ---------------------------------
+[tool.hatch.envs.default]
+dependencies = [
+  "ruff>=0.4",
+  "black>=24.3",
+  "mypy>=1.9",
+  "pandas-stubs>=2.1.1.230316",
+  "pytest>=8.1.1",
+]
+
+[tool.hatch.envs.default.scripts]
+lint = [
+  # Ruff + Black formatting & static type-check
+  "ruff check .",
+  "black --check .",
+  "mypy --strict src",
+]
+test = "pytest tests"
+
+# Type-checking env (strict MyPy)
+[tool.hatch.envs.types]
+extra-dependencies = ["mypy>=1.9"]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/surrogate_index tests}"
+
+# ---------------------------------
+#   Coverage (for pytest-cov)
+# ---------------------------------
+[tool.coverage.run]
+source_pkgs = ["surrogate_index", "tests"]
+branch = true
+parallel = true
+omit = ["src/surrogate_index/__about__.py"]
+
+[tool.coverage.paths]
+surrogate_index = ["src/surrogate_index", "*/surrogate-index/src/surrogate_index"]
+tests           = ["tests", "*/surrogate-index/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
+
+[tool.mypy]
+ignore_missing_imports = true
+
+# ---------------------------------
+#   Black & Ruff config (optional)
+#   — Add if you have project-specific rules
+# ---------------------------------
+# [tool.black]
+# line-length = 88
+#
+# [tool.ruff]
+# line-length = 88
