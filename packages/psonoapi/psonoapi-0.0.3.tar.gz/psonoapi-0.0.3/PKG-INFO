@@ -1,0 +1,61 @@
+Metadata-Version: 2.4
+Name: psonoapi
+Version: 0.0.3
+Summary: Psono API interface for python
+Author-email: Matthew Parslow <mparslow@cybersecure.com>
+License-Expression: MIT
+Project-URL: Homepage, https://gitlab.com/cyber-secure-public/psono-python-module
+Project-URL: Issues, https://gitlab.com/cyber-secure-public/psono-python-module/-/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: license-file
+
+# Psono python module
+
+This module is intended to allow you to interface with psono, a self hosted/cloud hosted open source secret manager.
+
+
+## Authentication
+
+You can either set it in the code as per below, or you can set it in the environment, and it will login automagically.
+```sh
+export PSONO_API_KEY_ID=
+export PSONO_API_PRIVATE_KEY=
+export PSONO_API_SECRET_KEY=
+export PSONO_API_SERVER_URL=https://psono.org.com/server
+export PSONO_API_SERVER_PUBLIC_KEY=
+export PSONO_API_SERVER_SIGNATURE=
+```
+
+## Simple examples
+```python
+import psonoapi
+# This connects to the psono public server by default.
+psonoserver=psonoapi.PsonoServerConfig(api_key='b3b5c964-50d2-40d7-a0f0-69ae43c498d3',
+                                    api_private_key='test'
+                                    api_secret_key='test')
+psono = psonoapi.PsonoAPI(psonoserver)
+
+# getting a secret (this requires full api)
+mysecret = psono.get_path('sharename/foldername/secretname')
+
+# getting a secret (with a limited api key)
+mysecret = psono.get_secret(secret_id='b3b5c964-50d2-40d7-a0f0-69ae43c498d3')
+
+
+# Updating (works as long as you have write permissions)
+mysecret.title = 'I want a new title'
+psono.update_secret(mysecret)
+
+# Creating a new secret
+newsecret = psono.generate_new_secret('website_password') # must be one of psonoapi.psono_type_list
+newsecret : psonoapi.models.PsonoApplicationPassword # set the type to make life easy for yourself.
+newsecret.path = 'existingfolder/newfolder/secretname'
+newsecret.password = '1234'
+newsecret.username = 'myusername'
+newsecret.title = 'My special new secret'
+psono.write_secret(newsecret)
+```
