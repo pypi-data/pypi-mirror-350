@@ -1,0 +1,44 @@
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ce-translit"
+version = "1.0.1"
+description = "Transliterate Chechen text from Cyrillic to Latin script using the Chechen Latin alphabet"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+    {name = "Chechen Language", email = "chechen-language@proton.me"},
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Topic :: Text Processing :: Linguistic",
+]
+
+[project.urls]
+Homepage = "https://github.com/chechen-language/ce-translit-py"
+Repository = "https://github.com/chechen-language/ce-translit-py"
+Issues = "https://github.com/chechen-language/ce-translit-py/issues"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/LICENSE",
+    "/README.md"
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ce_translit"]
+
+[tool.hatch.build.targets.wheel.sources]
+"src/ce_translit" = "ce_translit"
+
+[tool.hatch.envs.default]
+dependencies = ["pytest>=7.0"]
+
+[tool.hatch.envs.default.scripts]
+test = "pytest"
