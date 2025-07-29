@@ -1,0 +1,37 @@
+import sys
+import os
+
+file_path = os.path.abspath(__file__)
+end = file_path.index('mns') + 16
+project_path = file_path[0:end]
+sys.path.append(project_path)
+from mns_common.db.MongodbUtil import MongodbUtil
+import mns_common.constant.db_name_constant as db_name_constant
+
+mongodb_util = MongodbUtil('27017')
+
+
+# 获取东方财富A股全部信息
+def get_a_stock_info():
+    return mongodb_util.find_all_data(db_name_constant.EM_A_STOCK_INFO)
+
+
+# 获取东方财富ETF全部信息
+def get_etf_info():
+    return mongodb_util.find_all_data(db_name_constant.EM_ETF_INFO)
+
+
+# 获取东方财富可转债全部信息
+def get_kzz_info():
+    return mongodb_util.find_all_data(db_name_constant.EM_KZZ_INFO)
+
+
+# 获取东方财富美股全部信息
+def get_us_stock_info():
+    return mongodb_util.find_all_data(db_name_constant.EM_US_STOCK_INFO)
+
+
+# 获取东方财富港股全部信息
+
+def get_hk_stock_info():
+    return mongodb_util.find_all_data(db_name_constant.EM_HK_STOCK_INFO)
