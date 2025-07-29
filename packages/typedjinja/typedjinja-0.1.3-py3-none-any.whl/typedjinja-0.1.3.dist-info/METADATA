@@ -1,0 +1,79 @@
+Metadata-Version: 2.4
+Name: typedjinja
+Version: 0.1.3
+Summary: Type safety and editor intelligence for Jinja2 templates.
+Author-email: Daniel Rodriguez Mariblanca <dakixr@gmail.com>
+License: MIT
+Project-URL: Homepage, https://github.com/dakixr/TypedJinja
+Project-URL: Repository, https://github.com/dakixr/TypedJinja.git
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.12
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Text Processing :: Markup :: HTML
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: jinja2>=3.1.0
+Requires-Dist: jedi>=0.19.2
+Requires-Dist: tree-sitter>=0.24.0
+Requires-Dist: tree-sitter-jinja>=0.3.3
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+Requires-Dist: ruff>=0.1.0; extra == "dev"
+Dynamic: license-file
+
+# TypedJinja
+
+Python companion package for the VSCode extension that adds type safety and LSP features to Jinja2 templates by generating Python stub files (`.pyi`).
+
+## Installation
+
+```sh
+pip install typedjinja
+```
+
+## Usage
+
+### 1. Annotate Types
+
+In your Jinja2 template, declare variables using an `@types` block:
+```jinja
+{# @types
+from mytypes import User
+user: User
+#}
+Hello, {{ user.name }}!
+```
+Generate a stub:
+```sh
+python -m typedjinja path/to/sample_template.html
+```
+This creates `sample_template.pyi` alongside your template.
+
+### 2. Annotate Macros
+
+Use an `@typedmacro` block to define macro signatures:
+```jinja
+{# @typedmacro
+one_macro(name: str = "world")
+This macro greets a user.
+#}
+{% macro one_macro(name = "world") %}
+  Hello, {{ name }}!
+{% endmacro %}
+```
+Stub output includes:
+```python
+def one_macro(name: str = "world"): ...
+```
+
+## Examples
+Browse `samples/templates`:
+- `sample_template.html` for `@types`
+- `another_template.html` for `@typedmacro`
+
+## License
+MIT 
