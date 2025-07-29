@@ -1,0 +1,269 @@
+{% extends 'base.html.j2' %}
+
+{% block title %}Redis Browser{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Redis Browser</h3>
+                        <div class="card-actions">
+                            <button class="btn btn-danger" id="flushDbBtn">Flush DB</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <div class="d-flex gap-2 mb-3">
+                                <div class="flex-grow-1">
+                                    <label for="databaseSelect" class="form-label">Database</label>
+                                    <select class="form-select" id="databaseSelect">
+                                        <!-- Databases will be loaded here -->
+                                    </select>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <label for="keyPattern" class="form-label">Key Pattern</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="keyPattern"
+                                               placeholder="Key pattern (e.g., user:*)" value="*">
+                                        <button class="btn btn-primary" id="searchBtn">Search</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-vcenter card-table">
+                                <thead>
+                                <tr>
+                                    <th>Key</th>
+                                    <th>Type</th>
+                                    <th>TTL</th>
+                                    <th>Size</th>
+                                    <th>Preview</th>
+                                    <th>Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody id="keysTable">
+                                <!-- Keys will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Details Modal -->
+        <div class="modal modal-blur fade" id="keyDetailsModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Key Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="keyDetailsContent">
+                        <!-- Key details will be loaded here -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" id="deleteKeyBtn">Delete Key</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDatabases();
+        });
+
+        // When database selection changes
+        document.getElementById('databaseSelect').addEventListener('change', async function () {
+            const dbIndex = this.value;
+            const resp = await fetch(`{{ base_plugin_url }}/databases/${dbIndex}`, {method: 'POST'});
+            const data = await resp.json();
+            if (!data.success) {
+                return alert('Failed to switch database');
+            }
+            // Reload DB list and preserve this selection
+            loadDatabases(dbIndex);
+        });
+
+        // Search button
+        document.getElementById('searchBtn').addEventListener('click', () => {
+            const pattern = document.getElementById('keyPattern').value || '*';
+            loadKeys(pattern);
+        });
+
+        // Enter key in pattern input
+        document.getElementById('keyPattern').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const pattern = e.target.value || '*';
+                loadKeys(pattern);
+            }
+        });
+
+        // Flush DB
+        document.getElementById('flushDbBtn').addEventListener('click', async () => {
+            const dbIndex = getSelectedDatabase();
+            const dbName = document.getElementById('databaseSelect').selectedOptions[0].textContent;
+            if (!confirm(`Are you sure you want to flush ${dbName}? This cannot be undone.`)) return;
+            const resp = await fetch(`{{ base_plugin_url }}/flush-db?db=${dbIndex}`, {method: 'POST'});
+            const data = await resp.json();
+            if (data.success) {
+                await loadKeys('*');
+                alert('Database flushed successfully');
+            } else {
+                alert('Failed to flush database');
+            }
+        });
+
+        // Delete key from modal
+        document.getElementById('deleteKeyBtn').addEventListener('click', async function () {
+            const keyName = this.getAttribute('data-key');
+            const dbIndex = getSelectedDatabase();
+            if (!confirm(`Are you sure you want to delete the key "${keyName}"?`)) return;
+            const resp = await fetch(
+                `{{ base_plugin_url }}/keys/${encodeURIComponent(keyName)}?db=${dbIndex}`,
+                {method: 'DELETE'}
+            );
+            const data = await resp.json();
+            if (data.success) {
+                document.querySelector('#keyDetailsModal .btn-close').click();
+                loadKeys(document.getElementById('keyPattern').value || '*');
+            } else {
+                alert('Failed to delete key');
+            }
+        });
+
+        // Fetch and render the list of databases, then load keys
+        async function loadDatabases(selectedDb = null) {
+            const resp = await fetch(`{{ base_plugin_url }}/databases`);
+            const dbs = await resp.json();
+
+            const select = document.getElementById('databaseSelect');
+            select.innerHTML = dbs
+                .map(db => `<option value="${db.index}">DB ${db.index} (${db.keys} keys)</option>`)
+                .join('');
+
+            if (selectedDb !== null) {
+                select.value = selectedDb;
+            } else {
+                const curr = dbs.find(db => db.current);
+                if (curr) select.value = curr.index;
+            }
+
+            const pattern = document.getElementById('keyPattern').value || '*';
+            loadKeys(pattern);
+        }
+
+        // Fetch and render keys for the current DB + pattern
+        async function loadKeys(pattern) {
+            const tbody = document.getElementById('keysTable');
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center"><div class="spinner-border"></div></td></tr>';
+
+            const dbIndex = getSelectedDatabase();
+            const resp = await fetch(
+                `{{ base_plugin_url }}/keys?pattern=${encodeURIComponent(pattern)}&db=${dbIndex}`
+            );
+            const keys = await resp.json();
+
+            tbody.innerHTML = '';
+            if (!keys.length) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center">No keys found</td></tr>';
+                return;
+            }
+
+            keys.forEach(k => {
+                const tr = document.createElement('tr');
+                const ttl = k.ttl < 0 ? 'No expiry' : k.ttl + ' sec';
+                const size = k.size != null ? k.size : 'N/A';
+                const preview = k.preview
+                    ? k.preview.substring(0, 50) + (k.preview.length > 50 ? '…' : '')
+                    : 'N/A';
+
+                tr.innerHTML = `
+        <td>${k.key}</td>
+        <td><span class="badge bg-primary">${k.type}</span></td>
+        <td>${ttl}</td>
+        <td>${size}</td>
+        <td class="text-muted"><code>${preview}</code></td>
+        <td>
+          <button class="btn btn-sm btn-primary view-key" data-key="${k.key}">View</button>
+        </td>
+      `;
+                tbody.appendChild(tr);
+            });
+
+            // Attach view-details handlers
+            document.querySelectorAll('.view-key').forEach(btn => {
+                btn.addEventListener('click', () => viewKeyDetails(btn.dataset.key));
+            });
+        }
+
+        // Show the bootstrap modal for a single key’s details
+        async function viewKeyDetails(keyName) {
+            const dbIndex = getSelectedDatabase();
+            const resp = await fetch(
+                `{{ base_plugin_url }}/keys/${encodeURIComponent(keyName)}?db=${dbIndex}`
+            );
+            const data = await resp.json();
+
+            let valueHTML = '';
+            if (data.type === 'string') {
+                valueHTML = `<pre>${tryFormatJson(data.value)}</pre>`;
+            } else if (data.type === 'list') {
+                valueHTML = '<ol>' + data.value.map(i => `<li><pre>${tryFormatJson(i)}</pre></li>`).join('') + '</ol>';
+            } else if (data.type === 'hash') {
+                valueHTML = '<table class="table table-sm"><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody>';
+                for (const [f, v] of Object.entries(data.value)) {
+                    valueHTML += `<tr><td>${f}</td><td><pre>${tryFormatJson(v)}</pre></td></tr>`;
+                }
+                valueHTML += '</tbody></table>';
+            } else if (data.type === 'set') {
+                valueHTML = '<ul>' + data.value.map(i => `<li><pre>${tryFormatJson(i)}</pre></li>`).join('') + '</ul>';
+            } else if (data.type === 'zset') {
+                valueHTML = '<table class="table table-sm"><thead><tr><th>Member</th><th>Score</th></tr></thead><tbody>';
+                for (const [member, score] of data.value) {
+                    valueHTML += `<tr><td><pre>${tryFormatJson(member)}</pre></td><td>${score}</td></tr>`;
+                }
+                valueHTML += '</tbody></table>';
+            }
+
+            document.getElementById('keyDetailsContent').innerHTML = `
+      <div class="mb-3">
+        <h4>Key: ${data.key}</h4>
+        <div class="text-muted">
+          Type: <span class="badge bg-primary">${data.type}</span>
+          TTL: ${data.ttl < 0 ? 'No expiry' : data.ttl + ' sec'}
+        </div>
+      </div>
+      <div class="mb-3">
+        <h5>Value:</h5>
+        <div class="value-container border rounded p-2" style="max-height:400px;overflow:auto;">
+          ${valueHTML}
+        </div>
+      </div>
+    `;
+
+            document.getElementById('deleteKeyBtn').setAttribute('data-key', data.key);
+            new bootstrap.Modal(document.getElementById('keyDetailsModal')).show();
+        }
+
+        // Safely attempt JSON pretty-print
+        function tryFormatJson(val) {
+            try {
+                return JSON.stringify(JSON.parse(val), null, 2);
+            } catch {
+                return val;
+            }
+        }
+
+        function getSelectedDatabase() {
+            return document.getElementById('databaseSelect').value;
+        }
+    </script>
+{% endblock %}
