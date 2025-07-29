@@ -1,0 +1,29 @@
+[version]
+
+path = "src/pytest_checklist/__about__.py"
+
+[envs.default]
+
+python = "3.12"
+
+dependencies = [
+    "pytest",
+    "pytest-datadir",
+    "black",
+    "ruff",
+    "mypy",
+    # interactive
+    "ipython",
+    "pdbpp",
+]
+
+[envs.default.scripts]
+format = "black src tests"
+format_check = "black --check src tests"
+lint = "ruff check src tests"
+typecheck = "mypy src"
+test = "pytest tests"
+
+[build.targets.sdist]
+
+packages = ["src/pytest_checklist"]
