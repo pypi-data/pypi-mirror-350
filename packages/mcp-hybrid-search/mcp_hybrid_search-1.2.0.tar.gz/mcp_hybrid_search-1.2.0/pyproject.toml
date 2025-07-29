@@ -1,0 +1,43 @@
+[project]
+name = "mcp-hybrid-search"
+version = "1.2.0"
+description = "Hybrid Search RAG - A Model Context Protocol (MCP) server for RAG-based document search"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "mcp",
+  "langchain",
+  "langchain-experimental",
+  "langchain-openai",
+  "langchain-chroma",
+  "langchain-community",
+  "pypdf",
+  "rank_bm25",
+  "pdfplumber",
+]
+
+authors = [
+    {name = "Jay Pak", email = "jaypark@forestsoft.co.kr"},
+]
+license = {text = "MIT"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://forestsoft.co.kr/"
+
+[project.scripts]
+mcp-hybrid-search = "rag_mcp_server:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+packages = [
+  "rag_mcp_server"
+]
+
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
