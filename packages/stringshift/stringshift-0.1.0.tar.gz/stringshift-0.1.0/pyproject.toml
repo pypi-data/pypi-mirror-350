@@ -1,0 +1,76 @@
+[build-system]
+requires = [
+    "setuptools>=42",
+    "wheel",
+    "setuptools_scm>=6.0.0"  # For automatic versioning
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "stringshift"
+description = "Advanced string encoding/decoding toolkit with parallel processing, auto-detection, and 12+ format support (URL, HTML, Base64, Morse, etc.)"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "DevBullions", email = "chukwuebukawilliams6@gmail.com"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Text Processing :: Filters"
+]
+keywords = [
+    "text-processing",
+    "encoding",
+    "decoding",
+    "url-decode",
+    "html-entities",
+    "unicode",
+    "text-conversion"
+]
+dependencies = [
+    "charset-normalizer>=2.0.0",  # Better alternative to chardet
+]
+dynamic = ["version"]  # Version will be managed by setuptools_scm
+
+[project.optional-dependencies]
+full = [
+    "chardet>=4.0.0",
+    "python-dotenv>=0.19.0",
+    "rich>=12.0.0"
+]
+test = [
+    "pytest>=7.0.0",
+    "pytest-cov>=3.0.0",
+    "mypy>=0.950"
+]
+dev = [
+    "black>=22.0.0",
+    "flake8>=4.0.0",
+    "isort>=5.0.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/DevBullions/stringshift"
+Documentation = "https://github.com/DevBullions/stringshift/wiki"
+Repository = "https://github.com/DevBullions/stringshift"
+BugTracker = "https://github.com/DevBullions/stringshift/issues"
+Changelog = "https://github.com/DevBullions/stringshift/releases"
+
+[project.scripts]
+stringshift = "stringshift.cli:main"
+
+[project.gui-scripts]
+stringshift-gui = "stringshift.gui:main"  # Reserved for future GUI version
+
+[tool.setuptools_scm]
+write_to = "stringshift/_version.py"
