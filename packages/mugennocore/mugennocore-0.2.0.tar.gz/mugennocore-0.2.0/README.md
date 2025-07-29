@@ -1,0 +1,1 @@
+# Shared lib for the mugen project. Components used by two or more of the mugen ecossystem.
