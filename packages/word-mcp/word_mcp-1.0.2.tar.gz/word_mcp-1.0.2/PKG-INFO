@@ -1,0 +1,319 @@
+Metadata-Version: 2.4
+Name: word-mcp
+Version: 1.0.2
+Summary: A Model Context Protocol server for Microsoft Word integration
+Author-email: Jie Tong <tongjie@gmail.com>
+License-Expression: MIT
+Project-URL: Homepage, https://github.com/word-mcp/word-mcp
+Project-URL: Documentation, https://github.com/word-mcp/word-mcp#readme
+Project-URL: Repository, https://github.com/word-mcp/word-mcp.git
+Project-URL: Bug Tracker, https://github.com/word-mcp/word-mcp/issues
+Keywords: mcp,word,microsoft,automation,ai,llm
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Text Processing :: General
+Classifier: Topic :: Office/Business :: Office Suites
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: mcp>=1.0.0
+Requires-Dist: pydantic>=2.0.0
+Requires-Dist: asyncio-throttle>=1.0.0
+Requires-Dist: pywin32>=306; platform_system == "Windows"
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.21.0; extra == "dev"
+Requires-Dist: black>=22.0.0; extra == "dev"
+Requires-Dist: isort>=5.0.0; extra == "dev"
+Requires-Dist: mypy>=1.0.0; extra == "dev"
+Requires-Dist: pre-commit>=2.0.0; extra == "dev"
+Dynamic: license-file
+
+# Word MCP Server
+
+[![PyPI version](https://badge.fury.io/py/word-mcp.svg)](https://badge.fury.io/py/word-mcp)
+[![Python Support](https://img.shields.io/pypi/pyversions/word-mcp.svg)](https://pypi.org/project/word-mcp/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+A powerful **Model Context Protocol (MCP) server** for Microsoft Word integration, enabling AI assistants and automation tools to interact with Word documents across Windows and macOS platforms.
+
+## 🚀 Features
+
+- **Cross-platform Support**: Works on both Windows and macOS
+- **Document Automation**: Read, write, and manipulate Word documents programmatically
+- **AI-Powered Workflows**: Perfect for document translation, content generation, and editing
+- **Section-by-Section Processing**: Systematically process documents paragraph by paragraph
+- **State Management**: Intelligent tracking of processed content to avoid infinite loops
+- **Multiple Word Instances**: Support for multiple Word documents simultaneously
+
+## 📦 Installation
+
+```bash
+pip install word-mcp
+```
+
+### Platform-Specific Requirements
+
+**Windows:**
+- Microsoft Word (part of Microsoft Office)
+- `pywin32` (automatically installed)
+
+**macOS:**
+- Microsoft Word (part of Microsoft Office)
+- AppleScript support (built into macOS)
+
+## 🛠️ Quick Start
+
+### 1. Using uvx (Recommended)
+
+Run the server directly without installing:
+
+```bash
+# Using the main command
+uvx wordmcp
+
+# Or the alternative command name
+uvx word-mcp
+
+# When published to PyPI, you can also use:
+# uvx word-mcp
+```
+
+For development or local testing with a wheel file:
+
+```bash
+# Build the package first
+python -m build
+
+# Run with local wheel
+uvx --from ./dist/word_mcp-1.0.0-py3-none-any.whl wordmcp
+```
+
+### 2. Command Line Usage (After Installation)
+
+Install and run the MCP server:
+
+```bash
+pip install word-mcp
+word-mcp
+# or
+wordmcp
+```
+
+### 3. Module Usage
+
+Run as a Python module:
+
+```bash
+python -m word_mcp
+```
+
+### 4. Programmatic Usage
+
+```python
+import asyncio
+from word_mcp import create_server, run_server
+
+# Create a server instance
+server = create_server("my-word-server")
+
+# Or run the server directly
+run_server("my-word-server")
+```
+
+### 3. Integration with AI Assistants
+
+The server exposes the following MCP tools that AI assistants can use:
+
+- `get_selection_text` - Get currently selected text
+- `replace_selection_text` - Replace selected text with new content
+- `select_next_section` - Move to the next document section
+- `find_and_select_section` - Find and select text by keywords
+- `list_word_instances` - List all open Word documents
+
+## 📖 Use Cases
+
+### Document Translation
+
+Perfect for section-by-section translation workflows:
+
+```python
+# AI assistant workflow:
+# 1. select_next_section() -> finds next untranslated paragraph
+# 2. get_selection_text() -> gets the content
+# 3. [AI translates the text]
+# 4. replace_selection_text() -> replaces with translation
+# 5. Repeat until document is fully translated
+```
+
+### Content Generation
+
+Automate content creation and editing:
+
+- Generate documentation from templates
+- Apply consistent formatting across documents
+- Bulk content updates and modifications
+
+### Document Analysis
+
+Extract and analyze document content:
+
+- Parse document structure
+- Extract specific sections or data
+- Generate summaries and reports
+
+## 🔧 API Reference
+
+### Tools Available via MCP
+
+#### `get_selection_text`
+Retrieves the currently selected text from the active Word document.
+
+**Parameters:**
+- `instance_id` (optional): Target specific Word instance
+
+**Returns:**
+```json
+{
+  "text": "Selected content...",
+  "instance_id": "word-instance-1"
+}
+```
+
+#### `replace_selection_text`
+Replaces the currently selected text with new content.
+
+**Parameters:**
+- `text`: New text to insert
+- `instance_id` (optional): Target specific Word instance
+
+**Returns:**
+```json
+{
+  "success": true,
+  "instance_id": "word-instance-1"
+}
+```
+
+#### `select_next_section`
+Finds and selects the next section in the document.
+
+**Parameters:**
+- `section_type`: Type of section ("paragraph", "heading", "any")
+- `instance_id` (optional): Target specific Word instance
+
+**Returns:**
+```json
+{
+  "found": true,
+  "section_text": "Next section content...",
+  "section_type": "paragraph",
+  "instance_id": "word-instance-1"
+}
+```
+
+#### `find_and_select_section`
+Finds and selects a section containing specific keywords.
+
+**Parameters:**
+- `keywords`: Keywords to search for
+- `section_type`: Type of section to search in
+- `instance_id` (optional): Target specific Word instance
+
+#### `list_word_instances`
+Lists all currently running Word instances.
+
+**Returns:**
+```json
+{
+  "instances": [
+    {
+      "instance_id": "word-instance-1",
+      "document_title": "Document1.docx",
+      "is_active": true
+    }
+  ]
+}
+```
+
+## 🔒 Security & Permissions
+
+### Windows
+- Requires Microsoft Word to be installed and accessible
+- Uses COM automation (requires appropriate permissions)
+
+### macOS
+- Requires Microsoft Word to be installed
+- Uses AppleScript (may require accessibility permissions for some operations)
+- Grant permissions in System Preferences > Security & Privacy > Privacy > Accessibility
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+**"No Word instances found"**
+- Ensure Microsoft Word is running
+- Check that Word documents are open
+
+**"Platform not supported"**
+- Currently supports Windows and macOS only
+- Linux support may be added in future versions
+
+**AppleScript permission errors (macOS)**
+- Grant accessibility permissions to your terminal/IDE
+- System Preferences > Security & Privacy > Privacy > Accessibility
+
+### Debug Mode
+
+Enable detailed logging:
+
+```python
+import logging
+logging.basicConfig(level=logging.DEBUG)
+```
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+### Development Setup
+
+```bash
+git clone https://github.com/word-mcp/word-mcp.git
+cd word-mcp
+pip install -e ".[dev]"
+```
+
+### Running Tests
+
+```bash
+pytest tests/
+```
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Built on the [Model Context Protocol](https://github.com/modelcontextprotocol/python-sdk)
+- Inspired by the need for better AI-document integration
+- Thanks to the Microsoft Office automation community
+
+## 📞 Support
+
+- 📫 Email: support@wordmcp.com
+- 🐛 Issues: [GitHub Issues](https://github.com/word-mcp/word-mcp/issues)
+- 💬 Discussions: [GitHub Discussions](https://github.com/word-mcp/word-mcp/discussions)
+
+---
+
+**Made with ❤️ for the AI automation community** 

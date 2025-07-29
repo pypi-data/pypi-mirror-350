@@ -1,0 +1,77 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "word-mcp"
+version = "1.0.2"
+authors = [
+    {name = "Jie Tong", email = "tongjie@gmail.com"},
+]
+description = "A Model Context Protocol server for Microsoft Word integration"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Text Processing :: General",
+    "Topic :: Office/Business :: Office Suites",
+]
+keywords = ["mcp", "word", "microsoft", "automation", "ai", "llm"]
+dependencies = [
+    "mcp>=1.0.0",
+    "pydantic>=2.0.0",
+    "asyncio-throttle>=1.0.0",
+    "pywin32>=306; platform_system=='Windows'",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=22.0.0",
+    "isort>=5.0.0",
+    "mypy>=1.0.0",
+    "pre-commit>=2.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/word-mcp/word-mcp"
+Documentation = "https://github.com/word-mcp/word-mcp#readme"
+Repository = "https://github.com/word-mcp/word-mcp.git"
+"Bug Tracker" = "https://github.com/word-mcp/word-mcp/issues"
+
+[project.scripts]
+word-mcp = "word_mcp.server:main"
+wordmcp = "word_mcp.server:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["word_mcp*"]
+
+[tool.setuptools.package-data]
+word_mcp = ["*.py"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true 
