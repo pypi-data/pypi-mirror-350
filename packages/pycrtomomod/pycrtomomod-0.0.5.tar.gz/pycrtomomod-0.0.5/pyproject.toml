@@ -1,0 +1,41 @@
+[build-system]
+requires = ["meson-python", "numpy"]
+build-backend = "mesonpy"
+
+[project]
+name = 'pycrtomomod'
+version = '0.0.5'
+description = 'Python-wrapper modules for CRMod, CRTomo, CutMcK. Original code by Andreas Kemna.'
+# readme = 'README.md'
+requires-python = '>=3.8'
+# license = {file = 'LICENSE.txt'}
+authors = [
+  {name = 'Andreas Kemna', email = 'kemna@geo.uni-bonn.de'},
+  {name = 'Maximilian Weigand', email = 'mweigand@geo.uni-bonn.de'},
+  {name = 'Geophysics Section, University of Bonn, Germany', email = 'kemna@geo.uni-bonn.de'},
+]
+dependencies = [
+	"numpy",
+]
+
+[project.scripts]
+CRMod = 'crtomo_wrapper.crmod:main'
+CRTomo = 'crtomo_wrapper.crtomo:main'
+CutMcK = 'crtomo_wrapper.cutmckee:main'
+pycrtomo_test = 'crtomo_tests.pycrtomo:main'
+pycrtomo_extract_examples = 'crtomo_tests.extract_pyinv_examples:main'
+
+# https://mesonbuild.com/meson-python/how-to-guides/meson-args.html
+[tool.meson-python.args]
+setup = ['--default-library=static']
+compile = ['-j2']
+
+# [tool.cibuildwheel]
+# # https://cibuildwheel.pypa.io/en/stable/options/#build-skip
+# # archs = ["auto"]
+# archs = ["x86_64"]
+# # build = "*"
+# build = "cp312-manylinux_x86_64"
+# build_windows = "cp312-win_amd64"
+# skip = ""
+
