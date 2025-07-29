@@ -1,0 +1,233 @@
+Metadata-Version: 2.4
+Name: diskcachedb
+Version: 0.1.0
+Summary: A MongoDB-like query interface using diskcache for persistent storage
+Home-page: https://github.com/anandanklnce/diskcache-db
+Author: Anandan B S
+Author-email: anandanklnce@gmail.com
+Keywords: database,cache,mongodb,diskcache,persistent storage,query
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Database :: Database Engines/Servers
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: diskcache>=5.6.1
+Requires-Dist: bson>=0.5.10
+Requires-Dist: flask>=2.0.0
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# Diskcache-DB
+
+A high-performance Python package that provides MongoDB-like query operations using the `diskcache` package for persistent disk-based caching. This package combines the speed of DiskCache with the flexibility of MongoDB-style queries.
+
+[![Python Versions](https://img.shields.io/pypi/pyversions/diskcache.svg)](https://pypi.org/project/diskcache/)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![GitHub](https://img.shields.io/badge/GitHub-anadanklnce-181717.svg?style=flat&logo=github)](https://github.com/anadanklnce/diskcache-db)
+
+## 🚀 Features
+
+- **Persistent Disk-Based Caching**: Utilizes DiskCache for efficient data storage
+- **MongoDB-Style Query Interface**: Familiar query operations including:
+  - Complex queries with `$and`, `$or`, `$gt`, `$lt`, `$in`, etc.
+  - Field projections
+  - Sorting and pagination
+- **Thread-Safe Operations**: All operations are protected by reentrant locks
+- **Atomic Updates**: Ensures data consistency in multi-threaded environments
+- **Automatic Metadata**: Tracks creation and update timestamps
+- **Simple API**: Easy to use with Python dictionaries and objects
+
+## ⚡ Performance
+
+DiskCache outperforms SQLite in several key metrics:
+
+- **2x faster** than SQLite for reads
+- **10x faster** than SQLite for writes
+- Efficient memory utilization through disk-based storage
+- Better concurrent access handling
+- Optimized for both small and large data sets
+
+## 🛠️ Installation
+
+```bash
+# Clone the repository
+https: https://github.com/anandanklnce/diskcache-db.git
+github cli :  gh repo clone anandanklnce/diskcache-db
+git : git clone https://github.com/anandanklnce/diskcache-db.git
+cd diskcache-db
+python setup.py install
+```
+
+## 🎯 Database Viewer
+
+DiskCache DB comes with a built-in web-based database viewer that allows you to:
+- Browse and search through your database documents
+- Execute complex queries with MongoDB-like syntax
+- View document details and metadata
+- Sort and filter results
+- Delete documents (with admin access)
+
+### Starting the Viewer
+```bash
+# Run the viewer (default: http://localhost:5000)
+python -m diskcachedb.viewer
+
+# Run on a different host/port
+python -m diskcachedb.viewer -b localhost:8080
+```
+
+### Screenshots
+
+#### Home Page
+![Viewer Home](docs/images/viewer_home.png)
+*Connect to your DiskCache database*
+
+#### Documents View
+![Documents List](docs/images/viewer_documents.png)
+*Browse through your documents with sorting and filtering*
+
+#### Query Interface
+![Query Interface](docs/images/viewer_query.png)
+*Execute MongoDB-style queries*
+
+#### Document Details
+![Document Details](docs/images/viewer_details.png)
+*View complete document information*
+
+## 📖 Usage
+
+### Basic Operations
+
+```python
+from diskcachedb import DiskDB
+
+# Initialize database
+db = DiskDB('mydb')
+
+# Add a document
+doc = {
+    'name': 'John Doe',
+    'email': 'john@example.com',
+    'status': 'active',
+    'score': 95
+}
+doc_id = db.add(doc)
+
+# Retrieve a document
+result = db.get(doc_id)
+
+# Update a document
+db.update(doc_id, {'score': 98})
+
+# Remove a document
+db.remove(doc_id)
+```
+
+### Advanced Queries
+
+```python
+# Complex query with multiple conditions
+results = db.query(
+    conditions={
+        '$and': [
+            {'status': 'active'},
+            {'score': {'$gt': 90}},
+            {'tags': {'$in': ['premium', 'verified']}}
+        ]
+    },
+    projection={'name': 1, 'score': 1},
+    sort={'score': -1},
+    limit=10
+)
+
+# Simple OR query with pagination
+results = db.query(
+    conditions={
+        '$or': [
+            {'status': 'pending'},
+            {'status': 'in_progress'}
+        ]
+    },
+    skip=20,
+    limit=10
+)
+```
+
+## 🔍 Query Operators
+
+- **Comparison**
+  - `$eq`: Equals
+  - `$gt`: Greater than
+  - `$gte`: Greater than or equal
+  - `$lt`: Less than
+  - `$lte`: Less than or equal
+  - `$ne`: Not equal
+  - `$in`: In array
+  - `$nin`: Not in array
+
+- **Logical**
+  - `$and`: Logical AND
+  - `$or`: Logical OR
+
+- **Element**
+  - `$exists`: Field exists check
+
+## 🔒 Thread Safety
+
+All operations in DiskCache-DB are thread-safe by default. The package uses reentrant locks to ensure data consistency in multi-threaded environments.
+
+```python
+# Context manager for explicit locking
+with db as locked_db:
+    doc = locked_db.get(doc_id)
+    locked_db.update(doc_id, {'status': 'updated'})
+```
+
+## 🧪 Testing
+
+```bash
+# Run tests
+pytest tests/
+```
+
+## 📊 Memory Usage
+
+DiskCache-DB efficiently manages memory by:
+- Storing data on disk instead of memory
+- Loading only required data during queries
+- Automatic cache eviction for least recently used items
+- Configurable maximum size limits
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- [DiskCache](https://grantjenks.com/docs/diskcache/) for the excellent caching library
+- MongoDB for query syntax inspiration
