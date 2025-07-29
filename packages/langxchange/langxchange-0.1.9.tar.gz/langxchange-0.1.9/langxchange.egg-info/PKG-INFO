@@ -1,0 +1,663 @@
+Metadata-Version: 2.4
+Name: langxchange
+Version: 0.1.9
+Summary: AI Toolkit for fast integration of Private Data and LLM
+Author: Timothy Owusu
+Author-email: ikolilu.tim.owusu@gmail.com
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: pandas
+Requires-Dist: sentence-transformers
+Requires-Dist: chromadb
+Requires-Dist: pinecone-client
+Requires-Dist: sqlalchemy
+Requires-Dist: pymongo
+Requires-Dist: pymysql
+Requires-Dist: numpy
+Requires-Dist: google-generativeai
+Requires-Dist: openai
+Requires-Dist: anthropic
+Requires-Dist: weaviate-client
+Requires-Dist: qdrant-client
+Requires-Dist: elasticsearch
+Requires-Dist: elasticsearch-dsl
+Requires-Dist: opensearch-py
+Requires-Dist: faiss-cpu
+Dynamic: author
+Dynamic: author-email
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# 🌐 LangXchange
+
+**LangXchange** is a universal API and vector database helper suite that simplifies working with Large Language Models (LLMs) and modern vector databases across a wide range of platforms.
+
+It provides ready-to-use helper classes to:
+
+* Connect and interact with **LLMs** like OpenAI, Google GenAI, Claude, DeepSeek
+* Generate and manage **embeddings**
+* Store/query data in **vector databases**: Chroma, Pinecone, Milvus, FAISS, Qdrant, Weaviate, Elasticsearch, OpenSearch, and more
+* Connect to and retrieve data from **relational and NoSQL databases**
+* Preprocess and load data from **CSV, JSON, and Excel files**
+
+---
+
+## 🔧 Installation
+
+```bash
+pip install langxchange
+```
+
+Or clone the repo:
+
+```bash
+git clone https://github.com/yourorg/langxchange.git
+cd langxchange
+pip install -e .
+```
+
+---
+
+## 📦 Modules Overview
+
+| Category          | Helpers                                                                                                                                                      |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| LLMs & Embeddings | `OpenAIHelper`, `GoogleGenAIHelper`, `DeepSeekHelper`, `AnthropicHelper`                                                                                     |
+| Vector DBs        | `ChromaHelper`, `PineconeHelper`, `MilvusHelper`, `FAISSHelper`, `QdrantHelper`, `WeaviateHelper`, `ElasticsearchHelper`, `OpenSearchHelper`, `ZillizHelper` |
+| Data Sources      | `MySQLHelper`, `MongoHelper`, `DataConnector`, `DataFetcher`, `FileHelper`                                                                                   |
+
+---
+
+
+## 🚀 Getting Started
+
+
+### 1. Full RAG Pipeline: CSV → OpenAI Embeddings → ChromaDB → Retrieval → LLM Response
+- **DocumentLoaderHelper**: stream, chunk, and normalize TXT, CSV, JSON, PDF, Excel, and DOCX files  
+- **EmbeddingHelper**: high-throughput embedding via OpenAI, LLaMA, Google Gemini, or any SentenceTransformer model  
+- **ChromaHelper**: vector store integration with ChromaDB (persistent local or cloud)  
+- **RetrieverX**: two-stage retrieval (vector recall + cross-encoder re-ranking)  
+- **PromptHelper**: assemble system/user/context messages and call your LLM’s chat API  
+
+```python
+# examples/full_rag_pipeline.py
+
+import os
+import time
+from pathlib import Path
+import pandas as pd
+from dotenv import load_dotenv
+
+from langxchange.document_loader_helper import DocumentLoaderHelper
+from langxchange.openai_helper             import OpenAIHelper
+from langxchange.embedding_helper          import EmbeddingHelper
+from langxchange.chroma_helper             import ChromaHelper
+from langxchange.retrieverX                import RetrieverX
+from langxchange.prompt_helper             import PromptHelper
+
+def main():
+    load_dotenv()  # loads env vars from .env if present
+
+    # ─── Configuration ─────────────────────────────────────────────────────────
+    os.environ["OPENAI_API_KEY"]     = "sk-…"                   # your OpenAI key
+    os.environ["HUGGINGFACE_TOKEN"] = "hf_AAAk"                 # Optional for Re-Ranking
+    os.environ["CHROMA_PERSIST_PATH"] = "chroma_store"          # where Chroma stores dagta
+    COLLECTION = "sample_Collection"
+    Path(os.getenv("CHROMA_PERSIST_PATH")).mkdir(exist_ok=True)
+
+    # ─── 1) Load & Chunk Documents ─────────────────────────────────────────────
+    loader   = DocumentLoaderHelper(chunk_size=2000, csv_chunksize=500, max_workers=2)
+    source   = "examples/samplefile.txt"
+    chunks   = list(loader.load(source))
+    print(f"Extracted {len(chunks)} text chunks from {source}")
+
+    # ─── 2) Embed Chunks via OpenAI ────────────────────────────────────────────
+    llm      = OpenAIHelper()
+    embedder = EmbeddingHelper(llm=llm, batch_size=16, max_workers=4)
+    embeddings = embedder.embed(chunks)
+    print(f"Generated {len(embeddings)} embeddings")
+
+    # ─── 3) Ingest into ChromaDB ───────────────────────────────────────────────
+    chroma = ChromaHelper(llm)
+    df = pd.DataFrame({
+        "documents":  chunks,
+        "metadata":   [{"source": Path(source).name, "chunk": i} for i in range(len(chunks))],
+        "embeddings": embeddings
+    })
+    total = chroma.insertone(df, COLLECTION)
+    print(f"Ingested into `{COLLECTION}`, total items now: {total}")
+
+    # ─── 4) Retrieve + Re-rank ────────────────────────────────────────────────
+    retriever = RetrieverX(
+        vector_db       = chroma,
+        embedder        = embedder,
+        reranker_model  = "cross-encoder/ms-marco-MiniLM-L-6-v2",
+        use_rerank      = True
+    )
+    query = "Which is the best Article that articulates the solution"
+    hits = retriever.retrieve(query, COLLECTION, top_k=10)
+    print(f"Retrieved {len(hits)} candidate snippets")
+
+    # Build prompt context: take first hit’s document(s)
+    first = hits[0]["document"]
+    context = "\n".join(first) if isinstance(first, list) else first
+
+    # ─── 5) Final LLM Answer ───────────────────────────────────────────────────
+    prompt_helper = PromptHelper(
+        llm            = llm,
+        system_prompt  = "You are a helpful teaching assistant."
+    )
+    answer = prompt_helper.run(
+        user_query = query,
+        retrieval_results = context,
+        temperature = 0.2,
+        max_tokens  = 400
+    )
+
+    print("\n📝 Final Answer:\n", answer)
+
+if __name__ == "__main__":
+    main()
+
+```
+---
+### 2. Full RAG Pipeline: MySQL → CSV → Google Gemini Embeddings → ChromaDB → Retrieval → LLM Response
+- **MySQLHelper**: mySQL ,insert_dataframe,query, 
+- **DocumentLoaderHelper**: stream, chunk, and normalize TXT, CSV, JSON, PDF, Excel, and DOCX files  
+- **EmbeddingHelper**: high-throughput embedding via OpenAI, LLaMA, Google Gemini, or any SentenceTransformer model  
+- **ChromaHelper**: vector store integration with ChromaDB (persistent local or cloud)  
+- **RetrieverX**: two-stage retrieval (vector recall + cross-encoder re-ranking)  
+- **PromptHelper**: assemble system/user/context messages and call your LLM’s chat API  
+
+```python
+# examples/full_rag_pipeline.py
+
+import os
+import time
+from pathlib import Path
+import pandas as pd
+from dotenv import load_dotenv
+
+from langxchange.document_loader_helper import DocumentLoaderHelper
+from langxchange.google_genai_helper    import GoogleGenAIHelper
+from langxchange.embedding_helper       import EmbeddingHelper
+from langxchange.chroma_helper          import ChromaHelper
+from langxchange.retrieverX             import RetrieverX
+from langxchange.prompt_helper          import PromptHelper
+from langxchange.mysql_helper           import MySQLHelper
+
+def main():
+    load_dotenv()  # loads env vars from .env if present
+
+    # ─── Configuration ─────────────────────────────────────────────────────────
+    os.environ["GOOGLE_API_KEY"] = "AIzaSyB"                    # your GOOGLE API KEY
+    os.environ["HUGGINGFACE_TOKEN"] = "hf_AAAk"                 # Optional for Re-Ranking
+    os.environ["CHROMA_PERSIST_PATH"] = "chroma_store"          # where Chroma stores dagta
+    COLLECTION = "sample_Collection"
+    Path(os.getenv("CHROMA_PERSIST_PATH")).mkdir(exist_ok=True)
+    mysql  = MySQLHelper()
+    # ─── 1) Load & Chunk Documents ─────────────────────────────────────────────
+    loader   = DocumentLoaderHelper(chunk_size=2000, csv_chunksize=500, max_workers=2)
+     # pf_result = student.GetStudentPerformanceByGrades("", schoolid, "csv")
+    queryy = f"""select * from articles"""
+    # print(queryy)
+    # fetch
+    df     = mysql.query(queryy)
+    #print(df)
+    # # 2. Load the raw survey CSV
+    output_path = "../examples/articles.csv"
+
+    # 3. Export to CSV (without the DataFrame’s index column)
+    df.to_csv(output_path, index=False)
+   
+
+    chunks   = list(loader.load(output_path))
+    print(f"Extracted {len(chunks)} text chunks from {source}")
+
+    # ─── 2) Embed Chunks via OpenAI ────────────────────────────────────────────
+    llm      = OpenAIHelper(llm)
+    embedder = EmbeddingHelper(llm=llm, batch_size=16, max_workers=4)
+    embeddings = embedder.embed(chunks)
+    
+    
+    print(f"Generated {len(embeddings)} embeddings")
+
+    # ─── 3) Ingest into ChromaDB ───────────────────────────────────────────────
+    chroma = ChromaHelper()
+    df = pd.DataFrame({
+        "documents":  chunks,
+        "metadata":   [{"source": Path(source).name, "chunk": i} for i in range(len(chunks))],
+        "embeddings": embeddings
+    })
+    total = chroma.insertone(df, COLLECTION)
+    print(f"Ingested into `{COLLECTION}`, total items now: {total}")
+
+    # ─── 4) Retrieve + Re-rank ────────────────────────────────────────────────
+    retriever = RetrieverX(
+        vector_db       = chroma,
+        embedder        = embedder,
+        reranker_model  = "cross-encoder/ms-marco-MiniLM-L-6-v2",
+        use_rerank      = True
+    )
+    query = "Which is the best Article that articulates the solution"
+    hits = retriever.retrieve(query, COLLECTION, top_k=10)
+    print(f"Retrieved {len(hits)} candidate snippets")
+
+    # Build prompt context: take first hit’s document(s)
+    first = hits[0]["document"]
+    context = "\n".join(first) if isinstance(first, list) else first
+
+    # ─── 5) Final LLM Answer ───────────────────────────────────────────────────
+    prompt_helper = PromptHelper(
+        llm            = llm,
+        system_prompt  = "You are a helpful teaching assistant."
+    )
+    answer = prompt_helper.run(
+        user_query = query,
+        retrieval_results = context,
+        temperature = 0.2,
+        max_tokens  = 400
+    )
+
+    print("\n📝 Final Answer:\n", answer)
+
+if __name__ == "__main__":
+    main()
+
+```
+---
+
+### 3. Full RAG Pipeline: CSV → Sentence Transformer → FAISS Vector DB → Retrieval → GoogleGenAI completion(LLM) → Response
+- **DocumentLoaderHelper**: stream, chunk, and normalize TXT, CSV, JSON, PDF, Excel, and DOCX files  
+- **LocalEmbedder**: high-throughput embedding via Sentence Transformer
+- **FAISS**        : Face Book AI Similarity Search Vector DB, Memory Based, support to Save to disk and laod from disk
+- **RetrieverX**: two-stage retrieval (vector recall + cross-encoder re-ranking)  
+- **PromptHelper**: assemble system/user/context messages and call your LLM’s chat API  
+
+```python
+# examples/full_rag_pipeline.py
+
+import os
+import time
+from pathlib import Path
+import pandas as pd
+from dotenv import load_dotenv
+
+from langxchange.google_genai_helper    import GoogleGenAIHelper
+from langxchange.documentloader         import DocumentLoaderHelper
+from langxchange.faiss_helper           import FAISSHelper
+from langxchange.retrieverX             import RetrieverX
+from langxchange.prompt_helper          import PromptHelper
+from langxchange.localembedding import LocalEmbedder
+
+def main():
+    load_dotenv()  # loads env vars from .env if present
+
+    # ─── Configuration ─────────────────────────────────────────────────────────
+    # ─── Configuration ─────────────────────────────────────────────────────────
+    persistence_dir = Path("faiss_store")
+    persistence_dir.mkdir(exist_ok=True)
+    index_path    = persistence_dir / "students.index"
+    metadata_path = persistence_dir / "students.meta"
+    COLLECTION_NAME = None
+    os.environ["GOOGLE_API_KEY"] = "AIza"
+    llm = GoogleGenAIHelper()
+   
+
+     # ─── 1) Load & chunk your document ──────────────────────────────────────────
+    loader = DocumentLoaderHelper(chunk_size=500)
+    source = "examples/data_scores.csv" #StudentPerformanceFactors.csv"
+    chunks = list(loader.load(source))
+    print(f"Extracted {len(chunks)} chunks from {source}")
+
+
+    # ─── 2) Generate embeddings via SentenceTransformer ────────────────────────
+    # embedder = EmbeddingHelper(llm, batch_size=16, max_workers=4)
+    embedder = LocalEmbedder("all-MiniLM-L6-v2")
+    # start_emb = time.perf_counter()
+    embeddings = embedder.embed(chunks)
+    # print(f"Generated {len(embeddings)} embeddings in {time.perf_counter() - start_emb:.2f}s")
+
+    df = pd.DataFrame({
+        "documents":  chunks,
+        "metadata":   [{"source": Path(source).name, "chunk": i} for i in range(len(chunks))],
+        "embeddings": embeddings
+    })
+
+    # ─── 3) Insert into FAISS and save to disk ──────────────────────────────────
+    dim    = len(embeddings[0])
+    helper = FAISSHelper(dim=dim)
+    helper.insertone(df)
+    print(f"Indexed {helper.count()} vectors in memory.")
+
+    helper.save(str(index_path), str(metadata_path))
+    print(f"Saved FAISS index to {index_path} and metadata to {metadata_path}.")
+
+    # ─── 4) Clear in-memory store ──────────────────────────────────────────────
+    helper.clear()
+    print(f"After clear: {helper.count()} vectors in memory.")
+
+    # ─── 5) Reload from disk ───────────────────────────────────────────────────
+    helper.load(str(index_path), str(metadata_path))
+    print(f"After load: {helper.count()} vectors in memory.")
+
+
+    # ─── 6) Initialize RetrieverX & PromptHelper ──────────────────────────────
+    
+    retriever = RetrieverX(
+        vector_db=helper,
+        embedder=embedder,
+        reranker_model="cross-encoder/ms-marco-MiniLM-L-6-v2",
+        use_rerank=True
+    )
+    prompt_helper = PrompterResponse(
+        llm=llm,  # replace with your LLM helper implementing .chat(...)
+        system_prompt="You are a helpful assistant summarizing student data."
+    )
+
+    # ─── 7) Example query ───────────────────────────────────────────────────────
+    user_question = "List Top 10 MATHEMATICS students in GRADE 3 for the academic year 2023/2024 using their Terminal scores, and be specific with some insights"
+    print(f"\n🔍 Querying: {user_question}")
+
+    t0 = time.perf_counter()
+    hits = retriever.retrieve(
+        query=user_question,
+        collection_name=None,
+        top_k=80
+    )
+    print(f"Retrieved {len(hits)} snippets in {time.perf_counter() - t0:.2f}s")
+
+    # Build prompt context from retrieved snippets
+    # ─── 5) Build context for prompt ────────────────────────────────────────────
+    context_lines = []
+    for i, hit in enumerate(hits, start=1):
+        text = hit.get("document") or ""
+        if isinstance(text, list):
+            text = "\n".join(text)
+        meta = hit.get("metadata", {})
+        tag = ", ".join(f"{k}={v}" for k, v in meta.items())
+        context_lines.append(f"Snippet {i} ({tag}):\n{text}")
+    context = "\n\n".join(context_lines)
+   
+
+    # ─── 8) Call your LLM ───────────────────────────────────────────────────────
+    # Build full prompt messages
+    # Example: using a hypothetical LLMHelper with .chat(messages)
+    messages = [
+        {"role": "system",  "content": prompt_helper.system_prompt},
+        {"role": "assistant","content": context},
+        {"role": "user",    "content": user_question}
+    ]
+    # Replace the following with your actual LLM chat call:
+    if hasattr(prompt_helper.llm, "chat"):
+        answer = prompt_helper.llm.chat(messages=messages, temperature=0.7, max_tokens=400)
+    else:
+        answer = "<LLM not configured>"
+
+    print("\n📝 Final Answer:\n", answer)
+
+if __name__ == "__main__":
+    main()
+
+```
+---
+
+
+
+## 4. 📅 Embed & Query with OpenAI + Chroma + GCS Persistence
+
+```python
+from langxchange.openai_helper import OpenAIHelper
+from langxchange.chroma_helper import ChromaHelper
+from langxchange.file_helper import FileHelper
+from langxchange.gcs_helper import GoogleCloudStorageHelper
+import os
+
+os.environ["CHROMA_PERSIST_PATH"] = "./chroma_data"
+
+llm   = OpenAIHelper()
+chroma= ChromaHelper(llm_helper=llm, persist_directory=os.environ["CHROMA_PERSIST_PATH"])
+gcs   = GoogleCloudStorageHelper()
+loader= FileHelper()
+
+# Load and embed
+records    = loader.load_file("data/articles.csv", file_type="csv")
+texts      = [r["text"] for r in records]
+embeddings = [llm.get_embedding(t) for t in texts]
+
+# Store in Chroma
+chroma.insert("articles", texts, embeddings, metadatas=records)
+
+# Sync to GCS
+for fname in os.listdir(os.environ["CHROMA_PERSIST_PATH"]):
+    gcs.upload_file(os.environ["GCS_BUCKET"], f"{os.environ['CHROMA_PERSIST_PATH']}/{fname}", f"chroma/{fname}")
+
+# Query Chroma
+query_vec = llm.get_embedding("Explain AI use cases")
+results   = chroma.query("articles", query_vec, top_k=3)
+print(results)
+
+```
+---
+---
+
+### 5. 📄 RAG Pipeline from MySQL → Chroma → Chat
+
+```python
+from langxchange.mysql_helper import MySQLHelper
+from langxchange.openai_helper import OpenAIHelper
+from langxchange.chroma_helper import ChromaHelper
+
+# init
+mysql  = MySQLHelper()
+llm    = OpenAIHelper()
+chroma = ChromaHelper(llm_helper=llm, persist_directory="./chroma_store")
+
+# fetch
+df     = mysql.execute_query("SELECT id, content FROM articles")
+texts  = df["content"].tolist()
+meta   = df.to_dict(orient="records")
+
+# ingest
+embeds = [llm.get_embedding(t) for t in texts]
+chroma.insert("articles", texts, embeds, metadatas=meta)
+
+# retrieve
+qvec    = llm.get_embedding("What is data privacy policy?")
+res     = chroma.query("articles", qvec, top_k=2)
+
+# build prompt
+ctx = "\n".join(f"- {d}" for d in res["documents"])
+messages = [
+  {"role":"system","content":"You are a documentation assistant."},
+  {"role":"user","content":f"I asked: What is data privacy policy?\nContext:\n{ctx}"}
+]
+answer = llm.chat(messages)
+print(answer)
+
+```
+--- 
+### 6🧹 Cleaning Your Data Using an LLM
+
+Sometimes your raw DataFrame needs schema normalization, whitespace trimming, date parsing and NaN handling before embedding or analysis. LangXchange’s **`DataFormatCleanupHelper`** will:
+
+1. **Prompt** your LLM to dynamically generate a cleaning function  
+2. **Exec** and run that function over your entire DataFrame  
+3. **Return** a cleaned `DataFrame`  
+4. **Track** timing for each stage (prompt, extract, exec, clean)
+
+---
+
+### Example: Fetch from MySQL, Clean with OpenAI, and Inspect Timing
+
+```python
+import os
+from dotenv import load_dotenv
+from langxchange.mysql_helper import MySQLHelper
+from langxchange.openai_helper import OpenAIHelper
+from langxchange.data_format_cleanup_helper import DataFormatCleanupHelper
+
+# 1) Load environment & connect
+load_dotenv()  
+mysql  = MySQLHelper()
+llm    = OpenAIHelper()
+cleanup = DataFormatCleanupHelper(llm)
+
+# 2. Load path for output records and function filename
+path     = os.path.dirname(os.path.abspath(__file__))
+examples = os.path.join(path, "./examples")
+
+# 3) Pull raw data from your MySQL table
+query = "SELECT * FROM articles;"
+df_raw = mysql.query(query)
+
+# 4) Clean via LLM, serialize to CSV-style,json, txt file and normalize back
+#    (output is a {output_format}: current support[json,csv,txt])
+df_clean, records = cleanup.clean(df_raw,examples, output_format="csv")
+
+# 5) Inspect cleaned result
+print("Cleaned DataFrame:")
+print(df_clean.head())
+
+# 5) View timing breakdown
+stats = cleanup.stats
+print("\n⏱️ Timing (seconds):")
+print(f"  Prompt generation: {stats['prompt_time']:.2f}")
+print(f"  Regex extract:     {stats['extract_time']:.2f}")
+print(f"  Function exec:     {stats['exec_time']:.2f}")
+print(f"  Data cleaning:     {stats['clean_time']:.2f}")
+print(f"  Total time:        {stats['total_time']:.2f}")
+print("  Stage %:", stats["percent_complete"])
+
+```
+
+
+### Example: Fetch from File[csv], Clean with OpenAI, and Inspect Timing
+
+```python
+import os
+from dotenv import load_dotenv
+# from langxchange.mysql_helper import MySQLHelper
+from langxchange.openai_helper import OpenAIHelper
+from langxchange.data_format_cleanup_helper import DataFormatCleanupHelper
+
+# 1) Load environment & connect
+load_dotenv()  
+# mysql  = MySQLHelper()
+llm    = OpenAIHelper()
+cleanup = DataFormatCleanupHelper(llm)
+
+# 2. Load the raw survey CSV
+path     = os.path.dirname(os.path.abspath(__file__))
+examples = os.path.join(path, "examples")
+
+# raw_path = "examples/samplefile.txt" #"StudentPerformanceFactors.csv"
+raw_path = "examples/StudentPerformanceFactors.csv"
+# raw_path = "examples/Student_performance_data _.csv"
+df_raw = pd.read_csv(raw_path)
+
+
+
+# 4) Clean via LLM, serialize to CSV-style,json, txt file and normalize back
+#    (output is a {output_format}: current support[json,csv,txt])
+cleanup_helper = DataFormatCleanupHelper(llm)
+df_clean = cleanup_helper.clean(df_raw,examples, output_format="json")
+
+
+# 5) Inspect cleaned result
+print("Cleaned DataFrame:")
+print(df_clean.head())
+
+# 5) View timing breakdown
+stats = cleanup.stats
+print("\n⏱️ Timing (seconds):")
+print(f"  Prompt generation: {stats['prompt_time']:.2f}")
+print(f"  Regex extract:     {stats['extract_time']:.2f}")
+print(f"  Function exec:     {stats['exec_time']:.2f}")
+print(f"  Data cleaning:     {stats['clean_time']:.2f}")
+print(f"  Total time:        {stats['total_time']:.2f}")
+print("  Stage %:", stats["percent_complete"])
+```
+
+
+## 🔐 Environment Variables
+
+Set the following in your `.env` file as needed:
+
+```env
+# OpenAI
+OPENAI_API_KEY=your-openai-key
+
+# Google GenAI
+GOOGLE_API_KEY=your-google-api-key
+
+# Pinecone
+PINECONE_API_KEY=your-pinecone-key
+PINECONE_ENVIRONMENT=your-region
+
+# Chroma
+CHROMA_PERSIST_PATH=./chroma_store
+
+# Qdrant
+QDRANT_URL=http://localhost:6333
+
+# Weaviate
+WEAVIATE_URL=http://localhost:8080
+
+# Elasticsearch
+ES_HOST=http://localhost:9200
+ES_USER=elastic
+ES_PASSWORD=changeme
+
+# OpenSearch
+OS_HOST=http://localhost:9200
+OS_USER=admin
+OS_PASSWORD=admin
+
+# Milvus
+MILVUS_HOST=localhost
+MILVUS_PORT=19530
+
+# MySQL
+MYSQL_HOST=localhost
+MYSQL_DB=mydb
+MYSQL_USER=root
+MYSQL_PASSWORD=password
+
+# MongoDB
+MONGO_URI=mongodb://localhost:27017
+```
+
+---
+
+## 📙 Use Cases
+
+* AI-powered document search
+* Building RAG (Retrieval-Augmented Generation) pipelines
+* Custom chatbot memory & context
+* School or HR data analytics using LLMs
+* Semantic search across various industries
+
+---
+
+## 🛠️ Contributing
+
+1. Fork the repo
+2. Create a new branch
+3. Add your code with docstrings and examples
+4. Submit a pull request
+
+---
+
+## 🧠 Credits
+
+Built with ❤️ to empower developers and researchers working with LLMs and vector databases across the AI/ML stack.
+
+---
+
+## 📄 License
+
+MIT License © 2025 - iKolilu / LangXchange
