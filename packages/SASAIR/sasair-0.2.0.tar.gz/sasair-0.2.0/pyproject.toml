@@ -1,0 +1,45 @@
+
+[tool.poetry]
+name = "SASAIR"
+version = "0.2.0"
+description = "SAS Atmosphere Interface & Retrieval"
+authors = ["Roeland Maes <roeland.maes@vito.be>"]
+packages = [
+    { include = "vito",  from = "src" }
+]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+requests = "^2.31"
+pydantic = "^2.0"
+cachetools = "^5.3"
+python-dateutil = "^2.8"
+netCDF4 =  {version = ">=1.6.5", optional = true }
+xarray = {version = ">=2023.1", optional = true }
+cdsapi = {version = "^0.7", optional = true }
+loguru = {version = "^0.7", optional = true }
+
+sphinx =  { version = ">=8.1", optional = true }
+sphinx_rtd_theme = { version = ">=1.0", optional = true }
+sphinx-autodoc-typehints = { version = ">=3.0", optional = true }
+tomli = { version = ">=2.1", optional = true }
+myst_parser = { version = ">=3.0", optional = true }
+ruff = { version = "^0.2", optional = true }
+
+[tool.poetry.extras]
+cds = ["cdsapi"]
+xarray = ["xarray", "netCDF4"]
+loguru = ["loguru"]
+sphinx = ["sphinx", "sphinx_rtd_theme", "sphinx-autodoc-typehints", "tomli", "myst_parser"]
+ruff = ["ruff"]
+full = ["cdsapi", "loguru", "sphinx", "sphinx_rtd_theme", "sphinx-autodoc-typehints", "tomli", "myst_parser", "ruff", "xarray", "netCDF4"]
+
+[tool.poetry-git-version-plugin]
+make_alpha_version = false
+
+# only check the files in the src directory with ruff
+[tool.ruff]
+target-version = "py310"
+line-length = 160
+#exclude = ["^(?!src).*"]
