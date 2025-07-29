@@ -1,0 +1,107 @@
+Metadata-Version: 2.4
+Name: agentstr-sdk
+Version: 0.0.1
+Summary: Model Context Protocol (MCP) communication through Nostr.
+Project-URL: Homepage, https://github.com/ehallmark/agentstr
+Project-URL: Issues, https://github.com/ehallmark/agentstr/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Classifier: License :: OSI Approved :: MIT License
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: bolt11>=2.1.1
+Requires-Dist: mcp[cli]>=1.6.0
+Requires-Dist: pycryptodome==3.10.1
+Requires-Dist: pynostr[websocket-client]>=0.6.2
+Requires-Dist: python-dotenv>=1.1.0
+Requires-Dist: secp256k1>=0.14.0
+Dynamic: license-file
+
+# Agentstr - Nostr Agent Tools
+
+## File Descriptions
+
+### 1. `nwc_client.py`
+A Python class (`NWCClient`) for interacting with a Nostr Wallet Connect (NWC) service to handle Lightning Network payments.
+
+- **Functionality**:
+  - Initialize with an NWC connection string.
+  - List transactions (`list_tx`).
+  - Get wallet balance (`get_balance`).
+  - Create invoices (`make_invoice`).
+  - Check invoice status (`check_invoice`).
+  - Pay invoices (`try_pay_invoice`).
+  - Monitor payment success with callbacks (`on_payment_success`).
+- **Usage**: Used by other scripts to handle payment-related operations.
+- **Example**: Create an invoice and monitor payment:
+  ```python
+  client = NWCClient(nwc_str)
+  invoice = client.make_invoice(amt=5, desc='test')
+  client.on_payment_success(invoice, callback=lambda: print('Payment succeeded'))
+  ```
+
+### 2. `nostr_client.py`
+A core client (`NostrClient`) for interacting with the Nostr protocol.
+
+- **Functionality**:
+  - Initialize with relay URLs, private key, and optional NWC string.
+  - Sign events with a private key.
+  - Manage relay connections (`get_relay_manager`).
+  - Read posts by tag (`read_posts_by_tag`).
+  - Fetch and update user metadata (`get_metadata_for_pubkey`, `update_metadata`).
+  - Send and listen for encrypted direct messages (`send_direct_message_to_pubkey`, `direct_message_listener`).
+- **Usage**: Foundation for other scripts to interact with Nostr relays.
+- **Example**: Read posts with a specific tag:
+  ```python
+  client = NostrClient(relays, private_key)
+  posts = client.read_posts_by_tag('mcp_tool_discovery')
+  ```
+
+### 3. `nostr_mcp_client.py`
+A client (`NostrMCPClient`) for interacting with MCP servers over Nostr.
+
+- **Functionality**:
+  - Initialize with a `NostrClient` and MCP server public key.
+  - List available tools (`list_tools`).
+  - Call tools with arguments, handling payments if required (`call_tool`).
+- **Usage**: Used to invoke tools (e.g., math operations, weather queries) on remote MCP servers.
+- **Example**: Call a multiplication tool:
+  ```python
+  mcp_client = NostrMCPClient(nostr_client, server_public_key)
+  result = mcp_client.call_tool("multiply", {"a": 69, "b": 420})
+  ```
+
+### 4. `nostr_mcp_server.py`
+A server (`NostrMCPServer`) that exposes tools via Nostr and handles tool execution with optional payment requirements.
+
+- **Functionality**:
+  - Initialize with a display name and `NostrClient`.
+  - Add tools with optional pricing in satoshis (`add_tool`).
+  - List available tools (`list_tools`).
+  - Execute tools based on incoming requests (`call_tool`).
+  - Handle direct messages to process tool calls and payments (`_direct_message_callback`).
+  - Start the server to listen for requests (`start`).
+- **Usage**: Hosts tools like math operations and responds to client requests.
+- **Example**: Add and run a math server:
+  ```python
+  server = NostrMCPServer("Math MCP Server", client)
+  server.add_tool(lambda a, b: a + b, name="add")
+  server.start()
+  ```
+
+### 5. `nostr_agent_server.py`
+A server (`NostrAgentServer`) that integrates an external agent API with Nostr for chat-based interactions.
+
+- **Functionality**:
+  - Initialize with an agent URL, satoshis cost, and `NostrClient`.
+  - Fetch agent information (`agent_info`).
+  - Handle chat requests with optional thread IDs (`chat`).
+  - Process direct messages, requiring payments if specified (`_direct_message_callback`).
+  - Start the server to listen for messages (`start`).
+- **Usage**: Bridges Nostr with an external agent service.
+- **Example**: Start an agent server:
+  ```python
+  server = NostrAgentServer(agent_url, 5, client)
+  server.start()
+  ```
