@@ -1,0 +1,210 @@
+[build-system]
+requires = ["maturin>=1.7,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "deebot-client"
+license = "GPL-3.0-or-later"
+description = "Deebot client library in python 3"
+readme = "README.md"
+authors = [{ name = "Robert Resch", email = "robert@resch.dev" }]
+keywords = [
+    "home",
+    "automation",
+    "homeassistant",
+    "vacuum",
+    "robot",
+    "deebot",
+    "ecovacs",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Home Automation",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.13.0"
+dependencies = [
+    "aiohttp~=3.10",
+    "aiomqtt>=2.0.0,<3.0",
+    "cachetools>=5.0.0,<6.0",
+    "defusedxml>=0.7.1",
+]
+version = "13.2.1"
+
+[project.urls]
+"Homepage" = "https://deebot.readthedocs.io/"
+"Source Code" = "https://github.com/DeebotUniverse/client.py"
+"Bug Reports" = "https://github.com/DeebotUniverse/client.py/issues"
+
+[tool.uv]
+# Rebuild package when any rust files change
+cache-keys = [
+    { file = "pyproject.toml" },
+    { file = "Cargo.toml" },
+    { file = "**/*.rs" },
+]
+
+[dependency-groups]
+dev = [
+    { include-group = "test" },
+    { include-group = "lint" },
+    "maturin[patchelf]==1.8.6",
+    "maturin-import-hook==0.2.0",
+]
+lint = [
+    "mypy==1.15.0",
+    "pre-commit==4.2.0",
+    "pylint==3.3.7",
+    "types-cachetools>=5.5.0.20240820",
+    "types-mock>=5.1.0.20240425",
+]
+test = [
+    "pycountry==24.6.1",
+    "pytest-asyncio==0.26.0",
+    "pytest-codspeed>=3.1.2",
+    "pytest-cov==6.1.1",
+    "pytest-docker-fixtures==1.3.20",
+    "pytest-timeout==2.4.0",
+    "pytest==8.3.5",
+    "testfixtures==8.3.0",
+    "pytest-github-actions-annotate-failures==0.3.0",
+]
+
+[tool.maturin]
+features = ["pyo3/extension-module"]
+module-name = "deebot_client.rs"
+auditwheel = "repair"
+strip = true
+exclude = [
+    { path = "**/.*/**", format = "sdist" },
+    { path = "**/.*", format = "sdist" },
+    { path = "*.ini", format = "sdist" },
+    { path = "tests/**", format = "sdist" },
+    { path = "scripts/**", format = "sdist" },
+    { path = "ci/**", format = "sdist" },
+]
+
+[tool.ruff.lint]
+select = ["ALL"]
+
+ignore = [
+    "ANN401", # Opinioated warning on disallowing dynamically typed expressions
+    "D203",   # Conflicts with other rules
+    "D213",   # Conflicts with other rules
+    "EM101",  # raw-string-in-exception
+
+    "D105", # Missing docstring in magic method
+    "D107", # Missing docstring in `__init__`
+    "E501", # line too long
+
+    "FBT", # flake8-boolean-trap
+
+    "PLR2004", # Magic value used in comparison, consider replacing {value} with a constant variable
+
+    # Conflicts with the Ruff formatter
+    "COM812",
+
+    # Remove later
+    "TD",     # Todos
+    "A",      # bultins
+    "DTZ",    # use tz need to test it first
+    "TRY",    # tryceratops
+    "FIX002", # Line contains TODO, consider resolving the issue
+    "BLE001", # Do not catch blind exception: `Exception`
+
+]
+
+[tool.ruff.lint.flake8-pytest-style]
+fixture-parentheses = false
+
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+force-sort-within-sections = true
+known-first-party = ["deebot_client"]
+required-imports = ["from __future__ import annotations"]
+
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = [
+    "D100",    # Missing docstring in public module
+    "D103",    # Missing docstring in public function
+    "D104",    # Missing docstring in public package
+    "N802",    # Function name {name} should be lowercase
+    "N816",    # Variable {name} in global scope should not be mixedCase
+    "PLR0913", # Too many arguments in function definition
+    "S101",    # Use of assert detected
+    "SLF001",  # Private member accessed: {access}
+    "T201",    # print found
+]
+"deebot_client/hardware/deebot/*" = [
+    "N999", # Invalid module name
+]
+"deebot_client/rs/*.pyi" = [
+    "PYI021", #  docstring-in-stub
+]
+
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+"svg.Path".msg = "Use map.Path instead"
+
+
+[tool.ruff.lint.mccabe]
+max-complexity = 13
+
+[tool.ruff.lint.pylint]
+max-args = 7
+
+
+[tool.pylint.MAIN]
+py-version = "3.13"
+ignore = ["tests"]
+fail-on = ["I"]
+extension-pkg-allow-list = [
+    "deebot_client.rs",
+    "deebot_client.rs.map",
+    "deebot_client.rs.util",
+]
+
+[tool.pylint.BASIC]
+good-names = ["i", "j", "k", "ex", "_", "T", "x", "y", "id", "tg"]
+
+[tool.pylint."MESSAGES CONTROL"]
+# Reasons disabled:
+# format - handled by black
+# duplicate-code - unavoidable
+# cyclic-import - doesn't test if both import on load
+# abstract-class-little-used - prevents from setting right foundation
+# too-many-* - are not enforced for the sake of readability
+# too-few-* - same as too-many-*
+# abstract-method - with intro of async there are always methods missing
+# inconsistent-return-statements - doesn't handle raise
+# too-many-ancestors - it's too strict.
+# wrong-import-order - isort guards this
+# ---
+# Pylint CodeStyle plugin
+# consider-using-namedtuple-or-dataclass - too opinionated
+# consider-using-assignment-expr - decision to use := better left to devs
+disable = [
+    "format",
+    "cyclic-import",
+    "duplicate-code",
+    "too-many-arguments",
+    "too-many-instance-attributes",
+    "too-many-locals",
+    "too-many-ancestors",
+    "too-few-public-methods",
+    "invalid-name",
+]
+enable = ["useless-suppression", "use-symbolic-message-instead"]
+
+[tool.pylint.REPORTS]
+score = false
+
+
+[tool.pylint.FORMAT]
+expected-line-ending-format = "LF"
+
+[tool.pylint.EXCEPTIONS]
+overgeneral-exceptions = ["builtins.BaseException", "builtins.Exception"]
