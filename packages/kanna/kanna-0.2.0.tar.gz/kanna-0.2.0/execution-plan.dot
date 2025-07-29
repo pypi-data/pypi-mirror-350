@@ -1,0 +1,17 @@
+[1] publish
+    ├─ dep → build
+    ├─ dep → push
+    ├─ dep → tag
+    └─ seq → build
+
+[2] build
+    └─ seq → check_image
+
+[3] check_image
+    └─ seq → tag
+
+[4] tag
+    ├─ dep → check_image
+    └─ seq → push
+
+[5] push
