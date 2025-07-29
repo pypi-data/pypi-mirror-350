@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>ScubaDuck</title>
+  <style>
+    body { margin: 0; font-family: sans-serif; height: 100vh; display: flex; flex-direction: column; }
+    #header { padding: 10px; font-weight: bold; border-bottom: 1px solid #ccc; }
+    #content { flex: 1; display: flex; height: calc(100vh - 42px); overflow: hidden; }
+    #sidebar { width: 450px; padding: 10px; border-right: 3px solid #ccc; overflow-y: auto; display: flex; flex-direction: column; box-sizing: border-box; }
+    #sidebar-resizer { width: 5px; cursor: col-resize; background: #ccc; }
+    #view { flex: 1; padding: 10px; overflow-y: auto; overflow-x: auto; }
+    .field { display: flex; align-items: center; margin-bottom: 10px; }
+    .field label { width: 80px; text-align: right; margin-right: 5px; }
+    .help { margin-left: 4px; cursor: help; }
+    .rel-btn { margin-left: 4px; }
+    #tabs { display: flex; align-items: center; margin-bottom: 10px; }
+    #tabs .tab { margin-right: 5px; background: none; border: 1px solid #ccc; padding: 4px 8px; cursor: pointer; width: 120px; text-align: center; box-sizing: border-box; }
+    #tabs .tab.active { background: #eee; font-weight: bold; }
+    #dive { margin-left: auto; background: green; color: white; border: none; padding: 5px 10px; cursor: pointer; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    #filter_list { display: flex; flex-direction: column; }
+    #filters .filter {
+      border: 1px solid #ccc;
+      padding: 5px;
+      margin-bottom: 5px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    #derived_columns .derived {
+      border: 1px solid #ccc;
+      padding: 5px;
+      margin-bottom: 5px;
+      display: flex;
+      flex-direction: column;
+    }
+    #derived_columns .derived-row {
+      display: flex;
+      margin-bottom: 5px;
+    }
+    #derived_columns .derived-row input[type="text"] {
+      margin-left: 5px;
+      flex: 1;
+    }
+    #derived_columns .derived-row button.remove {
+      margin-left: 5px;
+      width: 20px;
+      flex: 0 0 auto;
+      padding: 0;
+      text-align: center;
+      line-height: 1;
+    }
+    #derived_columns textarea {
+      width: 100%;
+      box-sizing: border-box;
+    }
+    #filters .filter-row { display: flex; margin-bottom: 5px; }
+    #filters .filter-row .f-col { flex: 1; }
+    #filters .filter-row .f-op {
+      margin-left: 5px;
+      width: fit-content;
+      flex: 0 0 auto;
+    }
+    .chip-input input {
+      border: none;
+      flex: 1;
+      min-width: 60px;
+      margin: 2px;
+      outline: none;
+    }
+    .chip-box { position: relative; }
+    .chip-input { display: flex; flex-wrap: wrap; border: 1px solid #ccc; padding: 2px; min-height: 24px; }
+    .chip { background: #eee; border: 1px solid #999; padding: 2px 4px; margin: 2px; border-radius: 3px; display: flex; align-items: center; }
+    .chip .x { margin-left: 4px; cursor: pointer; }
+    .chip-copy { margin-left: 4px; cursor: pointer; background: none; border: none; }
+    .chip-dropdown { position: absolute; left: 0; right: 0; top: 100%; background: white; border: 1px solid #ccc; max-height: 120px; overflow-y: auto; z-index: 10; display: none; }
+    .chip-dropdown div { padding: 2px 4px; cursor: pointer; }
+    .chip-dropdown div.highlight { background: #bde4ff; }
+    .rel-box { position: relative; display: flex; }
+    .rel-dropdown { position: absolute; left: 0; right: 0; top: 100%; background: white; border: 1px solid #ccc; z-index: 10; display: none; }
+    .rel-dropdown div { padding: 2px 4px; cursor: pointer; }
+    .rel-dropdown div:hover { background: #bde4ff; }
+    .dropdown { position: relative; display: inline-block; }
+    .dropdown-display {
+      border: 1px solid #ccc;
+      padding: 2px 18px 2px 4px;
+      cursor: pointer;
+      min-width: 80px;
+      position: relative;
+    }
+    .dropdown-display::after {
+      content: '\25BC';
+      position: absolute;
+      right: 4px;
+      pointer-events: none;
+    }
+    .dropdown-menu { position: absolute; left: 0; right: 0; top: 100%; background: white; border: 1px solid #ccc; z-index: 10; max-height: 160px; overflow-y: auto; display: none; }
+    .dropdown-menu input { width: 100%; box-sizing: border-box; padding: 2px 4px; border: none; border-bottom: 1px solid #ccc; }
+    .dropdown-menu div { padding: 2px 4px; cursor: pointer; }
+    .dropdown-menu div.selected { background: #bde4ff; }
+    .dropdown-menu .option:hover { background: #eee; }
+    .dropdown-menu input::placeholder { color: #999; }
+    #filters .filter button.remove {
+      margin-left: 5px;
+      width: 20px;
+      flex: 0 0 auto;
+      padding: 0;
+      text-align: center;
+      line-height: 1;
+    }
+    #filters h4 { margin: 0 0 5px 0; }
+    table { border-collapse: collapse; min-width: 100%; }
+    th, td { border: 1px solid #ccc; padding: 4px; box-sizing: border-box; }
+    td.numeric { white-space: nowrap; }
+    td.date { white-space: nowrap; }
+    th { text-align: left; cursor: pointer; position: relative; }
+    th.sorted { color: blue; }
+    tr:nth-child(even) td { background: #f9f9f9; }
+    tr.selected td { background: #bde4ff !important; }
+    tr:hover:not(.selected) td { background: #eee; }
+    #column_actions {
+      text-align: right;
+      margin-bottom: 5px;
+    }
+    #column_actions a {
+      margin-left: 5px;
+    }
+    .col-group-header {
+      overflow: hidden;
+    }
+    .col-group-header .links {
+      float: right;
+    }
+    .col-group-header .links a {
+      margin-left: 5px;
+    }
+    #ts-container {
+      display: flex;
+    }
+    #legend {
+      width: 150px;
+      flex: 0 0 150px;
+      margin-right: 10px;
+      overflow-y: auto;
+    }
+    .legend-group {
+      margin-bottom: 4px;
+    }
+    .legend-header {
+      font-weight: normal;
+    }
+    .legend-item {
+      display: flex;
+      justify-content: space-between;
+      padding-left: 8px;
+    }
+    .legend-value {
+      margin-left: 4px;
+    }
+    #chart-wrapper {
+      flex: 1;
+    }
+    .legend-item.highlight {
+      background: #ddd;
+    }
+    #legend .drill-links h4 {
+      margin: 10px 0 4px 0;
+    }
+    #legend .drill-links a {
+      display: block;
+      margin-left: 8px;
+    }
+    #chart text.tick-label {
+      font-size: 10px;
+      user-select: none;
+    }
+    #chart text.tick-label.rotated {
+      text-anchor: end;
+    }
+    #chart text.y-tick-label {
+      font-size: 10px;
+      user-select: none;
+    }
+    #chart line.grid {
+      stroke: #ccc;
+    }
+    /* Column resizer removed */
+  </style>
+</head>
+<body>
+  <div id="header">sample.csv - <select id="table"></select> <select id="graph_type"><option value="samples">Samples</option><option value="table">Table</option><option value="timeseries">Time Series</option></select></div>
+  <div id="content">
+    <div id="sidebar">
+      <div id="tabs">
+        <button class="tab active" data-tab="settings">View Settings</button>
+        <button id="columns_tab" class="tab" data-tab="columns">Columns</button>
+        <button id="dive" onclick="dive()">Dive</button>
+      </div>
+      <div id="settings" class="tab-content active">
+        <div class="field">
+          <label>Time Column</label>
+          <select id="time_column"></select>
+          <select id="time_unit" style="margin-left:4px">
+            <option value="s">s</option>
+            <option value="ms">ms</option>
+            <option value="us">us</option>
+            <option value="ns">ns</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Start<span class="help" title="Sets the start/end of the time range to query. Can be any kind of datetime string. For example: 'April 23, 2014' or 'yesterday'.">[?]</span></label>
+          <div class="rel-box">
+            <input id="start" type="text" />
+            <button type="button" class="rel-btn" data-target="start-select">&#9660;</button>
+            <div id="start-select" class="rel-dropdown" data-input="start">
+              <div data-value="-1 hour">-1 hour</div>
+              <div data-value="-3 hours">-3 hours</div>
+              <div data-value="-12 hours">-12 hours</div>
+              <div data-value="-1 day">-1 day</div>
+              <div data-value="-3 days">-3 days</div>
+              <div data-value="-1 week">-1 week</div>
+              <div data-value="-1 fortnight">-1 fortnight</div>
+              <div data-value="-30 days">-30 days</div>
+              <div data-value="-90 days">-90 days</div>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label>End<span class="help" title="Sets the start/end of the time range to query. Can be any kind of datetime string. For example: 'April 23, 2014' or 'yesterday'.">[?]</span></label>
+          <div class="rel-box">
+            <input id="end" type="text" />
+            <button type="button" class="rel-btn" data-target="end-select">&#9660;</button>
+            <div id="end-select" class="rel-dropdown" data-input="end">
+              <div data-value="now">now</div>
+              <div data-value="-1 hour">-1 hour</div>
+              <div data-value="-3 hours">-3 hours</div>
+              <div data-value="-12 hours">-12 hours</div>
+              <div data-value="-1 day">-1 day</div>
+              <div data-value="-3 days">-3 days</div>
+              <div data-value="-1 week">-1 week</div>
+              <div data-value="-1 fortnight">-1 fortnight</div>
+              <div data-value="-30 days">-30 days</div>
+              <div data-value="-90 days">-90 days</div>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Order By<span class="help" title="Choose a column to sort results by.">[?]</span></label>
+          <select id="order_by"></select>
+          <button id="order_dir" type="button">ASC \u25B2</button>
+        </div>
+        <div class="field">
+          <label>Limit<span class="help" title="Choose the maximum number of results to show in the chart after any aggregations have been applied. For example, a limit of 10 will show no more than 10 rows for a table, etc.">[?]</span></label>
+          <input id="limit" type="number" value="100" />
+        </div>
+        <div id="x_axis_field" class="field" style="display:none;">
+          <label>X-axis</label>
+          <select id="x_axis"></select>
+        </div>
+        <div id="granularity_field" class="field" style="display:none;">
+          <label>Granularity</label>
+          <select id="granularity">
+            <option>Auto</option>
+            <option>Fine</option>
+            <option>1 second</option>
+            <option>5 seconds</option>
+            <option>10 seconds</option>
+            <option>30 seconds</option>
+            <option>1 minute</option>
+            <option>4 minutes</option>
+            <option>5 minutes</option>
+            <option>10 minutes</option>
+            <option>15 minutes</option>
+            <option>30 minutes</option>
+            <option>1 hour</option>
+            <option>3 hours</option>
+            <option>6 hours</option>
+            <option>1 day</option>
+            <option>1 week</option>
+            <option>30 days</option>
+          </select>
+        </div>
+        <div id="fill_field" class="field" style="display:none;">
+          <label>Fill Missing Buckets</label>
+          <select id="fill">
+            <option value="0">Fill with 0 (Per Series)</option>
+            <option value="connect">Connect (Per Series)</option>
+            <option value="blank">Leave blank</option>
+          </select>
+        </div>
+        <div id="group_by_field" class="field" style="display:none;">
+          <label>Group By</label>
+          <div class="chip-box">
+          <div class="chip-input">
+              <input id="group_by" class="f-val" type="text">
+              <button type="button" class="chip-copy">&#x2398;</button>
+          </div>
+            <div class="chip-dropdown"></div>
+          </div>
+        </div>
+        <div id="aggregate_field" class="field" style="display:none;">
+          <label>Aggregate</label>
+          <select id="aggregate">
+            <option>Count</option>
+            <option>Avg</option>
+            <option>Sum</option>
+            <option>Min</option>
+            <option>Max</option>
+            <option>Count Distinct</option>
+            <option>p5</option>
+            <option>p25</option>
+            <option>p50</option>
+            <option>p70</option>
+            <option>p75</option>
+            <option>p90</option>
+            <option>p95</option>
+            <option>p99</option>
+            <option>p99.9</option>
+            <option>p99.99</option>
+          </select>
+        </div>
+        <div id="show_hits_field" class="field" style="display:none;">
+          <label>Show Hits</label>
+          <input id="show_hits" type="checkbox" checked>
+        </div>
+        <div id="filters">
+          <h4>Filters<span class="help" title="You can create as many filters as you want. You can either write a filter using a UI or manual SQL. In the UI, filter consists of a column name, a relation (e.g., =, !=, <, >) and then a text field. The text field is a token input. It accepts multiple tokens for = relation, in which case we match using an OR for all options.">[?]</span></h4>
+          <div id="filter_list"></div>
+          <button id="add_filter" type="button" onclick="addFilter()">Add Filter</button>
+        </div>
+        <div id="query_info" style="margin-top:10px;"></div>
+      </div>
+      <div id="columns" class="tab-content">
+        <div id="column_actions">
+          <a id="columns_all" href="#">All</a>
+          <a id="columns_none" href="#">None</a>
+        </div>
+        <div id="column_groups"></div>
+        <div id="derived_columns">
+          <h4>Derived Columns</h4>
+          <div id="derived_list"></div>
+          <button id="add_derived" type="button" onclick="addDerived()">Add Derived</button>
+        </div>
+      </div>
+  </div>
+  <div id="sidebar-resizer"></div>
+  <div id="view">
+    <table id="results"></table>
+  </div>
+</div>
+<script src="/js/chip_input.js"></script>
+<script src="/js/timeseries_chart.js"></script>
+<script src="/js/time_column.js"></script>
+<script src="/js/sidebar.js"></script>
+<script src="/js/table_view.js"></script>
+<script src="/js/view_settings.js"></script>
+</body>
+</html>
