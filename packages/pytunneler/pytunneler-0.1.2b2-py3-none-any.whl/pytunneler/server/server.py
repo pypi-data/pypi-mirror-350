@@ -1,0 +1,295 @@
+#!/usr/bin/env python
+
+import asyncio
+import asyncio.trsock
+import socket
+import time
+from picows import ws_create_server, WSFrame, WSTransport, WSListener, WSMsgType, WSUpgradeRequest, WSCloseCode
+import threading
+import logging
+from queue import Queue
+import argparse
+
+from pytunneler.utils import commands, network, packet, host_hex
+
+parser = argparse.ArgumentParser(description='pytunneler Websocket server')
+
+parser.add_argument('address', type=str, nargs='?',
+                    help='websocket server address', default='0.0.0.0:8321')
+
+parser.add_argument('--password', type=str,
+                    help='password')
+
+class WebsocketServer(WSListener):
+    def __init__(self, ip, port, password):
+        self.tcp_thread = None
+        self.loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(self.loop)
+        self.tcp_servers: dict[str, TCPServer] = dict()
+        self.udp_servers: dict[str, UDPServer] = dict()
+        self.local_remote: dict[str, str] = dict()
+        self.ip = ip
+        self.port = port
+        self.password = password
+
+
+    def start_tcp_server(self, transport, local_ip, local_port, target_ip, target_port):
+        thread = TCPServer(transport, self, local_ip, int(local_port), target_ip, int(target_port))
+        self.tcp_servers[f"{target_ip}:{target_port}"] = thread
+        self.local_remote[f"{local_ip}:{local_port}"] = f"{target_ip}:{target_port}"
+        thread.start()
+
+    def start_udp_server(self, transport, local_ip, local_port, target_ip, target_port):
+        thread = UDPServer(transport, self, local_ip, int(local_port), target_ip, int(target_port))
+        self.udp_servers[f"{target_ip}:{target_port}"] = thread
+        self.local_remote[f"{local_ip}:{local_port}"] = f"{target_ip}:{target_port}"
+        thread.start()
+
+    def send_callback(self, transport, message):
+        command_callback_packet = packet.CommandCallbackPacket(message)
+        network.websocket_send(transport, command_callback_packet.create_packet())
+
+    def handle_packet(self, raw_packet, transport: WSTransport):
+        packet_ = packet.Packet.bytes2packet(raw_packet)
+        if isinstance(packet_, packet.CommandPacket):
+            command = packet_.command
+            for command_type in commands.CommandTypes:
+                if command.split()[0] == command_type.trigger:
+                    context = commands.CommandContext(command.split()[1:], transport, self)
+                    message = command_type.on_command(context)
+                    self.send_callback(transport, message)
+                    break
+            else:
+                print(f"Unknown command: {command.split()[0]}")
+                self.send_callback(transport, f"Unknown command: {command.split()[0]}")
+        elif isinstance(packet_, packet.BinaryPacket):
+            try:
+                ip, port = host_hex.hex2host(packet_.host).split(":")
+                target_ip, target_port = host_hex.hex2host(packet_.target_host).split(":")
+                remote_address = self.local_remote[f"{ip}:{port}"]
+
+                # Check if it's TCP or UDP server
+                if remote_address in self.tcp_servers:
+                    tcp_server = self.tcp_servers[remote_address]
+                    client_key = f"{target_ip}:{target_port}"
+
+                    if client_key not in tcp_server.clients:
+                        logging.error(f"No client connection found for {client_key}")
+                        return
+
+                    client_handler = tcp_server.clients[client_key]
+                    network.tcp_send(client_handler.client_socket, packet_.data)
+                elif remote_address in self.udp_servers:
+                    udp_server = self.udp_servers[remote_address]
+                    network.udp_send(udp_server.sock, packet_.data, (target_ip, int(target_port)))
+            except Exception as e:
+                logging.error(f"Error handling binary packet: {e}")
+
+
+    def check_password(self, transport, frame: WSFrame):
+        try:
+            password_packet = frame.get_payload_as_bytes()
+            password_packet = packet.Packet.bytes2packet(password_packet)
+            if isinstance(password_packet, packet.PasswordPacket):
+                if self.password != password_packet.password:
+                    self.send_callback(transport, "Wrong password")
+                    time.sleep(1) # 给客户端时间反应，不然直接退出了信息看不到
+                    return False
+            else:
+                self.send_callback(transport, "Wrong packet")
+                time.sleep(1)
+                return False
+        except TimeoutError:
+            self.send_callback(transport, "Timeout for password")
+            time.sleep(1)
+            return False
+        return True
+
+
+
+
+    class ServerListener(WSListener):
+        def __init__(self, server):
+            self.server = server
+            self.password_checked = False
+            super().__init__()
+
+        def on_ws_connected(self, transport: WSTransport):
+            atransport: asyncio.Transport = transport.underlying_transport
+            transport_socket: asyncio.trsock.TransportSocket = atransport.get_extra_info('socket')
+            peer = transport_socket.getpeername()
+            logging.info(f"Connected by {peer[0]}:{peer[1]}")
+
+
+        def on_ws_frame(self, transport: WSTransport, frame: WSFrame):
+            if frame.msg_type == WSMsgType.PING:
+                transport.send_pong(frame.get_payload_as_bytes())
+            elif frame.msg_type == WSMsgType.CLOSE:
+                transport.send_close(frame.get_close_code(), frame.get_close_message())
+                transport.disconnect()
+            else:
+                if not self.password_checked:
+                    if server.check_password(transport, frame):
+                        self.password_checked = True
+                        return
+                    else:
+                        transport.send_close(WSCloseCode.INVALID_TEXT)
+                        transport.disconnect()
+                        return
+                raw_packet = frame.get_payload_as_bytes()
+                if not raw_packet:
+                    transport.send_close(WSCloseCode.BAD_GATEWAY)
+                    transport.disconnect()
+                self.server.handle_packet(raw_packet, transport)
+
+
+    def listener_factory(self, r: WSUpgradeRequest):
+        return self.ServerListener(self)
+
+    async def main(self):
+        server: asyncio.Server = await ws_create_server(self.listener_factory, self.ip, self.port)
+        for s in server.sockets:
+            logging.info(f"Websocket server is running on {s.getsockname()}")
+        await server.serve_forever()
+
+
+
+    def shutdown(self):
+        """Shutdown all TCP servers and cleanup resources"""
+        for tcp_server in self.tcp_servers.values():
+            tcp_server.shutdown.set()
+        self.loop.stop()
+
+    def run(self):
+        try:
+            return self.loop.run_until_complete(self.main())
+        except KeyboardInterrupt:
+            self.shutdown()
+        except Exception as e:
+            logging.error(f"Server error: {e}")
+            self.shutdown()
+
+class ConnectionHandler(threading.Thread):
+    def __init__(self, client_socket, client_address, websocket, local_hex):
+        self.client_socket = client_socket
+        self.client_address = client_address
+        self.websocket = websocket
+        self.local_hex = local_hex
+        self.client_hex = host_hex.host2hex(f"{client_address[0]}:{client_address[1]}")
+        super().__init__()
+
+    def run(self):
+        with self.client_socket:
+            logging.info(f"Connected by {self.client_address}")
+            connected_packet = packet.ConnectedPacket(self.client_hex, self.local_hex)
+            network.websocket_send(self.websocket, connected_packet.create_packet())
+            time.sleep(0.5)
+
+            while True:
+                data = network.tcp_recv(self.client_socket)
+                if data is None:
+                    logging.info(f"Connection closed by {self.client_address}")
+                    break
+                binary_packet = packet.BinaryPacket(self.client_hex, self.local_hex, data)
+                network.websocket_send(self.websocket, binary_packet.create_packet())
+
+class TCPServer(threading.Thread):
+    def __init__(self, websocket: WSTransport, server: WebsocketServer, local_ip, local_port, host, port):
+        self.packet_queue = Queue()
+        self.local_ip = local_ip
+        self.local_port = local_port
+        self.host = host
+        self.port = port
+        self.server = server
+        self.server_socket = None
+        self.websocket = websocket
+        self.clients = {}
+        self.shutdown = threading.Event()
+        self.local_hex = host_hex.host2hex(f"{local_ip}:{local_port}")
+        super().__init__()
+
+    def run(self):
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
+            server_socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+            server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            server_socket.bind((self.host, self.port))
+            server_socket.listen(100)  # Increased backlog
+            self.server_socket = server_socket
+            logging.info(f"TCP server is running on {self.host}:{self.port}")
+
+            while not self.shutdown.is_set():
+                try:
+                    client_socket, client_address = server_socket.accept()
+                    client_socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+
+                    # Create and start new connection handler thread
+                    handler = ConnectionHandler(client_socket, client_address, self.websocket, self.local_hex)
+                    handler.daemon = True  # Don't block program exit
+                    handler.start()
+
+                    # Track client connection
+                    client_host, client_port = client_address
+                    self.clients[f"{client_host}:{client_port}"] = handler
+
+                except OSError as e:
+                    if not self.shutdown.is_set():
+                        logging.error(f"TCP server error: {e}")
+                    break
+
+            # Cleanup all client connections
+            for handler in list(self.clients.values()):
+                try:
+                    handler.client_socket.close()
+                except:
+                    pass
+                handler.join(timeout=1)
+
+            # Close server socket
+            try:
+                self.server_socket.close()
+            except:
+                pass
+
+class UDPServer(threading.Thread):
+    def __init__(self, websocket: WSTransport, server: WebsocketServer, local_ip, local_port, host, port):
+        self.local_ip = local_ip
+        self.local_port = local_port
+        self.host = host
+        self.port = port
+        self.server = server
+        self.sock = None
+        self.websocket = websocket
+        self.shutdown = threading.Event()
+        self.local_hex = host_hex.host2hex(f"{local_ip}:{local_port}")
+        super().__init__()
+
+    def run(self):
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
+            self.sock = sock
+            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            sock.bind((self.host, self.port))
+            logging.info(f"UDP server is running on {self.host}:{self.port}")
+
+            while not self.shutdown.is_set():
+                try:
+                    data, addr = network.udp_recv(sock)
+                    if not data:
+                        continue
+
+                    client_hex = host_hex.host2hex(f"{addr[0]}:{addr[1]}")
+                    binary_packet = packet.BinaryPacket(client_hex, self.local_hex, data)
+                    network.websocket_send(self.websocket, binary_packet.create_packet())
+
+                except OSError as e:
+                    if not self.shutdown.is_set():
+                        logging.error(f"UDP server error: {e}")
+                    break
+
+if __name__ == "__main__":
+    args = parser.parse_args()
+    ip, port = args.address.split(":")
+    password = ""
+    if args.password:
+        password = args.password
+    server = WebsocketServer(ip, port, password)
+    server.run()
