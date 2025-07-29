@@ -1,0 +1,30 @@
+[build-system]
+requires      = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name            = "wrapvenv"
+version         = "1.2.1"
+description     = "Yet another python virtual environments manager"
+readme          = "README.md"
+requires-python = ">=3.7"
+classifiers     = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+
+    [project.scripts]
+    wrapvenv = "wrapvenv:__main__"
+
+    [project.urls]
+    Homepage = "https://git.sr.ht/~greenfoo/wrapvenv"
+    Issues = "https://todo.sr.ht/~greenfoo/wrapvenv"
+
+[tool.hatch.build.targets.wheel]
+packages = ["wrapvenv"]
+
+[tool.ruff]
+exclude = [ "test", ]
+lint.ignore = [
+    "E501",  # Line length
+]
