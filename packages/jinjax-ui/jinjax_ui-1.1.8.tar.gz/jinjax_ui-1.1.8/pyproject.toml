@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools"]
+
+
+[project]
+name = "jinjax-ui"
+version = "1.1.8"
+description = "JinjaX UI components"
+authors = [
+    {name = "Juan Pablo Scaletti", email = "juanpablo@jpscaletti.com"},
+]
+license-files = ["MIT-LICENSE"]
+readme = "README.md"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Web Environment",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: User Interfaces",
+    "Topic :: Text Processing :: Markup :: HTML",
+]
+requires-python = ">=3.11,<4"
+dependencies = [
+    "jinjax >= 0.56",
+]
+
+[tool.uv.sources]
+claydocs = { path = "../claydocs", editable = true }
+
+[dependency-groups]
+docs = [
+    "claydocs",
+    "whitenoise ~= 6.9.0"
+]
+
+[project.urls]
+homepage = "https://jxui.scaletti.dev/"
+repository = "https://github.com/jpsca/jinjax-ui"
+documentation = "https://jxui.scaletti.dev/"
+
+[project.scripts]
+proper = "proper.cl:run"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+jinjax_ui = [
+    "components/**/*",
+]
+[tool.setuptools.exclude-package-data]
+"*" = [
+    "**/__pycache__",
+    "*.pyc",
+    "*.pyo",
+]
