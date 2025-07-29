@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    {% block head %}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Vampire: the Eternal Struggle (VTES) tournament manager">
+    <meta name="keywords" content="Archon, Vampire, the Eternal Struggle, VTES, CCG, Tournament">
+    <meta name="format-detection" content="telephone=no">
+    {% block meta %}{% endblock %}
+    <meta name="login-data" content="Login-related data" data-discord-oauth="{{ discord_oauth }}">
+    <link rel="shortcut icon" href="{{ url_for('img', path='favicon.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='layout.css') }}">
+    <script async src="{{ url_for('static', path='login.js') }}" type="module"></script>
+    <script async src="{{ url_for('static', path='topnav.js') }}" type="module"></script>
+    {% block scripts %}{% endblock %}
+    <title>Archon: VTES Tournament Manager</title>
+    {% endblock %}
+</head>
+
+<body>
+    <header role="banner">
+        <nav id="navigation" class="navbar bg-dark navbar-expand-sm mb-3" data-bs-theme="dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="{{ url_for('index') }}">
+                    <img src="{{ url_for('img', path='black-chantry-icon.webp') }}" alt="BCP logo" width="48px">
+                </a>
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}">Rankings</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('tournament_list') }}">Tournaments</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('league_list') }}">Leagues</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('member_list') }}">Members</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="dropdown-toggle nav-link" href="/document" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            <i class="bi bi-journal-text"></i>
+                        </a>
+                        <ul class="dropdown-menu">
+
+                            <li><a class="dropdown-item" href="{{ url_for('document_archon_help') }}">
+                                    <i class="bi bi-question-circle"></i>
+                                    Help
+                                </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('document_tournament_rules') }}">
+                                    Tournament Rules
+                                </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('document_judges_guide') }}">
+                                    Judge's Guide
+                                </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('document_code_of_ethics') }}">
+                                    Code of Ethics
+                                </a></li>
+                        </ul>
+                    </li>
+                </ul>
+                {% if member %}
+                <a type="button" class="btn btn-secondary ms-2" href="{{ url_for('member_display', uid=member.uid) }}">
+                    <i class="bi bi-person-fill"></i> Profile
+                </a>
+                {% else %}
+                <button type="button" class="btn btn-primary ms-2" id="loginButton">
+                    <i class="bi bi-box-arrow-in-right"></i> Login
+                </button>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true" aria-labelledby="loginModalLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="loginModalLabel">Login</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <a type="button" class="btn btn-sm btn-discord my-2 w-100" href="{{ discord_oauth }}">
+                        <i class="bi bi-discord"></i>
+                        Discord login
+                    </a>
+                    <hr>
+                    <form action="/auth/email" method="post">
+                        <input class="form-control me-2 mb-2" type="text" name="email" autocomplete="email"
+                            placeholder="E-mail">
+                        <input class="form-control me-2 mb-2" type="password" name="password"
+                            autocomplete="current-password" placeholder="Password">
+                        <div class="d-flow">
+                            <button type="submit" class="btn btn-primary me-2 mb-2">Login</button>
+                            <button type="submit" class="btn btn-secondary me-2 mb-2" formaction="/auth/email/reset">
+                                Reset Password
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if member and not member.vekn %}
+    <div class="alert alert-info" role="alert">
+        You have no VEKN ID# on record. If have an existing VEKN#, you can claim it in your
+        <a class="alert-link" href="{{ url_for('member_display', uid=member.uid) }}">Profile</a>.<br>
+        Otherwise, reach out to a Prince or National Coordinator in your country.
+    </div>
+    {% endif %}
+    <div class="container" id="contentContainer">
+        {% block content %}{% endblock %}
+    </div>
+    <div aria-live="polite" aria-atomic="true" class="position-static">
+        <div class="toast-container bottom-0 end-0 p-3">
+            <div id="errorToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <i class="bi-exclamation-circle-fill text-danger me-1"></i>
+                    <strong class="me-auto">Error</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    Error
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="container-fluid">
+        {% block footer %}{% endblock %}
+    </footer>
+</body>
+
+</html>
