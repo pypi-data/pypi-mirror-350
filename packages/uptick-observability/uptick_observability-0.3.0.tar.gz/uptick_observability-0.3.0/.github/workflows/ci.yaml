@@ -1,0 +1,59 @@
+name: CI
+on:
+  push:
+    branches:
+    - main
+  pull_request: {}
+
+permissions:
+  actions: read # Read the metrics
+  contents: write # to be able to publish a GitHub release
+  issues: write # to be able to comment on released issues
+  pull-requests: write # to be able to comment on released pull requests
+  id-token: write # to enable use of OIDC for npm provenance / AWS
+
+env:
+  MISE_PYTHON_COMPILE: false
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+jobs:
+  ci:
+    uses: uptick/actions/.github/workflows/ci.yaml@main
+    secrets: inherit
+    with:
+      mise: true
+      mise-install: true
+      command: |
+        mise run install
+        mise run ci
+
+  release_please:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: googleapis/release-please-action@v4
+      id: release
+      # Configured via: release-please-config.json and will update the manifest: .release-please-manifest.json
+      with: {}
+
+    # If it does release; lets checkout the code; build it and publish it
+    - if: ${{ steps.release.outputs.release_created }}
+      uses: actions/checkout@v4
+
+    - if: ${{ steps.release.outputs.release_created }}
+      uses: jdx/mise-action@v2
+      with:
+        install: true
+        cache: true
+        experimental: true
+
+    - if: ${{ steps.release.outputs.release_created }}
+      run: |
+        mise run build
+      shell: bash
+
+    - if: ${{ steps.release.outputs.release_created }}
+      name: Publish Pypi Package
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        repository-url: ${{inputs.pypi-repository-url}}

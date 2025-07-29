@@ -1,0 +1,77 @@
+[tools]
+uv = "latest"
+pre-commit = "latest"
+python = { version = "3.12.1", venv = ".venv" }
+
+[env]
+_.python.venv = { path = "{{config_root}}/.venv", create = true }
+OTEL_PYTHON_LOG_CORRELATION = "true"
+OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED = "true"
+OTEL_METRICS_EXPORTER = "none"
+OTEL_EXPORTER_OTLP_TIMEOUT=1
+# Auth
+OTEL_EXPORTER_OTLP_ENDPOINT = "https://quickwit-otel.onuptick.com/"
+OTEL_RESOURCE_ATTRIBUTES = "server_name=otel-test"
+# Customization
+OTEL_SERVICE_NAME="otel-test"
+# Main things to set
+OTEL_LOGS_EXPORTER="otlp"
+OTEL_TRACES_EXPORTER="otlp"
+
+[tasks.format]
+description = "Run all formatters"
+run = "ruff format ."
+
+[tasks.ruff-check]
+description = "Check"
+run = "ruff check --fix ."
+
+[tasks.lint]
+description = "Run all linters"
+depends = ['format', 'ruff-check', 'mypy']
+
+[tasks.mypy]
+description = "Typecheck python files"
+run = "mypy src"
+
+[tasks.test]
+run  = "echo TODO"
+
+[tasks.ci]
+description = "Runs everything for CI"
+depends = ['lint', 'test']
+
+
+[tasks.install]
+run = ["mise install", "uv sync --all-extras", "pre-commit install"]
+
+[tasks.build]
+run = "uvx --from build pyproject-build --installer uv"
+
+[tasks.publish]
+run = "uvx twine upload dist/*"
+
+[tasks.django_otel]
+run = "cd tests/django_tests/src; uv run daphne django_tests.asgi:application"
+
+[tasks.dramatiq_otel]
+run = "cd tests/django_tests/src; uv run manage.py rundramatiq --processes 1"
+
+[tasks.celery_otel]
+run = "cd tests/django_tests/src; uv run celery -A django_tests.celery worker --loglevel=info"
+
+[tasks.django_otel_console]
+run = "cd tests/django_tests/src; uv run daphne django_tests.asgi:application"
+
+[tasks.start_otel]
+run = ["""
+OTEL_LOGS_EXPORTER=otlp \
+OTEL_TRACES_EXPORTER=otlp \
+daphne -b 0.0.0.0 -p 80 --access-log /dev/null -t 60 abas.asgi:application
+"""]
+
+[tasks.fastapi_otel]
+run = ["""cd tests/fastapi_tests/src; uvicorn fastapi_tests.main:app --host 0.0.0.0 --port 8000"""]
+
+["tasks"."django:migrate"]
+run = "cd tests/django_tests/src; python manage.py migrate"

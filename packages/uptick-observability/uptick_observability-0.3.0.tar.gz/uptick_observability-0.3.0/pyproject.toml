@@ -1,0 +1,133 @@
+[project]
+name = "uptick-observability"
+version = "0.3.0"
+description = "Add your description here"
+readme = "PYPI_README.md"
+requires-python = ">=3.11"
+authors = [{name = "William Chu", email = "william.chu@uptickhq.com"}]
+dependencies = [
+    "opentelemetry-exporter-otlp>=1.25.0",
+    "opentelemetry-distro>=0.54b1",
+    "opentelemetry-instrumentation-logging>=0.54b1",
+    "opentelemetry-instrumentation-urllib>=0.54b1",
+    "opentelemetry-instrumentation-botocore>=0.54b1",
+    "opentelemetry-instrumentation-grpc>=0.54b1",
+    "opentelemetry-instrumentation-psycopg2>=0.54b1",
+    "opentelemetry-instrumentation-requests>=0.54b1",
+    "opentelemetry-instrumentation-urllib3>=0.54b1",
+    "opentelemetry-instrumentation-asgi>=0.54b1",
+    # ^ Required for django middleware
+    "botocore>=1.35.4",
+]
+
+[project.optional-dependencies]
+django = [
+    "opentelemetry-instrumentation-django>=0.54b1",
+]
+fastapi = [
+    "opentelemetry-instrumentation-fastapi>=0.54b1",
+]
+celery = [
+    "opentelemetry-instrumentation-celery>=0.54b1",
+]
+
+
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+dev-dependencies = [
+    "ruff>=0.11.1",
+    "mypy>=1.11.1",
+]
+
+[tool.uv.workspace]
+members = ["tests/django_tests", "tests/fastapi_tests"]
+
+[tool.ruff]
+# Assume Python 3.12.
+target-version = "py312"
+
+line-length = 88
+
+[tool.ruff.lint]
+# Enable Pyflakes `E` and `F` codes by default.
+select = [
+    "F", # Pyflakes
+    "E", # Pycodestyle
+    "W", # Pycodestyle
+
+    #"C90", # Mccabe complexity
+    #"C",   # flake8-comprehensions
+    "B",      # flake8-bugbear
+    "UP",     # pyupgrade
+    "S",      # bandit (security)
+    "DTZ",    # Enforce good datetime
+    "I",      # isort
+    "T10",    # no debugger/breakpoints in commits
+    "TID251", # banning  explicit imports
+]
+
+
+ignore = [
+    "B904",   # try - except - raise. TODO: Should raise from None or original exc
+    "B008",   # Doesn't play well with pydantic and ninja
+    "B007",   # Unused loop vars. TODO: rename or remove loop vars
+    "B905",   # zip() w/o strict. TODO: add strict to zip calls
+    "B026",   # *args after named param TODO: reorder params
+    "B017",   # assertRaises(Exception) is evil TODO: change to specific exceptions
+    "B018",   # useless attribute access. Needed as we have side effects
+    "B028",   # No explicit stacklevel TODO: add stacklevel to warnings
+    "DTZ007", # Hard basket for now TODO: fix this as well
+    "E501",   # Line length is done by ruff format
+    # "D202", # NoBlankLineAfterFunction
+    "S101", # Use of `assert` detected
+    "S104", # Ignore binding to all interfaces.
+    "S110", # try - except - pass. TODO: Remove this ignore
+    "S113", # requests call without timeout. TODO: Remove this ignore
+    "S602", # remove shell=True... not sure how we will do this
+]
+
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+]
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.lint.per-file-ignores]
+# Ignore checking for hardcoded passwords in test files
+"test*.py" = ["S106", "S105", "S311"]
+"e2e/fixtures*.py" = ["S106", "S105", "S311"]
+"factories.py" = ["S106", "S105", "S311"]
+"scripts/**.py" = ["S607", "S603", "TID"]
+"tasks/**.py" = ["S607", "S603"]
+
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+"functools.lru_cache".msg = "Unsafe caches are not allowed unless explicitly marked safe. Use @multitenant_lru_cache, @request_local_cache, @memoize, or use # noqa TID251 and an essay on why it is safe."
+"cachetools.func.ttl_cache".msg = "Unsafe caches are not allowed unless explicitly marked safe. Use @multitenant_lru_cache, @request_local_cache, @memoize, or use # noqa TID251 and an essay on why it is safe."
+"cachetools.ttl_cache".msg = "Unsafe caches are not allowed unless explicitly marked safe. Use @multitenant_lru_cache, @request_local_cache, @memoize, or use # noqa TID251 and an essay on why it is safe."
+
+[tool.mypy]
+ignore_missing_imports = true
