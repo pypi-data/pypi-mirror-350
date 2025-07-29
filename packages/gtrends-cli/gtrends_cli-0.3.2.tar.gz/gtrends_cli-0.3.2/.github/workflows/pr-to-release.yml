@@ -1,0 +1,55 @@
+name: PR to Release
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+jobs:
+  create-release:
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.RELEASE_TOKEN }}
+      - name: Extract version
+        id: version
+        run: |
+          # Extract version from PR branch name
+          VERSION=$(echo ${{ github.event.pull_request.head.ref }} | sed 's/release\/v//')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Extracted version: $VERSION"
+      - name: Create tag
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          
+          # Create and push tag
+          git tag -a v${{ steps.version.outputs.version }} -m "Release v${{ steps.version.outputs.version }}"
+          git push origin v${{ steps.version.outputs.version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+      - name: Extract release notes from CHANGELOG.md
+        id: extract_release_notes
+        run: |
+          # Extract the relevant section from CHANGELOG.md
+          VERSION=${{ steps.version.outputs.version }}
+          
+          NOTES=$(sed -n "/## \[$VERSION\]/,/## \[/p" CHANGELOG.md | sed '$d')
+          echo "RELEASE NOTES:"
+          echo "$NOTES"
+          
+          # Save to file for GitHub release
+          echo "$NOTES" > release_notes.md
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: Release v${{ steps.version.outputs.version }}
+          body_path: release_notes.md
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
