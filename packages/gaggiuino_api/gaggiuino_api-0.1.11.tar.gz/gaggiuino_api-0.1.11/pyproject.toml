@@ -1,0 +1,63 @@
+[project]
+name = "gaggiuino_api"
+version = "0.1.11"
+description = "Gaggiuino REST Api Wrapper"
+readme = "README.md"
+authors = [
+    { name = "Alexey ALERT Rubashёff", email = "alexey.rubasheff@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "aiohttp",
+]
+packages = ["gaggiuino_api"]
+
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.2.0",
+    "pytest>=8.3.5",  # update this in tox.ini
+    "pytest-asyncio>=0.26.0",  # update this in tox.ini
+    "ruff>=0.11.11",  # update this in tox.ini
+    "tox>=4.26.0",  # update this in tox.ini
+]
+
+[tool.ruff]
+target-version = "py313"
+src = ["gaggiuino_api", "test"]
+extend-exclude = [".idea/"]
+extend-include = []
+output-format = "grouped"
+respect-gitignore = true
+
+[tool.ruff.lint]
+task-tags = ["TODO"]
+
+[tool.ruff.format]
+docstring-code-format = true
+docstring-code-line-length = 88
+quote-style = "preserve"
+
+[tool.ruff.lint.pycodestyle]
+max-doc-length = 88
+max-line-length = 120
+
+[tool.ruff.lint.pylint]
+max-args = 10
+max-branches = 15
+max-nested-blocks = 10
+max-positional-args = 3
+max-public-methods = 30
+
+[tool.ruff.lint.extend-per-file-ignores]
+"__init__.py" = ["E402"]
+
+[tool.pytest.ini_options]
+minversion = "8.3.4"
+addopts = "-ra -q"
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "session"
