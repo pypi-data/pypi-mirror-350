@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+import "SiLAFramework.proto";
+
+package sila2.de.unigreifswald.biochemie.scheduling.labconfigurationcontroller.v1;
+
+/* This feature is used to configure the lab environment (called JobShop in this context), the scheduler can use to schedule processes on. */
+service LabConfigurationController {
+  /* Sets the Job-Shop (set of devices in the lab) for the scheduler. It will be kept until this method is called again. You can also use the ConfigureJobShop method which only uses basic types to achieve the same result. */
+  rpc LoadJobShopFromFile (sila2.de.unigreifswald.biochemie.scheduling.labconfigurationcontroller.v1.LoadJobShopFromFile_Parameters) returns (sila2.de.unigreifswald.biochemie.scheduling.labconfigurationcontroller.v1.LoadJobShopFromFile_Responses) {}
+  /* Sets the Job-Shop (set of devices in the lab) for the scheduler. It will be kept until this method is called again. */
+  rpc ConfigureJobShop (sila2.de.unigreifswald.biochemie.scheduling.labconfigurationcontroller.v1.ConfigureJobShop_Parameters) returns (sila2.de.unigreifswald.biochemie.scheduling.labconfigurationcontroller.v1.ConfigureJobShop_Responses) {}
+  /* The currently used job-shop */
+  rpc Get_CurrentJobShop (sila2.de.unigreifswald.biochemie.scheduling.labconfigurationcontroller.v1.Get_CurrentJobShop_Parameters) returns (sila2.de.unigreifswald.biochemie.scheduling.labconfigurationcontroller.v1.Get_CurrentJobShop_Responses) {}
+}
+
+/* A machine in a job-shop/laboratory defined by its type, name and capacities */
+message DataType_Machine {
+  message Machine_Struct {
+    sila2.org.silastandard.String Name = 1;  /* Unique Name of the Machine */
+    sila2.org.silastandard.String Type = 2;  /* Type */
+    sila2.org.silastandard.Integer MaxCapacity = 3;  /* Maximum holding Capacity of the machine */
+    sila2.org.silastandard.Integer ProcessingCapacity = 4;  /* Maximum number ob Operations that this machine can process at a time */
+    sila2.org.silastandard.Integer MinCapacity = 5;  /* Minimum processing capacity. For example a centrifuge might need to contain a minimum number of labware to be balanced enough to rotate. */
+    sila2.org.silastandard.Boolean AllowsOverlap = 6;  /* A boolean whether */
+  }
+  sila2.de.unigreifswald.biochemie.scheduling.labconfigurationcontroller.v1.DataType_Machine.Machine_Struct Machine = 1;  /* A machine in a job-shop/laboratory defined by its type, name and capacities */
+}
+
+/* Parameters for LoadJobShopFromFile */
+message LoadJobShopFromFile_Parameters {
+  sila2.org.silastandard.String ConfigurationFile = 1;  /* A yaml file in a specific format describing what machines of which capabilities should be used to schedule experiments on. This should be the file content and not the file location. */
+}
+
+/* Responses of LoadJobShopFromFile */
+message LoadJobShopFromFile_Responses {
+}
+
+/* Parameters for ConfigureJobShop */
+message ConfigureJobShop_Parameters {
+  repeated sila2.de.unigreifswald.biochemie.scheduling.labconfigurationcontroller.v1.DataType_Machine JobShop = 1;  /* A list of machines/devices available in the job-shop/laboratory to schedule operations on. */
+}
+
+/* Responses of ConfigureJobShop */
+message ConfigureJobShop_Responses {
+}
+
+/* Parameters for CurrentJobShop */
+message Get_CurrentJobShop_Parameters {
+}
+
+/* Responses of CurrentJobShop */
+message Get_CurrentJobShop_Responses {
+  repeated sila2.de.unigreifswald.biochemie.scheduling.labconfigurationcontroller.v1.DataType_Machine CurrentJobShop = 1;  /* The currently used job-shop */
+}

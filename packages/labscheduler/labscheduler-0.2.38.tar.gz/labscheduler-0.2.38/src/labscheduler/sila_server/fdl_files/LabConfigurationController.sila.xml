@@ -1,0 +1,132 @@
+<Feature xmlns="http://www.sila-standard.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Category="scheduling" FeatureVersion="1.0" MaturityLevel="Draft" Originator="de.unigreifswald.biochemie" SiLA2Version="1.0" xsi:schemaLocation="http://www.sila-standard.org https://gitlab.com/SiLA2/sila_base/raw/master/schema/FeatureDefinition.xsd">
+  <Identifier>LabConfigurationController</Identifier>
+  <DisplayName>LabConfiguration Controller</DisplayName>
+  <Description>
+      This feature is used to configure the lab environment (called JobShop in this context),
+      the scheduler can use to schedule processes on.
+  </Description>
+  <Command>
+    <Identifier>LoadJobShopFromFile</Identifier>
+    <DisplayName>Load Job Shop From File</DisplayName>
+    <Description>
+        Sets the Job-Shop (set of devices in the lab) for the scheduler.
+        It will be kept until this method is called again. You can also use the ConfigureJobShop method which only uses
+        basic types to achieve the same result.
+    </Description>
+    <Observable>No</Observable>
+    <Parameter>
+      <Identifier>ConfigurationFile</Identifier>
+      <DisplayName>Configuration File</DisplayName>
+      <Description>
+          A yaml file in a specific format describing what machines of which capabilities should be used to
+          schedule experiments on. This should be the file content and not the file location.
+      </Description>
+      <DataType>
+        <Basic>String</Basic>
+      </DataType>
+    </Parameter>
+  </Command>
+    <Command>
+        <Identifier>ConfigureJobShop</Identifier>
+        <DisplayName>ConfigureJobShop</DisplayName>
+        <Description>
+            Sets the Job-Shop (set of devices in the lab) for the scheduler.
+            It will be kept until this method is called again.
+        </Description>
+        <Observable>No</Observable>
+        <Parameter>
+            <Identifier>JobShop</Identifier>
+            <DisplayName>Job Shop</DisplayName>
+            <Description>
+                A list of machines/devices available in the job-shop/laboratory to schedule operations on.
+            </Description>
+            <DataType>
+                <List>
+                    <DataType>
+                        <DataTypeIdentifier>Machine</DataTypeIdentifier>
+                    </DataType>
+                </List>
+            </DataType>
+        </Parameter>
+    </Command>
+    <Property>
+        <Identifier>CurrentJobShop</Identifier>
+        <DisplayName>Current Job Shop</DisplayName>
+        <Description>The currently used job-shop</Description>
+        <Observable>No</Observable>
+        <DataType>
+            <List>
+                <DataType>
+                    <DataTypeIdentifier>Machine</DataTypeIdentifier>
+                </DataType>
+            </List>
+        </DataType>
+    </Property>
+    <DataTypeDefinition>
+        <Identifier>Machine</Identifier>
+        <DisplayName>Machine</DisplayName>
+        <Description>
+            A machine in a job-shop/laboratory defined by its type, name and capacities
+        </Description>
+        <DataType>
+            <Structure>
+                <Element>
+                    <Identifier>Name</Identifier>
+                    <DisplayName>Name</DisplayName>
+                    <Description>Unique Name of the Machine</Description>
+                    <DataType>
+                        <Basic>String</Basic>
+                    </DataType>
+                </Element>
+                <Element>
+                    <Identifier>Type</Identifier>
+                    <DisplayName>Type</DisplayName>
+                    <Description>Type</Description>
+                    <DataType>
+                        <Basic>String</Basic>
+                    </DataType>
+                </Element>
+                <Element>
+                    <Identifier>MaxCapacity</Identifier>
+                    <DisplayName>Max Capacity</DisplayName>
+                    <Description>Maximum holding Capacity of the machine</Description>
+                    <DataType>
+                        <Basic>Integer</Basic>
+                    </DataType>
+                </Element>
+                <Element>
+                    <Identifier>ProcessingCapacity</Identifier>
+                    <DisplayName>Processing Capacity</DisplayName>
+                    <Description>Maximum number ob Operations that this machine can process at a time</Description>
+                    <DataType>
+                        <Basic>Integer</Basic>
+                    </DataType>
+                </Element>
+                <Element>
+                    <Identifier>MinCapacity</Identifier>
+                    <DisplayName>Min Capacity</DisplayName>
+                    <Description>
+                        Minimum processing capacity. For example a centrifuge might need to contain a minimum number
+                        of labware to be balanced enough to rotate.
+                    </Description>
+                    <DataType>
+                        <Basic>Integer</Basic>
+                    </DataType>
+                </Element>
+                <Element>
+                    <Identifier>AllowsOverlap</Identifier>
+                    <DisplayName>Allows Overlap</DisplayName>
+                    <Description>A boolean whether </Description>
+                    <DataType>
+                        <Basic>Boolean</Basic>
+                    </DataType>
+                </Element>
+            </Structure>
+        </DataType>
+    </DataTypeDefinition>
+    <DefinedExecutionError>
+        <Identifier>FileFormatError</Identifier>
+        <DisplayName>Wring File Format</DisplayName>
+        <Description>The file could not be read because it violates the format</Description>
+    </DefinedExecutionError>
+</Feature>

@@ -1,0 +1,157 @@
+
+[project]
+name = "labscheduler"
+dynamic = ["version"]
+description = """The python lab scheduler is an adaptive scheduler solving generalized (suited to lab demands)
+versions of the JSSP (Job Shop Scheduling Problem). It comes as a microservice with a SiLA and a python interface."""
+readme = "README.md"
+authors = [
+    { name = "Mark Doerr", email = "mark.doerr@uni-greifswald.de" },
+    { name = "Stefan Maak", email = "stefan.maak@uni-greifswald.de" },
+    { name = "Walter Baccinelli", email = "w.baccinelli@esciencecenter.nl" },
+    { name = "Dani Bodor", email = "d.bodor@esciencecenter.nl" },
+]
+requires-python = ">=3.11"
+
+license = { text = "MIT" }
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Education",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3",
+    # :TODO: test, whether 3.9 and 3.10 are still supported
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Chemistry",
+]
+dependencies = ["pyyaml>=6.0.1",
+                "networkx>=3.1",
+                "pytz>=2023.3",
+                "grpcio==1.71.0",
+                "grpcio-tools==1.71.0",
+                "protobuf==5.29.4",
+                "sila2>=0.12"]
+
+[project.scripts]
+labscheduler = "labscheduler.sila_server.__main__:main"
+
+[dependency-groups]
+mipsolver = ["pyscipopt>=5.3.0"]
+cpsolver = ["ortools==9.9.3963"]
+dev = [
+    "pytest>=8.3",
+    "pytest-cov>6.0",
+    "pytest-xdist>=3.6",
+    "coverage>=7.7",
+    "anyio>=4.4",
+    "pytest-asyncio>=0.24",
+    "tox>=4.5",
+    "safety>=1.0",
+    "bandit>=1.0",
+    "ruff==0.9.*",
+    "mypy",
+    "invoke>=2.1",
+    "bump-my-version>=0.28",
+    "pre_commit>=4.0",
+    "typer",
+    "pandas",
+]
+docs = ["sphinx>=7.0", "python-docs-theme>=2023.3", "myst-parser>=1.0"]
+[project.urls]
+"Homepage" = "https://gitlab.com/opensourcelab/labscheduler"
+
+[tool.bumpversion]
+current_version = "0.2.38"
+parse = "(?P<major>\\d+)\\.(?P<minor>\\d+)\\.(?P<patch>\\d+)"
+serialize = ["{major}.{minor}.{patch}"]
+search = "{current_version}"
+replace = "{new_version}"
+regex = false
+ignore_missing_version = false
+ignore_missing_files = false
+tag = true
+sign_tags = false
+tag_name = "v{new_version}"
+tag_message = "Bump version: {current_version} → {new_version}"
+allow_dirty = false
+commit = true
+message = "Bump version: {current_version} → {new_version}"
+commit_args = ""
+setup_hooks = []
+pre_commit_hooks = ["uv sync", "git add uv.lock"]
+post_commit_hooks = []
+
+
+[[tool.bumpversion.files]]
+filename = ".gitlab-ci.yml"
+search = 'LABSCHEDULER_VERSION: "{current_version}"'
+replace = 'LABSCHEDULER_VERSION: "{new_version}"'
+
+
+[[tool.bumpversion.files]]
+filename = "src/labscheduler/__init__.py"
+search = '__version__ = "{current_version}"'
+replace = '__version__ = "{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = "CITATION.cff"
+search = 'version: {current_version}'
+replace = 'version: {new_version}'
+
+# FIXME: not working
+
+# [[tool.bumpversion.files]]
+# # note that the it's not possible to do 2 search/replace actions to the same file in a single entry
+# filename = "CITATION.cff"
+# search = 'date-released: "\\d{4}-\\d{2}-\\d{2}"'
+# replace = 'date-released: "{now:%Y-%m-%d}"' # not working
+# regex = true
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = ["-v"]
+filterwarnings = ["ignore:.*pkg_resources.*:DeprecationWarning"]
+
+[tool.bandit]
+exclude_dirs = ["tests"]
+skips = ["B101"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "if __name__ == .__main__.:",
+    "@abstractmethod",
+    "@abc.abstractmethod",
+    "def __repr__(self):",
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING",
+]
+skip_empty = true
+omit = ["*_pb2.py"]
+precision = 2
+
+[[tool.uv.index]]
+name = "testpypi"
+url = "https://test.pypi.org/simple/"
+publish-url = "https://test.pypi.org/legacy/"
+explicit = true
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "src/labscheduler/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "src/labscheduler",
+]
