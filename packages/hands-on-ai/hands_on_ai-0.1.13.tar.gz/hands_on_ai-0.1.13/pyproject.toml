@@ -1,0 +1,73 @@
+[build-system]
+requires = ["flit_core>=3.4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "hands-on-ai"
+version = "0.1.13"
+description = "Hands-on AI Toolkit for classrooms"
+authors = [
+  { name = "Michael Borck", email = "michael@borck.me" }
+]
+license = { text = "MIT" }
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "requests", 
+    "typer",
+    "python-fasthtml",
+    "python-docx", 
+    "pymupdf", 
+    "scikit-learn", 
+    "numpy"
+]
+
+[project.scripts]
+handsonai = "hands_on_ai.cli:app"
+chat = "hands_on_ai.chat.cli:app"
+rag = "hands_on_ai.rag.cli:app"
+agent = "hands_on_ai.agent.cli:app"
+
+[tool.flit.module]
+name = "hands_on_ai"
+
+# Keep optional dependencies for backward compatibility and development
+[project.optional-dependencies]
+rag = []
+chat = []
+agent = []
+dev = [
+  "pytest",
+  "build",
+  "twine==6.0.1",
+  "cython",
+  "ruff",
+  "mkdocs",
+  "mkdocstrings[python]",
+  "mkdocs-material",
+  "pymdown-extensions",
+  "uv"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"hands_on_ai" = [
+    "chat/data/*.json",
+    "rag/data/samples/*"
+]
+
+[project.urls]
+Homepage = "https://github.com/teaching-repositories/hands-on-ai"
+Documentation = "https://michael-borck.github.io/hands-on-ai/"
+Source = "https://github.com/teaching-repositories/hands-on-ai"
+Issues = "https://github.com/teaching-repositories/hands-on-ai"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+addopts = "-v"
+
+[tool.ruff]
+line-length = 100
+exclude = ["build", "dist", ".venv"]
