@@ -1,0 +1,26 @@
+{% ckan_extends %}
+
+{% block meta %}
+{{ super() }}
+{%- endblock -%}
+
+{%- block styles %}
+{{ super() }}
+{% asset 'matolabtheme/style' %}
+{% if config.get('ckanext.matolabtheme.dark_mode') %}
+{% asset 'matolabtheme/dark' %}
+{% endif %}
+{% endblock %}
+
+{% block links -%}
+      <link rel="shortcut icon" href="{{ h.url_for_static_or_external(config.get('ckanext.matolabtheme.favicon')) }}" />
+{% endblock -%}
+
+{% block bodytag %}
+{{ super() }}
+{% endblock %}
+
+{%- block scripts %}
+{{ super() }}
+{% asset 'matolabtheme/js' %}
+{% endblock %}
