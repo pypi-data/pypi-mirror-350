@@ -1,0 +1,50 @@
+[project]
+name = "swarmx"
+version = "0.6.1"
+authors = [
+    { name = "Tang Ziya", email = "tcztzy@gmail.Com" }
+]
+description = "A lightweight, stateless multi-agent orchestration framework."
+readme = "README.md"
+license = "MIT"
+dependencies = [
+    "jinja2",
+    "mcp",
+    "networkx",
+    "openai",
+    "pydantic",
+    "typer",
+]
+requires-python = ">=3.11"  # for asyncio.TaskGroup & except* syntax
+
+[project.scripts]
+swarmx = "swarmx:repl"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "prefligit",
+    "mcp-server-time>=0.6.2",
+    {include-group = "test"},
+]
+test = [
+    "tox>=4.26.0",
+    "pytest>=8.3.5",
+    "pytest-cov>=6.1.1",
+]
+
+[tool.ruff.lint]
+extend-select = ["I", "T20"]
+
+[tool.mypy]
+plugins = ['pydantic.mypy']
+
+[tool.pytest.ini_options]
+addopts = ["--cov=swarmx"]
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
