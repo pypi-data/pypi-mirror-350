@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+backend-path = ["."] # 明确指定后端路径
+
+
+[project]
+name = "base64mcp"
+version = "0.1.0-beta"
+description = "一个使用 FastMCP 实现的 Base64 编码和解码工具。"
+
+authors = [
+    { name = "quding", email = "niudear@foxmail.com" },
+]
+
+requires-python = ">=3.13"
+license = { text = "MIT" } # 或者您选择的其他许可证
+
+dependencies = [
+    "mcp[cli]>=1.9.1",
+    "wheel>=0.45.1",
+]
+
+# 详细分类，有助于在 PyPI 上被发现
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Utilities",
+]
+
+# 项目关键词
+keywords = ["base64", "mcp", "cli", "tool"]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/base64-mcp-tool" # 替换为您的项目主页
+Repository = "https://github.com/yourusername/base64-mcp-tool" # 替换为您的代码仓库
+
+# 定义命令行脚本
+# 这使得您在安装包后，可以直接运行 `base64-mcp` 命令
+# 或者使用 `uv run base64-mcp` (在项目环境中)
+[project.scripts]
+base64mcp = "base64mcp.main:main_cli"
