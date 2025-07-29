@@ -1,0 +1,54 @@
+Metadata-Version: 2.3
+Name: winfiletime
+Version: 2.1
+Summary: Win32 Filetime / Datetime conversion functions
+License: CC0-1.0
+Author: Jerome Leclanche
+Author-email: jerome@leclan.ch
+Requires-Python: >=3.7,<4.0
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: License :: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: System
+Project-URL: Repository, https://github.com/jleclanche/winfiletime
+Description-Content-Type: text/markdown
+
+# filetime.py
+
+A Python module to convert datetime to/from a
+[Win32 FILETIME structure](https://msdn.microsoft.com/en-us/library/windows/desktop/ms724284).
+
+[Reference algorithm](https://support.microsoft.com/en-us/help/167296)
+
+## Usage
+
+Install from PyPI: `pip install winfiletime`
+
+Example usage:
+
+```py
+import datetime
+import winfiletime
+
+# Convert a datetime to a filetime
+winfiletime.from_datetime(datetime.datetime(2009, 7, 25, 23, 0))
+# 128930364000000000
+
+# Convert a filetime to a datetime
+winfiletime.to_datetime(128930364000000000)
+# datetime.datetime(2009, 7, 25, 23, 0)
+```
+
+## License
+
+This project is hereby released in the Public Domain.
+See the `LICENSE` file for the full CC0 license text.
+
