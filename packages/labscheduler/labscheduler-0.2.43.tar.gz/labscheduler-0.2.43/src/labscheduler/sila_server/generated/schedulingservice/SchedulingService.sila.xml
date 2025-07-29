@@ -1,0 +1,412 @@
+<Feature xmlns="http://www.sila-standard.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Category="scheduling" FeatureVersion="1.0" MaturityLevel="Draft" Originator="de.unigreifswald.biochemie" SiLA2Version="1.0" xsi:schemaLocation="http://www.sila-standard.org https://gitlab.com/SiLA2/sila_base/raw/master/schema/FeatureDefinition.xsd">
+  <Identifier>SchedulingService</Identifier>
+  <DisplayName>Scheduling Service</DisplayName>
+  <Description>Provides an interface for the PythonLabOrchestrator or any other lab environment to interact with the
+    scheduling module. It provides an observable command to schedule a workflow(exact syntax explained in command).
+    You can choose between different algorithms as get their metadata.</Description>
+  <Command>
+    <Identifier>ComputeSchedule</Identifier>
+    <DisplayName>Compute Schedule</DisplayName>
+    <Description>Takes a workflow graph (see parameter description) and computes a schedule for the currently configured lab
+      environment(LabConfigurationController) with the currently selected algorithm.
+      You have to give the maximum computation time.</Description>
+    <Observable>Yes</Observable>
+    <Parameter>
+      <Identifier>WorkflowGraph</Identifier>
+      <DisplayName>Workflow Graph</DisplayName>
+      <Description>The workflow graph of an experiment in the required SiLA structure.</Description>
+      <DataType>
+        <DataTypeIdentifier>WorkflowGraph</DataTypeIdentifier>
+      </DataType>
+    </Parameter>
+    <Parameter>
+      <Identifier>MaxComputationTime</Identifier>
+      <DisplayName>Max Computation Time</DisplayName>
+      <Description>Maximum computation time in seconds</Description>
+      <DataType>
+        <Basic>Real</Basic>
+      </DataType>
+    </Parameter>
+    <Response>
+      <Identifier>Result</Identifier>
+      <DisplayName>Result</DisplayName>
+      <Description>Returns the computed schedule together with a string whether the schedule is optimal, feasible or infeasible.</Description>
+      <DataType>
+        <Structure>
+          <Element>
+            <Identifier>Schedule</Identifier>
+            <DisplayName>Schedule</DisplayName>
+            <Description>The computed schedule in the defined SiLA structure. The schedule is empty if no valid schedule was found.</Description>
+            <DataType>
+              <DataTypeIdentifier>Schedule</DataTypeIdentifier>
+            </DataType>
+          </Element>
+          <Element>
+            <Identifier>SolutionQuality</Identifier>
+            <DisplayName>Solution Quality</DisplayName>
+            <Description>A string indicating whether the found solution is optimal, feasible or infeasible</Description>
+            <DataType>
+              <Constrained>
+                <DataType>
+                  <Basic>String</Basic>
+                </DataType>
+                <Constraints>
+                  <Set>
+                    <Value>OPTIMAL</Value>
+                    <Value>FEASIBLE</Value>
+                    <Value>INFEASIBLE</Value>
+                  </Set>
+                </Constraints>
+              </Constrained>
+            </DataType>
+          </Element>
+        </Structure>
+      </DataType>
+    </Response>
+    <DefinedExecutionErrors>
+      <Identifier>ComputationError</Identifier>
+    </DefinedExecutionErrors>
+  </Command>
+  <Property>
+    <Identifier>AvailableAlgorithms</Identifier>
+    <DisplayName>Available Algorithms</DisplayName>
+    <Description>List of algorithm info for all available algorithms</Description>
+    <Observable>No</Observable>
+    <DataType>
+      <List>
+        <DataType>
+          <DataTypeIdentifier>AlgorithmMetaData</DataTypeIdentifier>
+        </DataType>
+      </List>
+    </DataType>
+  </Property>
+  <Command>
+    <Identifier>SelectAlgorithm</Identifier>
+    <DisplayName>Select Algorithm</DisplayName>
+    <Description>Selects the algorithm to be used in the ComputeSchedule command</Description>
+    <Observable>No</Observable>
+    <Parameter>
+      <Identifier>AlgorithmName</Identifier>
+      <DisplayName>Algorithm Name</DisplayName>
+      <Description>Name of the Algorithm</Description>
+      <DataType>
+        <Basic>String</Basic>
+      </DataType>
+    </Parameter>
+    <DefinedExecutionErrors>
+      <Identifier>MissingAlgorithmError</Identifier>
+    </DefinedExecutionErrors>
+  </Command>
+  <Property>
+    <Identifier>CurrentAlgorithm</Identifier>
+    <DisplayName>Current Algorithm</DisplayName>
+    <Description>The currently selected algorithm</Description>
+    <Observable>No</Observable>
+    <DataType>
+      <DataTypeIdentifier>AlgorithmMetaData</DataTypeIdentifier>
+    </DataType>
+  </Property>
+  <DataTypeDefinition>
+    <Identifier>AlgorithmMetaData</Identifier>
+    <DisplayName>Algorithm Meta Data</DisplayName>
+    <Description>Information on an algorithm: name, optimality, success guaranty, maximum problem size</Description>
+    <DataType>
+      <Structure>
+        <Element>
+          <Identifier>Name</Identifier>
+          <DisplayName>Name</DisplayName>
+          <Description>Name</Description>
+          <DataType>
+            <Basic>String</Basic>
+          </DataType>
+        </Element>
+        <Element>
+          <Identifier>IsOptimal</Identifier>
+          <DisplayName>Is Optimal</DisplayName>
+          <Description>whether solution is optimal</Description>
+          <DataType>
+            <Basic>Boolean</Basic>
+          </DataType>
+        </Element>
+        <Element>
+          <Identifier>SuccessGuaranty</Identifier>
+          <DisplayName>Success Guaranty</DisplayName>
+          <Description>Whether the algorithm always finds a solution</Description>
+          <DataType>
+            <Basic>Boolean</Basic>
+          </DataType>
+        </Element>
+        <Element>
+          <Identifier>MaxProblemSize</Identifier>
+          <DisplayName>Max Problem Size</DisplayName>
+          <Description>Recommended maximum problem size</Description>
+          <DataType>
+            <Basic>Integer</Basic>
+          </DataType>
+        </Element>
+      </Structure>
+    </DataType>
+  </DataTypeDefinition>
+  <DataTypeDefinition>
+    <Identifier>WorkflowGraph</Identifier>
+    <DisplayName>Workflow Graph</DisplayName>
+    <Description>The workflow graph of an experiment as list of nodes and edges with attributes</Description>
+    <DataType>
+      <Structure>
+        <Element>
+          <Identifier>Nodes</Identifier>
+          <DisplayName>Nodes</DisplayName>
+          <Description>The nodes of the wfg corresponding to process steps</Description>
+          <DataType>
+            <List>
+              <DataType>
+                <DataTypeIdentifier>Node</DataTypeIdentifier>
+              </DataType>
+            </List>
+          </DataType>
+        </Element>
+        <Element>
+          <Identifier>Edges</Identifier>
+          <DisplayName>Edges</DisplayName>
+          <Description>The edges of the wfg corresponding to precedence constraints</Description>
+          <DataType>
+            <List>
+              <DataType>
+                <DataTypeIdentifier>Edge</DataTypeIdentifier>
+              </DataType>
+            </List>
+          </DataType>
+        </Element>
+      </Structure>
+    </DataType>
+  </DataTypeDefinition>
+  <DataTypeDefinition>
+    <Identifier>Node</Identifier>
+    <DisplayName>Node</DisplayName>
+    <Description>Node</Description>
+    <DataType>
+      <Structure>
+        <Element>
+          <Identifier>Idx</Identifier>
+          <DisplayName>Idx</DisplayName>
+          <Description>Idx</Description>
+          <DataType>
+            <Basic>String</Basic>
+          </DataType>
+        </Element>
+        <Element>
+          <Identifier>Duration</Identifier>
+          <DisplayName>Duration</DisplayName>
+          <Description>Duration</Description>
+          <DataType>
+            <Basic>Real</Basic>
+          </DataType>
+        </Element>
+        <Element>
+          <Identifier>RequiredResources</Identifier>
+          <DisplayName>RequiredResources</DisplayName>
+          <Description>RequiredResources</Description>
+          <DataType>
+            <List>
+              <DataType>
+                <DataTypeIdentifier>RequiredResource</DataTypeIdentifier>
+              </DataType>
+            </List>
+          </DataType>
+        </Element>
+        <Element>
+          <Identifier>StartTime</Identifier>
+          <DisplayName>Start Time</DisplayName>
+          <Description>This must be the starting time of the process step converted to string or 'None' is the step has not stated
+            , yet.</Description>
+          <DataType>
+            <Basic>String</Basic>
+          </DataType>
+        </Element>
+        <Element>
+          <Identifier>Finish</Identifier>
+          <DisplayName>Finish</DisplayName>
+          <Description>This must be the finish time of the process step converted to string or 'None' is the step has not stated
+            , yet.</Description>
+          <DataType>
+            <Basic>String</Basic>
+          </DataType>
+        </Element>
+        <Element>
+          <Identifier>WaitToStartCost</Identifier>
+          <DisplayName>Wait To Start Cost</DisplayName>
+          <Description>Costs for waiting time before this step is started</Description>
+          <DataType>
+            <Basic>Real</Basic>
+          </DataType>
+        </Element>
+      </Structure>
+    </DataType>
+  </DataTypeDefinition>
+  <DataTypeDefinition>
+    <Identifier>RequiredResource</Identifier>
+    <DisplayName>RequiredResource</DisplayName>
+    <Description>RequiredResource</Description>
+    <DataType>
+      <Structure>
+        <Element>
+          <Identifier>Type</Identifier>
+          <DisplayName>Type</DisplayName>
+          <Description>Type</Description>
+          <DataType>
+            <Basic>String</Basic>
+          </DataType>
+        </Element>
+        <Element>
+          <Identifier>Tag</Identifier>
+          <DisplayName>Tag</DisplayName>
+          <Description>Tag</Description>
+          <!--&amp;gt;todo: better explaination &amp;lt;-->
+          <DataType>
+            <Basic>String</Basic>
+          </DataType>
+        </Element>
+        <Element>
+          <Identifier>Preferred</Identifier>
+          <DisplayName>Preferred</DisplayName>
+          <Description>Preferred</Description>
+          <DataType>
+            <Basic>String</Basic>
+          </DataType>
+        </Element>
+      </Structure>
+    </DataType>
+  </DataTypeDefinition>
+  <DataTypeDefinition>
+    <Identifier>Edge</Identifier>
+    <DisplayName>Edge</DisplayName>
+    <Description>Edge</Description>
+    <DataType>
+      <Structure>
+        <Element>
+          <Identifier>Head</Identifier>
+          <DisplayName>Head</DisplayName>
+          <Description>Head</Description>
+          <DataType>
+            <Basic>String</Basic>
+          </DataType>
+        </Element>
+        <Element>
+          <Identifier>Tail</Identifier>
+          <DisplayName>Tail</DisplayName>
+          <Description>Tail</Description>
+          <DataType>
+            <Basic>String</Basic>
+          </DataType>
+        </Element>
+        <Element>
+          <Identifier>WaitCost</Identifier>
+          <DisplayName>Wait Cost</DisplayName>
+          <Description>Wait Cost</Description>
+          <DataType>
+            <Basic>Real</Basic>
+          </DataType>
+        </Element>
+        <Element>
+          <Identifier>MaxWaitingTime</Identifier>
+          <DisplayName>Max Waiting Time</DisplayName>
+          <Description>Max Waiting Time</Description>
+          <DataType>
+            <Basic>Real</Basic>
+          </DataType>
+        </Element>
+        <Element>
+          <Identifier>MinWaitingTime</Identifier>
+          <DisplayName>Min Waiting Time</DisplayName>
+          <Description>Min Waiting Time</Description>
+          <DataType>
+            <Basic>Real</Basic>
+          </DataType>
+        </Element>
+      </Structure>
+    </DataType>
+  </DataTypeDefinition>
+  <DataTypeDefinition>
+    <Identifier>Schedule</Identifier>
+    <DisplayName>Schedule</DisplayName>
+    <Description>An Assignment of starting times and executing resources for each process step</Description>
+    <DataType>
+      <List>
+        <DataType>
+          <Structure>
+            <Element>
+              <Identifier>ProcessStepId</Identifier>
+              <DisplayName>ProcessStep Id</DisplayName>
+              <Description>Process Step Id</Description>
+              <DataType>
+                <Basic>String</Basic>
+              </DataType>
+            </Element>
+            <Element>
+              <Identifier>StartTime</Identifier>
+              <DisplayName>Start Time</DisplayName>
+              <Description>Start Time</Description>
+              <DataType>
+                <Basic>Timestamp</Basic>
+              </DataType>
+            </Element>
+            <Element>
+              <Identifier>MachinePrecedences</Identifier>
+              <DisplayName>Machine Precedences</DisplayName>
+              <Description>List of ids of process step, that have to finish before starting this step because
+                of machine capacity constraints</Description>
+              <DataType>
+                <List>
+                  <DataType>
+                    <Basic>String</Basic>
+                  </DataType>
+                </List>
+              </DataType>
+            </Element>
+            <Element>
+              <Identifier>AssignedMachines</Identifier>
+              <DisplayName>AssignedMachines</DisplayName>
+              <Description>List of machine assignments. Each assignment is a tuple (requirement tag, machine name).
+                The requirement tag is the same as given in the workflow graph in machine requirements.</Description>
+              <DataType>
+                <List>
+                  <DataType>
+                    <Structure>
+                      <Element>
+                        <Identifier>Tag</Identifier>
+                        <DisplayName>Tag</DisplayName>
+                        <Description>Tag</Description>
+                        <!--&amp;gt;todo: better explaination &amp;lt;-->
+                        <DataType>
+                          <Basic>String</Basic>
+                        </DataType>
+                      </Element>
+                      <Element>
+                        <Identifier>MachineName</Identifier>
+                        <DisplayName>Machine Name</DisplayName>
+                        <Description>Machine Name</Description>
+                        <DataType>
+                          <Basic>String</Basic>
+                        </DataType>
+                      </Element>
+                    </Structure>
+                  </DataType>
+                </List>
+              </DataType>
+            </Element>
+          </Structure>
+        </DataType>
+      </List>
+    </DataType>
+  </DataTypeDefinition>
+  <DefinedExecutionError>
+    <Identifier>MissingAlgorithmError</Identifier>
+    <DisplayName>Algorithm Not Available</DisplayName>
+    <Description>This algorithm either does not exist or is not available</Description>
+  </DefinedExecutionError>
+  <DefinedExecutionError>
+    <Identifier>ComputationError</Identifier>
+    <DisplayName>Computation Failed</DisplayName>
+    <Description>The scheduler failed to compute a schedule.</Description>
+  </DefinedExecutionError>
+</Feature>

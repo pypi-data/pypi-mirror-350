@@ -1,0 +1,135 @@
+syntax = "proto3";
+
+import "SiLAFramework.proto";
+
+package sila2.de.unigreifswald.biochemie.scheduling.schedulingservice.v1;
+
+/* Provides an interface for the PythonLabOrchestrator or any other lab environment to interact with the scheduling module. It provides an observable command to schedule a workflow(exact syntax explained in command). You can choose between different algorithms as get their metadata. */
+service SchedulingService {
+  /* Takes a workflow graph (see parameter description) and computes a schedule for the currently configured lab
+      environment(LabConfigurationController) with the currently selected algorithm.
+      You have to give the maximum computation time. */
+  rpc ComputeSchedule (sila2.de.unigreifswald.biochemie.scheduling.schedulingservice.v1.ComputeSchedule_Parameters) returns (sila2.org.silastandard.CommandConfirmation) {}
+  /* Monitor the state of ComputeSchedule */
+  rpc ComputeSchedule_Info (sila2.org.silastandard.CommandExecutionUUID) returns (stream sila2.org.silastandard.ExecutionInfo) {}
+  /* Retrieve result of ComputeSchedule */
+  rpc ComputeSchedule_Result(sila2.org.silastandard.CommandExecutionUUID) returns (sila2.de.unigreifswald.biochemie.scheduling.schedulingservice.v1.ComputeSchedule_Responses) {}
+  /* Selects the algorithm to be used in the ComputeSchedule command */
+  rpc SelectAlgorithm (sila2.de.unigreifswald.biochemie.scheduling.schedulingservice.v1.SelectAlgorithm_Parameters) returns (sila2.de.unigreifswald.biochemie.scheduling.schedulingservice.v1.SelectAlgorithm_Responses) {}
+  /* List of algorithm info for all available algorithms */
+  rpc Get_AvailableAlgorithms (sila2.de.unigreifswald.biochemie.scheduling.schedulingservice.v1.Get_AvailableAlgorithms_Parameters) returns (sila2.de.unigreifswald.biochemie.scheduling.schedulingservice.v1.Get_AvailableAlgorithms_Responses) {}
+  /* The currently selected algorithm */
+  rpc Get_CurrentAlgorithm (sila2.de.unigreifswald.biochemie.scheduling.schedulingservice.v1.Get_CurrentAlgorithm_Parameters) returns (sila2.de.unigreifswald.biochemie.scheduling.schedulingservice.v1.Get_CurrentAlgorithm_Responses) {}
+}
+
+/* Information on an algorithm: name, optimality, success guaranty, maximum problem size */
+message DataType_AlgorithmMetaData {
+  message AlgorithmMetaData_Struct {
+    sila2.org.silastandard.String Name = 1;  /* Name */
+    sila2.org.silastandard.Boolean IsOptimal = 2;  /* whether solution is optimal */
+    sila2.org.silastandard.Boolean SuccessGuaranty = 3;  /* Whether the algorithm always finds a solution */
+    sila2.org.silastandard.Integer MaxProblemSize = 4;  /* Recommended maximum problem size */
+  }
+  sila2.de.unigreifswald.biochemie.scheduling.schedulingservice.v1.DataType_AlgorithmMetaData.AlgorithmMetaData_Struct AlgorithmMetaData = 1;  /* Information on an algorithm: name, optimality, success guaranty, maximum problem size */
+}
+
+/* The workflow graph of an experiment as list of nodes and edges with attributes */
+message DataType_WorkflowGraph {
+  message WorkflowGraph_Struct {
+    repeated sila2.de.unigreifswald.biochemie.scheduling.schedulingservice.v1.DataType_Node Nodes = 1;  /* The nodes of the wfg corresponding to process steps */
+    repeated sila2.de.unigreifswald.biochemie.scheduling.schedulingservice.v1.DataType_Edge Edges = 2;  /* The edges of the wfg corresponding to precedence constraints */
+  }
+  sila2.de.unigreifswald.biochemie.scheduling.schedulingservice.v1.DataType_WorkflowGraph.WorkflowGraph_Struct WorkflowGraph = 1;  /* The workflow graph of an experiment as list of nodes and edges with attributes */
+}
+
+/* Node */
+message DataType_Node {
+  message Node_Struct {
+    sila2.org.silastandard.String Idx = 1;  /* Idx */
+    sila2.org.silastandard.Real Duration = 2;  /* Duration */
+    repeated sila2.de.unigreifswald.biochemie.scheduling.schedulingservice.v1.DataType_RequiredResource RequiredResources = 3;  /* RequiredResources */
+    sila2.org.silastandard.String StartTime = 4;  /* This must be the starting time of the process step converted to string or 'None' is the step has not stated , yet. */
+    sila2.org.silastandard.String Finish = 5;  /* This must be the finish time of the process step converted to string or 'None' is the step has not stated , yet. */
+    sila2.org.silastandard.Real WaitToStartCost = 6;  /* Costs for waiting time before this step is started */
+  }
+  sila2.de.unigreifswald.biochemie.scheduling.schedulingservice.v1.DataType_Node.Node_Struct Node = 1;  /* Node */
+}
+
+/* RequiredResource */
+message DataType_RequiredResource {
+  message RequiredResource_Struct {
+    sila2.org.silastandard.String Type = 1;  /* Type */
+    sila2.org.silastandard.String Tag = 2;  /* Tag */
+    sila2.org.silastandard.String Preferred = 3;  /* Preferred */
+  }
+  sila2.de.unigreifswald.biochemie.scheduling.schedulingservice.v1.DataType_RequiredResource.RequiredResource_Struct RequiredResource = 1;  /* RequiredResource */
+}
+
+/* Edge */
+message DataType_Edge {
+  message Edge_Struct {
+    sila2.org.silastandard.String Head = 1;  /* Head */
+    sila2.org.silastandard.String Tail = 2;  /* Tail */
+    sila2.org.silastandard.Real WaitCost = 3;  /* Wait Cost */
+    sila2.org.silastandard.Real MaxWaitingTime = 4;  /* Max Waiting Time */
+    sila2.org.silastandard.Real MinWaitingTime = 5;  /* Min Waiting Time */
+  }
+  sila2.de.unigreifswald.biochemie.scheduling.schedulingservice.v1.DataType_Edge.Edge_Struct Edge = 1;  /* Edge */
+}
+
+/* An Assignment of starting times and executing resources for each process step */
+message DataType_Schedule {
+  message Schedule_Struct {
+    message AssignedMachines_Struct {
+      sila2.org.silastandard.String Tag = 1;  /* Tag */
+      sila2.org.silastandard.String MachineName = 2;  /* Machine Name */
+    }
+    sila2.org.silastandard.String ProcessStepId = 1;  /* Process Step Id */
+    sila2.org.silastandard.Timestamp StartTime = 2;  /* Start Time */
+    repeated sila2.org.silastandard.String MachinePrecedences = 3;  /* List of ids of process step, that have to finish before starting this step because of machine capacity constraints */
+    repeated sila2.de.unigreifswald.biochemie.scheduling.schedulingservice.v1.DataType_Schedule.Schedule_Struct.AssignedMachines_Struct AssignedMachines = 4;  /* List of machine assignments. Each assignment is a tuple (requirement tag, machine name). The requirement tag is the same as given in the workflow graph in machine requirements. */
+  }
+  repeated sila2.de.unigreifswald.biochemie.scheduling.schedulingservice.v1.DataType_Schedule.Schedule_Struct Schedule = 1;  /* An Assignment of starting times and executing resources for each process step */
+}
+
+/* Parameters for ComputeSchedule */
+message ComputeSchedule_Parameters {
+  sila2.de.unigreifswald.biochemie.scheduling.schedulingservice.v1.DataType_WorkflowGraph WorkflowGraph = 1;  /* The workflow graph of an experiment in the required SiLA structure. */
+  sila2.org.silastandard.Real MaxComputationTime = 2;  /* Maximum computation time in seconds */
+}
+
+/* Responses of ComputeSchedule */
+message ComputeSchedule_Responses {
+  message Result_Struct {
+    sila2.de.unigreifswald.biochemie.scheduling.schedulingservice.v1.DataType_Schedule Schedule = 1;  /* The computed schedule in the defined SiLA structure. The schedule is empty if no valid schedule was found. */
+    sila2.org.silastandard.String SolutionQuality = 2;  /* A string indicating whether the found solution is optimal, feasible or infeasible */
+  }
+  sila2.de.unigreifswald.biochemie.scheduling.schedulingservice.v1.ComputeSchedule_Responses.Result_Struct Result = 1;  /* Returns the computed schedule together with a string whether the schedule is optimal, feasible or infeasible. */
+}
+
+/* Parameters for SelectAlgorithm */
+message SelectAlgorithm_Parameters {
+  sila2.org.silastandard.String AlgorithmName = 1;  /* Name of the Algorithm */
+}
+
+/* Responses of SelectAlgorithm */
+message SelectAlgorithm_Responses {
+}
+
+/* Parameters for AvailableAlgorithms */
+message Get_AvailableAlgorithms_Parameters {
+}
+
+/* Responses of AvailableAlgorithms */
+message Get_AvailableAlgorithms_Responses {
+  repeated sila2.de.unigreifswald.biochemie.scheduling.schedulingservice.v1.DataType_AlgorithmMetaData AvailableAlgorithms = 1;  /* List of algorithm info for all available algorithms */
+}
+
+/* Parameters for CurrentAlgorithm */
+message Get_CurrentAlgorithm_Parameters {
+}
+
+/* Responses of CurrentAlgorithm */
+message Get_CurrentAlgorithm_Responses {
+  sila2.de.unigreifswald.biochemie.scheduling.schedulingservice.v1.DataType_AlgorithmMetaData CurrentAlgorithm = 1;  /* The currently selected algorithm */
+}
