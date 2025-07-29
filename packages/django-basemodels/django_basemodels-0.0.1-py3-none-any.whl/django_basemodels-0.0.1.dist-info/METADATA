@@ -1,0 +1,151 @@
+Metadata-Version: 2.4
+Name: django-basemodels
+Version: 0.0.1
+Classifier: Framework :: Django
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: Django>=5.0
+Requires-Dist: django-polymorphic>=4.1
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: requires-dist
+Dynamic: requires-python
+
+# Django Base Models
+
+Пакет предоставляет базовые модели и менеджеры для Django, включая расширенную функциональность для работы с активностью объектов и полиморфизмом.
+
+## Особенности
+
+- **Автоматические временные метки**  
+  Автоматическое обновление полей `created_at` и `updated_at`
+- **Управление активностью**  
+  Гибкая система активации/деактивации объектов с временными рамками
+- **Полиморфные менеджеры**  
+  Поддержка django-polymorphic через кастомные QuerySet
+- **Валидация активности**  
+  Проверка корректности временных интервалов активности
+- **Локализация**  
+  Готовые переводы для русскоязычных проектов
+
+## Установка
+
+1. Установите пакет: 
+```console
+  pip install sp-django-basemodels django-polymorphic
+```
+2. Добавьте в settings.py:
+```python 
+INSTALLED_APPS = [ 
+   ... 
+   'polymorphic', 
+   'sp_basemodels',
+]
+```
+
+## Требования
+- Python >= 3.10
+- Django >= 5.0
+- django-polymorphic >= 4.1
+
+## Использование
+### Базовые модели
+
+```python
+from sp_basemodels import BaseModel
+
+class Article(BaseModel):
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+
+# Автоматически заполняет created_at/updated_at
+article = Article.objects.create(title="Hello World")
+print(article.created_at)  # 2024-02-20 14:30:00+00:00
+```
+
+### ActiveOrNotModel
+
+```python
+from sp_basemodels import ActiveOrNotModel
+
+class Product(ActiveOrNotModel):
+    name = models.CharField(max_length=100)
+
+# Фильтрация по активности
+active_products = Product.objects.active()
+inactive_products = Product.objects.inactive()
+
+# Управление активностью
+product.activate()  # Устанавливает is_active=True
+product.deactivate()  # Устанавливает is_active=False
+```
+
+### Комбинированная модель
+```python
+from sp_basemodels import BaseActiveOrNotModel
+
+class UserProfile(BaseActiveOrNotModel):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    bio = models.TextField()
+```
+
+### Полиморфные модели
+```python
+from polymorphic.models import PolymorphicModel
+from sp_basemodels import BaseActiveOrNotModel
+from sp_basemodels import PolymorphicBaseActiveOrNotQuerySet
+
+class ContentBlock(PolymorphicModel, BaseActiveOrNotModel):
+    objects = PolymorphicBaseActiveOrNotQuerySet.as_manager()
+
+class TextBlock(ContentBlock):
+    content = models.TextField()
+
+class ImageBlock(ContentBlock):
+    image = models.ImageField(upload_to='images/')
+```
+## Менеджеры запросов
+### Основные методы
+```python
+# Обновление с автоматическим обновлением updated_at
+Article.objects.filter(pk=1).update(title="New Title")
+
+# Фильтрация по активности
+Product.objects.active().filter(price__lt=100)
+Product.objects.inactive()
+
+# Пакетное управление активностью
+Product.objects.filter(category='old').deactivate()
+```
+
+### Кастомные QuerySet
+```python
+from sp_basemodels import BaseActiveOrNotQuerySet
+
+class CustomQuerySet(BaseActiveOrNotQuerySet):
+    def featured(self):
+        return self.filter(featured=True, is_active=True)
+
+class Event(models.Model):
+    objects = CustomQuerySet.as_manager()
+```
+
+## Локализация
+Пакет включает русскоязычные переводы. Для использования добавьте в settings.py:
+
+```python
+LANGUAGE_CODE = 'ru'
+```
+
+## Системные проверки
+При запуске проекта будут проверены:
+- Наличие 'polymorphic' в INSTALLED_APPS
+- Корректность порядка полей активности
+
+## Лицензия
+MIT License.
+
+## Authors
+- [@skulap](https://github.com/skulap)
