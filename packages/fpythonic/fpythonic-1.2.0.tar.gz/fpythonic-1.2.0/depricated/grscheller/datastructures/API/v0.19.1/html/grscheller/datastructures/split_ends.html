@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.1">
+<title>grscheller.datastructures.split_ends API documentation</title>
+<meta name="description" content="Module of LIFO stacks that can safely share immutable data between themselves.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+})</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>grscheller.datastructures.split_ends</code></h1>
+</header>
+<section id="section-intro">
+<p>Module of LIFO stacks that can safely share immutable data between themselves.</p>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="grscheller.datastructures.split_ends.SplitEnd"><code class="flex name class">
+<span>class <span class="ident">SplitEnd</span></span>
+<span>(</span><span>*ds: _T)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Class implementing a stack type data structures called a "split end".</p>
+<ul>
+<li>each "split end" is a very simple LIFO stateful data structure</li>
+<li>contains a count of nodes &amp; reference to first node of a linked list</li>
+<li>different "split ends" can safely share the same "tail"</li>
+<li>each "split end" sees itself as a singularly linked list</li>
+<li>bush-like datastructures can be formed using multiple "split ends"</li>
+</ul>
+<p>Construct a LIFO Stack</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class SplitEnd(Generic[_T]):
+    &#34;&#34;&#34;Class implementing a stack type data structures called a &#34;split end&#34;.
+
+    * each &#34;split end&#34; is a very simple LIFO stateful data structure
+    * contains a count of nodes &amp; reference to first node of a linked list
+    * different &#34;split ends&#34; can safely share the same &#34;tail&#34;
+    * each &#34;split end&#34; sees itself as a singularly linked list
+    * bush-like datastructures can be formed using multiple &#34;split ends&#34;
+
+    &#34;&#34;&#34;
+    __slots__ = &#39;_head&#39;, &#39;_count&#39;
+
+    def __init__(self, *ds: _T):
+        &#34;&#34;&#34;Construct a LIFO Stack&#34;&#34;&#34;
+        self._head: Optional[Node[_T]] = None
+        self._count: int = 0
+        for d in ds:
+            node: Node[_T] = Node(d, self._head)
+            self._head = node
+            self._count += 1
+
+    def __iter__(self) -&gt; Iterator[_T]:
+        &#34;&#34;&#34;Iterator yielding data stored on the stack, starting at the head&#34;&#34;&#34;
+        node = self._head
+        while node:
+            yield node._data
+            node = node._next
+
+    def __reversed__(self) -&gt; Iterator[_T]:
+        &#34;&#34;&#34;Reverse iterate over the contents of the stack&#34;&#34;&#34;
+        return reversed(CircularArray(*self))
+
+    def __repr__(self) -&gt; str:
+        return f&#39;{self.__class__.__name__}(&#39; + &#39;, &#39;.join(map(repr, reversed(self))) + &#39;)&#39;
+
+    def __str__(self) -&gt; str:
+        &#34;&#34;&#34;Display the data in the `Stack,` left to right starting at bottom.&#34;&#34;&#34;
+        return &#39;&gt;&lt; &#39; + &#39; &lt;- &#39;.join(CircularArray(*self).map(str)) + &#39; ||&#39;
+
+    def __bool__(self) -&gt; bool:
+        &#34;&#34;&#34;Returns true if stack is not empty&#34;&#34;&#34;
+        return self._count &gt; 0
+
+    def __len__(self) -&gt; int:
+        return self._count
+
+    def __eq__(self, other: object) -&gt; bool:
+        if not isinstance(other, type(self)):
+            return False
+
+        if self._count != other._count:
+            return False
+
+        left = self._head
+        right = other._head
+        nn = self._count
+        while nn &gt; 0:
+            if left is right:
+                return True
+            if left is None or right is None:
+                return True
+            if left._data != right._data:
+                return False
+            left = left._next
+            right = right._next
+            nn -= 1
+        return True
+
+    def copy(self) -&gt; SplitEnd[_T]:
+        &#34;&#34;&#34;Return a copy of a `Stack` in O(1) space &amp; time complexity.&#34;&#34;&#34;
+        stack: SplitEnd[_T] = SplitEnd()
+        stack._head, stack._count = self._head, self._count
+        return stack
+
+    def reverse(self) -&gt; SplitEnd[_T]:
+        &#34;&#34;&#34;Return shallow reversed copy of a SplitEnd.
+
+        * Returns a new `Stack` object with shallow copied new data
+        * creates all new nodes
+        * O(1) space &amp; time complexity
+
+        &#34;&#34;&#34;
+        return SplitEnd(*self)
+
+    def push(self, *ds: Optional[_T]) -&gt; None:
+        &#34;&#34;&#34;Push data onto top of the SplitEnd.&#34;&#34;&#34;
+        for d in ds:
+            if d is not None:
+                node = Node(d, self._head)
+                self._head, self._count = node, self._count+1
+
+    def pop(self, default: Optional[_T]=None) -&gt; Optional[_T]:
+        &#34;&#34;&#34;Pop data off of top of the SplitEnd.&#34;&#34;&#34;
+        if self._head is None:
+            return None
+        else:
+            data = self._head._data
+            self._head, self._count = self._head._next, self._count-1
+            return data
+
+    def peak(self, default: Optional[_T]=None) -&gt; Optional[_T]:
+        &#34;&#34;&#34;Returns the data at the top of the SplitEnd.
+
+        * does not consume the data
+        * if Stack empty, data does not exist, so in that case return default
+
+        &#34;&#34;&#34;
+        if self._head is None:
+            return default
+        return self._head._data
+
+    def head(self, default: Optional[_T]=None) -&gt; Optional[_T]:
+        &#34;&#34;&#34;Returns the data at the top of the SplitEnd.
+
+        * does not consume the data
+        * for an empty SplitEnd, head does not exist, so return default.
+
+        &#34;&#34;&#34;
+        if self._head is None:
+            return default
+        return self._head._data
+
+    def tail(self) -&gt; SplitEnd[_T]:
+        &#34;&#34;&#34;Return tail of the SplitEnd.
+
+        * if SplitEnd is empty, tail does not exist, so return an empty SplitEnd
+
+        &#34;&#34;&#34;
+        if self._head:
+            fstack: SplitEnd[_T] = SplitEnd()
+            fstack._head = self._head._next
+            fstack._count = self._count - 1
+            return fstack
+        else:
+            return SplitEnd()
+
+    def cons(self, d: _T) -&gt; SplitEnd[_T]:
+        &#34;&#34;&#34;Return a new `FStack` with data as head and self as tail.
+
+        Constructing an `FStack` using a non-existent value as head results in
+        a non-existent `FStack`. In that case, return a copy of the `FStack`.
+
+        &#34;&#34;&#34;
+        if d is not None:
+            stack: SplitEnd[_T] = SplitEnd()
+            stack._head = Node(d, self._head)
+            stack._count = self._count + 1
+            return stack
+        else:
+            return self.copy()
+
+    def fold(self, f:Callable[[_T, _T], _T]) -&gt; Optional[_T]:
+        &#34;&#34;&#34;Reduce with f.
+
+        * returns a value of the of type _T if self is not empty
+        * returns None if self is empty
+        * folds in natural LIFO Order
+        &#34;&#34;&#34;
+        node: Optional[Node[_T]] = self._head
+        if not node:
+            return None
+        acc: _T = node._data
+        while node:
+            if (node := node._next) is None:
+                break
+            acc = f(acc, node._data)
+        return acc
+
+    def fold1(self, f:Callable[[_S, _T], _S], s: _S) -&gt; _S:
+        &#34;&#34;&#34;Reduce with f.
+
+        * returns a value of the of type _S
+        * type _S can be same type as _T
+        * folds in natural LIFO Order
+        &#34;&#34;&#34;
+        node: Optional[Node[_T]] = self._head
+        if not node:
+            return s
+        acc: _S = s
+        while node:
+            acc = f(acc, node._data)
+            node = node._next
+        return acc
+
+    def map(self, f: Callable[[_T], _S]) -&gt; SplitEnd[_S]:
+        &#34;&#34;&#34;Maps a function (or callable object) over the values on the `Stack`.
+
+        * TODO: Redo in &#34;natural&#34; order?
+        * Returns a new `Stack` object with shallow copied new data
+        * O(n) complexity
+
+        &#34;&#34;&#34;
+        return SplitEnd(*map(f, reversed(self)))
+
+    def flatMap(self, f: Callable[[_T], SplitEnd[_S]]) -&gt; SplitEnd[_S]:
+        &#34;&#34;&#34;Monadically bind `f` to the `FStack` sequentially&#34;&#34;&#34;
+        return SplitEnd(*concat(*map(reversed, map(f, reversed(self)))))
+
+    def mergeMap(self, f: Callable[[_T], SplitEnd[_S]]) -&gt; SplitEnd[_S]:
+        &#34;&#34;&#34;Monadically bind f to the `FStack` sequentially until first exhausted&#34;&#34;&#34;
+        return SplitEnd(*merge(*map(reversed, map(f, reversed(self)))))
+
+    def exhaustMap(self, f: Callable[[_T], SplitEnd[_S]]) -&gt; SplitEnd[_S]:
+        &#34;&#34;&#34;Monadically bind f to the `FStack` merging until all exhausted&#34;&#34;&#34;
+        return SplitEnd(*exhaust(*map(reversed, map(f, reversed(self)))))</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>typing.Generic</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="grscheller.datastructures.split_ends.SplitEnd.cons"><code class="name flex">
+<span>def <span class="ident">cons</span></span>(<span>self, d: _T) ‑> <a title="grscheller.datastructures.split_ends.SplitEnd" href="#grscheller.datastructures.split_ends.SplitEnd">SplitEnd</a>[_T]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return a new <code>FStack</code> with data as head and self as tail.</p>
+<p>Constructing an <code>FStack</code> using a non-existent value as head results in
+a non-existent <code>FStack</code>. In that case, return a copy of the <code>FStack</code>.</p></div>
+</dd>
+<dt id="grscheller.datastructures.split_ends.SplitEnd.copy"><code class="name flex">
+<span>def <span class="ident">copy</span></span>(<span>self) ‑> <a title="grscheller.datastructures.split_ends.SplitEnd" href="#grscheller.datastructures.split_ends.SplitEnd">SplitEnd</a>[_T]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return a copy of a <code>Stack</code> in O(1) space &amp; time complexity.</p></div>
+</dd>
+<dt id="grscheller.datastructures.split_ends.SplitEnd.exhaustMap"><code class="name flex">
+<span>def <span class="ident">exhaustMap</span></span>(<span>self, f: Callable[[_T], <a title="grscheller.datastructures.split_ends.SplitEnd" href="#grscheller.datastructures.split_ends.SplitEnd">SplitEnd</a>[_S]]) ‑> <a title="grscheller.datastructures.split_ends.SplitEnd" href="#grscheller.datastructures.split_ends.SplitEnd">SplitEnd</a>[_S]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Monadically bind f to the <code>FStack</code> merging until all exhausted</p></div>
+</dd>
+<dt id="grscheller.datastructures.split_ends.SplitEnd.flatMap"><code class="name flex">
+<span>def <span class="ident">flatMap</span></span>(<span>self, f: Callable[[_T], <a title="grscheller.datastructures.split_ends.SplitEnd" href="#grscheller.datastructures.split_ends.SplitEnd">SplitEnd</a>[_S]]) ‑> <a title="grscheller.datastructures.split_ends.SplitEnd" href="#grscheller.datastructures.split_ends.SplitEnd">SplitEnd</a>[_S]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Monadically bind <code>f</code> to the <code>FStack</code> sequentially</p></div>
+</dd>
+<dt id="grscheller.datastructures.split_ends.SplitEnd.fold"><code class="name flex">
+<span>def <span class="ident">fold</span></span>(<span>self, f: Callable[[_T, _T], _T]) ‑> Optional[_T]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Reduce with f.</p>
+<ul>
+<li>returns a value of the of type _T if self is not empty</li>
+<li>returns None if self is empty</li>
+<li>folds in natural LIFO Order</li>
+</ul></div>
+</dd>
+<dt id="grscheller.datastructures.split_ends.SplitEnd.fold1"><code class="name flex">
+<span>def <span class="ident">fold1</span></span>(<span>self, f: Callable[[_S, _T], _S], s: _S) ‑> _S</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Reduce with f.</p>
+<ul>
+<li>returns a value of the of type _S</li>
+<li>type _S can be same type as _T</li>
+<li>folds in natural LIFO Order</li>
+</ul></div>
+</dd>
+<dt id="grscheller.datastructures.split_ends.SplitEnd.head"><code class="name flex">
+<span>def <span class="ident">head</span></span>(<span>self, default: Optional[_T] = None) ‑> Optional[_T]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the data at the top of the SplitEnd.</p>
+<ul>
+<li>does not consume the data</li>
+<li>for an empty SplitEnd, head does not exist, so return default.</li>
+</ul></div>
+</dd>
+<dt id="grscheller.datastructures.split_ends.SplitEnd.map"><code class="name flex">
+<span>def <span class="ident">map</span></span>(<span>self, f: Callable[[_T], _S]) ‑> <a title="grscheller.datastructures.split_ends.SplitEnd" href="#grscheller.datastructures.split_ends.SplitEnd">SplitEnd</a>[_S]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Maps a function (or callable object) over the values on the <code>Stack</code>.</p>
+<ul>
+<li>TODO: Redo in "natural" order?</li>
+<li>Returns a new <code>Stack</code> object with shallow copied new data</li>
+<li>O(n) complexity</li>
+</ul></div>
+</dd>
+<dt id="grscheller.datastructures.split_ends.SplitEnd.mergeMap"><code class="name flex">
+<span>def <span class="ident">mergeMap</span></span>(<span>self, f: Callable[[_T], <a title="grscheller.datastructures.split_ends.SplitEnd" href="#grscheller.datastructures.split_ends.SplitEnd">SplitEnd</a>[_S]]) ‑> <a title="grscheller.datastructures.split_ends.SplitEnd" href="#grscheller.datastructures.split_ends.SplitEnd">SplitEnd</a>[_S]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Monadically bind f to the <code>FStack</code> sequentially until first exhausted</p></div>
+</dd>
+<dt id="grscheller.datastructures.split_ends.SplitEnd.peak"><code class="name flex">
+<span>def <span class="ident">peak</span></span>(<span>self, default: Optional[_T] = None) ‑> Optional[_T]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the data at the top of the SplitEnd.</p>
+<ul>
+<li>does not consume the data</li>
+<li>if Stack empty, data does not exist, so in that case return default</li>
+</ul></div>
+</dd>
+<dt id="grscheller.datastructures.split_ends.SplitEnd.pop"><code class="name flex">
+<span>def <span class="ident">pop</span></span>(<span>self, default: Optional[_T] = None) ‑> Optional[_T]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Pop data off of top of the SplitEnd.</p></div>
+</dd>
+<dt id="grscheller.datastructures.split_ends.SplitEnd.push"><code class="name flex">
+<span>def <span class="ident">push</span></span>(<span>self, *ds: Optional[_T]) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Push data onto top of the SplitEnd.</p></div>
+</dd>
+<dt id="grscheller.datastructures.split_ends.SplitEnd.reverse"><code class="name flex">
+<span>def <span class="ident">reverse</span></span>(<span>self) ‑> <a title="grscheller.datastructures.split_ends.SplitEnd" href="#grscheller.datastructures.split_ends.SplitEnd">SplitEnd</a>[_T]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return shallow reversed copy of a SplitEnd.</p>
+<ul>
+<li>Returns a new <code>Stack</code> object with shallow copied new data</li>
+<li>creates all new nodes</li>
+<li>O(1) space &amp; time complexity</li>
+</ul></div>
+</dd>
+<dt id="grscheller.datastructures.split_ends.SplitEnd.tail"><code class="name flex">
+<span>def <span class="ident">tail</span></span>(<span>self) ‑> <a title="grscheller.datastructures.split_ends.SplitEnd" href="#grscheller.datastructures.split_ends.SplitEnd">SplitEnd</a>[_T]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return tail of the SplitEnd.</p>
+<ul>
+<li>if SplitEnd is empty, tail does not exist, so return an empty SplitEnd</li>
+</ul></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="grscheller.datastructures" href="index.html">grscheller.datastructures</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="grscheller.datastructures.split_ends.SplitEnd" href="#grscheller.datastructures.split_ends.SplitEnd">SplitEnd</a></code></h4>
+<ul class="two-column">
+<li><code><a title="grscheller.datastructures.split_ends.SplitEnd.cons" href="#grscheller.datastructures.split_ends.SplitEnd.cons">cons</a></code></li>
+<li><code><a title="grscheller.datastructures.split_ends.SplitEnd.copy" href="#grscheller.datastructures.split_ends.SplitEnd.copy">copy</a></code></li>
+<li><code><a title="grscheller.datastructures.split_ends.SplitEnd.exhaustMap" href="#grscheller.datastructures.split_ends.SplitEnd.exhaustMap">exhaustMap</a></code></li>
+<li><code><a title="grscheller.datastructures.split_ends.SplitEnd.flatMap" href="#grscheller.datastructures.split_ends.SplitEnd.flatMap">flatMap</a></code></li>
+<li><code><a title="grscheller.datastructures.split_ends.SplitEnd.fold" href="#grscheller.datastructures.split_ends.SplitEnd.fold">fold</a></code></li>
+<li><code><a title="grscheller.datastructures.split_ends.SplitEnd.fold1" href="#grscheller.datastructures.split_ends.SplitEnd.fold1">fold1</a></code></li>
+<li><code><a title="grscheller.datastructures.split_ends.SplitEnd.head" href="#grscheller.datastructures.split_ends.SplitEnd.head">head</a></code></li>
+<li><code><a title="grscheller.datastructures.split_ends.SplitEnd.map" href="#grscheller.datastructures.split_ends.SplitEnd.map">map</a></code></li>
+<li><code><a title="grscheller.datastructures.split_ends.SplitEnd.mergeMap" href="#grscheller.datastructures.split_ends.SplitEnd.mergeMap">mergeMap</a></code></li>
+<li><code><a title="grscheller.datastructures.split_ends.SplitEnd.peak" href="#grscheller.datastructures.split_ends.SplitEnd.peak">peak</a></code></li>
+<li><code><a title="grscheller.datastructures.split_ends.SplitEnd.pop" href="#grscheller.datastructures.split_ends.SplitEnd.pop">pop</a></code></li>
+<li><code><a title="grscheller.datastructures.split_ends.SplitEnd.push" href="#grscheller.datastructures.split_ends.SplitEnd.push">push</a></code></li>
+<li><code><a title="grscheller.datastructures.split_ends.SplitEnd.reverse" href="#grscheller.datastructures.split_ends.SplitEnd.reverse">reverse</a></code></li>
+<li><code><a title="grscheller.datastructures.split_ends.SplitEnd.tail" href="#grscheller.datastructures.split_ends.SplitEnd.tail">tail</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.1</a>.</p>
+</footer>
+</body>
+</html>

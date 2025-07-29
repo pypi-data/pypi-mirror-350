@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>grscheller.datastructures.ftuple API documentation</title>
+<meta name="description" content="Module grscheller.datastructure.ftuple - Functional tuples …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>grscheller.datastructures.ftuple</code></h1>
+</header>
+<section id="section-intro">
+<p>Module grscheller.datastructure.ftuple - Functional tuples</p>
+<p>Implements a tuple like object with funtional behaviors.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python"># Copyright 2023 Geoffrey R. Scheller
+#
+# Licensed under the Apache License, Version 2.0 (the &#34;License&#34;);
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an &#34;AS IS&#34; BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+&#34;&#34;&#34;Module grscheller.datastructure.ftuple - Functional tuples
+
+Implements a tuple like object with funtional behaviors.
+&#34;&#34;&#34;
+
+from __future__ import annotations
+
+__all__ = [&#39;FTuple&#39;]
+__author__ = &#34;Geoffrey R. Scheller&#34;
+__copyright__ = &#34;Copyright (c) 2023 Geoffrey R. Scheller&#34;
+__license__ = &#34;Appache License 2.0&#34;
+
+from typing import Any, Callable
+from itertools import chain
+from .core.iterlib import exhaust, merge
+
+class FTuple():
+    &#34;&#34;&#34;Class wrappng a tuple providing FP behaviors.
+
+    Filter out None values.
+    &#34;&#34;&#34;
+    def __init__(self, *ds):
+        &#34;&#34;&#34;Wrap a tuple and filter out None values&#34;&#34;&#34;
+        self._ds = tuple(filter(lambda x: x != None, ds))
+
+    def __bool__(self):
+        &#34;&#34;&#34;Returns true if not empty&#34;&#34;&#34;
+        return self._ds != ()
+
+    def __len__(self) -&gt; int:
+        &#34;&#34;&#34;Returns the number of elements in the ftuple&#34;&#34;&#34;
+        return len(self._ds)
+
+    def __getitem__(self, index: int) -&gt; Any:
+        # TODO: Does not like being given a slice ... research
+        msg = &#39;&#39;
+        if (cnt := len(self)) == 0:
+            msg = &#39;Indexing an empty FTuple&#39;
+        elif not -cnt &lt;= index &lt; cnt:
+            l = -cnt
+            h = cnt - 1
+            msg = f&#39;FTuple index = {index} not between {l} and {h}&#39;
+            msg += &#39; while getting value&#39;
+        
+        if msg:
+            raise IndexError(msg)
+
+        return self._ds[index]
+
+    def __iter__(self):
+        &#34;&#34;&#34;Iterate over the immutable state of the FTuple&#34;&#34;&#34;
+        for d in self._ds:
+            yield d
+
+    def __reversed__(self):
+        &#34;&#34;&#34;Reverse iterate over the immutable state of the FTuple&#34;&#34;&#34;
+        for d in reversed(self._ds):
+            yield d
+
+    def __eq__(self, other):
+        if not isinstance(other, type(self)):
+            return False
+        return self._ds == other._ds
+
+    def __repr__(self):
+        &#34;&#34;&#34;Display data in the FTuple&#34;&#34;&#34;
+        return &#34;((&#34; + &#34;, &#34;.join(map(lambda x: repr(x), iter(self))) + &#34;))&#34;
+
+    def __add__(self, other: FTuple) -&gt; FTuple:
+        &#34;&#34;&#34;Concatenate two FTuples&#34;&#34;&#34;
+        ftuple = FTuple()
+        ftuple._ds = self._ds + other._ds
+        return ftuple
+
+    def copy(self) -&gt; FTuple:
+        &#34;&#34;&#34;Return shallow copy of the FTuple in O(n) time &amp; space complexity&#34;&#34;&#34;
+        ftuple = FTuple()
+        ftuple._ds = self._ds
+        return ftuple
+
+    def reverse(self) -&gt; FTuple:
+        &#34;&#34;&#34;Return a reversed FTuple&#34;&#34;&#34;
+        return(FTuple(*reversed(self)))
+
+    def map(self, f: Callable[[Any], Any]) -&gt; FTuple:
+        &#34;&#34;&#34;Apply function over the FTuple&#39;s contents. Filter out None values.&#34;&#34;&#34;
+        return FTuple(*map(f, iter(self)))
+
+    def flatMap(self, f: Callable[[Any], FTuple]) -&gt; FTuple:
+        &#34;&#34;&#34;Apply function and flatten result by concatenating the results.&#34;&#34;&#34;
+        return FTuple(*chain(
+            *map(lambda x: iter(x), map(f, iter(self)))
+        ))
+
+    def mergeMap(self, f: Callable[[Any], FTuple]) -&gt; FTuple:
+        &#34;&#34;&#34;Apply function and flatten result by round robin
+        merging the results until first FTuple is exhauted.
+        &#34;&#34;&#34;
+        return FTuple(*merge(
+            *map(lambda x: iter(x), map(f, iter(self)))
+        ))
+
+    def exhaustMap(self, f: Callable[[Any], FTuple]) -&gt; FTuple:
+        &#34;&#34;&#34;Apply function and flatten result by round robin
+        merging the results until all FTuples are exhauted.
+        &#34;&#34;&#34;
+        return FTuple(*exhaust(
+            *map(lambda x: iter(x), map(f, iter(self)))
+        ))
+
+if __name__ == &#34;__main__&#34;:
+    pass</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="grscheller.datastructures.ftuple.FTuple"><code class="flex name class">
+<span>class <span class="ident">FTuple</span></span>
+<span>(</span><span>*ds)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Class wrappng a tuple providing FP behaviors.</p>
+<p>Filter out None values.</p>
+<p>Wrap a tuple and filter out None values</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class FTuple():
+    &#34;&#34;&#34;Class wrappng a tuple providing FP behaviors.
+
+    Filter out None values.
+    &#34;&#34;&#34;
+    def __init__(self, *ds):
+        &#34;&#34;&#34;Wrap a tuple and filter out None values&#34;&#34;&#34;
+        self._ds = tuple(filter(lambda x: x != None, ds))
+
+    def __bool__(self):
+        &#34;&#34;&#34;Returns true if not empty&#34;&#34;&#34;
+        return self._ds != ()
+
+    def __len__(self) -&gt; int:
+        &#34;&#34;&#34;Returns the number of elements in the ftuple&#34;&#34;&#34;
+        return len(self._ds)
+
+    def __getitem__(self, index: int) -&gt; Any:
+        # TODO: Does not like being given a slice ... research
+        msg = &#39;&#39;
+        if (cnt := len(self)) == 0:
+            msg = &#39;Indexing an empty FTuple&#39;
+        elif not -cnt &lt;= index &lt; cnt:
+            l = -cnt
+            h = cnt - 1
+            msg = f&#39;FTuple index = {index} not between {l} and {h}&#39;
+            msg += &#39; while getting value&#39;
+        
+        if msg:
+            raise IndexError(msg)
+
+        return self._ds[index]
+
+    def __iter__(self):
+        &#34;&#34;&#34;Iterate over the immutable state of the FTuple&#34;&#34;&#34;
+        for d in self._ds:
+            yield d
+
+    def __reversed__(self):
+        &#34;&#34;&#34;Reverse iterate over the immutable state of the FTuple&#34;&#34;&#34;
+        for d in reversed(self._ds):
+            yield d
+
+    def __eq__(self, other):
+        if not isinstance(other, type(self)):
+            return False
+        return self._ds == other._ds
+
+    def __repr__(self):
+        &#34;&#34;&#34;Display data in the FTuple&#34;&#34;&#34;
+        return &#34;((&#34; + &#34;, &#34;.join(map(lambda x: repr(x), iter(self))) + &#34;))&#34;
+
+    def __add__(self, other: FTuple) -&gt; FTuple:
+        &#34;&#34;&#34;Concatenate two FTuples&#34;&#34;&#34;
+        ftuple = FTuple()
+        ftuple._ds = self._ds + other._ds
+        return ftuple
+
+    def copy(self) -&gt; FTuple:
+        &#34;&#34;&#34;Return shallow copy of the FTuple in O(n) time &amp; space complexity&#34;&#34;&#34;
+        ftuple = FTuple()
+        ftuple._ds = self._ds
+        return ftuple
+
+    def reverse(self) -&gt; FTuple:
+        &#34;&#34;&#34;Return a reversed FTuple&#34;&#34;&#34;
+        return(FTuple(*reversed(self)))
+
+    def map(self, f: Callable[[Any], Any]) -&gt; FTuple:
+        &#34;&#34;&#34;Apply function over the FTuple&#39;s contents. Filter out None values.&#34;&#34;&#34;
+        return FTuple(*map(f, iter(self)))
+
+    def flatMap(self, f: Callable[[Any], FTuple]) -&gt; FTuple:
+        &#34;&#34;&#34;Apply function and flatten result by concatenating the results.&#34;&#34;&#34;
+        return FTuple(*chain(
+            *map(lambda x: iter(x), map(f, iter(self)))
+        ))
+
+    def mergeMap(self, f: Callable[[Any], FTuple]) -&gt; FTuple:
+        &#34;&#34;&#34;Apply function and flatten result by round robin
+        merging the results until first FTuple is exhauted.
+        &#34;&#34;&#34;
+        return FTuple(*merge(
+            *map(lambda x: iter(x), map(f, iter(self)))
+        ))
+
+    def exhaustMap(self, f: Callable[[Any], FTuple]) -&gt; FTuple:
+        &#34;&#34;&#34;Apply function and flatten result by round robin
+        merging the results until all FTuples are exhauted.
+        &#34;&#34;&#34;
+        return FTuple(*exhaust(
+            *map(lambda x: iter(x), map(f, iter(self)))
+        ))</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="grscheller.datastructures.ftuple.FTuple.copy"><code class="name flex">
+<span>def <span class="ident">copy</span></span>(<span>self) ‑> <a title="grscheller.datastructures.ftuple.FTuple" href="#grscheller.datastructures.ftuple.FTuple">FTuple</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return shallow copy of the FTuple in O(n) time &amp; space complexity</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def copy(self) -&gt; FTuple:
+    &#34;&#34;&#34;Return shallow copy of the FTuple in O(n) time &amp; space complexity&#34;&#34;&#34;
+    ftuple = FTuple()
+    ftuple._ds = self._ds
+    return ftuple</code></pre>
+</details>
+</dd>
+<dt id="grscheller.datastructures.ftuple.FTuple.exhaustMap"><code class="name flex">
+<span>def <span class="ident">exhaustMap</span></span>(<span>self, f: Callable[[Any], <a title="grscheller.datastructures.ftuple.FTuple" href="#grscheller.datastructures.ftuple.FTuple">FTuple</a>]) ‑> <a title="grscheller.datastructures.ftuple.FTuple" href="#grscheller.datastructures.ftuple.FTuple">FTuple</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Apply function and flatten result by round robin
+merging the results until all FTuples are exhauted.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def exhaustMap(self, f: Callable[[Any], FTuple]) -&gt; FTuple:
+    &#34;&#34;&#34;Apply function and flatten result by round robin
+    merging the results until all FTuples are exhauted.
+    &#34;&#34;&#34;
+    return FTuple(*exhaust(
+        *map(lambda x: iter(x), map(f, iter(self)))
+    ))</code></pre>
+</details>
+</dd>
+<dt id="grscheller.datastructures.ftuple.FTuple.flatMap"><code class="name flex">
+<span>def <span class="ident">flatMap</span></span>(<span>self, f: Callable[[Any], <a title="grscheller.datastructures.ftuple.FTuple" href="#grscheller.datastructures.ftuple.FTuple">FTuple</a>]) ‑> <a title="grscheller.datastructures.ftuple.FTuple" href="#grscheller.datastructures.ftuple.FTuple">FTuple</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Apply function and flatten result by concatenating the results.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def flatMap(self, f: Callable[[Any], FTuple]) -&gt; FTuple:
+    &#34;&#34;&#34;Apply function and flatten result by concatenating the results.&#34;&#34;&#34;
+    return FTuple(*chain(
+        *map(lambda x: iter(x), map(f, iter(self)))
+    ))</code></pre>
+</details>
+</dd>
+<dt id="grscheller.datastructures.ftuple.FTuple.map"><code class="name flex">
+<span>def <span class="ident">map</span></span>(<span>self, f: Callable[[Any], Any]) ‑> <a title="grscheller.datastructures.ftuple.FTuple" href="#grscheller.datastructures.ftuple.FTuple">FTuple</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Apply function over the FTuple's contents. Filter out None values.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def map(self, f: Callable[[Any], Any]) -&gt; FTuple:
+    &#34;&#34;&#34;Apply function over the FTuple&#39;s contents. Filter out None values.&#34;&#34;&#34;
+    return FTuple(*map(f, iter(self)))</code></pre>
+</details>
+</dd>
+<dt id="grscheller.datastructures.ftuple.FTuple.mergeMap"><code class="name flex">
+<span>def <span class="ident">mergeMap</span></span>(<span>self, f: Callable[[Any], <a title="grscheller.datastructures.ftuple.FTuple" href="#grscheller.datastructures.ftuple.FTuple">FTuple</a>]) ‑> <a title="grscheller.datastructures.ftuple.FTuple" href="#grscheller.datastructures.ftuple.FTuple">FTuple</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Apply function and flatten result by round robin
+merging the results until first FTuple is exhauted.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def mergeMap(self, f: Callable[[Any], FTuple]) -&gt; FTuple:
+    &#34;&#34;&#34;Apply function and flatten result by round robin
+    merging the results until first FTuple is exhauted.
+    &#34;&#34;&#34;
+    return FTuple(*merge(
+        *map(lambda x: iter(x), map(f, iter(self)))
+    ))</code></pre>
+</details>
+</dd>
+<dt id="grscheller.datastructures.ftuple.FTuple.reverse"><code class="name flex">
+<span>def <span class="ident">reverse</span></span>(<span>self) ‑> <a title="grscheller.datastructures.ftuple.FTuple" href="#grscheller.datastructures.ftuple.FTuple">FTuple</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return a reversed FTuple</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def reverse(self) -&gt; FTuple:
+    &#34;&#34;&#34;Return a reversed FTuple&#34;&#34;&#34;
+    return(FTuple(*reversed(self)))</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="grscheller.datastructures" href="index.html">grscheller.datastructures</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="grscheller.datastructures.ftuple.FTuple" href="#grscheller.datastructures.ftuple.FTuple">FTuple</a></code></h4>
+<ul class="two-column">
+<li><code><a title="grscheller.datastructures.ftuple.FTuple.copy" href="#grscheller.datastructures.ftuple.FTuple.copy">copy</a></code></li>
+<li><code><a title="grscheller.datastructures.ftuple.FTuple.exhaustMap" href="#grscheller.datastructures.ftuple.FTuple.exhaustMap">exhaustMap</a></code></li>
+<li><code><a title="grscheller.datastructures.ftuple.FTuple.flatMap" href="#grscheller.datastructures.ftuple.FTuple.flatMap">flatMap</a></code></li>
+<li><code><a title="grscheller.datastructures.ftuple.FTuple.map" href="#grscheller.datastructures.ftuple.FTuple.map">map</a></code></li>
+<li><code><a title="grscheller.datastructures.ftuple.FTuple.mergeMap" href="#grscheller.datastructures.ftuple.FTuple.mergeMap">mergeMap</a></code></li>
+<li><code><a title="grscheller.datastructures.ftuple.FTuple.reverse" href="#grscheller.datastructures.ftuple.FTuple.reverse">reverse</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>
