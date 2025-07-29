@@ -1,0 +1,101 @@
+name: Publish to PyPI
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (e.g., 0.1.0)'
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Needed for setuptools_scm
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.9'
+    
+    - name: Install build dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install build twine
+    
+    - name: Build package
+      run: python -m build
+    
+    - name: Check package
+      run: |
+        python -m twine check dist/*
+        
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: dist
+        path: dist/
+
+  test-install:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11', '3.12']
+    steps:
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: dist
+        path: dist/
+    
+    - name: Test installation
+      run: |
+        pip install dist/*.whl
+        python -c "import arc_tracing; print(f'Successfully imported arc_tracing {arc_tracing.__version__}')"
+
+  publish-test:
+    needs: [build, test-install]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    environment: test-pypi
+    steps:
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: dist
+        path: dist/
+    
+    - name: Publish to Test PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        repository-url: https://test.pypi.org/legacy/
+        password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+
+  publish-prod:
+    needs: [build, test-install]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    environment: pypi
+    steps:
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: dist
+        path: dist/
+    
+    - name: Publish to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        password: ${{ secrets.PYPI_API_TOKEN }}
