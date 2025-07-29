@@ -1,0 +1,36 @@
+name: Test package
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  test-code:
+    name: Test on ${{ matrix.container }}
+    runs-on: ubuntu-24.04
+    container: ${{ matrix.container }}
+    env:
+      DEB_PYTHON_INSTALL_LAYOUT: deb_system
+    strategy:
+      fail-fast: false
+      matrix:
+        container: [
+          "ghcr.io/fenics/dolfinx/dolfinx:stable",
+          "ghcr.io/fenics/dolfinx/dolfinx:nightly"
+        ]
+
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install package
+        run: |
+          python3 -m pip install Cython pkgconfig
+          HDF5_MPI=ON HDF5_PKGCONFIG_NAME="hdf5" python3 -m pip install .[test] --no-build-isolation --no-binary=h5py
+
+      - name: Run tests
+        run: python3 -m pytest -v
+
+      - name: Run tests in parallel
+        run: mpiexec -n 4 python3 -m pytest -v  -m "not serial"
