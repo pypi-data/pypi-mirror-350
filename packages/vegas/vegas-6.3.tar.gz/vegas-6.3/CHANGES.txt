@@ -1,0 +1,729 @@
+Version 6.3 2025-05-24
+========================
+Adds option gpu_pad to Integrator. Setting gpu_pad=True can make 
+GPU-based integrands run much faster. Thanks to Dmitriy Kim for 
+suggesting this quick fix.
+
+Version 6.2.1 2025-02-07
+========================
+- Integrator.random_batch() no longer exposes internal work buffers to users (it 
+  now makes copies).
+
+- Inconsistent behavior between adapt=False with minimize_mem=True 
+  or with minimize_mem=False is now fixed.
+
+- Cleaned up Cython.
+
+Version 6.2 2024-12-07
+======================
+Modified so Integrator works with integrands that return 32-bit floats 
+as well as 64-bit floats. This is to accommodate integrands that are run on GPUs. 
+
+See updated documentation for examples that use GPUs, Cython, numba, or Pythran to 
+speed up vegas integrations. 
+
+Adds method Integrator.sample() for generating sample sets of integration points.
+
+Version 6.1.3 2024-07-08
+=========================
+Modified so that it works with numpy>=2.0.
+
+Version 6.1.2 2024-05-21
+========================
+
+- Fixes bug in implementation of PDFIntegrator's scale parameter. There was no 
+  problem when scale=1 but other values were wrong.
+
+- Fixes bug when calculating the number of degrees of freedom when averaging 
+  results over multiple iterations with multiple integrands.
+
+- Tweaks to PDFIntegrator.
+  
+Version 6.1.1 2024-04-19
+========================
+- More robust treatment of round-off errors when calculating means and variances in vegas.
+
+Version 6.1 2024-03-30
+=========================
+- Adds PDFIntegrator.sample() which creates (weighted) samples 
+  from the integrator's probability distribution (eg, for making 
+  histograms or contour plots of probability distributions).
+
+- Fixes defect in handling of round-off errors (in sigf).
+
+Version 6.0.1 2024-03-07
+==========================
+Move vegas.pxd to its proper place.
+
+Version 6.0 2024-03-05
+=========================
+- Default value for vegas.Integrator parameter mpi is now False (was True) to avoid 
+  irritating security prompts on MacOS. Thus mpi=True must be specified if the plan 
+  is to use mpi. The default can be changed back to the old default using: 
+  vegas.Integrator.defaults['mpi'] = True. 
+
+- Fixes bug in Integrator.synchronize_random that caused crashes when using MPI.
+
+- As of Version 5.6, vegas.Integrators can be configured so that integrands are called 
+  with dictionaries rather than 1-d arrays -- so f(xdict) rather than f(x1darray). 
+  Now the arrays can have any shape (ie, not just 1-d).
+
+- Fixes bug that caused vegas to crash for integrands returning arrays with more than 1 dimension.
+
+- vegas.PDFIntegrator has a new method stats for calculating the means and standard 
+  deviations of arbitrary (multi-dimensional) functions f(p) with respect to a PDF.
+
+- vegas.PDFIntegrator(pdfitg) where pdfitg is a PDFIntegrator now works.
+
+
+Version 5.6 2023-12-18
+=========================
+vegas 5.6 adds one feature: vegas.Integrators now can be (optionally) 
+configured to package integration points as dictionaries rather than arrays. 
+This is to facilitate integration over (large) heterogeneous 
+collections of integration variables. See the tutorial section 
+on Dictionaries.
+
+
+Version 5.5.2 2023-12-04
+=========================
+- New default random number generator, to deal with
+  changes in numpy version >=1.17. Now tied explicitly to gvar's 
+  random number generator (which is from numpy).
+
+- Simpler and more robust implementation for vegas.__version__ 
+  (doesn't use importlib.metadata, which is buggy).
+
+Version 5.5 2023-10-21
+========================
+Significantly improves handling of memory for internal work arrays. These 
+allocations are controlled by three parameters: min_neval_batch (new),
+max_neval_hcube, and minimize_mem. Parameter min_neval_batch replaces 
+nhcube_batch, which is now ignored. The implementation for 
+minimize_mem=True is completely different and should be much faster
+than before; this feature requires the h5py Python module.
+
+Version 5.4.3 2023-10-13
+=========================
+Improved build/installation code to handle systems with old versions of numpy 
+or new versions of Cython.
+ 
+Support for wheels.
+
+Version 5.4.2 2023-07-22
+=========================
+Bug fixes to make code compatible with Cython v3.0 and numpy v1.25.
+
+Version 5.4.1 2023-05-13
+==========================
+* Integrator(itg) makes a more complete clone of Integrator itg than previously.
+
+* Simpler and more modern installation setup with pyproject.toml, setup.cfg, ...
+
+* Significant addition to the Tutorial section on Calculating Distributions.
+
+Version 5.4 2023-01-06
+=============================
+Fixes problem when integrating multiple integrands 
+simultaneously that are very different in magnitude.
+Also adds new functionality to vegas.ravg().
+
+Version 5.3
+==============
+- Adds new keywords save and saveall for Integrators. These allow 
+  the integrator to save results in a file automatically at the end of 
+  each iteration. See "Saving Results Automatically" in the tutorial
+  for more details and examples.
+
+- Pickled integrators now include information about the adaptive 
+  stratified sampling as well as the adaptive importance sampling 
+  (integ.map). This makes for larger files but now captures the 
+  complete state of the integrator. The AdaptiveMap integ.map can 
+  be pickled by itself, in a smaller file, if that is all that is 
+  neeeded.
+
+- Adds new function ravg for manipulating vegas results.
+
+- Added extend method to results returned by vegas Integrators 
+  that allow results from different runs to be merged.
+
+- Bug fixes for pickling of integrators and integration results. 
+  Can nnow use either pickle.dump/load or gvar.dump/load.
+
+- Fixed pickling of Integrator so it handles nstrat properly.
+
+Version 5.2 2022-11-02
+======================
+- New implementation for using multiple processors to evaluate expensive 
+  integrands. This new implementation is simpler than using MPI (which is 
+  still supported) and is based on Python's standard multiprocessing library 
+  (so, unlike MPI, does not require additional software beyond what comes 
+  standard with Python). New keyword nproc specifies the number of 
+  processes/processors that are used in parallel to evaluate the integrand.
+  Assumes Python 3.3 or later.
+
+- Improvements to PDFIntegrator. Can now be pickled which allows it to work 
+  with nproc > 1.
+
+- Multiple processors also supported for AdaptiveMap.adapt_to_samples. This 
+  is useful for very high dimensions or large number of samples.
+
+- Forces Cython to regenerate *.c files when using Python 3.11 or later (deals
+  with incompatibilities introduced by 3.11).
+
+
+Version 5.1 2022-01-21
+=======================
+Adds a new keyword uses_jac that causes vegas to supply 
+the vegas map's Jacobian to the integrand. A sample 
+application is given in the "vegas Jacobian" section of the 
+Tutorial in the documentation.
+
+Version 5.0.1 2021-12-13
+==========================
+- Fixes installation issue with Python 3.10.
+
+- Bug fix when using very large number of stratifications 
+  per axis (> ninc per axis). The algorithm was operating
+  sub-optimally in some such situations. Not usually an 
+  issue except for low-dimension integrals.
+
+
+Version 5.0 2021-08-14
+========================
+New implementation of PDFIntegrator which is slightly 
+incompatible with the previous implementation but 
+significantly more capable. In particular,
+it can now be used with non-Gaussian PDFs. It 
+also now works with batch integrands, which 
+lead to big speed increases.  
+
+Also includes a further bug fix 
+when max_nhcube=1.
+
+Version 4.0.3 2021-06-19
+========================
+Fixes bug when max_nhcube=1.
+
+Version 4.0.2 2021-06-09
+========================
+- Fixes (rare) bug when integrand vanishes everywhere.
+
+- Lazy import for mpi4py.
+
+- Adds RBatchIntegrand and rbatchintegrand.
+
+Version 4.0.1 2021-05-10
+========================
+Bug fix so version 4.0 works properly on Windows machines.
+
+Version 4.0 2021-04-21
+=======================
+This update changes one aspect of the default algorithm 
+for adaptive stratified sampling. Specifically it no longer 
+uses the same number of stratifications in each direction:
+Mst+1 stratifications are used in the first D0 directions 
+and Mst in the remaining directions. This allows for more 
+hypercubes, which reduces errors and improves stability. 
+For many problems the difference is negligible, but 
+this change can lead to large improvements for high 
+dimensions or with a small number neval of integrand 
+evaluations. In particular there will always be some 
+stratification for arbitrarily high dimensions. The 
+default stratification is determined by neval and 
+new parameter neval_frac.
+
+A related change is that AdaptiveMaps can now have 
+different numbers of increments in different directions.
+
+Version 3.5.4 2021-03-28
+========================
+Minor update to fix a bug (in _fill_sigf) when minimize_mem=True. 
+Also resets the default for max_neval_hcube to 1e5. Introduces 
+new parameter max_mem.
+
+Version 3.5.3 2020-10-29
+========================
+Fixes bug (again) on Windows (only) involving mismatched integer types.
+
+Version 3.5.2 2020-10-29
+========================
+Fixes bug on Windows (only) involving mismatched integer types.
+
+Version 3.5.1 2020-09-19
+=========================
+Documentation fixes; no changes to the code.
+
+Version 3.5 2020-09-14
+=========================
+This update adds new functionality. First, the new 
+method AdaptiveMap.adapt_to_samples(x, f) optimizes the 
+vegas map for integrals of function f(x). This can be 
+used to precondition vegas before integrating. 
+See "vegas Maps and Preconditioning vegas" 
+in the tutorial for more details.
+
+Second, the number of stratifications used by vegas for 
+its adaptive stratified sampling can now be set for each 
+direction separately. This is particularly useful in 
+high dimensions where it becomes increasingly 
+difficult to have more than one stratification per 
+axis. See "vegas Stratifications" in the tutorial
+for more information.
+
+Other changes:
+
+- New method AdpativeMap.invmap(x, y, jac) computes the y values 
+  and Jacobian corresponding to points x. It is the 
+  inverse of AdaptiveMap.map(y, x, jac), although 
+  jac is dx/dy in both cases.
+
+- AdaptiveMap.show_grid has a new keyword argument: plotter.
+
+- vegas results now include result.sum_neval which equals the 
+  total number of integrand evaluations used to obtain the result.
+
+Version 3.4.5 2020-06-16
+========================
+Still trying to fix that bug. Problem was in RAvgArray._inv
+which is used when computing weighted averages of results 
+from different iterations when there are multiple integrands.
+Specifically the issue is what to do when there is a linear 
+combination of the multiple integrands that is exactly zero 
+(which turns out to be natural in certain contexts), since 
+this leads to a singular covariance matrix (whose inverse 
+is needed for the weighted average). Current fix is 
+similar to scipy.linalg.pinvh.
+
+Version 3.4.4 2020-06-14
+========================
+Small bug fix to previous bug fix.
+
+Version 3.4.3 2020-06-08
+=========================
+Small bug fixes.
+
+- Adds left-out part of the bug fix in 3.4.2. 
+
+- Fixes problem that could sometimes lead 
+  gvar to complain about non-symmetric 
+  covariance matrices. Thanks to 
+  Jolyon Bloomfield for pointing this 
+  out.
+
+
+Version 3.4.2 2020-02-05
+========================
+Bug fix for situations where the error in the answer 
+is smaller than 1e-8 times the answer -- ie, unlikely 
+to affect many existing codes. The old code reported 
+cumulative errors that were too large. (Thanks to 
+Gabriele Spada for pointing this out.)
+
+Version 3.4.1 2020-01-01
+========================
+Minor documentation update; can be ignored otherwise.
+
+- Updates examples to account for changes in mpirun.
+
+Version 3.4 2019-04-11
+=======================
+Again a very minor update, to respond to a feature request.
+
+- Adds mpi keyword to Integrator. Setting mpi=False disables mpi support in
+  vegas even if mpi is available; setting mpi=True (default) uses mpi
+  automatically (so long as it is installed).
+
+- Improved documentation on the use of C and Fortran with vegas.
+
+- A new section in the tutorial on how to calculate distributions with vegas.
+
+
+Version 3.3.6 2018-07
+==========================
+Very, very minor update.
+
+- Fix compatibility issue with v11 of lsqfit.
+
+- Improved pypi documentation.
+
+- Improved makefile.
+
+Version 3.3.5 2018-06-24
+=========================
+Minor update; minor bug fixes.
+
+- Documentation fixes.
+
+- Fixed bugs associated with parameters minimize_mem=True and beta=0.
+  These resulted in sub-optimal behavior.
+
+- New timing information in vegas.reporter(). Also flushes stdout after
+  each iteration.
+
+
+Version 3.3.4 2018-03-18
+========================
+Tiny change to test scripts to account for changes in numpy.
+
+
+Version 3.3.3 2018-02-16
+========================
+- Improved installation script, especially when cython and numpy not
+  installed. cython is no longer necessary. numpy and gvar should be
+  installed automatically if they are not present.
+
+- Trivial changes to tests.
+
+- Slight rearrangement of documentation.
+
+
+Version 3.3.2 - 2018-01-04
+==========================
+Bug fix (in setup.py) to address installation problems on some systems.
+
+
+Version 3.3.1 - 2017-01-02
+==========================
+Bug fix that allows code to work on Windows (fixes type mismatch having to do
+with different conventions for integer lengths).
+
+
+Version 3.3 - 2017-01-02
+==========================
+vegas.PDFIntegrator rewritten to make it more efficient.
+The interface is the same.
+
+
+Version 3.2 - 2016-11-20
+========================
+MPI (multi-processor) support is now integrated into vegas
+and automatically avaible for any integrand without modifying
+its code --- simply run the code using, for example,
+
+  mpirun -np 4 python your-code.py
+
+to distribute integrand evaluations over 4 processes (and processors if you
+have that many). You no longer need to convert the integrand using
+vegas.MPIintegrator; MPIintegrator is no longer needed for anything. I left it
+in vegas for legacy purposes, but you should discontinue its use.
+
+Other changes:
+
+- The stopping conditions (atol and rtol) now work. I forgot to install
+  the stopping conditions in earlier versions, mostly because I never use
+  them. These stopping conditions can be quite unreliable in early iterations,
+  before vegas has converged --- use them with caution if you use them at all.
+  Thanks to Kevin Andrade for pointing out that they were not working.
+
+- Given output r from a vegas integrator, added new option to r.summary().
+  Using r.summary(extended=True) appends a table showing the final results
+  for every component of the integrand (not just the part used to adapt
+  vegas).
+
+- Extra documentation on how to access integrands written in C or
+  Fortran from Python vegas. New (simpler) documentation on using MPI.
+
+
+Version 3.1 - 2016-11-05
+========================
+Added new class PDFIntegrator for evaluating expectation values weighted
+by the probability density function (PDF) for arbitrary multi-dimensional
+Gaussian distributions. This class once resided in module gvar but
+had to be moved to vegas to avoid circular imports (which are bad) in the code.
+It is part of the setup for Bayesian integrals (BayesIntegrator)
+in the lsqfit module.
+
+Also fixed a bug in MPIintegrator that caused occasional crashes.
+
+
+Version 3.0.1 - 2016-08-14
+===========================
+- Corrected small bugs in RAvg.summary(), RAvgArray.summary() and
+  RAvgDict.summary(). Summary tables give weighted averages when
+  weighted=True, unweighted averages otherwise. summary() has an
+  optional argument (weighted) to overwrite the default setting in
+  the RAvg, etc. Summary tables used to always list weighted averages,
+  whether or not weighted=True.
+
+- Corrected small bug in code for batch integrands that return dictionaries.
+  vegas is supposed to adapt to the first entry in dictionary-valued
+  functions, where 'first' is defined to be the first entry in dictionary[k]
+  where k is the first key in dictionary.keys().
+
+
+Version 3.0 - 2015-07-23
+=========================
+Starting with this version, vegas requires module gvar ('pip install gvar') in
+order to function. In the past it used a (very poor) substitute for gvar if
+that module was not installed. That kludge is not sustainable.
+
+- Integrand functions in the past could return numbers or numpy arrays. Now
+  they can also return dictionaries whose values are either numbers
+  or numpy arrays. This is useful in situations where multiple integrals are
+  being done simultaneously since the keys can be used to document and  keep
+  straight which integral is which. This should make code  easier to read and
+  write.
+
+- Miscellaneous internal changes to simplify the vegas code that handles
+  integrands.
+
+- Switch to pip for installing and uninstalling. It is more robust than
+  the alternatives.
+
+
+Version 2.2.2 - 2014-11-25
+==========================
+Very minor fix: changes in numpy v1.9 broke MPIintegrand. It is now
+fixed.
+
+
+Version 2.2.1 - 2014-10-4
+=========================
+This is a minor bug fix release.
+
+- Fixed a bug that caused option adapt_to_errors to malfunction. The
+  malfunction caused the integral to be less than optimal, although
+  still correct.
+
+- Cleaner implementation of the (Feynman) path integral example.
+
+
+Version 2.2 - 2014-06-28
+=========================
+There is a new decorator, vegas.MPIintegrand, that makes it trivial to
+evaluate integrands on mupliple processors using MPI. See the tutorial section
+on Multiple Processors for more discussion. This is only useful for
+integrands that are expensive to evaluate.
+
+Beginning with this version of vegas, version numbers will be consistent
+with the rules of "semantic versioning" (http://semver.org). The most
+important consequence is that any change that is *not* backwards compatible
+with the current interface (as defined by the documentation) will be signaled
+by a change in the major version number, where the full version number has the
+format major.minor.patch (so the major version number is 2 for version 2.1.4).
+A side effect of this policy is that increases in the major version number can be
+triggered by relatively obscure changes in the interface that have no
+effect whatsoever on almost all existing codes. The minor component increased
+for this version because it adds new functionality; but it remains compatible
+with the previous version.
+
+
+Version 2.1.4 - 2014-02-05
+============================
+More small changes (all backwards compatible).
+
+- vegas.Integrator has new parameter ran_array_generator. This is the random
+  number generator used by vegas. The default function is numpy.random.random.
+  The new parameter allows users to substitute a different random number
+  generator, if they wish.
+
+- Legacy name vegas.VecIntegrand now works. This isn't needed for new code
+  (use vegas.BatchIntegrand), but saves having to update old code.
+
+- The path-integral example is a little bit more organized.
+
+- Ongoing polishing of documentation.
+
+
+Version 2.1.3 - 2014-01-13
+=============================
+The last (probably) in a series of very minor changes. Here only the
+documentation has been changed. There is a new section in the Tutorial
+showing how to use multiple CPUs to evaluate costly integrands in parallel.
+There is also a new section on how to use vegas to do multi-dimensional sums,
+rather than integrals.
+
+Also fixed errors in the documentation for random and random_batch generators.
+
+
+Version 2.1.2 - 2014-01-12
+============================
+Another very minor (backwards compatibile) modification. Internally vegas processes
+integration points in batches. These were called vectors initially but this name
+has proven confusing, especially now that integrands can be array-valued.
+To remove the potential confusion, collections of integration points are
+now called batches, and: VecIntegrand is now BatchIntegrand; vecintegrand is
+now batchintegrand; and nhcube_vec has become nhcube_batch. The old names
+are still available, as aliases, to support legacy code.
+
+
+Version 2.1.1 - 2014-01-09
+==========================
+This is a very minor upgrade. Missed out a couple of variable declarations
+in one of the cython routines that slowed the routine (and vegas) down
+significantly (eg, 20%) in some situations. These are now fixed. This
+changes nothing other than the run time.
+
+
+Version 2.1 - 2014-01-08
+=========================
+vegas normally uses weighted averages to combine results from different
+iterations. This is important since earlier iterations may have much larger
+errors and so should carry less weight in the average. The weighted averages
+mean, however, that the integral estimates are biased (see discussion of
+systematic error in the Tutorial). The bias is completely negligible compared
+to the statistical errors, and so unproblematic, unless the number of
+iterations (nitn) is made very large (eg, thousands). vegas does not need to,
+and no longer does use weighted averages when parameter adapt=False, because
+then different iterations are all the same (since there is no adaptation
+going on). Consequently the estimates for the mean and std deviation
+are unbiased when adapt=False. This is likely a non-issue for most
+and possibly all applications (since the bias vanishes so quickly with
+increasing neval --- like 1/neval), but taking unweighted averages is
+more correct when adapt=False so that is what vegas does now.
+
+Other changes:
+
+- Added parameter adapt to Integrator, as mentioned above. Setting alpha=False
+  prevents vegas from adapting any further. See the discussion in the Tutorial.
+
+- RWAvg and RWAvgArray have changed names to RAvg and RAvgArray. The R
+  stands for "running", since these objects keep a running total. The "W"
+  used to stand for "weighted" but is inappropriate now since averages
+  may be weighted or unweighted (depending upon parameter Integrator.adapt).
+
+- Changed the way vegas handles situations where variances
+  (or diagonal elements of covariance matrices) are negative or otherwise
+  afflicted by roundoff error. A small positive number is added, scaled by
+  the mean**2 (roughly 1e-15 * mean**2). This helps vegas survive unusual
+  situations like a constant integrand (independent of x) without generating
+  nan's or divide checks.
+
+- Have more robust mechanisms for defining integrands for vegas's vector
+  mode. Deriving from vegas.VecIntegand but failing to define a __call__
+  results in an error message (saying there is no __call__). Also there
+  is now a function decorator, vegas.vecintegrand, that can be applied
+  to an ordinary function to make it suitable as an integrand.
+
+
+Version 2.0.1 - 2014-01-07
+===========================
+Tiny improvement in how vegas interacts with the gvar module. The gvar
+module can now be installed by itself, without the rest of the lsqfit
+distribution: pip install gvar. Array-valued integrands work much better
+with gvar installed.
+
+
+Version 2.0 - 2014-01-06
+==========================
+This is a significant upgrade and cleanup of the code. As a result
+it is not entirely backwards compatible with earlier versions (see below).
+
+- Integrands are allowed to be array-valued now, with different elements
+  of the array representing different integrands. vegas always tunes on
+  the first function in the array. vegas determines whether the
+  integrand is scalar- or array-valued automatically, and returns
+  results that are either scalar or array-valued, as appropriate.
+  This functionality replaces method Integrator.multi, and is
+  implemented quite a bit differently (and better);
+  Integrator.multi has now disappeared. There is no longer a need for a
+  separate method for array-valued integrands.
+
+- The calling conventions for integrands in vector mode have been changed
+  (simplified): eg,
+
+    class fv(vegas.VecIntegrand):
+      def __call__(self, x):
+        return x[:, 0] ** 2 + x[:, 1] ** 4
+
+  See discussion in the tutorial. This is not compatible with the old
+  convention. The fcntype argument to Integrator is no longer needed.
+
+- Renamed RunningWAvg to RWAvg -- shorter name. Also introduced RWAvgArray
+  for arrays of same.
+
+- Major reorganization of the internal code to simplify the developer's
+  life. The code appears to be somewhat faster, though probably not
+  enough to be noticed by anyone other than the developer.
+
+
+
+Version 1.3 - 2014-01-03
+========================
+
+- Introduced new method Integrator.multi for doing multiple integrals
+  simultaneously, using the same integration points for all of the
+  integrals. Integrating simultaneously can lead to very large reductions
+  in the uncertainties for ratios or differences of integrals whose
+  integrands are very similar. See discussion in the documentation under
+  "Multiple Integrands Simultaneously."
+
+- Introduced iterators (Integrator.random and Integrator.random_vec)
+  that return |vegas| integration points and weights
+  for applications that use |vegas| as a random number generator.
+
+- Changed the semantics concerning the memory optimization introduced in
+  v1.2. To run with minimum memory set parameter minimize_mem = True. This
+  will cause vegas to use extra integrand evaluations, which can slow it by
+  50-100%, but also decouples the internal memory used from neval. The
+  default value, False, is the better choice unless vegas is running out
+  of RAM. Parameter max_nhcube limits the number of h-cubes used in the
+  stratification, unless beta=0 or minimize_mem=True in which case it is
+  ignored.
+
+
+Version 1.2 - 2013-12-29
+========================
+
+- Memory optimization: The (new) adaptive stratified sampling algorithm
+  can use a lot of memory since it must store a float (sigf = the std dev of
+  the integrand) for each h-cube. When neval gets to be 1e8 or larger,
+  the memory needs start to approach typical RAM limits (in laptops,
+  anyway). To avoid exceeding these limits, which would greatly slow
+  progress, vegas now switches to a different mode of operation when
+  the number of h-cubes exceeds parameter max_nhcube (set by default
+  to 5e8). Rather than store values of sigf for every h-cube for use
+  in the next iteration, it recomputes sigf just before it uses it
+  to move integrand evalutions around (and then throws the sigf value away).
+  This requires extra integrand evaluations, beyond those used to estimate
+  the integral. The number of extra evaluations is between 50% and 100% of
+  the number used to estimate the integral, typically increasing
+  execution time by the same fractions. This is worthwhile provided the
+  adaptive stratified sampling decreases errors by at least 30%
+  (since omitting it would allow up to 2x as many integration points
+  for the same cost, decreasing errors by a factor of 1/sqrt(2)). The
+  adaptive stratified sampling usually decreases errors by this amount,
+  and frequently by much more. The new mode is in operation if (internal)
+  attribute minimize_sigf_mem is True. Again the threshold for this
+  new behavior is set by max_nhcube which is 5e8 by default, which
+  is sufficiently large that this new mode will be used quite
+  infrequently.
+
+- Refactored Integrator._integrate to prepare for future project.
+
+- Tests for beta=0.0 mode and for the propagation of Python exceptions
+  from the integrand.
+
+- More polished documentation - still a work in progress.
+
+- Fixed bug in pickling of Integrator. Added testing for pickling.
+
+Version 1.1.1 - 2013-12-22
+============================
+Fixed a tiny typo that would not cause problems particularly,
+but needed to be fixed --- code would not import gvar from lsqfit
+even if it was present.
+
+Also made the slower examples run faster, so you don't have
+to wait so long. Added a plot to the path-integral example to
+compare the lattice path-integral result with the exact result
+(provided matplotlib installed).
+
+Version 1.1 - 2013-12-22
+=========================
+
+Original release made use of the lsqfit package in the testing. This package
+is quite useful in conjunction with vegas (for the gvar module) but it is not
+required. The testing and examples now work without  lsqfit present, which was
+the original intent. See discussion at the  end of the Tutorial about the role
+of lsqfit.
+
+Version 1.0 - 2013-12-21
+==========================
+This is the first version of a new implementation
+of the vegas algorithm for adaptive multidimensional
+Monte Carlo integration. It is written in Python/Cython
+and features a significantly improved algorithm
+relative to earlier versions of vegas. In particular
+it now uses two adaptive strategies instead of one.
