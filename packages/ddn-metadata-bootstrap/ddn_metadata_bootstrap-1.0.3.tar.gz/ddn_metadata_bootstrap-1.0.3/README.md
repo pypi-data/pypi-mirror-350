@@ -1,0 +1,239 @@
+# DDN Metadata Bootstrap
+
+[![PyPI version](https://badge.fury.io/py/ddn-metadata-bootstrap.svg)](https://badge.fury.io/py/ddn-metadata-bootstrap)
+[![Python versions](https://img.shields.io/pypi/pyversions/ddn-metadata-bootstrap.svg)](https://pypi.org/project/ddn-metadata-bootstrap/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+AI-powered metadata enhancement for Hasura DDN (Data Delivery Network) schema files. Automatically generate descriptions and detect relationships in your YAML/HML schema definitions using advanced AI.
+
+## 🚀 Features
+
+- **🤖 AI-Powered Descriptions**: Generate natural language descriptions for schema elements using Anthropic's Claude
+- **🔗 Relationship Detection**: Automatically detect and generate foreign key relationships
+- **📊 Domain Analysis**: Intelligent analysis of business domains and terminology
+- **⚡ Batch Processing**: Process entire directories of schema files efficiently
+- **🎯 DDN Optimized**: Specifically designed for Hasura DDN schema structures
+- **🔧 Configurable**: Extensive configuration options via environment variables or CLI
+
+## 📦 Installation
+
+### From PyPI (Recommended)
+
+```bash
+pip install ddn-metadata-bootstrap
+```
+
+### From Source
+
+```bash
+git clone https://github.com/hasura/ddn-metadata-bootstrap.git
+cd ddn-metadata-bootstrap
+pip install -e .
+```
+
+## 🏃 Quick Start
+
+### 1. Set up your environment
+
+```bash
+export ANTHROPIC_API_KEY="your-anthropic-api-key"
+export METADATA_BOOTSTRAP_INPUT_DIR="./input"
+export METADATA_BOOTSTRAP_OUTPUT_DIR="./output"
+```
+
+### 2. Run the tool
+
+```bash
+# Process entire directory
+ddn-metadata-bootstrap
+
+# Or with CLI arguments
+ddn-metadata-bootstrap --input-dir ./schema --output-dir ./enhanced --api-key YOUR_KEY
+```
+
+### 3. Or use as a Python package
+
+```python
+from ddn_metadata_bootstrap import MetadataBootstrapper
+
+bootstrapper = MetadataBootstrapper(
+    api_key="your-anthropic-api-key",
+    use_case="E-commerce platform"
+)
+
+# Process directory
+bootstrapper.process_directory("./input", "./output")
+
+# Get statistics
+stats = bootstrapper.get_statistics()
+print(f"Generated {stats['relationships_generated']} relationships")
+```
+
+## 📝 Example
+
+### Input HML File
+```yaml
+kind: ObjectType
+version: v1
+definition:
+  name: User
+  fields:
+    - name: id
+      type: ID!
+    - name: email
+      type: String!
+    - name: created_at
+      type: String
+```
+
+### Enhanced Output
+```yaml
+kind: ObjectType
+version: v1
+definition:
+  name: User
+  description: |
+    Represents a user account in the system with authentication
+    and profile information.
+  fields:
+    - name: id
+      type: ID!
+      description: Unique identifier for the user account.
+    - name: email
+      type: String!
+      description: User's email address for authentication and communication.
+    - name: created_at
+      type: String
+      description: Timestamp when the user account was created.
+```
+
+## ⚙️ Configuration
+
+### Environment Variables
+
+All configuration can be done via environment variables with the `METADATA_BOOTSTRAP_` prefix:
+
+```bash
+# Required
+ANTHROPIC_API_KEY=your_api_key_here
+
+# Input/Output (choose one mode)
+METADATA_BOOTSTRAP_INPUT_DIR=./input
+METADATA_BOOTSTRAP_OUTPUT_DIR=./output
+
+# OR single file mode
+METADATA_BOOTSTRAP_INPUT_FILE=./schema.hml  
+METADATA_BOOTSTRAP_OUTPUT_FILE=./enhanced.hml
+
+# Optional
+METADATA_BOOTSTRAP_USE_CASE="E-commerce platform"
+METADATA_BOOTSTRAP_MODEL=claude-3-haiku-20240307
+METADATA_BOOTSTRAP_FIELD_DESC_MAX_LENGTH=120
+METADATA_BOOTSTRAP_KIND_DESC_MAX_LENGTH=250
+```
+
+### CLI Arguments
+
+```bash
+ddn-metadata-bootstrap --help
+
+Options:
+  --input-dir PATH              Input directory containing HML files
+  --output-dir PATH             Output directory for enhanced files
+  --input-file PATH             Single input HML file
+  --output-file PATH            Single output HML file
+  --api-key TEXT                Anthropic API key
+  --use-case TEXT               Business domain description
+  --model TEXT                  AI model to use
+  --field-max-length INTEGER    Max characters for field descriptions
+  --kind-max-length INTEGER     Max characters for kind descriptions
+  --verbose                     Enable verbose logging
+  --dry-run                     Validate configuration without processing
+```
+
+## 🔄 What It Does
+
+### 1. **Description Generation**
+- Analyzes schema element names and types
+- Generates contextual descriptions using AI
+- Respects character limits and style guidelines
+- Supports field-level and entity-level descriptions
+
+### 2. **Relationship Detection**
+- Detects foreign key patterns (e.g., `user_id`, `customer_id`)
+- Identifies shared fields between entities
+- Generates bidirectional relationship definitions
+- Supports cross-subgraph relationships
+
+### 3. **Domain Analysis**
+- Extracts business terminology from schema
+- Identifies domain-specific patterns
+- Provides contextual AI prompts
+- Supports domain-specific relationship hints
+
+### 4. **Schema Enhancement**
+- Preserves original schema structure
+- Adds descriptions without breaking functionality
+- Generates proper DDN relationship definitions
+- Maintains YAML formatting and comments
+
+## 🏗️ Architecture
+
+The tool is built with a modular architecture:
+
+- **`ai/`** - AI integration and description generation
+- **`schema/`** - Schema analysis and metadata collection  
+- **`relationships/`** - Relationship detection and generation
+- **`processors/`** - File and directory processing
+- **`utils/`** - Text processing, YAML handling, path utilities
+
+## 🧪 Testing
+
+```bash
+# Install dev dependencies
+pip install -e ".[dev]"
+
+# Run tests
+pytest
+
+# Run with coverage
+pytest --cov=ddn_metadata_bootstrap
+
+# Type checking
+mypy ddn_metadata_bootstrap/
+
+# Code formatting
+black ddn_metadata_bootstrap/
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🆘 Support
+
+- 📖 [Documentation](https://github.com/hasura/ddn-metadata-bootstrap#readme)
+- 🐛 [Bug Reports](https://github.com/hasura/ddn-metadata-bootstrap/issues)
+- 💬 [Discussions](https://github.com/hasura/ddn-metadata-bootstrap/discussions)
+
+## 🏷️ Version History
+
+See [CHANGELOG.md](CHANGELOG.md) for version history and breaking changes.
+
+## ⭐ Acknowledgments
+
+- Built for [Hasura DDN](https://hasura.io/ddn)
+- Powered by [Anthropic Claude](https://www.anthropic.com/)
+- Inspired by the GraphQL and OpenAPI communities
+
+---
+
+Made with ❤️ by the Hasura team
