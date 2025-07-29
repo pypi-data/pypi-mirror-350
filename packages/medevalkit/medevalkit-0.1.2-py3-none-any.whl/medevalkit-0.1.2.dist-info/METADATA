@@ -1,0 +1,63 @@
+Metadata-Version: 2.4
+Name: medevalkit
+Version: 0.1.2
+Summary: A toolkit for evaluating machine learning models for healthcare applications.
+Author: Wesley Yeung
+Author-email: corona-monody-7e@icloud.com
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: lifelines
+Requires-Dist: matplotlib
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: scikit-learn
+Requires-Dist: scikit-survival
+Requires-Dist: seaborn
+Dynamic: author
+Dynamic: author-email
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# MedEvalKit
+
+**MedEvalKit** is a modular and extensible Python toolkit for evaluating machine learning models, especially in healthcare applications. It provides unified APIs for computing metrics, calibration curves, bootstrap confidence intervals, and plotting diagnostic curves.
+
+## Features
+
+- Binary and multiclass classification support
+- Threshold optimization
+- Calibration error estimation
+- Bootstrap confidence intervals
+- ROC, PR, and calibration plotting
+- Simulate results at different incidence rates
+
+## Installation
+
+```bash
+pip install medevalkit
+```
+
+## Usage Example
+
+```python
+from medevalkit import Evaluate
+
+clf.fit(X_train, y_train)
+
+evaluator = Evaluate(clf, X_test, y_test, classification=True, threshold=threshold)
+report = evaluator.generate_report(bootstrap=True)
+print(report['text_report'])
+```
+
+## GitHub Repo
+
+Visit https://github.com/wesleyyeung/medevalkit for more examples.
+
+## License
+
+This project is licensed under the MIT License.
