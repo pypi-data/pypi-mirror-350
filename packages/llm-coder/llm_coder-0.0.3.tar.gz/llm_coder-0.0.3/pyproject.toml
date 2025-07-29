@@ -1,0 +1,45 @@
+[build-system]
+requires      = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name            = "llm-coder"
+version         = "0.0.3"
+description     = "llm による自立型 Cli コーディングエージェントライブラリ"
+readme          = "README.md"
+requires-python = ">=3.11"
+license         = { text = "MIT" }
+authors         = [{ name = "igtm", email = "llm-coder@igtm.link" }]
+
+# PyPI 用の推奨 Classifiers を追加
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+    "Environment :: Console",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+]
+
+dependencies = [
+    "litellm",   # llm-coder が依存するライブラリを列挙
+    "toml",
+    "structlog",
+    # 他に必要な依存関係があればここに追加
+]
+
+    [project.scripts]
+    llm-coder         = "llm_coder.cli:run_cli"
+    llm-coder-litellm = "llm_coder.litellm_cli:run_litellm_cli"
+
+    [project.urls]
+    "Homepage"    = "https://github.com/igtm/llm-coder"
+    "Bug Tracker" = "https://github.com/igtm/llm-coder/issues"
+
+[dependency-groups]
+dev = ["pytest>=8.3.5", "pytest-asyncio>=0.26.0", "ruff>=0.11.9"]
+
+[tool.setuptools.packages.find]
+include = ["llm_coder*"]
+exclude = ["playground*"]
