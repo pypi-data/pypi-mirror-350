@@ -1,0 +1,172 @@
+type: object
+additionalProperties: false
+required: [spec-version, name, version, display-name, description, docker-image, docker-credentials-name]
+properties:
+  spec-version:
+    type: string
+    enum: [v1.0]
+  name:
+    type: string
+  display-name:
+    type: string
+  version:
+    type: string
+  description:
+    type: string
+  docker-image:
+    type: string
+  docker-credentials-name:
+    type: string
+  instance-type:
+    type: string
+    enum:
+    - small
+    - large
+    - xlarge
+    - gpu
+  volume-size:
+    type: integer
+    minimum: 0
+  tags:
+    type: array
+    items:
+      type: string
+  groups:
+    type: array
+    items:
+      type: string
+  inputs:
+    type: array
+    items:
+      type: object
+      additionalProperties: false
+      required: [name, display-name, description, kind, required]
+      properties:
+        name:
+          type: string
+        display-name:
+          type: string
+        description:
+          type: string
+        kind:
+          type: string
+          enum: [dataset, dataset-array]
+        schema:
+          $ref: '#/Dataset'
+        required:
+          type: boolean
+        preprocessings:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required: [operation]
+            properties:
+              operation:
+                type: string
+              parameters:
+                type: object
+  credentials:
+    type: array
+    items:
+      type: object
+      additionalProperties: false
+      required: [name, display-name, description, required]
+      properties:
+        name:
+          type: string
+        display-name:
+          type: string
+        description:
+          type: string
+        schema:
+          type: object
+          properties:
+            type:
+              type: string
+        required:
+          type: boolean
+  parameters:
+    type: array
+    items:
+      type: object
+      additionalProperties: false
+      required: [name, display-name, description, required]
+      properties:
+        name:
+          type: string
+        display-name:
+          type: string
+        description:
+          type: string
+        schema:
+          type: object
+          properties:
+            type:
+              type: string
+          required: [type]
+        required:
+          type: boolean
+  deliverables:
+    type: array
+    items:
+      $ref: '#/Deliverable'
+
+Deliverable:
+  type: object
+  additionalProperties: false
+  required: [name, display-name, description, kind, required]
+  properties:
+    name:
+      type: string
+    display-name:
+      type: string
+    description:
+      type: string
+    kind:
+      type: string
+      enum: [dataset, dataset-array]
+    schema:
+      $ref: '#/Dataset'
+    required:
+      type: boolean
+      required: true
+
+Dataset:
+  type: object
+  additionalProperties: false
+  properties:
+    type:
+      oneOf:
+      - $ref: '#/DatasetType'
+      - $ref: '#/DatasetTypeArray'
+    categories:
+      type: array
+      items:
+        type: string
+    mission:
+      type: string
+      enum:
+      - all
+      - current
+      - others
+    source:
+      type: string
+      enum:
+      - data-manager
+      - map-service
+
+DatasetType:
+  type: string
+  enum:
+  - raster
+  - pcl
+  - mesh
+  - vector
+  - file
+  - image
+
+DatasetTypeArray:
+  type: array
+  items:
+    $ref: '#/DatasetType'
