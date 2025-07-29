@@ -1,0 +1,53 @@
+{% from "templates/initial/sros.j2" import if_name, declare_router with context %}
+
+{% macro ospf_config(af,ospf,vrf_interfaces,include_system) %}
+{% set pid = ospf.process|default(0) %}
+{% set ospfv = 'ospf3' if af=='ipv6' else 'ospf' %}
+
+{% macro ospf_interface(l) %}
+{{ declare_router(l,sub_path="/"+ospfv+"[ospf-instance="+pid|string + "]") }}
+  val:
+{%  if ospf.reference_bandwidth is defined %}
+   reference-bandwidth: {{ ospf.reference_bandwidth * 1000 }} # in kbps
+{%  endif %}
+   admin-state: enable
+   router-id: {{ ospf.router_id }}
+   area:
+   - area-id: "{{ l.ospf.area }}"
+     interface:
+     - interface-name: "{{ if_name(l,l.ifname) }}"
+{%  if l.ospf.passive|default(False) %}
+       passive: True
+{%  endif %}
+{%  if l.ospf.bfd|default(False) %}
+       bfd-liveness: {% if not ospf.strict_bfd|default(False) %}{ }
+{%     else +%}
+        strict: True
+{%      if ospf.strict_bfd_delay|default(0) > 0 %}
+        strict-mode-holddown: {{ ospf.strict_bfd_delay }}
+{%      endif %}
+{%     endif %}
+{%  endif %}
+       # mtu: 1500 # SRL defaults to 1500, now supporting global mtu settings
+{# TODO: Add support for multi-area adjacencies and 'secondary' interface-type #}
+{%  if l.ospf.network_type|default("") in ["broadcast","non-broadcast","point-to-point","point-to-multipoint"] %}
+       interface-type: "{{ 'p2mp-nbma' if l.ospf.network_type=='point-to-multipoint' else l.ospf.network_type }}"
+{%  endif %}
+{%  if l.ospf.cost is defined %}
+       metric: {{ l.ospf.cost }}
+{%  endif %}
+{% endmacro %}
+
+{% set system_if = { 'ifname': "system", 'ospf': { 'passive': True, 'area': ospf.area }, af: True } %}
+{% for l in vrf_interfaces+([system_if] if include_system else []) if 'ospf' in l and af in l %}
+{{ ospf_interface(l)}}
+{% endfor %}
+{% endmacro %}
+
+updates:
+{% if ospf.af.ipv4|default(False) %}
+{{ ospf_config('ipv4',ospf,interfaces,'ipv4' in loopback) }}
+{% endif %}
+{% if ospf.af.ipv6|default(False) %}
+{{ ospf_config('ipv6',ospf,interfaces,'ipv6' in loopback) }}
+{% endif %}

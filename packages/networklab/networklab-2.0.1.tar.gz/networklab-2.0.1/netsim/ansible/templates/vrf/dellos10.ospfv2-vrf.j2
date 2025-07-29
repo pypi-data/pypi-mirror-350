@@ -1,0 +1,26 @@
+{% from "templates/ospf/dellos10.macro.j2" import configure_ospf_interface,configure_ospf_default %}
+
+router ospf {{ vdata.vrfidx }} vrf {{ vname }}
+ router-id {{ vdata.ospf.router_id|default(ospf.router_id) }}
+ redistribute connected
+ redistribute imported-ospf-routes
+{% if bgp.as is defined %}
+ redistribute bgp {{ bgp.as }}
+{% endif %}
+{% if 'evpn' in module %}
+ redistribute l2vpn evpn
+{% endif %}
+{% if vdata.ospf.reference_bandwidth is defined %}
+ auto-cost reference-bandwidth {{ vdata.ospf.reference_bandwidth }}
+{% endif %}
+
+{{ configure_ospf_default(vdata.ospf) }}
+
+ timers lsa arrival 100
+ timers spf 10 50 500
+ timers throttle lsa all 100
+!
+{% for l in vdata.ospf.interfaces|default([]) if 'ospf' in l and 'ipv4' in l %}
+{{   configure_ospf_interface(l,vdata.vrfidx) }}
+{% endfor %}
+exit

@@ -1,0 +1,15 @@
+nve
+  source-interface {{ vxlan.vtep_interface|default('loopback 0') }}
+
+{% if vxlan.vlans is defined and vlans is defined %}
+{%   for vname in vxlan.vlans if vlans[vname].vni is defined %}
+{%     set vlan = vlans[vname] %}
+virtual-network {{ vlan.id }}
+  vxlan-vni {{ vlan.vni }}
+{%     if vlan.vtep_list is defined %}
+{%       for remote_vtep in vlan.vtep_list %}
+  remote-vtep {{remote_vtep}}
+{%       endfor %}
+{%     endif %}
+{%   endfor %}
+{% endif %}

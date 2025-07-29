@@ -1,0 +1,71 @@
+# bgp.policy default settings -- mostly attributes
+#
+---
+#
+# The device settings are mostly inherited from the 'routing' module, the only
+# extra settings you can specify here are 'bandwidth' and '_default_locpref'
+#
+devices:
+  eos.features.bgp:
+    bandwidth:
+      in: int
+      out: int
+  frr.features.bgp:
+    _default_locpref: True
+    bandwidth:
+      in: int
+      out: int
+  cumulus:
+    copy: frr
+  dellos10:
+    _default_locpref: True
+  iosv.features.bgp:
+    _default_locpref: True
+    bandwidth:
+      in: auto
+  cat8000v:
+    copy: iosv
+  csr:
+    copy: iosv
+  iol:
+    copy: iosv
+  ioll2:
+    copy: iosv
+  junos.features.bgp:
+    _default_locpref: False
+  vptx:
+    copy: junos
+  vsrx:
+    copy: junos
+  vmx:
+    copy: junos
+  vjunos-switch:
+    copy: junos
+  vjunos-router:
+    copy: junos
+  sros.features.bgp:
+    bandwidth:
+      in: auto
+      out: auto
+
+bgp:
+  attributes:
+    p_attr:                                               # BGP policy attributes
+      direct: [ weight, prefix_filter, as_filter ]        # Things that can be applied directly to a neighbor
+      node: [ locpref ]
+      link: [ locpref, med ]
+      interface: [ locpref, med, prepend, weight ]
+      compound:                                           # Things that have to be applied to in/out policy
+        locpref: in
+        med: out
+        prepend: out
+        bandwidth: both
+
+    interface:
+      policy:
+        in: str
+        out: str
+      bandwidth:
+        _alt_types: [ autobw ]
+        in: autobw
+        out: autobw
