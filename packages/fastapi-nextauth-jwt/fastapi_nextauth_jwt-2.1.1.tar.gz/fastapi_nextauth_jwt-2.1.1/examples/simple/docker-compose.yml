@@ -1,0 +1,17 @@
+services:
+  fastapi:
+    build:
+      context: ../../
+      dockerfile: examples/simple/fastapi/Dockerfile
+    network_mode: "host"
+    volumes:
+      - ./fastapi:/code
+  nextjs:
+    build: ./nextjs
+    network_mode: "host"
+    volumes:
+      - ./nextjs:/app
+      - nodemodules:/app/node_modules
+
+volumes:
+  nodemodules: {}
