@@ -1,0 +1,87 @@
+[build-system]
+build-backend = "hatchling.build"
+requires = ["hatchling", "hatch-vcs"]
+
+[project]
+name = "pyKOOH"
+version = "0.5.0"
+authors = [{ name = "Albert Kottke", email = "albert.kottke@gmail.com" }]
+description = "Efficient implementatins of the Konno Ohmachi filter in Python."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = ["numpy", "numba", "setuptools"]
+
+[project.urls]
+Homepage = "https://github.com/arkottke/pykooh"
+
+[project.optional-dependencies]
+# No optional dependencies needed
+
+[tool.hatch.build.targets.sdist]
+exclude = ["/*.yml", "/.*", "/.github", "/docs"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pykooh"]
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.ruff]
+exclude = ["docs"]
+# Same as Black.
+line-length = 88
+indent-width = 4
+
+target-version = "py310"
+
+extend-include = ["*.ipynb"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "Q", "I"]
+ignore = ["E203"]
+
+[tool.hatch.envs.style]
+detached = true
+dependencies = ["black[colorama,jupyter]", "ruff"]
+
+# Format with black first to wrap comments
+[tool.hatch.envs.style.scripts]
+fmt = ['black .', 'ruff check --fix .']
+
+[tool.hatch.envs.test]
+dependencies = [
+	"numba",
+	"coverage[toml]",
+	"jupyter_client",
+	"nbconvert",
+	"nbformat",
+	"obspy",
+	"pytest",
+	"pytest-cov",
+]
+
+[tool.hatch.envs.test.env-vars]
+# Disable Numba during tests to get coverage report
+NUMBA_DISABLE_JIT = "1"
+
+[[tool.hatch.envs.test.matrix]]
+python = ["3.10", "3.11", "3.12"]
+
+[tool.hatch.envs.test.scripts]
+run-coverage = "pytest --cov-config=pyproject.toml --cov=pkg --cov=tests"
+run-coverage-xml = "run-coverage --cov-report xml"
+run = "run-coverage --no-cov"
+
+[tool.hatch.envs.docs]
+detached = true
+dependencies = [
+	"grip",  # GitHub-flavored markdown viewer
+]
+
+[tool.hatch.envs.docs.scripts]
+serve = "grip README.md -b localhost:6419"
+preview = "serve"
