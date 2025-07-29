@@ -1,0 +1,109 @@
+Metadata-Version: 2.4
+Name: fastapi-pypendency
+Version: 0.1.2
+Summary: Pypendency integration with FastAPI
+Home-page: https://github.com/jdiazromeral/fastapi-pypendency
+Author: Javier Díaz-Romeral Torralbo
+Author-email: javierdiazromeral@gmail.com
+License: MIT License
+Platform: any
+Classifier: Environment :: Web Environment
+Classifier: Framework :: FastAPI
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Software Development :: Quality Assurance
+Classifier: Topic :: Utilities
+Requires-Python: >=3.13
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pypendency>=0.5.0
+Requires-Dist: fastapi>=0.115.5
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license
+Dynamic: license-file
+Dynamic: platform
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# fastapi-pypendency
+
+Pypendency integration with FastAPI.
+
+Based on
+- [Flask-Pypendency](https://pypi.org/project/Flask-Pypendency/)
+- [Pypendency](https://pypi.org/project/Pypendency/)
+
+
+## Installation
+
+```bash
+pip install fastapi-pypendency
+```
+
+## Usage
+
+Configure your FastAPI app with the `Pypendency` class:
+```python
+import os
+from fastapi import FastAPI
+from fastapi_pypendency import Pypendency
+
+
+app = FastAPI()
+
+Pypendency(
+    app,
+    "_dependency_injection",
+    [os.path.dirname(os.path.abspath(__file__))],  # ["src"],
+)
+```
+
+A sample controller:
+```python
+# get_user_controller.py
+class GetUserController:
+    def get(self) -> dict:
+        return {"user": "John Doe"}
+```
+
+```yaml
+# _dependency_injection/get_user_controller.yaml
+GetUserController:
+  fqn: get_user_controller.GetUserController
+```
+
+
+On your router:
+```python
+from fastapi import APIRouter
+from fastapi import Request
+from fastapi_pypendency import ContainerBuilder
+from fastapi_pypendency import get_container
+from get_user_controller import GetUserController
+
+
+router = APIRouter(
+    prefix="/user",
+    tags=["user"],
+    dependencies=[],
+    responses={404: {"description": "Not found"}},
+)
+
+@router.get("/")
+def get_user(request: Request):
+    container: ContainerBuilder = get_container(request)
+    controller: GetUserController = container.get("GetUserController")
+    return {"id": controller.get()}
+
+```
