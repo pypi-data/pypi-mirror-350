@@ -1,0 +1,31 @@
+category: Diagnostics
+title: $MODEL_NAME CAPE ratio plot
+description: |
+  Extracts data required for, and calculates the CAPE ratio diagnostic, plotting on a map.
+
+steps:
+  - operator: read.read_cubes
+    file_paths: $INPUT_PATHS
+
+  - operator: convection.cape_ratio
+    SBCAPE:
+      operator: filters.filter_cubes
+      constraint:
+        operator: constraints.generate_var_constraint
+        varname: m01s20i114
+    MUCAPE:
+      operator: filters.filter_cubes
+      constraint:
+        operator: constraints.generate_var_constraint
+        varname: m01s20i112
+    MUCIN:
+      operator: filters.filter_cubes
+      constraint:
+        operator: constraints.generate_var_constraint
+        varname: m01s20i113
+    MUCIN_thresh: -75
+
+  - operator: write.write_cube_to_nc
+    overwrite: True
+
+  - operator: plot.spatial_contour_plot
