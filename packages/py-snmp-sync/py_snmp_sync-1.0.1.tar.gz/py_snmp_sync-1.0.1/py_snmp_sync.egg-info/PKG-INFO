@@ -1,0 +1,107 @@
+Metadata-Version: 2.4
+Name: py-snmp-sync
+Version: 1.0.1
+Summary: Lightweight synchronous SNMPv1 Client implemented as a PySNMP wrapper optimized for sequential queries
+Author: Ircama
+License-Expression: EUPL-1.2
+Project-URL: Homepage, https://github.com/Ircama/py-snmp-sync
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENCE.txt
+Requires-Dist: pysnmp>=7.0.0
+Dynamic: license-file
+
+# py-snmp-sync
+
+[![PyPI](https://img.shields.io/pypi/v/py-snmp-sync.svg?maxAge=2592000)](https://pypi.org/project/py-snmp-sync/)
+[![PyPI download month](https://img.shields.io/pypi/dm/py-snmp-sync.svg)](https://pypi.python.org/pypi/py-snmp-sync/)
+
+**Lightweight synchronous SNMPv1 Client implemented as a PySNMP wrapper optimized for sequential queries**
+
+---
+
+## Features
+
+- **Synchronous API** for straightforward SNMPv1 GET operations
+- Lightweight wrapper around PySNMP's core components
+- Can be used to interface Epson printers
+
+---
+
+## Installation
+
+```bash
+pip install py-snmp-sync
+```
+
+## Quick Start
+
+```python
+from py_snmp_sync import (
+    SyncUdpTransportTarget, sync_get_cmd, ObjectIdentity, CommunityData
+)
+
+target = SyncUdpTransportTarget(('demo.pysnmp.com', 161))
+oid = ObjectIdentity('1.3.6.1.2.1.1.1.0')
+
+# Perform SNMP GET request
+error, status, index, binds = sync_get_cmd(
+    CommunityData("public", mpModel=0),
+    target,
+    oid
+)
+
+if not error and not status:
+    for name, value in binds:
+        print(f"{name.prettyPrint()} = {value.prettyPrint()}")
+```
+
+## Usage
+
+### Basic Configuration
+
+```python
+transport = SyncUdpTransportTarget(
+    (host, 161), 
+    timeout=2, 
+    retries=3
+)
+community = CommunityData("public", mpModel=0)  # SNMPv1
+```
+
+- `timeout`: Response wait timeout (seconds)
+- `retries`: Number of retry attempts
+
+Alternatively, `community` can be a string (e.g., `"public"`).
+
+`oid` can be an `ObjectIdentity()` (e.g., `ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)` or `ObjectIdentity('1.3.6.1.2.1.1.1.0')`), or a string (e.g., `"1.3.6.1.2.1.1.1.0"`).
+
+`sync_get_cmd()` returns a tuple similar to pysnmp `get_cmd()`: `(error_indication, error_status, error_index, var_binds)` and supports multiple OIDs per request.
+
+### Batch operations
+
+```python
+oids = [
+    ObjectIdentity('1.3.6.1.2.1.1.1.0'),
+    ObjectIdentity('1.3.6.1.2.1.1.5.0')
+]
+
+with SyncUdpTransportTarget(('device-ip', 161)) as transport:
+    for oid in oids:
+        error, status, _, binds = sync_get_cmd(community, transport, oid)
+        # Handle response
+```
+
+## Contributing
+
+Contributions welcome! Please follow standard guidelines:
+
+- Fork the repository
+
+- Create a feature branch
+
+- Submit a Pull Request
+
+## License
+
+EUPL-1.2 License - See LICENSE for details.
