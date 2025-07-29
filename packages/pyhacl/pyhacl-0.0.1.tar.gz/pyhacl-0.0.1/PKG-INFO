@@ -1,0 +1,39 @@
+Metadata-Version: 2.4
+Name: pyhacl
+Version: 0.0.1
+Summary: Python binding to the HACL* library
+Author-email: Julien Castiaux <julien.castiaux@mailfence.com>
+License-Expression: EUPL-1.2
+Project-URL: Download, https://pypi.org/project/pyhacl/
+Project-URL: Repository, https://codeberg.org/drlazor8/pyhacl
+Classifier: Development Status :: 2 - Pre-Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Security :: Cryptography
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Provides-Extra: dev
+Requires-Dist: Cython; extra == "dev"
+Requires-Dist: parameterized; extra == "dev"
+Requires-Dist: setuptools>=64.0.0; extra == "dev"
+Dynamic: license-file
+
+# pyhacl
+
+Python binding to the HACL* library
+
+## Build
+
+Install the necessary tools for building hacl*: cmake, ninja and clang.
+
+Move inside the hacl-packages submodule and run `./mach build --release`, it
+compiles the files necessary for pyhacl.
+
+Move back in the pyhacl project root to create a virtual environment and install
+the project inside: `python3 -m venv .venv && .venv/bin/pip install -e .[dev]`.
+
+Starting here you should be able to use the `.venv/bin/pyhacl` binary.
+
+To recompile the cython files run `.venv/bin/python setup.py build_ext --inplace`.
