@@ -1,0 +1,77 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "say-hi-mcp"
+version = "0.1.14"
+description = "一个简单的MCP Server示例，提供向不同人打招呼的工具"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [
+    {name = "Your Name", email = "your.email@example.com"}
+]
+maintainers = [
+    {name = "Your Name", email = "your.email@example.com"}
+]
+keywords = ["mcp", "server", "chat", "ai", "anthropic"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Communications :: Chat",
+]
+
+dependencies = [
+    "black>=25.1.0",
+    "isort>=6.0.1",
+    "mcp[cli]>=1.2.0",
+    "pydantic>=2.0.0",
+    "pytest>=8.3.5",
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/say-hi-mcp"
+Repository = "https://github.com/yourusername/say-hi-mcp.git"
+Issues = "https://github.com/yourusername/say-hi-mcp/issues"
+Changelog = "https://github.com/yourusername/say-hi-mcp/blob/main/CHANGELOG.md"
+
+[project.scripts]
+say-hi-mcp = "say_hi_mcp.server:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0",
+    "isort>=5.12",
+    "mypy>=1.0",
+    "flake8>=6.0",
+]
+
+[tool.setuptools]
+packages = ["say_hi_mcp"]
+
+[tool.setuptools.package-data]
+say_hi_mcp = ["py.typed"]
+
+[tool.black]
+line-length = 88
+target-version = ['py310']
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
