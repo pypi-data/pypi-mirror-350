@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sage-web-app"
+version = "0.1.0"
+description = "Web applications for Sage MS/MS search engine"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+    {name = "Patrick Garrett", email = "pgarrett@scripps.edu"}
+]
+dependencies = [
+    "pandas",
+    "requests",
+    "streamlit",
+    "streamlit-permalink-pg",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "black",
+]
+
+[project.scripts]
+sage-app = "sage_web_apps.run:run_sage_app"
+sage-config = "sage_web_apps.run:run_input_app"
+
+[tool.setuptools]
+packages = ["sage_web_apps"]
+package-dir = {"" = "src"}
+
+[tool.black]
+line-length = 88
+target-version = ["py39"]
+
+[tool.isort]
+profile = "black"
