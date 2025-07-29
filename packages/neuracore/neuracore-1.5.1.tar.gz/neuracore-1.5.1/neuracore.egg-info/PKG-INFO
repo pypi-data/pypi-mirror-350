@@ -1,0 +1,162 @@
+Metadata-Version: 2.4
+Name: neuracore
+Version: 1.5.1
+Summary: Neuracore Client Library
+Home-page: https://github.com/neuraco/neuracore
+Author: Stephen James
+Author-email: stephen@neuraco.com
+Keywords: robotics machine-learning ai client-library
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy
+Requires-Dist: requests>=2.31.0
+Requires-Dist: pillow>=10.0.0
+Requires-Dist: pyyaml>=6.0.1
+Requires-Dist: tqdm>=4.66.0
+Requires-Dist: requests-oauthlib
+Requires-Dist: pydantic>=2.10
+Requires-Dist: av
+Requires-Dist: aiortc
+Requires-Dist: aiohttp-sse-client
+Requires-Dist: numpy-stl
+Provides-Extra: examples
+Requires-Dist: matplotlib>=3.3.0; extra == "examples"
+Requires-Dist: mujoco==2.3.7; extra == "examples"
+Requires-Dist: dm_control==1.0.14; extra == "examples"
+Requires-Dist: pyquaternion>=0.9.5; extra == "examples"
+Provides-Extra: mjcf
+Requires-Dist: mujoco>3; extra == "mjcf"
+Provides-Extra: ml
+Requires-Dist: torchserve; extra == "ml"
+Requires-Dist: nvgpu; extra == "ml"
+Requires-Dist: torch; extra == "ml"
+Requires-Dist: torchvision; extra == "ml"
+Requires-Dist: torch-model-archiver; extra == "ml"
+Requires-Dist: transformers; extra == "ml"
+Provides-Extra: dev
+Requires-Dist: pytest>=6.2.5; extra == "dev"
+Requires-Dist: pytest-cov>=2.12.1; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.15.1; extra == "dev"
+Requires-Dist: twine>=3.4.2; extra == "dev"
+Requires-Dist: requests-mock>=1.9.3; extra == "dev"
+Requires-Dist: pre-commit; extra == "dev"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license-file
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# Neuracore Python Client
+
+Neuracore is a powerful robotics and machine learning client library for seamless robot data collection, model deployment, and interaction.
+
+## Features
+
+- Easy robot initialization and connection
+- Streaming data logging
+- Model endpoint management
+- Local and remote model support
+- Flexible dataset creation
+
+## Installation
+
+```bash
+pip install neuracore
+```
+
+## Quick Start
+
+Ensure you have an account at [neuracore.app](https://www.neuracore.app/)
+
+### Authentication
+
+```python
+import neuracore as nc
+
+# This will save your API key locally
+nc.login()
+```
+
+### Robot Connection
+
+```python
+# Connect to a robot
+nc.connect_robot(
+    robot_name="MyRobot", 
+    urdf_path="/path/to/robot.urdf"
+)
+```
+
+You can also upload MuJoCo MJCF rather than URDF. 
+For that, ensure you install extra dependencies: `pip install neuracore[mjcf]`.
+
+```python
+nc.connect_robot(
+    robot_name="MyRobot", 
+    mjcf_path="/path/to/robot.xml"
+)
+```
+
+### Data Logging
+
+```python
+# Log joint positions
+nc.log_joint_positions({
+    'joint1': 0.5, 
+    'joint2': -0.3
+})
+
+# Log RGB camera image
+nc.log_rgb("top_camera", image_array)
+```
+
+## Documentation
+
+ - [Creating Custom Algorithms](./docs/creating_custom_algorithms.md)
+ - [Limitations](./docs/limitations.md)
+
+## Development
+
+To set up for development:
+
+```bash
+git clone https://github.com/neuraco/neuracore
+cd neuracore
+pip install -e .[dev]
+```
+
+## Environment Variables
+
+A few environment variables effect how this library operates, they are generally prefixed with `NEURACORE_` and are case insensitive
+
+ | Variable                                     | Function                                                                                                            | Valid Values                               | Default Value                   |
+ | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ | ------------------------------- |
+ | `NEURACORE_REMOTE_RECORDING_TRIGGER_ENABLED` | Allows you to disable other machines starting a recording when logging. this does not affect the live data          | `true`/`false`                             | `true`                          |
+ | `NEURACORE_LIVE_DATA_ENABLED`                | Allows you to disable the streaming of data for live visualizations from this node. This does not affect recording. | `true`/`false`                             | `true`                          |
+ | `NEURACORE_API_URL`                          | The base url used to contact the neuracore platform.                                                                | A url e.g. `https://api.neuracore.app/api` | `https://api.neuracore.app/api` |
+
+## Testing
+
+```bash
+export NEURACORE_API_URL=http://localhost:8000/api
+pytest tests/
+```
+
+## Contributing
+
+Contributions are welcome!
