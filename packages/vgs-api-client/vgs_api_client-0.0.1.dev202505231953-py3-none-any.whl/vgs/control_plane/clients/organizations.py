@@ -1,0 +1,2 @@
+class Organization(object):
+    pass
