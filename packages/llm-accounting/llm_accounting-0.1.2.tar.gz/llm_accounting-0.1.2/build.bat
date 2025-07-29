@@ -1,0 +1,1 @@
+.venv\Scripts\activate && python -m build && twine upload --username __token__ --password "$PYPI_TOKEN" dist/*
