@@ -1,0 +1,58 @@
+Metadata-Version: 2.4
+Name: uiya-yutto
+Version: 0.0.2rc2
+Summary: 🧊 一个可爱且任性的 B 站视频下载器
+Project-URL: Homepage, https://github.com/yutto-dev/yutto
+Project-URL: Documentation, https://github.com/yutto-dev/yutto
+Project-URL: Repository, https://github.com/yutto-dev/yutto
+Project-URL: Issues, https://github.com/yutto-dev/yutto/issues
+Author-email: Nyakku Shigure <sigure.qaq@gmail.com>, XnneHang <xnnehang@gmail.com>
+License: GPL-3.0
+License-File: LICENSE
+Keywords: bilibili,danmaku,downloader,python,video
+Classifier: Environment :: Console
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Typing :: Typed
+Requires-Python: >=3.10
+Requires-Dist: aiofiles>=24.1.0
+Requires-Dist: biliass==2.2.2
+Requires-Dist: colorama>=0.4.6; sys_platform == 'win32'
+Requires-Dist: dict2xml>=1.7.6
+Requires-Dist: httpx[http2,socks]>=0.28.1
+Requires-Dist: pydantic>=2.11.2
+Requires-Dist: returns>=0.25.0
+Requires-Dist: tomli>=2.0.2; python_version < '3.11'
+Requires-Dist: typing-extensions>=4.13.1
+Provides-Extra: mcp
+Requires-Dist: mcp[cli]>=1.6.0; extra == 'mcp'
+Description-Content-Type: text/markdown
+
+# uiya-yutto
+
+我克隆了 [yutto](https://github.com/yutto-dev/yutto) 并且在此基础上新增一些特性, 因为并不是所有特性值得合入上游分支, 但是那些特性对我来说可能是必要的, 所以我自己偷偷 release 一个分支.
+
+起点是 yutto 的 `#497` PR. 我也会跟踪一些上游的更新, 但并不是全部.
+
+## 变更日志
+
+- [x] `--skip-download` 解析但不下载, 以 Logger 的形式.
+- [x] 支持包含复杂 query 链接的 `ugc_vido_list` p 的解析, 防止总是下载 `p1`. (已合入上游)
+- [x] `--ffmpeg-path` 支持指定 local_ffmpeg, 而并非总是使用环境变量下的 `ffmpeg`.
+- [x] release v0.0.1
+- [x] 重定义部分为 INFO 的 Logger 为 Custom.
+- [x] release v0.0.2-pre
+- [x] 支持 ugc_video 不同 p 不互相覆盖, 以 page 作为标识符, video_name 作为文件名.
+- [x] release v0.0.2-pre.1
+- [x] 不在 Logger 中打印 page.
+- [x] release v0.0.2-pre.2
+
+
+
