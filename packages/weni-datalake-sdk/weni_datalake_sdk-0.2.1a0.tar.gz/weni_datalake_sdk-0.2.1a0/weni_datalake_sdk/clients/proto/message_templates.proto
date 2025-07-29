@@ -1,0 +1,37 @@
+syntax = "proto3";
+package message_template;
+import "google/protobuf/struct.proto";
+
+service DatalakeManagerService {
+    rpc InsertMessageTemplateData (InsertMessageTemplateRequest) returns (InsertMessageTemplateResponse);
+    rpc InsertMessageTemplateStatusData (InsertMessageTemplateStatusRequest) returns (InsertMessageTemplateStatusResponse);
+  }
+  
+  message InsertMessageTemplateRequest {
+    string contact_urn = 1;
+    string channel = 2;
+    string language = 3;
+    string template_name = 4;
+    string template_type = 5;
+    string template_id = 6;
+    string message_id = 7;
+    string direction = 8;
+    string template_variables = 9;
+    string text = 10;
+    google.protobuf.Struct data = 11;
+  }
+  
+  message InsertMessageTemplateResponse {
+    string status = 1;
+  }
+
+  message InsertMessageTemplateStatusRequest {
+    string status = 1;
+    string message_id = 2;
+    string template_id = 3;
+    google.protobuf.Struct data = 4;
+  }
+  
+  message InsertMessageTemplateStatusResponse {
+    string status = 1;
+  }
