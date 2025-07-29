@@ -1,0 +1,27 @@
+[package]
+name = "py-horned-owl"
+version = "1.2.1-dev"
+authors = ["Janna Hastings <j.hastings@ucl.ac.uk>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+name="pyhornedowl"
+crate-type=["cdylib"]
+
+[dependencies.pyo3]
+version = "0.21"
+features = ["abi3-py37", "extension-module", "experimental-inspect", "multiple-pymethods"]
+
+[dependencies]
+#horned-owl = "^1.0"
+#horned-bin = "^1.0"
+horned-owl = { git = "https://github.com/phillord/horned-owl", branch = "devel" }
+horned-bin = { git = "https://github.com/phillord/horned-owl", branch = "devel" }
+py-horned-owl-reasoner = { path = "../py-horned-owl/lib/reasoner" }
+curie = "0.1.2"
+libloading = "0.8"
+
+[profile.dev]
+opt-level=3
