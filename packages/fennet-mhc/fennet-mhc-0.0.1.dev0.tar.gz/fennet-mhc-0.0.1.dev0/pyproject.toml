@@ -1,0 +1,103 @@
+[build-system]
+requires = ["setuptools == 63.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fennet-mhc"
+requires-python = ">=3.10,<3.12"
+dynamic = ["version", "dependencies", "optional-dependencies"]
+
+authors = [
+  {name = "Wen-Feng Zeng", email = "zengwenfeng@westlake.edu.cn"},
+  {name = "Jin-Tao Cheng", email = "1274873858@qq.com"}
+]
+maintainers = [
+  {name = "Wen-Feng Zeng", email = "zengwenfeng@westlake.edu.cn"},
+  {name = "Jin-Tao Cheng", email = "1274873858@qq.com"}
+]
+description = "Fennet-MHC"
+readme = "README.md"
+license = {file = "LICENSE.txt"}
+keywords = [
+  "contrastive learning", "protein language model",
+  "immunopeptidomics", "mass spectrometry",
+  "HLA", "MHC", "peptide-MHC binding prediction"
+]
+classifiers = [
+  "Development Status :: 1 - Planning",
+  "Programming Language :: Python"
+]
+# __classifiers__ = [
+#     "Development Status :: 1 - Planning",
+#     # "Development Status :: 2 - Pre-Alpha",
+#     # "Development Status :: 3 - Alpha",
+#     # "Development Status :: 4 - Beta",
+#     # "Development Status :: 5 - Production/Stable",
+#     # "Development Status :: 6 - Mature",
+#     # "Development Status :: 7 - Inactive"
+#     "Intended Audience :: Science/Research",
+#     "License :: OSI Approved :: Apache Software License",
+#     "Operating System :: OS Independent",
+#     "Programming Language :: Python :: 3",
+#     "Topic :: Scientific/Engineering :: Bio-Informatics",
+# ]
+
+[project.urls]
+Homepage = "https://fennomix.lab.westlake.edu.cn"
+Documentation = "https://readthedocs.org"
+Repository = "https://github.com/FennOmix/fennet.mhc.git"
+"Bug Tracker" = "https://github.com/FennOmix/fennet.mhc/issues"
+Changelog = "https://github.com/FennOmix/fennet.mhc/blob/main/CHANGELOG.md"
+
+[project.scripts]
+fennet-mhc = "fennet_mhc.cli:run"
+
+# [project.gui-scripts]
+# fennet-gui = "fennet:main_gui"
+
+# [project.entry-points."fennet_mhc"]
+# fennet_mhc = "fennet_mhc:main"
+
+[tool.setuptools]
+py-modules = []
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["fennet*"]
+
+[tool.setuptools.dynamic]
+# https://stackoverflow.com/a/73600610
+dependencies = {file = ["requirements/requirements_loose.txt"]}
+optional-dependencies.stable = { file = ["requirements/_requirements.freeze.txt"] }
+optional-dependencies.tests = { file = ["requirements/requirements_tests.txt"] }
+optional-dependencies.docs = { file = ["requirements/requirements_docs.txt"] }
+optional-dependencies.development = { file = [
+    "requirements/requirements_development.txt",
+    "requirements/requirements_tests.txt",
+    "requirements/requirements_docs.txt"] }
+
+version = {attr = "fennet_mhc.__version__"}
+
+[tool.ruff.format]
+# Use `\n` line endings for all files
+line-ending = "lf"
+
+[tool.ruff.lint]
+select =  [
+    # pycodestyle
+    "E",
+    # Pyflakes
+    "F",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
+]
+ignore = [
+    "E501",  # Line too long  (ruff wraps code, but not docstrings)
+    "B028",  #  No explicit `stacklevel` keyword argument found (for warnings)
+]
