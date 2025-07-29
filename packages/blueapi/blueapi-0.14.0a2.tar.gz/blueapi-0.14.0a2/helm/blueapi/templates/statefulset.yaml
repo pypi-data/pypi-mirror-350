@@ -1,0 +1,143 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "blueapi.fullname" . }}
+  labels:
+    {{- include "blueapi.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "blueapi.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+      {{- if ((.Values.worker.logging).graylog).enabled }}
+        fluentd-ignore: "true"
+      {{- end }}
+      {{- if .Values.restartOnConfigChange }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      {{- end }}
+      {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "blueapi.selectorLabels" . | nindent 8 }}
+    spec:
+      hostNetwork: {{ .Values.hostNetwork }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "blueapi.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      volumes:
+      - name: worker-config
+        projected:
+          sources:
+          - configMap:
+              name: {{ include "blueapi.fullname" . }}-config
+      {{- if .Values.initContainer.enabled }}
+      - name: init-config
+        projected:
+          sources:
+          - configMap:
+              name: {{ include "blueapi.fullname" . }}-initconfig
+      - name: scratch-host
+        hostPath:
+          path: {{ required "initContainer enabled but no worker.scratch.root!" (.Values.worker.scratch).root }}
+          type: Directory
+      - name: venv
+        emptyDir:
+          sizeLimit: 5Gi
+      {{- end }}
+      {{- if .Values.debug.enabled }}
+      - name: home  # Required for vscode to install plugins
+        emptyDir:
+          sizeLimit: 500Mi
+      - name: nslcd  # Shared volume between main and sidecar container
+        emptyDir:
+          sizeLimit: 5Mi
+      {{- end }}      
+      {{- if .Values.initContainer.enabled }}
+      initContainers:
+      - name: setup-scratch
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+          {{- .Values.initResources | default .Values.resources | toYaml | nindent 12 }}
+        command: [/bin/sh, -c]
+        args:
+          - |
+            echo "Setting up scratch area"
+            blueapi -c /config/initconfig.yaml setup-scratch
+            if [ $? -ne 0 ]; then echo 'Blueapi failed'; exit 1; fi;
+            echo "Exporting venv as artefact"
+            cp -r /venv/* /artefacts
+        volumeMounts:
+          - name: init-config
+            mountPath: "/config"
+            readOnly: true
+          - name: scratch-host
+            mountPath: {{ .Values.worker.scratch.root }}
+            mountPropagation: HostToContainer
+          - name: venv
+            mountPath: /artefacts
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}{{ ternary "-debug" "" .Values.debug.enabled }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: worker-config
+              mountPath: "/config"
+              readOnly: true
+            {{- if .Values.initContainer.enabled }}
+            - name: scratch-host
+              mountPath: {{ .Values.worker.scratch.root }}
+              mountPropagation: HostToContainer
+            - name: venv
+              mountPath: /venv
+            {{- end }}
+            {{- if .Values.debug.enabled }}
+            - mountPath: /home
+              name: home
+            - mountPath: /var/run/nslcd
+              name: nslcd
+            {{- end }}
+          {{- if not .Values.debug.enabled }}
+          args:
+            - "-c"
+            - "/config/config.yaml"
+            - "serve"
+          {{ end }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "blueapi.fullname" . }}-otel-config
+          env:
+            {{- toYaml .Values.extraEnvVars | nindent 12 }}
+        {{- if .Values.debug.enabled }}
+        - name: debug-account-sync
+          image: ghcr.io/diamondlightsource/account-sync-sidecar:2.6.0-alpha
+          volumeMounts:
+          # This allows the nslcd socket to be shared between the main container and the sidecar
+          - mountPath: /var/run/nslcd
+            name: nslcd
+        {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
