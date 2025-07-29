@@ -1,0 +1,235 @@
+Metadata-Version: 2.4
+Name: MagicConvert
+Version: 0.1.3
+Summary: MagicConvert is a Python library that converts various document formats (PDF, DOCX, XLSX, PPTX, HTML, Images) to markdown text. Features include OCR support, automatic format detection, and URL/file stream handling.
+Author-email: Muhammad Noman <muhammadnomanshafiq76@gmail.com>
+Maintainer-email: Muhammad Noman <muhammadnomanshafiq76@gmail.com>
+License-Expression: MIT
+Project-URL: Homepage, https://github.com/MuhammadNoman76/MagicConvert
+Project-URL: Repository, https://github.com/MuhammadNoman76/MagicConvert
+Project-URL: Issue Tracker, https://github.com/MuhammadNoman76/MagicConvert/issues
+Project-URL: LinkedIn, https://www.linkedin.com/in/muhammad-noman76
+Keywords: document-conversion,markdown,ocr,pdf-to-markdown,docx-to-markdown,xlsx-to-markdown,pptx-to-markdown,html-to-markdown,image-to-text,python-library,text-extraction,document-processing,format-detection,tesseract-ocr,file-conversion,text-processing
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Text Processing :: General
+Classifier: Topic :: Office/Business
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: mammoth>=1.4.0
+Requires-Dist: markdownify>=0.11.0
+Requires-Dist: pandas>=1.0.0
+Requires-Dist: pdfminer.six>=20200517
+Requires-Dist: python-pptx>=0.6.18
+Requires-Dist: puremagic>=1.11
+Requires-Dist: requests>=2.25.0
+Requires-Dist: beautifulsoup4>=4.9.0
+Requires-Dist: charset-normalizer>=2.0.0
+Requires-Dist: Pillow>=8.0.0
+Requires-Dist: pytesseract>=0.3.0
+Requires-Dist: openpyxl>=3.0.0
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0; extra == "dev"
+Requires-Dist: pytest-cov>=2.0; extra == "dev"
+Requires-Dist: black>=21.0; extra == "dev"
+Requires-Dist: isort>=5.0; extra == "dev"
+Requires-Dist: flake8>=3.8; extra == "dev"
+Dynamic: license-file
+
+# MagicConvert: The Ultimate File-to-Markdown Conversion Library
+
+**MagicConvert** is a powerful and user-friendly Python library designed to convert various file formats into **Markdown**. Whether you're dealing with documents, images, web content, or spreadsheets, MagicConvert makes the process effortless. Equipped with built-in OCR (Optical Character Recognition), it can even extract text from images, making it an essential tool for developers, researchers, and anyone working with Markdown workflows. It’s especially helpful for **LLM (Large Language Model)** integrations!
+
+<p align="center">
+  <img src="https://i.imgur.com/Gm7hFzR_d.webp?maxwidth=760&fidelity=grand" alt="MagicConvert Logo" width="300" height="300">
+</p>
+
+## **✨ Why Choose MagicConvert?**
+
+MagicConvert is your go-to tool for file-to-Markdown conversion. Here’s what makes it special:
+
+1. **Supports Multiple File Formats**: Convert documents, images, spreadsheets, web pages, and more into Markdown.
+2. **OCR Integration**: Extract text from scanned images and documents using **Tesseract OCR**.
+3. **Convert Web Content**: Quickly transform URLs or HTML files into clean, readable Markdown.
+4. **Markdown for AI & LLMs**: Simplify content preparation for AI models using structured Markdown.
+5. **Simple & Efficient**: An intuitive API that makes file conversion a breeze.
+
+---
+
+## **🚀 Installation**
+
+Getting started is easy! Install MagicConvert using pip:
+
+```bash
+pip install MagicConvert
+```
+
+**Note**: For OCR functionality, make sure you have [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) installed on your system.
+
+**Pypi Link**: [MagicConvert on Pypi](https://pypi.org/project/MagicConvert/)
+
+---
+
+## **📚 Getting Started**
+
+### **1. Import and Initialize**
+
+Begin by importing MagicConvert and initializing the converter:
+
+```python
+from MagicConvert import MagicConvert
+
+converter = MagicConvert()
+```
+
+---
+
+### **2. Convert Files to Markdown**
+
+MagicConvert supports various file types. Here are some examples:
+
+#### **Convert Word Documents**
+
+```python
+result = converter.magic("document.docx")
+print(result.text_content)
+```
+
+#### **Convert PowerPoint Presentations**
+
+```python
+result = converter.magic("presentation.pptx")
+print(result.text_content)
+```
+
+#### **Convert PDFs**
+
+```python
+result = converter.magic("document.pdf")
+print(result.text_content)
+```
+
+#### **Convert Images (OCR)**
+
+```python
+result = converter.magic("image.png")
+print(result.text_content)
+```
+
+#### **Convert Web Content (URLs)**
+
+```python
+result = converter.magic("https://example.com")
+print(result.text_content)
+```
+
+#### **Convert Plain Text Files**
+
+```python
+result = converter.magic("example.txt")
+print(result.text_content)
+```
+
+#### **Convert HTML Files**
+
+```python
+result = converter.magic("webpage.html")
+print(result.text_content)
+```
+
+#### **Convert Excel Files**
+
+```python
+result = converter.magic("spreadsheet.xlsx")
+print(result.text_content)
+```
+
+#### **Convert CSV Files**
+
+```python
+result = converter.magic("data.csv")
+print(result.text_content)
+```
+
+---
+
+## **📂 Supported File Formats**
+
+MagicConvert supports a wide range of file formats, making it a versatile tool for various needs:
+
+### **Document Formats**
+
+- **Word Documents**: `.docx`
+- **PDF Files**: `.pdf`
+- **PowerPoint Presentations**: `.pptx`
+- **Excel Spreadsheets**: `.xlsx`
+- **CSV Files**: `.csv`
+
+### **Web Formats**
+
+- **HTML Files**: `.html`, `.htm`
+- **URLs**: `http://`, `https://`
+
+### **Image Formats**
+
+- **JPEG**: `.jpg`, `.jpeg`
+- **PNG**: `.png`
+- **TIFF**: `.tiff`
+- **BMP**: `.bmp`
+
+### **Text Formats**
+
+- **Plain Text**: `.txt`
+
+---
+
+## **📅 Future Work**
+
+MagicConvert is constantly evolving. Here are some features planned for the future:
+
+1. **Audio-to-Text Markdown**: Convert audio files (e.g., `.mp3`, `.wav`) into Markdown by transcribing them with speech recognition.
+2. **Video Subtitles to Markdown**: Extract captions or subtitles from video files and convert them into Markdown.
+3. **Advanced Formatting Options**: Customizable Markdown output with styles like tables, headers, and inline code.
+4. **Multi-language OCR Support**: Enhanced text recognition for multiple languages.
+5. **Cloud Integration**: Save converted Markdown directly to cloud platforms like Google Drive, Dropbox, etc.
+6. **Batch Conversion**: Process multiple files simultaneously for large-scale projects.
+
+Want to contribute ideas? Let us know!
+
+---
+
+## **👨‍💻 Contributing**
+
+MagicConvert is developed by **Muhammad Noman**, a student at **Iqra University**. Contributions, feedback, and bug reports are always welcome!
+
+Here’s how you can get in touch or contribute:
+
+- **Email**: [muhammadnomanshafiq76@gmail.com](mailto:muhammadnomanshafiq76@gmail.com)
+- **LinkedIn**: [Muhammad Noman](https://www.linkedin.com/in/muhammad-noman76/)
+- **GitHub Repository**: [MagicConvert on GitHub](https://github.com/MuhammadNoman76/MagicConvert)
+
+If you enjoy using MagicConvert, feel free to ⭐️ the repository on GitHub and share it with others!
+
+---
+
+## **📃 License**
+
+MagicConvert is open-source and licensed under the [MIT License](https://github.com/MuhammadNoman76/MagicConvert/blob/main/LICENSE). You are free to use, modify, and distribute the library as per the license terms.
+
+---
+
+## **💡 Summary**
+
+MagicConvert is the ultimate tool for converting files into Markdown, whether you’re preparing content for **AI models**, creating documentation, or simply working with Markdown-based workflows. Its ease of use, wide format support, and robust features make it an indispensable tool for developers, researchers, and content creators.
+
+Try MagicConvert today and unlock the power of seamless file-to-Markdown conversion! 🚀
