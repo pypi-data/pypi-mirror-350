@@ -1,0 +1,66 @@
+Metadata-Version: 2.4
+Name: ddapi
+Version: 0.14.1
+Summary: DDnet api
+Home-page: https://github.com/ByFox213/ddapi
+Author: ByFox
+License: MIT
+Project-URL: Github, https://github.com/ByFox213/ddapi
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: author
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license
+Dynamic: license-file
+Dynamic: project-url
+Dynamic: requires-python
+Dynamic: summary
+
+ddapi is an api from the ddnet and qwik website
+
+## Installation
+
+```bash
+  pip install ddapi
+```
+
+or
+
+```bash
+  pip install git+https://github.com/ByFox213/ddapi
+```
+
+## Usage/Examples
+
+DDnet
+
+```python
+import asyncio
+
+from ddapi import DDnetApi, DDPlayer
+
+
+async def main():
+    async with DDnetApi() as obj:
+        user: DDPlayer = await obj.player("Cor")
+    if user is not None:
+        text = f"{user.player}: {user.points.points}/{user.points.total}"
+        percent = round(user.points.total / user.points.points * 100)
+        print(f"{text}({percent}%)")
+        # Cor: 32950/32950(100%)
+    else:
+        print("Player not found")
+
+
+asyncio.run(main())
+```
+
+Tested on Python
+| 3.11 | 3.12 | 3.13 |
+|------|------|------|
+| ✅ | ✅ | ✅ |
+
+[other examples](https://github.com/ByFox213/ddapi/tree/main/example)
