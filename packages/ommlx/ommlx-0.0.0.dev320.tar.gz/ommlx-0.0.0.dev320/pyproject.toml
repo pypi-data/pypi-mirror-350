@@ -1,0 +1,120 @@
+[build-system]
+requires = [
+    'setuptools',
+]
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = 'ommlx'
+authors = [
+    {name = 'wrmsr'},
+]
+urls = {source = 'https://github.com/wrmsr/omlish'}
+license = {text = 'BSD-3-Clause'}
+requires-python = '>=3.12'
+version = '0.0.0.dev320'
+classifiers = [
+    'License :: OSI Approved :: BSD License',
+    'Development Status :: 2 - Pre-Alpha',
+    'Intended Audience :: Developers',
+    'Operating System :: OS Independent',
+    'Operating System :: POSIX',
+]
+description = 'ommlx'
+dependencies = [
+    'omdev == 0.0.0.dev320',
+    'omlish == 0.0.0.dev320',
+]
+
+[project.optional-dependencies]
+all = [
+    'mlx-lm ~= 0.24; sys_platform == "darwin"',
+    'transformers ~= 4.52',
+    'sentence-transformers ~= 4.1',
+    'diffusers ~= 0.33.1',
+    'sentencepiece ~= 0.2',
+    'tiktoken ~= 0.9',
+    'tokenizers ~= 0.21',
+    'huggingface-hub ~= 0.32',
+    'datasets ~= 3.6',
+    'llama-cpp-python ~= 0.3',
+    'numpy >= 1.26',
+    'pytesseract ~= 0.3',
+    'rapidocr-onnxruntime ~= 1.4',
+    'pillow ~= 11.1',
+    'duckduckgo-search ~= 8.0',
+    'tinygrad ~= 0.10',
+    'torch ~= 2.7',
+    'mwparserfromhell ~= 0.6',
+    'wikitextparser ~= 0.56',
+    'lxml ~= 5.3; python_version < "3.13"',
+]
+backends = [
+    'mlx-lm ~= 0.24; sys_platform == "darwin"',
+    'transformers ~= 4.52',
+    'sentence-transformers ~= 4.1',
+    'diffusers ~= 0.33.1',
+    'sentencepiece ~= 0.2',
+    'tiktoken ~= 0.9',
+    'tokenizers ~= 0.21',
+]
+huggingface = [
+    'huggingface-hub ~= 0.32',
+    'datasets ~= 3.6',
+]
+llamacpp = [
+    'llama-cpp-python ~= 0.3',
+]
+numpy = [
+    'numpy >= 1.26',
+]
+ocr = [
+    'pytesseract ~= 0.3',
+    'rapidocr-onnxruntime ~= 1.4',
+]
+pillow = [
+    'pillow ~= 11.1',
+]
+search = [
+    'duckduckgo-search ~= 8.0',
+]
+tinygrad = [
+    'tinygrad ~= 0.10',
+]
+torch = [
+    'torch ~= 2.7',
+]
+wiki = [
+    'mwparserfromhell ~= 0.6',
+    'wikitextparser ~= 0.56',
+]
+xml = [
+    'lxml ~= 5.3; python_version < "3.13"',
+]
+
+[project.entry-points]
+'omlish.manifests' = {ommlx = 'ommlx'}
+
+[tool.setuptools]
+
+[tool.setuptools.packages.find]
+include = [
+    'ommlx',
+    'ommlx.*',
+]
+exclude = [
+    '*.tests',
+    '*.tests.*',
+]
+
+[tool.setuptools.package-data]
+'*' = [
+    '*.c',
+    '*.cc',
+    '*.cu',
+    '*.g4',
+    '*.h',
+    '.manifests.json',
+    'LICENSE',
+    'LICENSE.txt',
+]
