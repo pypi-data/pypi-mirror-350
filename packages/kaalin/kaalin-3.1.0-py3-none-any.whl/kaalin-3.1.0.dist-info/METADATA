@@ -1,0 +1,64 @@
+Metadata-Version: 2.4
+Name: kaalin
+Version: 3.1.0
+Summary: Special opportunities for the Karakalpak language
+Author: Turdıbek Jumabaev
+Author-email: <turdibekjumabaev05@gmail.com>
+Keywords: karakalpak,language,python
+Classifier: Development Status :: 1 - Planning
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: Unix
+Classifier: Operating System :: MacOS :: MacOS X
+Classifier: Operating System :: Microsoft :: Windows
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: keywords
+Dynamic: license-file
+Dynamic: summary
+
+
+# Kaalin
+
+<p>
+    Using this library, certain operations for the Karakalpak language can be performed very quickly and conveniently.
+</p>
+
+## Example
+```python
+from kaalin.converter import latin2cyrillic, cyrillic2latin
+
+
+print(latin2cyrillic("Assalawma áleykum"))      # Ассалаўма әлейкум
+print(cyrillic2latin("Ассалаўма әлейкум"))      # Assalawma áleykum
+```
+
+```python
+from kaalin.number import to_word, NumberRangeError
+
+
+try:
+  print(to_word(123))                     # bir júz jigirma úsh
+  print(to_word(999, num_type="cyr"))     # тоғыз жүз тоқсан тоғыз
+except NumberRangeError as e:
+  print("San shegaradan asıp ketti!")
+```
+
+```python
+from kaalin.string import upper, lower
+
+
+print(upper("Assalawma áleykum"))     # ASSALAWMA ÁLEYKUM
+print(lower("Assalawma áleykum"))     # assalawma áleykum
+```
+
+### Command Line Interface (CLI)
+```bash
+$ cyr2lat input.txt [output.txt]
+$ lat2cyr input.txt [output.txt]
+```
