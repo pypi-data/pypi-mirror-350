@@ -1,0 +1,80 @@
+[package]
+name = "auditor"
+version = "0.9.4"
+authors = ["Stefan Kroboth <stefan.kroboth@gmail.com>"]
+edition = "2024"
+default-run = "auditor"
+license = "MIT OR Apache-2.0"
+description = "AccoUnting Data handlIng Toolbox for Opportunistic Resources"
+documentation = "https://docs.rs/auditor/"
+homepage = "https://alu-schumacher.github.io/AUDITOR/"
+repository = "https://github.com/alu-schumacher/AUDITOR"
+readme = "../README.md"
+keywords = ["accounting", "opportunistic", "grid-computing", "batch-systems"]
+exclude = [
+    ".cargo",
+    ".dockerignore",
+    ".git",
+    ".gitattributes",
+    ".github",
+    ".gitignore",
+    ".pytest_cache",
+    "target",
+    "nohup.out"
+]
+
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "auditor"
+path = "src/main.rs"
+
+[profile.release]
+strip = true
+
+[dependencies]
+actix-web-opentelemetry = { version = "0.17.0", features = ["metrics", "metrics-prometheus"] }
+actix-web = { version = "4.8.0", features = ["rustls-0_23"] }
+actix-tls = { version = "3.4.0", features = ["rustls-0_23"] }
+anyhow = "1.0.96"
+async-stream = "0.3"
+chrono = { version = "0.4.40", default-features = false, features = ["serde"] }
+config = "0.15.9"
+fake = { version = "2.9.2", features = ["chrono"] }
+futures = "0.3"
+futures-util = "0.3"
+itertools = "0.13.0"
+num-traits = "0.2.19"
+opentelemetry-prometheus = "0.16.0"
+opentelemetry = "0.23.0"
+opentelemetry_sdk = "0.23.0"
+prometheus = "0.13.4"
+rand = "0.8.5"
+regex = "1.11.1"
+reqwest = { version = "0.12.5", default-features = false, features = ["json", "rustls-tls", "blocking", "stream"] }
+reqwest-streams = { version = "0.9", features= ["json"] }
+secrecy = { version = "0.8.0", features = ["serde"] }
+serde = { version = "1.0.218", features = ["derive"] }
+serde_json = "1.0.139"
+serde-aux = "4.6.0"
+serde_qs = { version = "0.13.0", features = ["actix4"] }
+serde_with = { version = "3.12.0", features = ["chrono_0_4"] }
+sqlx = { version = "0.8.6", default-features = false, features = ["runtime-tokio-rustls", "macros", "uuid", "chrono", "migrate", "runtime-tokio", "json","postgres", "json"] }
+thiserror = "2.0.7"
+tokio = { version = "1.44.1", features = ["macros", "rt-multi-thread", "time"] }
+tracing-actix-web = "0.7.11"
+tracing-bunyan-formatter = "0.3.9"
+tracing-log = "0.2.0"
+tracing-subscriber = { version = "0.3.18", features = ["registry", "env-filter"] }
+tracing = { version = "0.1.40", features = ["log"] }
+unicode-segmentation = "1.11.0"
+urlencoding = "2.1.3"
+uuid = { version = "1.15.1", features = ["v4"] }
+rustls = "0.23.23"
+rustls-pemfile = "2.2.0"
+
+[features]
+default = ["server"]
+server = []

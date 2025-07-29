@@ -1,0 +1,30 @@
+auditor:
+  addr: "localhost"
+  port: 8000
+components:
+  NumCPUs: "HEPSPEC"
+min_priority: 1
+max_priority: 65335
+group_mapping:
+  atlsch: 
+    - "nemo_vm_atlsch"
+  atljak:
+    - "nemo_vm_atljak"
+  atlher:
+    - "nemo_vm_atlher"
+  atlhei:
+    - "nemo_vm_atlhei"
+commands:
+  - "/usr/bin/scontrol update PartitionName={1} PriorityJobFactor={priority}"
+  - "echo '{group}: {priority}'"
+frequency: 3600
+prometheus:
+  enable: true
+  addr: 0.0.0.0
+  port: 9000
+  metrics:
+    - ResourceUsage
+    - Priority
+tls_config:
+  use_tls: false
+

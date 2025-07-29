@@ -1,0 +1,36 @@
+[package]
+name = "python-auditor"
+version = "0.9.4"
+edition = "2024"
+authors = ["Stefan Kroboth <stefan.kroboth@gmail.com>"]
+license = "MIT OR Apache-2.0"
+description = "Python interface to AuditorClient"
+documentation = "https://docs.rs/pyauditor/"
+homepage = "https://alu-schumacher.github.io/AUDITOR/"
+repository = "https://github.com/alu-schumacher/AUDITOR"
+readme = "README.md"
+keywords = ["accounting", "opportunistic", "grid-computing", "batch-systems"]
+exclude = [
+    ".dockerignore",
+    ".git",
+    ".gitattributes",
+    ".github",
+    ".gitignore",
+    "target",
+    ".env"
+]
+
+[lib]
+name = "pyauditor"
+crate-type = ["cdylib"]
+
+[dependencies]
+auditor-client.path = "local_dependencies/auditor-client"
+auditor.path = "local_dependencies/auditor"
+anyhow = "1.0.96"
+chrono = { version = "0.4.40", default-features = false, features = ["serde"] }
+pyo3 = { version = "0.24.1", features = ["chrono", "extension-module", "anyhow"] }
+pyo3-async-runtimes = { version = "0.24.0", features = ["attributes", "tokio-runtime"] }
+serde = { version = "1.0.218", features = ["derive"] }
+serde_json = "1.0.139"
+tokio = "1.44.1"
