@@ -1,0 +1,143 @@
+Metadata-Version: 2.4
+Name: publicmethod
+Version: 0.1.4
+Summary: 通用Python组件库，提供数据读取、路径管理和日志功能
+Author-email: Zhou Yuanqi <zyq1034378361@gmail.com>
+License: MIT
+Project-URL: Homepage, https://github.com/1034378361/publicmethod
+Project-URL: Bug Tracker, https://github.com/1034378361/publicmethod/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Provides-Extra: dev
+Requires-Dist: pytest>=7.4.3; extra == "dev"
+Requires-Dist: black>=23.11.0; extra == "dev"
+Requires-Dist: flake8>=6.1.0; extra == "dev"
+Requires-Dist: mypy>=1.7.0; extra == "dev"
+Requires-Dist: setuptools_scm>=6.2.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.1.0; extra == "dev"
+Dynamic: license-file
+
+# PublicMethod
+
+通用Python组件库，提供数据读取、路径管理和日志功能的基础类框架。帮助开发者快速构建基于组件的应用程序。
+
+## 功能特点
+
+* **BaseComponent** - 通用基础组件类，提供标准化组件结构
+* **PathManager** - 路径管理，自动创建时间戳目录
+* **DataReader** - 数据读取组件，支持多种编码自动检测
+* **日志系统** - 基于Python标准logging模块，支持文件轮转
+
+## 安装
+
+```bash
+pip install publicmethod
+```
+
+## 快速开始
+
+下面是一个使用示例：
+
+```python
+# 导入主包中的组件
+from publicmethod import BaseComponent
+
+# 或者从子包导入
+from publicmethod.core import BaseComponent, PathManager, DataReader
+
+# 创建基础组件实例
+component = BaseComponent({
+    'debug_mode': True,  # 启用调试模式
+    'output_path': 'output'  # 指定输出路径
+})
+
+# 读取数据
+data = component.read_data('input.txt')
+
+# 开发自定义组件
+class MyComponent(BaseComponent):
+    def __init__(self, config=None):
+        super().__init__(config)
+        # 自定义初始化...
+    
+    def process(self, data=None):
+        # 实现自定义处理逻辑
+        if data is None:
+            data = self._data  # 使用之前读取的数据
+        
+        # 处理数据
+        result = self._process_data(data)
+        
+        return result
+    
+    def _process_data(self, data):
+        # 实现具体的处理逻辑
+        return data.upper()  # 示例：转换为大写
+```
+
+## 包结构
+
+```
+publicmethod/
+├── core/          # 核心组件
+│   ├── base_component.py  # 基础组件类
+│   ├── path_manager.py    # 路径管理
+│   ├── data_reader.py     # 数据读取
+│   └── log_config.py      # 日志配置
+```
+
+## 版本管理
+
+本项目使用Git标签进行版本控制，安装后可通过以下方式获取版本信息：
+
+```python
+import publicmethod
+print(publicmethod.__version__)
+```
+
+## 组件说明
+
+### BaseComponent
+
+基础组件类，提供以下功能：
+
+* 配置管理
+* 数据读取
+* 路径管理
+* 日志系统集成
+* 状态管理
+
+### PathManager
+
+路径管理器，主要功能：
+
+* 自动创建带时间戳的输出目录
+* 管理多级目录结构
+* 快速获取文件路径
+* 路径映射管理
+
+### DataReader
+
+数据读取组件，支持：
+
+* 从文件或标准输入读取数据
+* 自动检测文件编码
+* 分块读取大文件
+
+## 开发
+
+要在开发模式下安装此包：
+
+```bash
+git clone https://github.com/1034378361/publicmethod.git
+cd publicmethod
+pip install -e .
+```
+
+## 许可证
+
+MIT
