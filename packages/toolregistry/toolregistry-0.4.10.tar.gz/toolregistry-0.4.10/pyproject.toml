@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "toolregistry"
+version = "0.4.10"
+authors = [{ name = "Oaklight", email = "oaklight@gmx.com" }]
+description = "ToolRegistry: a library for easier function calling and tool use in LLMs"
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "pydantic>=1.5.1",
+    "loguru>=0.7.3",
+    "deprecated>=1.2.18",
+    "dill>=0.4.0",
+    "httpx>=0.28.1",
+    "fake-useragent>=2.0.0",  # 2.0.0 is the max version compatible with Python 3.8
+    "beautifulsoup4>=4.13.4",
+]
+
+[project.optional-dependencies]
+mcp = ["fastmcp>=2.3.5"]
+openapi = [
+    "PyYAML>=6.0.2",  # safe load both json and yaml
+    "jsonref>=1.1.0", # deref $ref in openapi spec
+]
+langchain = ["langchain-core>=0.3,<0.4", "langchain-community>=0.3,<0.4"]
+dev = ["dotenv>=0.9.9", "openai>=1.79.0","mypy>=1.14.1", "build>=1.2.2.post1", "twine>=6.1.0"]
+
+[project.urls]
+Documentation = "https://toolregistry.lab.oaklight.cn"
+Repository = "https://github.com/Oaklight/ToolRegistry"
+Issues = "https://github.com/Oaklight/ToolRegistry/issues"
+
+# Note: Standard TOML does not support imports from other TOML files
+# When installing with mcp extras (toolregistry[mcp]), Python >= 3.10 is required
+# The mcp package dependencies should be listed in this file
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"toolregistry" = ["py.typed"]
