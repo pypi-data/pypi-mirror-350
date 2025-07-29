@@ -1,0 +1,111 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Tj\u00e4nsten \u00e4r redan konfigurerad",
+            "cannot_connect": "Det gick inte att ansluta",
+            "invalid_auth": "Ogiltig autentisering"
+        },
+        "error": {
+            "cannot_connect": "Det gick inte att ansluta",
+            "invalid_auth": "Ogiltig autentisering"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "password": "L\u00f6senord",
+                    "username": "Anv\u00e4ndarnamn"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "alert": {
+                "name": "Varning"
+            },
+            "delivered": {
+                "name": "Levererad"
+            },
+            "expired": {
+                "name": "Utg\u00e5tt"
+            },
+            "in_transit": {
+                "name": "P\u00e5 v\u00e4g"
+            },
+            "not_found": {
+                "name": "Hittades inte"
+            },
+            "package": {
+                "name": "Paket {name}"
+            },
+            "ready_to_be_picked_up": {
+                "name": "Redo att h\u00e4mtas"
+            },
+            "undelivered": {
+                "name": "Ej levererad"
+            }
+        }
+    },
+    "exceptions": {
+        "invalid_config_entry": {
+            "message": "Ogiltig konfigurationspost har angetts. Fick {config_entry_id}"
+        },
+        "unloaded_config_entry": {
+            "message": "Ogiltig konfigurationspost har angetts. {config_entry_id} \u00e4r inte inladdad."
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "show_archived": "Om sensorer ska skapas f\u00f6r arkiverade paket",
+                    "show_delivered": "Om sensorer ska skapas f\u00f6r levererade paket"
+                },
+                "description": "Konfigurera allm\u00e4nna inst\u00e4llningar"
+            }
+        }
+    },
+    "selector": {
+        "package_state": {
+            "options": {
+                "alert": "Varning",
+                "delivered": "Levererad",
+                "expired": "Utg\u00e5tt",
+                "in_transit": "P\u00e5 v\u00e4g",
+                "not_found": "Hittades inte",
+                "ready_to_be_picked_up": "Redo att h\u00e4mtas",
+                "undelivered": "Ej levererad"
+            }
+        }
+    },
+    "services": {
+        "archive_package": {
+            "description": "Arkiverar ett paket med 17track API.",
+            "fields": {
+                "config_entry_id": {
+                    "description": "Paketet kommer att arkiveras f\u00f6r den valda tj\u00e4nsten.",
+                    "name": "17Track-tj\u00e4nst"
+                },
+                "package_tracking_number": {
+                    "description": "Paketet kommer att arkiveras f\u00f6r det angivna sp\u00e5rningsnumret.",
+                    "name": "Paketets sp\u00e5rningsnummer"
+                }
+            },
+            "name": "Arkivera paket"
+        },
+        "get_packages": {
+            "description": "Fr\u00e5gar 17track API efter de senaste paketdata.",
+            "fields": {
+                "config_entry_id": {
+                    "description": "Paketen kommer att h\u00e4mtas f\u00f6r den valda tj\u00e4nsten.",
+                    "name": "17Track-tj\u00e4nst"
+                },
+                "package_state": {
+                    "description": "Returnera endast paket med angivna tillst\u00e5nd. Returnerar alla paket om inte specificerat.",
+                    "name": "Paketets tillst\u00e5nd"
+                }
+            },
+            "name": "H\u00e4mta paket"
+        }
+    }
+}
