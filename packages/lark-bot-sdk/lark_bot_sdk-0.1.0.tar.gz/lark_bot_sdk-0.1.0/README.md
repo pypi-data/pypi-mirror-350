@@ -1,0 +1,155 @@
+# Feishu SDK
+
+飞书机器人消息SDK - 一个简单易用的飞书应用机器人消息推送工具
+
+## 特点
+
+- 极简API设计，符合直觉
+- 基于官方飞书SDK (lark_oapi)，可靠稳定
+- 支持多种消息类型：文本、富文本、卡片消息
+- 自动处理认证令牌的获取和刷新
+- 轻量级设计，易于集成到任何项目
+
+## 安装方法
+
+```bash
+# 从源代码安装
+pip install -e .
+
+# 或者直接从PyPI安装（如果已发布）
+# pip install feishusdk
+```
+
+## 快速开始
+
+### 1. 初始化机器人
+
+```python
+from feishusdk import init_bot, BotMessage
+
+# 方式1：直接提供应用凭证
+init_bot(app_id="YOUR_APP_ID", app_secret="YOUR_APP_SECRET")
+
+# 方式2：使用配置文件
+init_bot(config_file="config.json")
+```
+
+配置文件格式 (config.json)：
+```json
+{
+  "app_id": "YOUR_APP_ID",
+  "app_secret": "YOUR_APP_SECRET"
+}
+```
+
+### 2. 发送消息
+
+使用简单的`BotMessage`类来发送各种类型的消息：
+
+```python
+# 发送文本消息
+message = BotMessage("群组ID", {
+    "type": "text", 
+    "content": "Hello World"
+})
+message.send()
+```
+
+### 3. 获取群组列表
+
+```python
+from feishusdk.bot import get_group_list
+
+groups = get_group_list()
+for group in groups:
+    print(f"{group.name}: {group.chat_id}")
+```
+
+## 消息类型示例
+
+### 文本消息
+
+```python
+BotMessage("群组ID", {
+    "type": "text", 
+    "content": "这是一条文本消息"
+}).send()
+```
+
+### 富文本消息
+
+```python
+post_content = {
+    "zh_cn": {
+        "title": "系统通知",
+        "content": [
+            [
+                {"tag": "text", "text": "这是一条富文本消息测试"}
+            ],
+            [
+                {"tag": "text", "text": "支持多个段落"}
+            ]
+        ]
+    }
+}
+
+BotMessage("群组ID", {
+    "type": "post",
+    "content": post_content
+}).send()
+```
+
+### 卡片消息
+
+```python
+import time
+
+card_content = {
+    "config": {
+        "wide_screen_mode": True
+    },
+    "header": {
+        "title": {
+            "tag": "plain_text",
+            "content": "系统报警"
+        },
+        "template": "red"
+    },
+    "elements": [
+        {
+            "tag": "div",
+            "text": {
+                "tag": "lark_md",
+                "content": f"**服务器监控报警**\n\n时间: {time.strftime('%Y-%m-%d %H:%M:%S')}"
+            }
+        },
+        {
+            "tag": "hr"
+        },
+        {
+            "tag": "div",
+            "text": {
+                "tag": "lark_md",
+                "content": "### 警告详情\n- CPU使用率: 92%\n- 内存使用率: 85%"
+            }
+        }
+    ]
+}
+
+BotMessage("群组ID", {
+    "type": "interactive",
+    "content": card_content
+}).send()
+```
+
+## 先决条件
+
+1. 在[飞书开放平台](https://open.feishu.cn/)创建一个应用
+2. 获取应用的App ID和App Secret
+3. 开启应用的机器人功能
+4. 开启机器人发送消息的权限
+5. 将机器人添加到您想要发送消息的群组中
+
+## 完整示例
+
+请参考项目中的`sdk_example.py`文件获取完整使用示例。
