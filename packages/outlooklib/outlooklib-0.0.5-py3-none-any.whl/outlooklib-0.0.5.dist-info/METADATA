@@ -1,0 +1,124 @@
+Metadata-Version: 2.4
+Name: outlooklib
+Version: 0.0.5
+Summary: Microsoft Outlook client Python package that uses the requests library.
+Author-email: Paulo Portela <portela.paulo@gmail.com>
+Maintainer-email: Paulo Portela <portela.paulo@gmail.com>
+License-Expression: BSD-3-Clause
+Project-URL: Homepage, https://github.com/aghuttun/outlooklib
+Project-URL: Documentation, https://github.com/aghuttun/outlooklib/blob/main/README.md
+Keywords: Microsoft,Outlook,Python,API,Office365,GraphAPI
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Operating System :: MacOS
+Classifier: Operating System :: MacOS :: MacOS X
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests~=2.0
+Requires-Dist: pydantic~=1.0
+Provides-Extra: dev
+Requires-Dist: twine; extra == "dev"
+Requires-Dist: build; extra == "dev"
+Dynamic: license-file
+
+# outlooklib
+
+* [Description](#package-description)
+* [Usage](#usage)
+* [Installation](#installation)
+* [License](#license)
+
+## Package Description
+
+Microsoft Outlook client Python package that uses the [requests](https://pypi.org/project/requests/) library.
+
+> [!IMPORTANT]  
+> This packages uses pydantic~=1.0!
+
+## Usage
+
+* [outlooklib](#outlooklib)
+
+from a script:
+
+```python
+import outlooklib
+import pandas as pd
+
+client_id = "123"
+client_secret = "123"
+tenant_id = "123"
+sp_domain = "companygroup.sharepoint.com"
+
+client_email = "team.email@company.com"
+
+outlook = outlooklib.Outlook(client_id=client_id, 
+                             tenant_id=tenant_id, 
+                             client_secret=client_secret,
+                             sp_domain=sp_domain,
+                             client_email=client_email,
+                             client_folder="Inbox")
+```
+
+```python
+message_id = "A...A=="
+response = outlook.download_message_attachment(id=message_id, 
+                                               path=r"C:\Users\admin", 
+                                               index=True)
+if response.status_code == 200:
+    print("Attachment(s) downloaded successfully")
+```
+
+```python
+message_id = "A...A=="
+response = outlook.delete_message(id=message_id)
+if response.status_code == 204:
+    print("Message deleted successfully")
+```
+
+```python
+outlook.change_folder(id="root")
+```
+
+## Installation
+
+* [outlooklib](#outlooklib)
+
+Install python and pip if you have not already.
+
+Then run:
+
+```bash
+pip install pip --upgrade
+```
+
+For production:
+
+```bash
+pip install outlooklib
+```
+
+This will install the package and all of it's python dependencies.
+
+If you want to install the project for development:
+
+```bash
+git clone https://github.com/aghuttun/outlooklib.git
+cd outlooklib
+pip install -e ".[dev]"
+```
+
+To test the development package: [Testing](#testing)
+
+## License
+
+* [outlooklib](#outlooklib)
+
+BSD License (see license file)
