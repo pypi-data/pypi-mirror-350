@@ -1,0 +1,286 @@
+from _typeshed import Incomplete
+from enum import StrEnum
+from gllm_core.event import EventEmitter as EventEmitter
+from gllm_inference.lm_invoker.lm_invoker import BaseLMInvoker as BaseLMInvoker
+from gllm_inference.schema import LMOutput as LMOutput, MimeType as MimeType, MultimodalContent as MultimodalContent, MultimodalOutput as MultimodalOutput, MultimodalPrompt as MultimodalPrompt, PromptRole as PromptRole, Reasoning as Reasoning, ResponseSchema as ResponseSchema, TokenUsage as TokenUsage, ToolCall as ToolCall, ToolResult as ToolResult
+from gllm_inference.utils import get_mime_type as get_mime_type, validate_string_enum as validate_string_enum
+from langchain_core.tools import Tool as Tool
+from typing import Any
+
+VALID_EXTENSIONS_MAP: Incomplete
+
+class _Key:
+    """Defines valid keys in OpenAI."""
+    ADDITIONAL_PROPERTIES: str
+    ANY_OF: str
+    ARGUMENTS: str
+    CALL_ID: str
+    DEFAULT: str
+    DEFS: str
+    FILE_DATA: str
+    FILENAME: str
+    ID: str
+    IMAGE_URL: str
+    INCOMPLETE_DETAILS: str
+    NAME: str
+    OUTPUT: str
+    PARAMETERS: str
+    PROPERTIES: str
+    REASON: str
+    REQUIRED: str
+    STATUS: str
+    SUMMARY: str
+    TEXT: str
+    TITLE: str
+    TYPE: str
+
+class _InputType:
+    """Defines valid input types in OpenAI."""
+    FUNCTION_CALL: str
+    FUNCTION_CALL_OUTPUT: str
+    INPUT_FILE: str
+    INPUT_IMAGE: str
+    INPUT_TEXT: str
+    NULL: str
+    OUTPUT_TEXT: str
+    REASONING: str
+    SUMMARY_TEXT: str
+
+class _OutputType:
+    """Defines valid output types in OpenAI."""
+    COMPLETED: str
+    FUNCTION_CALL: str
+    INCOMPLETE: str
+    ITEM_DONE: str
+    MESSAGE: str
+    REASONING: str
+    REASONING_DELTA: str
+    TEXT_DELTA: str
+
+class ReasoningEffort(StrEnum):
+    """Defines the reasoning effort for reasoning models."""
+    HIGH = 'high'
+    MEDIUM = 'medium'
+    LOW = 'low'
+
+class ReasoningSummary(StrEnum):
+    """Defines the reasoning summary for reasoning models."""
+    AUTO = 'auto'
+    DETAILED = 'detailed'
+
+class OpenAILMInvoker(BaseLMInvoker):
+    '''A language model invoker to interact with OpenAI language models.
+
+    Attributes:
+        client (AsyncOpenAI): The OpenAI client instance.
+        model_name (str): The name of the OpenAI language model.
+        default_hyperparameters (dict[str, Any]): Default hyperparameters for invoking the model.
+        valid_extensions_map (dict[str, set[str]]): A dictionary mapping for validating the content type of the
+            multimodal inputs. The keys are the mime types (e.g. "image") and the values are the set of valid
+            file extensions (e.g. {".png", ".jpg", ".jpeg"}) for the corresponding mime type.
+        valid_extensions (set[str]): A set of valid file extensions for the multimodal inputs.
+        tools (list[Any]): The list of tools provided to the model to enable tool calling.
+        response_schema (ResponseSchema | None): The schema of the response. If provided, the model will output a
+            structured response as defined by the schema. Supports both Pydantic BaseModel and JSON schema dictionary.
+        output_analytics (bool): Whether to output the invocation analytics.
+        reasoning_effort (ReasoningEffort | None): The reasoning effort for reasoning models. Not allowed
+            for non-reasoning models. If None, the model will perform medium reasoning effort.
+        reasoning_summary (ReasoningSummary | None): The reasoning summary level for reasoning models. Not allowed
+            for non-reasoning models. If None, no summary will be generated.
+
+    Input types:
+        1. Text.
+        2. Document: ".pdf".
+        3. Image: ".jpg", ".jpeg", ".png", ".gif", and ".webp".
+
+        Non-text inputs must be of valid file extensions and can be passed as either:
+        1. Base64 encoded bytes.
+        2. Remote URLs, with a valid `http` or `https` scheme.
+        3. Existing local file paths.
+
+        Usage example:
+        ```python
+        text = "What animal is in this image?"
+        image = "path/to/local/image.png"
+
+        prompt = [(PromptRole.USER, [text, image])]
+        result = await lm_invoker.invoke(prompt)
+        ```
+
+    Tool calling:
+        Tool calling is a feature that allows the language model to call tools to perform tasks.
+        Tools can be passed to the via the `tools` parameter as a list of LangChain\'s `Tool` objects.
+        When tools are provided and the model decides to call a tool, the tool calls are stored in the
+        `tool_calls` attribute in the output.
+
+        Usage example:
+        ```python
+        lm_invoker = OpenAILMInvoker(..., tools=[tool_1, tool_2])
+        ```
+
+        Output example:
+        ```python
+        LMOutput(
+            response="Let me call the tools...",
+            tool_calls=[
+                ToolCall(id="123", name="tool_1", args={"key": "value"}),
+                ToolCall(id="456", name="tool_2", args={"key": "value"}),
+            ]
+        )
+        ```
+
+    Structured output:
+        Structured output is a feature that allows the language model to output a structured response.
+        This feature can be enabled by providing a schema to the `response_schema` parameter.
+        The schema must be either a JSON schema dictionary or a Pydantic BaseModel class.
+
+        The language model also doesn\'t need to stream anything when structured output is enabled. Thus, standard
+        invocation will be performed regardless of whether the `event_emitter` parameter is provided or not.
+
+        When enabled, the structured output is stored in the `structured_output` attribute in the output.
+        1. If the schema is a JSON schema dictionary, the structured output is a dictionary.
+        2. If the schema is a Pydantic BaseModel class, the structured output is a Pydantic model.
+
+        # Example 1: Using a JSON schema dictionary
+        Usage example:
+        ```python
+        schema = {
+            "title": "Animal",
+            "description": "A description of an animal.",
+            "properties": {
+                "color": {"title": "Color", "type": "string"},
+                "name": {"title": "Name", "type": "string"},
+            },
+            "required": ["name", "color"],
+            "type": "object",
+        }
+        lm_invoker = OpenAILMInvoker(..., response_schema=schema)
+        ```
+        Output example:
+        ```python
+        LMOutput(structured_output={"name": "Golden retriever", "color": "Golden"})
+        ```
+
+        # Example 2: Using a Pydantic BaseModel class
+        Usage example:
+        ```python
+        class Animal(BaseModel):
+            name: str
+            color: str
+
+        lm_invoker = OpenAILMInvoker(..., response_schema=Animal)
+        ```
+        Output example:
+        ```python
+        LMOutput(structured_output=Animal(name="Golden retriever", color="Golden"))
+        ```
+
+    Analytics tracking:
+        Analytics tracking is a feature that allows the module to output additional information about the invocation.
+        This feature can be enabled by setting the `output_analytics` parameter to `True`.
+        When enabled, the following attributes will be stored in the output:
+        1. `token_usage`: The token usage.
+        2. `duration`: The duration in seconds.
+        3. `finish_details`: The details about how the generation finished.
+
+        Output example:
+        ```python
+        LMOutput(
+            response="Golden retriever is a good dog breed.",
+            token_usage=TokenUsage(input_tokens=100, output_tokens=50),
+            duration=0.729,
+            finish_details={"status": "completed", "incomplete_details": {"reason": None}},
+        )
+        ```
+
+    Reasoning:
+        OpenAI\'s o-series models are classified as reasoning models. Reasoning models think before they answer,
+        producing a long internal chain of thought before responding to the user. Reasoning models excel in
+        complex problem solving, coding, scientific reasoning, and multi-step planning for agentic workflows.
+
+        The reasoning effort of reasoning models can be set via the `reasoning_effort` parameter. This parameter
+        will guide the models on how many reasoning tokens it should generate before creating a response to the prompt.
+        Available options include:
+        1. "low": Favors speed and economical token usage.
+        2. "medium": Favors a balance between speed and reasoning accuracy.
+        3. "high": Favors more complete reasoning at the cost of more tokens generated and slower responses.
+        When not set, the reasoning effort will be equivalent to `medium` by default.
+
+        OpenAI doesn\'t expose the raw reasoning tokens. However, the summary of the reasoning tokens can still be
+        generated. The summary level can be set via the `reasoning_summary` parameter. Available options include:
+        1. "auto": The model decides the summary level automatically.
+        2. "detailed": The model will generate a detailed summary of the reasoning tokens.
+        Reasoning summary is not compatible with tool calling.
+        When enabled, the reasoning summary will be stored in the `reasoning` attribute in the output.
+
+        Output example:
+        ```python
+        LMOutput(
+            response="Golden retriever is a good dog breed.",
+            reasoning=[Reasoning(id="x", reasoning="Let me think about it...")],
+        )
+        ```
+
+        When streaming is enabled along with reasoning summary, the reasoning summary token will be streamed with the
+        `EventType.DATA` event type.
+
+        Streaming output example:
+        ```python
+        {"type": "data", "value": "Let me think ", ...}  # Reasoning summary token
+        {"type": "data", "value": "about it...", ...}  # Reasoning summary token
+        {"type": "response", "value": "Golden retriever ", ...}  # Response token
+        {"type": "response", "value": "is a good dog breed.", ...}  # Response token
+        ```
+
+        Setting reasoning-related parameters for non-reasoning models will raise an error.
+
+    Output types:
+        The output of the `OpenAILMInvoker` is of type `MultimodalOutput`, which is a type alias that can represent:
+        1. `str`: The text response if no additional output is needed.
+        2. `LMOutput`: A Pydantic model with the following attributes if any additional output is needed:
+            2.1. response (str): The text response.
+            2.2. tool_calls (list[ToolCall]): The tool calls, if the `tools` parameter is defined and the language
+                model decides to invoke tools. Defaults to an empty list.
+            2.3. structured_output (StructuredOutput | None): The structured output, if the `response_schema` parameter
+                is defined. Defaults to None.
+            2.4. token_usage (TokenUsage | None): The token usage analytics, if the `output_analytics` parameter is
+                set to `True`. Defaults to None.
+            2.5. duration (float | None): The duration of the invocation in seconds, if the `output_analytics`
+                parameter is set to `True`. Defaults to None.
+            2.6. finish_details (dict[str, Any] | None): The details about how the generation finished, if the
+                `output_analytics` parameter is set to `True`. Defaults to None.
+            2.7. reasoning (list[Reasoning]): The reasoning objects, if the `reasoning_summary` parameter is provided
+                for reasoning models. Defaults to an empty list.
+    '''
+    client: Incomplete
+    def __init__(self, model_name: str, api_key: str, model_kwargs: dict[str, Any] | None = None, default_hyperparameters: dict[str, Any] | None = None, tools: list[Tool] | None = None, response_schema: ResponseSchema | None = None, output_analytics: bool = False, reasoning_effort: ReasoningEffort | None = None, reasoning_summary: ReasoningSummary | None = None, bind_tools_params: dict[str, Any] | None = None, with_structured_output_params: dict[str, Any] | None = None) -> None:
+        """Initializes a new instance of the OpenAILMInvoker class.
+
+        Args:
+            model_name (str): The name of the OpenAI model.
+            api_key (str): The API key for authenticating with OpenAI.
+            model_kwargs (dict[str, Any] | None, optional): Additional model parameters. Defaults to None.
+            default_hyperparameters (dict[str, Any] | None, optional): Default hyperparameters for invoking the model.
+                Defaults to None.
+            tools (list[Tool] | None, optional): Tools provided to the language model to enable tool calling.
+                Defaults to None.
+            response_schema (ResponseSchema | None, optional): The schema of the response. If provided, the model will
+                output a structured response as defined by the schema. Supports both Pydantic BaseModel and JSON schema
+                dictionary. Defaults to None.
+            output_analytics (bool, optional): Whether to output the invocation analytics. Defaults to False.
+            reasoning_effort (ReasoningEffort | None, optional): The reasoning effort for reasoning models. Not allowed
+                for non-reasoning models. If None, the model will perform medium reasoning effort. Defaults to None.
+            reasoning_summary (ReasoningSummary | None, optional): The reasoning summary level for reasoning models.
+                Not allowed for non-reasoning models. If None, no summary will be generated. Defaults to None.
+            bind_tools_params (dict[str, Any] | None, optional): Deprecated parameter to add tool calling capability.
+                If provided, must at least include the `tools` key that is equivalent to the `tools` parameter.
+                Retained for backward compatibility. Defaults to None.
+            with_structured_output_params (dict[str, Any] | None, optional): Deprecated parameter to instruct the
+                model to produce output with a certain schema. If provided, must at least include the `schema` key that
+                is equivalent to the `response_schema` parameter. Retained for backward compatibility. Defaults to None.
+
+        Raises:
+            ValueError:
+            1. `reasoning_effort` is provided, but is not a valid ReasoningEffort.
+            2. `reasoning_summary` is provided, but is not a valid ReasoningSummary.
+        """
