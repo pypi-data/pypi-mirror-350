@@ -1,0 +1,263 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "codemap"
+version = "0.3.1-rc.2"
+description = "CLI tool that generates optimized markdown docs and streamline Git workflows"
+readme = "README.md"
+source = "https://github.com/SarthakMishra/codemap"
+changelog = "CHANGELOG.md"
+authors = [
+    { name="Sarthak Mishra", email="hi@sarthakmishra.com" },
+]
+license = "MIT"
+keywords = ["cli", "markdown", "git", "documentation", "codebase"]
+classifiers = [
+  "Intended Audience :: Developers",
+  "Topic :: Software Development :: Build Tools",
+  
+  "License :: OSI Approved :: MIT License",
+
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.12",
+]
+requires-python = ">=3.12"
+dependencies = [
+    "numpy>=2.2.5",
+    "pygments>=2.19.1",
+    "python-dotenv>=1.1.0",
+    "pyyaml>=6.0.2",
+    "questionary>=2.1.0",
+    "rich>=14.0.0",
+    "typer>=0.15.2",
+    "typing-extensions>=4.13.2",
+    "tree-sitter>=0.24.0",
+    "tree-sitter-language-pack>=0.7.2",
+    "pydantic>=2.7.0",
+    "packaging>=24.2",
+    "pathspec>=0.12.1",
+    "unidiff>=0.7.5",
+    "sqlmodel>=0.0.24",
+    "qdrant-client>=1.14.2",
+    "httpx>=0.28.1",
+    "docker>=7.1.0",
+    "psycopg2-binary>=2.9.10",
+    "watchdog>=6.0.0",
+    "pydantic-ai>=0.2.6",
+    "nest-asyncio>=1.6.0",
+    "asyncer",
+    "pygit2>=1.18.0",
+    "aiofiles>=24.1.0",
+    "xxhash>=3.5.0",
+    "model2vec>=0.5.0",
+    "scikit-learn>=1.6.1",
+    "pygithub>=2.6.1",
+    "pydantic-ai-slim[duckduckgo]>=0.2.6",
+]
+
+[project.urls]
+Homepage = "https://github.com/SarthakMishra/codemap.git"
+Changelog = "https://github.com/SarthakMishra/codemap/blob/main/CHANGELOG.md"
+Documentation = "https://github.com/SarthakMishra/codemap/blob/main/README.md"
+Repository = "https://github.com/SarthakMishra/codemap.git"
+Issues = "https://github.com/SarthakMishra/codemap/issues"
+
+[dependency-groups]
+dev = [
+    "build>=1.2.2.post1",
+    "interrogate[png]>=1.7.0",
+    "packaging>=25.0",
+    "pre-commit>=4.2.0",
+    "pyrefly>=0.16.2",
+    "pytest>=8.3.5",
+    "pytest-asyncio>=0.26.0",
+    "pytest-cov>=6.1.1",
+    "pytest-mock>=3.14.0",
+    "pytest-sugar>=1.0.0",
+    "pytest-xdist[psutil]>=3.6.1",
+    "python-semantic-release>=9.3.1",
+    "radon>=6.0.1",
+    "ruff>=0.11.6",
+    "twine>=6.1.0",
+    "vulture>=2.14",
+]
+docs = [
+    "mike>=2.1.3",
+    "mkdocs-material[imaging]>=9.6.12",
+    "mkdocs-mermaid2-plugin>=1.2.1",
+    "mkdocstrings-python>=1.16.10",
+]
+
+[tool.pyrefly]
+project_includes = [
+    "src",
+]
+project_excludes = [
+    ".git",
+    ".ruff_cache",
+    ".venv",
+    "venv",
+    "__pycache__",
+    "build",
+    "dist",
+    "vendor",
+    "tests",
+    "scripts",
+]
+search_path = ["src"]
+python_version = "3.12.0"
+
+[project.scripts]
+codemap = "codemap.cli:main"
+cm = "codemap.cli:main"
+
+[tool.pytest]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+# Exclude files/directories
+exclude = [
+    ".git",
+    ".ruff_cache",
+    ".venv",
+    "venv",
+    "__pycache__",
+    "build",
+    "dist",
+    "vendor"
+]
+
+[tool.ruff.lint]
+# Enable all rules by default, then selectively disable
+select = ["ALL"]
+ignore = [
+    # Rules that conflict with other tools/preferences
+    "D203",  # one-blank-line-before-class
+    "D212",  # multi-line-summary-first-line
+    "FBT001",  # Boolean positional arg in function definition (required for typer)
+    "FBT002",  # Boolean default value in function definition (required for typer)
+    "C901",  # function too complex
+    "PLR0911",  # too many return statements
+    "PLR0912",  # too many branches
+    "PLR0913",  # too many arguments in function definition
+    "PLR0915",  # too many statements
+    "TRY300",  # Consider moving this statement to an `else` block
+    "COM812",  # Use a constant for the message in a raise statement
+    "TC001",  # Move application import into a type-checking block
+    "ERA001", # Found commented-out code
+    "G004", # Logging statement uses f-string
+    "TD003", # Missing link in to-do
+    "TRY301", # Abstract raise to an inner function
+    # Disable rules that conflict with tab indentation
+    "E101",  # Indentation contains mixed spaces and tabs
+    "W191",  # indentation contains tabs
+    "D206",  # indent with spaces, not tabs
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+"tests/*" = [
+    "S101",  # Use of assert detected (security risk in production)
+    "PLR2004",  # Magic value comparison (should use constant)
+    "ANN002",  # Missing type annotation for argument
+    "ANN003",  # Missing type annotation for return value
+    "SLF001",  # Private member accessed (name starts with underscore)
+    "S108",  # File permissions set too openly (security risk)
+    "S105",  # Hardcoded password/token (security risk)
+    "PT019",  # Fixture without return type annotation
+    "ANN001",  # Missing type annotation for function argument
+    "ANN201",  # Missing return type annotation for public function
+    "ANN202",  # Missing return type annotation for private function
+    "D102",  # Missing docstring in public method
+    "ARG001",  # Unused function argument
+    "E501",  # Line too long (>120 characters)
+    "N806",  # Variable in function should be lowercase
+    "BLE001", # Do not catch blind exceptions
+]
+"src/codemap/cli/main.py" = ["ARG001"]  # Allow unused arguments in CLI functions (for API compatibility)
+"src/codemap/utils/pr_strategies.py" = ["ARG002"]  # Allow unused arguments in strategy interface methods
+"scripts/*" = [
+    "S101",  # Use of assert detected (security risk in production)
+    "PLR2004",  # Magic value comparison (should use constant)
+    "ANN002",  # Missing type annotation for argument
+    "ANN003",  # Missing type annotation for return value
+    "SLF001",  # Private member accessed (name starts with underscore)
+    "S108",  # File permissions set too openly (security risk)
+    "S105",  # Hardcoded password/token (security risk)
+    "PT019",  # Fixture without return type annotation
+    "ANN001",  # Missing type annotation for function argument
+    "ANN201",  # Missing return type annotation for public function
+    "ANN202",  # Missing return type annotation for private function
+    "D102",  # Missing docstring in public method
+    "ARG001",  # Unused function argument
+    "E501",  # Line too long (>120 characters)
+    "N806",  # Variable in function should be lowercase
+    "BLE001", # Do not catch blind exceptions
+    "S603", # Use of unsafe subprocess call
+    "S607", # Starting a process with a partial executable path
+]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.lint.pylint]
+max-args = 5
+max-branches = 12
+max-statements = 50
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "tab"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.semantic_release]
+version_variables = [
+    "src/codemap/__init__.py:__version__"
+]
+version_toml = [
+    "pyproject.toml:project.version:nf"
+]
+major_on_zero = false
+vcs_release = true
+
+[tool.semantic_release.changelog.default_templates]
+mask_initial_release = true
+
+# Main branch - stable production releases
+[tool.semantic_release.branches.main]
+match = "^main$"
+prerelease = false
+
+# Development branch - integration branch for upcoming features
+[tool.semantic_release.branches.dev]
+match = "^dev$"
+prerelease = true
+prerelease_token = "rc"
+
+# Commit message parsing configuration
+[tool.semantic_release.commit_parser_options]
+allowed_tags = [
+    "build",
+    "chore",
+    "ci",
+    "docs",
+    "feat",
+    "fix",
+    "perf",
+    "refactor",
+    "style",
+    "test",
+    "release"
+]
+minor_tags = ["release"]
+patch_tags = ["fix", "feat"]
