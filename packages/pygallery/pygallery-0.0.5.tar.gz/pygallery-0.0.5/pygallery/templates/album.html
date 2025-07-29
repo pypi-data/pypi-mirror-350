@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{{ title }}</title>
+        <link rel="stylesheet" type="text/css" href="../theme.css">
+    </head>
+    <body class="album">
+        <header class="top">
+            <nav>{{ title }}</nav>
+        </header>
+        <footer class="bottom">
+        </footer>
+        {%- for entry in albums %}
+        <section class="thumbnail">
+            <a href="../{{ entry['code'] }}" title="{{ entry['name'] }}">
+                <img src="../{{ entry['code'] }}/{{ entry['first']['code'] }}.thumb.jpg" alt="{{ entry['name'] }}">
+            </a>
+            <br/><p>{{ entry['name'] }}</p>
+        </section>
+        {%- endfor %}
+        {%- for entry in photos %}
+        <section class="thumbnail">
+            <a href="{{ entry['code'] }}.html">
+            <img src="{{ entry['code'] }}.thumb.jpg" alt="{{ entry['name'] }}">
+            </a>
+        </section>
+        {%- endfor %}
+    </body>
+</html>

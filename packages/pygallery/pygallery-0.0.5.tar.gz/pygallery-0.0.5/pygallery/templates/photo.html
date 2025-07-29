@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{{ album['name'] }} - {{ name }}</title>
+        <link rel="stylesheet" type="text/css" href="../theme.css">
+    </head>
+    <body class="photo">
+        <header class="top">
+            <nav>
+                <a href="index.html">
+                {{ album['name'] }}
+                </a>
+            </nav>
+        </header>
+        <section class="before">
+            {%- if before -%}
+            <a href="{{ before['code'] }}.html">
+            <img src="{{ before['code'] }}.thumb.jpg" alt="{{ before['name'] }}">
+            </a>
+            {%- endif -%}
+        </section>
+        <main>
+            <a href="{{ code }}.large.jpg">
+            <img src="{{ code }}.jpg" alt="{{ name }}">
+            </a>
+        </main>
+        <section class="after">
+            {%- if after -%}
+            <a href="{{ after['code'] }}.html">
+            <img src="{{ after['code'] }}.thumb.jpg" alt="{{ after['name'] }}">
+            </a>
+            {%- endif -%}
+        </section>
+        <section class="meta">
+            <table class="meta">
+                {% if exif %}
+                {% for k, v in exif.items() %}
+                <tr>
+                    <td class="bold">{{ k }}</td>
+                </tr>
+                <tr>
+                    <td>{{ v }}</td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+            </table>
+        </section>
+        <footer class="bottom">
+            {{ name }}
+        </footer>
+    </body>
+</html>
