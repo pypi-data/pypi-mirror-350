@@ -1,0 +1,59 @@
+Metadata-Version: 2.4
+Name: TeleFlow
+Version: 0.2.0
+Summary: Asynchronous Telegram Bot API client
+Home-page: https://github.com/x7007x/NegmPy
+Author: Ahmed Negm
+Author-email: A7medNegm.x@gmail.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: aiohttp>=3.7.4
+Requires-Dist: typing_extensions>=4.0.0
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.15.1; extra == "dev"
+Requires-Dist: black>=21.6b0; extra == "dev"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# Telegram Bot API
+
+A simple and efficient asynchronous Telegram Bot API client.
+
+## Installation
+
+```bash
+pip install -U TeleFlow
+```
+
+## Usage
+
+```python
+from TeleFlow import TelegramBot
+
+bot = TelegramBot("YOUR_BOT_TOKEN")
+
+@bot.handler('message')
+async def handle_message(message, update_type):
+    if message.text == '/start':
+        await bot("sendMessage", {
+            'chat_id': message.chat['id'],
+            'text': 'Hello!'
+        })
+
+bot.run()
+```
