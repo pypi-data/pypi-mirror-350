@@ -1,0 +1,72 @@
+[tool.poetry]
+name = "match-video"
+version = "0.1.5"
+description = "A Python library that simplifies working with video from soccer matches."
+authors = ["Grant Wenzinger <grantwenzinger@gmail.com>"]
+readme = "README.md"
+repository = "https://gitlab.com/grantwenzinger/match-video"
+keywords = ["soccer", "football", "match", "video"]
+
+[tool.poetry.dependencies]
+python = "^3.9.0"
+typer = {version = "^0.12.3", extras = ["all"]}
+
+# lint
+pre-commit = {version = "^2.19.0", optional = true}
+black = {version = "^22.3.0", optional = true}
+flake8 = {version = "^4.0.1", optional = true}
+isort = {version = "^5.6.4", optional = true}
+
+# test
+pytest = {version = "^7.1.2", optional = true}
+coverage = {version = "^6.4", optional = true, extras = ["toml"]}
+pytest-cov = {version = "^3.0.0", optional = true}
+pytest-mock = {version = "^3.2.0", optional = true}
+pytest-sugar = {version = "^0.9.4", optional = true}
+
+# examples
+streamlit = {version = "^1.12.0", optional = true}
+jupyterlab = {version = "^3.6.1", optional = true}
+xmltodict = {version = "^0.13.0", optional = true}
+numpy = {version = "1.23.4", optional = true}
+pyarrow = {version = "10.0.0", optional = true}
+
+[tool.poetry.extras]
+lint = ["pre-commit", "black", "flake8", "isort", "seed-isort-config"]
+test = ["pytest", "coverage", "pytest-cov", "pytest-mock", "pytest-sugar"]
+examples = ["streamlit", "jupyterlab", "xmltodict", "numpy", "pyarrow"]
+
+[tool.poetry.scripts]
+match-video = "match_video.cli:app"
+
+[tool.black]
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+  | docs
+)/
+'''
+
+[tool.isort]
+line_length = 88
+multi_line_output = 3
+include_trailing_comma = true
+known_third_party = ["pytest", "streamlit", "typer"]
+
+[tool.coverage.run]
+source = ["match-video"]
+omit = ["*/__init__.py"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

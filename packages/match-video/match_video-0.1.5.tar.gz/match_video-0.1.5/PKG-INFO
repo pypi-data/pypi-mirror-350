@@ -1,0 +1,84 @@
+Metadata-Version: 2.1
+Name: match-video
+Version: 0.1.5
+Summary: A Python library that simplifies working with video from soccer matches.
+Home-page: https://gitlab.com/grantwenzinger/match-video
+Keywords: soccer,football,match,video
+Author: Grant Wenzinger
+Author-email: grantwenzinger@gmail.com
+Requires-Python: >=3.9.0,<4.0.0
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Provides-Extra: examples
+Provides-Extra: lint
+Provides-Extra: test
+Requires-Dist: black (>=22.3.0,<23.0.0) ; extra == "lint"
+Requires-Dist: coverage[toml] (>=6.4,<7.0) ; extra == "test"
+Requires-Dist: flake8 (>=4.0.1,<5.0.0) ; extra == "lint"
+Requires-Dist: isort (>=5.6.4,<6.0.0) ; extra == "lint"
+Requires-Dist: jupyterlab (>=3.6.1,<4.0.0) ; extra == "examples"
+Requires-Dist: numpy (==1.23.4) ; extra == "examples"
+Requires-Dist: pre-commit (>=2.19.0,<3.0.0) ; extra == "lint"
+Requires-Dist: pyarrow (==10.0.0) ; extra == "examples"
+Requires-Dist: pytest (>=7.1.2,<8.0.0) ; extra == "test"
+Requires-Dist: pytest-cov (>=3.0.0,<4.0.0) ; extra == "test"
+Requires-Dist: pytest-mock (>=3.2.0,<4.0.0) ; extra == "test"
+Requires-Dist: pytest-sugar (>=0.9.4,<0.10.0) ; extra == "test"
+Requires-Dist: streamlit (>=1.12.0,<2.0.0) ; extra == "examples"
+Requires-Dist: typer[all] (>=0.12.3,<0.13.0)
+Requires-Dist: xmltodict (>=0.13.0,<0.14.0) ; extra == "examples"
+Project-URL: Repository, https://gitlab.com/grantwenzinger/match-video
+Description-Content-Type: text/markdown
+
+# Match Video
+
+This is a Python library that simplifies working with video from soccer matches. It allows match video to be selected intuitively by period number and clock, instead of absolute video time.
+
+To accomplish this the start of each period is set as a chapter in the match video's metadata. Clips from the video can then be selected by period number and clock. ffmpeg handles both reading and writing the video chapter metadata and clip selection.
+
+## Installation
+
+### Requirements
+- Python 3.9 or newer
+- [ffmpeg](https://ffmpeg.org)
+
+```shell
+pip install match-video
+```
+
+## Usage
+
+Before the video can be used, the start time of each half needs to be set.
+
+```shell
+match-video set-half-starts path/to/video.mp4 0:04 63:20
+```
+
+Then it is easy to select match video by period and clock!
+
+```python
+import match_video as mv
+
+# get the third minute of the match
+clip = mv.get_clip("path/to/video.mp4", period=1, start_clock=180, end_clock=240)
+
+# get the start of each half and concatenate them
+clip_clocks = [
+    {"period": 1, "start_clock": 0, "end_clock": 30},
+    {"period": 2, "start_clock": 0, "end_clock": 30},
+]
+clips = mv.get_clips("path/to/video.mp4", clip_clocks)
+```
+
+See the [examples](https://gitlab.com/grantwenzinger/match-video/-/tree/main/examples) to see how to save or display video clips.
+
+## Support
+
+<grantwenzinger@gmail.com>
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
+
