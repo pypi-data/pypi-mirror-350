@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>    
+    <record id="view_order_form" model="ir.ui.view">
+        <field name="name">sale.order.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form" />
+        <field name="arch" type="xml">
+            <page name="other_information" position="after">
+                <page string="Contract Info" name="contract_info">
+                    <group>
+                        <group string="Supply Point" name="supply_point">
+                            <field name="cups" />
+                            <field name="is_light" />
+                        </group>
+                        <group string="Service point data" name="service_point_data">
+                            <field name="service_street" />
+                            <field name="service_floor" />
+                            <field name="service_door" />
+                            <field name="service_state_id" />
+                            <field name="service_city" />
+                            <field name="service_zip_code" />
+                            <field name="is_home" />
+                            <field name="cnae" />
+                            <field name="cadastral_reference" />
+                            <field name="statement" />
+                        </group>
+                        <group string="Power info" name="power_info">
+                            <field name="voltage_installation_type" attrs="{'invisible':[('is_light', '=', True)]}"/>
+                            <field name="power_type" />
+                            <field name="current_power_point" attrs="{'invisible':[('power_type', '=', 'is_superior_of_15kw')]}"/>
+                            <field name="current_power_valley" attrs="{'invisible':[('power_type', '=', 'is_superior_of_15kw')]}"/>
+                            <field name="current_power_p1" attrs="{'invisible':[('power_type', '=', 'is_inferior_of_15kw')]}"/>
+                            <field name="current_power_p2" attrs="{'invisible':[('power_type', '=', 'is_inferior_of_15kw')]}"/>
+                            <field name="current_power_p3" attrs="{'invisible':[('power_type', '=', 'is_inferior_of_15kw')]}"/>
+                            <field name="current_power_p4" attrs="{'invisible':[('power_type', '=', 'is_inferior_of_15kw')]}"/>
+                            <field name="current_power_p5" attrs="{'invisible':[('power_type', '=', 'is_inferior_of_15kw')]}"/>
+                            <field name="current_power_p6" attrs="{'invisible':[('power_type', '=', 'is_inferior_of_15kw')]}"/>
+                        </group>
+                        <group string="Selfconsume" name="selfconsume">
+                            <field name="selfconsume" />
+                            <field name="installation" attrs="{'invisible':[('selfconsume', '=', 'selfconsume_nonactive')]}"/>
+                            <field name="cau" attrs="{'invisible':[('selfconsume', '=', 'selfconsume_nonactive')]}"/>
+                            <field name="installation_power" attrs="{'invisible':[('selfconsume', '=', 'selfconsume_nonactive')]}"/>
+                            <field name="installation_situation" attrs="{'invisible':[('selfconsume', '=', 'selfconsume_nonactive')]}"/>
+                            <field name="installation_type" attrs="{'invisible':[('selfconsume', '=', 'selfconsume_nonactive')]}"/>
+                            <field name="auxiliar_service" attrs="{'invisible':[('selfconsume', '=', 'selfconsume_nonactive')]}"/>
+                        </group>
+                        <group string="Titularity Info" name="titularity_info">
+                            <field name="titular_nif" />
+                            <field name="is_previous_titular" attrs="{'invisible':[('is_light', '=', True)]}"/>
+                            <field name="titular_firstname" />
+                            <field name="titular_lastname" />
+                            <field name="titular_street" />
+                            <field name="titular_floor" />
+                            <field name="titular_door" />
+                            <field name="titular_state_id" />
+                            <field name="titular_city" />
+                            <field name="titular_zip_code" />
+                            <field name="titular_email" />
+                            <field name="titular_phone" />
+                        </group>
+                        <group string="Terms and Conditions" name="terms_and_conditions">
+                            <field name="conditions" />
+                            <field name="payment_conditions" />
+                            <field name="privacy_policy" />
+                        </group>
+                        <group string="Tariff info" name="tariff_info">
+                            <field name="tariff" />
+                        </group>
+                        <group string="Payment Info" name="payment_info">
+                            <field name="iban" />
+                            <field name="iban_statement" />
+                        </group>
+                    </group>
+                </page>
+            </page>
+        </field>
+    </record>
+</odoo>
