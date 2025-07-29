@@ -1,0 +1,110 @@
+Metadata-Version: 2.4
+Name: voyado-engage
+Version: 0.1.0
+Summary: A Python client library for Voyado Engage API
+Home-page: https://github.com/alinaqi/voyado-python
+Author: Ali Shaheen
+Author-email: ali.shaheen@zenloop.com
+License: MIT
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests>=2.28.0
+Requires-Dist: typing-extensions>=4.0.0
+Requires-Dist: python-dateutil>=2.8.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-cov>=3.0.0; extra == "dev"
+Requires-Dist: black>=22.0.0; extra == "dev"
+Requires-Dist: flake8>=4.0.0; extra == "dev"
+Requires-Dist: mypy>=0.950; extra == "dev"
+Requires-Dist: python-dotenv>=0.20.0; extra == "dev"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license
+Dynamic: license-file
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# Voyado Engage Python Client
+
+A Python client library for interacting with the Voyado Engage API v3.
+
+## Features
+
+- Full support for Voyado Engage API v3
+- Type hints for better IDE support
+- Comprehensive error handling
+- Support for contacts, orders, transactions, and more
+- Async support (coming soon)
+
+## Installation
+
+```bash
+pip install voyado-engage
+```
+
+## Quick Start
+
+```python
+from voyado import VoyadoClient
+
+# Initialize the client
+client = VoyadoClient(
+    api_key="your-api-key",
+    base_url="https://your-instance.voyado.com",
+    user_agent="YourApp/1.0"
+)
+
+# Create a contact
+contact = client.contacts.create({
+    "firstName": "John",
+    "lastName": "Doe",
+    "email": "john.doe@example.com",
+    "contactType": "Member",
+    "countryCode": "SE",
+    "preferences": {
+        "acceptsEmail": True,
+        "acceptsSms": True,
+        "acceptsPostal": False
+    }
+})
+
+# Get contact by ID
+contact = client.contacts.get(contact_id="contact-id-here")
+
+# Update contact
+client.contacts.update(
+    contact_id="contact-id-here",
+    data={
+        "firstName": "Jane",
+        "street": "New Street 123"
+    }
+)
+
+# Search contacts
+results = client.contacts.search(
+    email="john.doe@example.com"
+)
+```
+
+## API Documentation
+
+For full API documentation, please visit [Voyado Developer Documentation](https://developer.voyado.com/).
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
