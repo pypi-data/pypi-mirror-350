@@ -1,0 +1,607 @@
+class WebTask {
+    constructor() {
+        this.processes = [];
+        this.filteredProcesses = [];
+        this.fileSystem = {};
+        this.currentPath = '/';
+        this.startTime = Date.now();
+        this.selectedPid = null;
+        this.processCounter = 1000;
+        this.filterText = '';
+        this.sortConfig = {
+            column: 'cpu',
+            direction: 'desc'
+        };
+        this.sortConfig = {
+            column: 'cpu',
+            direction: 'desc'
+        };
+        
+        this.initializeFileSystem();
+        this.initializeProcesses();
+        this.startUpdating();
+        this.bindEvents();
+    }
+
+    initializeFileSystem() {
+        this.fileSystem = {
+            '/': {
+                type: 'directory',
+                children: {
+                    'bin': { type: 'directory', children: {
+                        'bash': { type: 'executable', size: 1234567, content: '#!/bin/bash\n# Bash shell executable\n# System shell program' },
+                        'node': { type: 'executable', size: 45678901, content: '#!/usr/bin/env node\n// Node.js runtime executable' },
+                        'python3': { type: 'executable', size: 23456789, content: '#!/usr/bin/python3\n# Python 3 interpreter' }
+                    }},
+                    'etc': { type: 'directory', children: {
+                        'nginx': { type: 'directory', children: {
+                            'nginx.conf': { type: 'config', size: 2048, content: 'server {\n    listen 80;\n    server_name localhost;\n    location / {\n        root /var/www/html;\n    }\n}' }
+                        }},
+                        'systemd': { type: 'directory', children: {
+                            'system': { type: 'directory', children: {
+                                'nginx.service': { type: 'service', size: 512, content: '[Unit]\nDescription=The nginx HTTP and reverse proxy server\n[Service]\nType=forking\nExecStart=/usr/sbin/nginx\n[Install]\nWantedBy=multi-user.target' }
+                            }}
+                        }}
+                    }},
+                    'var': { type: 'directory', children: {
+                        'www': { type: 'directory', children: {
+                            'html': { type: 'directory', children: {
+                                'index.html': { type: 'html', size: 1024, content: '<!DOCTYPE html>\n<html>\n<head>\n    <title>Welcome to nginx!</title>\n    <style>\n        body { font-family: Arial; background: #f0f0f0; }\n        .container { max-width: 800px; margin: 50px auto; padding: 20px; }\n        h1 { color: #333; text-align: center; }\n    </style>\n</head>\n<body>\n    <div class="container">\n        <h1>Welcome to nginx!</h1>\n        <p>If you can see this page, the nginx web server is successfully installed and working.</p>\n    </div>\n</body>\n</html>' },
+                                'app.js': { type: 'script', size: 856, content: 'const express = require(\'express\');\nconst app = express();\nconst port = 3000;\n\napp.get(\'/\', (req, res) => {\n    res.send(\'Hello World from Node.js!\');\n});\n\napp.listen(port, () => {\n    console.log(`Server running at http://localhost:${port}`);\n});' }
+                            }}
+                        }},
+                        'log': { type: 'directory', children: {
+                            'nginx': { type: 'directory', children: {
+                                'access.log': { type: 'log', size: 45678, content: '192.168.1.100 - - [22/May/2025:10:30:45 +0000] "GET / HTTP/1.1" 200 612\n192.168.1.101 - - [22/May/2025:10:31:12 +0000] "GET /app.js HTTP/1.1" 404 162' }
+                            }}
+                        }}
+                    }},
+                    'usr': { type: 'directory', children: {
+                        'local': { type: 'directory', children: {
+                            'bin': { type: 'directory', children: {
+                                'myapp': { type: 'script', size: 1234, content: '#!/bin/bash\n# Custom application launcher\nexport NODE_ENV=production\ncd /var/www/html\nnode app.js' }
+                            }}
+                        }}
+                    }}
+                }
+            }
+        };
+    }
+
+    initializeProcesses() {
+        const processTemplates = [
+            { cmd: 'systemd', user: 'root', port: null, file: null, service: 'systemd', parent: null },
+            { cmd: '/usr/sbin/nginx', user: 'www-data', port: 80, file: '/usr/sbin/nginx', service: 'nginx', parent: 1 },
+            { cmd: 'nginx: worker process', user: 'www-data', port: 80, file: '/usr/sbin/nginx', service: 'nginx', parent: 'nginx' },
+            { cmd: 'node /var/www/html/app.js', user: 'user', port: 3000, file: '/var/www/html/app.js', service: 'node', parent: null },
+            { cmd: '/bin/bash /usr/local/bin/myapp', user: 'user', port: null, file: '/usr/local/bin/myapp', service: 'bash', parent: null },
+            { cmd: 'python3 -m http.server 8000', user: 'user', port: 8000, file: '/usr/bin/python3', service: 'python3', parent: null },
+            { cmd: 'sshd: /usr/sbin/sshd -D', user: 'root', port: 22, file: '/usr/sbin/sshd', service: 'sshd', parent: null },
+            { cmd: 'mysql', user: 'mysql', port: 3306, file: '/usr/bin/mysql', service: 'mysql', parent: null },
+            { cmd: 'redis-server', user: 'redis', port: 6379, file: '/usr/bin/redis-server', service: 'redis', parent: null },
+            { cmd: 'docker daemon', user: 'root', port: null, file: '/usr/bin/dockerd', service: 'docker', parent: null }
+        ];
+
+        this.processes = processTemplates.map((template, index) => ({
+            pid: this.processCounter + index,
+            user: template.user,
+            cpu: Math.random() * 15,
+            memory: Math.random() * 25,
+            time: this.generateTime(),
+            port: template.port,
+            command: template.cmd,
+            file: template.file,
+            service: template.service,
+            parent: template.parent,
+            children: [],
+            transparency: this.calculateTransparency(template.service),
+            startTime: Date.now() - Math.random() * 3600000
+        }));
+
+        this.processCounter += processTemplates.length;
+        this.buildProcessHierarchy();
+        this.processes.sort((a, b) => b.cpu - a.cpu);
+        this.applyFilter();
+    }
+
+    buildProcessHierarchy() {
+        // Create parent-child relationships
+        this.processes.forEach(process => {
+            if (process.parent) {
+                const parent = this.processes.find(p => 
+                    p.service === process.parent || p.pid === process.parent
+                );
+                if (parent) {
+                    parent.children.push(process.pid);
+                    process.parentPid = parent.pid;
+                }
+            }
+        });
+    }
+
+    calculateTransparency(service) {
+        // Different services have different transparency levels
+        const transparencyMap = {
+            'systemd': 0.3,      // Core system - very transparent
+            'kernel': 0.2,       // Kernel processes - most transparent
+            'nginx': 0.8,        // Web server - less transparent
+            'node': 0.9,         // Application - visible
+            'mysql': 0.7,        // Database - moderate transparency
+            'redis': 0.7,        // Cache - moderate transparency
+            'sshd': 0.6,         // SSH daemon - moderate transparency
+            'docker': 0.5,       // Container runtime - more transparent
+            'bash': 1.0,         // Shell - fully visible
+            'python3': 0.9       // Python apps - visible
+        };
+        return transparencyMap[service] || 0.8;
+    }
+
+    generateTime() {
+        const seconds = Math.floor(Math.random() * 3600);
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
+        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    applyFilter() {
+        if (!this.filterText) {
+            this.filteredProcesses = [...this.processes];
+        } else {
+            const filter = this.filterText.toLowerCase();
+            this.filteredProcesses = this.processes.filter(process =>
+                process.pid.toString().includes(filter) ||
+                process.user.toLowerCase().includes(filter) ||
+                process.command.toLowerCase().includes(filter) ||
+                process.service.toLowerCase().includes(filter) ||
+                (process.port && process.port.toString().includes(filter))
+            );
+        }
+        document.getElementById('filtered-count').textContent = this.filteredProcesses.length;
+    }
+
+    updateSystemStats() {
+        const cpuUsage = Math.random() * 100;
+        const memUsage = Math.random() * 100;
+        const loadAvg = (Math.random() * 4).toFixed(2);
+
+        document.getElementById('cpu-fill').style.width = cpuUsage + '%';
+        document.getElementById('cpu-percent').textContent = cpuUsage.toFixed(1) + '%';
+
+        document.getElementById('mem-fill').style.width = memUsage + '%';
+        document.getElementById('mem-percent').textContent = memUsage.toFixed(1) + '%';
+
+        document.getElementById('load-avg').textContent = loadAvg;
+
+        // Update uptime
+        const uptime = Date.now() - this.startTime;
+        const hours = Math.floor(uptime / 3600000);
+        const minutes = Math.floor((uptime % 3600000) / 60000);
+        const seconds = Math.floor((uptime % 60000) / 1000);
+        document.getElementById('uptime').textContent =
+            `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    updateProcesses() {
+        // Simulate process changes
+        this.processes.forEach(process => {
+            process.cpu += (Math.random() - 0.5) * 2;
+            process.cpu = Math.max(0, Math.min(100, process.cpu));
+
+            process.memory += (Math.random() - 0.5) * 1;
+            process.memory = Math.max(0, Math.min(100, process.memory));
+        });
+
+        // Occasionally add new processes
+        if (Math.random() < 0.1 && this.processes.length < 50) {
+            const commands = ['node app.js', 'python3 server.py', 'java -jar app.jar', 'go run main.go'];
+            const command = commands[Math.floor(Math.random() * commands.length)];
+            const port = Math.random() < 0.3 ? Math.floor(Math.random() * 9000) + 1000 : null;
+
+            this.processes.push({
+                pid: this.processCounter++,
+                user: 'user',
+                cpu: Math.random() * 5,
+                memory: Math.random() * 10,
+                time: this.generateTime(),
+                port: port,
+                command: command,
+                file: command.includes('node') ? '/var/www/html/app.js' : null,
+                service: command.split(' ')[0],
+                parent: null,
+                children: [],
+                transparency: 0.9,
+                startTime: Date.now()
+            });
+        }
+
+        // Sort by CPU usage
+        this.processes.sort((a, b) => b.cpu - a.cpu);
+        this.applyFilter();
+    }
+
+    generatePreviewThumbnail(process) {
+        let thumbnailContent = '';
+        let thumbnailClass = 'preview-thumbnail';
+
+        if (process.file && this.getFileContent(process.file)) {
+            const fileContent = this.getFileContent(process.file);
+            const fileExtension = process.file.split('.').pop();
+
+            switch (fileExtension) {
+                case 'html':
+                    thumbnailClass += ' html-preview';
+                    thumbnailContent = `<div class="html-preview">${fileContent}</div>`;
+                    break;
+                case 'js':
+                    thumbnailClass += ' bash-script';
+                    thumbnailContent = fileContent.substring(0, 50) + '...';
+                    break;
+                case 'sh':
+                    thumbnailClass += ' bash-script';
+                    thumbnailContent = fileContent.substring(0, 50) + '...';
+                    break;
+                default:
+                    if (process.service) {
+                        thumbnailClass += ' service-status';
+                        thumbnailContent = `<div>⚙️</div><div>${process.service}</div>`;
+                    }
+            }
+        } else if (process.port) {
+            thumbnailClass += ' port-indicator';
+            thumbnailContent = `<div>🌐</div><div>:${process.port}</div>`;
+        } else if (process.service) {
+            thumbnailClass += ' service-status';
+            thumbnailContent = `<div>⚙️</div><div>${process.service}</div>`;
+        }
+
+        return { class: thumbnailClass, content: thumbnailContent };
+    }
+
+    renderProcesses() {
+        const processList = document.getElementById('process-list');
+        processList.innerHTML = '';
+
+        this.filteredProcesses.forEach(process => {
+            const row = document.createElement('div');
+            row.className = 'process-row';
+
+            if (process.cpu > 10) row.classList.add('high-cpu');
+            if (process.memory > 20) row.classList.add('high-mem');
+            if (process.transparency < 0.8) row.classList.add('transparent');
+
+            // Add hierarchy indicator
+            let hierarchyIndicator = '';
+            if (process.parentPid) {
+                const depth = this.getProcessDepth(process);
+                const hierarchyClass = depth === 1 ? 'child' : 'grandchild';
+                hierarchyIndicator = `<div class="process-hierarchy ${hierarchyClass}"></div>`;
+            }
+
+            const thumbnail = this.generatePreviewThumbnail(process);
+
+            row.innerHTML = `
+                ${hierarchyIndicator}
+                <div>${process.pid}</div>
+                <div>${process.user}</div>
+                <div>${process.cpu.toFixed(1)}</div>
+                <div>${process.memory.toFixed(1)}</div>
+                <div>${process.time}</div>
+                <div>${process.port || '-'}</div>
+                <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${process.command}">
+                    ${process.command}
+                </div>
+                <div class="process-preview" onclick="webtask.showPreview(${process.pid})">
+                    <div class="${thumbnail.class}">${thumbnail.content}</div>
+                    <span class="preview-icon">👁️</span>
+                </div>
+                <div class="kill-options">
+                    <button class="kill-btn" onclick="webtask.toggleKillDropdown(event, ${process.pid})">
+                        KILL ▼
+                    </button>
+                    <div class="kill-dropdown" id="dropdown-${process.pid}">
+                        <div class="kill-option" onclick="webtask.killProcessWithSignal(${process.pid}, 'TERM')">
+                            SIGTERM (Graceful)
+                        </div>
+                        <div class="kill-option danger" onclick="webtask.killProcessWithSignal(${process.pid}, 'KILL')">
+                            SIGKILL (Force)
+                        </div>
+                        <div class="kill-option" onclick="webtask.killProcessWithSignal(${process.pid}, 'INT')">
+                            SIGINT (Interrupt)
+                        </div>
+                        <div class="kill-option" onclick="webtask.killProcessWithSignal(${process.pid}, 'HUP')">
+                            SIGHUP (Hangup)
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            row.style.opacity = process.transparency;
+
+            row.addEventListener('click', (e) => {
+                if (!e.target.closest('.kill-options') && !e.target.closest('.process-preview')) {
+                    this.selectedPid = process.pid;
+                    document.getElementById('selected-pid').textContent = process.pid;
+
+                    // Remove previous selection
+                    document.querySelectorAll('.process-row').forEach(r =>
+                        r.style.background = '');
+                    row.style.background = '#444';
+                }
+            });
+
+            row.addEventListener('dblclick', () => {
+                this.showProcessDetails(process.pid);
+            });
+
+            processList.appendChild(row);
+        });
+
+        document.getElementById('process-count').textContent = this.processes.length;
+        document.getElementById('last-update').textContent = new Date().toLocaleTimeString();
+    }
+
+    getProcessDepth(process) {
+        let depth = 0;
+        let current = process;
+        while (current.parentPid) {
+            depth++;
+            current = this.processes.find(p => p.pid === current.parentPid);
+            if (!current) break;
+        }
+        return depth;
+    }
+
+    getFileContent(filePath) {
+        const parts = filePath.split('/').filter(Boolean);
+        let current = this.fileSystem['/'];
+
+        for (const part of parts) {
+            if (current.children && current.children[part]) {
+                current = current.children[part];
+            } else {
+                return null;
+            }
+        }
+
+        return current.content || null;
+    }
+
+    showPreview(pid) {
+        const process = this.processes.find(p => p.pid === pid);
+        if (!process) return;
+
+        const overlay = document.getElementById('preview-overlay');
+        const title = document.getElementById('preview-title');
+        const body = document.getElementById('preview-body');
+
+        title.textContent = `Process Details - PID ${pid}: ${process.command}`;
+
+        // Calculate additional information
+        const uptime = this.formatTime(process.time);
+        const memoryUsage = (process.mem * 100).toFixed(2) + '%';
+        const cpuUsage = (process.cpu * 100).toFixed(2) + '%';
+        const status = process.transparency < 0.8 ? 'Background Process' : 'Active Process';
+        const startTime = new Date(Date.now() - process.time * 1000).toLocaleString();
+        
+        if (process.file && this.getFileContent(process.file)) {
+            const content = this.getFileContent(process.file);
+            const isHTML = process.file.endsWith('.html');
+
+            // Create a structured view with file information and content
+            body.className = 'preview-body process-info';
+            body.innerHTML = `
+                <div class="preview-info-section">
+                    <h3>Process Information</h3>
+                    <div class="preview-info-row"><span class="preview-info-label">PID:</span> <span>${process.pid}</span></div>
+                    <div class="preview-info-row"><span class="preview-info-label">User:</span> <span>${process.user}</span></div>
+                    <div class="preview-info-row"><span class="preview-info-label">Command:</span> <span>${process.command}</span></div>
+                    <div class="preview-info-row"><span class="preview-info-label">CPU Usage:</span> <span>${cpuUsage}</span></div>
+                    <div class="preview-info-row"><span class="preview-info-label">Memory Usage:</span> <span>${memoryUsage}</span></div>
+                    <div class="preview-info-row"><span class="preview-info-label">Uptime:</span> <span>${uptime}</span></div>
+                    <div class="preview-info-row"><span class="preview-info-label">Started:</span> <span>${startTime}</span></div>
+                    <div class="preview-info-row"><span class="preview-info-label">Status:</span> <span>${status}</span></div>
+                    <div class="preview-info-row"><span class="preview-info-label">File:</span> <span>${process.file}</span></div>
+                </div>
+                <div class="preview-info-section">
+                    <h3>File Content</h3>
+                    <div class="file-content ${isHTML ? 'html-content' : ''}">${isHTML ? content : this.escapeHTML(content)}</div>
+                </div>
+            `;
+        } else if (process.port) {
+            // Create a structured view for network services
+            body.className = 'preview-body process-info';
+            body.innerHTML = `
+                <div class="preview-info-section">
+                    <h3>Process Information</h3>
+                    <div class="preview-info-row"><span class="preview-info-label">PID:</span> <span>${process.pid}</span></div>
+                    <div class="preview-info-row"><span class="preview-info-label">User:</span> <span>${process.user}</span></div>
+                    <div class="preview-info-row"><span class="preview-info-label">Command:</span> <span>${process.command}</span></div>
+                    <div class="preview-info-row"><span class="preview-info-label">CPU Usage:</span> <span>${cpuUsage}</span></div>
+                    <div class="preview-info-row"><span class="preview-info-label">Memory Usage:</span> <span>${memoryUsage}</span></div>
+                    <div class="preview-info-row"><span class="preview-info-label">Uptime:</span> <span>${uptime}</span></div>
+                    <div class="preview-info-row"><span class="preview-info-label">Started:</span> <span>${startTime}</span></div>
+                    <div class="preview-info-row"><span class="preview-info-label">Status:</span> <span>${status}</span></div>
+                </div>
+                <div class="preview-info-section">
+                    <h3>Network Information</h3>
+                    <div class="preview-info-row"><span class="preview-info-label">Port:</span> <span>${process.port}</span></div>
+                    <div class="preview-info-row"><span class="preview-info-label">Service Type:</span> <span>${process.service || 'Unknown'}</span></div>
+    
+    this.filteredProcesses.sort((a, b) => {
+        let valueA, valueB;
+        
+        switch(column) {
+            case 'pid':
+                return (a.pid - b.pid) * multiplier;
+            case 'user':
+                return (a.user.localeCompare(b.user)) * multiplier;
+            case 'cpu':
+                return (a.cpu - b.cpu) * multiplier;
+            case 'mem':
+                return (a.mem - b.mem) * multiplier;
+            case 'time':
+                return (a.time - b.time) * multiplier;
+            case 'port':
+                // Handle null ports
+                if (!a.port && !b.port) return 0;
+                if (!a.port) return 1 * multiplier;
+                if (!b.port) return -1 * multiplier;
+                return (a.port - b.port) * multiplier;
+            case 'command':
+                return (a.command.localeCompare(b.command)) * multiplier;
+            default:
+                return 0;
+        }
+    });
+
+    // Re-render the processes with the new sort order
+    this.renderProcesses();
+}
+
+renderProcesses() {
+    const processList = document.getElementById('process-list');
+    processList.innerHTML = '';
+
+    this.filteredProcesses.forEach(process => {
+        const row = document.createElement('div');
+        row.className = 'process-row';
+
+        if (process.cpu > 10) row.classList.add('high-cpu');
+        if (process.memory > 20) row.classList.add('high-mem');
+        if (process.transparency < 0.8) row.classList.add('transparent');
+
+        // Add hierarchy indicator
+        let hierarchyIndicator = '';
+        if (process.parentPid) {
+            const depth = this.getProcessDepth(process);
+            const hierarchyClass = depth === 1 ? 'child' : 'grandchild';
+            hierarchyIndicator = `<div class="process-hierarchy ${hierarchyClass}"></div>`;
+        }
+
+        const thumbnail = this.generatePreviewThumbnail(process);
+
+        row.innerHTML = `
+            ${hierarchyIndicator}
+            <div class="sortable" data-sort="pid">${process.pid}</div>
+            <div class="sortable" data-sort="user">${process.user}</div>
+            <div class="sortable" data-sort="cpu">${process.cpu.toFixed(1)}</div>
+            <div class="sortable" data-sort="mem">${process.memory.toFixed(1)}</div>
+            <div class="sortable" data-sort="time">${process.time}</div>
+            <div class="sortable" data-sort="port">${process.port || '-'}</div>
+            <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${process.command}">
+                ${process.command}
+            </div>
+            <div class="process-preview" onclick="webtask.showPreview(${process.pid})">
+                <div class="${thumbnail.class}">${thumbnail.content}</div>
+                <span class="preview-icon">👁️</span>
+            </div>
+            <div class="kill-options">
+                <button class="kill-btn" onclick="webtask.toggleKillDropdown(event, ${process.pid})">
+                    KILL ▼
+                </button>
+                <div class="kill-dropdown" id="dropdown-${process.pid}">
+                    <div class="kill-option" onclick="webtask.killProcessWithSignal(${process.pid}, 'TERM')">
+                        SIGTERM (Graceful)
+                    </div>
+                    <div class="kill-option danger" onclick="webtask.killProcessWithSignal(${process.pid}, 'KILL')">
+                        SIGKILL (Force)
+                    </div>
+                    <div class="kill-option" onclick="webtask.killProcessWithSignal(${process.pid}, 'INT')">
+                        SIGINT (Interrupt)
+                    </div>
+                    <div class="kill-option" onclick="webtask.killProcessWithSignal(${process.pid}, 'HUP')">
+                        SIGHUP (Hangup)
+                    </div>
+                </div>
+            </div>
+        `;
+
+        row.style.opacity = process.transparency;
+
+        row.addEventListener('click', (e) => {
+            if (!e.target.closest('.kill-options') && !e.target.closest('.process-preview')) {
+                this.selectedPid = process.pid;
+                document.getElementById('selected-pid').textContent = process.pid;
+
+                // Remove previous selection
+                document.querySelectorAll('.process-row').forEach(r =>
+                    r.style.background = '');
+                row.style.background = '#444';
+            }
+        });
+
+        row.addEventListener('dblclick', () => {
+            this.showProcessDetails(process.pid);
+        });
+
+        processList.appendChild(row);
+    });
+
+    document.getElementById('process-count').textContent = this.processes.length;
+    document.getElementById('last-update').textContent = new Date().toLocaleTimeString();
+}
+
+bindEvents() {
+    // Filter processes when typing in the search box
+    document.getElementById('search-filter').addEventListener('input', (e) => {
+        this.filterText = e.target.value.toLowerCase();
+        this.filterProcesses();
+        this.renderProcesses();
+    });
+
+    // Global click handler for closing dropdowns
+    document.addEventListener('click', (e) => {
+        const dropdowns = document.querySelectorAll('.kill-dropdown.show');
+        dropdowns.forEach(dropdown => {
+            if (!e.target.closest('.kill-options') && !e.target.closest('.process-preview')) {
+                dropdown.classList.remove('show');
+            }
+        });
+    });
+
+    // Add click handlers for sortable columns
+    document.querySelectorAll('.sortable').forEach(column => {
+        column.addEventListener('click', (e) => {
+            const sortBy = column.getAttribute('data-sort');
+            this.sortProcesses(sortBy);
+        });
+    });
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'F1') {
+            e.preventDefault();
+            const advancedControls = document.getElementById('advanced-controls');
+            advancedControls.classList.toggle('show');
+        } else if (e.key === 'F2') {
+            e.preventDefault();
+            this.openFileBrowser();
+        } else if (e.key === 'F5') {
+            e.preventDefault();
+            this.toggleTreeView();
+        } else if (e.key === 'F6') {
+            e.preventDefault();
+            this.toggleSortOrder();
+        } else if (e.key === 'F9') {
+            e.preventDefault();
+            if (this.selectedPid) {
+                this.killProcess(this.selectedPid);
+            }
+        } else if (e.key === 'F10' || e.key === 'Escape') {
+            e.preventDefault();
+            if (document.getElementById('file-browser-modal').classList.contains('show')) {
+                this.closeFileBrowser();
+            } else if (document.getElementById('process-details-modal').classList.contains('show')) {
+                this.closeProcessDetails();
+            } else if (document.getElementById('preview-overlay').classList.contains('show')) {
+                document.getElementById('preview-overlay').classList.remove('show');
+            } else if (document.getElementById('advanced-controls').classList.contains('show')) {
+                document.getElementById('advanced-controls').classList.remove('show');
+            }
+        }
+    });
+}
+
+// Initialize webtask
+const webtask = new WebTask();
