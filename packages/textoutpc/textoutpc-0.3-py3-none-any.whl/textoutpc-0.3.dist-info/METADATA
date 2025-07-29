@@ -1,0 +1,68 @@
+Metadata-Version: 2.3
+Name: textoutpc
+Version: 0.3
+Summary: BBCode parser and renderer for Planète Casio
+Keywords: planète casio,textout,bbcode,translator,parser
+Author: Thomas Touhey
+Author-email: thomas@touhey.fr
+Requires-Python: >=3.9,<4.0
+Classifier: Development Status :: 2 - Pre-Alpha
+Classifier: License :: OSI Approved :: CEA CNRS Inria Logiciel Libre License, version 2.1 (CeCILL-2.1)
+Classifier: Natural Language :: French
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Internet :: WWW/HTTP :: Dynamic Content :: CGI Tools/Libraries
+Classifier: Topic :: Text Processing :: Markup :: HTML
+Requires-Dist: docutils (>=0.20,<0.21)
+Requires-Dist: eval-type-backport (>=0.2,<0.3) ; python_version < "3.10"
+Requires-Dist: pydantic (>=2.9,<3)
+Requires-Dist: regex (>=2024.11.6)
+Requires-Dist: thcolor (>=0.4,<0.5)
+Requires-Dist: typing-extensions (>=4.8,<5)
+Project-URL: Bug Tracker, https://gitlab.com/thomas.touhey/textoutpc/-/issues
+Project-URL: Documentation, https://textoutpc.touhey.pro/
+Project-URL: Homepage, https://textoutpc.touhey.pro/
+Project-URL: Source Code, https://gitlab.com/thomas.touhey/textoutpc
+Description-Content-Type: text/x-rst
+
+``textoutpc`` -- Planète Casio's textout() BBcode markup language translator
+============================================================================
+
+This module defines BBcode parsers, including HTML rendering, for
+`Planète Casio`_.
+
+For example, as described in `Rendering BBCode as HTML`_, in order to
+render BBCode into HTML, you can use the following snippet:
+
+.. code-block:: python
+
+    from __future__ import annotations
+
+    from textoutpc import render_as_html
+
+    text = """\
+    [img=center]https://www.planet-casio.com/assets/img/logo.png[/img]
+
+    Hello [color=R10]world[/color]!
+    [list]
+    [li]This module is made by [url=https://thomas.touhey.fr/]me[/url]!
+    [li]Use `render_as_html()` to translate magically to HTML!
+    [/]
+    """
+
+    print(render_as_html(text), end="")
+
+The project is present at the following locations:
+
+* `Official website and documentation at textoutpc.touhey.pro <Website_>`_;
+* `thomas.touhey/textoutpc repository on Gitlab <Gitlab repository_>`_;
+* `textoutpc project on PyPI <PyPI project_>`_.
+
+.. _Planète Casio: https://www.planet-casio.com/
+.. _Website: https://textoutpc.touhey.pro/
+.. _Gitlab repository: https://gitlab.com/thomas.touhey/textoutpc
+.. _PyPI project: https://pypi.org/project/textoutpc/
+.. _Rendering BBCode as HTML:
+    https://textoutpc.touhey.pro/user-guides/render-as-html.html
+
