@@ -1,0 +1,63 @@
+# Copyright 2025 Canonical Ltd.
+# See LICENSE file for licensing details.
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "juju-doctor"
+version = "0.1.7"
+description = "Juju-doctor is a pypi package which helps validate Juju deployments using probes."
+license = { file = "LICENSE" }
+readme = "README.md"
+requires-python = ">=3.10"
+
+dependencies = [
+  "pyyaml",
+  # Main
+  "sh",
+  "typer",
+  # Fetcher
+  "fsspec",
+  "requests",
+  "treelib",
+]
+
+[project.optional-dependencies]
+dev = [
+  # Linting
+  "ruff",
+  # Static
+  "pyright",
+  # Unit
+  "pytest",
+  "coverage[toml]",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/canonical/juju-doctor"
+"PyPI" = "https://pypi.org/project/juju-doctor"
+# "Bug Tracker" = "?"
+
+[project.scripts]
+juju-doctor = "juju_doctor.main:app"
+
+[tool.ruff]
+line-length = 99
+extend-exclude = ["__pycache__", "*.egg_info"]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "C", "N", "R", "D", "I001"]
+ignore = ["C901"]
+# D100, D101, D102, D103: Ignore missing docstrings in tests
+per-file-ignores = {"tests/*" = ["D100","D101","D102","D103"]}
+extend-select = ["I"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.pytest.ini_options]
+markers = [
+    "github: mark tests which use probes in GitHub remotes",
+]

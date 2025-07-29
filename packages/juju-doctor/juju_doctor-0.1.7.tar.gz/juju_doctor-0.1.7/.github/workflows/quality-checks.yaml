@@ -1,0 +1,87 @@
+name: Pull Requests
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_call:
+
+jobs:
+  lint:
+    name: Lint tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: |
+          sudo snap install --classic astral-uv
+          sudo snap install --classic just
+      - name: Run tests
+        run: just lint
+
+  static:
+    name: Static tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: |
+          sudo snap install --classic astral-uv
+          sudo snap install --classic just
+      - name: Run tests
+        run: just static
+        
+  unit-tests:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Set up python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: |
+          sudo snap install --classic astral-uv
+          sudo snap install --classic just
+          sudo snap install juju  # mocking 'sh' fails without this
+      - name: Run tests
+        run: just unit
+
+
+  solution-tests:
+    name: Solution tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Set up python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: |
+          sudo snap install --classic astral-uv
+          sudo snap install --classic just
+      - name: Run tests
+        run: just solution
+
