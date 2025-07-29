@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>gmsaas - Portal</title>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@genymotion/device-web-player@4.1.4/dist/css/device-renderer.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@genymotion/device-web-player@4.1.4/dist/js/device-renderer.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        margin: 0;
+        background: #000;
+      }
+      header {
+        height: 64px;
+        padding: 10px 0;
+        background-color: #1e1e1e;
+        margin-bottom: 20px;
+      }
+      #logo {
+        height: 100%;
+        background-size: contain;
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-image: url("./logo.png");
+      }
+
+      #informations,
+      #error {
+        font-family: "Roboto", sans-serif;
+        display: flex;
+        align-items: center;
+        background-color: #f44336;
+        color: white;
+        border-radius: 4px;
+        padding: 10px;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+        margin: 10px;
+        color: black;
+      }
+      #informations {
+        background-color: #fff59d;
+      }
+
+      #informations .informations-icon,
+      #error .error-icon {
+        font-size: 24px;
+        margin-right: 10px;
+      }
+
+      #informations .informations-content,
+      #error .error-content {
+        flex-grow: 1;
+      }
+
+      #error {
+        background-color: #ef9a9a;
+      }
+
+      #error.no-error,
+      #informations.no-informations {
+        display: none;
+      }
+
+      #instances {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 10px;
+        align-items: center;
+        justify-items: center;
+      }
+
+      .instance {
+        width: 400px;
+        margin: 10px;
+        margin: 0;
+        color: #fff;
+        font-size: 14px;
+        font-family: "Roboto", sans-serif;
+      }
+      .instance.landscape {
+        max-width: 800px;
+        width: auto;
+        grid-column-end: span 2;
+      }
+
+      .instance .device-renderer {
+        position: relative;
+      }
+      .instance .device-renderer.wsError::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #000000dd;
+        z-index: 1;
+      }
+      .instance .gm-toolbars {
+        display: none;
+        margin-right: -50px;
+      }
+
+      .instance .instanceInfos {
+        padding: 0 20px;
+        font-size: 12px;
+      }
+      .instance .instanceInfosdetails {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .instance .instanceInfoKey {
+        padding-left: 12px;
+      }
+      .instance .instancePlayer .gm-video-wrapper {
+        background: #252525;
+      }
+      .instance .instancePlayer .device-renderer {
+        padding: 0;
+      }
+      .instance .instancePlayer .gm-video {
+        margin-right: 0;
+      }
+      .instance .instancePlayer .gm-click-to-unmute {
+        left: calc(50% - 152px);
+        top: calc(86% - 75px);
+      }
+      @media screen and (max-width: 800px) {
+        .instance.landscape {
+          max-width: 400px;
+          width: auto;
+          grid-column-end: span 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div id="logo"></div>
+    </header>
+
+    <div id="error" class="no-error">
+      <span class="error-icon">⚠</span>
+      <div class="error-content">Error on Authorization, check token</div>
+    </div>
+
+    <div id="informations" class="no-informations">
+      <span class="informations-icon">⚠</span>
+      <div class="informations-content">No running instances to display</div>
+    </div>
+
+    <div id="instances"></div>
+    <script>
+      const {DeviceRendererFactory} = window.genyDeviceWebPlayer;
+      const factory = new DeviceRendererFactory();
+      const url = new URL(window.location.href);
+      const authHeaderKey = url.searchParams.get("auth_header_key")
+      const authHeaderValue = url.searchParams.get("auth_header_value")
+      const baseUrlToFetch = url.searchParams.get("url")
+        ? url.searchParams.get("url")
+        : "https://api.geny.io/cloud";
+      const instancesUuidFromUrl = url.searchParams.getAll("instances[]");
+      const instancesToDisplay = [];
+      const divToAppendPlayers = document.querySelector("#instances");
+
+      document.addEventListener("DOMContentLoaded", init);
+
+      function showError(shouldShowError) {
+        if (shouldShowError) {
+          document.querySelector("#error").classList.remove("no-error");
+        }
+        else {
+          document.querySelector("#error").classList.remove("error");
+        }
+      }
+
+      function getRequestHeaders() {
+        return {
+          "Content-Type": "application/json",
+          [authHeaderKey]: authHeaderValue,
+        };
+      }
+
+      async function listInstancesRequest() {
+        return fetch(
+          baseUrlToFetch + "/v2/instances?page_size=1000",
+          {
+            method: "GET",
+            headers: getRequestHeaders(),
+          }
+        );
+      }
+
+      async function createAccessTokenRequest(uuid) {
+        return fetch(
+          baseUrlToFetch + "/v1/instances/access-token",
+          {
+            method: "POST",
+            headers: getRequestHeaders(),
+            body: JSON.stringify({
+              instance_uuid: uuid
+            }),
+          }
+        );
+      }
+
+      async function init() {
+
+        const listInstancesResponse = await listInstancesRequest();
+        if (listInstancesResponse.status === 401) {
+          showError(true);
+          return;
+        } else {
+          showError(false);
+        }
+
+        let { results: instances } = await listInstancesResponse.json();
+
+        // If at least one UUID in queryString, exclude instances that are not in the url, otherwise display all.
+        // Exclude all instances where state is STOPPING, DELETING, RECYCLED, ERROR, REVOKED, EXPIRED.
+        instances = instances.filter(({ uuid, state }) => {
+          if (
+            [
+              "STOPPING",
+              "DELETING",
+              "RECYCLED",
+              "ERROR",
+              "REVOKED",
+              "EXPIRED",
+            ].includes(state)
+          ) {
+            return false;
+          }
+
+          return (
+            !instancesUuidFromUrl.length || instancesUuidFromUrl.includes(uuid)
+          );
+        });
+
+        if (!instances.length) {
+          document
+            .querySelector("#informations")
+            .classList.remove("no-informations");
+        } else {
+          document
+            .querySelector("#informations")
+            .classList.remove("informations");
+        }
+
+        instances.forEach(async ({
+            uuid,
+            name,
+            created_at,
+            os_image,
+            hardware_profile,
+            webrtc_url,
+          }) => {
+            // Beware that an ID must start with a letter.
+            const divId = "A" + uuid;
+            // Create container with player and infos.
+            const instanceHTML = createHTMLForInstance({
+              divId,
+              uuid,
+              name,
+              created_at,
+              andoid_version: os_image.name,
+              architecture: os_image.arch,
+              screen_density:
+                hardware_profile.width + " x " + hardware_profile.height,
+              width: hardware_profile.width,
+              height: hardware_profile.height,
+            });
+
+            divToAppendPlayers.appendChild(instanceHTML);
+            const instanceAccessTokenResponse = await createAccessTokenRequest(uuid);
+            if (instanceAccessTokenResponse.status !== 200) {
+              showError(true);
+              return;
+            } else {
+              showError(false);
+            }
+
+            const {access_token} = await instanceAccessTokenResponse.json();
+
+            instancesToDisplay.push({
+              divId,
+              instanceHTML,
+              player: loadPlayer(divId, webrtc_url, access_token),
+            });
+        });
+      }
+
+      function createHTMLForInstance({
+        divId,
+        uuid,
+        name,
+        created_at,
+        andoid_version,
+        architecture,
+        screen_density,
+        width,
+        height,
+      }) {
+        const containerDiv = document.createElement("div");
+        const instancePlayerDiv = document.createElement("div");
+        const instanceInfosDiv = document.createElement("div");
+        const instanceInfosdetailsDiv = document.createElement("div");
+
+        containerDiv.id = divId;
+        containerDiv.classList.add(width > height ? "landscape" : "portrait");
+        containerDiv.classList.add("instance");
+        instancePlayerDiv.classList.add("instancePlayer");
+        instanceInfosDiv.classList.add("instanceInfos");
+        instanceInfosdetailsDiv.classList.add("instanceInfosdetails");
+
+        // Create title instance div.
+        const instanceTitleDiv = document.createElement("div");
+        instanceTitleDiv.classList.add("instanceTitle");
+        instanceTitleDiv.innerHTML = `<b>${name}</b>`;
+
+        // Create instance info key div.
+        const instanceInfoKey = document.createElement("ul");
+        instanceInfoKey.classList.add("instanceInfoKey");
+
+        const infosObject = {
+          UUID: uuid,
+          "Creation date": formatDate(created_at),
+          "Android version": andoid_version,
+          "Architecture": architecture,
+          "Display resolution": screen_density,
+        };
+
+        Object.keys(infosObject).forEach((key) => {
+          const li = document.createElement("li");
+          const span = document.createElement("span");
+          span.innerHTML = "<b>" + key + "</b>";
+          li.appendChild(span);
+          instanceInfoKey.appendChild(li);
+        });
+
+        // Create instance info value div.
+        const instanceInfoValueDiv = document.createElement("div");
+        instanceInfoValueDiv.classList.add("instanceInfoValue");
+
+        Object.values(infosObject).forEach((value) => {
+          const div = document.createElement("div");
+          div.textContent = value;
+          instanceInfoValueDiv.appendChild(div);
+        });
+
+        instanceInfosdetailsDiv.appendChild(instanceInfoKey);
+        instanceInfosdetailsDiv.appendChild(instanceInfoValueDiv);
+
+        instanceInfosDiv.appendChild(instanceTitleDiv);
+        instanceInfosDiv.appendChild(instanceInfosdetailsDiv);
+
+        containerDiv.appendChild(instancePlayerDiv);
+        containerDiv.appendChild(instanceInfosDiv);
+
+        return containerDiv;
+      }
+
+      function loadPlayer(divId, webrtcURL, accessToken) {
+        try {
+          const container = document
+            .getElementById(divId)
+            .querySelector(".instancePlayer");
+          const options = {
+            template: "renderer",
+            token: accessToken,
+            fileUpload: false,
+          };
+
+          const instance = factory.setupRenderer(
+            container,
+            webrtcURL,
+            options
+          );
+
+          // Disconnect the player when page is closed.
+          window.addEventListener("beforeunload", function () {
+            instance.VM_communication.disconnect();
+          });
+
+          return instance;
+        } catch (err) {
+          console.log("Issues with Parsing URL Parameter's - " + err);
+        }
+      }
+
+      function formatDate(date) {
+        let dateToformat = typeof date === "string" ? new Date(date) : date;
+        const monthNames = [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ];
+
+        const month = monthNames[dateToformat.getMonth()];
+        const day = dateToformat.getDate();
+        const year = dateToformat.getFullYear();
+        const hours = String(dateToformat.getHours());
+        const minutes = String(dateToformat.getMinutes());
+        const seconds = String(dateToformat.getSeconds());
+        const daySuffix = getDaySuffix(day);
+
+        const formattedDate = `${month}, ${day}${daySuffix} ${year} ${hours.padStart(
+          2,
+          "0"
+        )}:${minutes.padStart(2, "0")}:${seconds.padStart(2, "0")}`;
+        return formattedDate;
+      }
+
+      function getDaySuffix(day) {
+        if (day >= 11 && day <= 13) {
+          return "th";
+        }
+        switch (day % 10) {
+          case 1:
+            return "st";
+          case 2:
+            return "nd";
+          case 3:
+            return "rd";
+          default:
+            return "th";
+        }
+      }
+    </script>
+  </body>
+</html>
