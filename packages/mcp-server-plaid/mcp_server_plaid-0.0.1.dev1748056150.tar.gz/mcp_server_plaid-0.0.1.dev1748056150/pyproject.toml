@@ -1,0 +1,45 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mcp-server-plaid"
+version = "0.0.1-dev-1748056150"
+description = "Model Context Protocol (MCP) server to build fast integration testing with Plaid Sandbox data."
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [
+    {name = "Plaid"}
+]
+maintainers = [
+    { name = "Wang Tian", email = "wtian@plaid.com" },
+    { name = "Stella Zhang", email = "szhang@plaid.com" },
+]
+dependencies = [
+    "httpx",
+    "mcp",
+    "websockets",
+    "plaid-python"
+]
+
+[project.scripts]
+mcp-server-plaid = "mcp_server_plaid:main"
+
+[tool.pytest]
+testpaths = ["src/mcp_server_plaid/test"]
+python_files = "test_*.py"
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.1.0",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mcp_server_plaid"]
+exclude = ["src/mcp_server_plaid/test"]
+
+[tool.hatch.build.targets.sdist]
+exclude = ["src/mcp_server_plaid/test"]
