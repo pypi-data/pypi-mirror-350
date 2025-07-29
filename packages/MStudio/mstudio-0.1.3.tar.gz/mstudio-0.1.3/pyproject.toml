@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools >= 42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "MStudio"
+version = "0.1.3"
+description = "A motion capture marker data visualization and editing tool"
+authors = [
+    {name = "HunMin Kim", email = "hunminkim98@gmail.com"},
+]
+readme = "README.md"
+license = { file = "LICENSE" }
+keywords = ["biomechanics", "kinemaics", "marker", "editor", "Pose2Sim", "Sports2D", "mocap", "motion capture", "human pose"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Healthcare Industry",
+
+    "Operating System :: OS Independent",  
+]
+urls = {Homepage = "https://github.com/hunminkim98/MStudio", "Bug Tracker" = "https://github.com/hunminkim98/MStudio/issues"}
+dependencies = [
+    "customtkinter",
+    "matplotlib",
+    "pyopengl",
+    "pyopengl-accelerate",
+    "pyopengltk",
+    "numpy>=1.19",
+    "pandas>=1.5",
+    "c3d",
+    "anytree",
+    "filterpy",
+    "scipy",
+    "statsmodels",
+    "opencv-python"
+]
+
+[project.scripts]
+MStudio = "MStudio.main:main"
+
+[tool.setuptools]
+packages = {find = { where = ["."], include = ["MStudio*"]}}
+
+[tool.setuptools.package-data]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test.py"
