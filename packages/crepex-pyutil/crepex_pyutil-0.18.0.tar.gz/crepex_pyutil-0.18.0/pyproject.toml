@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "crepex-pyutil"
+version = "0.18.0"
+description = "CrepeX python utilities"
+authors = ["Hyunwoo Shim <hyunwoo.shim@crepe-x.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+requests = "^2.27.0"
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^3.1.1"
+tox = "^4.4.6"
+pytest = "^7.3.1"
+isort = "^6.0.1"
+flake8-pyproject = "^1.2.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+indent = 4
+line_length = 120
+lines_after_imports = 2
+sections = ["FUTURE", "STDLIB", "THIRDPARTY", "LOCALFOLDER"]
+default_section = "THIRDPARTY"
+force_single_line = true
+skip_glob = ["**/__init__.py"]
+
+[tool.flake8]
+ignore = ["E226", "E302", "E41", "E702", "E731", "E126", "W503", "F405"]
+max-line-length = 120
+exclude = [".git", "dist", "**/__init__.py"]
