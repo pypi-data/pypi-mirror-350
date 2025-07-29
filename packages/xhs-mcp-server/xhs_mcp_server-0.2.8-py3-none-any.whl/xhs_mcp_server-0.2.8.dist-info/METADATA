@@ -1,0 +1,148 @@
+Metadata-Version: 2.4
+Name: xhs_mcp_server
+Version: 0.2.8
+Summary: A Model Context Protocol (MCP) server to post xiaohongshu(rednote,小红书)
+Author-email: Zhiling Luo <godot.lzl@alibaba-inc.com>
+Requires-Python: >=3.11
+Requires-Dist: mcp>=1.0.0
+Requires-Dist: requests
+Requires-Dist: selenium
+Description-Content-Type: text/markdown
+
+# Install the prerequisites
+
+1. install chromedriver
+find out your chrome version like "136.0.7103.92".
+download it
+```bash
+npx @puppeteer/browsers install chromedriver@136.0.7103.92
+```
+copy the chromedriver to your path or add it in your path
+
+Note: if you find that xhs_mcp_server does not work and even does not open the chrome. It is usually the problem of chromedriver.
+Try to use the new version of chromedriver.
+
+# Login
+run the following command in your terminal.
+Note PATH_TO_STORE_YOUR_COOKIES is an avaliable path, for example /Users/Bruce/ . Your should use the absolute path. This MCP server will store your cookie in this path.
+```bash
+env phone=YOUR_PHONE_NUMBER json_path=PATH_TO_STORE_YOUR_COOKIES uvx --from xhs_mcp_server@latest login
+```
+it will show:
+```bash
+无效的cookies，已清理
+请输入验证码: 
+```
+
+and you need to input the verification code in the terminal and press enter.
+
+## Check it 
+```bash
+env phone=YOUR_PHONE_NUMBER json_path=PATH_TO_STORE_YOUR_COOKIES uvx --from xhs_mcp_server@latest login
+```
+it will show:
+```bash
+使用cookies登录成功
+```
+
+# Inspector
+start the inspector by following command in terminal:
+```bash
+npx @modelcontextprotocol/inspector -e phone=YOUR_PHONE_NUMBER -e json_path=PATH_TO_STORE_YOUR_COOKIES uvx xhs_mcp_server@latest
+```
+
+you can use a local image, type in its path in the inspector
+
+["PATH\TO\YOUR\IMAGE.jpg"]
+
+
+it will show an error, but it is ok, the post will be sent.
+Error
+Request timed out
+
+
+# Start the server
+## Optional install mode: install the server as a tool
+use
+```bash
+uv tool install xhs_mcp_server
+```
+
+
+## Call the server as a tool directly (without installing it)
+start the server by following command:
+```bash
+env phone=YOUR_PHONE_NUMBER json_path=PATH_TO_STORE_YOUR_COOKIES uvx xhs_mcp_server@latest
+```
+
+or you can add following json into your config file
+```json
+{
+    "mcpServers": {
+        "xhs-mcp-server": {
+            "command": "uvx",
+            "args": [
+                "xhs_mcp_server@latest"
+            ],
+            "env": {
+                "phone": "YOUR_PHONE_NUMBER",
+                "json_path":"PATH_TO_STORE_YOUR_COOKIES"
+            }
+        }
+    }
+}
+```
+If this server cannot be started, you can use the install mode above and modify the command (remove @latest) as 
+```bash
+env phone=YOUR_PHONE_NUMBER json_path=PATH_TO_STORE_YOUR_COOKIES uvx xhs_mcp_server
+```
+or
+
+```json
+{
+    "mcpServers": {
+        "xhs-mcp-server": {
+            "command": "uvx",
+            "args": [
+                "xhs_mcp_server"
+            ],
+            "env": {
+                "phone": "YOUR_PHONE_NUMBER",
+                "json_path":"PATH_TO_STORE_YOUR_COOKIES"
+            }
+        }
+    }
+}
+```
+
+## Fast mode or slow mode
+In default, this server works as the fast mode, which means it will send the post very fast. But sometimes your network maybe slow, and the server will send the post very fast, so it may cause some errors. You can use the slow mode to avoid this problem.
+
+If you want to use the slow mode, you can start the server by following command
+```bash
+env phone=YOUR_PHONE_NUMBER json_path=PATH_TO_STORE_YOUR_COOKIES slow_mode=true uvx xhs_mcp_server@latest
+```
+or you can add the following json into your config file
+```json
+{
+    "mcpServers": {
+        "xhs-mcp-server": {
+            "command": "uvx",
+            "args": [
+                "xhs_mcp_server@latest"
+            ],
+            "env": {
+                "phone": "YOUR_PHONE_NUMBER",
+                "json_path":"PATH_TO_STORE_YOUR_COOKIES",
+                "slow_mode":"true"
+            }
+        }
+    }
+}
+```
+
+# Note
+This mcp server is for research purpose only, please do not use it for commercial purpose.
+
+# Contact
+godot.lzl@alibaba-inc.com
