@@ -1,0 +1,104 @@
+Metadata-Version: 2.4
+Name: qv-ollama-sdk
+Version: 0.3.0
+Summary: A simple SDK for interacting with the Ollama API by automatically creating a conversation (chat history)
+Author-email: Thomas Bernhard <thomas@quantyverse.com>
+License: MIT
+Project-URL: Homepage, https://github.com/quantyverse/qv-ollama-sdk
+Project-URL: Bug Tracker, https://github.com/quantyverse/qv-ollama-sdk/issues
+Project-URL: Documentation, https://github.com/quantyverse/qv-ollama-sdk#readme
+Keywords: ollama,llm,ai,chat,sdk,domain-driven-design
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: ollama>=0.4.7
+Requires-Dist: pytest>=8.3.4
+Provides-Extra: dev
+Requires-Dist: pytest>=7.4.0; extra == "dev"
+Dynamic: license-file
+
+# QV Ollama SDK
+
+A simple SDK for interacting with the Ollama API.
+
+## Features
+
+- Simple conversation management
+- Support for synchronous API calls
+- Streaming response support
+- Explicit parameter handling (no unnecessary defaults)
+- User-friendly client interface
+
+## Installation
+
+```bash
+pip install qv-ollama-sdk
+```
+
+## Quick Start
+
+```python
+from qv_ollama_sdk import OllamaChatClient
+
+# Create a client with a system message
+client = OllamaChatClient(
+    model_name="gemma2:2b",
+    system_message="You are a helpful assistant."
+)
+
+# Simple chat - uses Ollama's default parameters
+response = client.chat("What is the capital of France?")
+print(response)
+
+# Continue the conversation
+response = client.chat("And what is its population?")
+print(response)
+
+# Set specific parameters only when you need them
+client.temperature = 1.0  # Using property setter
+client.max_tokens = 500   # Using property setter
+client.set_parameters(num_ctx=2048)  # For multiple parameters
+
+# Get conversation history
+history = client.get_history()
+```
+
+## Streaming Responses
+
+```python
+from qv_ollama_sdk import OllamaChatClient
+
+client = OllamaChatClient(model_name="gemma2:2b")
+
+# Stream the response
+for chunk in client.stream_chat("Explain quantum computing."):
+    print(chunk, end="", flush=True)
+```
+
+
+## Advanced Usage
+
+For more control, you can use the lower-level API:
+
+```python
+from qv_ollama_sdk import Conversation, OllamaConversationService, ModelParameters
+
+# Create a conversation
+conversation = Conversation(model_name="gemma2:2b")
+conversation.add_system_message("You are a helpful assistant.")
+conversation.add_user_message("What is the capital of France?")
+
+# Generate a response with specific parameters
+service = OllamaConversationService()
+parameters = ModelParameters(temperature=0.7, num_ctx=2048)
+response = service.generate_response(conversation, parameters)
+
+print(response.content)
+```
