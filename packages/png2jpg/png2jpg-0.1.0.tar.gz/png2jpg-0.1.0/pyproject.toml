@@ -1,0 +1,84 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "png2jpg"
+version = "0.1.0"
+description = "A Python package to convert PNG images to JPG format while maintaining directory structure"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Tuan Anh Bui", email = "bta1489@gmail.com"}
+]
+maintainers = [
+    {name = "Tuan Anh Bui", email = "bta1489@gmail.com"}
+]
+keywords = ["png", "jpg", "jpeg", "image", "conversion", "converter"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Multimedia :: Graphics :: Graphics Conversion",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Utilities"
+]
+requires-python = ">=3.8"
+dependencies = [
+    "Pillow>=8.0.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov",
+    "black",
+    "flake8",
+    "mypy"
+]
+
+[project.urls]
+Homepage = "https://github.com/tuananhbui89/png2jpg"
+Repository = "https://github.com/tuananhbui89/png2jpg.git"
+Documentation = "https://github.com/tuananhbui89/png2jpg#readme"
+"Bug Tracker" = "https://github.com/tuananhbui89/png2jpg/issues"
+
+[project.scripts]
+png2jpg = "png2jpg.converter:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v --cov=png2jpg --cov-report=term-missing" 

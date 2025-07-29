@@ -1,0 +1,76 @@
+# png2jpg
+
+A Python package to convert PNG images to JPG format while maintaining directory structure and optimizing file sizes.
+
+## Installation
+
+You can install the package using pip:
+
+```bash
+pip install png2jpg
+```
+
+## Usage
+
+The package provides a command-line interface to convert PNG images to JPG format. Here's how to use it:
+
+### Basic Usage
+
+```bash
+png2jpg -d /path/to/png/directory -o /path/to/output/directory
+```
+
+### Alternative Usage
+
+You can also run the package as a Python module:
+
+```bash
+python -m png2jpg -d /path/to/png/directory -o /path/to/output/directory
+```
+
+### Command Line Arguments
+
+- `-d, --directory`: (Required) The root directory containing PNG files to convert
+- `-o, --output`: (Optional) The output directory for JPG files (default: 'lower')
+- `-q, --quality`: (Optional) JPG quality (0-100, default: 50)
+- `-l, --lowest`: (Optional) Minimum file size in MB to apply quality reduction (default: 0.5)
+- `-v, --verbose`: (Optional) Enable verbose output
+
+### Examples
+
+1. Convert all PNG files in a directory with default settings:
+```bash
+png2jpg -d ./images
+```
+
+2. Convert with custom quality and minimum file size:
+```bash
+png2jpg -d ./images -q 80 -l 1.0
+```
+
+3. Convert with verbose output:
+```bash
+png2jpg -d ./images -v
+```
+
+4. Convert with custom output directory:
+```bash
+png2jpg -d ./images -o ./converted_images
+```
+
+## Features
+
+- Maintains original directory structure
+- Automatically creates output directories
+- Preserves full quality for small files (below the minimum size threshold)
+- Configurable JPG quality
+- Verbose mode for detailed conversion information
+
+## Requirements
+
+- Python 3.8+
+- Pillow (PIL Fork) >= 8.0.0
+
+## License
+
+MIT License
