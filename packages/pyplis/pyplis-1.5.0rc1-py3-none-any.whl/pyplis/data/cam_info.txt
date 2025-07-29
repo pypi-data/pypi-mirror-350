@@ -1,0 +1,351 @@
+This file contains information about pyplis default cameras
+-----------------------------------------------------------
+
+In this text file, new default camera types can be specified, this mainly includes information about how to extract information from the image file names (e.g. acq. time, which filter was used, exposure time, etc.) and which information can be extracted. Further additional default information about the camera can be specified, such as the pixel pitch (pixel to pixel distance), the detector dimensions (number of pixels, aspect ratio) or the focal length of the lens used, which filters are used and in which way dark (and potentially offset) images are recorded.
+
+The individual parameters that can be set are explained based on the example of the first default camera listed below (HD-Custom camera).
+
+When creating a new camera type please use lower case filter names. Parameters which include the substring "pos" (e.g. time_info_pos, meas_type_pos, filter_id_pos) refer to positions of specific information in the image filenames (after they are splitted using "delim"), for instance "time_info_pos"==1 means, that a datetime string can be found at pos (!) 2 in the filename after splitting. PLEASE leave these "pos" fields empty if the specific information is not available in your filename. If you wish to use automatic separation of images by type ("on", "off", "dark", "offset") and image selection (and sorting) by acquisition time, then the the fields "meas_type_pos", "filter_id_pos" and "time_info_pos" need to be filled.
+
+
+
+NEW FEATURES
+
+28/01/2019
+**********
+
+  1. Include new filename_regexp parameter in CameraBaseInfo -> can now be used
+     as an alternative to default file name parsing method using delim,
+     time_info_pos, time_info_subnum, filter_id_pos, fid_subnum_max,
+     meas_type_pos, mtype_subnum_max, texp_pos
+
+
+28/02/2017
+**********
+
+  1. Included new default parameter ``import_method`` -> can be used to set a customised image import method (the name of it) which needs to be defined in the pyplis source file ``custom_image_import.py``. The latter can be helpful if you want to apply some image pre-processing (e.g. binning / undo binning, rotation or) or include image customised import of image meta information (e.g. acq. time, exposure time, e.g. from .tiff file header) when importing the data in pyplis. If no customised image import method is defined, then the images are loaded using standard functions (e.g. matplotlib.imread) and only the image meta information is imported, which can be extracted from the file names (explained above)
+
+
+NEWCAM
+
+#Camera access IDs (these can be used to identify a certain camera within pyplis), use as many as you like, but they need to be unique (! -> compare with already existing cams)
+
+cam_ids:hdcam,hd,HD,HDCam
+
+#ID of camera within pyplis
+cam_id:hdcam
+
+# Custom import method (leave empty if not required, else please use pyplis source file ``custom_image_import.py`` to define your method and reinstall)
+image_import_method: load_hd_custom
+
+# Camera and detector specifications
+# Please only fill the filename specifications which can actually be extracted from your convention and leave the other fields empty
+
+# Filename delimiter for information extraction
+delim:_
+
+# Position of acquisition time string in filename (after split using delim)
+time_info_pos:0
+
+# Datetime string conversion format of filename datetime string
+time_info_str:%H%M%S%f
+
+# Position of filter acronym in filename (after split using delim)
+filter_id_pos:2
+
+# Image file_type
+file_type:tiff
+
+# ID of main filter (usually on-band, must match ID of one of the filters defined below)
+main_filter_id:on
+
+# Position of meastype info, e.g. dark offset (after split using delim)
+# Note: can be the same as filter_id_pos (see ECII camera) but MUST be set
+meas_type_pos:1
+
+# Specify dark correction option
+# 0: no dark corr, 1: dark + offset, 2: one dark at same exposure time  NOTE: USE CAPITAL LETTERS FOR THIS FLAG)
+darkcorr_opt:2
+
+# Position of exposure time (exp. time must be in s or ms)
+texp_pos:
+
+#Choose from s or ms
+texp_unit:
+
+# Camera lens focal length (default)
+focal_length:32.0e-3 #in m
+
+# Pixel geometry in m
+pix_height:13.0e-6
+pix_width:13.0e-6
+
+# Detector size
+pixnum_x:1024
+pixnum_y:1024
+
+reg_shift_off: # e.g. -4, 6 for shift of -4 pixels in x and +6 in y-dir
+
+# Now sepcify the camera (default) filter setup (one row for each filter)
+# Row format for filter specifications
+# filter:<filter ID>,<type>,<type acronym>,<meas type acronym>,<center wavelength>
+# filters for plume image data access
+filter:on,on,A0,M,315
+filter:off,off,B0,M,330
+# filters for cell calibration data access
+filter:bg_on,on,A00,K
+filter:cell1_on,on,A01,K
+filter:cell2_on,on,A02,K
+filter:cell3_on,on,A03,K
+filter:cell4_on,on,A04,K
+
+filter:bg_off,off,B00,K
+filter:cell1_off,off,B01,K
+filter:cell2_off,off,B02,K
+filter:cell3_off,off,B03,K
+filter:cell4_off,off,B04,K
+
+# Specify information about Dark (and offset) image identification (one row for each dark / offset image type), parameter read_gain is optional
+# Row format for dark / offset image specifications
+# dark_info:<id>,<type>,<type acronym>,<meas_type_acro>,<read_gain>
+dark_info:on_dark,dark,A0,D
+dark_info:off_dark,dark,B0,D
+# dark images for cell calibration data access
+dark_info:bg_on_dark,dark,A00,D
+dark_info:cell1_on_dark,dark,A01,D
+dark_info:cell2_on_dark,dark,A02,D
+dark_info:cell3_on_dark,dark,A03,D
+dark_info:cell4_on_dark,dark,A04,D
+
+dark_info:bg_off_dark,dark,B00,D
+dark_info:cell1_off_dark,dark,B01,D
+dark_info:cell2_off_dark,dark,B02,D
+dark_info:cell3_off_dark,dark,B03,D
+dark_info:cell4_off_dark,dark,B04,D
+
+# Options for how to import images in Dataset class. Please see attributes
+# of BaseSetup class in setupclasses.py source file of pyplis
+io_opts:USE_ALL_FILES=0, SEPARATE_FILTERS=1, USE_ALL_FILE_TYPES=0,INCLUDE_SUB_DIRS=1, ON_OFF_SAME_FILE=0, LINK_OFF_TO_ON=1, REG_SHIFT_OFF=0
+ENDCAM
+
+NEWCAM
+cam_ids:ecII,ec2,ECII,EC2,EnvicamII
+cam_id:ecII
+image_import_method:
+delim:_
+time_info_pos:3
+time_info_str:%Y%m%d%H%M%S%f
+filter_id_pos:4
+file_type:fts
+main_filter_id:on
+meas_type_pos:4
+darkcorr_opt:1
+texp_pos:
+texp_unit:
+focal_length:
+pix_height:4.65e-6
+pix_width:4.65e-6
+pixnum_x:1344
+pixnum_y:1024
+reg_shift_off:
+
+# Filters (row-wise, format):
+# filter:<ID>,<type>,<type acronym>,<meas_type acronym>,<center_wavelength>
+filter:on,on,F01,F01,310
+filter:off,off,F03,F03,330
+
+# Dark / offset information (row-wise, format):
+# dark_info:<ID>,<type>,<type acronym>,<meas_type acronym>,<read_gain>
+dark_info:offset0,offset,D0L,D0L,0
+dark_info:dark0,dark,D1L,D1L,0
+dark_info:offset1,offset,D0H,D0H,1
+dark_info:dark1,dark,D1H,D1H,1
+
+image_import_method:load_ecII_fits
+#default data import options, see e.g. def. of usgs camera below and
+#class MeasSetup
+io_opts:
+ENDCAM
+
+NEWCAM
+cam_ids:PCO, pco, pco.ultraviolet, PCO.ultraviolet
+cam_id:pco
+image_import_method:
+filter:on,on,FilterOn,FilterOn,310
+filter:bg,off,BG,BG,999 #fake offband filter for test purposes
+dark_info:dark,dark,DarkImage2,DarkImage2,0
+delim:_
+time_info_pos:1
+time_info_str:%H%M%S
+filter_id_pos:0
+file_type:tif
+main_filter_id:on
+meas_type_pos:0
+darkcorr_opt:2
+texp_pos:
+texp_unit:
+focal_length:25.0e-3
+pix_height:4.65e-6
+pix_width:4.65e-6
+pixnum_x:1392
+pixnum_y:1040
+ENDCAM
+
+NEWCAM
+cam_ids:hd_new
+cam_id:hd_new
+delim:_
+time_info_pos:0
+time_info_str:%Y%m%d_%H%M%S_%f
+filter_id_pos:4
+texp_pos:None
+texp_unit:ms
+file_type:tif
+main_filter_id:on
+meas_type_pos:3
+darkcorr_opt:2
+focal_length:35.8e-3
+# Camera read out is 4x4 binned (original size is 2048x2048 pix @ 7.4 microns)
+pix_height:29.59e-6
+pix_width:29.59e-6
+pixnum_x:512
+pixnum_y:512
+filter:on,on,A,M,nan
+filter:off,off,B,M,nan
+filter:bg_on,on,A,B,nan
+filter:bg_off,off,B,B,nan
+dark_info:on_dark,dark,A_dark,M,0
+dark_info:off_dark,dark,B_dark,M,0
+dark_info:bg_on_dark,dark,A_dark,B,0
+dark_info:bg_off_dark,dark,B_dark,B,0
+image_import_method:load_hd_new
+ENDCAM
+
+NEWCAM
+cam_ids:usgs, usgs_12mm
+cam_id:usgs_12mm
+delim:_
+time_info_pos:1
+time_info_str:%Y-%m-%d_%H-%M-%S.%f
+filter_id_pos:
+file_type:fits
+main_filter_id:on
+meas_type_pos:
+darkcorr_opt:
+texp_pos:
+texp_unit:
+focal_length:12.5e-3
+pix_height:4.65e-6
+pix_width:4.65e-6
+pixnum_x:1392
+pixnum_y:1040
+
+# default image registration shift between off and onband image: x, y in
+# pixel coordinates
+reg_shift_off: 8, -7
+
+# Filters (row-wise, format):
+# filter:<ID>,<type>,<type acronym>,<meas_type acronym>,<center_wavelength>
+filter:on,on,on,on,313
+filter:off,off,off,off,330
+
+# Dark / offset information (row-wise, format):
+# dark_info:<ID>,<type>,<type acronym>,<meas_type acronym>,<read_gain>
+
+image_import_method:load_usgs_multifits
+
+# Options for how to import images in Dataset class. Please see attributes
+# of BaseSetup class in setupclasses.py source file of pyplis
+io_opts:USE_ALL_FILES=0, SEPARATE_FILTERS=1, USE_ALL_FILE_TYPES=0,INCLUDE_SUB_DIRS=1, ON_OFF_SAME_FILE=1, LINK_OFF_TO_ON=1, REG_SHIFT_OFF=1
+ENDCAM
+
+NEWCAM
+cam_ids:usgs, usgs_9mm
+cam_id:usgs_9mm
+delim:_
+time_info_pos:1
+time_info_str:%Y-%m-%d_%H-%M-%S.%f
+filter_id_pos:
+file_type:fits
+main_filter_id:on
+meas_type_pos:
+darkcorr_opt:
+texp_pos:
+texp_unit:
+focal_length:9.0e-3
+pix_height:4.65e-6
+pix_width:4.65e-6
+pixnum_x:1392
+pixnum_y:1040
+
+# default image registration shift between off and onband image: x, y in
+# pixel coordinates
+reg_shift_off: 8, -7
+
+# Filters (row-wise, format): 
+# filter:<ID>,<type>,<type acronym>,<meas_type acronym>,<center_wavelength>
+filter:on,on,on,on,313
+filter:off,off,off,off,330
+
+# Dark / offset information (row-wise, format):
+# dark_info:<ID>,<type>,<type acronym>,<meas_type acronym>,<read_gain>
+
+image_import_method:load_usgs_multifits
+
+# Options for how to import images in Dataset class. Please see attributes
+# of BaseSetup class in setupclasses.py source file of pyplis
+io_opts:USE_ALL_FILES=0, SEPARATE_FILTERS=1, USE_ALL_FILE_TYPES=0,INCLUDE_SUB_DIRS=1, ON_OFF_SAME_FILE=1, LINK_OFF_TO_ON=1, REG_SHIFT_OFF=1
+ENDCAM
+
+NEWCAM
+cam_ids:ecII_new_test
+cam_id:ecII_new_test
+delim:_
+time_info_pos:3
+time_info_str:%Y%m%d%H%M%S%f
+filter_id_pos:4
+texp_pos:
+texp_unit:
+file_type:fts
+main_filter_id:on
+meas_type_pos:4
+darkcorr_opt:1
+focal_length:
+pix_height:4.65e-06
+pix_width:4.65e-06
+pixnum_x:1344
+pixnum_y:1024
+filter:on,on,F01,F01,310
+filter:off,off,F02,F02,330
+dark_info:offset0,offset,D0L,D0L,0
+dark_info:offset1,offset,D0H,D0H,1
+dark_info:dark0,dark,D1L,D1L,0
+dark_info:dark1,dark,D1H,D1H,1
+reg_shift_off:0.00,0.00
+io_opts:LINK_OFF_TO_ON=1,USE_ALL_FILES=0,INCLUDE_SUB_DIRS=1,SEPARATE_FILTERS=1
+image_import_method:load_ecII_fits
+ENDCAM
+
+
+NEWCAM
+cam_ids:comtessa, nilu, NILU,
+cam_id:comtessa
+delim:_
+time_info_pos:0
+time_info_str:%Y%m%dZ%H%M
+filter_id_pos:1
+texp_pos:
+texp_unit:
+file_type:fts
+main_filter_id:on
+meas_type_pos:1
+DARK_CORR_OPT:2
+focal_length:25.04
+pix_height:4.65e-06
+pix_width:4.65e-06
+pixnum_x:1392
+pixnum_y:1040
+filter:on,on,A,A,310
+filter:off,off,B,B,330
+image_import_method:load_comtessa
+ENDCAM
