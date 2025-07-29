@@ -1,0 +1,19 @@
+Fix invalid generated SDK when property has name 'properties' (#480)
+
+# Description
+For the `search` function, replace argumnet `properties` with
+`properties_` if there is property in the view with name `properties`.
+Currently this case makes an invalid SDK with dual `properties`
+arguments.
+
+## Bump
+
+- [x] Patch
+- [ ] Minor
+- [ ] Skip
+
+## Changelog
+### Fixed
+- When a view has a property with name `properties`, an underscore is
+appended to avoid conflict with the `properties` argument in the search
+function.
