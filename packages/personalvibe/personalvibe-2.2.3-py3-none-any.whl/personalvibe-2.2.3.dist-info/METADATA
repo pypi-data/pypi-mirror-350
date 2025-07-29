@@ -1,0 +1,91 @@
+Metadata-Version: 2.3
+Name: personalvibe
+Version: 2.2.3
+Summary: My personal vibecoding.
+License: MIT
+Keywords: flask,personalvibe,python_packaging
+Author: Nick Jenkins
+Requires-Python: >=3.9,<3.13
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Education
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Topic :: Utilities
+Requires-Dist: jinja2 (>=3.1.6,<4.0.0)
+Requires-Dist: openai (>=1.77.0,<2.0.0)
+Requires-Dist: pathspec (>=0.12.1,<0.13.0)
+Requires-Dist: pydantic-settings (>=2.9.1,<3.0.0)
+Requires-Dist: python-dotenv (>=0.21,<0.22)
+Requires-Dist: pytz (>=2025.1,<2026.0)
+Requires-Dist: pyyaml (>=6.0,<7.0)
+Requires-Dist: requests (>=2.29,<3.0)
+Requires-Dist: tenacity (>=9.0,<10.0)
+Requires-Dist: tiktoken (>=0.9.0,<0.10.0)
+Requires-Dist: tqdm (>=4.67,<5.0)
+Project-URL: Documentation, https://ndjenkins85.github.io/personalvibe/
+Project-URL: Homepage, https://www.ndjenkins.com/
+Project-URL: Repository, https://github.com/ndjenkins85/personalvibe/
+Description-Content-Type: text/markdown
+
+# Personalvibe
+
+*Brainstorm → YAML → Prompt → Code → Test*
+Personalvibe turns AI tinkering into a **repeatable pipeline**
+you can embed in *any* project.
+
+```text
+pip install personalvibe        # 🚀  get the CLI
+pv run --config 1.0.0.yaml      # 🤖  generate / execute prompts
+```
+
+---
+## Why “vibe coding” ?
+Traditional scaffolding tools expect you to know the end-state.
+But early-stage ideas are fuzzy, iterations rapid.
+Personalvibe embraces this *uncertainty*:
+
+• prompts live beside your source code (version controlled)
+• every run writes human-readable logs in `./logs`
+• unit tests guard each sprint so automation stays trustworthy
+
+---
+## Quick start (2 mins)
+
+1. `pip install personalvibe`
+2. `pv run --config examples/hello_world.yaml --prompt_only`
+   → renders a prompt, saves it under `data/<project>/prompt_inputs/`
+3. fill in your OpenAI key, drop the `--prompt_only` flag, re-run.
+
+---
+## CLI overview
+
+| command        | purpose                                   |
+|----------------|-------------------------------------------|
+| `pv run`       | auto-detect mode from YAML & execute      |
+| `pv milestone` | ask the LLM for a milestone plan          |
+| `pv sprint`    | generate a sprint chunk (≤20 k chars)     |
+| `pv validate`  | re-run lint/tests inside a one-liner gate |
+| `pv parse-stage` | save last assistant *code* block to file|
+
+Append `--help` to any sub-command for details.
+
+---
+## Development setup (optional)
+
+```bash
+poetry install         # installs dev + lint + test groups
+poetry run nox         # black, flake8, mypy, pytest, smoke_dist
+./tests/personalvibe.sh   # the same quality-gate in one shell
+```
+
+---
+## License & acknowledgements
+MIT.
+Made with ❤️  and too much coffee by Nick Jenkins.
+Inspired by dozens of open-source LLM projects — thank you!
+
