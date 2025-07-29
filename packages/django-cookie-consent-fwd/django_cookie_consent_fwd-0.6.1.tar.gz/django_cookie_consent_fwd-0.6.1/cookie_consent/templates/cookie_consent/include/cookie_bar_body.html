@@ -1,0 +1,20 @@
+{% load i18n %}
+
+<template id="cookie-consent__cookie-bar">
+    <div class="cookie-bar cookie-bar-style-2">
+      <div>
+        {% blocktrans %}
+          <p>
+            This site uses cookies for better performance and user experience.<br>
+            Do you agree to use these cookies?
+          </p>
+        {% endblocktrans %}
+      </div>
+      <div>
+        {# Button is the more accessible role, but an anchor tag would also work #}
+        <button type="button" onClick="handleCookies()" class="cookie-consent__accept">{% trans 'Accept all' %}</button>
+        <button type="button" onClick="handleCookies()" class="cookie-consent__decline">{% trans 'Decline all' %}</button>
+        {% comment %} <a href="{{ url_cookies }}">{% trans 'Cookies info' %}</a> {% endcomment %}
+      </div>
+    </div>
+</template>

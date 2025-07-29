@@ -1,0 +1,92 @@
+{% load static %}
+{% url 'cookie_consent_accept_all' as accept_all_url %}
+{% url 'cookie_consent_decline_all' as decline_all_url %}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="{% static 'cookie_consent/style.css' %}" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <div class="flex-container">
+      {% block body %}
+      {% endblock %}
+    </div>
+
+    {% comment %} NON REFRESH SCRIPT FOR ADDING OR REMOVING ALL COOKIES {% endcomment %}
+    <script>
+      function acceptAllCookies() {
+          // Logic to accept all cookies
+          const acceptAllUrl = '{% url "cookie_consent_accept_all" %}';
+          fetch(acceptAllUrl, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded',
+                  'X-CSRFToken': '{{ csrf_token }}'
+              }
+          }).then(() => {
+              parent.closeModal();
+              parent.handleCookies();
+          });
+      }
+
+      function declineAllCookies() {
+          // Logic to decline all cookies
+          const declineAllUrl = '{% url "cookie_consent_decline_all" %}';
+          fetch(declineAllUrl, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded',
+                  'X-CSRFToken': '{{ csrf_token }}'
+              }
+          }).then(() => {
+              parent.closeModal();
+              parent.handleCookies();
+          });
+      }
+    </script>
+
+    {% comment %} NON REFRESH SCRIPT AFTER TOGGLE AND CUSTOM JS COOKIE HANDLER {% endcomment %}
+    <script>
+      function handleToggle(checkbox, varname) {
+        const csrfToken = '{{ csrf_token }}';
+        const actionUrl = checkbox.checked 
+          ? `{% url "cookie_consent_accept" "VAR_NAME" %}`.replace("VAR_NAME", varname)
+          : `{% url "cookie_consent_decline" "VAR_NAME" %}`.replace("VAR_NAME", varname);
+
+        fetch(actionUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': csrfToken
+          },
+          body: new URLSearchParams({
+            'csrfmiddlewaretoken': csrfToken
+          })
+        }).then(response => {
+          if (response.ok) {
+            if (checkbox.checked) {
+              document.dispatchEvent(new CustomEvent('cookieConsentAccept', {
+                detail: { cookieGroups: [{ varname: varname }] }
+              }));
+            } else {
+              document.dispatchEvent(new CustomEvent('cookieConsentDecline', {
+                detail: { cookieGroups: [{ varname: varname }] }
+              }));
+            }
+          }
+        });
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('cookieConsentAccept', function(event) {
+          parent.handleCookies();
+        });
+
+        document.addEventListener('cookieConsentDecline', function(event) {
+          parent.handleCookies();
+        });
+      });
+    </script>
+  </body>
+</html>
