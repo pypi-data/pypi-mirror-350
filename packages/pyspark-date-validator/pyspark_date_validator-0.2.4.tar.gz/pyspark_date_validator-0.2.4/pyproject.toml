@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyspark_date_validator"
+dynamic = ["version"]
+description = "A PySpark package to check missing dates in tables"
+readme = "README.md"
+authors = [
+    { name = "Natthakit Jeamprapakorn", email = "natthakit.j@kasikornline.com" }
+]
+license = { text = "MIT" }
+dependencies = [
+    "pyspark"
+]
+requires-python = ">=3.6"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.dynamic]
+version = {attr = "date_validator.__version__"}
