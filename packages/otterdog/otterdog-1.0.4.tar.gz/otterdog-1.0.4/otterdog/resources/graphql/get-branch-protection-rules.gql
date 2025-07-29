@@ -1,0 +1,132 @@
+query($endCursor: String, $organization: String!, $repository: String!) {
+  repository(owner: $organization, name: $repository) {
+    branchProtectionRules(first: 100, after: $endCursor) {
+      nodes {
+        id
+        pattern
+        allowsDeletions
+        allowsForcePushes
+        blocksCreations
+        dismissesStaleReviews
+        isAdminEnforced
+        lockAllowsFetchAndMerge
+        lockBranch
+        requireLastPushApproval
+        requiredApprovingReviewCount
+        requiresApprovingReviews
+        requiresCodeOwnerReviews
+        requiresCommitSignatures
+        requiresConversationResolution
+        requiresLinearHistory
+        requiresStatusChecks
+        requiresStrictStatusChecks
+        restrictsPushes
+        restrictsReviewDismissals
+        bypassPullRequestAllowances(first: 100) {
+          nodes {
+            actor {
+              __typename
+              ... on App {
+                id
+                slug
+              }
+              ... on Team {
+                id
+                combinedSlug
+              }
+              ... on User {
+                id
+                login
+              }
+            }
+          }
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
+        }
+        bypassForcePushAllowances(first: 100) {
+          nodes {
+            actor {
+              __typename
+              ... on App {
+                id
+                slug
+              }
+              ... on Team {
+                id
+                combinedSlug
+              }
+              ... on User {
+                id
+                login
+              }
+            }
+          }
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
+        }
+        pushAllowances(first: 100) {
+          nodes {
+            actor {
+              __typename
+              ... on App {
+                id
+                slug
+              }
+              ... on Team {
+                id
+                combinedSlug
+              }
+              ... on User {
+                id
+                login
+              }
+            }
+          }
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
+        }
+        reviewDismissalAllowances(first: 100) {
+          nodes {
+            actor {
+              __typename
+              ... on App {
+                id
+                slug
+              }
+              ... on Team {
+                id
+                combinedSlug
+              }
+              ... on User {
+                id
+                login
+              }
+            }
+          }
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
+        }
+        requiredStatusChecks {
+          app {
+            slug
+          }
+          context
+        }
+        requiresDeployments
+        requiredDeploymentEnvironments
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}

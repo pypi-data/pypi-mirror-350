@@ -1,0 +1,130 @@
+site_name: otterdog
+site_description: Manage GitHub organizations at scale
+strict: true
+site_url: https://otterdog.readthedocs.io/
+
+theme:
+  name: 'material'
+  palette:
+  - media: "(prefers-color-scheme: light)"
+    scheme: default
+    primary: indigo
+    accent: indigo
+    toggle:
+      icon: material/lightbulb-outline
+      name: "Switch to dark mode"
+  - media: "(prefers-color-scheme: dark)"
+    scheme: slate
+    primary: indigo
+    accent: indigo
+    toggle:
+      icon: material/lightbulb
+      name: "Switch to light mode"
+  features:
+    - content.tabs.link
+    - content.code.annotate
+    - announce.dismiss
+    - navigation.instant
+    - navigation.tabs
+    - navigation.sections
+    - navigation.indexes
+    - navigation.expand
+    - toc.integrate
+  logo: 'otterdog.png'
+  favicon: 'favicon.png'
+
+repo_url: https://github.com/eclipse-csi/otterdog
+edit_uri: edit/main/docs/
+
+nav:
+- Get Started:
+    - Overview: index.md
+    - install.md
+    - setup.md
+    - usage.md
+- Reference:
+    - Resources:
+      - Format: reference/resource-format.md
+      - GitHub Organization:
+        - reference/organization/index.md
+        - Organization Settings: reference/organization/settings.md
+        - Organization Role: reference/organization/role.md
+        - Organization Webhook: reference/organization/webhook.md
+        - Organization Secret: reference/organization/secret.md
+        - Organization Variable: reference/organization/variable.md
+        - Organization Ruleset: reference/organization/ruleset.md
+        - Custom Property: reference/organization/custom-property.md
+        - Team: reference/organization/team.md
+        - Repository:
+          - reference/organization/repository/index.md
+          - Repository Webhook: reference/organization/repository/webhook.md
+          - Repository Secret: reference/organization/repository/secret.md
+          - Repository Variable: reference/organization/repository/variable.md
+          - Environment: reference/organization/repository/environment.md
+          - Branch Protection Rule: reference/organization/repository/branch-protection-rule.md
+          - Repository Ruleset: reference/organization/repository/ruleset.md
+        - Referenced Types:
+           - Actor: reference/organization/repository/actor.md
+           - Branch or Tag: reference/organization/repository/branch-or-tag.md
+           - Bypass Actor: reference/organization/repository/bypass-actor.md
+           - Repo Name Matcher: reference/organization/repo-name-matcher.md
+           - Ref Matcher: reference/organization/repository/ref-matcher.md
+           - Status Check: reference/organization/repository/status-check.md
+    - Policies:
+        - reference/policies/index.md
+        - Upload SBOM data to dependency track: reference/policies/dependency-track-upload.md
+        - Usage of macOS large runners: reference/policies/macos-large-runners.md
+    - Blueprints:
+        - reference/blueprints/index.md
+        - Required File: reference/blueprints/required-file.md
+        - Pin Workflow: reference/blueprints/pin-workflow.md
+        - Append Configuration: reference/blueprints/append-configuration.md
+        - OSSF Scorecard Integration: reference/blueprints/scorecard-integration.md
+
+    - CLI Operations:
+        - reference/operations/index.md
+        - Apply: reference/operations/apply.md
+        - Import: reference/operations/import.md
+        - Plan: reference/operations/plan.md
+        - Validate: reference/operations/validate.md
+        - List Advisories: reference/operations/list-advisories.md
+- User Guide:
+    - Adding new Resources: userguide/adding.md
+    - Renaming of Resources: userguide/renaming.md
+    - Removal of Resources: userguide/removal.md
+    - Unsupported Settings: userguide/unsupported.md
+
+- Contribute: contributing.md
+
+markdown_extensions:
+- admonition
+- tables
+- toc:
+    permalink: true
+    title: Page
+- pymdownx.highlight:
+    anchor_linenums: true
+    line_spans: __span
+    pygments_lang_class: true
+- pymdownx.inlinehilite
+- pymdownx.snippets
+- pymdownx.superfences
+- pymdownx.details
+- pymdownx.extra
+- pymdownx.caret
+- pymdownx.keys
+- pymdownx.mark
+- pymdownx.tilde
+- pymdownx.emoji:
+    emoji_index: !!python/name:material.extensions.emoji.twemoji
+    emoji_generator: !!python/name:material.extensions.emoji.to_svg
+- pymdownx.tabbed:
+    alternate_style: true
+
+watch: []
+
+plugins:
+- search
+- exclude:
+    glob:
+    - __pycache__/*

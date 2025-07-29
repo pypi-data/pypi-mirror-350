@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+
+  "type": "object",
+  "properties": {
+    "project_name": { "type": "string" },
+    "github_id": { "type": "string" },
+    "settings": { "$ref": "settings.json" },
+    "roles": {
+      "type": "array",
+      "items": { "$ref": "org-role.json" }
+    },
+    "teams": {
+      "type": "array",
+      "items": { "$ref": "team.json" }
+    },
+    "webhooks": {
+      "type": "array",
+      "items": { "$ref": "webhook.json" }
+    },
+    "secrets": {
+      "type": "array",
+      "items": { "$ref": "org-secret.json" }
+    },
+    "variables": {
+      "type": "array",
+      "items": { "$ref": "org-variable.json" }
+    },
+    "rulesets": {
+      "type": "array",
+      "items": { "$ref": "org-ruleset.json" }
+    },
+    "repositories": {
+      "type": "array",
+      "items": { "$ref": "repository.json" }
+    }
+  },
+
+  "required": [ "project_name", "github_id", "settings" ],
+  "additionalProperties": false
+}
