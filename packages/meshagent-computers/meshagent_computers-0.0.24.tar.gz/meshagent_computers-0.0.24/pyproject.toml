@@ -1,0 +1,39 @@
+[build-system]
+requires = [
+  "setuptools>=42",
+  "wheel"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "meshagent-computers"
+dynamic = ["version", "readme"]
+description = "Computer Building Blocks for Meshagent"
+requires-python = ">=3.12"
+license = "Apache-2.0"
+dependencies = [
+  "pytest~=8.3.5",
+  "pytest-asyncio~=0.26.0",
+  "openai~=1.70.0",
+  "meshagent-api~=0.0.24",
+  "meshagent-agents~=0.0.24",
+  "meshagent-tools~=0.0.24",
+  "playwright~=1.51.0",
+  "browserbase~=1.2.0",
+  "scrapybara~=2.4.7"
+]
+
+[project.urls]
+Documentation = "https://docs.meshagent.com"
+Website = "https://www.meshagent.com"
+Source = "https://www.meshagent.com"
+
+[tool.setuptools.packages.find]
+include = ["meshagent.*"]
+
+[tool.setuptools.package-data]
+"meshagent.computers" = ["py.typed", "*.pyi", "**/*.pyi", "**/*.js" ]
+
+[tool.setuptools.dynamic]
+version = {attr = "meshagent.computers.version.__version__"}
+readme = { file = "README.md", content-type = "text/markdown" }
