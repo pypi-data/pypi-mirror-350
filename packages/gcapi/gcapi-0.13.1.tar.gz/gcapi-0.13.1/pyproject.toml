@@ -1,0 +1,74 @@
+[tool.poetry]
+name = "gcapi"
+version = "0.13.1"
+description = "Python client for the grand-challenge.org REST API"
+authors = ["James Meakin"]
+license = "Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/DIAGNijmegen/rse-gcapi"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+]
+
+[tool.poetry.scripts]
+gcapi = "gcapi.cli:main"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+httpx = "~0.23.0"
+Click = ">=6.0"
+pydantic = "*"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "*"
+pytest-randomly = "*"
+pytest-cov = "*"
+pyyaml = "*"
+datamodel-code-generator = "*"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+profile = "black"
+known_first_party = ["gcapi", "tests"]
+line_length = 79
+
+[tool.black]
+line-length = 79
+target-version = ['py39']
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = [
+    "tests",
+]
+python_files = "tests.py test_*.py *_tests.py"
+addopts = "--strict-markers --showlocals"
+xfail_strict = true
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+isolated_build = True
+envlist = py39, py310, py311, py312, py313
+
+[gh-actions]
+python =
+    3.9: py39
+    3.10: py310
+    3.11: py311
+    3.12: py312
+    3.13: py313
+
+[testenv]
+allowlist_externals =
+    poetry
+setenv =
+    PYTHONPATH = {toxinidir}
+commands =
+    poetry install -v
+    poetry run pytest --cov-branch --cov-report term-missing --cov=tests/ --cov=gcapi/ --basetemp={envtmpdir} {posargs}
+"""
