@@ -1,0 +1,49 @@
+[project]
+name = "lynxkite"
+version = "0.1.0"
+description = "The LynxKite application, with web server and UI"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi[standard]>=0.115.6",
+    "lynxkite-core",
+    "orjson>=3.10.13",
+    "pycrdt-websocket>=0.15.3",
+    "sse-starlette>=2.2.1",
+    "griffe>=1.7.3",
+]
+classifiers = ["License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)"]
+
+[project.urls]
+Homepage = "https://github.com/lynxkite/lynxkite-2000/"
+
+[project.optional-dependencies]
+dev = [
+    "pydantic-to-typescript>=2.0.0",
+    "pytest>=8.3.4",
+]
+
+[tool.uv.sources]
+lynxkite-core = { path = "../lynxkite-core" }
+
+[build-system]
+requires = ["setuptools", "wheel", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+namespaces = true
+where = ["src"]
+
+[tool.setuptools.package-data]
+"lynxkite_app.web_assets" = ["*"]
+"lynxkite_app.web_assets.assets" = ["*"]
+
+[tool.setuptools]
+py-modules = ["build_frontend"]
+include-package-data = true
+
+[tool.setuptools.cmdclass]
+build_py = "build_frontend.build_py"
+
+[project.scripts]
+lynxkite = "lynxkite_app.__main__:main"
