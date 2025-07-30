@@ -1,0 +1,59 @@
+Metadata-Version: 2.4
+Name: xarray-ceos-alos2
+Version: 2025.5.0
+Summary: xarray reader for advanced land observing satellite 2 (ALOS2) CEOS files
+License: MIT
+Project-URL: homepage, https://xarray-ceos-alos2.readthedocs.io
+Project-URL: documentation, https://xarray-ceos-alos2.readthedocs.io
+Project-URL: repository, https://github.com/umr-lops/xarray-ceos-alos2
+Project-URL: changelog, https://xarray-ceos-alos2.readthedocs.io/en/latest/changelog.html
+Keywords: xarray,earth-observation,remote-sensing,satellite-imagery,ceos,alos2,sar,synthetic-aperture-radar
+Classifier: Development Status :: 4 - Beta
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Intended Audience :: Science/Research
+Classifier: Topic :: Scientific/Engineering
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: toolz
+Requires-Dist: python-dateutil
+Requires-Dist: xarray>=2024.10.0
+Requires-Dist: numpy
+Requires-Dist: construct>=2.10
+Requires-Dist: fsspec
+Requires-Dist: platformdirs
+Requires-Dist: exceptiongroup; python_version < "3.11"
+Dynamic: license-file
+
+# xarray-ceos-alos2
+
+Read ALOS2 CEOS files into `xarray.DataTree` objects.
+
+## Installation
+
+From PyPI
+
+```sh
+pip install xarray-ceos-alos2
+```
+
+From conda-forge
+
+```sh
+conda install -c conda-forge xarray-ceos-alos2
+```
+
+## Usage
+
+```python
+import ceos_alos2
+
+tree = ceos_alos2.open_alos2(url, chunks={}, backend_options={"requests_per_chunk": 4096})
+```
