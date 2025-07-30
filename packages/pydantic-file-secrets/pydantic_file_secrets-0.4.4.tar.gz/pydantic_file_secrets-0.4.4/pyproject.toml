@@ -1,0 +1,165 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pydantic-file-secrets"
+description = "Use file secrets in nested pydantic-settings models instead of built-in SecretsSettingsSource"
+authors = [
+  {name = "Michael Makukha", email = "m.makukha@gmail.com"},
+]
+license = {text = "MIT"}
+readme = "README.md"
+urls.Documentation = "https://github.com/makukha/pydantic-file-secrets#readme"
+urls.Homepage = "https://github.com/makukha/pydantic-file-secrets"
+urls.Repository = "https://github.com/makukha/pydantic-file-secrets"
+urls.Issues = "https://github.com/makukha/pydantic-file-secrets/issues"
+urls.Changelog = "https://github.com/makukha/pydantic-file-secrets/blob/main/CHANGELOG.md"
+keywords = [
+  "python", "python3",
+  "pydantic", "pydantic-v2", "pydantic-settings",
+  "settings", "configuration", "config", "validation",
+  "secrets", "docker-secret", "docker", "file-secrets",
+]
+classifiers = [
+  # see https://pypi.org/classifiers/
+  "Development Status :: 4 - Beta",
+  "Framework :: Pydantic",
+  "Framework :: Pydantic :: 2",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Topic :: Software Development",
+  "Typing :: Typed",
+]
+dynamic = ["version"]
+
+requires-python = ">=3.8"
+dependencies = [
+  "pydantic-settings>=2.2,<3",
+  "typing_extensions>=4",
+]
+
+[dependency-groups]
+dev = [
+  "bracex>=2.5 ; python_version >= '3.13'",
+  "bump-my-version>=1.0 ; python_version >= '3.13'",
+  "docsub>=0.9.0 ; python_version >= '3.13'",
+  "genbadge[tests,coverage]>=1.1 ; python_version >= '3.13'",
+  "mypy>=1.0 ; python_version >= '3.13'",
+  "ruff>=0.9 ; python_version >= '3.13'",
+  "scriv>=1.5 ; python_version >= '3.13'",
+  "tabulate>=0.9.0",
+]
+testing = [
+  "coverage>=7 ; python_version >= '3.13'",
+  "dirlay>=0.4.0,<0.5.0",
+  "doctestcase>=0.2.2",
+  "mypy>=1",
+  "pytest>=8",
+  "pytest-sugar>=1 ; python_version >= '3.13'",
+]
+
+# bump-my-version
+
+[tool.bumpversion]
+allow_dirty = true
+current_version = "0.4.4"
+files = [
+  {filename = ".copier-answers.yml"},
+  {filename = "docs/badges.md"},
+  {filename = "src/pydantic_file_secrets/__version__.py"},
+]
+
+# coverage
+
+[tool.coverage]
+paths.source = ["src/", "**/site-packages/"]
+run.branch = true
+run.data_file = ".tmp/.coverage"
+run.parallel = true
+run.relative_files = true
+run.source_pkgs = ["pydantic_file_secrets"]
+report.precision = 1
+report.skip_empty = true
+html.directory = ".tmp/htmlcov"
+xml.output = ".tmp/coverage.xml"
+
+# hatch
+
+[tool.hatch.build]
+exclude = [
+  ".just",
+  "Justfile",
+  "Makefile",
+  "compose.yml",
+]
+[tool.hatch.version]
+path = "src/pydantic_file_secrets/__version__.py"
+
+# mypy
+
+[tool.mypy]
+incremental = false
+python_version = "3.9"
+strict = true
+exclude = [
+  "docsubfile.py",  # todo: include docsubfile.py when typing bugs are fixed
+]
+[[tool.mypy.overrides]]
+module = "tests.*"
+allow_incomplete_defs = true
+allow_untyped_defs = true
+disable_error_code = [
+  "call-arg",  # in BaseSettings() constructor all args are optional
+]
+[[tool.mypy.overrides]]
+module = "tests.usage.*"
+allow_incomplete_defs = false
+allow_untyped_defs = false
+
+# ruff
+
+[tool.ruff]
+[tool.ruff.lint]
+select = [
+  "B",       # flake8-bugbear
+  "E4",      # pycodestyle: Import
+  "E7",      # pycodestyle: Statement
+  "E9",      # pycodestyle: Runtime
+  "F",       # pyflakes
+  "I",       # isort
+  "RUF100",  # ruff: Unused `noqa` directive
+  "S",       # flake8-bandit
+]
+per-file-ignores."tests/**/*.py" = [
+  "B008",  # Do not perform function call in argument defaults
+  "I001",  # Import block is un-sorted or un-formatted
+  "S101",  # Use of `assert` detected
+  "S102",  # Use of `exec` detected
+  "S108",  # Probable insecure usage of temporary file or directory
+  "S603",  # `subprocess` call: check for execution of untrusted input
+]
+[tool.ruff.format]
+quote-style = "single"
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+
+# scriv
+
+[tool.scriv]
+categories = ["Security ⚠️", "Breaking 🔥", "Removed 💨", "Deprecated ❄️", "Added 🌿", "Experimental 🧪", "Changed", "Fixed", "Docs", "Misc"]
+entry_title_template = "[{{ version }}](https://github.com/makukha/pydantic-file-secrets/releases/tag/v{{ version }}) — {{ date.strftime('%Y-%m-%d') }}"
+format = "md"
+fragment_directory = "NEWS.d"
+md_header_level = "2"
+new_fragment_template = "file: NEWS.d/.new_fragment.md.j2"
+version = "literal: pyproject.toml: tool.bumpversion.current_version"
