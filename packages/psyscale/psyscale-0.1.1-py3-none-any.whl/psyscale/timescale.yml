@@ -1,0 +1,28 @@
+name: PsyscaleDB
+
+services:
+  TimescaleDB:
+    image: timescale/timescaledb-ha:pg17
+    ports:
+      - "${PSYSCALE_PORT}:5432"
+    environment:
+      POSTGRES_USER: ${PSYSCALE_USER}
+      POSTGRES_PASSWORD: ${PSYSCALE_PASSWORD}
+      POSTGRES_DB: ${PSYSCALE_DB_NAME}
+    volumes:
+      - TimescaleData:/home/postgres/pgdata/data
+    networks:
+      - database
+    restart: on-failure
+
+volumes:
+  TimescaleData:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PSYSCALE_VOLUME_PATH}
+
+networks:
+  database:
+    driver: bridge
