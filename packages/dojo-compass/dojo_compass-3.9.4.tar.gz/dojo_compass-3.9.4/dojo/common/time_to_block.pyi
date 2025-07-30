@@ -1,0 +1,3 @@
+from dojo.common import Chain as Chain
+
+def time_to_block(datetime_string: str, chain: Chain) -> int: ...

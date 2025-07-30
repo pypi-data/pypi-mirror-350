@@ -1,0 +1,9 @@
+from dojo.network.base_backend import BaseBackend as BaseBackend
+from dojo.utils.gmxV2.keys import REQUEST_EXPIRATION_TIME as REQUEST_EXPIRATION_TIME
+from typing import Any
+from web3.contract.contract import Contract as Contract
+from web3.types import PendingTx as PendingTx
+
+def set_uint(backend: BaseBackend, contract: Contract, function_params: tuple[bytes | int]) -> PendingTx: ...
+def get_uint(backend: BaseBackend, contract: Contract, key: bytes) -> Any: ...
+def get_request_expiration_time(backend: BaseBackend, contract: Contract) -> Any: ...

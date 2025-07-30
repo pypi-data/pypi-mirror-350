@@ -1,0 +1,190 @@
+// generate python types by running:
+// protoc --python_out=. --pyi_out=. dojo/external_data_providers/protobuf/data.proto
+
+// generate typescript types from the dashboard directory by running:
+// npm run protobuf
+
+syntax = "proto3";
+
+// TODO: automate this
+// generated file should be placed in current version folder (/dashboard/v1 for package dashboard.v1)
+package dashboard.v1;
+
+message ClientData {
+  oneof data_options {
+    int32 last_block_num_processed = 1;
+    bool all_blocks = 2;
+    Save save = 3;
+  }
+}
+
+message Save {
+  bool save_data = 1;
+  optional string title = 2;
+  optional string description = 3;
+  repeated Bookmark bookmarks = 4;
+}
+
+enum Mode {
+  MODE_NOT_SET = 0;
+  BACKTEST = 1;
+  MONITOR = 2;
+  LIVE = 3;
+}
+
+message Bookmark {
+  int32 block = 1;
+  string title = 2;
+  string description = 3;
+}
+
+message ServerData {
+  Params params = 1;
+  repeated Block block_data_list = 2;
+  float progress = 3;
+  int32 estimatedSecondsRemaining = 4;
+  int32 last_block_num_processed = 5;
+  FileChunk file_chunk = 6;
+}
+
+message Params {
+  Environment environment = 1;
+  string start_date = 2;
+  string end_date = 3;
+  int32 start_block = 4;
+  int32 end_block = 5;
+  repeated AgentParams agents = 6;
+  repeated Pool pools = 7;
+  Mode mode = 8;
+}
+
+enum Environment {
+  NONE = 0;
+  UniswapV3Env = 1;
+  AAVEv3Env = 2;
+  GmxV2Env = 3;
+}
+
+message AgentParams {
+  string address = 1;
+  string name = 2;
+}
+
+message Pool {
+  string name = 1;
+  string token0 = 2;
+  string token1 = 3;
+  optional int32 fee = 4;
+}
+
+message Block {
+  optional int32 block_num = 1;
+  BlockData block_data = 2;
+}
+
+message BlockData {
+  repeated AgentBlock agents = 1;
+  repeated Signal signals = 2;
+  map<string, float> token_prices = 3;
+  repeated UniswapPoolData uniswap_pools_data = 4;
+  map<string,GmxMarketData> gmx_market_data = 5;
+  string timestamp = 6;
+}
+
+message GmxMarketData {
+    float net_pnl = 1;
+    float long_pnl = 2;
+    float short_pnl = 3;
+    float long_open_interest_with_pnl = 4;
+    float short_open_interest_with_pnl = 5;
+    float gm_token_value = 6;
+}
+
+message AgentBlock {
+  optional float reward = 1;
+  map<string, float> portfolio = 2;
+  UniswapAgent uniswap = 3;
+  AaveAgent aave = 4;
+  GmxAgent gmx = 5;
+}
+
+message GmxAgent {
+    repeated GmxAction actions = 1;
+    optional float total_trader_pnl = 2;
+}
+
+message GmxAction {
+    string type = 1;
+    string market = 2;
+    // orders
+    float usd_value = 3;
+    float leverage = 4;
+    string token_in_symbol = 5;
+    string collateral_symbol = 6;
+    bool is_long = 7;
+    int32 order_id = 8;
+    // deposits
+    int32 deposit_id = 9;
+    float initial_long_token_amount = 10;
+    float initial_short_token_amount = 11;
+    string initial_long_token_symbol = 12;
+    string initial_short_token_symbol = 13;
+    float min_market_tokens = 14;
+    // withdrawals
+    int32 withdrawal_id = 15;
+}
+
+message UniswapAgent {
+  repeated UniswapAction actions = 1;
+  map<string, float> lp_quantities = 2;
+  map<string, float> lp_fees = 3;
+  map<string, float> wallet = 4;
+}
+
+message UniswapAction {
+  string type = 1;
+  string pool = 2;
+  TokenPairValues quantities = 3;
+}
+
+message TokenPairValues {
+  optional float token0 = 1;
+  optional float token1 = 2;
+}
+
+message AaveAgent {
+  repeated AaveAction actions = 1;
+  optional float availableBorrows = 2;
+  optional float healthFactor = 3;
+  optional float liquidationThreshold = 4;
+  optional float loanToValue = 5;
+  optional float totalCollateral = 6;
+  optional float totalDebt = 7;
+}
+
+message AaveAction {
+  string type = 1;
+  string token_name = 2;
+  optional float amount = 3;
+  optional float health_factor = 4;
+}
+
+message UniswapPoolData {
+  string liquidity = 1;
+  float price = 2;
+}
+
+message Signal {
+  string name = 1;
+  optional double value = 2;
+}
+
+message FileChunk {
+  bytes data = 1;
+  int32 sequence_number = 2;
+  bool is_last_chunk = 3;
+  optional string title = 4;
+  optional string description = 5;
+  repeated Bookmark bookmarks = 6;
+}
+

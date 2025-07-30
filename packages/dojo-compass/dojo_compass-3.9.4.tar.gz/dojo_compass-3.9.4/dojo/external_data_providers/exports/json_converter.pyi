@@ -1,0 +1,3 @@
+from dojo.external_data_providers.protobuf.dashboard.v1.data_pb2 import BlockData as BlockData
+
+def convert_db_file_to_json(db_file_path: str) -> None: ...

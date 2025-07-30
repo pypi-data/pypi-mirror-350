@@ -1,0 +1,1 @@
+"""GMX specific dataclasses."""

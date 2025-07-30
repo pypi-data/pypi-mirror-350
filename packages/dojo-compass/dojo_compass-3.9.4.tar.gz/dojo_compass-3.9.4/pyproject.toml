@@ -1,0 +1,154 @@
+[tool.poetry]
+name = "dojo-compass"
+version = "3.9.4"
+description = "Develop, simulate and backtest trading strategies on DeFi protocols."
+authors = ["Compass Labs"]
+documentation = "https://www.compasslabs.ai/docs"
+readme = "README_pypi.md"
+keywords = ["DeFi", "Uniswap", "Aave", "GMX", "AMM", "simulation", "crypto", "realistic", "on-chain", "Compass Labs", "trading strategies", "DeFi protocols", "backtesting"]
+include = [
+    "dojo/py.typed",
+    "dojo_compass/py.typed",
+    "dojo/*.so",
+    "dojo/**/*.so",
+    "dojo/**/**/*.so",
+    "dojo/**/**/**/*.so",
+    "dojo/**/**/**/**/*.so",
+    "dojo/*.pyi",
+    "dojo/**/*.pyi",
+    "dojo/**/**/*.pyi",
+    "dojo/**/**/**/*.pyi",
+    "dojo/**/**/**/**/*.pyi",
+    "dojo/config/data",
+    "dojo/config/data/*",
+    "dojo/config/data/**/*",
+    "dojo/config/data/**/**/*",
+    "dojo/config/data/**/**/**/*",
+    "dojo/config/data/**/**/**/**/*",
+    "dojo/utils/pre_saved_data*",
+    "dojo/**/base_uniswapV3_loader.py"
+]
+exclude=[
+    "dojo/*.py",
+    "dojo/*/*.py",
+    "dojo/*.c",
+    "dojo/*/*.c",
+    "dojo/landing_page/",
+    "demo/pre_release/**/*.py"
+]
+packages = [
+    { include = "dojo" },
+    { include = "dojo_compass" }
+]
+
+[tool.poetry.dependencies]
+python = ">=3.10, <3.13"
+numpy = "^1.21.1"
+Cython = ">=3.0.0"
+pathlib = "^1.0.1"
+py-machineid = "^0.3.0"
+pytz = "^2023.3"
+jsons = "^1.6.3"
+python-dotenv = "^1.0.0"
+tqdm = "^4.65.0"
+web3 = "^6.8.0"
+google-cloud-bigquery = "^3.13.0"
+google-auth = "^2.23.4"
+python-dateutil = "^2.9.0"
+frozendict = "^2.4.4"
+joblib = "^1.4.2"
+cloud-sql-python-connector = {extras = ["pg8000"], version = "^1.11.0"}
+sqlalchemy = "^2.0.31"
+websockets = "^12.0"
+watchdog = "^4.0.1"
+
+dataclasses-json = "^0.6.7"
+sortedcontainers = "^2.4.0"
+protobuf = "5.28.3"
+types-protobuf = "^5.27.0.20240907"
+pytimeparse = "^1.1.8"
+pytest-check = "^2.4.1"
+mypy-extensions = "^1.0.0"
+pandas = "^2.1.1"
+requests-toolbelt = "^1.0.0"
+psycopg2-binary = "^2.9.10"
+cachetools = "^5.5.0"
+diskcache = "^5.6.3"
+sqlitedict = "^2.1.0"
+
+[tool.poetry.dev-dependencies]
+flake8 = "*"
+black = "^22.3.0"
+isort = "^5.9.2"
+pre-commit = "^2.13.0"
+pytest-cov = "2.12.1"
+coverage = {extras = ["toml"], version = "^5.5"}
+pydocstyle = "^6.1.1"
+docformatter = "^1.4.4"
+darglint = "^1.8.0"
+google-cloud-storage = "^2.13.0"
+pdoc = "^15.0.0"
+
+[tool.poetry.group.dev.dependencies]
+google-cloud-monitoring = "^2.22.1"
+types-requests = "^2.32.0.20240712"
+mypy = "^1.10.1"
+types-pytz = "^2024.1.0.20240417"
+types-python-dateutil = "^2.9.0.20240316"
+
+pytest-xdist = "^3.6.1"
+pytest-timeout = "^2.3.1"
+devtools = "^0.12.2"
+gitpython = "^3.1.43"
+setuptools = "^75.1.0"
+types-cachetools = "^5.5.0.20240820"
+
+[tool.pytest.ini_options]
+addopts = """
+    --verbose
+    --junitxml build/reports/unittest.xml
+    -p no:warnings
+    -m 'not integration'
+    --tb=short -rEf
+    --cov=dojo
+    --cov=demo
+    --cov-config=.coveragerc
+    --cov-report xml:build/reports/coverage.xml
+    --cov-report term
+    --color=yes
+    -p no:pytest-brownie
+"""
+
+[tool.poetry.scripts]
+demo = "demo.run:main"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[build]
+optimize = 3  # Add this line to set optimization level
+
+[tool.pydocstyle]
+convention = "google"  # Or use "numpy" for NumPy-style docstrings
+
+[tool.isort]
+profile = "black"
+
+[tool.black]
+line-length = 88
+
+[tool.mypy]
+disable_error_code = 'union-attr'
+ignore_missing_imports = true
+no_warn_incomplete_stub = true
+strict = true
+# bhack: we should work towards reducing this block
+exclude = [
+    "^dojo/vis",
+    "^dojo/network/live_backend.py",
+    "^dojo/runners/live_runner.py",
+    "^dojo/external_data_providers/protobuf/data_pb2.py",
+    "^dojo/external_data_providers/protobuf/dashboard/v1/data_pb2.py"
+]
+
