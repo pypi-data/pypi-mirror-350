@@ -1,0 +1,46 @@
+Metadata-Version: 2.4
+Name: pgarrow
+Version: 0.0.1
+Summary: A SQLAlchemy PostgreSQL dialect for ADBC (Arrow Database Connectivity)
+Project-URL: Source, https://github.com/michalc/pgarrow
+Author-email: Michal Charemza <michal@charemza.name>
+License-File: LICENSE
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Database
+Requires-Python: >=3.7.7
+Requires-Dist: adbc-driver-postgresql>=1.6.0
+Requires-Dist: pyarrow>=20.0.0
+Requires-Dist: sqlalchemy>=2.0.7
+Provides-Extra: ci
+Requires-Dist: adbc-driver-postgresql==1.6.0; extra == 'ci'
+Requires-Dist: pyarrow==20.0.0; extra == 'ci'
+Requires-Dist: pytest; extra == 'ci'
+Requires-Dist: sqlalchemy==2.0.7; extra == 'ci'
+Provides-Extra: dev
+Requires-Dist: pytest>=7.2.1; extra == 'dev'
+Description-Content-Type: text/markdown
+
+# pgarrow
+
+A SQLAlchemy PostgreSQL dialect for ADBC (Arrow Database Connectivity)
+
+
+## Installation
+
+pgarrow can be installed from PyPI using pip:
+
+```bash
+pip install pgarrow
+```
+
+
+## Usage
+
+pgarrow can be used using the `postgresql+pgarrow` dialect:
+
+```python
+import sqlalchemy as sa
+
+engine = sa.create_engine('postgresql+pgarrow://postgres@127.0.0.1:5432/')
+```
