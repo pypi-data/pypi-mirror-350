@@ -1,0 +1,12 @@
+formula = compound dot_n_compound? charge? phase?
+compound = (compound_n / element_n / element)+
+dot_n_compound = "." n? compound
+compound_n = "(" compound ")" n?
+element_n = element n
+element = ~r"[A-Z][a-z]*"
+n = ~r"[0-9]+"
+charge = "[" charge_number? charge_sign "]"
+charge_number = ~r"[0-9]+"
+charge_sign = ~r"[+-]"
+phase = "[" phase_label "]"
+phase_label = ~r"[A-Za-z]+[0-9]*"
