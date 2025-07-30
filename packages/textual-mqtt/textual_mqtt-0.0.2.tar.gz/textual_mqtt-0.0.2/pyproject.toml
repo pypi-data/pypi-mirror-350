@@ -1,0 +1,31 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "textual-mqtt"
+dynamic = ["version"]
+description = 'A Textual wrapper for Paho MQTT library'
+readme = "README.md"
+requires-python = ">=3.8.1"
+license = "MIT"
+keywords = []
+authors = [{ name = "Mariano Renzi", email = "mariano@renzi.com.ar" }]
+dependencies = ["textual", "paho-mqtt"]
+
+[project.urls]
+Documentation = "https://github.com/marianorenzi/textual-mqtt#readme"
+Issues = "https://github.com/marianorenzi/textual-mqtt/issues"
+Source = "https://github.com/marianorenzi/textual-mqtt"
+
+[project.scripts]
+textual-mqtt = "textual_mqtt.demo:main"
+
+[dependency-groups]
+dev = [
+    "mypy>=1.14.1",
+    "textual-dev>=1.7.0",
+]
+
+[tool.hatch.version]
+path = "src/textual_mqtt/__about__.py"
