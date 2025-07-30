@@ -1,0 +1,39 @@
+<nz-modal
+    (nzOnCancel)="closePopup()"
+    [nzFooter]="null"
+    [nzVisible]="popupShown"
+    nzTitle="Select Layers"
+    [nzWidth]="600"
+>
+    <ng-container *nzModalContent>
+        <input
+            [(ngModel)]="filterText"
+            nz-input
+            placeholder="Filter"
+            type="text"
+            nz-tooltip
+            [nzTooltipMouseEnterDelay]="1.0"
+            nzTooltipTitle="Enter some text here to filter the list"
+            nzTooltipPlacement="top"
+        />
+        <p *ngIf="noItems()">
+            There are no layers matching your filter or no layers available.
+        </p>
+        <div *ngIf="!noItems()" class="scroll-outer">
+            <nz-table nzSize="small" nzTemplateMode>
+                <tbody>
+                    <tr *ngFor="let item of items">
+                        <td>
+                            <nz-switch
+                                (ngModelChange)="toggleLayerVisible(item)"
+                                [ngModel]="item.visible"
+                            ></nz-switch>
+                        </td>
+                        <td>{{item.name}}</td>
+                        <td>{{item.order}}</td>
+                    </tr>
+                </tbody>
+            </nz-table>
+        </div>
+    </ng-container>
+</nz-modal>
