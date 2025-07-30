@@ -1,0 +1,1203 @@
+{% extends "enap_designsystem/base.html" %}
+{% load static %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+
+{% block metadata %}
+    {% comment %} <meta name="viewport" content="width=device-width, initial-scale=1.0"> {% endcomment %}
+{% endblock %}
+
+
+{% block title %}
+    <title>{{ page.page_title }}</title>
+{% endblock %}
+
+
+{%block govnavbar %}
+    <div style="background-color: #071E41;">
+        <div class="menu">
+            <div class="logo">
+                <img style="width: 51px; height: 18px;" src="{% static 'enap_designsystem/icons/logo-white.png' %}" alt="Passar pro lado esquerdo" alt="Logo GovBR" height="40">
+            </div>
+            <a href="#">Comunica BR</a>
+            <div class="separator"></div>
+            <a href="#">Acesso à informação</a>
+            <div class="separator"></div>
+            <a href="#">Participe</a>
+            <div class="separator"></div>
+            <a href="#">Legislação</a>
+            <div class="separator"></div>
+            <a href="#">Órgãos do Governo</a>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block navbar %}
+    {% if page.navbar %}
+        {% include "enap_designsystem/blocks/navbar/navbar_block.html" with navbar=page.navbar %}
+    {% else %}
+        <p style="color: red;">DEBUG: Nenhuma Navbar foi definida.</p>
+    {% endif %}
+{% endblock %}
+
+
+{% block content %}
+<section class="page-wrapper">
+
+    <div class="hearder-search">
+        <div class="">
+            <div class="space-header">
+            <div>
+                <h1 class="title-large-green">"Busca"</h1>
+                <p style="font-weight: 500;">Resultados de busca</p>
+            </div>
+            <div class="tab">
+            <button class="tabbusca tab-btn active" onclick="openTab(event, 'Tab01')">Cursos<p class="ppp" >8</p></button>
+            <button class="tabbusca tab-btn" onclick="openTab(event, 'Tab03')">Serviços<p class="ppp">8</p></button>
+            <button class="tabbusca tab-btn" onclick="openTab(event, 'Tab02')">Noticias<p class="ppp">8</p></button>
+            
+            <button class="tabbusca tab-btn" onclick="openTab(event, 'Tab04')">Pesquisa e conhecimento<p class="ppp">8</p></button>
+            <button class="tabbusca tab-btn" onclick="openTab(event, 'Tab05')">Todos<p class="ppp">8</p></button>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <div id="Tab01" class="tabcontent" style="display: block;">
+        <div class="filter-container">
+            <button class="filter-btn filter-option active" onclick="openFilter(event, 'MostViewed')">Mais Vistos</button>
+            <button class="filter-btn filter-option" onclick="openFilter(event, 'MostRecent')">Mais Recentes</button>
+            <button class="filter-btn filter-option" onclick="openFilter(event, 'Featured')">Destaques</button>
+        </div>
+
+        <div>
+            <div id="MostViewed" class="filter-content" style="display: block;">
+                <div class="content-search">
+                    <div class="filtro-wrapper">
+                        <div class="filtro-sidebar" id="filtroSidebar">
+                            <div class="filtro-grupo">
+                                
+                                <select id="categoria">
+                                    <option value="">Todas as categorias</option>
+                                    <option value="tecnologia">Tecnologia</option>
+                                    <option value="saude">Saúde</option>
+                                    <option value="educacao">Educação</option>
+                                </select>
+                            </div>
+                            <div class="filtro-grupo">
+                                
+                                <select id="categoria">
+                                    <option value="">Todas as categorias</option>
+                                    <option value="tecnologia">Tecnologia</option>
+                                    <option value="saude">Saúde</option>
+                                    <option value="educacao">Educação</option>
+                                </select>
+                            </div>
+                            <div class="filtro-grupo">
+                                
+                                <select id="categoria">
+                                    <option value="">Todas as categorias</option>
+                                    <option value="tecnologia">Tecnologia</option>
+                                    <option value="saude">Saúde</option>
+                                    <option value="educacao">Educação</option>
+                                </select>
+                            </div>
+                            <div class="filtro-grupo">
+                                <select id="nivel">
+                                    <option value="">Todos os níveis</option>
+                                    <option value="iniciante">Iniciante</option>
+                                    <option value="intermediario">Intermediário</option>
+                                    <option value="avancado">Avançado</option>
+                                </select>
+                            </div>
+                            <div class="filtro-grupo">
+                                <select id="nivel">
+                                    <option value="">Todos os níveis</option>
+                                    <option value="iniciante">Iniciante</option>
+                                    <option value="intermediario">Intermediário</option>
+                                    <option value="avancado">Avançado</option>
+                                </select>
+                            </div>
+                            <button class="filtro-aplicar">Aplicar filtros</button>
+                        </div>
+                        
+                        <div class="content-cards">
+                            <div class="filtro-header">
+                                <button class="btn-filter-search" id="toggleFiltro" onclick="toggleFiltro()"><i class="fa-solid fa-filter"></i> Filtro</button>
+                                <div class="p-busca">Resultados encontrados: 8</div>
+                            </div>
+                            
+                            <div class="cards-grid-search" id="cardsGrid">
+                                <div class="card-primary">
+                                    <div class="img-card">
+                                        <img src="{% static 'enap_designsystem/icons/280-140-default.png' %}" alt="">
+                                    </div>
+                                    <div class="wrapper-text-card">
+                                        <h2 class="h2-card">Card Title 1</h2>
+                                        <p class="p-card">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
+                                    </div>
+                                </div>
+                
+                                <div class="card-primary">
+                                    <div class="img-card">
+                                        <img src="{% static 'enap_designsystem/icons/280-140-default.png' %}" alt="">
+                                    </div>
+                                    <div class="wrapper-text-card">
+                                        <h2 class="h2-card">Card Title 2</h2>
+                                        <p class="p-card">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
+                                    </div>
+                                </div>
+                
+                                <div class="card-primary">
+                                    <div class="img-card">
+                                        <img src="{% static 'enap_designsystem/icons/280-140-default.png' %}" alt="">
+                                    </div>
+                                    <div class="wrapper-text-card">
+                                        <h2 class="h2-card">Card Title 3</h2>
+                                        <p class="p-card">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
+                                    </div>
+                                </div>
+                
+                                <div class="card-primary">
+                                    <div class="img-card">
+                                        <img src="{% static 'enap_designsystem/icons/280-140-default.png' %}" alt="">
+                                    </div>
+                                    <div class="wrapper-text-card">
+                                        <h2 class="h2-card">Card Title 4</h2>
+                                        <p class="p-card">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
+                                    </div>
+                                </div>
+                
+                                <div class="card-primary">
+                                    <div class="img-card">
+                                        <img src="{% static 'enap_designsystem/icons/280-140-default.png' %}" alt="">
+                                    </div>
+                                    <div class="wrapper-text-card">
+                                        <h2 class="h2-card">Card Title 5</h2>
+                                        <p class="p-card">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
+                                    </div>
+                                </div>
+                
+                                <div class="card-primary">
+                                    <div class="img-card">
+                                        <img src="{% static 'enap_designsystem/icons/280-140-default.png' %}" alt="">
+                                    </div>
+                                    <div class="wrapper-text-card">
+                                        <h2 class="h2-card">Card Title 6</h2>
+                                        <p class="p-card">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
+                                    </div>
+                                </div>
+                
+                                <div class="card-primary">
+                                    <div class="img-card">
+                                        <img src="{% static 'enap_designsystem/icons/280-140-default.png' %}" alt="">
+                                    </div>
+                                    <div class="wrapper-text-card">
+                                        <h2 class="h2-card">Card Title 7</h2>
+                                        <p class="p-card">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
+                                    </div>
+                                </div>
+                
+                                <div class="card-primary">
+                                    <div class="img-card">
+                                        <img src="{% static 'enap_designsystem/icons/280-140-default.png' %}" alt="">
+                                    </div>
+                                    <div class="wrapper-text-card">
+                                        <h2 class="h2-card">Card Title 8</h2>
+                                        <p class="p-card">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <div id="MostRecent" class="filter-content">
+                <div class="content-search">
+                    <div class="filtro-wrapper">
+                        <div class="filtro-sidebar" id="filtroSidebar">
+                            <div class="filtro-grupo">
+                                <label for="categoria">Categoria</label>
+                                <select id="categoria">
+                                    <option value="">Todas as categorias</option>
+                                    <option value="tecnologia">Tecnologia</option>
+                                    <option value="saude">Saúde</option>
+                                    <option value="educacao">Educação</option>
+                                </select>
+                            </div>
+                            <div class="filtro-grupo">
+                                <label for="nivel">Nível</label>
+                                <select id="nivel">
+                                    <option value="">Todos os níveis</option>
+                                    <option value="iniciante">Iniciante</option>
+                                    <option value="intermediario">Intermediário</option>
+                                    <option value="avancado">Avançado</option>
+                                </select>
+                            </div>
+                            <div class="filtro-grupo">
+                                <label for="data">Data</label>
+                                <select id="data">
+                                    <option value="">Qualquer data</option>
+                                    <option value="hoje">Hoje</option>
+                                    <option value="semana">Esta semana</option>
+                                    <option value="mes">Este mês</option>
+                                </select>
+                            </div>
+                            <div class="filtro-grupo">
+                                <label>Avaliação</label>
+                                <div class="filtro-rating">
+                                    <input type="checkbox" id="rating5"> <label for="rating5">5 estrelas</label>
+                                </div>
+                                <div class="filtro-rating">
+                                    <input type="checkbox" id="rating4"> <label for="rating4">4+ estrelas</label>
+                                </div>
+                                <div class="filtro-rating">
+                                    <input type="checkbox" id="rating3"> <label for="rating3">3+ estrelas</label>
+                                </div>
+                            </div>
+                            <button class="filtro-aplicar">Aplicar filtros</button>
+                        </div>
+                        
+                        <div class="content-cards">
+                            <div class="filtro-header">
+                                <button class="btn-filter-search" id="toggleFiltro" onclick="toggleFiltro()"><i class="fa-solid fa-filter"></i> Filtro</button>
+                                <div class="p-busca">Resultados encontrados: 8</div>
+                            </div>
+                            
+                            <div class="cards-grid" id="cardsGrid">
+                                <div class="card-primary">
+                                    <div class="img-card">
+                                        <img src="{% static 'enap_designsystem/icons/280-140-default.png' %}" alt="">
+                                    </div>
+                                    <div class="wrapper-text-card">
+                                        <h2 class="h2-card">Card Title 1</h2>
+                                        <p class="p-card">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
+                                    </div>
+                                </div>
+                
+                                <div class="card-primary">
+                                    <div class="img-card">
+                                        <img src="{% static 'enap_designsystem/icons/280-140-default.png' %}" alt="">
+                                    </div>
+                                    <div class="wrapper-text-card">
+                                        <h2 class="h2-card">Card Title 2</h2>
+                                        <p class="p-card">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
+                                    </div>
+                                </div>
+                
+                                <div class="card-primary">
+                                    <div class="img-card">
+                                        <img src="{% static 'enap_designsystem/icons/280-140-default.png' %}" alt="">
+                                    </div>
+                                    <div class="wrapper-text-card">
+                                        <h2 class="h2-card">Card Title 3</h2>
+                                        <p class="p-card">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
+                                    </div>
+                                </div>
+                
+                                <div class="card-primary">
+                                    <div class="img-card">
+                                        <img src="{% static 'enap_designsystem/icons/280-140-default.png' %}" alt="">
+                                    </div>
+                                    <div class="wrapper-text-card">
+                                        <h2 class="h2-card">Card Title 4</h2>
+                                        <p class="p-card">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
+                                    </div>
+                                </div>
+                
+                                <div class="card-primary">
+                                    <div class="img-card">
+                                        <img src="{% static 'enap_designsystem/icons/280-140-default.png' %}" alt="">
+                                    </div>
+                                    <div class="wrapper-text-card">
+                                        <h2 class="h2-card">Card Title 5</h2>
+                                        <p class="p-card">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
+                                    </div>
+                                </div>
+                
+                                <div class="card-primary">
+                                    <div class="img-card">
+                                        <img src="{% static 'enap_designsystem/icons/280-140-default.png' %}" alt="">
+                                    </div>
+                                    <div class="wrapper-text-card">
+                                        <h2 class="h2-card">Card Title 6</h2>
+                                        <p class="p-card">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
+                                    </div>
+                                </div>
+                
+                                <div class="card-primary">
+                                    <div class="img-card">
+                                        <img src="{% static 'enap_designsystem/icons/280-140-default.png' %}" alt="">
+                                    </div>
+                                    <div class="wrapper-text-card">
+                                        <h2 class="h2-card">Card Title 7</h2>
+                                        <p class="p-card">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
+                                    </div>
+                                </div>
+                
+                                <div class="card-primary">
+                                    <div class="img-card">
+                                        <img src="{% static 'enap_designsystem/icons/280-140-default.png' %}" alt="">
+                                    </div>
+                                    <div class="wrapper-text-card">
+                                        <h2 class="h2-card">Card Title 8</h2>
+                                        <p class="p-card">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="Featured" class="filter-content">
+                <div class="content-search">
+                    <div class="filtro-wrapper">
+                        <div class="filtro-sidebar" id="filtroSidebar">
+                            <div class="filtro-grupo">
+                                <label for="categoria">Categoria</label>
+                                <select id="categoria">
+                                    <option value="">Todas as categorias</option>
+                                    <option value="tecnologia">Tecnologia</option>
+                                    <option value="saude">Saúde</option>
+                                    <option value="educacao">Educação</option>
+                                </select>
+                            </div>
+                            <div class="filtro-grupo">
+                                <label for="nivel">Nível</label>
+                                <select id="nivel">
+                                    <option value="">Todos os níveis</option>
+                                    <option value="iniciante">Iniciante</option>
+                                    <option value="intermediario">Intermediário</option>
+                                    <option value="avancado">Avançado</option>
+                                </select>
+                            </div>
+                            <div class="filtro-grupo">
+                                <label for="data">Data</label>
+                                <select id="data">
+                                    <option value="">Qualquer data</option>
+                                    <option value="hoje">Hoje</option>
+                                    <option value="semana">Esta semana</option>
+                                    <option value="mes">Este mês</option>
+                                </select>
+                            </div>
+                            <div class="filtro-grupo">
+                                <label>Avaliação</label>
+                                <div class="filtro-rating">
+                                    <input type="checkbox" id="rating5"> <label for="rating5">5 estrelas</label>
+                                </div>
+                                <div class="filtro-rating">
+                                    <input type="checkbox" id="rating4"> <label for="rating4">4+ estrelas</label>
+                                </div>
+                                <div class="filtro-rating">
+                                    <input type="checkbox" id="rating3"> <label for="rating3">3+ estrelas</label>
+                                </div>
+                            </div>
+                            <button class="filtro-aplicar">Aplicar filtros</button>
+                        </div>
+                        
+                        <div class="content-cards">
+                            <div class="filtro-header">
+                                <button class="btn-filter-search" id="toggleFiltro" onclick="toggleFiltro()"><i class="fa-solid fa-filter"></i> Filtro</button>
+                                <div class="p-busca">Resultados encontrados: 8</div>
+                            </div>
+                            
+                            <div class="cards-grid" id="cardsGrid">
+                                <div class="card-primary">
+                                    <div class="img-card">
+                                        <img src="{% static 'enap_designsystem/icons/280-140-default.png' %}" alt="">
+                                    </div>
+                                    <div class="wrapper-text-card">
+                                        <h2 class="h2-card">Card Title 1</h2>
+                                        <p class="p-card">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
+                                    </div>
+                                </div>
+                
+                                <div class="card-primary">
+                                    <div class="img-card">
+                                        <img src="{% static 'enap_designsystem/icons/280-140-default.png' %}" alt="">
+                                    </div>
+                                    <div class="wrapper-text-card">
+                                        <h2 class="h2-card">Card Title 2</h2>
+                                        <p class="p-card">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
+                                    </div>
+                                </div>
+                
+                                <div class="card-primary">
+                                    <div class="img-card">
+                                        <img src="{% static 'enap_designsystem/icons/280-140-default.png' %}" alt="">
+                                    </div>
+                                    <div class="wrapper-text-card">
+                                        <h2 class="h2-card">Card Title 3</h2>
+                                        <p class="p-card">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
+                                    </div>
+                                </div>
+                
+                                <div class="card-primary">
+                                    <div class="img-card">
+                                        <img src="{% static 'enap_designsystem/icons/280-140-default.png' %}" alt="">
+                                    </div>
+                                    <div class="wrapper-text-card">
+                                        <h2 class="h2-card">Card Title 4</h2>
+                                        <p class="p-card">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
+                                    </div>
+                                </div>
+                
+                                <div class="card-primary">
+                                    <div class="img-card">
+                                        <img src="{% static 'enap_designsystem/icons/280-140-default.png' %}" alt="">
+                                    </div>
+                                    <div class="wrapper-text-card">
+                                        <h2 class="h2-card">Card Title 5</h2>
+                                        <p class="p-card">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
+                                    </div>
+                                </div>
+                
+                                <div class="card-primary">
+                                    <div class="img-card">
+                                        <img src="{% static 'enap_designsystem/icons/280-140-default.png' %}" alt="">
+                                    </div>
+                                    <div class="wrapper-text-card">
+                                        <h2 class="h2-card">Card Title 6</h2>
+                                        <p class="p-card">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
+                                    </div>
+                                </div>
+                
+                                <div class="card-primary">
+                                    <div class="img-card">
+                                        <img src="{% static 'enap_designsystem/icons/280-140-default.png' %}" alt="">
+                                    </div>
+                                    <div class="wrapper-text-card">
+                                        <h2 class="h2-card">Card Title 7</h2>
+                                        <p class="p-card">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
+                                    </div>
+                                </div>
+                
+                                <div class="card-primary">
+                                    <div class="img-card">
+                                        <img src="{% static 'enap_designsystem/icons/280-140-default.png' %}" alt="">
+                                    </div>
+                                    <div class="wrapper-text-card">
+                                        <h2 class="h2-card">Card Title 8</h2>
+                                        <p class="p-card">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+      
+    <div id="Tab02" class="tabcontent">
+        <div class="filter-container">
+            <div id="SrvTab02" class="srv-tabcontent" style="display: block;">
+                <div class="srv-filter-container">
+                    <button class="srv-filter-btn srv-filter-option active" onclick="openSrvFilter(event, 'SrvMaisRecentes')">Mais Recentes</button>
+                    <button class="srv-filter-btn srv-filter-option" onclick="openSrvFilter(event, 'SrvMaisRelevantes')">Mais Relevantes</button>
+                    <button class="srv-filter-btn srv-filter-option" onclick="openSrvFilter(event, 'SrvMaisVistos')">Mais Vistos</button>
+                </div>
+        
+                <div id="SrvMaisRecentes" class="srv-filter-content" style="display: block;">
+                    <div class="srv-result-info">Exibindo 8 resultados</div>
+                    
+                    <div class="srv-card-horizontal-wrapper">
+                        <!-- Card 1 -->
+                        <a class="link-card-search" href="">
+                        <div class="srv-card-horizontal">
+                            <div class="srv-card-image-container">
+                                <img class="srv-card-image" src="{% static 'enap_designsystem/icons/280-140-default.png' %}" alt="Consultoria em Estratégia de Negócios">
+                            </div>
+                            <div class="srv-card-content">
+                                <div class="wrapper-text-news">
+                                    <h3 class="srv-card-title">Consultoria em Estratégia de Negócios</h3>
+                                    <p class="srv-card-text">Oferecemos assessoria especializada para desenvolvimento de estratégias de negócio, análise de mercado e planejamento de crescimento para startups e empresas estabelecidas.</p>
+                                </div>
+                                <div class="srv-card-meta">
+                                    <div class="srv-card-date">
+                                        <svg class="srv-card-date-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                                        </svg>
+                                        Publicado em: 04/04/2025
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </a>
+        
+                        <!-- Card 2 -->
+                        <a class="link-card-search"  href="">
+                        <div class="srv-card-horizontal">
+                            <div class="srv-card-image-container">
+                                <img class="srv-card-image" src="{% static 'enap_designsystem/icons/280-140-default.png' %}" alt="Desenvolvimento de Aplicações Web">
+                            </div>
+                            <div class="srv-card-content">
+                                <div class="srv-card-content">
+                                    <h3 class="srv-card-title">Desenvolvimento de Aplicações Web</h3>
+                                    <p class="srv-card-text">Criamos aplicações web personalizadas utilizando as mais recentes tecnologias e frameworks para atender às necessidades específicas do seu negócio.</p>
+                                </div>
+                                <div class="srv-card-meta">
+                                    <div class="srv-card-date">
+                                        <svg class="srv-card-date-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                                        </svg>
+                                        Publicado em: 02/04/2025
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </a>
+        
+                        <!-- Card 3 -->
+                        <a class="link-card-search"  href="">
+                        <div class="srv-card-horizontal">
+                            <div class="srv-card-image-container">
+                                <img class="srv-card-image" src="{% static 'enap_designsystem/icons/280-140-default.png' %}" alt="Análise de Dados e Business Intelligence">
+                            </div>
+                            <div class="srv-card-content">
+                                <div class="srv-card-content">
+                                    <h3 class="srv-card-title">Análise de Dados e Business Intelligence</h3>
+                                    <p class="srv-card-text">Transformamos dados em insights acionáveis para impulsionar a tomada de decisões estratégicas. Implementamos soluções de BI para monitoramento de KPIs e análise de tendências.</p>
+                                </div>
+                                <div class="srv-card-meta">
+                                    <div class="srv-card-date">
+                                        <svg class="srv-card-date-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                                        </svg>
+                                        Publicado em: 30/03/2025
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </a>
+        
+                        <!-- Card 4 -->
+                        <a class="link-card-search"  href="">
+                        <div class="srv-card-horizontal">
+                            <div class="srv-card-image-container">
+                                <img class="srv-card-image" src="{% static 'enap_designsystem/icons/280-140-default.png' %}" alt="Marketing Digital e Estratégia de Conteúdo">
+                            </div>
+                            <div class="srv-card-content">
+                                <div>
+                                    <h3 class="srv-card-title">Marketing Digital e Estratégia de Conteúdo</h3>
+                                    <p class="srv-card-text">Desenvolvemos estratégias de marketing digital completas, incluindo SEO, gestão de redes sociais, e-mail marketing e criação de conteúdo voltado para conversão.</p>
+                                </div>
+                                <div class="srv-card-meta">
+                                    <div class="srv-card-date">
+                                        <svg class="srv-card-date-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                                        </svg>
+                                        Publicado em: 28/03/2025
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </a>
+                    </div>
+                </div>
+        
+                <div id="SrvMaisRelevantes" class="srv-filter-content">
+                    <div class="srv-result-info">Exibindo 5 resultados</div>
+                    
+                    <div class="srv-card-horizontal-wrapper">
+                        <!-- Card 1 -->
+                        <a class="link-card-search"  href="">
+                        <div class="srv-card-horizontal">
+                            <div class="srv-card-image-container">
+                                <img class="srv-card-image" src="{% static 'enap_designsystem/icons/280-140-default.png' %}" alt="Implementação de Inteligência Artificial">
+                            </div>
+                            <div class="srv-card-content">
+                                <div class="srv-card-content">
+                                    <h3 class="srv-card-title">Implementação de Inteligência Artificial</h3>
+                                    <p class="srv-card-text">Soluções de IA personalizadas para automatização de processos, análise preditiva e sistemas de recomendação que aumentam a eficiência operacional.</p>
+                                </div>
+                                <div class="srv-card-meta">
+                                    <div class="srv-card-date">
+                                        <svg class="srv-card-date-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                                        </svg>
+                                        Publicado em: 01/03/2025
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </a>
+        
+                        <!-- Outros cards para Mais Relevantes -->
+                        <a class="link-card-search"  href="">
+                        <div class="srv-card-horizontal">
+                            <div class="srv-card-image-container">
+                                <img class="srv-card-image" src="{% static 'enap_designsystem/icons/280-140-default.png' %}" alt="Consultoria em Estratégia de Negócios">
+                            </div>
+                            <div class="srv-card-content">
+                                <div class="srv-card-content">
+                                    <h3 class="srv-card-title">Automação de Processos</h3>
+                                    <p class="srv-card-text">Implementamos soluções de automação para otimizar fluxos de trabalho, reduzir erros humanos e aumentar a produtividade em diversos setores empresariais.</p>
+                                </div>
+                                <div class="srv-card-meta">
+                                    <div class="srv-card-date">
+                                        <svg class="srv-card-date-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                                        </svg>
+                                        Publicado em: 15/01/2025
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </a>
+                    </div>
+                </div>
+        
+                <div id="SrvMaisVistos" class="srv-filter-content">
+                    <div class="srv-result-info">Exibindo 6 resultados</div>
+                    
+                    <div class="srv-card-horizontal-wrapper">
+                        <!-- Card 1 -->
+                        <a class="link-card-search"  href="">
+                        <div class="srv-card-horizontal">
+                            <div class="srv-card-image-container">
+                                <img class="srv-card-image" src="{% static 'enap_designsystem/icons/280-140-default.png' %}" alt="Cibersegurança para Empresas">
+                            </div>
+                            <div class="srv-card-content">
+                                <div class="srv-card-content">
+                                    <h3 class="srv-card-title">Cibersegurança para Empresas</h3>
+                                    <p class="srv-card-text">Proteção abrangente contra ameaças cibernéticas, incluindo avaliação de vulnerabilidades, implementação de medidas de segurança e treinamento de equipes.</p>
+                                </div>
+                                <div class="srv-card-meta">
+                                    <div class="srv-card-date">
+                                        <svg class="srv-card-date-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                                        </svg>
+                                        Publicado em: 15/02/2025
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </a>
+        
+                        <!-- Outros cards para Mais Vistos -->
+                        <a class="link-card-search"  href="">
+                        <div class="srv-card-horizontal">
+                            <div class="srv-card-image-container">
+                                <img class="srv-card-image" src="{% static 'enap_designsystem/icons/280-140-default.png' %}" alt="Desenvolvimento de E-commerce">
+                            </div>
+                            <div class="srv-card-content">
+                                <div class="srv-card-content">
+                                    <h3 class="srv-card-title">Desenvolvimento de E-commerce</h3>
+                                    <p class="srv-card-text">Criamos plataformas de comércio eletrônico completas com sistemas de pagamento integrados, gestão de estoque e experiência de usuário otimizada.</p>
+                                </div>
+                                <div class="srv-card-meta">
+                                    <div class="srv-card-date">
+                                        <svg class="srv-card-date-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                                        </svg>
+                                        Publicado em: 20/01/2025
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        
+        </div>
+    </div>
+      
+    <div id="Tab03" class="tabcontent">
+        <div id="SrvNoImg" class="srv-tabcontent" style="display: block;">
+            <div class="srv-filter-container">
+                <button class="srv-filter-btn srv-filter-option active" onclick="openSrvFilter(event, 'SrvNoImgRecentes')">Mais Recentes</button>
+                <button class="srv-filter-btn srv-filter-option" onclick="openSrvFilter(event, 'SrvNoImgRelevantes')">Mais Relevantes</button>
+                <button class="srv-filter-btn srv-filter-option" onclick="openSrvFilter(event, 'SrvNoImgVistos')">Mais Vistos</button>
+            </div>
+    
+            <div id="SrvNoImgRecentes" class="srv-filter-content" style="display: block;">
+                <div class="srv-result-info">Exibindo 8 resultados</div>
+                
+                <div class="srv-card-wrapper">
+                    <!-- Card 1 -->
+                    <a class="link-card-search" href="">
+                    <div class="srv-card">
+                        <div class="srv-card-tag">Estratégia</div>
+                        <h3 class="srv-card-title">Consultoria em Estratégia de Negócios</h3>
+                        <p class="srv-card-text">Oferecemos assessoria especializada para desenvolvimento de estratégias de negócio, análise de mercado e planejamento de crescimento para startups e empresas estabelecidas. Nossa equipe de consultores experientes trabalha com você para identificar oportunidades de crescimento e superar desafios do mercado.</p>
+                        <div class="srv-card-meta">
+                            <div class="srv-card-date">
+                                <svg class="srv-card-date-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                                Publicado em: 04/04/2025
+                            </div>
+                        </div>
+                    </div>
+                    </a>
+
+                    <!-- Card 2 -->
+                    <a class="link-card-search" href="">
+                    <div class="srv-card">
+                        <div class="srv-card-tag">Tecnologia</div>
+                        <h3 class="srv-card-title">Desenvolvimento de Aplicações Web</h3>
+                        <p class="srv-card-text">Criamos aplicações web personalizadas utilizando as mais recentes tecnologias e frameworks para atender às necessidades específicas do seu negócio. Desde websites institucionais até plataformas complexas, nossas soluções são escaláveis, seguras e otimizadas para o usuário.</p>
+                        <div class="srv-card-meta">
+                            <div class="srv-card-date">
+                                <svg class="srv-card-date-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                                Publicado em: 02/04/2025
+                            </div>
+                        </div>
+                    </div>
+                    </a>
+    
+                    <!-- Card 3 -->
+                    <a class="link-card-search" href="">
+                    <div class="srv-card">
+                        <div class="srv-card-tag">Dados</div>
+                        <h3 class="srv-card-title">Análise de Dados e Business Intelligence</h3>
+                        <p class="srv-card-text">Transformamos dados em insights acionáveis para impulsionar a tomada de decisões estratégicas. Implementamos soluções de BI para monitoramento de KPIs e análise de tendências, permitindo que sua empresa utilize dados para guiar seu crescimento e eficiência operacional.</p>
+                        <div class="srv-card-meta">
+                            <div class="srv-card-date">
+                                <svg class="srv-card-date-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                                Publicado em: 30/03/2025
+                            </div>
+                        </div>
+                    </div>
+                    </a>
+    
+                    <!-- Card 4 -->
+                    <a class="link-card-search" href="">
+                    <div class="srv-card">
+                        <div class="srv-card-tag">Marketing</div>
+                        <h3 class="srv-card-title">Marketing Digital e Estratégia de Conteúdo</h3>
+                        <p class="srv-card-text">Desenvolvemos estratégias de marketing digital completas, incluindo SEO, gestão de redes sociais, e-mail marketing e criação de conteúdo voltado para conversão. Nossos especialistas trabalham para aumentar a visibilidade da sua marca e gerar leads qualificados.</p>
+                        <div class="srv-card-meta">
+                            <div class="srv-card-date">
+                                <svg class="srv-card-date-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                                Publicado em: 28/03/2025
+                            </div>
+                        </div>
+                    </div>
+                    </a>
+                </div>
+            </div>
+            </div>
+    
+            <div id="SrvNoImgRelevantes" class="srv-filter-content">
+                <div class="srv-result-info">Exibindo 5 resultados</div>
+                
+                <div class="srv-card-wrapper">
+                    <!-- Card 1 -->
+                    <a class="link-card-search" href="">
+                    <div class="srv-card">
+                        <div class="srv-card-tag">Inovação</div>
+                        <h3 class="srv-card-title">Implementação de Inteligência Artificial</h3>
+                        <p class="srv-card-text">Soluções de IA personalizadas para automatização de processos, análise preditiva e sistemas de recomendação que aumentam a eficiência operacional. Desenvolvemos e integramos modelos de machine learning adaptados às necessidades específicas do seu negócio.</p>
+                        <div class="srv-card-meta">
+                            <div class="srv-card-date">
+                                <svg class="srv-card-date-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                                Publicado em: 01/03/2025
+                            </div>
+                        </div>
+                    </div>
+                    </a>
+    
+                    <!-- Outros cards para Mais Relevantes -->
+                    <a class="link-card-search" href="">
+                    <div class="srv-card">
+                        <div class="srv-card-tag">Eficiência</div>
+                        <h3 class="srv-card-title">Automação de Processos</h3>
+                        <p class="srv-card-text">Implementamos soluções de automação para otimizar fluxos de trabalho, reduzir erros humanos e aumentar a produtividade em diversos setores empresariais. Nossas soluções ajudam a eliminar tarefas repetitivas e liberar recursos para atividades estratégicas.</p>
+                        <div class="srv-card-meta">
+                            <div class="srv-card-date">
+                                <svg class="srv-card-date-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                                Publicado em: 15/01/2025
+                            </div>
+                        </div>
+                    </div>
+                    </a>
+                </div>
+            </div>
+    
+            <div id="SrvNoImgVistos" class="srv-filter-content">
+                <div class="srv-result-info">Exibindo 6 resultados</div>
+                
+                <div class="srv-card-wrapper">
+                    <!-- Card 1 -->
+                    <a class="link-card-search" href="">
+                    <div class="srv-card">
+                        <div class="srv-card-tag">Segurança</div>
+                        <h3 class="srv-card-title">Cibersegurança para Empresas</h3>
+                        <p class="srv-card-text">Proteção abrangente contra ameaças cibernéticas, incluindo avaliação de vulnerabilidades, implementação de medidas de segurança e treinamento de equipes. Nossos especialistas trabalham para garantir a integridade dos seus dados e sistemas contra ataques cada vez mais sofisticados.</p>
+                        <div class="srv-card-meta">
+                            <div class="srv-card-date">
+                                <svg class="srv-card-date-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                                Publicado em: 15/02/2025
+                            </div>
+                        </div>
+                    </div>
+                    </a>
+    
+                    <!-- Outros cards para Mais Vistos -->
+                    <a class="link-card-search" href="">
+                    <div class="srv-card">
+                        <div class="srv-card-tag">E-commerce</div>
+                        <h3 class="srv-card-title">Desenvolvimento de E-commerce</h3>
+                        <p class="srv-card-text">Criamos plataformas de comércio eletrônico completas com sistemas de pagamento integrados, gestão de estoque e experiência de usuário otimizada. Nossas soluções são escaláveis e podem crescer junto com o seu negócio.</p>
+                        <div class="srv-card-meta">
+                            <div class="srv-card-date">
+                                <svg class="srv-card-date-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                                Publicado em: 20/01/2025
+                            </div>
+                        </div>
+                    </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="Tab04" class="tabcontent">
+        <div id="SrvNoImg" class="srv-tabcontent" style="display: block;">
+            <div class="srv-filter-container">
+                <button class="srv-filter-btn srv-filter-option active" onclick="openPesquisaFilter(event, 'PesquisaRecentes')">Mais Recentes</button>
+                <button class="srv-filter-btn srv-filter-option" onclick="openPesquisaFilter(event, 'PesquisaRelevantes')">Mais Relevantes</button>
+                <button class="srv-filter-btn srv-filter-option" onclick="openPesquisaFilter(event, 'PesquisaVistos')">Mais Vistos</button>
+            </div>
+    
+            <div id="PesquisaRecentes" class="srv-filter-content" style="display: block;">
+                <div class="srv-result-info">Exibindo 8 resultados</div>
+                
+                <div class="srv-card-wrapper">
+                    <!-- Card 1 -->
+                    <a class="link-card-search" href="">
+                    <div class="srv-card">
+                        <div class="srv-card-tag">Inteligência Artificial</div>
+                        <h3 class="srv-card-title">Pesquisa em Inteligência Artificial e Aprendizado de Máquina</h3>
+                        <div class="srv-card-meta">
+                            
+                            <div class="srv-card-info">
+                                <div class="srv-card-info-item">Autor: Dr. Paulo Rodrigues</div>
+                                <div class="srv-card-info-item">Publicado por: Centro de Pesquisa em IA</div>
+                                <div class="srv-card-info-item">Linguagem: Português</div>
+                                <div class="srv-card-info-item">Publicação: Revista Brasileira de Tecnologia</div>
+                            </div>
+                        </div>
+                    </div>
+                    </a>
+    
+                    <!-- Card 2 -->
+                    <a class="link-card-search" href="">
+                    <div class="srv-card">
+                        <div class="srv-card-tag">Energia Renovável</div>
+                        <h3 class="srv-card-title">Avanços em Energias Renováveis</h3>
+                        <div class="srv-card-meta">
+                            
+                            <div class="srv-card-info">
+                                <div class="srv-card-info-item">Autor: Dra. Marina Costa</div>
+                                <div class="srv-card-info-item">Publicado por: Instituto de Energia</div>
+                                <div class="srv-card-info-item">Linguagem: Português</div>
+                                <div class="srv-card-info-item">Publicação: Journal of Renewable Energy</div>
+                            </div>
+                        </div>
+                    </div>
+                    </a>
+    
+                    <!-- Card 3 -->
+                    <a class="link-card-search" href="">
+                    <div class="srv-card">
+                        <div class="srv-card-tag">IoT</div>
+                        <h3 class="srv-card-title">Monitoramento Ambiental com IoT</h3>
+                        <div class="srv-card-meta">
+                           
+                            <div class="srv-card-info">
+                                <div class="srv-card-info-item">Autor: Dr. Ricardo Mendes</div>
+                                <div class="srv-card-info-item">Publicado por: Laboratório de Tecnologia Ambiental</div>
+                                <div class="srv-card-info-item">Linguagem: Português</div>
+                                <div class="srv-card-info-item">Publicação: Anais do Simpósio de Meio Ambiente</div>
+                            </div>
+                        </div>
+                    </div>
+                    </a>
+    
+                    <!-- Card 4 -->
+                    <a class="link-card-search" href="">
+                    <div class="srv-card">
+                        <div class="srv-card-tag">Bioengenharia</div>
+                        <h3 class="srv-card-title">Bioengenharia para Tratamento de Águas</h3>
+                        <div class="srv-card-meta">
+                           
+                            <div class="srv-card-info">
+                                <div class="srv-card-info-item">Autor: Dra. Carla Santos</div>
+                                <div class="srv-card-info-item">Publicado por: Departamento de Bioquímica</div>
+                                <div class="srv-card-info-item">Linguagem: Português</div>
+                                <div class="srv-card-info-item">Publicação: Journal of Environmental Sciences</div>
+                            </div>
+                        </div>
+                    </div>
+                    </a>
+                </div>
+            </div>
+    
+            <div id="PesquisaRelevantes" class="srv-filter-content">
+                <div class="srv-result-info">Exibindo 5 resultados</div>
+                
+                <div class="srv-card-wrapper">
+                    <!-- Card 1 -->
+                    <a class="link-card-search" href="">
+                    <div class="srv-card">
+                        <div class="srv-card-tag">Materiais</div>
+                        <h3 class="srv-card-title">Materiais Biodegradáveis para Embalagens</h3>
+                        <div class="srv-card-meta">
+                          
+                            <div class="srv-card-info">
+                                <div class="srv-card-info-item">Autor: Dr. Fernando Almeida</div>
+                                <div class="srv-card-info-item">Publicado por: Centro de Inovação em Materiais</div>
+                                <div class="srv-card-info-item">Linguagem: Português</div>
+                                <div class="srv-card-info-item">Publicação: Materials Science Journal</div>
+                            </div>
+                        </div>
+                    </div>
+                    </a>
+    
+                    <!-- Card 2 -->
+                    <a class="link-card-search" href="">
+                    <div class="srv-card">
+                        <div class="srv-card-tag">Medicina</div>
+                        <h3 class="srv-card-title">Novo Método de Diagnóstico Médico</h3>
+                        <div class="srv-card-meta">
+                            
+                            <div class="srv-card-info">
+                                <div class="srv-card-info-item">Autor: Dra. Juliana Ferreira</div>
+                                <div class="srv-card-info-item">Publicado por: Instituto de Tecnologia Médica</div>
+                                <div class="srv-card-info-item">Linguagem: Português</div>
+                                <div class="srv-card-info-item">Publicação: Medical Innovation Digest</div>
+                            </div>
+                        </div>
+                    </div>
+                    </a>
+                </div>
+            </div>
+    
+            <div id="PesquisaVistos" class="srv-filter-content">
+                <div class="srv-result-info">Exibindo 6 resultados</div>
+                
+                <div class="srv-card-wrapper">
+                    <!-- Card 1 -->
+                    <a class="link-card-search" href="">
+                    <div class="srv-card">
+                        <div class="srv-card-tag">Agricultura</div>
+                        <h3 class="srv-card-title">Impactos das Mudanças Climáticas na Agricultura</h3>
+                        <div class="srv-card-meta">
+                            
+                            <div class="srv-card-info">
+                                <div class="srv-card-info-item">Autor: Dr. Marcelo Oliveira</div>
+                                <div class="srv-card-info-item">Publicado por: EMBRAPA</div>
+                                <div class="srv-card-info-item">Linguagem: Português</div>
+                                <div class="srv-card-info-item">Publicação: Revista Agronômica Brasileira</div>
+                            </div>
+                        </div>
+                    </div>
+                    </a>
+    
+                    <!-- Card 2 -->
+                    <a class="link-card-search" href="">
+                    <div class="srv-card">
+                        <div class="srv-card-tag">Saúde</div>
+                        <h3 class="srv-card-title">Novos Tratamentos para Doenças Neurodegenerativas</h3>
+                        <div class="srv-card-meta">
+                            
+                            <div class="srv-card-info">
+                                <div class="srv-card-info-item">Autor: Dra. Ana Fonseca</div>
+                                <div class="srv-card-info-item">Publicado por: Instituto Nacional de Neurociências</div>
+                                <div class="srv-card-info-item">Linguagem: Português</div>
+                                <div class="srv-card-info-item">Publicação: Neuroscience Journal</div>
+                            </div>
+                        </div>
+                    </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="Tab05" class="tabcontent">
+        <div id="TodosNoImg" class="srv-tabcontent" style="display: block;">
+            <div class="srv-filter-container">
+                <button class="srv-filter-btn srv-filter-option active" onclick="openTodosFilter(event, 'TodosRecentes')">Mais Recentes</button>
+                <button class="srv-filter-btn srv-filter-option" onclick="openTodosFilter(event, 'TodosRelevantes')">Mais Relevantes</button>
+                <button class="srv-filter-btn srv-filter-option" onclick="openTodosFilter(event, 'TodosVistos')">Mais Vistos</button>
+            </div>
+    
+            <div id="TodosRecentes" class="srv-filter-content" style="display: block;">
+                <div class="srv-result-info">Exibindo 8 resultados</div>
+                
+                <div class="srv-card-wrapper">
+                    <!-- Card 1 - Curso -->
+                    <a class="link-card-search" href="">
+                    <div class="srv-card">
+                        <div class="srv-card-tag">Curso</div>
+                        <h3 class="srv-card-title">Desenvolvimento Fullstack com JavaScript</h3>
+                        <p class="srv-card-text">Aprenda a desenvolver aplicações web completas utilizando as mais modernas tecnologias JavaScript, como React, Node.js e MongoDB. Este curso aborda desde conceitos básicos até técnicas avançadas para criar aplicações escaláveis e de alta performance.</p>
+                        <div class="srv-card-meta">
+                            <div class="srv-card-date">
+                                <svg class="srv-card-date-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                                Publicado em: 06/04/2025
+                            </div>
+                        </div>
+                    </div>
+                    </a>
+    
+                    <!-- Card 2 - Serviço -->
+                    <a class="link-card-search" href="">
+                    <div class="srv-card">
+                        <div class="srv-card-tag">Serviço</div>
+                        <h3 class="srv-card-title">Consultoria em Estratégia de Negócios</h3>
+                        <p class="srv-card-text">Oferecemos assessoria especializada para desenvolvimento de estratégias de negócio, análise de mercado e planejamento de crescimento para startups e empresas estabelecidas. Nossa equipe de consultores experientes trabalha com você para identificar oportunidades de crescimento e superar desafios do mercado.</p>
+                        <div class="srv-card-meta">
+                            <div class="srv-card-date">
+                                <svg class="srv-card-date-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                                Publicado em: 04/04/2025
+                            </div>
+                        </div>
+                    </div>
+                    </a>
+                </div>
+            </div>
+    
+            <div id="TodosRelevantes" class="srv-filter-content">
+                <div class="srv-result-info">Exibindo 5 resultados</div>
+                
+                <div class="srv-card-wrapper">
+                    <!-- Card 1 - Pesquisa -->
+                    <a class="link-card-search" href="">
+                    <div class="srv-card">
+                        <div class="srv-card-tag">Pesquisa</div>
+                        <h3 class="srv-card-title">Materiais Sustentáveis para Construção Civil</h3>
+                        <p class="srv-card-text">Pesquisa premiada sobre desenvolvimento de novos materiais sustentáveis para o setor de construção, com baixa emissão de carbono e alta durabilidade. Nossos pesquisadores desenvolveram compostos que reduzem em até 40% a pegada de carbono em comparação com materiais convencionais, mantendo propriedades estruturais equivalentes.</p>
+                        <div class="srv-card-meta">
+                            <div class="srv-card-date">
+                                <svg class="srv-card-date-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                                Publicado em: 15/02/2025
+                            </div>
+                        </div>
+                    </div>
+                    </a>
+                </div>
+            </div>
+    
+            <div id="TodosVistos" class="srv-filter-content">
+                <div class="srv-result-info">Exibindo 6 resultados</div>
+                
+                <div class="srv-card-wrapper">
+                    <!-- Card 1 - Notícia -->
+                    <a class="link-card-search" href="">
+                    <div class="srv-card">
+                        <div class="srv-card-tag">Notícia</div>
+                        <h3 class="srv-card-title">Avanços na Comunicação Quântica</h3>
+                        <p class="srv-card-text">Cientistas demonstram nova técnica de comunicação quântica que pode revolucionar a segurança na transmissão de dados e viabilizar a internet quântica. O breakthrough permite transmissão de dados criptografados em distâncias até 10 vezes maiores que as tecnologias quânticas atuais, sem perder integridade da informação.</p>
+                        <div class="srv-card-meta">
+                            <div class="srv-card-date">
+                                <svg class="srv-card-date-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                                Publicado em: 20/01/2025
+                            </div>
+                        </div>
+                    </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+</section>
+
+{% endblock %}
+
+
+{% block footer %}
+    {% include "enap_designsystem/includes/footer.html" %}
+{% endblock %}
