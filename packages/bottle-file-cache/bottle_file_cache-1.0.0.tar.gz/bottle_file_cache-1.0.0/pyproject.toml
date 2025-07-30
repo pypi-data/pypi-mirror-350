@@ -1,0 +1,142 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "bottle-file-cache"
+description = "A simple file cache for the Python Bottle web framework."
+readme = "README.md"
+requires-python = ">= 3.10"
+authors = [
+  { name = "Mickaël Schoentgen", email="contact@tiger-222.fr" },
+]
+maintainers = [
+  { name = "Mickaël Schoentgen", email="contact@tiger-222.fr" },
+]
+license = { file = "LICENSE" }
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
+keywords = [
+    "bottle",
+    "cache",
+    "file",
+]
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://pypi.org/project/bottle-file-cache"
+Changelog = "https://github.com/BoboTiG/bottle-file-cache/blob/main/CHANGELOG.md"
+Source = "https://github.com/BoboTiG/bottle-file-cache"
+Sponsor = "https://github.com/sponsors/BoboTiG"
+Tracker = "https://github.com/BoboTiG/bottle-file-cache/issues"
+"Released Versions" = "https://github.com/BoboTiG/bottle-file-cache/releases"
+
+[project.optional-dependencies]
+tests = [
+  "bottle==0.13.3",
+  "mypy==1.15.0",
+  "pytest==8.3.5",
+  "pytest-cov==6.1.1",
+  "ruff==0.11.11",
+  "webtest==3.0.4",
+]
+dev = [
+  "build==1.2.2.post1",
+  "twine==6.1.0",
+]
+
+[tool.hatch.version]
+path = "bottle_file_cache.py"
+
+[tool.hatch.build.targets.sdist]
+only-include = [
+  "CHANGELOG.md",
+  "bottle_file_cache.py",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = [
+  "bottle_file_cache.py",
+]
+
+[tool.coverage.report]
+exclude_also = [
+  'if TYPE_CHECKING:',
+]
+
+[tool.mypy]
+# Ensure we know what we do
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_unused_configs = true
+
+# Imports management
+ignore_missing_imports = true
+follow_imports = "skip"
+
+# Ensure full coverage
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_untyped_calls = true
+
+# Restrict dynamic typing (a little)
+# e.g. `x: List[Any]` or x: List`
+# disallow_any_generics = true
+
+strict_equality = true
+
+
+[tool.pytest.ini_options]
+addopts = """
+  --cov-report=term-missing:skip-covered
+  --cov=bottle_file_cache
+  --no-cov-on-fail
+  --showlocals
+  --strict-markers
+  -r fE
+  -vvv
+  tests/
+"""
+
+[tool.ruff]
+line-length = 120
+indent-width = 4
+target-version = "py38"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.ruff.lint]
+extend-select = ["ALL"]
+ignore = [
+  "COM812",   # conflict
+  "D203",     # conflict
+  "D213",     # conflict
+  "ISC001",   # conflict
+]
+fixable = ["ALL"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = [
+  "D",       # no need for documentation
+  "FBT003",  # Boolean positional value in function call
+  "S101",    # Use of `assert` detected
+]
+
