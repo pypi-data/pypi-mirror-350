@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "py-api-dumper"
+version = "1.2"
+description = "Python API dumping and comparison tool"
+authors = [
+    { name = "Karl Wette", email = "karl.wette@anu.edu.au" },
+]
+requires-python = ">=3.9"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/kwwette/py-api-dumper"
+Issues = "https://github.com/kwwette/py-api-dumper/issues"
+
+[project.scripts]
+py-api-dumper = "py_api_dumper.cli:cli"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "--cov=py_api_dumper --cov-report=term-missing --cov-fail-under=100"
+testpaths = ["test"]
