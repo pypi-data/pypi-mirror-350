@@ -1,0 +1,22 @@
+{
+    "pipeline": [
+        "swedish",
+        "actapublica",
+        {
+            "name": "anonymizer.app",
+            "options": {
+                "annotations": [
+                    "Person",
+                    "Address",
+                    "Street",
+                    "Email",
+                    "PersonalIdentificationNumber"
+                ],
+                "formatters": {
+                    "Person": "#{uri}-{concept.position}-{nr}#",
+                    "PersonalIdentificationNumber": "#{\"*\"* (len(literal)-3)}{literal[-2:]}"
+                }
+            }
+        }
+    ]
+}
