@@ -1,0 +1,84 @@
+name: CI & CD  ♻️
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:    
+jobs:
+  pre-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install .[dev]
+
+  build-and-publish:
+    needs: pre-build
+    runs-on: ubuntu-latest
+    permissions: write-all
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Extract version from ref
+        id: meta
+        run: |
+          REF="${GITHUB_REF}"
+          if [[ "$REF" == refs/tags/"v"* ]]; then
+            VERSION="${REF#refs/tags/v}"
+          elif [[ "$REF" == refs/tags/* ]]; then
+            VERSION="${REF#refs/tags/}"
+          else
+            VERSION="${REF#refs/heads/}"
+            VERSION="${VERSION//\//-}"
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+
+      # ───────── Build wheel & sdist ─────────
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build Python package
+        run: |
+          python -m pip install --upgrade build
+          python -m build -s -w
+
+      # ───────── Publish to PyPI ─────────
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          skip-existing: true
+
+      # ───────── Docker build & push ─────────
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Prepare tag
+        id: prep
+        run: echo "branch=$(echo ${GITHUB_REF##*/} | tr '/' '-')" >> $GITHUB_OUTPUT
+
+      - name: Build & push image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/hello-build-agent:${{ steps.meta.outputs.version }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/hello-build-agent:latest
+          build-args: |
+            HBA_VERSION=${{ steps.meta.outputs.version }}
