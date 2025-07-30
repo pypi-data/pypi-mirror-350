@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rrview"
+version = "0.8.1"
+dependencies = [
+        "requests>=2.5.1",
+        "SimpleITK>=2.2.0",
+        "PySide6>=6.7",
+        "numpy>=1.25.0",
+        "opencv_python_headless>=4.8.0.76",
+        "psutil>=7.0.0",
+        "scipy>=1.15.0",
+        "setuptools>=68.0.0",
+        "scikit-image>=0.25.2",
+        "nibabel>=5.3.2"
+]
+requires-python = ">=3.8"
+authors = [
+  {name = "Fakai Wang", email = "fakaiwang@sjtu.edu.cn"},
+]
+maintainers = [
+  {name = "Fakai Wang", email = "fakaiwang@sjtu.edu.cn"}
+]
+description = "Ruijin Radiology Viewer"
+readme = "README.md"
+keywords = ["Radiology", "NifTi", "3D Medical Imaging", "Multi-modality", "Segmentation Mask"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python"
+]
+
+[project.optional-dependencies]
+gui = ["PySide6"]
+cli = [
+  "rich",
+  "click",
+]
+
+# 可以定义从命令行运行的脚本
+[options.entry_points]
+console_scripts = [
+    "rrview = rrview.main:main_gui",
+]
+
+
+
+[project.urls]
+Homepage = "http://ruijin-imit.cn/software/rrview"
+Documentation = "http://ruijin-imit.cn/software/rrview/docs"
+Repository = "https://github.com/ruijin-imit/rrview.git"
+"Bug Tracker" = "https://github.com/ruijin-imit/rrview/issues"
+Changelog = "https://github.com/ruijin-imit/rrview/blob/master/CHANGELOG.md"
+
+
+[project.gui-scripts]
+rrview = "rrview.main:main_gui"
