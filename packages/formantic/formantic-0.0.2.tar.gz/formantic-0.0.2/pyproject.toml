@@ -1,0 +1,77 @@
+[build-system]
+requires = [
+    "pdm-backend",
+]
+build-backend = "pdm.backend"
+
+[project]
+name = "formantic"
+description = "WTForm generator for Pydantic"
+authors = [
+    { name = "Wojciech Nowicki", email = "wnowicki@me.com" },
+]
+dynamic = []
+requires-python = ">=3.10"
+readme = "README.md"
+dependencies = [
+    "pydantic>=2.11.5",
+    "wtforms>=3.2.1",
+]
+version = "0.0.2"
+
+[project.license]
+file = "LICENSE.md"
+
+[project.urls]
+Homepage = "https://github.com/wnowicki/formantic"
+Source = "https://github.com/wnowicki/formantic"
+
+[tool.pdm.version]
+source = "scm"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q"
+testpaths = [
+    "tests",
+]
+pythonpath = "."
+
+[tool.ruff]
+line-length = 100
+extend-exclude = [
+    "*.ipynb",
+]
+
+[tool.ruff.lint]
+select = [
+    "E4",
+    "E7",
+    "E9",
+    "F",
+    "B",
+    "Q",
+]
+ignore = [
+    "E501",
+]
+unfixable = [
+    "B",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = [
+    "E402",
+    "F403",
+]
+"**/{tests,docs,tools}/*" = [
+    "E402",
+    "S101",
+]
+
+[dependency-groups]
+dev = [
+    "pre-commit",
+    "pytest",
+    "ruff",
+]
