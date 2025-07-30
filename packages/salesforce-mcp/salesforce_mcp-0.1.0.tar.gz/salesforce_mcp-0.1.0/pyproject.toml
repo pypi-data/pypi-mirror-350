@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "salesforce-mcp"
+version = "0.1.0" # Increment this for each new release
+description = "Salesforce MCP Connector allows you to interact with your Salesforce data and metadata using natural language." # From README.md
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT License" }
+authors = [{ name = "Salesforce MCP", email = "salesforce.mcp.2@gmail.com" }]
+keywords = ["salesforce", "mcp", "api", "automation", "model-context-protocol"] # Add relevant keywords
+classifiers = [ 
+    "Development Status :: 3 - Alpha", # Or "4 - Beta", "5 - Production/Stable"
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License", # If MIT
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Utilities"
+]
+dependencies = [
+    "mcp",
+    "simple-salesforce",
+    "python-dotenv",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/salesforce-mcp/salesforce-mcp"
+"Bug Tracker" = "https://github.com/salesforce-mcp/salesforce-mcp/issues"
+
+[project.scripts]
+salesforce-mcp = "server:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+py-modules = ["server"]
+packages = ["salesforcemcp"]
+
+[tool.setuptools.package-data]
+"salesforcemcp" = ["assets/**", "assets/**/**"]
