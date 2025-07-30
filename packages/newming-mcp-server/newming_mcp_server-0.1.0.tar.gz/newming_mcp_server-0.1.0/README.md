@@ -1,0 +1,212 @@
+# 뉴밍 MCP 서버 사용법 및 설치 안내
+
+## 📦 설치 및 실행 방법 (uv 명령어 기준)
+
+### 1. 소스 코드 다운로드 및 설치
+```bash
+git clone https://github.com/your-org/newming-mcp-server.git
+cd newming-mcp-server
+pip install .
+```
+
+### 2. uv 명령어로 실행
+- stdio 모드:
+  ```bash
+  uv --directory $(pwd) run main.py --license=<YOUR_LICENSE_KEY>
+  ```
+- sse 모드:
+  ```bash
+  uv --directory $(pwd) run sse.py --license=<YOUR_LICENSE_KEY>
+  ```
+
+> ※ `<YOUR_LICENSE_KEY>`는 본인의 라이센스 키로 대체하세요.
+
+### 1. npx로 설치 및 실행
+```bash
+# 전역 설치
+npm install -g newming-mcp-server
+
+# 또는 npx로 직접 실행
+npx newming-mcp-server --license=<YOUR_LICENSE_KEY>
+```
+
+### 2. Claude Desktop 설정
+`claude_desktop_config.json` 파일에 다음 설정을 추가:
+```json
+{
+  "mcpServers": {
+    "newming_mcp_server": {
+      "command": "npx",
+      "args": [
+        "newming-mcp-server",
+        "--license=<YOUR_LICENSE_KEY>"
+      ],
+      "env": {}
+    }
+  }
+}
+```
+
+### 1. pip로 설치
+```bash
+# pip로 설치
+pip install newming-mcp-server
+
+# 실행
+newming-mcp --license=<YOUR_LICENSE_KEY>
+```
+
+---
+
+## ⚙️ 환경 변수 설정
+- license: 라이센스 키
+
+예시:
+```bash
+export license=<YOUR_LICENSE_KEY>
+```
+
+---
+
+## 🐳 도커 실행 방법
+
+### 1. 도커 이미지 빌드
+```bash
+docker build -t newming-mcp-server .
+```
+
+### 2. 도커 컨테이너 실행
+```bash
+docker rm -f newming-mcp-server 2>/dev/null || true && \
+docker run --rm \
+  --name newming-mcp-server \
+  -e license=ftpbYi5%7c \
+  -p 8000:8000 \
+  newming-mcp-server
+```
+
+- `-e license=...` : 라이센스 환경변수 지정
+- `-p 8000:8000` : 포트 매핑(필요시)
+
+### 3. 도커 컨테이너에서 로그 확인
+```bash
+docker exec -it newming-mcp-server /bin/sh
+cd /app/logs
+tail -f tool_access_$(date +%Y-%m-%d).log
+```
+
+---
+
+## 🚀 실행 방법 (uv 명령어 기준)
+
+### 1. stdio 모드 (로컬 MCP 연동)
+```bash
+uv --directory <YOUR_PROJECT_PATH> run main.py --license=<YOUR_LICENSE_KEY>
+```
+
+### 2. sse 모드 (서버/원격 중계)
+```bash
+uv --directory <YOUR_PROJECT_PATH> run sse.py --license=<YOUR_LICENSE_KEY>
+```
+
+---
+
+## 🛠️ Claude Desktop 연동 예시
+
+> **경로 안내:**
+> 아래 예시의 `<YOUR_PROJECT_PATH>/main.py` 등은 실제 사용자의 프로젝트 경로에 맞게 수정하세요.
+
+### 1. stdio 방식
+`claude_desktop_config.json` 예시:
+```json
+{
+  "mcpServers": {
+    "newming_mcp_server": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "<YOUR_PROJECT_PATH>",
+        "run",
+        "main.py",
+        "--license=<YOUR_LICENSE_KEY>"
+      ],
+      "env": {},
+      "type": "stdio"
+    }
+  }
+}
+```
+
+### 2. 도커 기반 sse 방식 (npx mcp-remote 중계)
+1) 도커로 MCP 서버 실행:
+```bash
+docker run --rm \
+  --name newming-mcp-server \
+  -e license=ftpbYi5%7c \
+  -p 9000:8000 \
+  newming-mcp-server
+```
+2) npx mcp-remote로 중계:
+```bash
+npx mcp-remote http://localhost:8000/sse --license=ftpbYi5%7c
+```
+3) Claude Desktop 설정:
+```json
+{
+  "mcpServers": {
+    "newming_mcp_server": {
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "http://localhost:8000/sse",
+        "--license=ftpbYi5%7c
+      ],
+      "env": {}
+    }
+  }
+}
+```
+
+---
+
+## 🧩 주요 MCP 도구 설명
+
+### festival_search_api
+- 전국 축제 데이터 실시간 조회 (시도, 만족도, 방문객 등 다양한 필드)
+- 예시: "경기도 축제 TOP5를 표로 보여줘"
+
+### festival_visitor_spending_range_api
+- 축제별 방문객 지출 구간(금액대별 비율) 데이터
+- 예시: "5만원 미만 지출 비율이 높은 축제만 뽑아줘"
+
+### festival_visitor_composition_api
+- 축제별 방문객 동행 유형(가족, 친구 등) 데이터
+- 예시: "가족 방문 비율이 높은 축제만 보여줘"
+
+### festival_nearby_tourism_activity_api
+- 축제별 방문객의 인근 관광/여가 활동 데이터
+- 예시: "음식점/카페 방문 비율이 높은 축제만 뽑아줘"
+
+### festival_nearby_activity_region_api
+- 축제별 방문객의 활동 지역(축제 지역/인접 지역) 데이터
+- 예시: "축제 지역 내 활동 비율이 높은 축제만 보여줘"
+
+### festival_awareness_api
+- 축제별 인지도(정보 획득 경로 등) 데이터
+- 예시: "SNS 인지도가 높은 축제만 뽑아줘"
+
+### get_location_by_ip
+- 현재 IP 기반 위치(도시, 위도/경도, 상세 주소) 반환
+
+---
+
+## 📝 로그파일 위치 및 모니터링
+- 모든 도구 호출 및 응답 로그는 `logs/` 폴더에 날짜별로 저장
+- 예시: `logs/tool_access_2025-05-20.log`
+- 실시간 모니터링: `tail -f logs/tool_access_$(date +%Y-%m-%d).log`
+
+---
+
+## ❓ 기타 참고
+- 도구별 상세 docstring 및 리포트/표/대화형 유도 가이드는 코드 내 주석 참고
+- 시스템 요구사항 정의는 REQUIREMENTS.md 파일 참고
