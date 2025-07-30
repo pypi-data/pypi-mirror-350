@@ -1,0 +1,46 @@
+name: Test
+
+on:
+  push:
+    paths:
+      - "src/heurist/**"
+      - "tests/**"
+    branches:
+      - main
+  pull_request:
+  workflow_call:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      HEURIST_USER: ${{ secrets.DEV_DB_LOGIN }}
+      HEURIST_PASS: ${{ secrets.DEV_DB_PASSWORD }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv and set the python version
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install the project
+        run: |
+          uv lock
+          uv sync --locked --all-extras --dev
+
+      - name: Lint with ruff
+        run: |
+          uv run ruff check src/
+
+      - name: Run tests
+        run: |
+          export DB_LOGIN=$HEURIST_USER
+          export DB_PASSWORD=$HEURIST_PASS
+          export DB_NAME=api_dev
+          uv run pytest
