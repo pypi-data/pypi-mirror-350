@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "util_common"
+version = "0.5.7"
+description = "..."
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = ["Programming Language :: Python :: 3", "Operating System :: OS Independent"]
+dependencies = [
+    "pip",
+    "rich",
+    "natsort",
+    "python-magic",
+    "python-json-logger<3",
+    "pydantic",
+    "colorlog",
+    "base58",
+]
+license-files = ["LICENSE.txt"]
+[[project.authors]]
+name = "Sheldon Lee"
+email = "sheldonlee@outlook.com"
+
+[project.optional-dependencies]
+dev = ["twine", "build", "pytest", "mypy", "types-toml", "pre-commit", "pytest-asyncio"]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src/"]
+include = ["util_common*", "util_common/*"]
+
+[tool.sys-dependencies]
+apt = ["libmagic1", "rar", "p7zip-full"]
