@@ -1,0 +1,33 @@
+HOSTNAME=$(hostname)
+CONDAPATH=$(pwd)/../.sw
+VENVPATH=$(pwd)/../.venv
+USER_CONDA_ENV_PATH=/projects/ml_scope/Students/a1744874/scale_invariants/sw
+USER_VENV_PATH=/projects/ml_scope/Students/a1744874/scale_invariants/.venv
+
+echo $HOSTNAME
+if [[ $HOSTNAME == mseas.mit.edu ]] || [[ $HOSTNAME == ibgpu-compute-0-0.local ]]
+then {
+    if [ -d $CONDAPATH ]
+    then echo 'software environment already exists; activating'
+    elif [ -d $USER_CONDA_ENV_PATH ]
+    then echo 'using user conda' && CONDAPATH=$USER_CONDA_ENV_PATH && VENVPATH=$USER_VENV_PATH
+    else conda create --prefix .sw python=3.10.15 git tmux graphviz conda-forge::ffmpeg
+    fi
+    echo $CONDAPATH
+    conda activate $CONDAPATH 
+    python3 --version
+}
+else echo 'not on cluster; fallback to pip / local python'
+fi
+
+{ # try
+	source $VENVPATH/bin/activate
+} || { # catch
+    python3 --version
+    pip --version
+  	pip install uv
+	uv venv
+	source $VENVPATH/bin/activate
+}
+
+uv pip install -r {{install}}/requirements.txt
