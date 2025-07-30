@@ -1,0 +1,240 @@
+# Civic Auth Python SDK
+
+Python SDK for Civic Auth server-side authentication. This library provides a Python implementation that matches the API of the [Node.js Civic Auth library](https://github.com/civicteam/civic-auth).
+
+## What is Civic Auth?
+
+Civic Auth is a flexible authentication and user management solution that provides seamless sign-in experiences for your applications. It supports multiple authentication methods including email, Google, passkeys, and wallet-based authentication, making it suitable for both traditional web applications and Web3 projects.
+
+Key features:
+- **Multiple sign-in options** - Email, social providers, passkeys, and Web3 wallets
+- **Privacy-preserving** - Built with user privacy at its core
+- **Flexible integration** - Works with any Python web framework
+- **Embedded wallets** - Optional Web3 capabilities for blockchain applications
+- **User verification** - Support for identity proofs and credentials
+
+## Installation
+
+```bash
+pip install civic-auth
+```
+
+For specific framework support:
+
+```bash
+# Flask
+pip install "civic-auth[flask]"
+
+# FastAPI
+pip install "civic-auth[fastapi]"
+
+# Django
+pip install "civic-auth[django]"
+```
+
+## Quick Start
+
+### FastAPI Integration
+
+[Full example →](examples/fastapi/)
+
+```python
+from fastapi import FastAPI, Depends
+from civic_auth.integrations.fastapi import create_auth_router, create_auth_dependencies
+
+app = FastAPI()
+
+# Configure
+config = {"client_id": "your-client-id", "redirect_url": "..."}
+
+# Add auth routes  
+app.include_router(create_auth_router(config))
+
+# Create dependencies
+civic_auth_dep, get_current_user, require_auth = create_auth_dependencies(config)
+
+# Protected route
+@app.get("/protected", dependencies=[Depends(require_auth)])
+async def protected(user = Depends(get_current_user)):
+    return f"Hello {user.name}!"
+```
+
+### Flask Integration
+
+[Full example →](examples/flask/)
+
+```python
+from flask import Flask
+from civic_auth.integrations.flask import init_civic_auth, create_auth_blueprint, civic_auth_required
+
+app = Flask(__name__)
+
+# Configure and initialize
+config = {"client_id": "your-client-id", "redirect_url": "..."}
+init_civic_auth(app, config)
+app.register_blueprint(create_auth_blueprint(config))
+
+# Protected route
+@app.route("/protected")
+@civic_auth_required
+async def protected():
+    # user available via get_civic_user()
+    ...
+```
+
+### Django Integration
+
+[Full example →](examples/django/)
+
+```python
+# settings.py
+MIDDLEWARE = [
+    # ...
+    'civic_auth.integrations.django.CivicAuthMiddleware',
+]
+
+CIVIC_AUTH = {
+    'client_id': 'your-client-id',
+    'redirect_url': '...',
+}
+
+# urls.py
+from civic_auth.integrations.django import get_auth_urls
+urlpatterns = [
+    path('', include(get_auth_urls())),  # Adds /auth/* routes
+    # ...
+]
+
+# views.py
+from civic_auth.integrations.django import civic_auth_required
+
+@civic_auth_required
+def protected(request):
+    # user available via request.civic_user
+    ...
+```
+
+### Other Frameworks
+
+```python
+from civic_auth import CivicAuth
+from civic_auth.storage import AuthStorage
+
+class MyStorage(AuthStorage):
+    # Implement get/set/delete for your framework's session/cookies
+    ...
+
+storage = MyStorage()
+civic_auth = CivicAuth(storage, config)
+
+# Use the API
+login_url = await civic_auth.build_login_url()
+await civic_auth.resolve_oauth_access_code(code, state)
+user = await civic_auth.get_user()
+```
+
+## API Reference
+
+### CivicAuth Class
+
+#### Methods
+
+- `get_user()` - Get the authenticated user information
+- `get_tokens()` - Get the stored OAuth tokens
+- `is_logged_in()` - Check if user is authenticated
+- `build_login_url(scopes=None)` - Build OAuth authorization URL
+- `resolve_oauth_access_code(code, state)` - Exchange auth code for tokens
+- `refresh_tokens()` - Refresh access tokens
+- `build_logout_redirect_url()` - Build logout URL
+- `clear_tokens()` - Clear all stored tokens
+
+### Types
+
+```python
+from civic_auth.types import BaseUser, AuthConfig, Tokens
+
+# BaseUser
+{
+    "id": str,
+    "email": Optional[str],
+    "username": Optional[str],
+    "name": Optional[str],
+    "given_name": Optional[str],
+    "family_name": Optional[str],
+    "picture": Optional[str],
+    "updated_at": Optional[datetime]
+}
+
+# AuthConfig
+{
+    "client_id": str,  # Required
+    "redirect_url": str,  # Required
+    "oauth_server": Optional[str],  # Default: "https://auth.civic.com/oauth"
+    "post_logout_redirect_url": Optional[str],
+    "scopes": Optional[List[str]]  # Default: ["openid", "email", "profile"]
+}
+
+# Tokens
+{
+    "access_token": str,
+    "id_token": str,
+    "refresh_token": Optional[str],
+    "token_type": str,
+    "expires_in": Optional[int],
+    "scope": Optional[str]
+}
+```
+
+## Examples
+
+See the [examples](examples/) directory for complete working examples:
+
+- [Flask Example](examples/flask/)
+- [FastAPI Example](examples/fastapi/)
+- [Django Example](examples/django/)
+
+## Development
+
+### Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/civicteam/civic-auth-py.git
+cd civic-auth-py
+
+# Install development dependencies
+pip install -e ".[dev]"
+```
+
+### Testing
+
+```bash
+# Run tests
+pytest
+
+# Run with coverage
+pytest --cov=civic_auth
+```
+
+### Linting and Formatting
+
+```bash
+# Format code
+black civic_auth tests
+
+# Lint
+ruff civic_auth tests
+
+# Type checking
+mypy civic_auth
+```
+
+## License
+
+MIT License - see [LICENSE](LICENSE) file for details.
+
+## Support
+
+For issues and questions:
+- GitHub Issues: [https://github.com/civicteam/civic-auth-py/issues](https://github.com/civicteam/civic-auth-py/issues)
+- Documentation: [https://docs.civic.com](https://docs.civic.com)
