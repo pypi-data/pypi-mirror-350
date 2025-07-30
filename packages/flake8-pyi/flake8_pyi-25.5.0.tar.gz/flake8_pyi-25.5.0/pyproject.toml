@@ -1,0 +1,108 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "flake8-pyi"
+dynamic = ["version"]
+authors = [
+  { name="Łukasz Langa", email="=lukasz@langa.pl" },
+]
+maintainers = [
+  { name="Jelle Zijlstra", email="jelle.zijlstra@gmail.com" },
+  { name="Alex Waygood", email="alex.waygood@gmail.com" },
+  { name="Sebastian Rittau", email="sebastian@rittau.biz" },
+  { name="Akuli" },
+  { name="Shantanu" },
+]
+description = "A plugin for flake8 to enable linting .pyi stub files."
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.9"
+keywords = [
+    "flake8",
+    "pyi",
+    "bugs",
+    "pyflakes",
+    "linter",
+    "qa",
+    "stubs",
+    "typing",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Framework :: Flake8",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Quality Assurance",
+]
+dependencies = [
+    "flake8 >= 6.0.0, < 8.0.0",
+    "pyflakes >= 2.1.1",
+]
+
+[dependency-groups]
+dev = [
+    "black==25.1.0",            # Must match .pre-commit-config.yaml
+    "flake8-bugbear==24.12.12",
+    "flake8-noqa==1.4.0",
+    "isort==6.0.1",             # Must match .pre-commit-config.yaml
+    "mypy==1.15.0",
+    "pre-commit-hooks==5.0.0",  # Must match .pre-commit-config.yaml
+    "pytest==8.3.5",
+    "pytest-xdist==3.6.1",
+    "types-pyflakes<4",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/PyCQA/flake8-pyi"
+"Source" = "https://github.com/PyCQA/flake8-pyi"
+"Bug Tracker" = "https://github.com/PyCQA/flake8-pyi/issues"
+"Changelog" = "https://github.com/PyCQA/flake8-pyi/blob/main/CHANGELOG.md"
+
+[project.entry-points]
+"flake8.extension" = {Y0 = "flake8_pyi:PyiTreeChecker"}
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.version.raw-options]
+local_scheme = "no-local-version"
+
+[tool.isort]
+profile = "black"
+combine_as_imports = true
+skip = ["tests/imports.pyi", "tests/pep604_union_types.pyi"]
+skip_gitignore = true
+
+[tool.black]
+target-version = ['py39']
+skip-magic-trailing-comma = true
+force-exclude = ".*\\.pyi"
+
+[tool.mypy]
+files = ["flake8_pyi", "tests/test_pyi_files.py"]
+show_traceback = true
+pretty = true
+strict = true
+enable_error_code = "ignore-without-code,redundant-expr,possibly-undefined"
+warn_unreachable = true
+allow_subclassing_any = true
+
+[[tool.mypy.overrides]]
+module = 'flake8.*'
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+addopts = "--doctest-modules -nauto"
+filterwarnings = ["error"]
