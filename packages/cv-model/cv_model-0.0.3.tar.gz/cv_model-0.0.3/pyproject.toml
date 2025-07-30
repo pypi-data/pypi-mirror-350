@@ -1,0 +1,87 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "cv-model"
+description = ""
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = []
+keywords = []
+classifiers = []
+dependencies = [
+    "jinja2>=3.1.6",
+    "pydantic>=2.11.4",
+    "toml>=0.10.2",
+    "typer>=0.15.4",
+    "typst>=0.13.2",
+]
+dynamic = ["version"]
+
+[[project.authors]]
+name = "Austin Yu"
+email = "yuxm.austin1023@gmail.com"
+
+[[project.maintainers]]
+name = "Austin Yu"
+email = "yuxm.austin1023@gmail.com"
+
+[project.scripts]
+cvmodel = "cv_model.cli:app"
+
+
+[dependency-groups]
+tests = [ "pytest", "pytest-cov",]
+static_checkers = [ "flake8", "mypy", "pyright", "pylint",]
+formatters = [ "ruff", "isort",]
+docs = [ "mkdocs",]
+
+[project.urls]
+homepage = "https://todo.com"
+source = "https://todo.com"
+download = "https://todo.com"
+changelog = "https://todo.com"
+releasenotes = "https://todo.com"
+documentation = "https://todo.com"
+issues = "https://todo.com"
+funding = "https://todo.com"
+
+[project.optional-dependencies]
+
+[tool.mypy]
+
+[tool.ruff]
+exclude = []
+line-length = 95
+indent-width = 4
+
+[tool.isort]
+profile = "black"
+line_length = 95
+indent = 4
+
+[tool.pytest.ini_options]
+addopts = "--cov . --cov-report xml:tests/.coverage/cov.xml --cov-report html:tests/.coverage/html"
+
+[tool.ruff.lint]
+ignore = []
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.hatch.build.targets.sdist]
+include = [ "README.md", "LICENSE", "CHANGELOG.md", "*.typ", "*.py"]
+exclude = []
+
+[tool.hatch.build.targets.wheel]
+packages = [ "src/cv_model",]
+include = [ "*.typ", "*.py"]
+
+[tool.hatch.build.targets.wheel.sources]
+"src/cv_model" = "cv_model"
+
+[tool.hatch.version]
+source = "vcs"
