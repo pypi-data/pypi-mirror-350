@@ -1,0 +1,77 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "beaquery"
+dynamic = ["version"]
+description = ''
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+keywords = []
+authors = [
+  { name = "Don Caldwell", email = "dfcnj@gmail.com" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = []
+
+[project.urls]
+Documentation = "https://github.com/dfwcnj/beaquery#readme"
+Issues = "https://github.com/dfwcnj/beaquery/issues"
+Source = "https://github.com/dfwcnj/beaquery"
+
+[project.scripts]
+beaillustrated = "beaquery.beaillustrated:main"
+beaqueryq = "beaquery.beaqueryq:main"
+beanipa = "beaquery.beanipa:main"
+beaniud = "beaquery.beaniud:main"
+beamne = "beaquery.beamne:main"
+beafixedassets = "beaquery.beafixedassets:main"
+beaita = "beaquery.beaita:main"
+beaiip = "beaquery.beaiip:main"
+beainputoutput = "beaquery.beainputoutput:main"
+beaistrade = "beaquery.beaistrade:main"
+beaissta = "beaquery.beaissta:main"
+beagdpbyind = "beaquery.beagdpbyind:main"
+bearegional = "beaquery.bearegional:main"
+beaugdpbyind = "beaquery.beaugdpbyind:main"
+
+[tool.hatch.version]
+path = "src/beaquery/__about__.py"
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+  "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/beaquery tests}"
+
+[tool.coverage.run]
+source_pkgs = ["beaquery", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/beaquery/__about__.py",
+]
+
+[tool.coverage.paths]
+beaquery = ["src/beaquery", "*/beaquery/src/beaquery"]
+tests = ["tests", "*/beaquery/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
