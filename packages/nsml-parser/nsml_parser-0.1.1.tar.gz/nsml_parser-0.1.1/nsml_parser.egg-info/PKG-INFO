@@ -1,0 +1,52 @@
+Metadata-Version: 2.4
+Name: nsml-parser
+Version: 0.1.1
+Summary: NSML++: Neuro-Symbolic Memory Lattice for Intelligent Log Parsing
+Home-page: https://github.com/catchmaurya/nsml-parser
+Author: catchmaurya(catchmaurya@gmail.com) and NeuroBujandar
+Author-email: catchmaurya@gmail.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-python
+Dynamic: summary
+
+# NSML Parser
+
+**Neuro Symbolic Memory Lattice Parser** (NSML) is a lightweight, cognitively inspired, fuzzy-intelligent log parser that combines heuristic reasoning, semantic backtracking, and fuzzy key recognition to extract structured information from semi-structured log lines.
+
+---
+
+## 🚀 Features
+- 🔎 **Fuzzy key matching**: Autocorrects mistyped or aliased keys.
+- 🧠 **Heuristic inference**: Guesses missing values based on patterns.
+- 🧬 **Semantic classifier-ready**: Plug in vector similarity models.
+- 📚 **Confidence scoring**: Score for every parsed key.
+- 🔁 **REPL-friendly**: Can be wrapped into command-line tools.
+
+---
+
+## 🧪 Example
+```python
+from nsml_parser import NSMLParser
+
+log = '''Running HTTPS_PROXY='http://proxy.net:8080' /opt/radar/bin/apprise \
+  -consumers "FUNNYTEAM_AUDIT" -cluster "POD109" -product "blah-base" -sp "KP" \
+  -dc "MM" -caseNumber -release "rrrrr" -event "ERROR_RUNNING_PLSQL_TARGET" \
+  -eventTime "2023-06-09_04:31:04" -stage "RUN_PLSQL_TARGET" -status "FAILED" \
+  -type "ERROR" -source "ops0-release2-2-RR" "123456" --message "some issue here"'''
+
+parser = NSMLParser()
+parsed = parser.parse(log)
+print(parsed)
+

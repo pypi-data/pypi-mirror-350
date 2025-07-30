@@ -1,0 +1,29 @@
+# NSML Parser
+
+**Neuro Symbolic Memory Lattice Parser** (NSML) is a lightweight, cognitively inspired, fuzzy-intelligent log parser that combines heuristic reasoning, semantic backtracking, and fuzzy key recognition to extract structured information from semi-structured log lines.
+
+---
+
+## 🚀 Features
+- 🔎 **Fuzzy key matching**: Autocorrects mistyped or aliased keys.
+- 🧠 **Heuristic inference**: Guesses missing values based on patterns.
+- 🧬 **Semantic classifier-ready**: Plug in vector similarity models.
+- 📚 **Confidence scoring**: Score for every parsed key.
+- 🔁 **REPL-friendly**: Can be wrapped into command-line tools.
+
+---
+
+## 🧪 Example
+```python
+from nsml_parser import NSMLParser
+
+log = '''Running HTTPS_PROXY='http://proxy.net:8080' /opt/radar/bin/apprise \
+  -consumers "FUNNYTEAM_AUDIT" -cluster "POD109" -product "blah-base" -sp "KP" \
+  -dc "MM" -caseNumber -release "rrrrr" -event "ERROR_RUNNING_PLSQL_TARGET" \
+  -eventTime "2023-06-09_04:31:04" -stage "RUN_PLSQL_TARGET" -status "FAILED" \
+  -type "ERROR" -source "ops0-release2-2-RR" "123456" --message "some issue here"'''
+
+parser = NSMLParser()
+parsed = parser.parse(log)
+print(parsed)
+
