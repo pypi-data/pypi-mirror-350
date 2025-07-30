@@ -1,0 +1,143 @@
+kind: AvatarVolume
+metadata:
+  name: user-volume-9c2ab228-8292-4734-bfc1-eb8f21188f20
+spec:
+  url: s3://05e2b665-cb8d-41f9-a0a3-11c0bff5710d/1d/0bcb7a8c-f623-4854-805f-d6efafde56fc/05e2b665-cb8d-41f9-a0a3-11c0bff5710d/input
+
+---
+kind: AvatarSchema
+metadata:
+  name: user-schema-f12c8e06-186d-4c1b-9397-0fece5295c49
+spec:
+  check_links_between_tables: true
+  tables:
+    - name: patient
+      individual_level: false
+      columns:
+        - field: p_id
+          type: float
+          identifier: true
+          primary_key: true
+        - field: gender
+          type: category
+        - field: height
+          type: float
+        - field: age
+          type: float
+        - field: weight
+          type: float
+      links:
+        - field: p_id
+          to:
+            table: visit
+            field: patient_id
+          method: linear_sum_assignment
+      data:
+        volume: user-volume-9c2ab228-8292-4734-bfc1-eb8f21188f20
+        file: patient.csv
+    - name: visit
+      individual_level: false
+      columns:
+        - field: visit_id
+          type: float
+          identifier: true
+          primary_key: true
+        - field: patient_id
+          type: float
+          identifier: true
+        - field: doctor_id
+          type: float
+        - field: day_visit
+          type: category
+        - field: exam
+          type: category
+      data:
+        volume: user-volume-9c2ab228-8292-4734-bfc1-eb8f21188f20
+        file: visit.csv
+
+---
+kind: AvatarReportParameters
+metadata:
+  name: user-job-report-user-schema-f12c8e06-186d-4c1b-9397-0fece5295c49
+spec:
+  report_type: basic
+  results:
+    path: report-user-schema-f12c8e06-186d-4c1b-9397-0fece5295c49
+    volume: user-volume-9c2ab228-8292-4734-bfc1-eb8f21188f20
+
+---
+kind: AvatarSchema
+metadata:
+  name: user-schema-f12c8e06-186d-4c1b-9397-0fece5295c49_avatarized
+spec:
+  tables:
+    - name: patient
+      avatars_data:
+        auto: true
+    - name: visit
+      avatars_data:
+        auto: true
+  schema_ref: user-schema-f12c8e06-186d-4c1b-9397-0fece5295c49
+
+---
+kind: AvatarParameters
+metadata:
+  name: user-job-params-user-schema-f12c8e06-186d-4c1b-9397-0fece5295c49
+spec:
+  schema: user-schema-f12c8e06-186d-4c1b-9397-0fece5295c49
+  avatarization:
+    patient:
+      k: 5
+      ncp: 4
+      imputation:
+        method: knn
+      use_categorical_reduction: true
+    visit:
+      k: 5
+      ncp: 4
+      exclude_variables:
+        variable_names:
+          - doctor_id
+        replacement_strategy: "row_order"
+  results:
+    path: user-job-params-user-schema-f12c8e06-186d-4c1b-9397-0fece5295c49
+    volume: user-volume-9c2ab228-8292-4734-bfc1-eb8f21188f20
+---
+kind: AvatarSignalMetricsParameters
+metadata:
+  name: user-job-signal-user-schema-f12c8e06-186d-4c1b-9397-0fece5295c49
+spec:
+  schema: user-schema-f12c8e06-186d-4c1b-9397-0fece5295c49_avatarized
+  avatarization_ref: user-job-params-user-schema-f12c8e06-186d-4c1b-9397-0fece5295c49
+  signal_metrics:
+    patient:
+      ncp: 0
+    visit:
+      ncp: 0
+  results:
+    path: signal_metrics-user-schema-f12c8e06-186d-4c1b-9397-0fece5295c49
+    volume: user-volume-9c2ab228-8292-4734-bfc1-eb8f21188f20
+---
+kind: AvatarPrivacyMetricsParameters
+metadata:
+  name: user-job-privacy-user-schema-f12c8e06-186d-4c1b-9397-0fece5295c49
+spec:
+  schema: user-schema-f12c8e06-186d-4c1b-9397-0fece5295c49_avatarized
+  avatarization_ref: user-job-params-user-schema-f12c8e06-186d-4c1b-9397-0fece5295c49
+  privacy_metrics:
+    patient:
+      ncp: 4
+    visit:
+      ncp: 4
+  results:
+    path: privacy_metrics-user-schema-f12c8e06-186d-4c1b-9397-0fece5295c49
+    volume: user-volume-9c2ab228-8292-4734-bfc1-eb8f21188f20
+---
+kind: AvatarReportParameters
+metadata:
+  name: user-job-report-user-schema-f12c8e06-186d-4c1b-9397-0fece5295c49
+spec:
+  report_type: basic
+  results:
+    path: report-user-schema-f12c8e06-186d-4c1b-9397-0fece5295c49
+    volume: user-volume-9c2ab228-8292-4734-bfc1-eb8f21188f20
