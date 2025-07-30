@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "medallion-etl"
+version = "0.1.12"
+description = "Una librería modular para construir data pipelines con arquitectura medallion"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [
+    {name = "Juan Maniglia", email = "jamr1989@gmail.com"}
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Database",
+]
+dependencies = [
+    "polars>=1.30",
+    "pydantic>=2.7",
+    "sqlalchemy>=2.0",
+    "prefect>=3.0",
+    "requests>=2.25.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "black>=23.0.0",
+    "isort>=5.10.0",
+    "mypy>=1.0.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/JuanManiglia/medallion-etl"
+
+[project.scripts]
+medallion-etl = "medallion_etl.cli.commands:main"
