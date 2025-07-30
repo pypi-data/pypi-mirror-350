@@ -1,0 +1,47 @@
+[tool.poetry]
+name = "lattica-query"
+version = "1.0.5"
+description = "Lattica client"
+authors = ["LatticaAI Inc. <hello@lattica.ai>"]
+homepage = "https://www.lattica.ai/"
+license = "Proprietary"
+readme = "README.md"
+packages = [{include = "lattica_query"}]
+
+# Package includes
+include = ["LICENSE.txt"]
+
+# Exclude demos from the wheel package
+exclude = ["lattica_query/internal_demos/**/*"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+lattica-common = "~0.5.5"
+lattica-fhe-core = "~0.1.6"
+timeit-decorator = "*"
+python-dotenv = "1.0.1"
+protobuf = "5.27.1"
+numpy = "^2.0.1"
+torch = "2.5.1"
+pybind11 = "^2.13.6"
+
+[tool.poetry.group.dev.dependencies]
+lattica-common = {path = "../lattica_common_src", develop = true}
+lattica-fhe-core = {path = "../../lattice-toolkit/fhe_core", develop = true}
+
+[tool.poetry.group.ci.dependencies]
+lattica-common = {path = "../lattica_common_src"}
+lattica-fhe-core = {path = "../../lattice-toolkit/fhe_core"}
+
+
+[[tool.poetry.source]]
+name = "pypi"
+
+[[tool.poetry.source]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
