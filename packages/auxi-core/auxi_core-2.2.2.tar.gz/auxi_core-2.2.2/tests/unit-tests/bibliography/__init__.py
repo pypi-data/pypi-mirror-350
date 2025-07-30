@@ -1,0 +1,3 @@
+"""
+bibliography sub-package tests.
+"""

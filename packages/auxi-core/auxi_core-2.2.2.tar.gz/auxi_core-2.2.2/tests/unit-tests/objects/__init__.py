@@ -1,0 +1,3 @@
+"""
+objects sub-package tests.
+"""

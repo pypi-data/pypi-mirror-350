@@ -1,0 +1,24 @@
+---
+  config:
+    class:
+      hideEmptyMembersBox: true
+---
+classDiagram
+namespace auxi.core.objects {
+    class Object["Object: abc.ABC, pydantic.BaseModel"] {
+        <<abstract>>
+        str +__str__()
+        int +__hash__()
+        +init()
+        +write(path: Path)
+        +$read(path: Path) Self
+        -*_init()
+    }
+
+    class NamedObject {
+        <<abstract>>
+        +str name
+        +str description
+    }
+}
+Object <|-- NamedObject
