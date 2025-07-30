@@ -1,0 +1,50 @@
+Metadata-Version: 2.4
+Name: as-price-download
+Version: 0.3.2
+Summary: Commodity price retrieval, storage, and export in format compatible with Plain-Text Accounting applications.
+License-File: LICENSE
+Requires-Python: >=3.12
+Requires-Dist: asyncclick>=8.1.8
+Requires-Dist: beanprice>=2.0.0
+Requires-Dist: dotenv>=0.9.9
+Requires-Dist: loguru>=0.7.3
+Requires-Dist: pyeurofx>=0.6.4
+Requires-Dist: requests>=2.32.3
+Requires-Dist: yfinance>=0.2.59
+Description-Content-Type: text/markdown
+
+# as-price-download
+Price-database utility converted to Python
+
+This is a rewrite of Pricedb-Rust utility. Pricedb-Rust originally came from Price-Database, which was in Python and was storing the prices in a SQLite database.
+In later versions of Price-Database, the database was replaced with an in-memory store, outputting the final result into a Ledger prices text file.
+In this project, the idea remains to fetch the prices, sort them by time, and output them into a Ledger prices text file.
+
+# Install
+```sh
+uv tool install as-price-download
+```
+
+# Run
+Example configuration file (.config/pricedb/pricedl.toml):
+```
+price_database_path = ":memory:"
+alphavantage_api_key = ""
+prices_path = "/home/prices.txt"
+symbols_path = "/home/symbols.csv"
+```
+
+
+# Development
+```sh
+uv run python main.py [dl]
+```
+
+# Use with `bean-price`
+
+The Vanguard downloader has been adapted for use with `bean-price` utility.
+Use:
+
+```sh
+bean-price -e "AUD:pricedl.beanprice.vanguard_au_detail/HY"
+```
