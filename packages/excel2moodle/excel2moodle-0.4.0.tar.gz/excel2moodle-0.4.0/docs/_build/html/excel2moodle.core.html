@@ -1,0 +1,1626 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>excel2moodle.core package &mdash; excel2moodle 0.4.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=6c02275b"></script>
+        <script src="_static/doctools.js?v=9bcbadda"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="excel2moodle.extra package" href="excel2moodle.extra.html" />
+    <link rel="prev" title="excel2moodle package" href="excel2moodle.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            excel2moodle
+          </a>
+              <div class="version">
+                0.4.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="howto.html">How To - Schritt für Schritt Anleitung</a></li>
+<li class="toctree-l1"><a class="reference internal" href="userReference.html">User Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exampleQuestions.html">Fragenbeispiele</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="excel2moodle.html">excel2moodle package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="excel2moodle.extra.html">excel2moodle.extra package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">excel2moodle.core package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-excel2moodle.core.category">excel2moodle.core.category module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#excel2moodle.core.category.Category"><code class="docutils literal notranslate"><span class="pre">Category</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.category.Category.getCategoryHeader"><code class="docutils literal notranslate"><span class="pre">Category.getCategoryHeader()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.category.Category.id"><code class="docutils literal notranslate"><span class="pre">Category.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.category.Category.name"><code class="docutils literal notranslate"><span class="pre">Category.name</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-excel2moodle.core.dataStructure">excel2moodle.core.dataStructure module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#excel2moodle.core.dataStructure.QuestionDB"><code class="docutils literal notranslate"><span class="pre">QuestionDB</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.dataStructure.QuestionDB.appendQElements"><code class="docutils literal notranslate"><span class="pre">QuestionDB.appendQElements()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.dataStructure.QuestionDB.appendQuestions"><code class="docutils literal notranslate"><span class="pre">QuestionDB.appendQuestions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.dataStructure.QuestionDB.asyncInitAllCategories"><code class="docutils literal notranslate"><span class="pre">QuestionDB.asyncInitAllCategories()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.dataStructure.QuestionDB.initAllCategories"><code class="docutils literal notranslate"><span class="pre">QuestionDB.initAllCategories()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.dataStructure.QuestionDB.initCategory"><code class="docutils literal notranslate"><span class="pre">QuestionDB.initCategory()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.dataStructure.QuestionDB.mcParser"><code class="docutils literal notranslate"><span class="pre">QuestionDB.mcParser</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.dataStructure.QuestionDB.nfParser"><code class="docutils literal notranslate"><span class="pre">QuestionDB.nfParser</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.dataStructure.QuestionDB.nfmParser"><code class="docutils literal notranslate"><span class="pre">QuestionDB.nfmParser</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.dataStructure.QuestionDB.parseAllQuestions"><code class="docutils literal notranslate"><span class="pre">QuestionDB.parseAllQuestions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.dataStructure.QuestionDB.parseCategoryQuestions"><code class="docutils literal notranslate"><span class="pre">QuestionDB.parseCategoryQuestions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.dataStructure.QuestionDB.readCategoriesMetadata"><code class="docutils literal notranslate"><span class="pre">QuestionDB.readCategoriesMetadata()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.dataStructure.QuestionDB.setupAndParseQuestion"><code class="docutils literal notranslate"><span class="pre">QuestionDB.setupAndParseQuestion()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.dataStructure.QuestionDB.signals"><code class="docutils literal notranslate"><span class="pre">QuestionDB.signals</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.dataStructure.QuestionDB.validator"><code class="docutils literal notranslate"><span class="pre">QuestionDB.validator</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#excel2moodle.core.dataStructure.QuestionDBSignals"><code class="docutils literal notranslate"><span class="pre">QuestionDBSignals</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.dataStructure.QuestionDBSignals.categoryQuestionsReady"><code class="docutils literal notranslate"><span class="pre">QuestionDBSignals.categoryQuestionsReady</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.dataStructure.QuestionDBSignals.categoryReady"><code class="docutils literal notranslate"><span class="pre">QuestionDBSignals.categoryReady</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.dataStructure.QuestionDBSignals.staticMetaObject"><code class="docutils literal notranslate"><span class="pre">QuestionDBSignals.staticMetaObject</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#excel2moodle.core.dataStructure.processSheet"><code class="docutils literal notranslate"><span class="pre">processSheet()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-excel2moodle.core.etHelpers">excel2moodle.core.etHelpers module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#excel2moodle.core.etHelpers.getCdatTxtElement"><code class="docutils literal notranslate"><span class="pre">getCdatTxtElement()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#excel2moodle.core.etHelpers.getElement"><code class="docutils literal notranslate"><span class="pre">getElement()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#excel2moodle.core.etHelpers.getFeedBEle"><code class="docutils literal notranslate"><span class="pre">getFeedBEle()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#excel2moodle.core.etHelpers.getTextElement"><code class="docutils literal notranslate"><span class="pre">getTextElement()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-excel2moodle.core.exceptions">excel2moodle.core.exceptions module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#excel2moodle.core.exceptions.InvalidFieldException"><code class="docutils literal notranslate"><span class="pre">InvalidFieldException</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#excel2moodle.core.exceptions.NanException"><code class="docutils literal notranslate"><span class="pre">NanException</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#excel2moodle.core.exceptions.QNotParsedException"><code class="docutils literal notranslate"><span class="pre">QNotParsedException</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-excel2moodle.core.globals">excel2moodle.core.globals module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#excel2moodle.core.globals.DFIndex"><code class="docutils literal notranslate"><span class="pre">DFIndex</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.DFIndex.ANSTYPE"><code class="docutils literal notranslate"><span class="pre">DFIndex.ANSTYPE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.DFIndex.BPOINTS"><code class="docutils literal notranslate"><span class="pre">DFIndex.BPOINTS</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.DFIndex.FALSE"><code class="docutils literal notranslate"><span class="pre">DFIndex.FALSE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.DFIndex.NAME"><code class="docutils literal notranslate"><span class="pre">DFIndex.NAME</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.DFIndex.NUMBER"><code class="docutils literal notranslate"><span class="pre">DFIndex.NUMBER</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.DFIndex.PICTURE"><code class="docutils literal notranslate"><span class="pre">DFIndex.PICTURE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.DFIndex.RESULT"><code class="docutils literal notranslate"><span class="pre">DFIndex.RESULT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.DFIndex.TEXT"><code class="docutils literal notranslate"><span class="pre">DFIndex.TEXT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.DFIndex.TOLERANCE"><code class="docutils literal notranslate"><span class="pre">DFIndex.TOLERANCE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.DFIndex.TRUE"><code class="docutils literal notranslate"><span class="pre">DFIndex.TRUE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.DFIndex.TYPE"><code class="docutils literal notranslate"><span class="pre">DFIndex.TYPE</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#excel2moodle.core.globals.TextElements"><code class="docutils literal notranslate"><span class="pre">TextElements</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.TextElements.LISTITEM"><code class="docutils literal notranslate"><span class="pre">TextElements.LISTITEM</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.TextElements.PLEFT"><code class="docutils literal notranslate"><span class="pre">TextElements.PLEFT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.TextElements.SPANGREEN"><code class="docutils literal notranslate"><span class="pre">TextElements.SPANGREEN</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.TextElements.SPANORANGE"><code class="docutils literal notranslate"><span class="pre">TextElements.SPANORANGE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.TextElements.SPANRED"><code class="docutils literal notranslate"><span class="pre">TextElements.SPANRED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.TextElements.ULIST"><code class="docutils literal notranslate"><span class="pre">TextElements.ULIST</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.TextElements.create"><code class="docutils literal notranslate"><span class="pre">TextElements.create()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.TextElements.style"><code class="docutils literal notranslate"><span class="pre">TextElements.style</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#excel2moodle.core.globals.XMLTags"><code class="docutils literal notranslate"><span class="pre">XMLTags</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.XMLTags.ANSFEEDBACK"><code class="docutils literal notranslate"><span class="pre">XMLTags.ANSFEEDBACK</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.XMLTags.ANSWER"><code class="docutils literal notranslate"><span class="pre">XMLTags.ANSWER</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.XMLTags.CORFEEDB"><code class="docutils literal notranslate"><span class="pre">XMLTags.CORFEEDB</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.XMLTags.GENFEEDB"><code class="docutils literal notranslate"><span class="pre">XMLTags.GENFEEDB</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.XMLTags.HIDE"><code class="docutils literal notranslate"><span class="pre">XMLTags.HIDE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.XMLTags.ID"><code class="docutils literal notranslate"><span class="pre">XMLTags.ID</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.XMLTags.INCORFEEDB"><code class="docutils literal notranslate"><span class="pre">XMLTags.INCORFEEDB</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.XMLTags.NAME"><code class="docutils literal notranslate"><span class="pre">XMLTags.NAME</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.XMLTags.PCORFEEDB"><code class="docutils literal notranslate"><span class="pre">XMLTags.PCORFEEDB</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.XMLTags.PENALTY"><code class="docutils literal notranslate"><span class="pre">XMLTags.PENALTY</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.XMLTags.PICTURE"><code class="docutils literal notranslate"><span class="pre">XMLTags.PICTURE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.XMLTags.POINTS"><code class="docutils literal notranslate"><span class="pre">XMLTags.POINTS</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.XMLTags.QTEXT"><code class="docutils literal notranslate"><span class="pre">XMLTags.QTEXT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.XMLTags.QUESTION"><code class="docutils literal notranslate"><span class="pre">XMLTags.QUESTION</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.XMLTags.TEXT"><code class="docutils literal notranslate"><span class="pre">XMLTags.TEXT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.XMLTags.TOLERANCE"><code class="docutils literal notranslate"><span class="pre">XMLTags.TOLERANCE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.XMLTags.TYPE"><code class="docutils literal notranslate"><span class="pre">XMLTags.TYPE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.XMLTags.dfkey"><code class="docutils literal notranslate"><span class="pre">XMLTags.dfkey</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.globals.XMLTags.set"><code class="docutils literal notranslate"><span class="pre">XMLTags.set()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-excel2moodle.core.numericMultiQ">excel2moodle.core.numericMultiQ module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#excel2moodle.core.numericMultiQ.getVariablesDict"><code class="docutils literal notranslate"><span class="pre">getVariablesDict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#excel2moodle.core.numericMultiQ.getVarsList"><code class="docutils literal notranslate"><span class="pre">getVarsList()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#excel2moodle.core.numericMultiQ.insertVariablesToBPoints"><code class="docutils literal notranslate"><span class="pre">insertVariablesToBPoints()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#excel2moodle.core.numericMultiQ.parseNumericMultiQuestion"><code class="docutils literal notranslate"><span class="pre">parseNumericMultiQuestion()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#excel2moodle.core.numericMultiQ.setParameters"><code class="docutils literal notranslate"><span class="pre">setParameters()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-excel2moodle.core.parser">excel2moodle.core.parser module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#excel2moodle.core.parser.QuestionParser"><code class="docutils literal notranslate"><span class="pre">QuestionParser</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.parser.QuestionParser.appendToTmpEle"><code class="docutils literal notranslate"><span class="pre">QuestionParser.appendToTmpEle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.parser.QuestionParser.formatBulletList"><code class="docutils literal notranslate"><span class="pre">QuestionParser.formatBulletList()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.parser.QuestionParser.getFeedBEle"><code class="docutils literal notranslate"><span class="pre">QuestionParser.getFeedBEle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.parser.QuestionParser.getNumericAnsElement"><code class="docutils literal notranslate"><span class="pre">QuestionParser.getNumericAnsElement()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.parser.QuestionParser.hasPicture"><code class="docutils literal notranslate"><span class="pre">QuestionParser.hasPicture()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.parser.QuestionParser.parse"><code class="docutils literal notranslate"><span class="pre">QuestionParser.parse()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.parser.QuestionParser.setAnswers"><code class="docutils literal notranslate"><span class="pre">QuestionParser.setAnswers()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.parser.QuestionParser.setBPoints"><code class="docutils literal notranslate"><span class="pre">QuestionParser.setBPoints()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.parser.QuestionParser.setMainText"><code class="docutils literal notranslate"><span class="pre">QuestionParser.setMainText()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.parser.QuestionParser.settings"><code class="docutils literal notranslate"><span class="pre">QuestionParser.settings</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.parser.QuestionParser.setup"><code class="docutils literal notranslate"><span class="pre">QuestionParser.setup()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-excel2moodle.core.question">excel2moodle.core.question module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#excel2moodle.core.question.Picture"><code class="docutils literal notranslate"><span class="pre">Picture</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.question.Picture.getImgId"><code class="docutils literal notranslate"><span class="pre">Picture.getImgId()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#excel2moodle.core.question.Question"><code class="docutils literal notranslate"><span class="pre">Question</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.question.Question.addStandardTags"><code class="docutils literal notranslate"><span class="pre">Question.addStandardTags()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.question.Question.assemble"><code class="docutils literal notranslate"><span class="pre">Question.assemble()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.question.Question.getBPointVariant"><code class="docutils literal notranslate"><span class="pre">Question.getBPointVariant()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.question.Question.setID"><code class="docutils literal notranslate"><span class="pre">Question.setID()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.question.Question.standardTags"><code class="docutils literal notranslate"><span class="pre">Question.standardTags</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-excel2moodle.core.validator">excel2moodle.core.validator module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#excel2moodle.core.validator.Validator"><code class="docutils literal notranslate"><span class="pre">Validator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.validator.Validator.getQuestionRawData"><code class="docutils literal notranslate"><span class="pre">Validator.getQuestionRawData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.validator.Validator.setup"><code class="docutils literal notranslate"><span class="pre">Validator.setup()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.validator.Validator.validate"><code class="docutils literal notranslate"><span class="pre">Validator.validate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-excel2moodle.core.settings">excel2moodle.ui.settings module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#excel2moodle.core.settings.Settings"><code class="docutils literal notranslate"><span class="pre">Settings</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.settings.Settings.get"><code class="docutils literal notranslate"><span class="pre">Settings.get()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.settings.Settings.localSettings"><code class="docutils literal notranslate"><span class="pre">Settings.localSettings</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.settings.Settings.set"><code class="docutils literal notranslate"><span class="pre">Settings.set()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.settings.Settings.setSpreadsheet"><code class="docutils literal notranslate"><span class="pre">Settings.setSpreadsheet()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.settings.Settings.shPathChanged"><code class="docutils literal notranslate"><span class="pre">Settings.shPathChanged</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.settings.Settings.staticMetaObject"><code class="docutils literal notranslate"><span class="pre">Settings.staticMetaObject</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#excel2moodle.core.settings.SettingsKey"><code class="docutils literal notranslate"><span class="pre">SettingsKey</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.settings.SettingsKey.ANSPICWIDTH"><code class="docutils literal notranslate"><span class="pre">SettingsKey.ANSPICWIDTH</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.settings.SettingsKey.CATEGORIESSHEET"><code class="docutils literal notranslate"><span class="pre">SettingsKey.CATEGORIESSHEET</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.settings.SettingsKey.INCLUDEINCATS"><code class="docutils literal notranslate"><span class="pre">SettingsKey.INCLUDEINCATS</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.settings.SettingsKey.LOGFILE"><code class="docutils literal notranslate"><span class="pre">SettingsKey.LOGFILE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.settings.SettingsKey.LOGLEVEL"><code class="docutils literal notranslate"><span class="pre">SettingsKey.LOGLEVEL</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.settings.SettingsKey.PICTUREFOLDER"><code class="docutils literal notranslate"><span class="pre">SettingsKey.PICTUREFOLDER</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.settings.SettingsKey.PICTURESUBFOLDER"><code class="docutils literal notranslate"><span class="pre">SettingsKey.PICTURESUBFOLDER</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.settings.SettingsKey.PICTUREWIDTH"><code class="docutils literal notranslate"><span class="pre">SettingsKey.PICTUREWIDTH</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.settings.SettingsKey.POINTS"><code class="docutils literal notranslate"><span class="pre">SettingsKey.POINTS</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.settings.SettingsKey.QUESTIONVARIANT"><code class="docutils literal notranslate"><span class="pre">SettingsKey.QUESTIONVARIANT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.settings.SettingsKey.SPREADSHEETFOLDER"><code class="docutils literal notranslate"><span class="pre">SettingsKey.SPREADSHEETFOLDER</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.settings.SettingsKey.TOLERANCE"><code class="docutils literal notranslate"><span class="pre">SettingsKey.TOLERANCE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.settings.SettingsKey.VERSION"><code class="docutils literal notranslate"><span class="pre">SettingsKey.VERSION</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.settings.SettingsKey.default"><code class="docutils literal notranslate"><span class="pre">SettingsKey.default</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.settings.SettingsKey.full"><code class="docutils literal notranslate"><span class="pre">SettingsKey.full</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.settings.SettingsKey.place"><code class="docutils literal notranslate"><span class="pre">SettingsKey.place</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#excel2moodle.core.settings.SettingsKey.typ"><code class="docutils literal notranslate"><span class="pre">SettingsKey.typ()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-excel2moodle.core.stringHelpers">excel2moodle.core.stringHelpers module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#excel2moodle.core.stringHelpers.getBase64Img"><code class="docutils literal notranslate"><span class="pre">getBase64Img()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#excel2moodle.core.stringHelpers.getListFromStr"><code class="docutils literal notranslate"><span class="pre">getListFromStr()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#excel2moodle.core.stringHelpers.getUnitsElementAsString"><code class="docutils literal notranslate"><span class="pre">getUnitsElementAsString()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#excel2moodle.core.stringHelpers.printDom"><code class="docutils literal notranslate"><span class="pre">printDom()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#excel2moodle.core.stringHelpers.stringToFloat"><code class="docutils literal notranslate"><span class="pre">stringToFloat()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#excel2moodle.core.stringHelpers.texWrapper"><code class="docutils literal notranslate"><span class="pre">texWrapper()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="excel2moodle.ui.html">excel2moodle.ui package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">excel2moodle</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="excel2moodle.html">excel2moodle package</a></li>
+      <li class="breadcrumb-item active">excel2moodle.core package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/excel2moodle.core.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-excel2moodle.core">
+<span id="excel2moodle-core-package"></span><h1>excel2moodle.core package<a class="headerlink" href="#module-excel2moodle.core" title="Link to this heading"></a></h1>
+<p>These Modules are the heart of the excel2moodle Package.</p>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-excel2moodle.core.category">
+<span id="excel2moodle-core-category-module"></span><h2>excel2moodle.core.category module<a class="headerlink" href="#module-excel2moodle.core.category" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="excel2moodle.core.category.Category">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">excel2moodle.core.category.</span></span><span class="sig-name descname"><span class="pre">Category</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/category.html#Category"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.category.Category" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Category stores a list of question. And holds shared information for all.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> (<em>int</em>)</p></li>
+<li><p><strong>name</strong> (<em>str</em>)</p></li>
+<li><p><strong>description</strong> (<em>str</em>)</p></li>
+<li><p><strong>dataframe</strong> (<em>DataFrame</em>)</p></li>
+<li><p><strong>points</strong> (<em>float</em>)</p></li>
+<li><p><strong>version</strong> (<em>int</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="excel2moodle.core.category.Category.getCategoryHeader">
+<span class="sig-name descname"><span class="pre">getCategoryHeader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/category.html#Category.getCategoryHeader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.category.Category.getCategoryHeader" title="Link to this definition"></a></dt>
+<dd><p>Insert an &lt;question type=’category’&gt; before all Questions of this Category.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="excel2moodle.core.category.Category.id">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#excel2moodle.core.category.Category.id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="excel2moodle.core.category.Category.name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#excel2moodle.core.category.Category.name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-excel2moodle.core.dataStructure">
+<span id="excel2moodle-core-datastructure-module"></span><h2>excel2moodle.core.dataStructure module<a class="headerlink" href="#module-excel2moodle.core.dataStructure" title="Link to this heading"></a></h2>
+<p>Main Module which does the heavy lifting.</p>
+<p>At the heart is the class <code class="docutils literal notranslate"><span class="pre">xmlTest</span></code></p>
+<dl class="py class">
+<dt class="sig sig-object py" id="excel2moodle.core.dataStructure.QuestionDB">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">excel2moodle.core.dataStructure.</span></span><span class="sig-name descname"><span class="pre">QuestionDB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">settings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/dataStructure.html#QuestionDB"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.dataStructure.QuestionDB" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The QuestionDB is the main class for processing the Spreadsheet.</p>
+<p>It provides the functionality, for setting up the categories and Questions.
+Any interaction with the questions are done by its methods.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>settings</strong> (<a class="reference internal" href="#excel2moodle.core.settings.Settings" title="excel2moodle.core.settings.Settings"><em>Settings</em></a>)</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="excel2moodle.core.dataStructure.QuestionDB.appendQElements">
+<span class="sig-name descname"><span class="pre">appendQElements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qList</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tree</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">includeHeader</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/dataStructure.html#QuestionDB.appendQElements"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.dataStructure.QuestionDB.appendQElements" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>cat</strong> (<a class="reference internal" href="#excel2moodle.core.category.Category" title="excel2moodle.core.category.Category"><em>Category</em></a>)</p></li>
+<li><p><strong>qList</strong> (<em>list</em><em>[</em><a class="reference internal" href="#excel2moodle.core.question.Question" title="excel2moodle.core.question.Question"><em>Question</em></a><em>]</em>)</p></li>
+<li><p><strong>tree</strong> (<em>Element</em>)</p></li>
+<li><p><strong>includeHeader</strong> (<em>bool</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="excel2moodle.core.dataStructure.QuestionDB.appendQuestions">
+<span class="sig-name descname"><span class="pre">appendQuestions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">questions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/dataStructure.html#QuestionDB.appendQuestions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.dataStructure.QuestionDB.appendQuestions" title="Link to this definition"></a></dt>
+<dd><p>Append selected question Elements to the tree.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>questions</strong> (<em>list</em><em>[</em><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.treewidget.QuestionItem" title="excel2moodle.ui.treewidget.QuestionItem"><em>QuestionItem</em></a><em>]</em>)</p></li>
+<li><p><strong>file</strong> (<em>Path</em><em> | </em><em>None</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="excel2moodle.core.dataStructure.QuestionDB.asyncInitAllCategories">
+<span class="sig-name descname"><span class="pre">asyncInitAllCategories</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sheetPath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/dataStructure.html#QuestionDB.asyncInitAllCategories"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.dataStructure.QuestionDB.asyncInitAllCategories" title="Link to this definition"></a></dt>
+<dd><p>Read all category sheets asynchron and initialize all Categories.</p>
+<p>It does the same as <cite>initAllCategories</cite> but the parsing of the excelfile
+is done asynchron via <cite>concurrent.futures.ProcessPoolExecutor</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>sheetPath</strong> (<em>Path</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="excel2moodle.core.dataStructure.QuestionDB.initAllCategories">
+<span class="sig-name descname"><span class="pre">initAllCategories</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sheetPath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/dataStructure.html#QuestionDB.initAllCategories"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.dataStructure.QuestionDB.initAllCategories" title="Link to this definition"></a></dt>
+<dd><p>Read all category sheets and initialize all Categories.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>sheetPath</strong> (<em>Path</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="excel2moodle.core.dataStructure.QuestionDB.initCategory">
+<span class="sig-name descname"><span class="pre">initCategory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sheetPath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">categoryName</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/dataStructure.html#QuestionDB.initCategory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.dataStructure.QuestionDB.initCategory" title="Link to this definition"></a></dt>
+<dd><p>Read <cite>categoryName</cite> from the file <code class="docutils literal notranslate"><span class="pre">sheetPath</span></code> and initialize the category.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>sheetPath</strong> (<em>Path</em>)</p></li>
+<li><p><strong>categoryName</strong> (<em>str</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.dataStructure.QuestionDB.mcParser">
+<span class="sig-name descname"><span class="pre">mcParser</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">MCQuestionParser</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;excel2moodle.question_types.mc.MCQuestionParser</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#excel2moodle.core.dataStructure.QuestionDB.mcParser" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.dataStructure.QuestionDB.nfParser">
+<span class="sig-name descname"><span class="pre">nfParser</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">NFQuestionParser</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;excel2moodle.question_types.nf.NFQuestionParser</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#excel2moodle.core.dataStructure.QuestionDB.nfParser" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.dataStructure.QuestionDB.nfmParser">
+<span class="sig-name descname"><span class="pre">nfmParser</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">NFMQuestionParser</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;excel2moodle.question_types.nfm.NFMQuestionParser</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#excel2moodle.core.dataStructure.QuestionDB.nfmParser" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="excel2moodle.core.dataStructure.QuestionDB.parseAllQuestions">
+<span class="sig-name descname"><span class="pre">parseAllQuestions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/dataStructure.html#QuestionDB.parseAllQuestions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.dataStructure.QuestionDB.parseAllQuestions" title="Link to this definition"></a></dt>
+<dd><p>Parse all question from all categories.</p>
+<p>The categories need to be initialized first.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="excel2moodle.core.dataStructure.QuestionDB.parseCategoryQuestions">
+<span class="sig-name descname"><span class="pre">parseCategoryQuestions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">category</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/dataStructure.html#QuestionDB.parseCategoryQuestions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.dataStructure.QuestionDB.parseCategoryQuestions" title="Link to this definition"></a></dt>
+<dd><p>Parse all questions inside <code class="docutils literal notranslate"><span class="pre">category</span></code>.</p>
+<p>The category has to be initialized first.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>category</strong> (<a class="reference internal" href="#excel2moodle.core.category.Category" title="excel2moodle.core.category.Category"><em>Category</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="excel2moodle.core.dataStructure.QuestionDB.readCategoriesMetadata">
+<span class="sig-name descname"><span class="pre">readCategoriesMetadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sheetPath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/dataStructure.html#QuestionDB.readCategoriesMetadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.dataStructure.QuestionDB.readCategoriesMetadata" title="Link to this definition"></a></dt>
+<dd><p>Read the metadata and questions from the spreadsheet.</p>
+<p>Get the category data from the spreadsheet and stores it in the
+<code class="docutils literal notranslate"><span class="pre">categoriesMetaData</span></code> dataframe
+Setup the categories and store them  in <code class="docutils literal notranslate"><span class="pre">self.categories</span> <span class="pre">=</span> <span class="pre">{}</span></code>
+Pass the question data to the categories.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>sheetPath</strong> (<em>Path</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="excel2moodle.core.dataStructure.QuestionDB.setupAndParseQuestion">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">setupAndParseQuestion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">category</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qNumber</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/dataStructure.html#QuestionDB.setupAndParseQuestion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.dataStructure.QuestionDB.setupAndParseQuestion" title="Link to this definition"></a></dt>
+<dd><p>Check if the Question Data is valid. Then parse it.</p>
+<p>The Question data is accessed from  <cite>category.dataframe</cite> via its number
+First it is checked if all mandatory fields for the given question type
+are provided.
+Then in checks, weather the data has the correct type.
+If the data is valid, the corresponding parser is fed with the data and run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="#excel2moodle.core.exceptions.QNotParsedException" title="excel2moodle.core.exceptions.QNotParsedException"><strong>QNotParsedException</strong></a> – If the parsing of the question is not possible this is raised</p></li>
+<li><p><a class="reference internal" href="#excel2moodle.core.exceptions.InvalidFieldException" title="excel2moodle.core.exceptions.InvalidFieldException"><strong>InvalidFieldException</strong></a> – If the data of the question is invalid.
+    This gives more information wheather a missing field, or the invalid type
+    caused the Exception.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>category</strong> (<a class="reference internal" href="#excel2moodle.core.category.Category" title="excel2moodle.core.category.Category"><em>Category</em></a>)</p></li>
+<li><p><strong>qNumber</strong> (<em>int</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.dataStructure.QuestionDB.signals">
+<span class="sig-name descname"><span class="pre">signals</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;excel2moodle.core.dataStructure.QuestionDBSignals(0x558ecb9d5950)&gt;</span></em><a class="headerlink" href="#excel2moodle.core.dataStructure.QuestionDB.signals" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.dataStructure.QuestionDB.validator">
+<span class="sig-name descname"><span class="pre">validator</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#excel2moodle.core.validator.Validator" title="excel2moodle.core.validator.Validator"><code class="xref py py-class docutils literal notranslate"><span class="pre">Validator</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;excel2moodle.core.validator.Validator</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#excel2moodle.core.dataStructure.QuestionDB.validator" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="excel2moodle.core.dataStructure.QuestionDBSignals">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">excel2moodle.core.dataStructure.</span></span><span class="sig-name descname"><span class="pre">QuestionDBSignals</span></span><a class="reference internal" href="_modules/excel2moodle/core/dataStructure.html#QuestionDBSignals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.dataStructure.QuestionDBSignals" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QObject</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.dataStructure.QuestionDBSignals.categoryQuestionsReady">
+<span class="sig-name descname"><span class="pre">categoryQuestionsReady</span></span><a class="headerlink" href="#excel2moodle.core.dataStructure.QuestionDBSignals.categoryQuestionsReady" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.dataStructure.QuestionDBSignals.categoryReady">
+<span class="sig-name descname"><span class="pre">categoryReady</span></span><a class="headerlink" href="#excel2moodle.core.dataStructure.QuestionDBSignals.categoryReady" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.dataStructure.QuestionDBSignals.staticMetaObject">
+<span class="sig-name descname"><span class="pre">staticMetaObject</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">PySide6.QtCore.QMetaObject(&quot;QuestionDBSignals&quot;</span> <span class="pre">inherits</span> <span class="pre">&quot;QObject&quot;:</span> <span class="pre">Methods:</span>&#160;&#160; <span class="pre">#4</span> <span class="pre">type=Signal,</span> <span class="pre">signature=categoryReady(PyObject),</span> <span class="pre">parameters=PyObject</span>&#160;&#160; <span class="pre">#5</span> <span class="pre">type=Signal,</span> <span class="pre">signature=categoryQuestionsReady(PyObject),</span> <span class="pre">parameters=PyObject</span> <span class="pre">)</span></em><a class="headerlink" href="#excel2moodle.core.dataStructure.QuestionDBSignals.staticMetaObject" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="excel2moodle.core.dataStructure.processSheet">
+<span class="sig-prename descclassname"><span class="pre">excel2moodle.core.dataStructure.</span></span><span class="sig-name descname"><span class="pre">processSheet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sheetPath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">categoryName</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/dataStructure.html#processSheet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.dataStructure.processSheet" title="Link to this definition"></a></dt>
+<dd><p>Parse <cite>categoryName</cite> from the file <code class="docutils literal notranslate"><span class="pre">sheetPath</span></code> into the dataframe.</p>
+<p>This Function is meant to be run asynchron for increased speed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>sheetPath</strong> (<em>str</em>)</p></li>
+<li><p><strong>categoryName</strong> (<em>str</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-excel2moodle.core.etHelpers">
+<span id="excel2moodle-core-ethelpers-module"></span><h2>excel2moodle.core.etHelpers module<a class="headerlink" href="#module-excel2moodle.core.etHelpers" title="Link to this heading"></a></h2>
+<p>Helper Module which aids in creating XML-Elements for the Questions.</p>
+<p>This module host different functions. All of them will return an <code class="docutils literal notranslate"><span class="pre">lxml.etree.Element</span></code></p>
+<dl class="py function">
+<dt class="sig sig-object py" id="excel2moodle.core.etHelpers.getCdatTxtElement">
+<span class="sig-prename descclassname"><span class="pre">excel2moodle.core.etHelpers.</span></span><span class="sig-name descname"><span class="pre">getCdatTxtElement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subEle</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/etHelpers.html#getCdatTxtElement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.etHelpers.getCdatTxtElement" title="Link to this definition"></a></dt>
+<dd><p>Puts all <code class="docutils literal notranslate"><span class="pre">subEle</span></code> as <code class="docutils literal notranslate"><span class="pre">str</span></code> into a <code class="docutils literal notranslate"><span class="pre">&lt;text&gt;&lt;![CDATA[...subEle...]]&lt;/text&gt;</span></code> element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>subEle</strong> (<em>_Element</em><em> | </em><em>list</em><em>[</em><em>_Element</em><em>]</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="excel2moodle.core.etHelpers.getElement">
+<span class="sig-prename descclassname"><span class="pre">excel2moodle.core.etHelpers.</span></span><span class="sig-name descname"><span class="pre">getElement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eleName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">attribs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/etHelpers.html#getElement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.etHelpers.getElement" title="Link to this definition"></a></dt>
+<dd><p>Creates an XML-Element with text.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">type(text)``is</span> <span class="pre">a</span> <span class="pre">``QuestionFields</span></code>, the specific field is directly read.
+Otherwise it will include whatever is <code class="docutils literal notranslate"><span class="pre">text</span></code> as a string
+:param <a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs: are treated as attributes for the Element
+:raises NanException if the spreadsheet cell of text: QuestionFields is <code class="docutils literal notranslate"><span class="pre">nan</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>eleName</strong> (<em>str</em>)</p></li>
+<li><p><strong>text</strong> (<em>str</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="excel2moodle.core.etHelpers.getFeedBEle">
+<span class="sig-prename descclassname"><span class="pre">excel2moodle.core.etHelpers.</span></span><span class="sig-name descname"><span class="pre">getFeedBEle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">feedback</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/etHelpers.html#getFeedBEle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.etHelpers.getFeedBEle" title="Link to this definition"></a></dt>
+<dd><p>Gets ET Elements with the feedback for the question.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>feedback</strong> (<a class="reference internal" href="#excel2moodle.core.globals.XMLTags" title="excel2moodle.core.globals.XMLTags"><em>XMLTags</em></a>)</p></li>
+<li><p><strong>text</strong> (<em>str</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>style</strong> (<a class="reference internal" href="#excel2moodle.core.globals.TextElements" title="excel2moodle.core.globals.TextElements"><em>TextElements</em></a><em> | </em><em>None</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="excel2moodle.core.etHelpers.getTextElement">
+<span class="sig-prename descclassname"><span class="pre">excel2moodle.core.etHelpers.</span></span><span class="sig-name descname"><span class="pre">getTextElement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eleName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">attribs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/etHelpers.html#getTextElement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.etHelpers.getTextElement" title="Link to this definition"></a></dt>
+<dd><p>Creates two nested elements: <code class="docutils literal notranslate"><span class="pre">eleName</span></code> with child <code class="docutils literal notranslate"><span class="pre">text</span></code> which holds the text.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>eleName</strong> (<em>str</em>)</p></li>
+<li><p><strong>text</strong> (<em>str</em><em> | </em><a class="reference internal" href="#excel2moodle.core.globals.DFIndex" title="excel2moodle.core.globals.DFIndex"><em>DFIndex</em></a>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-excel2moodle.core.exceptions">
+<span id="excel2moodle-core-exceptions-module"></span><h2>excel2moodle.core.exceptions module<a class="headerlink" href="#module-excel2moodle.core.exceptions" title="Link to this heading"></a></h2>
+<dl class="py exception">
+<dt class="sig sig-object py" id="excel2moodle.core.exceptions.InvalidFieldException">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">excel2moodle.core.exceptions.</span></span><span class="sig-name descname"><span class="pre">InvalidFieldException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/exceptions.html#InvalidFieldException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.exceptions.InvalidFieldException" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>message</strong> (<em>str</em>)</p></li>
+<li><p><strong>qID</strong> (<em>str</em>)</p></li>
+<li><p><strong>field</strong> (<a class="reference internal" href="#excel2moodle.core.globals.DFIndex" title="excel2moodle.core.globals.DFIndex"><em>DFIndex</em></a><em> | </em><em>list</em><em>[</em><a class="reference internal" href="#excel2moodle.core.globals.DFIndex" title="excel2moodle.core.globals.DFIndex"><em>DFIndex</em></a><em>]</em>)</p></li>
+<li><p><strong>args</strong> (<em>object</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="excel2moodle.core.exceptions.NanException">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">excel2moodle.core.exceptions.</span></span><span class="sig-name descname"><span class="pre">NanException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/exceptions.html#NanException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.exceptions.NanException" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#excel2moodle.core.exceptions.QNotParsedException" title="excel2moodle.core.exceptions.QNotParsedException"><code class="xref py py-class docutils literal notranslate"><span class="pre">QNotParsedException</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="excel2moodle.core.exceptions.QNotParsedException">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">excel2moodle.core.exceptions.</span></span><span class="sig-name descname"><span class="pre">QNotParsedException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qID</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/exceptions.html#QNotParsedException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.exceptions.QNotParsedException" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>message</strong> (<em>str</em>)</p></li>
+<li><p><strong>qID</strong> (<em>str</em><em> | </em><em>int</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-excel2moodle.core.globals">
+<span id="excel2moodle-core-globals-module"></span><h2>excel2moodle.core.globals module<a class="headerlink" href="#module-excel2moodle.core.globals" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.DFIndex">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">excel2moodle.core.globals.</span></span><span class="sig-name descname"><span class="pre">DFIndex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/globals.html#DFIndex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.globals.DFIndex" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">StrEnum</span></code></p>
+<p>The identifier string for for the spreadsheet and the string for the xml-tag.</p>
+<p>Each enum corresponds to a list of two values.
+The first Value is the index in the spreadsheet, the second is the name of the xml-tag</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.DFIndex.ANSTYPE">
+<span class="sig-name descname"><span class="pre">ANSTYPE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'answerType'</span></em><a class="headerlink" href="#excel2moodle.core.globals.DFIndex.ANSTYPE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.DFIndex.BPOINTS">
+<span class="sig-name descname"><span class="pre">BPOINTS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bulletPoint'</span></em><a class="headerlink" href="#excel2moodle.core.globals.DFIndex.BPOINTS" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.DFIndex.FALSE">
+<span class="sig-name descname"><span class="pre">FALSE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'false'</span></em><a class="headerlink" href="#excel2moodle.core.globals.DFIndex.FALSE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.DFIndex.NAME">
+<span class="sig-name descname"><span class="pre">NAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'name'</span></em><a class="headerlink" href="#excel2moodle.core.globals.DFIndex.NAME" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.DFIndex.NUMBER">
+<span class="sig-name descname"><span class="pre">NUMBER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'number'</span></em><a class="headerlink" href="#excel2moodle.core.globals.DFIndex.NUMBER" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.DFIndex.PICTURE">
+<span class="sig-name descname"><span class="pre">PICTURE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'picture'</span></em><a class="headerlink" href="#excel2moodle.core.globals.DFIndex.PICTURE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.DFIndex.RESULT">
+<span class="sig-name descname"><span class="pre">RESULT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'result'</span></em><a class="headerlink" href="#excel2moodle.core.globals.DFIndex.RESULT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.DFIndex.TEXT">
+<span class="sig-name descname"><span class="pre">TEXT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'text'</span></em><a class="headerlink" href="#excel2moodle.core.globals.DFIndex.TEXT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.DFIndex.TOLERANCE">
+<span class="sig-name descname"><span class="pre">TOLERANCE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'tolerance'</span></em><a class="headerlink" href="#excel2moodle.core.globals.DFIndex.TOLERANCE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.DFIndex.TRUE">
+<span class="sig-name descname"><span class="pre">TRUE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'true'</span></em><a class="headerlink" href="#excel2moodle.core.globals.DFIndex.TRUE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.DFIndex.TYPE">
+<span class="sig-name descname"><span class="pre">TYPE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'type'</span></em><a class="headerlink" href="#excel2moodle.core.globals.DFIndex.TYPE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.TextElements">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">excel2moodle.core.globals.</span></span><span class="sig-name descname"><span class="pre">TextElements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/globals.html#TextElements"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.globals.TextElements" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.TextElements.LISTITEM">
+<span class="sig-name descname"><span class="pre">LISTITEM</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('li',</span> <span class="pre">'text-align:</span> <span class="pre">left;')</span></em><a class="headerlink" href="#excel2moodle.core.globals.TextElements.LISTITEM" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.TextElements.PLEFT">
+<span class="sig-name descname"><span class="pre">PLEFT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('p',</span> <span class="pre">'text-align:</span> <span class="pre">left;')</span></em><a class="headerlink" href="#excel2moodle.core.globals.TextElements.PLEFT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.TextElements.SPANGREEN">
+<span class="sig-name descname"><span class="pre">SPANGREEN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('span',</span> <span class="pre">'color:</span> <span class="pre">rgb(152,</span> <span class="pre">202,</span> <span class="pre">62)')</span></em><a class="headerlink" href="#excel2moodle.core.globals.TextElements.SPANGREEN" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.TextElements.SPANORANGE">
+<span class="sig-name descname"><span class="pre">SPANORANGE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('span',</span> <span class="pre">'color:</span> <span class="pre">rgb(152,</span> <span class="pre">100,</span> <span class="pre">100)')</span></em><a class="headerlink" href="#excel2moodle.core.globals.TextElements.SPANORANGE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.TextElements.SPANRED">
+<span class="sig-name descname"><span class="pre">SPANRED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('span',</span> <span class="pre">'color:</span> <span class="pre">rgb(239,</span> <span class="pre">69,</span> <span class="pre">64)')</span></em><a class="headerlink" href="#excel2moodle.core.globals.TextElements.SPANRED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.TextElements.ULIST">
+<span class="sig-name descname"><span class="pre">ULIST</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('ul',</span> <span class="pre">'')</span></em><a class="headerlink" href="#excel2moodle.core.globals.TextElements.ULIST" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.TextElements.create">
+<span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/globals.html#TextElements.create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.globals.TextElements.create" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tag</strong> (<em>str</em><em> | </em><em>None</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.TextElements.style">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">style</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#excel2moodle.core.globals.TextElements.style" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.XMLTags">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">excel2moodle.core.globals.</span></span><span class="sig-name descname"><span class="pre">XMLTags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dfkey</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">getEle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/globals.html#XMLTags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.globals.XMLTags" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">StrEnum</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.XMLTags.ANSFEEDBACK">
+<span class="sig-name descname"><span class="pre">ANSFEEDBACK</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'feedback'</span></em><a class="headerlink" href="#excel2moodle.core.globals.XMLTags.ANSFEEDBACK" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.XMLTags.ANSWER">
+<span class="sig-name descname"><span class="pre">ANSWER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'answer'</span></em><a class="headerlink" href="#excel2moodle.core.globals.XMLTags.ANSWER" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.XMLTags.CORFEEDB">
+<span class="sig-name descname"><span class="pre">CORFEEDB</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'correctfeedback'</span></em><a class="headerlink" href="#excel2moodle.core.globals.XMLTags.CORFEEDB" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.XMLTags.GENFEEDB">
+<span class="sig-name descname"><span class="pre">GENFEEDB</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'generalfeedback'</span></em><a class="headerlink" href="#excel2moodle.core.globals.XMLTags.GENFEEDB" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.XMLTags.HIDE">
+<span class="sig-name descname"><span class="pre">HIDE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'hidden'</span></em><a class="headerlink" href="#excel2moodle.core.globals.XMLTags.HIDE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.XMLTags.ID">
+<span class="sig-name descname"><span class="pre">ID</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'idnumber'</span></em><a class="headerlink" href="#excel2moodle.core.globals.XMLTags.ID" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.XMLTags.INCORFEEDB">
+<span class="sig-name descname"><span class="pre">INCORFEEDB</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'incorrectfeedback'</span></em><a class="headerlink" href="#excel2moodle.core.globals.XMLTags.INCORFEEDB" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.XMLTags.NAME">
+<span class="sig-name descname"><span class="pre">NAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'name'</span></em><a class="headerlink" href="#excel2moodle.core.globals.XMLTags.NAME" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.XMLTags.PCORFEEDB">
+<span class="sig-name descname"><span class="pre">PCORFEEDB</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'partialcorrectfeedback'</span></em><a class="headerlink" href="#excel2moodle.core.globals.XMLTags.PCORFEEDB" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.XMLTags.PENALTY">
+<span class="sig-name descname"><span class="pre">PENALTY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'penalty'</span></em><a class="headerlink" href="#excel2moodle.core.globals.XMLTags.PENALTY" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.XMLTags.PICTURE">
+<span class="sig-name descname"><span class="pre">PICTURE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'file'</span></em><a class="headerlink" href="#excel2moodle.core.globals.XMLTags.PICTURE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.XMLTags.POINTS">
+<span class="sig-name descname"><span class="pre">POINTS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'defaultgrade'</span></em><a class="headerlink" href="#excel2moodle.core.globals.XMLTags.POINTS" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.XMLTags.QTEXT">
+<span class="sig-name descname"><span class="pre">QTEXT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'questiontext'</span></em><a class="headerlink" href="#excel2moodle.core.globals.XMLTags.QTEXT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.XMLTags.QUESTION">
+<span class="sig-name descname"><span class="pre">QUESTION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'question'</span></em><a class="headerlink" href="#excel2moodle.core.globals.XMLTags.QUESTION" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.XMLTags.TEXT">
+<span class="sig-name descname"><span class="pre">TEXT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'text'</span></em><a class="headerlink" href="#excel2moodle.core.globals.XMLTags.TEXT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.XMLTags.TOLERANCE">
+<span class="sig-name descname"><span class="pre">TOLERANCE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'tolerance'</span></em><a class="headerlink" href="#excel2moodle.core.globals.XMLTags.TOLERANCE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.XMLTags.TYPE">
+<span class="sig-name descname"><span class="pre">TYPE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'type'</span></em><a class="headerlink" href="#excel2moodle.core.globals.XMLTags.TYPE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.XMLTags.dfkey">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dfkey</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#excel2moodle.core.globals.XMLTags.dfkey" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="excel2moodle.core.globals.XMLTags.set">
+<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">getEle</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/globals.html#XMLTags.set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.globals.XMLTags.set" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-excel2moodle.core.numericMultiQ">
+<span id="excel2moodle-core-numericmultiq-module"></span><h2>excel2moodle.core.numericMultiQ module<a class="headerlink" href="#module-excel2moodle.core.numericMultiQ" title="Link to this heading"></a></h2>
+<p>Numeric Multi Questions Module to calculate results from a formula.</p>
+<p>This module calculates a series of results from al matrix of variables.
+For each column in the matrix there will be one result.
+As well it returns a bullet points string that shows the numerical values corresponding to the set of variables</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="excel2moodle.core.numericMultiQ.getVariablesDict">
+<span class="sig-prename descclassname"><span class="pre">excel2moodle.core.numericMultiQ.</span></span><span class="sig-name descname"><span class="pre">getVariablesDict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keyList</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/numericMultiQ.html#getVariablesDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.numericMultiQ.getVariablesDict" title="Link to this definition"></a></dt>
+<dd><p>Liest alle Variablen-Listen deren Name in <code class="docutils literal notranslate"><span class="pre">keyList</span></code> ist aus dem DataFrame im Column[index].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>df</strong> (<em>DataFrame</em>)</p></li>
+<li><p><strong>keyList</strong> (<em>list</em>)</p></li>
+<li><p><strong>index</strong> (<em>int</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="excel2moodle.core.numericMultiQ.getVarsList">
+<span class="sig-prename descclassname"><span class="pre">excel2moodle.core.numericMultiQ.</span></span><span class="sig-name descname"><span class="pre">getVarsList</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bps</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/numericMultiQ.html#getVarsList"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.numericMultiQ.getVarsList" title="Link to this definition"></a></dt>
+<dd><p>Durchsucht den bulletPoints String nach den Variablen <cite>{var}</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>bps</strong> (<em>str</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="excel2moodle.core.numericMultiQ.insertVariablesToBPoints">
+<span class="sig-prename descclassname"><span class="pre">excel2moodle.core.numericMultiQ.</span></span><span class="sig-name descname"><span class="pre">insertVariablesToBPoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">varDict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bulletPoints</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/numericMultiQ.html#insertVariablesToBPoints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.numericMultiQ.insertVariablesToBPoints" title="Link to this definition"></a></dt>
+<dd><p>Für jeden Eintrag im varDict, wird im bulletPoints String der
+Substring “{key}” durch value[index] ersetzt.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>varDict</strong> (<em>dict</em>)</p></li>
+<li><p><strong>bulletPoints</strong> (<em>str</em>)</p></li>
+<li><p><strong>index</strong> (<em>int</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="excel2moodle.core.numericMultiQ.parseNumericMultiQuestion">
+<span class="sig-prename descclassname"><span class="pre">excel2moodle.core.numericMultiQ.</span></span><span class="sig-name descname"><span class="pre">parseNumericMultiQuestion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bulletPoints</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">equation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">questionIndex</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/numericMultiQ.html#parseNumericMultiQuestion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.numericMultiQ.parseNumericMultiQuestion" title="Link to this definition"></a></dt>
+<dd><p>Berechnet die Ergebnisse anhand der Variablen in <em>bulletPoints</em>.</p>
+<p>Gibt eine Liste mit allen Ergebnissen zurück
+und eine Liste mit den bulletPoints-Strings, die die Numerischen Variablen enthalten</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]</span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>datFrame</strong> (<em>DataFrame</em>)</p></li>
+<li><p><strong>bulletPoints</strong> (<em>str</em>)</p></li>
+<li><p><strong>equation</strong> (<em>str</em>)</p></li>
+<li><p><strong>questionIndex</strong> (<em>int</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="excel2moodle.core.numericMultiQ.setParameters">
+<span class="sig-prename descclassname"><span class="pre">excel2moodle.core.numericMultiQ.</span></span><span class="sig-name descname"><span class="pre">setParameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/numericMultiQ.html#setParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.numericMultiQ.setParameters" title="Link to this definition"></a></dt>
+<dd><p>Ubergibt die Parameter mit entsprechenden Variablen-Namen an den asteval-Interpreter.</p>
+<p>Dann kann dieser die equation loesen.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>parameters</strong> (<em>dict</em>)</p></li>
+<li><p><strong>index</strong> (<em>int</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-excel2moodle.core.parser">
+<span id="excel2moodle-core-parser-module"></span><h2>excel2moodle.core.parser module<a class="headerlink" href="#module-excel2moodle.core.parser" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="excel2moodle.core.parser.QuestionParser">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">excel2moodle.core.parser.</span></span><span class="sig-name descname"><span class="pre">QuestionParser</span></span><a class="reference internal" href="_modules/excel2moodle/core/parser.html#QuestionParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.parser.QuestionParser" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Setup the Parser Object.</p>
+<p>This is the superclass which implements the general Behaviour of he Parser.
+Important to implement the answers methods.</p>
+<dl class="field-list simple">
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="excel2moodle.core.parser.QuestionParser.appendToTmpEle">
+<span class="sig-name descname"><span class="pre">appendToTmpEle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eleName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">txtEle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">attribs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/parser.html#QuestionParser.appendToTmpEle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.parser.QuestionParser.appendToTmpEle" title="Link to this definition"></a></dt>
+<dd><p>Append <code class="docutils literal notranslate"><span class="pre">text</span></code> to the temporary Element.</p>
+<p>It uses the data from <code class="docutils literal notranslate"><span class="pre">self.rawInput</span></code> if <code class="docutils literal notranslate"><span class="pre">text</span></code> is type``DFIndex``
+Otherwise the value of <code class="docutils literal notranslate"><span class="pre">text</span></code> will be inserted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>eleName</strong> (<em>str</em>)</p></li>
+<li><p><strong>text</strong> (<em>str</em><em> | </em><a class="reference internal" href="#excel2moodle.core.globals.DFIndex" title="excel2moodle.core.globals.DFIndex"><em>DFIndex</em></a>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="excel2moodle.core.parser.QuestionParser.formatBulletList">
+<span class="sig-name descname"><span class="pre">formatBulletList</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bps</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/parser.html#QuestionParser.formatBulletList"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.parser.QuestionParser.formatBulletList" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>bps</strong> (<em>str</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="excel2moodle.core.parser.QuestionParser.getFeedBEle">
+<span class="sig-name descname"><span class="pre">getFeedBEle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">feedback</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/parser.html#QuestionParser.getFeedBEle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.parser.QuestionParser.getFeedBEle" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>feedback</strong> (<a class="reference internal" href="#excel2moodle.core.globals.XMLTags" title="excel2moodle.core.globals.XMLTags"><em>XMLTags</em></a>)</p></li>
+<li><p><strong>text</strong> (<em>str</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>style</strong> (<a class="reference internal" href="#excel2moodle.core.globals.TextElements" title="excel2moodle.core.globals.TextElements"><em>TextElements</em></a><em> | </em><em>None</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="excel2moodle.core.parser.QuestionParser.getNumericAnsElement">
+<span class="sig-name descname"><span class="pre">getNumericAnsElement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fraction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'moodle_auto_format'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/parser.html#QuestionParser.getNumericAnsElement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.parser.QuestionParser.getNumericAnsElement" title="Link to this definition"></a></dt>
+<dd><p>Get <code class="docutils literal notranslate"><span class="pre">&lt;answer/&gt;</span></code> Element specific for the numerical Question.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>result</strong> (<em>float</em>)</p></li>
+<li><p><strong>fraction</strong> (<em>float</em>)</p></li>
+<li><p><strong>format</strong> (<em>str</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>The element contains those children:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">&lt;text/&gt;</span></code> which holds the value of the answer
+<code class="docutils literal notranslate"><span class="pre">&lt;tolerance/&gt;</span></code> with the <em>relative</em> tolerance for the result in percent
+<code class="docutils literal notranslate"><span class="pre">&lt;feedback/&gt;</span></code> with general feedback for a true answer.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="excel2moodle.core.parser.QuestionParser.hasPicture">
+<span class="sig-name descname"><span class="pre">hasPicture</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/parser.html#QuestionParser.hasPicture"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.parser.QuestionParser.hasPicture" title="Link to this definition"></a></dt>
+<dd><p>Create a <code class="docutils literal notranslate"><span class="pre">Picture</span></code> object <a href="#id3"><span class="problematic" id="id4">``</span></a>question``if the question needs a pic.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="excel2moodle.core.parser.QuestionParser.parse">
+<span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/parser.html#QuestionParser.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.parser.QuestionParser.parse" title="Link to this definition"></a></dt>
+<dd><p>Parse the Question.</p>
+<p>Generates an new Question Element stored as <code class="docutils literal notranslate"><span class="pre">self.tmpEle:ET.Element</span></code>
+if no Exceptions are raised, <code class="docutils literal notranslate"><span class="pre">self.tmpEle</span></code> is passed to <code class="docutils literal notranslate"><span class="pre">self.question.element</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="excel2moodle.core.parser.QuestionParser.setAnswers">
+<span class="sig-name descname"><span class="pre">setAnswers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/parser.html#QuestionParser.setAnswers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.parser.QuestionParser.setAnswers" title="Link to this definition"></a></dt>
+<dd><p>Needs to be implemented in the type-specific subclasses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code>] | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="excel2moodle.core.parser.QuestionParser.setBPoints">
+<span class="sig-name descname"><span class="pre">setBPoints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/parser.html#QuestionParser.setBPoints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.parser.QuestionParser.setBPoints" title="Link to this definition"></a></dt>
+<dd><p>If there bulletPoints are set in the Spreadsheet it creates an unordered List-Element in <code class="docutils literal notranslate"><span class="pre">Question.bulletList</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="excel2moodle.core.parser.QuestionParser.setMainText">
+<span class="sig-name descname"><span class="pre">setMainText</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/parser.html#QuestionParser.setMainText"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.parser.QuestionParser.setMainText" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.parser.QuestionParser.settings">
+<span class="sig-name descname"><span class="pre">settings</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;excel2moodle.core.settings.Settings(0x558ecc5243d0)&gt;</span></em><a class="headerlink" href="#excel2moodle.core.parser.QuestionParser.settings" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="excel2moodle.core.parser.QuestionParser.setup">
+<span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">question</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/parser.html#QuestionParser.setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.parser.QuestionParser.setup" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>question</strong> (<a class="reference internal" href="#excel2moodle.core.question.Question" title="excel2moodle.core.question.Question"><em>Question</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-excel2moodle.core.question">
+<span id="excel2moodle-core-question-module"></span><h2>excel2moodle.core.question module<a class="headerlink" href="#module-excel2moodle.core.question" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="excel2moodle.core.question.Picture">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">excel2moodle.core.question.</span></span><span class="sig-name descname"><span class="pre">Picture</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">picKey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imgFolder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">questionId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/question.html#Picture"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.question.Picture" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>picKey</strong> (<em>str</em>)</p></li>
+<li><p><strong>imgFolder</strong> (<em>Path</em>)</p></li>
+<li><p><strong>questionId</strong> (<em>str</em>)</p></li>
+<li><p><strong>width</strong> (<em>int</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="excel2moodle.core.question.Picture.getImgId">
+<span class="sig-name descname"><span class="pre">getImgId</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imgKey</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/question.html#Picture.getImgId"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.question.Picture.getImgId" title="Link to this definition"></a></dt>
+<dd><p>Get the image ID and width based on the given key.
+The key should either be the full ID (as the question) or only the question Num.
+If only the number is given, the category.id is prepended.
+The width should be specified by <cite>ID:width:XX</cite>. where xx is the px value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>imgKey</strong> (<em>str</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="excel2moodle.core.question.Question">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">excel2moodle.core.question.</span></span><span class="sig-name descname"><span class="pre">Question</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">category</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rawData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/question.html#Question"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.question.Question" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>category</strong> (<a class="reference internal" href="#excel2moodle.core.category.Category" title="excel2moodle.core.category.Category"><em>Category</em></a>)</p></li>
+<li><p><strong>rawData</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>float</em><em> | </em><em>str</em><em> | </em><em>int</em><em> | </em><em>list</em><em>[</em><em>str</em><em>]</em><em>]</em>)</p></li>
+<li><p><strong>points</strong> (<em>float</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="excel2moodle.core.question.Question.addStandardTags">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">addStandardTags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/question.html#Question.addStandardTags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.question.Question.addStandardTags" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="excel2moodle.core.question.Question.assemble">
+<span class="sig-name descname"><span class="pre">assemble</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/question.html#Question.assemble"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.question.Question.assemble" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>variant</strong> (<em>int</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="excel2moodle.core.question.Question.getBPointVariant">
+<span class="sig-name descname"><span class="pre">getBPointVariant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variant</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/question.html#Question.getBPointVariant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.question.Question.getBPointVariant" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>variant</strong> (<em>int</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="excel2moodle.core.question.Question.setID">
+<span class="sig-name descname"><span class="pre">setID</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/question.html#Question.setID"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.question.Question.setID" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.question.Question.standardTags">
+<span class="sig-name descname"><span class="pre">standardTags</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-data docutils literal notranslate"><span class="pre">ClassVar</span></code><span class="pre">[</span><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code><span class="pre">[</span><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code><span class="pre">,</span> <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> <span class="pre">|</span> <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code><span class="pre">]]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'hidden':</span> <span class="pre">0}</span></em><a class="headerlink" href="#excel2moodle.core.question.Question.standardTags" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-excel2moodle.core.validator">
+<span id="excel2moodle-core-validator-module"></span><h2>excel2moodle.core.validator module<a class="headerlink" href="#module-excel2moodle.core.validator" title="Link to this heading"></a></h2>
+<p>This Module checks if the data inside the Spreadsheet is valid.</p>
+<p>Those things are considered:</p>
+<ol class="arabic simple">
+<li><p>The mandatory entries must not be <code class="docutils literal notranslate"><span class="pre">Nan</span></code></p></li>
+<li><p>All fields must have the right data-type</p></li>
+</ol>
+<p>If Those checks pass, a question is created,
+which can be accessed via <code class="docutils literal notranslate"><span class="pre">Validator.question</span></code></p>
+<dl class="py class">
+<dt class="sig sig-object py" id="excel2moodle.core.validator.Validator">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">excel2moodle.core.validator.</span></span><span class="sig-name descname"><span class="pre">Validator</span></span><a class="reference internal" href="_modules/excel2moodle/core/validator.html#Validator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.validator.Validator" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Validate the question data from the spreadsheet.</p>
+<p>Creates a dictionary with the data, for easier access later.</p>
+<dl class="field-list simple">
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="excel2moodle.core.validator.Validator.getQuestionRawData">
+<span class="sig-name descname"><span class="pre">getQuestionRawData</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/validator.html#Validator.getQuestionRawData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.validator.Validator.getQuestionRawData" title="Link to this definition"></a></dt>
+<dd><p>Get the data from the spreadsheet as a dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> | <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code> | <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="excel2moodle.core.validator.Validator.setup">
+<span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/validator.html#Validator.setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.validator.Validator.setup" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>df</strong> (<em>Series</em>)</p></li>
+<li><p><strong>index</strong> (<em>int</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="excel2moodle.core.validator.Validator.validate">
+<span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/validator.html#Validator.validate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.validator.Validator.validate" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-excel2moodle.core.settings">
+<span id="excel2moodle-ui-settings-module"></span><h2>excel2moodle.ui.settings module<a class="headerlink" href="#module-excel2moodle.core.settings" title="Link to this heading"></a></h2>
+<p>Settings module provides the adjusted subclass of <code class="docutils literal notranslate"><span class="pre">PySide6.QtCore.QSettings</span></code>.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="excel2moodle.core.settings.Settings">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">excel2moodle.core.settings.</span></span><span class="sig-name descname"><span class="pre">Settings</span></span><a class="reference internal" href="_modules/excel2moodle/core/settings.html#Settings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.settings.Settings" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QSettings</span></code></p>
+<p>Settings for Excel2moodle.</p>
+<dl class="field-list simple">
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="excel2moodle.core.settings.Settings.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/settings.html#Settings.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.settings.Settings.get" title="Link to this definition"></a></dt>
+<dd><p>Get the typesafe settings value.</p>
+<p>If local Settings are stored, they are returned.
+If no setting is made, the default value is returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>key</strong> (<a class="reference internal" href="#excel2moodle.core.settings.SettingsKey" title="excel2moodle.core.settings.SettingsKey"><em>SettingsKey</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.settings.Settings.localSettings">
+<span class="sig-name descname"><span class="pre">localSettings</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-data docutils literal notranslate"><span class="pre">ClassVar</span></code><span class="pre">[</span><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code><span class="pre">[</span><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code><span class="pre">,</span> <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> <span class="pre">|</span> <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code> <span class="pre">|</span> <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code><span class="pre">]]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#excel2moodle.core.settings.Settings.localSettings" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="excel2moodle.core.settings.Settings.set">
+<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/settings.html#Settings.set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.settings.Settings.set" title="Link to this definition"></a></dt>
+<dd><p>Set the setting to value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>local</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – True saves local project specific settings.
+Defaults to False
+The local settings are meant to be set in the first sheet <cite>settings</cite></p></li>
+<li><p><strong>key</strong> (<a class="reference internal" href="#excel2moodle.core.settings.SettingsKey" title="excel2moodle.core.settings.SettingsKey"><em>SettingsKey</em></a><em> | </em><em>str</em>)</p></li>
+<li><p><strong>value</strong> (<em>float</em><em> | </em><em>bool</em><em> | </em><em>Path</em><em> | </em><em>str</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="excel2moodle.core.settings.Settings.setSpreadsheet">
+<span class="sig-name descname"><span class="pre">setSpreadsheet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sheet</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/settings.html#Settings.setSpreadsheet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.settings.Settings.setSpreadsheet" title="Link to this definition"></a></dt>
+<dd><p>Save spreadsheet path and emit the changed event.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>sheet</strong> (<em>Path</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.settings.Settings.shPathChanged">
+<span class="sig-name descname"><span class="pre">shPathChanged</span></span><a class="headerlink" href="#excel2moodle.core.settings.Settings.shPathChanged" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.settings.Settings.staticMetaObject">
+<span class="sig-name descname"><span class="pre">staticMetaObject</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">PySide6.QtCore.QMetaObject(&quot;Settings&quot;</span> <span class="pre">inherits</span> <span class="pre">&quot;QSettings&quot;:</span> <span class="pre">Methods:</span>&#160;&#160; <span class="pre">#4</span> <span class="pre">type=Signal,</span> <span class="pre">signature=shPathChanged(PyObject),</span> <span class="pre">parameters=PyObject</span> <span class="pre">)</span></em><a class="headerlink" href="#excel2moodle.core.settings.Settings.staticMetaObject" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="excel2moodle.core.settings.SettingsKey">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">excel2moodle.core.settings.</span></span><span class="sig-name descname"><span class="pre">SettingsKey</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">place</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/settings.html#SettingsKey"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.settings.SettingsKey" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">StrEnum</span></code></p>
+<p>Settings Keys are needed to always acess the correct Value.</p>
+<p>As the QSettings settings are accesed via strings, which could easily gotten wrong.
+Further, this Enum defines, which type a setting has to be.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.settings.SettingsKey.ANSPICWIDTH">
+<span class="sig-name descname"><span class="pre">ANSPICWIDTH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'answerImgWidth'</span></em><a class="headerlink" href="#excel2moodle.core.settings.SettingsKey.ANSPICWIDTH" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.settings.SettingsKey.CATEGORIESSHEET">
+<span class="sig-name descname"><span class="pre">CATEGORIESSHEET</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'categoriesSheet'</span></em><a class="headerlink" href="#excel2moodle.core.settings.SettingsKey.CATEGORIESSHEET" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.settings.SettingsKey.INCLUDEINCATS">
+<span class="sig-name descname"><span class="pre">INCLUDEINCATS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'includeCats'</span></em><a class="headerlink" href="#excel2moodle.core.settings.SettingsKey.INCLUDEINCATS" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.settings.SettingsKey.LOGFILE">
+<span class="sig-name descname"><span class="pre">LOGFILE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'logfile'</span></em><a class="headerlink" href="#excel2moodle.core.settings.SettingsKey.LOGFILE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.settings.SettingsKey.LOGLEVEL">
+<span class="sig-name descname"><span class="pre">LOGLEVEL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'loglevel'</span></em><a class="headerlink" href="#excel2moodle.core.settings.SettingsKey.LOGLEVEL" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.settings.SettingsKey.PICTUREFOLDER">
+<span class="sig-name descname"><span class="pre">PICTUREFOLDER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'pictureFolder'</span></em><a class="headerlink" href="#excel2moodle.core.settings.SettingsKey.PICTUREFOLDER" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.settings.SettingsKey.PICTURESUBFOLDER">
+<span class="sig-name descname"><span class="pre">PICTURESUBFOLDER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'imgFolder'</span></em><a class="headerlink" href="#excel2moodle.core.settings.SettingsKey.PICTURESUBFOLDER" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.settings.SettingsKey.PICTUREWIDTH">
+<span class="sig-name descname"><span class="pre">PICTUREWIDTH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'imgWidth'</span></em><a class="headerlink" href="#excel2moodle.core.settings.SettingsKey.PICTUREWIDTH" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.settings.SettingsKey.POINTS">
+<span class="sig-name descname"><span class="pre">POINTS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'points'</span></em><a class="headerlink" href="#excel2moodle.core.settings.SettingsKey.POINTS" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.settings.SettingsKey.QUESTIONVARIANT">
+<span class="sig-name descname"><span class="pre">QUESTIONVARIANT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'defaultQuestionVariant'</span></em><a class="headerlink" href="#excel2moodle.core.settings.SettingsKey.QUESTIONVARIANT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.settings.SettingsKey.SPREADSHEETFOLDER">
+<span class="sig-name descname"><span class="pre">SPREADSHEETFOLDER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'spreadsheetFolder'</span></em><a class="headerlink" href="#excel2moodle.core.settings.SettingsKey.SPREADSHEETFOLDER" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.settings.SettingsKey.TOLERANCE">
+<span class="sig-name descname"><span class="pre">TOLERANCE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'tolerance'</span></em><a class="headerlink" href="#excel2moodle.core.settings.SettingsKey.TOLERANCE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="excel2moodle.core.settings.SettingsKey.VERSION">
+<span class="sig-name descname"><span class="pre">VERSION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'version'</span></em><a class="headerlink" href="#excel2moodle.core.settings.SettingsKey.VERSION" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="excel2moodle.core.settings.SettingsKey.default">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">default</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#excel2moodle.core.settings.SettingsKey.default" title="Link to this definition"></a></dt>
+<dd><p>Get default value for the key.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="excel2moodle.core.settings.SettingsKey.full">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">full</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#excel2moodle.core.settings.SettingsKey.full" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="excel2moodle.core.settings.SettingsKey.place">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">place</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#excel2moodle.core.settings.SettingsKey.place" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="excel2moodle.core.settings.SettingsKey.typ">
+<span class="sig-name descname"><span class="pre">typ</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/settings.html#SettingsKey.typ"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.settings.SettingsKey.typ" title="Link to this definition"></a></dt>
+<dd><p>Get default value for the key.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-excel2moodle.core.stringHelpers">
+<span id="excel2moodle-core-stringhelpers-module"></span><h2>excel2moodle.core.stringHelpers module<a class="headerlink" href="#module-excel2moodle.core.stringHelpers" title="Link to this heading"></a></h2>
+<p>This Module holds small Helperfunctions related to string manipulation.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="excel2moodle.core.stringHelpers.getBase64Img">
+<span class="sig-prename descclassname"><span class="pre">excel2moodle.core.stringHelpers.</span></span><span class="sig-name descname"><span class="pre">getBase64Img</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imgPath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/stringHelpers.html#getBase64Img"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.stringHelpers.getBase64Img" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="excel2moodle.core.stringHelpers.getListFromStr">
+<span class="sig-prename descclassname"><span class="pre">excel2moodle.core.stringHelpers.</span></span><span class="sig-name descname"><span class="pre">getListFromStr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stringList</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/stringHelpers.html#getListFromStr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.stringHelpers.getListFromStr" title="Link to this definition"></a></dt>
+<dd><p>Get a python List of strings from a semi-colon separated string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>stringList</strong> (<em>str</em><em> | </em><em>list</em><em>[</em><em>str</em><em>]</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="excel2moodle.core.stringHelpers.getUnitsElementAsString">
+<span class="sig-prename descclassname"><span class="pre">excel2moodle.core.stringHelpers.</span></span><span class="sig-name descname"><span class="pre">getUnitsElementAsString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unit</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/stringHelpers.html#getUnitsElementAsString"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.stringHelpers.getUnitsElementAsString" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="excel2moodle.core.stringHelpers.printDom">
+<span class="sig-prename descclassname"><span class="pre">excel2moodle.core.stringHelpers.</span></span><span class="sig-name descname"><span class="pre">printDom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xmlElement</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/stringHelpers.html#printDom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.stringHelpers.printDom" title="Link to this definition"></a></dt>
+<dd><p>Prints the document tree of <code class="docutils literal notranslate"><span class="pre">xmlTree</span></code> to <code class="docutils literal notranslate"><span class="pre">file</span></code>, if specified, else dumps to stdout.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>xmlElement</strong> (<em>Element</em>)</p></li>
+<li><p><strong>file</strong> (<em>Path</em><em> | </em><em>None</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="excel2moodle.core.stringHelpers.stringToFloat">
+<span class="sig-prename descclassname"><span class="pre">excel2moodle.core.stringHelpers.</span></span><span class="sig-name descname"><span class="pre">stringToFloat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/stringHelpers.html#stringToFloat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.stringHelpers.stringToFloat" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>string</strong> (<em>str</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="excel2moodle.core.stringHelpers.texWrapper">
+<span class="sig-prename descclassname"><span class="pre">excel2moodle.core.stringHelpers.</span></span><span class="sig-name descname"><span class="pre">texWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle/core/stringHelpers.html#texWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.core.stringHelpers.texWrapper" title="Link to this definition"></a></dt>
+<dd><p>Put the strings inside <code class="docutils literal notranslate"><span class="pre">text</span></code> into a LaTex environment.</p>
+<p>if <code class="docutils literal notranslate"><span class="pre">style</span> <span class="pre">==</span> <span class="pre">unit</span></code>: inside <code class="docutils literal notranslate"><span class="pre">\\mathrm{}</span></code>
+if <code class="docutils literal notranslate"><span class="pre">style</span> <span class="pre">==</span> <span class="pre">math</span></code>: inside <code class="docutils literal notranslate"><span class="pre">\\(</span> <span class="pre">\\)</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>text</strong> (<em>str</em><em> | </em><em>list</em><em>[</em><em>str</em><em>]</em>)</p></li>
+<li><p><strong>style</strong> (<em>str</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="excel2moodle.html" class="btn btn-neutral float-left" title="excel2moodle package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="excel2moodle.extra.html" class="btn btn-neutral float-right" title="excel2moodle.extra package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Jakob Bosse.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

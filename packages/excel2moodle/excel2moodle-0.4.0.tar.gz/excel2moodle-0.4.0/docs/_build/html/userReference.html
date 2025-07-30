@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Reference &mdash; excel2moodle 0.4.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=6c02275b"></script>
+        <script src="_static/doctools.js?v=9bcbadda"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Fragenbeispiele" href="exampleQuestions.html" />
+    <link rel="prev" title="How To - Schritt für Schritt Anleitung" href="howto.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            excel2moodle
+          </a>
+              <div class="version">
+                0.4.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="howto.html">How To - Schritt für Schritt Anleitung</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">User Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#structure-of-a-question-database">Structure of a question database</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#supported-settings-tags">Supported settings tags</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#question-id-convention">Question ID convention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#supported-question-types">Supported Question Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#question-tag-definitions">Question Tag Definitions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#general-tags-for-all-question-types">General tags for all Question Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#specific-tags-for-question-types">Specific tags for question Types</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="exampleQuestions.html">Fragenbeispiele</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="excel2moodle.html">excel2moodle package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="excel2moodle.extra.html">excel2moodle.extra package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="excel2moodle.core.html">excel2moodle.core package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="excel2moodle.ui.html">excel2moodle.ui package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">excel2moodle</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">User Reference</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/userReference.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="user-reference">
+<span id="userreference"></span><h1>User Reference<a class="headerlink" href="#user-reference" title="Link to this heading"></a></h1>
+<section id="structure-of-a-question-database">
+<h2>Structure of a question database<a class="headerlink" href="#structure-of-a-question-database" title="Link to this heading"></a></h2>
+<p>Each spreadsheet document must at least have three sheets:</p>
+<ol class="arabic">
+<li><p>One sheet named <code class="docutils literal notranslate"><span class="pre">settings</span></code> which stores project specific settings for this question database:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>In this sheet in the first column the tags below need to be written and in the second column the specific values for each tag.</p></li>
+<li><p>It must specify <code class="docutils literal notranslate"><span class="pre">categoriesSheet</span></code> with the name of the sheet, which lists the Categories.</p></li>
+<li><p>It must specify <code class="docutils literal notranslate"><span class="pre">imgFolder</span></code> which is the directory name for the pictures, <em>relativ</em> to the path of the spreadsheet itself.</p></li>
+<li><p>It may specify any of the tags listet in <a class="reference internal" href="#settingstags"><span class="std std-ref">Supported settings tags</span></a>
+Tags are listed in the first, their values in the second column.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>One sheet which stores the information about the different categories of questions.</p>
+<blockquote>
+<div><ul>
+<li><p>The name of this sheet must be as specified by <code class="docutils literal notranslate"><span class="pre">categoriesSheet</span></code> in the settings.</p></li>
+<li><p>It may/must have at least those columns:</p>
+<blockquote>
+<div><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">category</span></code><span class="classifier">mandatory</span></dt><dd><p>in this column all the different category identifiers are listet.
+Those identifiers must be coherent to the names of the sheets, which store the questions of for this category.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">description</span></code><span class="classifier">mandatory</span><span class="classifier">string | int</span></dt><dd><p>A short description of the category.
+This is later shown as the description for the category in <strong>moodle</strong> and in <strong>excel2moodle</strong></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">points</span></code><span class="classifier">optional</span><span class="classifier">float</span></dt><dd><p>The total points for each question of this category.
+If omitted, the Fallback points as specified in <code class="docutils literal notranslate"><span class="pre">settings</span></code> sheet is used.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">version</span></code><span class="classifier">optional</span><span class="classifier">int</span></dt><dd><p>The version of the question.
+If omitted, the default version as specified in <code class="docutils literal notranslate"><span class="pre">settings</span></code> sheet is used.</p>
+</dd>
+</dl>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>At least one category sheet, which stores all the questions in for that category.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The name of this sheet(s) must be as specified by <code class="docutils literal notranslate"><span class="pre">category</span></code> sheet</p></li>
+<li><p>The first column of this sheet list all the tags (refer to: <a class="reference internal" href="#tagdefinition"><span class="std std-ref">Question Tag Definitions</span></a>)
+in each of the folowing columns the values for each of the questions are provided.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ol>
+<section id="supported-settings-tags">
+<span id="settingstags"></span><h3>Supported settings tags<a class="headerlink" href="#supported-settings-tags" title="Link to this heading"></a></h3>
+<p>Below is a list of all supported settings which can be set in the <code class="docutils literal notranslate"><span class="pre">settings</span></code> sheet.
+None of them has to be set, if the defaults are to your liking.</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">points</span></code><span class="classifier">float</span><span class="classifier">default=1.0</span></dt><dd><p>Fallback value for the points for each question. Can be overridden by a definition in the categories sheet.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">version</span></code><span class="classifier">int</span><span class="classifier">default=1</span></dt><dd><p>Fallback version number of the question. Can be overriden by a definition in the categories sheet.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">tolerance</span></code><span class="classifier">int</span><span class="classifier">default=1</span></dt><dd><p>Fallback tolerance if the <code class="docutils literal notranslate"><span class="pre">NF</span></code> or <code class="docutils literal notranslate"><span class="pre">NFM</span></code> question doesn’t define it.
+See also <a class="reference internal" href="#tagdefinition"><span class="std std-ref">Question Tag Definitions</span></a> for details of how this value is treated.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">imgWidth</span></code><span class="classifier">int</span><span class="classifier">default=500</span></dt><dd><p>Width of the picture in the questions</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">imgPictureWidth</span></code><span class="classifier">int</span><span class="classifier">default=120</span></dt><dd><p>Width of the pictures set as answers for tho <code class="docutils literal notranslate"><span class="pre">MC</span></code> questions.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">imgFolder</span></code><span class="classifier">str</span><span class="classifier">default=Abbildungen</span></dt><dd><p>Folder where the images are stored, relative to the folder of the spreadsheet.
+Inside this Folder for each category a folder needs to be created with the same name as the category sheet.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="question-id-convention">
+<span id="questionid"></span><h2>Question ID convention<a class="headerlink" href="#question-id-convention" title="Link to this heading"></a></h2>
+<p>Each Question gets an unique 5 digit identifier consisting of three parts.</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>part is a one digit version number</p></li>
+<li><p>part is the two digit category number</p></li>
+<li><p>part is the two digit question number.</p></li>
+</ol>
+</div></blockquote>
+<p>Beispiel: <code class="docutils literal notranslate"><span class="pre">10613</span></code> ist die Frage <strong>13</strong> aus der Kategorie <strong>6</strong> in der Version 1</p>
+</section>
+<section id="supported-question-types">
+<h2>Supported Question Types<a class="headerlink" href="#supported-question-types" title="Link to this heading"></a></h2>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">MC</span></code><span class="classifier">Multiple Choice</span></dt><dd><p>This is the multiple choice question Type.
+It supports a main text and two list of answers. One with correct and one with incorrect answers.
+Optionally a picture can be shown below the main text.
+See <a class="reference internal" href="#tagdefinition"><span class="std std-ref">Question Tag Definitions</span></a> for an overview what needs to be specified.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">NF</span></code><span class="classifier">Numeric</span><span class="classifier">Einfach Berechnet</span></dt><dd><p>This is a question which expects an numeric answer.
+It consist of the main text, optionally a bullet Point list, where variables may be presented in a structured way.
+Optionally a picture can be included.
+See <a class="reference internal" href="#tagdefinition"><span class="std std-ref">Question Tag Definitions</span></a> for an overview what needs to be specified.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">NFM</span></code><span class="classifier">Numeric (multiple Variants)</span><span class="classifier">Einfach Berechnet (mehrfache Variation):</span></dt><dd><p>This is an easy way to serialize numerical Questions based on a set of Variables on which a result is calculated by <strong>excel2moodle</strong>
+When imported into <strong>moodle</strong> it is the same as the <code class="docutils literal notranslate"><span class="pre">NF</span></code> Question.
+When creating this question mostly the same rules apply as for the <code class="docutils literal notranslate"><span class="pre">NF</span></code> type.
+But instead of specifying the numeric answer, a formula is given, which will evaluated by <strong>excel2moodle</strong>
+Inside the formula variables need to be used.
+For each of these variables another <em>tag</em> is created in the spreadsheet to which a list of numbers need to be passed.
+For better understanding please have a look at <a class="reference internal" href="exampleQuestions.html#numericexample"><span class="std std-ref">Numerische Fragen</span></a>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">CLOZE</span></code><span class="classifier">Lückentext</span></dt><dd><div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.4.0: </span>This will be implemented in v0.4.0</p>
+</div>
+</dd>
+</dl>
+</section>
+<section id="question-tag-definitions">
+<span id="tagdefinition"></span><h2>Question Tag Definitions<a class="headerlink" href="#question-tag-definitions" title="Link to this heading"></a></h2>
+<p>When writing questions several important things must be considered, as the program still is quite buggy and likely to crash, when unexpected input is reached.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The following list shows all tags that need or may be declared in the spreadsheet.
+It has the following structure</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">tag</span></code><span class="classifier">classifier</span><span class="classifier">QuestionType</span></dt><dd><p>Description of what this tags does</p>
+</dd>
+</dl>
+<p>The first classifier shows weather this tag is optional or mandatory.
+Each tag may have slightly different meanings for each question type.</p>
+<p>For example: the <code class="docutils literal notranslate"><span class="pre">bulletPoints</span></code> tag is mandatory for <code class="docutils literal notranslate"><span class="pre">NFM</span></code> questions,
+but for <code class="docutils literal notranslate"><span class="pre">NF</span></code> questions it is optional.</p>
+</div>
+<section id="general-tags-for-all-question-types">
+<h3>General tags for all Question Types<a class="headerlink" href="#general-tags-for-all-question-types" title="Link to this heading"></a></h3>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">number</span></code><span class="classifier">mandatory</span><span class="classifier">ALL</span></dt><dd><p>The number of the question</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">type</span></code><span class="classifier">mandatory</span><span class="classifier">ALL</span></dt><dd><p>Any of <code class="docutils literal notranslate"><span class="pre">NFM</span></code>, <code class="docutils literal notranslate"><span class="pre">NF</span></code>, <code class="docutils literal notranslate"><span class="pre">MC</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">name</span></code><span class="classifier">mandatory</span><span class="classifier">ALL</span></dt><dd><p>The internal name of the question, not the title that will be seen when the question is viewed</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">text</span></code><span class="classifier">mandatory</span><span class="classifier">ALL</span></dt><dd><p>The question text. At least one of these must be filled out. If it occurs more than once, a new paragraph gets added for each.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">picture</span></code><span class="classifier">optional</span><span class="classifier">ALL</span></dt><dd><p>If left empty, no picture will be included
+All pictures have to be in the folder specified in the <code class="docutils literal notranslate"><span class="pre">settings</span></code> by the <code class="docutils literal notranslate"><span class="pre">imgFolder</span></code> Tag (see also: <a class="reference internal" href="#settingstags"><span class="std std-ref">Supported settings tags</span></a>)
+If a picture with the same ID as the question should be included, <code class="docutils literal notranslate"><span class="pre">true</span></code> or <code class="docutils literal notranslate"><span class="pre">yes</span></code> or the number of the question can be written here.
+If a picture from another question (in the same category) should be used, write the number of that question:
+The Width or Height of the question can be set by appending <code class="docutils literal notranslate"><span class="pre">:width:600</span></code> to the number.</p>
+<p>Examples (for questions inside category <em>6</em> with version <em>1</em>, see also: <a class="reference internal" href="#questionid"><span class="std std-ref">Question ID convention</span></a>):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">15:width:650</span></code> will include the picture <code class="docutils literal notranslate"><span class="pre">imgFolder/KAT_06/10615.jpg</span></code> and set its width to <em>650</em> px.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">1_a:height:90</span></code> will include the picture <code class="docutils literal notranslate"><span class="pre">imgFolder/KAT_06/10601_a.jpg</span></code> and set its height to <em>90</em> px.</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="specific-tags-for-question-types">
+<h3>Specific tags for question Types<a class="headerlink" href="#specific-tags-for-question-types" title="Link to this heading"></a></h3>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">true</span></code><span class="classifier">mandatory</span><span class="classifier">MC</span></dt><dd><p>One true answer. For each true answer this tag can be specified.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">false</span></code><span class="classifier">mandatory</span><span class="classifier">MC</span></dt><dd><p>One false answers. For each wrong answer this tag can be specified.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">answerType</span></code><span class="classifier">mandatory</span><span class="classifier">MC</span></dt><dd><p>controls the formatting of the answers
+either <em>text</em>, <em>formula</em>, <em>unit</em>, or <em>picture</em></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">bulletPoint</span></code><span class="classifier">optional</span><span class="classifier">NF</span></dt><dd><p>One bullet point it consists of four parts</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Name: (Example: <em>length</em>)</p></li>
+<li><p>Variable Name: (Example <em>l</em> )</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">=</span></code>-Sign</p></li>
+<li><p>Value:  (Example <em>5.4</em>)</p></li>
+<li><p>Si-Unit: (Example <em>m</em>)</p></li>
+</ol>
+</div></blockquote>
+<p>A list of bullet points can be created by defining multiple times the tag <code class="docutils literal notranslate"><span class="pre">bulletPoint</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">bulletPoint</span></code><span class="classifier">mandatory</span><span class="classifier">NFM</span></dt><dd><p>list of bullet points separated by <code class="docutils literal notranslate"><span class="pre">;</span></code>, each bullet Points consist of 4 parts:
+The only difference to the NF bullet point is the use of variables instead of values.</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Name: (Example: <em>length</em>)</p></li>
+<li><p>Variable Name: (Example <em>l</em> )</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">=</span></code>-Sign</p></li>
+<li><p>Variable:  (Example <em>{l}</em>): must be one letter enclosed by curly braces</p></li>
+<li><p>Si-Unit: (Example <em>m</em>)</p></li>
+</ol>
+</div></blockquote>
+<p>A list of bullet points can be created by defining multiple times the tag <code class="docutils literal notranslate"><span class="pre">bulletPoint</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">result</span></code><span class="classifier">mandatory</span><span class="classifier">NF</span></dt><dd><p>the value of the result. Decimal separator must be a <code class="docutils literal notranslate"><span class="pre">.</span></code> dot.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">result</span></code><span class="classifier">mandatory</span><span class="classifier">NFM</span></dt><dd><p>formula to calculate the result. Must follow those rules.</p>
+<ul class="simple">
+<li><p>Decimal separator must be a <code class="docutils literal notranslate"><span class="pre">.</span></code> dot.</p></li>
+<li><p>Variables must <strong>not</strong> be encapsulated by <code class="docutils literal notranslate"><span class="pre">{curly}</span></code> braces.</p></li>
+<li><p>Example: <code class="docutils literal notranslate"><span class="pre">3.7*a/(b+4*c)-a**2/4</span></code> is a valid representation of <span class="math notranslate nohighlight">\(\frac{3.7}{b+4c}-a^{2/4}\)</span></p></li>
+<li><p>All available functions are are listed in <a class="reference external" href="https://lmfit.github.io/asteval/basics.html#built-in-functions">asteval built in functions</a></p></li>
+<li><p>Each variable <code class="docutils literal notranslate"><span class="pre">a,</span> <span class="pre">b,</span> <span class="pre">c</span></code> needs to be set as a new <em>tag</em> in the spreadsheet.
+For each of those variables a list of values needs to be given. Each value needs to be separated by a semicolon
+Each variable name may use any number of letters and numbers, without spaces or special characters.</p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>excel2moodle uses the <a class="reference external" href="https://lmfit.github.io/asteval/index.html">ASTEVAL: Minmal Python AST Interpreter</a>, for parsing the mathematical expressions.
+Broadly speaking the code of <code class="docutils literal notranslate"><span class="pre">result</span></code> is executed in a more isolated environment to not harm your computer.
+This makes it harder for malicious code being executed.
+But still there is a potential security risk when executing external code. Therefore always make sure the <code class="docutils literal notranslate"><span class="pre">result</span></code> field does not contain code,
+that could harm your machine.</p>
+</div>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">tolerance</span></code><span class="classifier">optional</span><span class="classifier">NF</span><span class="classifier">NFM</span></dt><dd><p>absolute tolerance in which the answer is considered true.
+Fraction <code class="docutils literal notranslate"><span class="pre">0.01</span></code> or percent <code class="docutils literal notranslate"><span class="pre">1</span></code> Both would be interpreted as a relative Tolerance of <span class="math notranslate nohighlight">\(\pm 1\%\)</span></p>
+<ul class="simple">
+<li><p>Any value below <span class="math notranslate nohighlight">\(1\)</span> will be interpreted as a fraction. <span class="math notranslate nohighlight">\(0.8\)</span> would give <span class="math notranslate nohighlight">\(\pm 80\%\)</span> tolerance.</p></li>
+<li><p>Any value above <span class="math notranslate nohighlight">\(1\)</span> will be interpreted as percentage: <span class="math notranslate nohighlight">\(1.3\)</span> would give <span class="math notranslate nohighlight">\(\pm 1.3\%\)</span> tolerance.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If no tolerance is specified for the question, the tolerance from the settings sheet is used.
+The tolerance definition in the question takes precedence over that in the settings sheet.</p>
+</div>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">unit</span></code><span class="classifier">optional</span><span class="classifier">NF</span><span class="classifier">NFM</span></dt><dd><p>‘not yet implemented’</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">firstResult</span></code><span class="classifier">optional</span><span class="classifier">NFM</span></dt><dd><p>but recommended to verify the <em>formula</em> inside <code class="docutils literal notranslate"><span class="pre">result</span></code> with the equation-checker tool.</p>
+</dd>
+</dl>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="howto.html" class="btn btn-neutral float-left" title="How To - Schritt für Schritt Anleitung" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="exampleQuestions.html" class="btn btn-neutral float-right" title="Fragenbeispiele" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Jakob Bosse.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

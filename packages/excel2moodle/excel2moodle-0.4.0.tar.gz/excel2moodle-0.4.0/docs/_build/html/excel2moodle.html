@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>excel2moodle package &mdash; excel2moodle 0.4.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=6c02275b"></script>
+        <script src="_static/doctools.js?v=9bcbadda"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="excel2moodle.core package" href="excel2moodle.core.html" />
+    <link rel="prev" title="Fragenbeispiele" href="exampleQuestions.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            excel2moodle
+          </a>
+              <div class="version">
+                0.4.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="howto.html">How To - Schritt für Schritt Anleitung</a></li>
+<li class="toctree-l1"><a class="reference internal" href="userReference.html">User Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exampleQuestions.html">Fragenbeispiele</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">excel2moodle package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#concept">Concept</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#functionality">Functionality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#excel2moodle.isMainState"><code class="docutils literal notranslate"><span class="pre">isMainState()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.core.html">excel2moodle.core package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.extra.html">excel2moodle.extra package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.ui.html">excel2moodle.ui package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="excel2moodle.extra.html">excel2moodle.extra package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="excel2moodle.core.html">excel2moodle.core package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="excel2moodle.ui.html">excel2moodle.ui package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">excel2moodle</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">excel2moodle package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/excel2moodle.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-excel2moodle">
+<span id="excel2moodle-package"></span><h1>excel2moodle package<a class="headerlink" href="#module-excel2moodle" title="Link to this heading"></a></h1>
+<p>This Python program helps to create Moodle questions in less time.</p>
+<p>The aim is to put alle the information for the questions into a spreadsheet
+file, and then parse it, to generate Moodle compliant XML-Files.
+Furthermore this program lets you create a single <code class="docutils literal notranslate"><span class="pre">.xml</span></code>-File with a selection
+of questions, that then can be imported to a Moodle-Test.</p>
+<section id="concept">
+<h2>Concept<a class="headerlink" href="#concept" title="Link to this heading"></a></h2>
+<p>The concept is, to store the different questions into categories of similar
+types and difficulties of questions, for each of which, a separated sheet in
+the Spreadsheet document should be created.</p>
+<p>There Should be a sheet called <em>“Kategorien”</em>, where an overview over the
+different categories is stored.
+This sheet stores The names and descriptions, for all categories.
+The name have to be the same as the actual sheet names with the questions.
+Furthermore the points used for grading, are set in the “Kategorien” sheet</p>
+</section>
+<section id="functionality">
+<h2>Functionality<a class="headerlink" href="#functionality" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Parse multiple Choice Questions, each into one XML file</p></li>
+<li><p>Parse Numeric Questions, each into one XML file</p></li>
+<li><p>create single XML File from a selection of questions</p></li>
+</ul>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="excel2moodle.isMainState">
+<span class="sig-prename descclassname"><span class="pre">excel2moodle.</span></span><span class="sig-name descname"><span class="pre">isMainState</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/excel2moodle.html#isMainState"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel2moodle.isMainState" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="excel2moodle.core.html">excel2moodle.core package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="excel2moodle.core.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="excel2moodle.core.html#module-excel2moodle.core.category">excel2moodle.core.category module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.category.Category"><code class="docutils literal notranslate"><span class="pre">Category</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.category.Category.getCategoryHeader"><code class="docutils literal notranslate"><span class="pre">Category.getCategoryHeader()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.category.Category.id"><code class="docutils literal notranslate"><span class="pre">Category.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.category.Category.name"><code class="docutils literal notranslate"><span class="pre">Category.name</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="excel2moodle.core.html#module-excel2moodle.core.dataStructure">excel2moodle.core.dataStructure module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.dataStructure.QuestionDB"><code class="docutils literal notranslate"><span class="pre">QuestionDB</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.dataStructure.QuestionDB.appendQElements"><code class="docutils literal notranslate"><span class="pre">QuestionDB.appendQElements()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.dataStructure.QuestionDB.appendQuestions"><code class="docutils literal notranslate"><span class="pre">QuestionDB.appendQuestions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.dataStructure.QuestionDB.asyncInitAllCategories"><code class="docutils literal notranslate"><span class="pre">QuestionDB.asyncInitAllCategories()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.dataStructure.QuestionDB.initAllCategories"><code class="docutils literal notranslate"><span class="pre">QuestionDB.initAllCategories()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.dataStructure.QuestionDB.initCategory"><code class="docutils literal notranslate"><span class="pre">QuestionDB.initCategory()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.dataStructure.QuestionDB.mcParser"><code class="docutils literal notranslate"><span class="pre">QuestionDB.mcParser</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.dataStructure.QuestionDB.nfParser"><code class="docutils literal notranslate"><span class="pre">QuestionDB.nfParser</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.dataStructure.QuestionDB.nfmParser"><code class="docutils literal notranslate"><span class="pre">QuestionDB.nfmParser</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.dataStructure.QuestionDB.parseAllQuestions"><code class="docutils literal notranslate"><span class="pre">QuestionDB.parseAllQuestions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.dataStructure.QuestionDB.parseCategoryQuestions"><code class="docutils literal notranslate"><span class="pre">QuestionDB.parseCategoryQuestions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.dataStructure.QuestionDB.readCategoriesMetadata"><code class="docutils literal notranslate"><span class="pre">QuestionDB.readCategoriesMetadata()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.dataStructure.QuestionDB.setupAndParseQuestion"><code class="docutils literal notranslate"><span class="pre">QuestionDB.setupAndParseQuestion()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.dataStructure.QuestionDB.signals"><code class="docutils literal notranslate"><span class="pre">QuestionDB.signals</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.dataStructure.QuestionDB.validator"><code class="docutils literal notranslate"><span class="pre">QuestionDB.validator</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.dataStructure.QuestionDBSignals"><code class="docutils literal notranslate"><span class="pre">QuestionDBSignals</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.dataStructure.QuestionDBSignals.categoryQuestionsReady"><code class="docutils literal notranslate"><span class="pre">QuestionDBSignals.categoryQuestionsReady</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.dataStructure.QuestionDBSignals.categoryReady"><code class="docutils literal notranslate"><span class="pre">QuestionDBSignals.categoryReady</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.dataStructure.QuestionDBSignals.staticMetaObject"><code class="docutils literal notranslate"><span class="pre">QuestionDBSignals.staticMetaObject</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.dataStructure.processSheet"><code class="docutils literal notranslate"><span class="pre">processSheet()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="excel2moodle.core.html#module-excel2moodle.core.etHelpers">excel2moodle.core.etHelpers module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.etHelpers.getCdatTxtElement"><code class="docutils literal notranslate"><span class="pre">getCdatTxtElement()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.etHelpers.getElement"><code class="docutils literal notranslate"><span class="pre">getElement()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.etHelpers.getFeedBEle"><code class="docutils literal notranslate"><span class="pre">getFeedBEle()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.etHelpers.getTextElement"><code class="docutils literal notranslate"><span class="pre">getTextElement()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="excel2moodle.core.html#module-excel2moodle.core.exceptions">excel2moodle.core.exceptions module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.exceptions.InvalidFieldException"><code class="docutils literal notranslate"><span class="pre">InvalidFieldException</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.exceptions.NanException"><code class="docutils literal notranslate"><span class="pre">NanException</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.exceptions.QNotParsedException"><code class="docutils literal notranslate"><span class="pre">QNotParsedException</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="excel2moodle.core.html#module-excel2moodle.core.globals">excel2moodle.core.globals module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.DFIndex"><code class="docutils literal notranslate"><span class="pre">DFIndex</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.DFIndex.ANSTYPE"><code class="docutils literal notranslate"><span class="pre">DFIndex.ANSTYPE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.DFIndex.BPOINTS"><code class="docutils literal notranslate"><span class="pre">DFIndex.BPOINTS</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.DFIndex.FALSE"><code class="docutils literal notranslate"><span class="pre">DFIndex.FALSE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.DFIndex.NAME"><code class="docutils literal notranslate"><span class="pre">DFIndex.NAME</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.DFIndex.NUMBER"><code class="docutils literal notranslate"><span class="pre">DFIndex.NUMBER</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.DFIndex.PICTURE"><code class="docutils literal notranslate"><span class="pre">DFIndex.PICTURE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.DFIndex.RESULT"><code class="docutils literal notranslate"><span class="pre">DFIndex.RESULT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.DFIndex.TEXT"><code class="docutils literal notranslate"><span class="pre">DFIndex.TEXT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.DFIndex.TOLERANCE"><code class="docutils literal notranslate"><span class="pre">DFIndex.TOLERANCE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.DFIndex.TRUE"><code class="docutils literal notranslate"><span class="pre">DFIndex.TRUE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.DFIndex.TYPE"><code class="docutils literal notranslate"><span class="pre">DFIndex.TYPE</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.TextElements"><code class="docutils literal notranslate"><span class="pre">TextElements</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.TextElements.LISTITEM"><code class="docutils literal notranslate"><span class="pre">TextElements.LISTITEM</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.TextElements.PLEFT"><code class="docutils literal notranslate"><span class="pre">TextElements.PLEFT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.TextElements.SPANGREEN"><code class="docutils literal notranslate"><span class="pre">TextElements.SPANGREEN</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.TextElements.SPANORANGE"><code class="docutils literal notranslate"><span class="pre">TextElements.SPANORANGE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.TextElements.SPANRED"><code class="docutils literal notranslate"><span class="pre">TextElements.SPANRED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.TextElements.ULIST"><code class="docutils literal notranslate"><span class="pre">TextElements.ULIST</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.TextElements.create"><code class="docutils literal notranslate"><span class="pre">TextElements.create()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.TextElements.style"><code class="docutils literal notranslate"><span class="pre">TextElements.style</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.XMLTags"><code class="docutils literal notranslate"><span class="pre">XMLTags</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.XMLTags.ANSFEEDBACK"><code class="docutils literal notranslate"><span class="pre">XMLTags.ANSFEEDBACK</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.XMLTags.ANSWER"><code class="docutils literal notranslate"><span class="pre">XMLTags.ANSWER</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.XMLTags.CORFEEDB"><code class="docutils literal notranslate"><span class="pre">XMLTags.CORFEEDB</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.XMLTags.GENFEEDB"><code class="docutils literal notranslate"><span class="pre">XMLTags.GENFEEDB</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.XMLTags.HIDE"><code class="docutils literal notranslate"><span class="pre">XMLTags.HIDE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.XMLTags.ID"><code class="docutils literal notranslate"><span class="pre">XMLTags.ID</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.XMLTags.INCORFEEDB"><code class="docutils literal notranslate"><span class="pre">XMLTags.INCORFEEDB</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.XMLTags.NAME"><code class="docutils literal notranslate"><span class="pre">XMLTags.NAME</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.XMLTags.PCORFEEDB"><code class="docutils literal notranslate"><span class="pre">XMLTags.PCORFEEDB</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.XMLTags.PENALTY"><code class="docutils literal notranslate"><span class="pre">XMLTags.PENALTY</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.XMLTags.PICTURE"><code class="docutils literal notranslate"><span class="pre">XMLTags.PICTURE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.XMLTags.POINTS"><code class="docutils literal notranslate"><span class="pre">XMLTags.POINTS</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.XMLTags.QTEXT"><code class="docutils literal notranslate"><span class="pre">XMLTags.QTEXT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.XMLTags.QUESTION"><code class="docutils literal notranslate"><span class="pre">XMLTags.QUESTION</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.XMLTags.TEXT"><code class="docutils literal notranslate"><span class="pre">XMLTags.TEXT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.XMLTags.TOLERANCE"><code class="docutils literal notranslate"><span class="pre">XMLTags.TOLERANCE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.XMLTags.TYPE"><code class="docutils literal notranslate"><span class="pre">XMLTags.TYPE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.XMLTags.dfkey"><code class="docutils literal notranslate"><span class="pre">XMLTags.dfkey</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.globals.XMLTags.set"><code class="docutils literal notranslate"><span class="pre">XMLTags.set()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="excel2moodle.core.html#module-excel2moodle.core.numericMultiQ">excel2moodle.core.numericMultiQ module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.numericMultiQ.getVariablesDict"><code class="docutils literal notranslate"><span class="pre">getVariablesDict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.numericMultiQ.getVarsList"><code class="docutils literal notranslate"><span class="pre">getVarsList()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.numericMultiQ.insertVariablesToBPoints"><code class="docutils literal notranslate"><span class="pre">insertVariablesToBPoints()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.numericMultiQ.parseNumericMultiQuestion"><code class="docutils literal notranslate"><span class="pre">parseNumericMultiQuestion()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.numericMultiQ.setParameters"><code class="docutils literal notranslate"><span class="pre">setParameters()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="excel2moodle.core.html#module-excel2moodle.core.parser">excel2moodle.core.parser module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.parser.QuestionParser"><code class="docutils literal notranslate"><span class="pre">QuestionParser</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.parser.QuestionParser.appendToTmpEle"><code class="docutils literal notranslate"><span class="pre">QuestionParser.appendToTmpEle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.parser.QuestionParser.formatBulletList"><code class="docutils literal notranslate"><span class="pre">QuestionParser.formatBulletList()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.parser.QuestionParser.getFeedBEle"><code class="docutils literal notranslate"><span class="pre">QuestionParser.getFeedBEle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.parser.QuestionParser.getNumericAnsElement"><code class="docutils literal notranslate"><span class="pre">QuestionParser.getNumericAnsElement()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.parser.QuestionParser.hasPicture"><code class="docutils literal notranslate"><span class="pre">QuestionParser.hasPicture()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.parser.QuestionParser.parse"><code class="docutils literal notranslate"><span class="pre">QuestionParser.parse()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.parser.QuestionParser.setAnswers"><code class="docutils literal notranslate"><span class="pre">QuestionParser.setAnswers()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.parser.QuestionParser.setBPoints"><code class="docutils literal notranslate"><span class="pre">QuestionParser.setBPoints()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.parser.QuestionParser.setMainText"><code class="docutils literal notranslate"><span class="pre">QuestionParser.setMainText()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.parser.QuestionParser.settings"><code class="docutils literal notranslate"><span class="pre">QuestionParser.settings</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.parser.QuestionParser.setup"><code class="docutils literal notranslate"><span class="pre">QuestionParser.setup()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="excel2moodle.core.html#module-excel2moodle.core.question">excel2moodle.core.question module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.question.Picture"><code class="docutils literal notranslate"><span class="pre">Picture</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.question.Picture.getImgId"><code class="docutils literal notranslate"><span class="pre">Picture.getImgId()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.question.Question"><code class="docutils literal notranslate"><span class="pre">Question</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.question.Question.addStandardTags"><code class="docutils literal notranslate"><span class="pre">Question.addStandardTags()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.question.Question.assemble"><code class="docutils literal notranslate"><span class="pre">Question.assemble()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.question.Question.getBPointVariant"><code class="docutils literal notranslate"><span class="pre">Question.getBPointVariant()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.question.Question.setID"><code class="docutils literal notranslate"><span class="pre">Question.setID()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.question.Question.standardTags"><code class="docutils literal notranslate"><span class="pre">Question.standardTags</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="excel2moodle.core.html#module-excel2moodle.core.validator">excel2moodle.core.validator module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.validator.Validator"><code class="docutils literal notranslate"><span class="pre">Validator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.validator.Validator.getQuestionRawData"><code class="docutils literal notranslate"><span class="pre">Validator.getQuestionRawData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.validator.Validator.setup"><code class="docutils literal notranslate"><span class="pre">Validator.setup()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.validator.Validator.validate"><code class="docutils literal notranslate"><span class="pre">Validator.validate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="excel2moodle.core.html#module-excel2moodle.core.settings">excel2moodle.ui.settings module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.settings.Settings"><code class="docutils literal notranslate"><span class="pre">Settings</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.settings.Settings.get"><code class="docutils literal notranslate"><span class="pre">Settings.get()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.settings.Settings.localSettings"><code class="docutils literal notranslate"><span class="pre">Settings.localSettings</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.settings.Settings.set"><code class="docutils literal notranslate"><span class="pre">Settings.set()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.settings.Settings.setSpreadsheet"><code class="docutils literal notranslate"><span class="pre">Settings.setSpreadsheet()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.settings.Settings.shPathChanged"><code class="docutils literal notranslate"><span class="pre">Settings.shPathChanged</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.settings.Settings.staticMetaObject"><code class="docutils literal notranslate"><span class="pre">Settings.staticMetaObject</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.settings.SettingsKey"><code class="docutils literal notranslate"><span class="pre">SettingsKey</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.settings.SettingsKey.ANSPICWIDTH"><code class="docutils literal notranslate"><span class="pre">SettingsKey.ANSPICWIDTH</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.settings.SettingsKey.CATEGORIESSHEET"><code class="docutils literal notranslate"><span class="pre">SettingsKey.CATEGORIESSHEET</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.settings.SettingsKey.INCLUDEINCATS"><code class="docutils literal notranslate"><span class="pre">SettingsKey.INCLUDEINCATS</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.settings.SettingsKey.LOGFILE"><code class="docutils literal notranslate"><span class="pre">SettingsKey.LOGFILE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.settings.SettingsKey.LOGLEVEL"><code class="docutils literal notranslate"><span class="pre">SettingsKey.LOGLEVEL</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.settings.SettingsKey.PICTUREFOLDER"><code class="docutils literal notranslate"><span class="pre">SettingsKey.PICTUREFOLDER</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.settings.SettingsKey.PICTURESUBFOLDER"><code class="docutils literal notranslate"><span class="pre">SettingsKey.PICTURESUBFOLDER</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.settings.SettingsKey.PICTUREWIDTH"><code class="docutils literal notranslate"><span class="pre">SettingsKey.PICTUREWIDTH</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.settings.SettingsKey.POINTS"><code class="docutils literal notranslate"><span class="pre">SettingsKey.POINTS</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.settings.SettingsKey.QUESTIONVARIANT"><code class="docutils literal notranslate"><span class="pre">SettingsKey.QUESTIONVARIANT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.settings.SettingsKey.SPREADSHEETFOLDER"><code class="docutils literal notranslate"><span class="pre">SettingsKey.SPREADSHEETFOLDER</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.settings.SettingsKey.TOLERANCE"><code class="docutils literal notranslate"><span class="pre">SettingsKey.TOLERANCE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.settings.SettingsKey.VERSION"><code class="docutils literal notranslate"><span class="pre">SettingsKey.VERSION</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.settings.SettingsKey.default"><code class="docutils literal notranslate"><span class="pre">SettingsKey.default</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.settings.SettingsKey.full"><code class="docutils literal notranslate"><span class="pre">SettingsKey.full</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.settings.SettingsKey.place"><code class="docutils literal notranslate"><span class="pre">SettingsKey.place</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.settings.SettingsKey.typ"><code class="docutils literal notranslate"><span class="pre">SettingsKey.typ()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="excel2moodle.core.html#module-excel2moodle.core.stringHelpers">excel2moodle.core.stringHelpers module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.stringHelpers.getBase64Img"><code class="docutils literal notranslate"><span class="pre">getBase64Img()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.stringHelpers.getListFromStr"><code class="docutils literal notranslate"><span class="pre">getListFromStr()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.stringHelpers.getUnitsElementAsString"><code class="docutils literal notranslate"><span class="pre">getUnitsElementAsString()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.stringHelpers.printDom"><code class="docutils literal notranslate"><span class="pre">printDom()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.stringHelpers.stringToFloat"><code class="docutils literal notranslate"><span class="pre">stringToFloat()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.core.html#excel2moodle.core.stringHelpers.texWrapper"><code class="docutils literal notranslate"><span class="pre">texWrapper()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="excel2moodle.extra.html">excel2moodle.extra package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="excel2moodle.extra.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="excel2moodle.extra.html#module-excel2moodle.extra.equationVerification">excel2moodle.extra.equationVerification module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.extra.html#usage">Usage</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.extra.html#from-the-main-ui">From the main UI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.extra.html#as-script">As Script</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.extra.html#excel2moodle.extra.equationVerification.checkResult"><code class="docutils literal notranslate"><span class="pre">checkResult()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.extra.html#excel2moodle.extra.equationVerification.equationChecker"><code class="docutils literal notranslate"><span class="pre">equationChecker()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.extra.html#excel2moodle.extra.equationVerification.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="excel2moodle.ui.html">excel2moodle.ui package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="excel2moodle.ui.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="excel2moodle.ui.html#module-excel2moodle.ui.appUi">excel2moodle.ui.appUi module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.appUi.EqCheckerWindow"><code class="docutils literal notranslate"><span class="pre">EqCheckerWindow</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.appUi.EqCheckerWindow.onButRunCheck"><code class="docutils literal notranslate"><span class="pre">EqCheckerWindow.onButRunCheck()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.appUi.EqCheckerWindow.staticMetaObject"><code class="docutils literal notranslate"><span class="pre">EqCheckerWindow.staticMetaObject</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.appUi.MainWindow"><code class="docutils literal notranslate"><span class="pre">MainWindow</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.appUi.MainWindow.actionSpreadsheet"><code class="docutils literal notranslate"><span class="pre">MainWindow.actionSpreadsheet()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.appUi.MainWindow.closeEvent"><code class="docutils literal notranslate"><span class="pre">MainWindow.closeEvent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.appUi.MainWindow.connectEvents"><code class="docutils literal notranslate"><span class="pre">MainWindow.connectEvents()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.appUi.MainWindow.onButGenTest"><code class="docutils literal notranslate"><span class="pre">MainWindow.onButGenTest()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.appUi.MainWindow.onSelectionChanged"><code class="docutils literal notranslate"><span class="pre">MainWindow.onSelectionChanged()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.appUi.MainWindow.onSheetPathChanged"><code class="docutils literal notranslate"><span class="pre">MainWindow.onSheetPathChanged()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.appUi.MainWindow.openAboutDlg"><code class="docutils literal notranslate"><span class="pre">MainWindow.openAboutDlg()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.appUi.MainWindow.openDocumentation"><code class="docutils literal notranslate"><span class="pre">MainWindow.openDocumentation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.appUi.MainWindow.openEqCheckerDlg"><code class="docutils literal notranslate"><span class="pre">MainWindow.openEqCheckerDlg()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.appUi.MainWindow.parseSpreadsheetAll"><code class="docutils literal notranslate"><span class="pre">MainWindow.parseSpreadsheetAll()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.appUi.MainWindow.setIncludeCategoriesSetting"><code class="docutils literal notranslate"><span class="pre">MainWindow.setIncludeCategoriesSetting()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.appUi.MainWindow.setQVariantDefault"><code class="docutils literal notranslate"><span class="pre">MainWindow.setQVariantDefault()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.appUi.MainWindow.setStatus"><code class="docutils literal notranslate"><span class="pre">MainWindow.setStatus()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.appUi.MainWindow.staticMetaObject"><code class="docutils literal notranslate"><span class="pre">MainWindow.staticMetaObject</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.appUi.MainWindow.toggleQuestionSelectionState"><code class="docutils literal notranslate"><span class="pre">MainWindow.toggleQuestionSelectionState()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.appUi.MainWindow.treeRefreshCategory"><code class="docutils literal notranslate"><span class="pre">MainWindow.treeRefreshCategory()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.appUi.MainWindow.updateLog"><code class="docutils literal notranslate"><span class="pre">MainWindow.updateLog()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.appUi.MainWindow.updateQuestionPreview"><code class="docutils literal notranslate"><span class="pre">MainWindow.updateQuestionPreview()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.appUi.ParseAllThread"><code class="docutils literal notranslate"><span class="pre">ParseAllThread</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.appUi.ParseAllThread.run"><code class="docutils literal notranslate"><span class="pre">ParseAllThread.run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="excel2moodle.ui.html#module-excel2moodle.ui.dialogs">excel2moodle.ui.dialogs module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.dialogs.AboutDialog"><code class="docutils literal notranslate"><span class="pre">AboutDialog</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.dialogs.AboutDialog.staticMetaObject"><code class="docutils literal notranslate"><span class="pre">AboutDialog.staticMetaObject</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.dialogs.ExportDialog"><code class="docutils literal notranslate"><span class="pre">ExportDialog</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.dialogs.ExportDialog.staticMetaObject"><code class="docutils literal notranslate"><span class="pre">ExportDialog.staticMetaObject</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.dialogs.QuestionPreview"><code class="docutils literal notranslate"><span class="pre">QuestionPreview</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.dialogs.QuestionPreview.setAnswers"><code class="docutils literal notranslate"><span class="pre">QuestionPreview.setAnswers()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.dialogs.QuestionPreview.setPicture"><code class="docutils literal notranslate"><span class="pre">QuestionPreview.setPicture()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.dialogs.QuestionPreview.setText"><code class="docutils literal notranslate"><span class="pre">QuestionPreview.setText()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.dialogs.QuestionPreview.setupQuestion"><code class="docutils literal notranslate"><span class="pre">QuestionPreview.setupQuestion()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.dialogs.QuestionVariantDialog"><code class="docutils literal notranslate"><span class="pre">QuestionVariantDialog</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.dialogs.QuestionVariantDialog.categoryWide"><code class="docutils literal notranslate"><span class="pre">QuestionVariantDialog.categoryWide</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.dialogs.QuestionVariantDialog.staticMetaObject"><code class="docutils literal notranslate"><span class="pre">QuestionVariantDialog.staticMetaObject</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.dialogs.QuestionVariantDialog.variant"><code class="docutils literal notranslate"><span class="pre">QuestionVariantDialog.variant</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="excel2moodle.ui.html#module-excel2moodle.ui.questionPreviewDialog">excel2moodle.ui.questionPreviewDialog module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.questionPreviewDialog.Ui_QuestionPrevDialog"><code class="docutils literal notranslate"><span class="pre">Ui_QuestionPrevDialog</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.questionPreviewDialog.Ui_QuestionPrevDialog.retranslateUi"><code class="docutils literal notranslate"><span class="pre">Ui_QuestionPrevDialog.retranslateUi()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.questionPreviewDialog.Ui_QuestionPrevDialog.setupUi"><code class="docutils literal notranslate"><span class="pre">Ui_QuestionPrevDialog.setupUi()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="excel2moodle.ui.html#module-excel2moodle.ui.treewidget">excel2moodle.ui.treewidget module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.treewidget.CategoryItem"><code class="docutils literal notranslate"><span class="pre">CategoryItem</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.treewidget.CategoryItem.getCategory"><code class="docutils literal notranslate"><span class="pre">CategoryItem.getCategory()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.treewidget.CategoryItem.getMaxVariants"><code class="docutils literal notranslate"><span class="pre">CategoryItem.getMaxVariants()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.treewidget.CategoryItem.iterateChildren"><code class="docutils literal notranslate"><span class="pre">CategoryItem.iterateChildren()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.treewidget.QuestionItem"><code class="docutils literal notranslate"><span class="pre">QuestionItem</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.treewidget.QuestionItem.getQuestion"><code class="docutils literal notranslate"><span class="pre">QuestionItem.getQuestion()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="excel2moodle.ui.html#module-excel2moodle.ui.variantDialog">excel2moodle.ui.variantDialog module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.variantDialog.Ui_Dialog"><code class="docutils literal notranslate"><span class="pre">Ui_Dialog</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.variantDialog.Ui_Dialog.retranslateUi"><code class="docutils literal notranslate"><span class="pre">Ui_Dialog.retranslateUi()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.variantDialog.Ui_Dialog.setupUi"><code class="docutils literal notranslate"><span class="pre">Ui_Dialog.setupUi()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="excel2moodle.ui.html#module-excel2moodle.ui.windowEquationChecker">excel2moodle.ui.windowEquationChecker module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.windowEquationChecker.Ui_EquationChecker"><code class="docutils literal notranslate"><span class="pre">Ui_EquationChecker</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.windowEquationChecker.Ui_EquationChecker.retranslateUi"><code class="docutils literal notranslate"><span class="pre">Ui_EquationChecker.retranslateUi()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.windowEquationChecker.Ui_EquationChecker.setupUi"><code class="docutils literal notranslate"><span class="pre">Ui_EquationChecker.setupUi()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="excel2moodle.ui.html#module-excel2moodle.ui.windowMain">excel2moodle.ui.windowMain module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.windowMain.Ui_MoodleTestGenerator"><code class="docutils literal notranslate"><span class="pre">Ui_MoodleTestGenerator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.windowMain.Ui_MoodleTestGenerator.retranslateUi"><code class="docutils literal notranslate"><span class="pre">Ui_MoodleTestGenerator.retranslateUi()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel2moodle.ui.html#excel2moodle.ui.windowMain.Ui_MoodleTestGenerator.setupUi"><code class="docutils literal notranslate"><span class="pre">Ui_MoodleTestGenerator.setupUi()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="exampleQuestions.html" class="btn btn-neutral float-left" title="Fragenbeispiele" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="excel2moodle.core.html" class="btn btn-neutral float-right" title="excel2moodle.core package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Jakob Bosse.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
