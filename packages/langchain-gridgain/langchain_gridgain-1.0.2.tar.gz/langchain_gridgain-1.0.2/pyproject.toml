@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "langchain-gridgain"
+version = "1.0.2"
+authors = [
+    {name = "Manini Puranik", email = "manini.puranik@gridgain.com"},
+    {name = "Aditi Sharma", email = "aditi.sharma@gridgain.com"}
+]
+description = "This package makes it possible to use Gridgain as a Vector Store, Document Loader, LLM Cache, Key Value Store, Chat Memory within langchain "
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "langchain == 0.3.21",
+    "langchain-community~=0.3.20",
+    "pyignite == 0.6.1",
+    "pygridgain == 1.5.0"
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-asyncio",
+]
+coverage = [
+    "pytest-cov",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["langchain_gridgain*"]
+namespaces = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+asyncio_mode = "strict"
+markers = [
+    "integration: marks tests as integration tests (deselect with '-m \"not integration\"')",
+]
+
+[tool.pytest.asyncio]
+default_fixture_loop_scope = "function"

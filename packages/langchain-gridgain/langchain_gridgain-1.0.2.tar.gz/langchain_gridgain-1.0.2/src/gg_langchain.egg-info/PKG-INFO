@@ -1,0 +1,379 @@
+Metadata-Version: 2.2
+Name: gg_langchain
+Version: 0.6.3.dev0
+Summary: This package makes it possible to use Gridgain as a Vector Store, Document Loader, LLM Cache, Key Value Store, Chat Memory within langchain 
+Author-email: Manini Puranik <manini.puranik@gridgain.com>, Aditi Sharma <aditi.sharma@gridgain.com>
+Requires-Python: >=3.11.7
+Description-Content-Type: text/markdown
+Requires-Dist: langchain>=0.3.10
+Requires-Dist: pandas==2.2.2
+Requires-Dist: numpy==1.26.4
+Requires-Dist: langchain-community>=0.2.11
+Requires-Dist: pyignite==0.6.1
+Requires-Dist: pygridgain==1.4.1.dev0
+Provides-Extra: test
+Requires-Dist: pytest; extra == "test"
+Requires-Dist: pytest-asyncio; extra == "test"
+Provides-Extra: coverage
+Requires-Dist: pytest-cov; extra == "coverage"
+
+# gg_langchain
+
+gg_langchain is a Python library that provides seamless integration between GridGain/Apache Ignite and LangChain. This library offers a set of storage adapters that allow LangChain components to efficiently use GridGain as a backend for various data storage needs.
+
+## Table of Contents
+1. [Project Structure](#project-structure)
+2. [Features](#features)
+3. [Installation](#installation)
+4. [Setting up the Source Code](#setting-up-the-source-code)
+   - [Prerequisites](#prerequisites)
+   - [Installation](#installation-1)
+   - [Building](#building)
+5. [GridGain Setup](#gridgain-setup)
+6. [Connecting to GridGain/Ignite](#connecting-to-gridgainignite)
+   - [Connecting to Ignite](#1-connecting-to-ignite)
+   - [Connecting to GridGain](#2-connecting-to-gridgain)
+7. [Detailed Component Explanations](#detailed-component-explanations)
+   - [GridGainStore](#1-gridgainstore)
+   - [GridGainDocumentLoader](#2-gridgaindocumentloader)
+   - [GridGainChatMessageHistory](#3-gridgainchatmessagehistory)
+   - [GridGainCache](#4-gridgaincache)
+   - [GridGainVectorStore](#5-gridgainvectorstore)
+8. [Example](#example)
+
+## Project Structure
+
+```
+gg_langchain/
+├── src/
+│   └── langchain_community/
+│       ├── __init__.py
+│       ├── chat_message_histories/
+│       └── document_loaders/
+│       ├──llm_cache/
+│       ├──storage/
+│       └──vectorstores/
+├── tests/
+│   ├── unit/
+│   │   ├── __init__.py     
+│   │   └── test_ignite_chat_message.py
+│   │   └── test_ignite_document.py
+│   │   └── test_ignite_llm.py
+│   │   ├── test_ignite_storage.py
+│   │   └── test_ignite_vector_store.py
+│   └── integration/                    
+│       ├── __init__.py
+│       └── test_ignite_chat_message_history.py
+│       └── test_ignite_document_loader.py
+│       ├── test_ignite_llm_cache.py
+│       └── test_ignite_storage.py
+│       ├── test_ignite_vector_store.py
+├── pyproject.toml
+└── README.md
+```
+
+## Features
+
+This library implements five key LangChain interfaces for GridGain:
+
+1. **GridGainStore**: A key-value store implementation.
+2. **GridGainDocumentLoader**: A document loader for retrieving documents from GridGain caches.
+3. **GridGainChatMessageHistory**: A chat message history store using GridGain.
+4. **GridGainCache**: A caching mechanism for Language Models using GridGain.
+5. **GridGainVectorStore**: A vector store implementation using GridGain for storing and querying embeddings.
+
+## Setting up the Source Code
+
+### Prerequisites
+
+* Python 3.11.7
+    * You can use `pyenv` to manage multiple Python versions (optional):
+        1. Install `pyenv`: `brew install pyenv` (or your system's package manager)
+        2. Create and activate the environment: 
+            ```bash
+            pyenv virtualenv 3.11.7 langchain-env
+            source $HOME/.pyenv/versions/langchain-env/bin/activate 
+            ```
+    * Alternatively, ensure Python 3.11.7 is installed directly.
+
+### Installation
+
+1. Clone these repositories:
+   ```
+   git clone https://github.com/gridgain/python-thin-client.git
+   cd python-thin-client
+   pip install -e .  
+   ```
+   ```
+   git clone https://github.com/gridgain-poc/gg8_langchain.git
+   ```
+3. You can build and install the resulting tarball, check the next section on building
+   ```bash
+    pip install dist/gg_langchain-0.6.2.tar.gz
+    ```
+
+4. For integration tests, ensure GridGain/Apache Ignite is set up and running. Adjust the connection details (host and port) in the test files to match your GridGain/Apache Ignite configuration.
+
+### Building
+
+1. Install build
+    ```bash
+    pip install -q build
+    pip install wheel
+    pip install setuptools-scm
+    ```
+
+2. Build the package
+    ```bash
+    python -m build
+    ```
+This will create a distributable package in the `dist` directory.
+
+## GridGain Setup
+
+In order to use [GridGain](https://www.gridgain.com/) or [Apache Ignite](https://ignite.apache.org/) as an online store, you need to have a running GridGain/Ignite cluster. 
+
+The GridGain online store provides the capability to connect to local/remote GridGain or Ignite clusters.
+
+## Connecting to GridGain/Ignite
+
+Before using any of the GridGain-based components, you need to establish a connection to your GridGain or Ignite cluster. The connection method differs slightly depending on whether you're using Apache Ignite or GridGain.
+
+### 1. Connecting to Ignite / Gridgain
+
+***Note with Ignite you can instantiate all other stores except Vector Store***
+For Apache Ignite, use the following code:
+
+```python
+from pyignite import Client
+
+def connect_to_ignite(host: str, port: int) -> Client:
+    try:
+        client = Client()
+        client.connect(host, port)
+        print("Connected to Ignite successfully.")
+        return client
+    except Exception as e:
+        print(f"Failed to connect to Ignite: {e}")
+        raise
+```
+
+Usage:
+```python
+client = connect_to_ignite("localhost", 10800)
+```
+
+### 2. Connecting to GridGain Nebula
+
+For GridGain Nebula, use the following code:
+
+```python
+from pygridgain import Client
+from pygridgain.exceptions import AuthenticationError
+
+def connect_to_gridgain(username: str, password: str, url: str, port: int) -> Client:
+    try:
+        # Create client configuration
+        client = Client(username=username, password=password, use_ssl=True)
+        
+        # Connect to the cluster
+        client.connect(url, port)
+        print("Connected to GridGain successfully.")
+        return client
+    except AuthenticationError:
+        print("Authentication failed. Please check your username and password.")
+        raise
+    except Exception as e:
+        print(f"Failed to connect to GridGain: {e}")
+        raise
+
+# Example usage
+try:
+    client = connect_to_gridgain(
+        username="your_username",
+        password="your_password",
+        url="gridgain.example.com",
+        port=10800
+    )
+except Exception as e:
+    print(f"Connection failed: {e}")
+```
+
+Make sure to replace `"your_username"`, `"your_password"`, `"gridgain.example.com"`, and `10800` with your actual GridGain cluster credentials and connection details.
+
+## Detailed Component Explanations
+
+### 1. GridGainStore
+
+GridGainStore is a key-value store implementation that uses GridGain as its backend. It provides a simple and efficient way to store and retrieve data using key-value pairs.
+
+Usage example:
+```python
+from langchain_community.storage.ignite import GridGainStore
+
+def initialize_keyvalue_store(client) -> GridGainStore:
+    try:
+        key_value_store = GridGainStore(
+            cache_name="laptop_specs",
+            client=client
+        )
+        print("GridGainStore initialized successfully.")
+        return key_value_store
+    except Exception as e:
+        print(f"Failed to initialize GridGainStore: {e}")
+        raise
+
+# Usage
+client = connect_to_ignite("localhost", 10800)
+key_value_store = initialize_keyvalue_store(client)
+
+# Store a value
+key_value_store.mset([("laptop1", "16GB RAM, NVIDIA RTX 3060, Intel i7 11th Gen")])
+
+# Retrieve a value
+specs = key_value_store.mget(["laptop1"])[0]
+```
+
+### 2. GridGainDocumentLoader
+
+GridGainDocumentLoader is designed to load documents from GridGain caches. It's particularly useful for scenarios where you need to retrieve and process large amounts of textual data stored in GridGain.
+
+Usage example:
+```python
+from langchain_community.document_loaders.ignite import GridGainDocumentLoader
+
+def initialize_doc_loader(client) -> GridGainDocumentLoader:
+    try:
+        doc_loader = GridGainDocumentLoader(
+            cache_name="review_cache",
+            client=client,
+            create_cache_if_not_exists=True
+        )
+        print("GridGainDocumentLoader initialized successfully.")
+        return doc_loader
+    except Exception as e:
+        print(f"Failed to initialize GridGainDocumentLoader: {e}")
+        raise
+
+# Usage
+client = connect_to_ignite("localhost", 10800)
+doc_loader = initialize_doc_loader(client)
+
+# Populate the cache
+reviews = {
+    "laptop1": "Great performance for coding and video editing. The 16GB RAM and dedicated GPU make multitasking a breeze."
+}
+doc_loader.populate_cache(reviews)
+
+# Load documents
+documents = doc_loader.load()
+```
+
+### 3. GridGainChatMessageHistory
+
+GridGainChatMessageHistory provides a way to store and retrieve chat message history using GridGain. This is crucial for maintaining context in conversational AI applications.
+
+Usage example:
+```python
+from langchain_community.chat_message_histories.ignite import GridGainChatMessageHistory
+
+def initialize_chathistory_store(client) -> GridGainChatMessageHistory:
+    try:
+        chat_history = GridGainChatMessageHistory(
+            session_id="user_session",
+            cache_name="chat_history",
+            client=client
+        )
+        print("GridGainChatMessageHistory initialized successfully.")
+        return chat_history
+    except Exception as e:
+        print(f"Failed to initialize GridGainChatMessageHistory: {e}")
+        raise
+
+# Usage
+client = connect_to_ignite("localhost", 10800)
+chat_history = initialize_chathistory_store(client)
+
+# Add a message to the history
+chat_history.add_user_message("Hello, I need help choosing a laptop.")
+
+# Retrieve the conversation history
+messages = chat_history.messages
+```
+
+### 4. GridGainCache
+
+GridGainCache provides a caching mechanism for the responses received from LLMs using GridGain. This can significantly improve response times for repeated or similar queries by storing and retrieving pre-computed results.
+
+Usage example:
+
+```python
+from langchain_community.llm_cache.ignite import GridGainCache
+
+def initialize_llm_cache(client)-> GridGainCache:
+    try:
+        llm_cache = GridGainCache(
+            cache_name="llm_cache",
+            client=client
+        )
+        logger.info("GridGainCache initialized successfully.")
+        return llm_cache
+    except Exception as e:
+        logger.error(f"Failed to initialize GridGainCache: {e}")
+        raise
+```
+
+### 5. GridGainVectorStore
+
+GridGainVectorStore is a vector store implementation using GridGain for storing and querying embeddings. It allows efficient similarity search operations on high-dimensional vector data.
+
+Usage example:
+
+```python
+from langchain_community.vectorstores import GridGainVectorStore
+
+# Initialize GridGainVectorStore
+def initialize_vector_store(client, embedding_model)-> GridGainVectorStore:
+    try:
+        vector_store = GridGainVectorStore(
+            cache_name="vector_cache",
+            embedding=embedding_model,
+            client=client
+        )
+        logger.info("GridGainVectorStore initialized successfully.")
+        return vector_store
+    except Exception as e:
+        logger.error(f"Failed to initialize GridGainVectorStore: {e}")
+        raise
+
+# Add texts to the vector store
+texts = [
+    "The latest MacBook Pro offers exceptional performance for video editing.",
+    "Dell XPS 15 is a powerful Windows laptop suitable for creative professionals.",
+    "ASUS ROG Zephyrus G14 provides a balance of portability and gaming performance."
+]
+metadatas = [{"id": "tech_review_1"}, {"id": "tech_review_2"}, {"id": "tech_review_3"}]
+
+vector_store.add_texts(texts=texts, metadatas=metadatas)
+
+# Perform similarity search
+query = "What's a good laptop for video editing?"
+results = vector_store.similarity_search(query, k=2)
+
+for doc in results:
+    print(f"Content: {doc.page_content}")
+    print(f"Metadata: {doc.metadata}")
+    print("---")
+
+# Clear the vector store
+vector_store.clear()
+```
+
+
+## Example
+
+For a comprehensive, real-world example of how to use this package, please refer to the following GitHub repository:
+
+[GG Langchain Demo](https://github.com/gridgain-poc/gg8_langchain_demo)
+
+gg_langchain_demo is a demonstration project that showcases the integration of GridGain/Apache Ignite with LangChain, using the custom gg_langchain package. This project provides examples of how to use GridGain as a backend for various LangChain components, focusing on a laptop recommendation system.
