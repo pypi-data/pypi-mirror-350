@@ -1,0 +1,194 @@
+Metadata-Version: 2.3
+Name: phoenix-ai
+Version: 0.2.3
+Summary: GenAI library for RAG , MCP and Agentic AI
+License: MIT
+Author: Praveen Govindaraj
+Author-email: 38414524+Praveengovianalytics@users.noreply.github.com
+Requires-Python: >=3.11,<4.0
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Dist: databricks (>=0.2,<0.3)
+Requires-Dist: databricks-vectorsearch (>=0.56,<0.57)
+Requires-Dist: faiss-cpu (>=1.11.0,<2.0.0)
+Requires-Dist: langchain-community (>=0.3.24,<0.4.0)
+Requires-Dist: mlflow (>=2.22.0,<3.0.0)
+Requires-Dist: nltk (>=3.9.1,<4.0.0)
+Requires-Dist: numpy (>=2.2.5,<3.0.0)
+Requires-Dist: openai (>=1.78.1,<2.0.0)
+Requires-Dist: openpyxl (>=3.1.5,<4.0.0)
+Requires-Dist: pandas (>=2.2.3,<3.0.0)
+Requires-Dist: pymupdf (>=1.25.5,<2.0.0)
+Requires-Dist: pypdf (>=5.5.0,<6.0.0)
+Requires-Dist: pypdf2 (>=3.0.1,<4.0.0)
+Requires-Dist: python-docx (>=1.1.2,<2.0.0)
+Requires-Dist: scikit-learn (>=1.6.1,<2.0.0)
+Requires-Dist: tiktoken (>=0.9.0,<0.10.0)
+Requires-Dist: unstructured (>=0.17.2,<0.18.0)
+Description-Content-Type: text/markdown
+
+# 🔥 phoenix_ai
+
+**phoenix_ai** is a modular Python library designed for GenAI tasks like:
+
+- 🔍 Vector embedding with FAISS
+- 🤖 RAG Inference (Standard / Hybrid / HyDE)
+- 📄 Ground truth Q&A generation from documents
+- 🧪 Answer evaluation using BLEU + LLM-as-a-Judge (ChatGPT or Claude)
+- 📊 MLflow logging of evaluation metrics
+
+Supports:  
+🧠 OpenAI | ☁️ Azure OpenAI | 💼 Databricks Model Serving
+
+---
+
+## 📦 Installation
+
+```bash
+git clone https://github.com/your-org/phoenix_ai.git
+cd phoenix_ai
+poetry install
+
+
+# 🔥 phoenix_ai
+
+A modular Python library for building Generative AI applications using RAG (Retrieval-Augmented Generation), evaluation datasets, and LLM-as-a-Judge scoring. Supports OpenAI, Azure OpenAI, and Databricks.
+
+---
+
+## ⚙️ 1. Configure Embedding & Chat Clients
+
+Supports `openai`, `azure-openai`, and `databricks` as providers.
+
+### ▶️ OpenAI
+```python
+from phoenix_ai.utils import GenAIEmbeddingClient, GenAIChatClient
+
+embedding_client = GenAIEmbeddingClient(
+    provider="openai",
+    model="text-embedding-ada-002",
+    api_key="your-openai-key"
+)
+
+chat_client = GenAIChatClient(
+    provider="openai",
+    model="gpt-4",
+    api_key="your-openai-key"
+)
+
+
+☁️ Azure OpenAI
+
+embedding_client = GenAIEmbeddingClient(
+    provider="azure-openai",
+    model="text-embedding-ada-002",
+    api_key="your-azure-key",
+    api_version="2024-06-01",
+    azure_endpoint="https://<your-endpoint>.openai.azure.com"
+)
+
+chat_client = GenAIChatClient(
+    provider="azure-openai",
+    model="gpt-4",
+    api_key="your-azure-key",
+    api_version="2024-06-01",
+    azure_endpoint="https://<your-endpoint>.openai.azure.com"
+)
+
+embedding_client = GenAIEmbeddingClient(
+    provider="databricks",
+    model="bge_large_en_v1_5",
+    base_url="https://<your-databricks-url>",
+    api_key="your-databricks-token"
+)
+
+chat_client = GenAIChatClient(
+    provider="databricks",
+    model="databricks-claude-3-7-sonnet",
+    base_url="https://<your-databricks-url>",
+    api_key="your-databricks-token"
+)
+
+
+📂 2. Load and Process Documents
+
+from phoenix_ai.loaders import load_and_process_single_document
+
+df = load_and_process_single_document(folder_path="data/", filename="policy_doc.pdf")
+
+
+📌 3. Generate FAISS Vector Index
+
+from phoenix_ai.vector_embedding_pipeline import VectorEmbedding
+
+vector = VectorEmbedding(embedding_client)
+index_path, chunks = vector.generate_index(
+    df=df,
+    text_column="content",
+    index_path="output/policy_doc.index"
+)
+
+💬 4. Perform RAG Inference (Standard, Hybrid, HyDE)
+
+from phoenix_ai.rag_inference import RAGInferencer
+from phoenix_ai.param import Param
+
+rag_inferencer = RAGInferencer(embedding_client, chat_client)
+response_df = rag_inferencer.infer(
+    system_prompt=Param.get_rag_prompt(),
+    index_path="output/policy_doc.index",
+    question="What is the purpose of the company Group Data Classification Policy?",
+    mode="standard",  # or "hybrid", "hyde"
+    top_k=5
+)
+
+🧪 5. Generate Ground Truth Q&A from Document
+
+from phoenix_ai.eval_dataset_prep_ground_truth import EvalDatasetGroundTruthGenerator
+
+generator = EvalDatasetGroundTruthGenerator(chat_client)
+qa_df = generator.process_dataframe(
+    df=df,
+    text_column="content",
+    prompt_template=Param.get_ground_truth_prompt()
+)
+qa_df.to_csv("output/eval_dataset_ground_truth.csv", index=False)
+
+🔁 6. Apply RAG to Ground Truth Questions
+
+from phoenix_ai.rag_evaluation_data_prep import RagEvalDataPrep
+
+rag_data = RagEvalDataPrep(
+    inferencer=rag_inferencer,
+    system_prompt=Param.get_rag_prompt(),
+    index_path="output/policy_doc.index"
+)
+
+result_df = rag_data.run_rag(input_df=qa_df, limit=5)
+result_df.to_csv("output/eval_dataset_rag_output.csv", index=False)
+
+
+📊 7. Evaluate RAG Output with LLM-as-a-Judge
+
+from phoenix_ai.rag_eval import RagEvaluator
+
+evaluator = RagEvaluator(chat_client, experiment_name="/Users/yourname/LLM_Answer_Evaluation")
+df_input = result_df
+
+df_eval, metrics = evaluator.evaluate(
+    input_df=df_input,
+    prompt=Param.get_evaluation_prompt(),
+    max_rows=5
+)
+
+df_eval.to_csv("output/eval_dataset_rag_eval.csv", index=False)
+
+# Print metrics
+for k, v in metrics.items():
+    print(f"{k}: {v:.4f}")
+
+```
+
