@@ -1,0 +1,2 @@
+class OpenAgent:
+  pass
