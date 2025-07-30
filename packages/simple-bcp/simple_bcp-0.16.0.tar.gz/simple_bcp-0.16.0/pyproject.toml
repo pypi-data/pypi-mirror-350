@@ -1,0 +1,50 @@
+[tool.poetry]
+name = "simple_bcp"
+version = "0.16.0"
+description = "A Simple yet powerful bcp wrapper"
+authors = ["Noam Fisher <noam9997@gmail.com>"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+readme = "README.md"
+license = "MIT"
+homepage = "https://gitlab.com/noamfisher/simple_bcp"
+
+[tool.poetry.urls]
+changelog = "https://gitlab.com/noamfisher/simple_bcp/-/blob/main/CHANGELOG.md"
+
+
+[tool.poetry.dependencies]
+python = "~=3.10"
+pydantic = "~=2.11"
+packaging = "~=25.0"
+annotated-types = "~=0.7.0"
+
+[tool.semantic_release]
+version_toml = ["pyproject.toml:tool.poetry.version"]
+remote.type = "gitlab"
+build_command = "poetry build"
+
+[tool.semantic_release.commit_parser_options]
+patch_tags = ["fix", "refactor"]
+
+[tool.semantic_release.changelog]
+mode = "update"
+sections = [
+    { type = "refactor", section = "Refactor" },
+]
+
+[tool.semantic_release.branches.main]
+match = "(main|master)"
+prerelease = false
+
+[tool.semantic_release.branches.any]
+match = "*"
+prerelease_token = "dev"
+prerelease = true
+
+[build-system]
+requires = ["poetry-core~=2.1"]
+build-backend = "poetry.core.masonry.api"
