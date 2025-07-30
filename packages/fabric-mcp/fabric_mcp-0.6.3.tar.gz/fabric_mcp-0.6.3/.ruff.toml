@@ -1,0 +1,53 @@
+# Match black's line length.
+line-length = 88
+# Assume Python 3.10+.
+target-version = "py310"
+
+# Exclude common directories.
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+]
+
+[lint]
+# Enable Pyflakes ("F") and pycodestyle ("E", "W") rules by default.
+# Adding "I" for isort compatibility checks.
+select = ["E", "F", "W", "I", "BLE001", "UP"]
+ignore = ["E203"] # Ignore whitespace before ':' (compatible with black)
+extend-select = [
+    "UP006",
+    "UP007",
+] # Enforce using built-in types instead of typing ones
+
+
+[format]
+# Like Black, use double quotes for strings.
+quote-style = "double"
+# Like Black, indent with spaces, rather than tabs.
+indent-style = "space"
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+# Like Black, automatically detect the appropriate line ending.
+line-ending = "auto"
