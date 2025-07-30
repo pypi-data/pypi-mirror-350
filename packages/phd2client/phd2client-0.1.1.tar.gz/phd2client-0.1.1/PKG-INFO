@@ -1,0 +1,49 @@
+Metadata-Version: 2.4
+Name: phd2client
+Version: 0.1.1
+Summary: PHD2 event server API client
+Author: Andy Galasso
+Author-email: Andy Galasso <andy.galasso@gmail.com>
+License-Expression: MIT
+License-File: LICENSE
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Scientific/Engineering :: Astronomy
+Classifier: Typing :: Typed
+Requires-Python: >=3.13
+Project-URL: Changelog, https://github.com/agalasso/phd2clientblob/master/python/CHANGELOG.md
+Project-URL: Documentation, https://github.com/OpenPHDGuiding/phd2/wiki/EventMonitoring
+Project-URL: Homepage, https://github.com/agalasso/phd2client/tree/master/python
+Project-URL: Issues, https://github.com/agalasso/phd2client/issues
+Project-URL: Repository, https://github.com/agalasso/phd2client
+Description-Content-Type: text/markdown
+
+# phd2client
+
+A python binding for the PHD2 event server API.
+
+## Installation
+
+```
+pip install phd2client
+```
+
+## Usage
+
+```python
+from phd2client.guider import Guider, GuiderException
+
+with Guider("localhost", connect=True) as guider:
+    try:
+        # connect equipment in profile "Simulator"
+        guider.ConnectEquipment("Simulator")
+
+        # start guiding with settle tolerance of 2.0 pixels, 10 second settle time, 100-second timeout
+        guider.Guide(2.0, 10.0, 100.0)
+    except GuiderException as ex:
+        print(f"Guider Error: {ex}")
+```
+
+See [phd2client.py](https://github.com/agalasso/phd2client/blob/master/python/examples/phd2client.py) for a more complete example.
