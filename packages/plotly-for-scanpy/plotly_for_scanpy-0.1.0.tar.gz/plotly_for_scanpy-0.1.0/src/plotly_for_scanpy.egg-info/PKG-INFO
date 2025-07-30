@@ -1,0 +1,97 @@
+Metadata-Version: 2.4
+Name: plotly_for_scanpy
+Version: 0.1.0
+Summary: Plotly-based visualization tools for Scanpy data
+Author-email: Klim Kostiuk <2601074@gmail.com>
+License: MIT License
+        
+        Copyright (c) 2024 Klim Kostiuk
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        
+Project-URL: Homepage, https://github.com/yourusername/plotly_for_scanpy
+Project-URL: Bug Tracker, https://github.com/yourusername/plotly_for_scanpy/issues
+Project-URL: Documentation, https://colab.research.google.com/drive/1pHt8m-wIVS2B7aUbjrlsNrNWV2JsEI-E
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Scientific/Engineering :: Visualization
+Classifier: Topic :: Scientific/Engineering :: Bio-Informatics
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: plotly>=5.0.0
+Requires-Dist: dash
+Requires-Dist: scipy
+Requires-Dist: anndata
+Requires-Dist: webcolors
+Dynamic: license-file
+
+# plotly_for_scanpy
+
+Interactive Plotly-based visualization tools for Scanpy single-cell data analysis, providing drop-in alternatives to scanpy.pl functions with enhanced interactivity.
+
+## Installation
+
+```bash
+pip install plotly_for_scanpy
+```
+
+## Features
+
+- **Dynamic Downsampling**: Efficiently visualize large datasets with intelligent point reduction
+- **Interactive Plots**: All visualizations are fully interactive with zoom, pan, and hover functionality
+- **Scanpy Integration**: Works seamlessly with AnnData objects
+- **Publication Quality**: Easily export to HTML or static formats
+
+## Example Usage
+
+```python
+import scanpy as sc
+import plotly_for_scanpy as psc
+
+# Load data
+adata = sc.datasets.pbmc3k()
+sc.pp.normalize_total(adata)
+sc.pp.log1p(adata)
+sc.pp.highly_variable_genes(adata)
+sc.pp.pca(adata)
+sc.pp.neighbors(adata)
+sc.tl.umap(adata)
+sc.tl.leiden(adata)
+
+# Use interactive UMAP visualization
+psc.umap(adata, color=['leiden'])
+
+# Visualize with dynamic downsampling for large datasets
+fig = psc.umap(adata, color='leiden', return_fig=True)
+dynamic_fig = psc.dd(fig, resolution=10000)
+dynamic_fig.show()
+```
+
+## Documentation
+
+Full examples and tutorials:
+- [Interactive Colab Demo](https://colab.research.google.com/drive/1pHt8m-wIVS2B7aUbjrlsNrNWV2JsEI-E)
+
+## License
+
+MIT License
