@@ -1,0 +1,87 @@
+[project]
+name = "simple-github"
+description = "A simple Github client that only provides auth and access to the REST and GraphQL APIs."
+version = "2.2.0"
+authors = [
+  { name = "Mozilla Release Engineering", email =  "release+simple-github@mozilla.com"}
+]
+license = "MPL-2.0"
+readme = "README.md"
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Software Development",
+]
+requires-python = ">=3.8"
+dependencies = [
+  "aiohttp[speedups]~=3.8",
+  "gql[aiohttp,requests]>=3.5.1,<4",
+  "pyjwt[crypto]~=2.8",
+  "requests~=2.31",
+]
+
+[tool.uv]
+dev-dependencies = [
+  "aioresponses~=0.7",
+  "coverage~=7.3",
+  "pytest~=7.4",
+  "pytest-aioresponses~=0.2",
+  "pytest-asyncio~=0.21",
+  "pytest-mock~=3.11",
+  "pytest-responses~=0.5",
+  "pyright~=1.1",
+  "responses~=0.23",
+  "sphinx<7",
+  "sphinx-autobuild",
+  "sphinx-book-theme~=1.0",
+  "tox~=4.11",
+]
+
+[tool.commitizen]
+bump_message = "chore: version bump $new_version"
+changelog_incremental = true
+gpg_sign = true
+tag_format = "$version"
+update_changelog_on_bump = true
+version_provider = "pep621"
+
+[tool.black]
+line-length = 88
+
+[tool.pytest.ini_options]
+xfail_strict = true
+
+[tool.coverage.run]
+parallel = true
+branch = true
+source = ["src/simple_github/"]
+
+[tool.ruff]
+select = [
+    "E", "W",       # pycodestyle
+    "F",            # pyflakes
+    "I",            # isort
+    "PLC", "PLE",   # pylint
+    "UP",           # pyupgrade
+    "TCH",          # flake8-type-checking
+]
+ignore = [
+    "E501",  # let black handle line-length
+]
+target-version = "py38"
+
+[tool.ruff.isort]
+known-first-party = ["simple_github"]
+
+[tool.pyright]
+include = ["src/simple_github"]
+reportUnknownParameterType = "error"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
