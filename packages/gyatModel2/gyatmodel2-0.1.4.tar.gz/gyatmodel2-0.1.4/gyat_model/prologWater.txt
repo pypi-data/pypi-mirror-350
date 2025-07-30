@@ -1,0 +1,87 @@
+% Initial state
+start((0, 0)).
+
+% Goal state
+goal((2, 0)).
+
+% Move rules
+move((X, Y), (5, Y)) :- X < 5.     % Fill 5L jug
+move((X, Y), (X, 4)) :- Y < 4.     % Fill 4L jug
+move((X, Y), (0, Y)) :- X > 0.     % Empty 5L jug
+move((X, Y), (X, 0)) :- Y > 0.     % Empty 4L jug
+
+% Pour from 5L to 4L
+move((X, Y), (NX, NY)) :-
+    X > 0, Y < 4,
+    T is min(X, 4 - Y),
+    NX is X - T,
+    NY is Y + T.
+
+% Pour from 4L to 5L
+move((X, Y), (NX, NY)) :-
+    Y > 0, X < 5,
+    T is min(Y, 5 - X),
+    NY is Y - T,
+    NX is X + T.
+
+
+
+//////// HOW to run prolog 
+Create the .pl file
+Option A: Using any text editor
+Open a text editor (like Notepad, VS Code, or Notepad++).
+
+Paste the code (from the previous message).
+
+Save the file as:
+ wjug.pl
+(Make sure the extension is .pl, not .txt)
+
+Example:
+File name: wjug.pl
+Location: C:\Users\YourName\Documents\Prolog\
+
+
+
+
+ Step 3: Open SWI-Prolog
+Open SWI-Prolog (search "swipl" in the Start Menu).
+
+
+
+
+ Step 4: Load the file into SWI-Prolog
+In the SWI-Prolog console:
+
+?- [wjug].
+If the file is in another folder, give full path like:
+
+?- ['C:/Users/YourName/Documents/Prolog/wjug.pl'].
+If loaded successfully, you’ll see:
+
+true.
+
+
+
+Step 5: Write a predicate to find a solution
+Now, add this path-finding code in your .pl file after the move rules:
+
+   enter program 
+
+
+
+ Step 6: Run the solution
+Once the file is saved and loaded into Prolog, run:
+
+
+?- solve.
+This will print each move step-by-step until it reaches the goal (2, 0).
+
+
+ Tip:
+If you make changes to the .pl file, save it and then in Prolog console run:
+
+prolog
+Copy
+Edit
+?- [wjug].   % again, to reload it
