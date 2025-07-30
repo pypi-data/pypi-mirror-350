@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools >= 77.0.3", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "splang"
+version = "1.0.9"
+dependencies = [
+  "spotipy >= 2.25.1"
+]
+
+requires-python = ">=3.11"
+authors = [
+  {name = "Naman Satish", email = "naman.satish@gmail.com"}
+]
+maintainers = [
+  {name = "Naman Satish", email = "naman.satish@gmail.com"}
+]
+description = "An interpreter for Splang : an esoteric programming language written in a playlist."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = ["playlist", "interpreter", "music", "esoteric programming language", "esolang", "spotify"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python :: 3.11",
+  "Intended Audience :: Developers",
+  "Topic :: Software Development :: Interpreters",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest >= 7.4.0",
+]
+
+[project.urls]
+Homepage = "https://satish.dev/projects/splang/"
+Documentation = "https://satish.dev/projects/splang/"
+Repository = "https://github.com/namansatish/splang"
+
+[project.scripts]
+splang = "splang.cli:main"
+
+[tool.setuptools]
+packages = ["splang"]
+package-dir = {"" = "src"}
+include-package-data = true
+
+[tool.setuptools.package-data]
+splang = ["examples/*.json"]
