@@ -1,0 +1,2 @@
+from .base import BaseBeanProxy, ClassBeanProxy, AspectClassBeanProxy, AsyncCallClassBeanProxy
+from .delay import DelayAutowiredClassBeanProxy, AsyncCallDelayAutowiredClassBeanProxy, DelayConfigAutowiredClassBeanProxy
