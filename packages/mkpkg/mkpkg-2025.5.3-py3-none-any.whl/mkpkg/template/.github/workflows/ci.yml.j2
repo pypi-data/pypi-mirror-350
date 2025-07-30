@@ -1,0 +1,89 @@
+name: CI
+
+on:
+  push:
+    branches-ignore:
+      - "wip*"
+    tags:
+      - "v*"
+  pull_request:
+  schedule:
+    # Daily at {{ schedule_hour }}:{{ schedule_minute }}
+    - cron: "{{ schedule_minute }} {{ schedule_hour }} * * *"
+  workflow_dispatch:
+
+jobs:
+  list:
+    runs-on: ubuntu-latest
+    outputs:
+      noxenvs: {% raw %}${{ steps.noxenvs-matrix.outputs.noxenvs }}{% endraw %}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+      - id: noxenvs-matrix
+        run: |
+          echo >>$GITHUB_OUTPUT noxenvs=$(
+            uvx nox --list-sessions --json | jq '[.[].session]'
+          )
+
+  ci:
+    needs: list
+    runs-on: {% raw %}${{ matrix.os }}{% endraw %}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+        noxenv: {% raw %}${{ fromJson(needs.list.outputs.noxenvs) }}{% endraw }
+        posargs: [""]
+        include:
+          - os: ubuntu-latest
+            noxenv: "tests-3.12"
+            posargs: coverage github
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y libenchant-2-dev
+        if: runner.os == 'Linux' && startsWith(matrix.noxenv, 'docs')
+      - name: Install dependencies
+        run: brew install enchant
+        if: runner.os == 'macOS' && startsWith(matrix.noxenv, 'docs')
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+      - name: Run nox
+        run: {% raw %}uvx nox -s "${{ matrix.noxenv }}" -- ${{ matrix.posargs }}{% endraw %}
+
+  packaging:
+    needs: ci
+    runs-on: ubuntu-latest
+    environment:
+      name: PyPI
+      url: https://pypi.org/p/{{ name }}
+
+    permissions:
+      contents: write
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Build our distributions
+        run: uv run --frozen --with 'build[uv]' -m build --installer=uv
+
+      - name: Publish to PyPI
+        if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+        uses: pypa/gh-action-pypi-publish@release/v1
+      - name: Create a Release
+        if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            dist/*
+          generate_release_notes: true
