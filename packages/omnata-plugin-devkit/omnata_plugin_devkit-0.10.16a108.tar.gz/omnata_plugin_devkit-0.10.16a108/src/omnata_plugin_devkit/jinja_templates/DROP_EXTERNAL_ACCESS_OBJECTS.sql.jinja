@@ -1,0 +1,82 @@
+create or replace procedure PLUGIN.DROP_EXTERNAL_ACCESS_OBJECTS(
+      EAI_NAME varchar,
+      SECRET_NAMES ARRAY,
+      NETWORK_RULE_NAMES ARRAY)
+   returns object
+   language javascript
+   COMMENT = $$
+   Drops an external access integration, and associated secrets/network rules.
+   Due to Snowflake privilege model changes over time, this is an opportunistic deletion. 
+   Instead of erroring it will create event log 
+   errors and provide successflags back to the caller.
+   $$
+   execute as owner
+as
+$$
+try{
+   var droppedEai = false;
+   try{
+      snowflake.createStatement( {
+         sqlText: `DROP EXTERNAL ACCESS INTEGRATION IDENTIFIER(?)`,
+         binds:[EAI_NAME]
+      } ).execute();
+      droppedEai = true;
+   }
+   catch(e){
+      snowflake.log("error", e.message);
+   }
+
+   var droppedSecrets = false;
+   try{
+      if (SECRET_NAMES !== null && SECRET_NAMES !== undefined && SECRET_NAMES.length > 0){
+         for (let i = 0; i < SECRET_NAMES.length; i++) {
+            const secretName = SECRET_NAMES[i];
+            snowflake.createStatement( {
+               sqlText: `DROP SECRET IDENTIFIER(?)`,
+               binds:[secretName]
+            } ).execute();
+         }
+         droppedSecrets = true;
+      }
+   }
+   catch(e){
+      snowflake.log("error", e.message);
+   }
+   
+   var droppedNetworkRules=false;
+   try{
+      if (NETWORK_RULE_NAMES !== null && NETWORK_RULE_NAMES !== undefined && NETWORK_RULE_NAMES.length > 0){
+         for (let i = 0; i < NETWORK_RULE_NAMES.length; i++) {
+            const ruleName = NETWORK_RULE_NAMES[i];
+            snowflake.createStatement( {
+               sqlText: `DROP NETWORK RULE IDENTIFIER(?)`,
+               binds:[ruleName]
+            } ).execute();
+         }
+         droppedNetworkRules = true;
+      }
+   }
+   catch(e){
+      snowflake.log("error", e.message);
+   }
+
+   return {
+      "success": true,
+      "data": {
+         "droppedEai":droppedEai,
+         "droppedSecrets":droppedSecrets,
+         "droppedNetworkRules": droppedNetworkRules
+      }
+    }
+}
+catch(e){
+   return {
+      "success": false,
+      "error": `DROP_EXTERNAL_ACCESS_OBJECTS: ${String(e)}`
+   }
+}
+$$
+;
+
+grant usage on procedure PLUGIN.DROP_EXTERNAL_ACCESS_OBJECTS(VARCHAR,ARRAY,ARRAY)
+to application role OMNATA_MANAGEMENT;
