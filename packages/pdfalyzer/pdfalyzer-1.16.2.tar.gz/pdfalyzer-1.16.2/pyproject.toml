@@ -1,0 +1,77 @@
+[tool.poetry]
+name = "pdfalyzer"
+version = "1.16.2"
+description = "A PDF analysis toolkit. Scan a PDF with relevant YARA rules, visualize its inner tree-like data structure in living color (lots of colors), force decodes of suspicious font binaries, and more."
+authors = ["Michel de Cryptadamus <michel@cryptadamus.com>"]
+license = "GPL-3.0-or-later"
+readme = "README.md"
+homepage = "https://github.com/michelcrypt4d4mus/pdfalyzer"
+repository = "https://github.com/michelcrypt4d4mus/pdfalyzer"
+documentation = "https://github.com/michelcrypt4d4mus/pdfalyzer"
+
+keywords = [
+    "ascii art",
+    "binary",
+    "color",
+    "font",
+    "encoding",
+    "malicious pdf",
+    "malware",
+    "malware analysis",
+    "pdf",
+    "threat assessment",
+    "visualization",
+    "yara"
+]
+
+classifiers = [
+    "Topic :: Artistic Software",
+    "Topic :: Security",
+    "Topic :: Scientific/Engineering :: Visualization",
+]
+
+include = [
+    "CHANGELOG.md",
+    "LICENSE"
+    #{ path = "doc" }
+]
+
+packages = [
+    { include = "pdfalyzer" }
+]
+
+[tool.poetry.urls]
+Changelog = "https://github.com/michelcrypt4d4mus/pdfalyzer/blob/master/CHANGELOG.md"
+
+
+[tool.poetry.scripts]
+combine_pdfs = 'pdfalyzer:combine_pdfs'
+pdfalyze = 'pdfalyzer:pdfalyze'
+pdfalyzer_show_color_theme = 'pdfalyzer:pdfalyzer_show_color_theme'
+
+
+[tool.poetry.dependencies]
+python = "^3.9"
+anytree = "~=2.8"
+chardet = ">=5.0.0,<6.0.0"
+pypdf = "^5.0.1"
+python-dotenv = "^0.21.0"
+rich = "^12.5.1"
+rich-argparse-plus = "^0.3.1"
+yaralyzer = "^0.9.4"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.1.2"
+pytest-skip-slow = "^0.0.3"
+
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
+]
