@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zarrofflinedownloader"
+description = "offline zarr downloader"
+version = "2025.5"
+readme = "README.md"
+authors = [
+    {name = "Michael Blaschek", email = "michael.blaschek@univie.ac.at"},
+    {name = "Emma Haslwanter", email = "emma.haslwanter@univie.ac.at"}
+]
+maintainers = [
+    {name = "Emma Haslwanter", email = "emma.haslwanter@univie.ac.at"}
+]
+license = { text = "MIT" }
+keywords = ["zarr", "netcdf", "download"]
+dependencies = ["requests",
+"fsspec",
+"aiohttp",
+"zarr>2.16.0,<3.0.0",
+"numpy<2.0.0",
+"numcodecs<0.16.0",
+"tqdm",
+"argparse"]
+
+[project.scripts]
+zarr-downloader="zarr_download:main"
+
+[project.urls]
+Repository = "https://gitlab.phaidra.org/imgw/zarr-downloader.git"
+Issues = "https://gitlab.phaidra.org/imgw/zarr-downloader/-/issues"
