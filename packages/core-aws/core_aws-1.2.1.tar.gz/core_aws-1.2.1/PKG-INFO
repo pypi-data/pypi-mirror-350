@@ -1,0 +1,87 @@
+Metadata-Version: 2.4
+Name: core-aws
+Version: 1.2.1
+Summary: This project/library contains common elements related to AWS services...
+Author-email: Alejandro Cora González <alek.cora.glez@gmail.com>
+Maintainer: Alejandro Cora González
+License: MIT
+Project-URL: Homepage, https://gitlab.com/bytecode-solutions/core/core-aws
+Project-URL: Repository, https://gitlab.com/bytecode-solutions/core/core-aws
+Project-URL: Documentation, https://core-aws.readthedocs.io/en/latest/
+Project-URL: Issues, https://gitlab.com/bytecode-solutions/core/core-aws/-/issues
+Project-URL: Changelog, https://gitlab.com/bytecode-solutions/core/core-aws/-/blob/master/CHANGELOG.md
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Intended Audience :: Developers
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Utilities
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: aws-encryption-sdk==4.0.0
+Requires-Dist: boto3>=1.35.63
+Requires-Dist: botocore>=1.35.63
+Requires-Dist: core-ciphers>=1.1.0
+Requires-Dist: core-cdc>=1.1.0
+Requires-Dist: core-etl>=1.1.0
+Requires-Dist: core-mixins>=1.1.0
+Requires-Dist: core-tests>=1.1.0
+Requires-Dist: typing-extensions>=4.8.0; python_version < "3.11"
+Provides-Extra: all
+Requires-Dist: core-cdc>=1.1.0; extra == "all"
+Provides-Extra: core-cdc
+Requires-Dist: core-cdc>=1.1.0; extra == "core-cdc"
+Provides-Extra: tests
+Requires-Dist: core-cdc[mongo]>=1.1.0; extra == "tests"
+Requires-Dist: core-cdc[mysql]>=1.1.0; extra == "tests"
+Provides-Extra: docs
+Requires-Dist: pydata-sphinx-theme==0.16.1; extra == "docs"
+Requires-Dist: Sphinx==8.2.3; extra == "docs"
+Dynamic: license-file
+
+# core-aws
+_______________________________________________________________________________
+
+This project/library contains common elements related to AWS services...
+
+## Execution Environment
+
+### Install libraries
+```shell
+pip install --upgrade pip 
+pip install virtualenv
+```
+
+### Create the Python Virtual Environment.
+```shell
+virtualenv --python=python3.11 .venv
+```
+
+### Activate the Virtual Environment.
+```shell
+source .venv/bin/activate
+```
+
+### Install required libraries.
+```shell
+pip install .
+```
+
+### Optional libraries.
+```shell
+pip install '.[all]'      # For all...
+pip install '.[core-cdc]' # For CDC flows...
+pip install '.[tests]'    # For tests execution...
+```
+
+### Check tests and coverage...
+```shell
+python manager.py run-tests
+python manager.py run-coverage
+```
