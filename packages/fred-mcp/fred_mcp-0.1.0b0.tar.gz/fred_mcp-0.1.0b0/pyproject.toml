@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools>=61.0",]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fred-mcp"
+version = "0.1.0-beta"
+authors = [
+    { name="Zachary Spar", email="zachspar@gmail.com" },
+]
+description = "A fully-featured FRED MCP server."
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Financial and Insurance Industry",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "fastmcp~=2.3.4",
+    "fred-py-api~=1.2.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/zachspar/fred-mcp"
+"Bug Tracker" = "https://github.com/zachspar/fred-mcp/issues"
+
+[project.scripts]
+fred-mcp = "fred_mcp.main:main"
+
+[tool.coverage.run]
+branch = true
+source = ["src"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "if __name__ == .__main__.:",
+]
+
+[tool.coverage.html]
+directory = "coverage_html_report"
+
+[tool.black]
+line-length = 79
+
