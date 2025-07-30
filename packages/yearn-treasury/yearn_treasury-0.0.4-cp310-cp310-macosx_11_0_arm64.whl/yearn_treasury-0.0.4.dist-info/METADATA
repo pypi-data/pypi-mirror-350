@@ -1,0 +1,64 @@
+Metadata-Version: 2.4
+Name: yearn_treasury
+Version: 0.0.4
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: Intended Audience :: End Users/Desktop
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Software Development :: Libraries
+Requires-Python: >=3.10,<3.13
+Description-Content-Type: text/markdown
+Requires-Dist: dao-treasury<0.1,>=0.0.2
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: requires-dist
+Dynamic: requires-python
+
+## Installation
+
+- **pip:** (soon will be on pypi)
+  ```bash
+   pip install git+https://github.com/BobTheBuidler/yearn-treasury`
+  ```
+
+- **From Source:**  
+  ```bash
+  git clone https://github.com/BobTheBuidler/yearn-treasury
+  cd yearn-treasury
+  poetry install
+  ```
+
+## Usage
+
+Run the treasury export tool:
+
+```bash
+# For pip installations:
+yearn-treasury run --network mainnet --interval 12h
+```
+
+For local development (from source installation), use:
+```bash
+poetry run yearn-treasury run --network mainnet --interval 12h
+```
+
+**CLI Options:**
+- `--network`: The id of the brownie network the exporter will connect to (default: mainnet)
+- `--interval`: The time interval between each data snapshot (default: 12h)
+- `--daemon`: Run the export process in the background (default: False) (NOTE: currently unsupported)
+- `--grafana-port`: Set the port for the Grafana dashboard where you can view data (default: 3003)
+- `--renderer-port`: Set the port for the report rendering service (default: 8080)
+- `--victoria-port`: Set the port for the Victoria metrics reporting endpoint (default: 8430)
+
+After running the command, the export script will run continuously until you close your terminal.
+To access the dashboard, open your browser and navigate to http://localhost:3003
+
+Enjoy!
