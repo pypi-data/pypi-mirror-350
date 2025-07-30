@@ -1,0 +1,83 @@
+name: Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macOS-latest ]
+        python-version: [ '3.10' ]
+        include:
+          - os: ubuntu-latest
+            python-version: '3.9'
+          - os: ubuntu-latest
+            python-version: '3.11'
+          - os: ubuntu-latest
+            python-version: '3.12'
+          - os: ubuntu-latest
+            python-version: '3.13'
+          - os: ubuntu-latest
+            python-version: '3.9'
+            requirements: 'minimum'
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-tags: true
+        fetch-depth: 50
+
+    - name: Cache emodb
+      uses: actions/cache@v4
+      with:
+        path: emodb-src
+        key: emodb-ubuntu
+      if: matrix.os == 'ubuntu-latest'
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Prepare Ubuntu
+      run: |
+        sudo apt-get update
+        sudo apt-get install --no-install-recommends --yes libsndfile1
+      if: matrix.os == 'ubuntu-latest'
+
+    - name: Install dependencies
+      run: |
+        python -V
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -r tests/requirements.txt
+
+    - name: Downgrade to minimum dependencies
+      run: |
+        pip install "audeer==2.0.0"
+        pip install "audiofile==0.4.0"
+        pip install "numpy<2.0.0"
+        pip install "pandas==2.1.0"
+        pip install "pyarrow==10.0.1"
+        pip install "pyyaml==5.4.1"
+        # need to use an audb version in the test,
+        # that supports audeer==2.0.0
+        pip install "audb==1.7.4"
+      if: matrix.requirements == 'minimum'
+
+    - name: Test with pytest
+      run: |
+        python -m pytest
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: ./coverage.xml
+      if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.10'
