@@ -1,0 +1,41 @@
+[project]
+name = "pycounts_bzrudski"
+version = "1.0.0"
+description = "Calculate word counts in a text file!"
+authors = [
+    {name = "bzrudski"},
+]
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "matplotlib>=3.9.4",
+]
+
+[project.urls]
+homepage = "https://github.com/bzrudski/pycounts_bzrudski"
+repository = "https://github.com/bzrudski/pycounts_bzrudski"
+documentation = "https://pycounts-bzrudski.readthedocs.io/en/latest/index.html"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.3"
+pytest-cov = "^4.1.0"
+jupyter = "^1.1.0"
+myst-nb = "^1.2.0"
+sphinx-autoapi = "^3.5.0"
+sphinx-rtd-theme = "^2.0.0"
+python-semantic-release = "^8.7.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.semantic_release]
+version_toml = [
+    "pyproject.toml:project.version"
+]
+branch = "main" # branch to make releases of
+build_command = "pip install poetry && poetry build" # build dists
+
+[tool.semantic_release.publish]
+upload_to_vcs_release = true
