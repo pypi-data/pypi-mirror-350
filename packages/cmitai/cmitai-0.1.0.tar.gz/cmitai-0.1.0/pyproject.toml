@@ -1,0 +1,44 @@
+[project]
+name = "cmitai"
+version = "0.1.0"
+description = "Generate Git commit messages using LLMs (OpenAI or Google Gemini)"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "Oziel Senior" }]
+keywords = ["git", "commit", "ai", "cli"]
+license = { text = "MIT" }
+
+dependencies = [
+    "gitpython>=3.1.44",
+    "google-generativeai>=0.8.5",
+    "openai>=1.82.0",
+    "typer>=0.15.4",
+]
+
+[project.scripts]
+cmitai = "cmitai.main:app"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+packages = ["cmitai"]
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[dependency-groups]
+dev = [
+    "build>=1.2.2.post1",
+    "ruff>=0.11.11",
+    "twine>=6.1.0",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+exclude = ["__pycache__", "build", "dist", ".venv"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+
+[tool.ruff.format]
