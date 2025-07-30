@@ -1,0 +1,1 @@
+from algowalk.searching.algorithms.linearsearch import LinearSearchStrategy
