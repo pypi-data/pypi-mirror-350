@@ -1,0 +1,140 @@
+include:
+  - component: gitlab.gnome.org/GNOME/citemplates/release-service@master
+    inputs:
+      dist-job-name: "sdist"
+      tarball-artifact-path: "${TARBALL_ARTIFACT_PATH}"
+
+stages:
+  - build_and_test
+  - coverage
+  - deploy
+
+variables:
+  TARBALL_ARTIFACT_PATH: "dist/${CI_PROJECT_NAME}-${CI_COMMIT_TAG}.tar.gz"
+
+default:
+  image: registry.gitlab.gnome.org/gnome/pygobject/main:v23
+  cache:
+    paths:
+      - _ccache/
+
+linux:
+  stage: build_and_test
+  parallel:
+    matrix:
+      - PYTHON_VERSION:
+          - "3.9"
+          - "3.10"
+          - "3.11"
+          - "3.12"
+          - "pypy3"
+        TEST_GTK_VERSION: "3.0"
+      - PYTHON_VERSION: "3.11"
+        TEST_GTK_VERSION: "4.0"
+  artifacts:
+    when: always
+    paths:
+      - coverage/
+      - test-results.xml
+    reports:
+      junit: test-results.xml
+  script:
+   - bash -x ./.gitlab-ci/test-docker.sh
+
+windows:
+  stage: build_and_test
+  tags:
+    - win32-ps
+  parallel:
+    matrix:
+      - MSYSTEM:
+          - "MINGW32"
+          - "MINGW64"
+  artifacts:
+    when: always
+    paths:
+      - coverage/
+      - _build/meson-logs
+      - test-results.xml
+    reports:
+      junit: test-results.xml
+  script:
+    - $env:CHERE_INVOKING = 'yes'
+    - C:\msys64\usr\bin\pacman --noconfirm -Syyuu
+    - C:\msys64\usr\bin\bash -lc "bash -x ./.gitlab-ci/test-msys2.sh"
+
+coverage:
+  stage: coverage
+  artifacts:
+    paths:
+      - coverage/
+  variables:
+    PYTHON_VERSION: "3.9"
+  script:
+    - bash -x ./.gitlab-ci/coverage-docker.sh
+  coverage: '/^\s+lines\.+:\s+([\d.]+\%)\s+/'
+
+pages:
+  stage: deploy
+  dependencies:
+    - coverage
+  before_script:
+    - python -m pip install "pdm!=2.17.3"
+    - python -m pdm install -v
+  script:
+    - python -m pdm run sphinx-build -T -E -W --keep-going -b html -d _build/doctrees -D language=en docs/ public
+    - mv coverage/ public/
+  artifacts:
+    paths:
+      - public
+    expire_in: 30 days
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_TAG
+
+sdist:
+  stage: build_and_test
+  artifacts:
+    paths:
+      - dist/
+  script:
+    - git config --global --add safe.directory "$CI_PROJECT_DIR"
+    - bash -x ./.gitlab-ci/build-sdists.sh
+
+gnome-master:
+  stage: build_and_test
+  image: quay.io/gnome_infrastructure/gnome-runtime-images:gnome-master
+  tags:
+    - flatpak
+  parallel:
+    matrix:
+      - TEST_GTK_VERSION:
+          - "3.0"
+          - "4.0"
+  artifacts:
+    paths:
+      - coverage/
+  script:
+    - bash -x ./.gitlab-ci/test-flatpak.sh
+
+python3.12-pdm:
+  stage: build_and_test
+  variables:
+    PYTHON_VERSION: "3.12"
+    TEST_GTK_VERSION: "3.0"
+  before_script:
+    - python -m pip install "pdm!=2.17.3"
+    - python -m pdm install -v
+  script:
+    - xvfb-run -a python -m pdm run pytest
+
+minimal-meson:
+  allow_failure: true
+  stage: build_and_test
+  image: quay.io/fedora/fedora:40
+  before_script:
+    - dnf install --assumeyes gcc meson git flex bison diffutils python3-devel python3-pytest gobject-introspection-devel
+  script:
+    - meson setup _build
+    - meson compile -C _build
+    - PYTEST_ADDOPTS="-sv -k 'not test_cairo'" meson test -C _build --suite pygobject --verbose
