@@ -1,0 +1,62 @@
+Metadata-Version: 2.4
+Name: pgarrow
+Version: 0.0.2
+Summary: A SQLAlchemy PostgreSQL dialect for ADBC (Arrow Database Connectivity)
+Project-URL: Source, https://github.com/michalc/pgarrow
+Author-email: Michal Charemza <michal@charemza.name>
+License-File: LICENSE
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Database
+Requires-Python: >=3.7.7
+Requires-Dist: adbc-driver-postgresql>=1.6.0
+Requires-Dist: pyarrow>=20.0.0
+Requires-Dist: sqlalchemy>=2.0.31; python_version >= '3.13'
+Requires-Dist: sqlalchemy>=2.0.7; python_version < '3.13'
+Provides-Extra: ci
+Requires-Dist: adbc-driver-postgresql==1.6.0; extra == 'ci'
+Requires-Dist: pyarrow==20.0.0; extra == 'ci'
+Requires-Dist: pytest; extra == 'ci'
+Requires-Dist: pytest-cov; extra == 'ci'
+Requires-Dist: sqlalchemy==2.0.31; (python_version >= '3.13') and extra == 'ci'
+Requires-Dist: sqlalchemy==2.0.7; (python_version < '3.13') and extra == 'ci'
+Provides-Extra: dev
+Requires-Dist: pytest-cov; extra == 'dev'
+Requires-Dist: pytest>=7.2.1; extra == 'dev'
+Description-Content-Type: text/markdown
+
+# pgarrow [![PyPI package](https://img.shields.io/pypi/v/pgarrow?label=PyPI%20package)](https://pypi.org/project/pgarrow/) [![Test suite](https://img.shields.io/github/actions/workflow/status/michalc/pgarrow/test.yaml?label=Test%20suite)](https://github.com/michalc/pgarrow/actions/workflows/test.yaml) [![Code coverage](https://img.shields.io/codecov/c/github/michalc/pgarrow?label=Code%20coverage)](https://app.codecov.io/gh/michalc/pgarrow)
+
+A SQLAlchemy PostgreSQL dialect for ADBC (Arrow Database Connectivity)
+
+
+## Installation
+
+pgarrow can be installed from PyPI using pip:
+
+```bash
+pip install pgarrow
+```
+
+
+## Usage
+
+pgarrow can be used using the `postgresql+pgarrow` dialect. For example, to connect to a running database on 127.0.0.1 (localhost) on port 5432 as user _postgres_ with password _password_ and run a trivial query:
+
+```python
+import sqlalchemy as sa
+
+engine = sa.create_engine('postgresql+pgarrow://postgres:password@127.0.0.1:5432/')
+
+with engine.connect() as conn:
+    results = conn.execute(sa.text("SELECT 1")).fetchall()
+```
+
+
+## Compatibility
+
+- Python >= 3.9 (tested on 3.9.0, 3.10.0, 3.11.1, 3.12.0, and 3.13.0)
+- PostgreSQL >= 13.0 (tested on 13.0, 14.0, 15.0, and 16.0)
+- SQLAlchemy >= 2.0.7 on Python < 3.13, and SQLAlchemy >= 2.0.31 on Python >= 3.13 (tested on 2.0.7 on Python before 3.13.0, and SQLAlchemy 2.0.31 on Python 3.13.0)
+- PyArrow >= 20.0.0 (tested on 20.0.0)
+- adbc-driver-postgresql >= 1.6.0 (tested on 1.6.0)
