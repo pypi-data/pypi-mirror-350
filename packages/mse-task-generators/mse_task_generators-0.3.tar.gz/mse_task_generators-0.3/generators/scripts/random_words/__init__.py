@@ -1,0 +1,1 @@
+from .generate_random_words import NamesGenerator
