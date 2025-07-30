@@ -1,0 +1,68 @@
+[tool.poetry]
+name = "doipy"
+version = "1.0.0"
+description = "A Python wrapper for DOIP."
+authors = [
+    "Triet Doan <triet.doan@gwdg.de>",
+    "Sven Bingert <sven.bingert@gwdg.de>",
+    "Jana Böhm <jana.boehm@gwdg.de>"
+]
+readme = "README.md"
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+
+[tool.poetry.scripts]
+doipy = "doipy.main:app"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+typer = {extras = ["all"], version = "^0.9.0"}
+rich = "^13.7.0"
+pydantic = "^2.6.3"
+pydantic-settings = "^2.2.1"
+jsonschema = "^4.22.0"
+requests = "^2.32.3"
+doip-sdk = "^0.0.6"
+python-benedict = {extras = ["parse"], version = "^0.33.2"}
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0.2"
+pytest-mock = "^3.14.0"
+pytest-cov = "^5.0.0"
+ruff = "^0.6.4"
+
+
+[tool.ruff]
+line-length = 120
+
+
+[tool.ruff.lint]
+extend-select = [
+    # pycodestyle
+    "E",
+    # Pyflakes
+    "F",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I"
+]
+
+
+[tool.ruff.format]
+quote-style = "single"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
