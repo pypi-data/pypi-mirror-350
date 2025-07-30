@@ -1,0 +1,71 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rhoshift"
+version = "0.1.3.12"
+authors = [
+    { name = "Milind Waykole", email = "mwaykole@example.com" },
+]
+description = "RHOAI tool kit for managing and upgrading RHOAI"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { file = "LICENSE" }
+keywords = ["rhoai", "openshift", "upgrade", "toolkit", "red hat"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "boto3",
+    "kubernetes",
+    "openshift-client",
+    "python-dotenv",
+    "requests",
+]
+
+[tool.setuptools]
+include-package-data = true
+packages = [
+    "rhoshift",
+    "rhoshift.cli",
+    "rhoshift.logger",
+    "rhoshift.rhoai_upgrade_matrix",
+    "rhoshift.utils",
+    "rhoshift.utils.operator",
+]
+
+[tool.setuptools.package-data]
+"rhoshift" = [
+    "scripts/cleanup/*.sh",
+    "scripts/run_upgrade_matrix.sh"
+]
+
+[project.scripts]
+rhoshift = "rhoshift.main:main"
+run-upgrade-matrix = "rhoshift.rhoai_upgrade_matrix.cli:main"
+
+[project.urls]
+"Homepage" = "https://github.com/yourusername/rhoshift"
+"Bug Tracker" = "https://github.com/yourusername/rhoshift/issues"
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-cov",
+]
+dev = [
+    "ruff",
+    "pre-commit",
+    "build",
+]
