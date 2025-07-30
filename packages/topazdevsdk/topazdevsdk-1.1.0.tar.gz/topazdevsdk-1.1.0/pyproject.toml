@@ -1,0 +1,84 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+# See https://setuptools.pypa.io/en/latest/userguide/quickstart.html for more project configuration options.
+name = "topazdevsdk"
+dynamic = ["version"]
+description = "TopazDev Python SDK"
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+]
+authors = [
+    {name = "MALLET Maxime", email = "mallet.maxime@topazdev.fr"}
+]
+requires-python = ">=3.8"
+dependencies = [
+]
+license = "MIT"
+license-files = ["LICENSE"]
+
+[project.urls]
+Homepage = "https://github.com/azerxim/topazdev-sdk-py"
+Repository = "https://github.com/azerxim/topazdev-sdk-py"
+# Changelog = "https://github.com/azerxim/topazdev-sdk-py/blob/main/CHANGELOG.md"
+Documentation = "https://sdk.topazdev.fr/py"
+
+[project.optional-dependencies]
+dev = [
+    "sphinx>=8.1.3",
+    "sphinx-rtd-theme>=3.0.1",
+    "furo>=2024.8.6",
+    "myst-parser>=4.0.0",
+    "pytest",
+    "pytest-sphinx",
+    "pytest-cov",
+    "twine>=1.11.0",
+    "build",
+    "setuptools",
+    "wheel",
+    "sphinx-copybutton",
+    "sphinx-autobuild",
+    "sphinx-autodoc-typehints==1.23.3",
+    "packaging"
+]
+
+[tool.setuptools.packages.find]
+# All the following settings are optional:
+where = ["./src"]
+include = ["topazdevsdk*"]
+namespaces = true
+exclude = [
+    "*.tests",
+    "*.tests.*",
+    "tests.*",
+    "tests",
+    "docs*",
+    "scripts*"
+]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.dynamic]
+version = {attr = "topazdevsdk.__version__"}
+
+[tool.pytest.ini_options]
+testpaths = "tests/"
+python_classes = [
+  "Test*",
+  "*Test"
+]
+log_format = "%(asctime)s - %(levelname)s - %(name)s - %(message)s"
+log_level = "DEBUG"
