@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "titanic-model"
+description = "Titanic model package."
+version = "1.0.2"
+authors = [
+    {name = "Emin Tagiev", email = "emin.tagiev@phystech.edu"},
+]
+readme = "README.md"
+requires-python = ">=3.10.0"
+dependencies = [
+    "feature-engine==1.8.3",
+    "joblib==1.5.0",
+    "numpy==2.2.6",
+    "pandas==2.2.3",
+    "pydantic==2.11.4",
+    "scikit-learn==1.6.1",
+    "strictyaml==1.7.3"
+]
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+classifiers = [
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest==8.3.5",
+    "tox==4.26.0",
+]
+dev = [
+    "black==25.1.0",
+    "flake8==7.2.0",
+    "isort==6.0.1",
+    "mypy==1.15.0",
+    "pytest==8.3.5",
+    "tox==4.26.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Emilien-mipt/titanic-package"
+
+[tool.setuptools]
+# Аналог find_packages(exclude=("tests",))
+packages = {find = {exclude = ["tests"]}}
+
+# Аналог package_data
+package-data = {"titanic_model" = ["VERSION"]}
+
+# Аналог include_package_data
+include-package-data = true
