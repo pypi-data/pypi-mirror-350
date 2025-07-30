@@ -1,0 +1,148 @@
+[build-system]
+requires = ["build", "setuptools-scm"]
+
+[project]
+dynamic = ["version"]
+name = "ixmp"
+description = "The ix modeling platform"
+authors = [{ name = "IIASA Energy, Climate, and Environment (ECE) program" }]
+maintainers = [
+  { name = "Paul Natsuo Kishimoto", email = "mail@paul.kishimoto.name" },
+  { name = "Fridolin Glatter", email = "glatter@iiasa.ac.at" },
+]
+license = "Apache-2.0"
+readme = "README.md"
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "Natural Language :: English",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: R",
+  "Topic :: Scientific/Engineering",
+  "Topic :: Scientific/Engineering :: Information Analysis",
+]
+requires-python = ">=3.9"
+dependencies = [
+  "click",
+  "genno >= 1.20",
+  "JPype1 >= 1.2.1",
+  "JPype1 <= 1.4.0; python_version < '3.11'",
+  "openpyxl",
+  "pandas >= 1.2",
+  "pint",
+  "PyYAML",
+  "xarray",
+]
+
+[project.urls]
+Documentation = "https://docs.messageix.org/ixmp"
+"Release notes" = "https://docs.messageix.org/projects/ixmp/en/stable/whatsnew.html"
+Repository = "https://github.com/iiasa/ixmp"
+"Issue tracker" = "https://github.com/iiasa/ixmp/issues"
+
+
+[project.optional-dependencies]
+docs = [
+  "ixmp[tests]",
+  "genno >= 1.26",  # For sphinx extensions; see doc/conf.py
+  "GitPython",
+  "numpydoc",
+  "sphinx >= 3.0",
+  "sphinx_rtd_theme",
+  "sphinxcontrib-bibtex",
+]
+ixmp4 = [
+  "ixmp4 >= 0.10, < 0.11; python_version > '3.9'",
+  "gamsapi[core,transfer] >= 45.7.0",
+]
+report = ["genno[compat,graphviz]"]
+tutorial = ["jupyter"]
+tests = [
+  "ixmp[ixmp4,report,tutorial]",
+  "memory_profiler",
+  "nbclient >= 0.5",
+  "pytest >= 5",
+  "pytest-benchmark",
+  "pytest-cov",
+  "pytest-httpserver",
+  "pytest-rerunfailures",
+  "pytest-xdist",
+]
+
+[project.scripts]
+ixmp = "ixmp.cli:main"
+
+[tool.coverage.report]
+exclude_also = [
+  # Imports only used by type checkers
+  "if TYPE_CHECKING:",
+]
+omit = [
+  ".venv/*",
+  "ixmp/types.py",
+  "ixmp/util/sphinx_linkcode_github.py",
+]
+
+[tool.mypy]
+files = [
+  "doc",
+  "ixmp",
+]
+
+[[tool.mypy.overrides]]
+# Packages/modules for which no type hints are available.
+module = [
+  "jpype",
+  "memory_profiler",
+  "pyam",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+# Disable faulthandler plugin on Windows to prevent spurious console noise; see
+# - https://github.com/jpype-project/jpype/issues/561
+# - https://github.com/iiasa/ixmp/issues/229
+# - https://github.com/iiasa/ixmp/issues/247
+addopts = """
+  -m "not rixmp and not performance"
+  -p no:faulthandler
+  --benchmark-skip
+  --cov=ixmp --cov-report="""
+# Parallel to .util.ixmp4.configure_logging_and_warnings(), prevent warnings
+# from appearing in the test output
+filterwarnings = [
+  "ignore:Accessing the 'model_fields' :DeprecationWarning:ixmp4.db.filters",
+  # NB The following don't work if a message regex is added
+  "ignore::pandas.errors.SettingWithCopyWarning:ixmp4.data.db.base",
+  "ignore::DeprecationWarning:sqlalchemy.sql.schema",
+]
+markers = [
+  "rixmp: test of the ixmp R interface.",
+  "performance: ixmp performance test.",
+  "jdbc: tests exclusive to JDBCBackend.",
+  "ixmp4: tests exclusive to IXMP4Backend.",
+]
+tmp_path_retention_policy = "none"
+usefixtures = "tmp_env"
+
+[tool.ruff.lint]
+select = ["C9", "E", "F", "I", "W"]
+# FIXME the following exceed this limit
+# .backend.io.s_read_excel: 22
+# .backend.jdbc.JDBCBackend.item_get_elements: 18
+# .core.scenario.Scenario.add_par: 15
+# .core.scenario.Scenario.add_set: 18
+mccabe.max-complexity = 13
+
+[tool.setuptools.packages]
+find = {}
+
+[tool.setuptools_scm]
