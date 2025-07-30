@@ -1,0 +1,1110 @@
+#!/usr/bin/env python
+
+import re
+import dis
+import sys
+import csv
+import math
+import yaml
+import json
+import types
+import socket
+import urllib
+import inspect
+import pathlib
+import hashlib
+import warnings
+import argparse
+import collections
+
+from tqdm import tqdm
+from enum import Enum
+from pathlib import Path
+from dataclasses import dataclass
+from typing import List, Tuple, Set, Optional, Any, Dict, TextIO
+
+
+from research.predict import get_node_text_prediction, initialize_models
+from common.files import read_json_from_file
+
+
+SCRIPT_DIR = pathlib.Path(__file__).resolve().parent
+SENSITIVE_PATHS: Set[str] = read_json_from_file(
+    SCRIPT_DIR / "syntax_mapping" / "sensitive_files.json"
+)
+FUNCTION_MAPPING: Dict[str, Any] = read_json_from_file(
+    SCRIPT_DIR / "syntax_mapping" / "function_mapping.json"
+)
+IMPORT_MAPPING: Dict[str, Any] = read_json_from_file(
+    SCRIPT_DIR / "syntax_mapping" / "import_mapping.json"
+)
+COMMON_TARGET_FILES: Dict[str, Set[str]] = read_json_from_file(
+    SCRIPT_DIR / "syntax_mapping" / "target_files.json"
+)
+
+
+class SpecialCases(Enum):
+    STRING_MAX_LENGTH = 10
+    STRING_SENSITIVE_FILE_PATH = "STRING_SENSITIVE_FILE_PATH"
+    STRING_URL = "STRING_URL"
+    STRING_FILE_PATH = "STRING_FILE_PATH"
+    STRING_IP = "STRING_IP"
+    STRING_BASE64 = "STRING_BASE64"
+    STRING_HEX = "STRING_HEX"
+    STRING_ESCAPED_HEX = "STRING_ESCAPED_HEX"
+    MALFORMED_FILE = "MALFORMED_FILE"
+    MALFORMED_SYNTAX = "MALFORMED_SYNTAX"
+    FILE_READING_ISSUES = "FILE_READING_ISSUES"
+    TARGETED_FILE = "TARGETED_FILE"
+    INTEGER = "INTEGER"
+    FLOAT = "FLOAT"
+
+
+class LiteralStr(str):
+    pass
+
+
+def literal_str_representer(dumper, data):
+    return dumper.represent_scalar("tag:yaml.org,2002:str", data, style="|")
+
+
+yaml.add_representer(LiteralStr, literal_str_representer)
+
+
+@dataclass
+class MalwiObject:
+    name: str
+    file_path: str
+    instructions: List[Tuple[str, str]]
+    warnings: List[str]
+    maliciousness: Optional[float] = None
+    code: Optional[str] = None
+    codeType: Optional[types.CodeType] = None
+
+    def __init__(
+        self,
+        name: str,
+        language: str,
+        file_path: str,
+        instructions: List[Tuple[str, str]],
+        codeType: types.CodeType = None,
+        warnings: List[str] = [],
+    ):
+        self.name = name
+        self.file_path = file_path
+        self.instructions = instructions
+        self.warnings = list(warnings)
+        self.maliciousness = None
+        self.codeType = codeType
+
+        if Path(self.file_path).name in COMMON_TARGET_FILES.get(language, []):
+            self.warnings += [SpecialCases.TARGETED_FILE.value]
+
+    @classmethod
+    def load_models_into_memory(
+        cls, model_path: Optional[str] = None, tokenizer_path: Optional[str] = None
+    ):
+        initialize_models(model_path=model_path, tokenizer_path=tokenizer_path)
+
+    def to_tokens(self) -> List[str]:
+        instructions: List[Tuple[str, str]] = self.instructions
+        all_token_parts: List[str] = []
+        all_token_parts.extend(self.warnings)
+        for opname, argrepr_val in instructions:
+            all_token_parts.append(opname)
+            if argrepr_val:
+                all_token_parts.append(argrepr_val)
+        return all_token_parts
+
+    def to_token_string(self) -> str:
+        return " ".join(self.to_tokens())
+
+    def to_string_hash(self) -> str:
+        tokens = self.to_token_string()
+        encoded_string = tokens.encode("utf-8")
+        sha256_hash = hashlib.sha256()
+        sha256_hash.update(encoded_string)
+        return sha256_hash.hexdigest()
+
+    def retrieve_source_code(self) -> Optional[str]:
+        try:
+            lines, _ = inspect.getsourcelines(self.codeType)
+            self.code = "".join(lines)
+            return self.code
+        except Exception:
+            pass
+        return None
+
+    def predict(self) -> Optional[dict]:
+        prediction = get_node_text_prediction(self.to_token_string())
+        if prediction and "probabilities" in prediction:
+            self.maliciousness = prediction["probabilities"][1]
+        return prediction
+
+    def to_dict(self) -> dict:
+        code_display_value = self.code
+        if code_display_value is None:
+            code_display_value = "<source not available>"
+
+        if isinstance(code_display_value, str) and "\n" in code_display_value:
+            final_code_value = LiteralStr(code_display_value.strip())
+        else:
+            final_code_value = code_display_value
+
+        return {
+            "path": self.file_path,
+            "contents": [
+                {
+                    "name": self.name,
+                    "score": self.maliciousness,
+                    "code": final_code_value,
+                    "tokens": self.to_token_string(),
+                    "hash": self.to_string_hash(),
+                }
+            ],
+        }
+
+    def to_yaml(self) -> str:
+        return yaml.dump(
+            self.to_dict(),
+            sort_keys=False,
+            width=float("inf"),
+            default_flow_style=False,
+        )
+
+    def to_json(self) -> str:
+        return json.dumps(self.to_dict(), indent=4)
+
+    @staticmethod
+    def _generate_report_data(
+        malwi_files: List["MalwiObject"],
+        all_files: List[str],
+        malicious_threshold: float = 0.5,
+        number_of_skipped_files: int = 0,
+        malicious_only: bool = False,
+    ) -> Dict[str, Any]:
+        """
+        Internal helper to compute report data.
+        """
+        processed_objects_count = len(malwi_files)
+        total_maliciousness_score = 0.0
+        malicious_objects_count = 0
+        files_with_scores_count = 0
+
+        for mf in malwi_files:
+            mf.retrieve_source_code()
+            if mf.maliciousness is None:
+                mf.predict()
+
+            if mf.maliciousness is not None:
+                total_maliciousness_score += mf.maliciousness
+                files_with_scores_count += 1
+                if mf.maliciousness > malicious_threshold:
+                    malicious_objects_count += 1
+
+        summary_statistics = {
+            "total_files": len(all_files),
+            "skipped_files": number_of_skipped_files,
+            "processed_objects": processed_objects_count,
+            "malicious_objects": malicious_objects_count,
+        }
+
+        report_data = {
+            "statistics": summary_statistics,
+            "details": [],
+        }
+
+        for mf in malwi_files:
+            if mf.maliciousness is not None:
+                if mf.maliciousness > malicious_threshold:
+                    report_data["details"].append(mf.to_dict())
+                elif not malicious_only:
+                    report_data["details"].append(mf.to_dict())
+            elif not malicious_only:
+                report_data["details"].append(mf.to_dict())
+
+        return report_data
+
+    @classmethod
+    def to_report_json(
+        cls,
+        malwi_files: List["MalwiObject"],
+        all_files: List[str],
+        malicious_threshold: float = 0.5,
+        number_of_skipped_files: int = 0,
+        malicious_only: bool = False,
+    ) -> str:
+        report_data = cls._generate_report_data(
+            malwi_files,
+            all_files,
+            malicious_threshold,
+            number_of_skipped_files,
+            malicious_only=malicious_only,
+        )
+        return json.dumps(report_data, indent=4)
+
+    @classmethod
+    def to_report_yaml(
+        cls,
+        malwi_files: List["MalwiObject"],
+        all_files: List[str],
+        malicious_threshold: float = 0.5,
+        number_of_skipped_files: int = 0,
+        malicious_only: bool = False,
+    ) -> str:
+        report_data = cls._generate_report_data(
+            malwi_files,
+            all_files,
+            malicious_threshold,
+            number_of_skipped_files,
+            malicious_only=malicious_only,
+        )
+        return yaml.dump(
+            report_data, sort_keys=False, width=float("inf"), default_flow_style=False
+        )
+
+    @classmethod
+    def to_report_markdown(
+        cls,
+        malwi_files: List["MalwiObject"],
+        all_files: List[str],
+        malicious_threshold: float = 0.5,
+        number_of_skipped_files: int = 0,
+        malicious_only: bool = False,
+    ) -> str:
+        report_data = cls._generate_report_data(
+            malwi_files,
+            all_files,
+            malicious_threshold,
+            number_of_skipped_files,
+            malicious_only=malicious_only,
+        )
+
+        stats = report_data["statistics"]
+
+        txt = "# Malwi Report\n\n"
+        txt += f"- Files: {stats['total_files']}\n"
+        txt += f"- Skipped: {stats['skipped_files']}\n"
+        txt += f"- Processed Objects: {stats['processed_objects']}\n"
+        txt += f"- Malicious Objects: {stats['malicious_objects']}\n\n"
+
+        for file in report_data["details"]:
+            txt += f"## {file['path']}\n"
+
+            for object in file["contents"]:
+                txt += (
+                    f"- Object: {object['name'] if object['name']  else "<object>"}\n"
+                )
+                txt += f"- Maliciousness: {object['score']}\n\n"
+                txt += "### Code\n"
+                txt += f"```\n{object['code']}\n```\n\n"
+                txt += "### Tokens\n"
+                txt += f"```\n{object['tokens']}\n```\n"
+            txt += "\n\n"
+
+        return txt
+
+
+class OutputFormatter:
+    """Handles different output formats for MalwiObject data."""
+
+    @staticmethod
+    def format_text(objects_data: List[MalwiObject], output_stream: TextIO) -> None:
+        """Format objects as readable text."""
+        for obj_data in objects_data:
+            output_stream.write(f"\nDisassembly of <code object {obj_data.name}>:\n")
+            output_stream.write(f'  (file: "{obj_data.file_path}")\n')
+
+            if obj_data.code and not obj_data.code.startswith("<Not applicable"):
+                indented_source = "\n".join(
+                    ["    " + line for line in obj_data.code.splitlines()]
+                )
+                output_stream.write(f"  Source Code:\n{indented_source}\n")
+            elif obj_data.code:
+                output_stream.write(f"  Source Code: {obj_data.code}\n")
+
+            if obj_data.instructions:
+                output_stream.write(f"{'OPNAME':<25} ARGREPR\n")
+                output_stream.write(f"{'-' * 25} {'-' * 20}\n")
+                for opname, argrepr_val in obj_data.instructions:
+                    output_stream.write(f"{opname:<25} {argrepr_val}\n")
+            elif not obj_data.code or obj_data.code.startswith("<Not applicable"):
+                output_stream.write(
+                    f"  (No instructions, entry likely represents a file/syntax error: {obj_data.name})\n"
+                )
+
+    @staticmethod
+    def format_csv(objects_data: List[MalwiObject], output_stream: TextIO) -> None:
+        """Format objects as CSV."""
+        writer = csv.writer(output_stream)
+        writer.writerow(["tokens", "hash", "filepath"])
+        for obj in objects_data:
+            writer.writerow(
+                [
+                    obj.to_token_string(),
+                    obj.to_string_hash(),
+                    obj.file_path,
+                ]
+            )
+
+    @staticmethod
+    def format_json(
+        objects_data: List[MalwiObject],
+        output_stream: TextIO,
+        malicious_threshold: float = 0.5,
+        malicious_only: bool = False,
+    ) -> None:
+        """Format objects as JSON report."""
+        report_json = MalwiObject.to_report_json(
+            objects_data, [], malicious_threshold, 0, malicious_only
+        )
+        output_stream.write(report_json + "\n")
+
+    @staticmethod
+    def format_yaml(
+        objects_data: List[MalwiObject],
+        output_stream: TextIO,
+        malicious_threshold: float = 0.5,
+        malicious_only: bool = False,
+    ) -> None:
+        """Format objects as YAML report."""
+        report_yaml = MalwiObject.to_report_yaml(
+            objects_data, [], malicious_threshold, 0, malicious_only
+        )
+        output_stream.write(report_yaml + "\n")
+
+
+class CSVWriter:
+    """Handles CSV output operations."""
+
+    def __init__(self, file_path: Path):
+        self.file_path = file_path
+        self.file_handle = None
+        self.writer = None
+        self._initialize_file()
+
+    def _initialize_file(self):
+        """Initialize CSV file with headers if needed."""
+        file_exists_before_open = self.file_path.is_file()
+        is_empty = not file_exists_before_open or self.file_path.stat().st_size == 0
+
+        self.file_handle = open(
+            self.file_path, "a", newline="", encoding="utf-8", errors="replace"
+        )
+        self.writer = csv.writer(self.file_handle)
+
+        if is_empty:
+            self.writer.writerow(["tokens", "hash", "filepath"])
+
+    def write_objects(self, objects_data: List[MalwiObject]) -> None:
+        """Write MalwiObject data to CSV."""
+        for obj in objects_data:
+            self.writer.writerow(
+                [
+                    obj.to_token_string(),
+                    obj.to_string_hash(),
+                    obj.file_path,
+                ]
+            )
+
+    def close(self):
+        """Close the CSV file."""
+        if self.file_handle:
+            self.file_handle.close()
+
+
+def sanitize_identifier(identifier: Optional[str]) -> str:
+    if identifier is None:
+        return ""
+    sanitized_name = re.sub(r"[^a-zA-Z0-9]", ".", identifier)
+    sanitized_name = re.sub(r"\.{2,}", ".", sanitized_name)
+    sanitized_name = sanitized_name.strip(".")
+    return sanitized_name
+
+
+def map_identifier(
+    identifier: Optional[str], language: str, mapping_table: dict
+) -> Optional[str]:
+    if identifier is None:
+        return None
+    parts = identifier.split(".")
+    for i in range(len(parts)):
+        key = ".".join(parts[i:])
+        if key in mapping_table.get(language, {}):
+            return mapping_table[language].get(key)
+    return None
+
+
+def map_entropy_to_token(entropy: float):
+    if entropy <= 1.0:
+        return "ENT_LOW"
+    elif entropy <= 2.5:
+        return "ENT_MED"
+    elif entropy <= 5.0:
+        return "ENT_HIGH"
+    else:
+        return "ENT_VHIGH"
+
+
+def map_string_length_to_token(str_len: int):
+    if str_len <= 10:
+        return "LEN_XS"
+    elif str_len <= 100:
+        return "LEN_S"
+    elif str_len <= 1000:
+        return "LEN_M"
+    elif str_len <= 10000:
+        return "LEN_L"
+    elif str_len <= 100000:
+        return "LEN_XL"
+    else:
+        return "LEN_XXL"
+
+
+def calculate_shannon_entropy(data: bytes) -> float:
+    if not data:
+        return 0.0
+    length = len(data)
+    byte_counts = collections.Counter(data)
+    entropy = -sum(
+        (count / length) * math.log2(count / length) for count in byte_counts.values()
+    )
+    return entropy
+
+
+def is_valid_ip(content: str) -> bool:
+    if not content or "%" in content:
+        return False
+    try:
+        socket.inet_pton(socket.AF_INET, content)
+        return True
+    except (socket.error, OSError):
+        try:
+            socket.inet_pton(socket.AF_INET6, content)
+            return True
+        except (socket.error, OSError):
+            return False
+    except Exception:
+        return False
+
+
+def is_valid_url(content: str) -> bool:
+    if not content or (":" not in content and "." not in content):
+        return False
+
+    if not re.match(r"^[a-zA-Z][a-zA-Z0-9+.-]*://", content):
+        if content.startswith(("www.", "http.", "https.")):
+            content_with_scheme = "http://" + content
+        else:
+            return False
+    else:
+        content_with_scheme = content
+
+    try:
+        result = urllib.parse.urlparse(content_with_scheme)
+        return bool(result.scheme and result.netloc)
+    except Exception:
+        return False
+
+
+def is_escaped_hex(s: str) -> bool:
+    pattern = re.compile(r"^(?:\\x[0-9a-fA-F]{2})+$")
+    return bool(pattern.match(s))
+
+
+def is_base64(s: str) -> bool:
+    base64_char_pattern = re.compile(r"^[A-Za-z0-9+/]*(={0,2})$")
+    if not s:
+        return False
+    return bool(base64_char_pattern.match(s)) and len(s) % 4 == 0
+
+
+def is_hex(s: str) -> bool:
+    hex_char_pattern_strict = re.compile(r"^[A-Fa-f0-9]+$")
+    return bool(hex_char_pattern_strict.match(s))
+
+
+def is_file_path(text: str) -> bool:
+    if not text or len(text) < 2:
+        return False
+    has_separator = "/" in text or "\\" in text
+    is_common_non_file_url = text.startswith(
+        (
+            "http://",
+            "https://",
+            "ftp://",
+            "sftp://",
+            "ws://",
+            "wss://",
+            "mailto:",
+            "tel:",
+            "data:",
+        )
+    )
+    is_unix_like_start = text.startswith(("/", "~", "./", "../"))
+    is_win_drive_start = (
+        len(text) > 2
+        and text[1] == ":"
+        and text[0].isalpha()
+        and text[2] in ("\\", "/")
+    )
+    is_win_unc_start = text.startswith("\\\\")
+    return (
+        has_separator or is_unix_like_start or is_win_drive_start or is_win_unc_start
+    ) and not is_common_non_file_url
+
+
+def map_string_arg(argval: str, original_argrepr: str) -> str:
+    prefix = "STRING"
+    python_function_mapping = FUNCTION_MAPPING.get("python", {})
+    python_import_mapping = IMPORT_MAPPING.get("python", {})
+
+    if argval in python_function_mapping:
+        return python_function_mapping.get(argval)
+    elif argval in python_import_mapping:
+        return argval
+    elif argval in SENSITIVE_PATHS:
+        return f"{SpecialCases.STRING_SENSITIVE_FILE_PATH.value}"
+    elif is_valid_ip(argval):
+        return f"{SpecialCases.STRING_IP.value}"
+    elif is_valid_url(argval):
+        return f"{SpecialCases.STRING_URL.value}"
+    elif is_file_path(argval):
+        return f"{SpecialCases.STRING_FILE_PATH.value}"
+    else:
+        if len(argval) <= SpecialCases.STRING_MAX_LENGTH.value:
+            return argval
+        if is_escaped_hex(argval):
+            prefix = SpecialCases.STRING_ESCAPED_HEX.value
+        elif is_hex(argval):
+            prefix = SpecialCases.STRING_HEX.value
+        elif is_base64(argval):
+            prefix = SpecialCases.STRING_BASE64.value
+
+        length_suffix = map_string_length_to_token(len(argval))
+        try:
+            entropy = calculate_shannon_entropy(argval.encode("utf-8", errors="ignore"))
+        except Exception:
+            entropy = 0.0
+        entropy_suffix = map_entropy_to_token(entropy)
+        return f"{prefix}_{length_suffix}_{entropy_suffix}"
+
+
+def map_code_object_arg(argval: types.CodeType, original_argrepr: str) -> str:
+    return "OBJECT"
+
+
+def map_tuple_arg(argval: tuple, original_argrepr: str) -> str:
+    result = set()
+    for item in argval:
+        if isinstance(item, str):
+            result.add(str(item))
+        elif isinstance(item, int):
+            result.add(SpecialCases.INTEGER.value)
+        elif isinstance(item, float):
+            result.add(SpecialCases.FLOAT.value)
+    if not result:
+        return ""
+    ordered = list(result)
+    ordered.sort()
+    return " ".join(ordered)
+
+
+def map_frozenset_arg(argval: frozenset, original_argrepr: str) -> str:
+    result = set()
+    for item in argval:
+        if isinstance(item, str):
+            result.add(str(item))
+        elif isinstance(item, int):
+            result.add(SpecialCases.INTEGER.value)
+        elif isinstance(item, float):
+            result.add(SpecialCases.FLOAT.value)
+    if not result:
+        return ""
+    ordered = list(result)
+    ordered.sort()
+    return " ".join(ordered)
+
+
+def map_jump_instruction_arg(instruction: dis.Instruction) -> Optional[str]:
+    return "TO_NUMBER"
+
+
+def map_load_const_number_arg(
+    instruction: dis.Instruction, argval: Any, original_argrepr: str
+) -> Optional[str]:
+    if isinstance(argval, int):
+        return SpecialCases.INTEGER.value
+    elif isinstance(argval, float):
+        return SpecialCases.FLOAT.value
+    elif isinstance(argval, types.CodeType):
+        return map_code_object_arg(argval, original_argrepr)
+    elif isinstance(argval, str):
+        return map_string_arg(argval, original_argrepr)
+    return None
+
+
+def recursively_disassemble_python(
+    file_path: str,
+    language: str,
+    code_obj: Optional[types.CodeType],
+    all_objects_data: List[MalwiObject] = [],
+    visited_code_ids: Optional[Set[int]] = None,
+    errors: List[str] = [],
+) -> None:
+    if errors or not code_obj:
+        for err_msg in errors:
+            object_data = MalwiObject(
+                name=err_msg,
+                language=language,
+                file_path=file_path,
+                instructions=[],
+                codeType=None,
+                warnings=[err_msg],
+            )
+            all_objects_data.append(object_data)
+        if not code_obj and not errors:
+            all_objects_data.append(
+                MalwiObject(
+                    name=SpecialCases.MALFORMED_FILE.value,
+                    language=language,
+                    file_path=file_path,
+                    instructions=[],
+                    codeType=None,
+                    warnings=[SpecialCases.MALFORMED_FILE.value],
+                    code="<Not applicable: no code object generated>",
+                )
+            )
+        return
+
+    if visited_code_ids is None:
+        visited_code_ids = set()
+
+    if id(code_obj) in visited_code_ids:
+        return
+    visited_code_ids.add(id(code_obj))
+
+    current_instructions_data: List[Tuple[str, str]] = []
+    for instruction in dis.get_instructions(code_obj):
+        opname: str = instruction.opname.lower()
+        argval: Any = instruction.argval
+        original_argrepr: str = (
+            instruction.argrepr if instruction.argrepr is not None else ""
+        )
+
+        final_value = ""
+
+        if instruction.opcode in dis.hasjabs or instruction.opcode in dis.hasjrel:
+            final_value = map_jump_instruction_arg(instruction)
+        elif instruction.opname == "LOAD_CONST":
+            final_value = map_load_const_number_arg(
+                instruction, argval, original_argrepr
+            )
+        elif isinstance(argval, str):
+            final_value = map_string_arg(argval, original_argrepr)
+        elif isinstance(argval, types.CodeType):
+            final_value = map_code_object_arg(argval, original_argrepr)
+        elif isinstance(argval, tuple):
+            final_value = map_tuple_arg(argval, original_argrepr)
+        elif isinstance(argval, frozenset):
+            final_value = map_frozenset_arg(argval, original_argrepr)
+        else:
+            final_value = original_argrepr
+
+        current_instructions_data.append((opname, final_value))
+
+    object_data = MalwiObject(
+        name=code_obj.co_name if code_obj else "UnknownObject",
+        language=language,
+        file_path=(code_obj.co_filename if code_obj else file_path),
+        instructions=current_instructions_data,
+        codeType=code_obj,
+        warnings=[],
+    )
+    all_objects_data.append(object_data)
+
+    if code_obj:  # Only recurse if code_obj is valid
+        for const in code_obj.co_consts:
+            if isinstance(const, types.CodeType):
+                recursively_disassemble_python(
+                    file_path=file_path,  # Pass the original file_path for context
+                    language=language,
+                    code_obj=const,
+                    all_objects_data=all_objects_data,
+                    visited_code_ids=visited_code_ids,
+                    errors=[],
+                )
+
+
+def disassemble_python_file(
+    file_path_str: str, retrieve_source_code: bool = True
+) -> List[MalwiObject]:
+    all_disassembled_data: List[MalwiObject] = []
+    source_code: Optional[str] = None
+    current_file_errors: List[str] = []
+
+    try:
+        with open(file_path_str, "r", encoding="utf-8", errors="replace") as f:
+            source_code = f.read()
+    except Exception:
+        current_file_errors.append(SpecialCases.FILE_READING_ISSUES.value)
+
+    top_level_code_object = None
+    if source_code is not None:
+        try:
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore", SyntaxWarning)
+                top_level_code_object = compile(source_code, file_path_str, "exec")
+        except UnicodeDecodeError:
+            current_file_errors.append(SpecialCases.MALFORMED_FILE.value)
+        except SyntaxError:
+            current_file_errors.append(SpecialCases.MALFORMED_SYNTAX.value)
+        except Exception:
+            current_file_errors.append(SpecialCases.MALFORMED_FILE.value)
+    else:
+        if not current_file_errors:
+            current_file_errors.append(SpecialCases.FILE_READING_ISSUES.value)
+
+    recursively_disassemble_python(
+        file_path=file_path_str,
+        language="python",
+        code_obj=top_level_code_object,
+        all_objects_data=all_disassembled_data,
+        errors=current_file_errors,
+    )
+    return all_disassembled_data
+
+
+def process_single_py_file(
+    py_file: Path, predict: bool = True, retrieve_source_code: bool = True
+) -> Optional[List[MalwiObject]]:
+    try:
+        disassembled_data: List[MalwiObject] = disassemble_python_file(
+            str(py_file), retrieve_source_code=retrieve_source_code
+        )
+        if predict:
+            for d in disassembled_data:
+                if d.instructions:
+                    d.predict()
+        if retrieve_source_code:
+            for d in disassembled_data:
+                d.retrieve_source_code()
+        return disassembled_data if disassembled_data else None
+    except Exception as e:
+        print(
+            f"An unexpected error occurred while processing {py_file}: {e}",
+            file=sys.stderr,
+        )
+    return None
+
+
+@dataclass
+class ProcessingResult:
+    """Result of processing files from a path."""
+
+    malwi_objects: List[MalwiObject]
+    all_files: List[Path]
+    skipped_files: List[Path]
+    processed_files: int
+
+
+def collect_files_by_extension(
+    input_path: Path,
+    accepted_extensions: Optional[List[str]] = None,
+    silent: bool = False,
+) -> Tuple[List[Path], List[Path]]:
+    """
+    Collect files from the input path, filtering by accepted extensions.
+
+    Args:
+        input_path: Path to file or directory
+        accepted_extensions: List of file extensions to accept (without dots)
+        silent: If True, suppress error messages
+
+    Returns:
+        Tuple of (accepted_files, skipped_files)
+    """
+    if accepted_extensions is None:
+        accepted_extensions = ["py"]
+
+    normalized_extensions = [ext.lower().lstrip(".") for ext in accepted_extensions]
+    accepted_files = []
+    skipped_files = []
+
+    if not input_path.exists():
+        if not silent:
+            print(f"Error: Path does not exist: {input_path}", file=sys.stderr)
+        return accepted_files, skipped_files
+
+    if input_path.is_file():
+        file_extension = input_path.suffix.lstrip(".").lower()
+        if file_extension in normalized_extensions:
+            accepted_files.append(input_path)
+        else:
+            skipped_files.append(input_path)
+            if not silent:
+                print(
+                    f"Skipping file '{input_path}': Extension '.{file_extension}' "
+                    f"not in accepted list: {accepted_extensions}",
+                    file=sys.stderr,
+                )
+
+    elif input_path.is_dir():
+        if not silent:
+            print(
+                f"--- Searching directory: {input_path.resolve()} ---", file=sys.stderr
+            )
+
+        for file_path in input_path.rglob("*"):
+            if file_path.is_file():
+                file_extension = file_path.suffix.lstrip(".").lower()
+                if file_extension in normalized_extensions:
+                    accepted_files.append(file_path)
+                else:
+                    skipped_files.append(file_path)
+
+        if not accepted_files and not silent:
+            print(
+                f"No files with extensions {accepted_extensions} found in directory: {input_path}",
+                file=sys.stderr,
+            )
+
+    else:
+        if not silent:
+            print(
+                f"Error: Path is not a file or directory: {input_path}", file=sys.stderr
+            )
+        skipped_files.append(input_path)
+
+    return accepted_files, skipped_files
+
+
+def process_files(
+    input_path: Path,
+    accepted_extensions: Optional[List[str]] = None,
+    predict: bool = False,
+    retrieve_source_code: bool = False,
+    silent: bool = False,
+    show_progress: bool = True,
+) -> ProcessingResult:
+    accepted_files, skipped_files = collect_files_by_extension(
+        input_path, accepted_extensions, silent
+    )
+
+    all_files = accepted_files + skipped_files
+    accumulated_data: List[MalwiObject] = []
+    files_processed_count = 0
+
+    if not accepted_files:
+        return ProcessingResult(
+            malwi_objects=accumulated_data,
+            all_files=all_files,
+            skipped_files=skipped_files,
+            processed_files=files_processed_count,
+        )
+
+    # Configure progress bar
+    tqdm_desc = (
+        f"Processing directory '{input_path.name}'"
+        if input_path.is_dir() and len(accepted_files) > 1
+        else f"Processing '{input_path.name}'"
+    )
+
+    disable_tqdm = not show_progress or (
+        len(accepted_files) <= 1 and input_path.is_file()
+    )
+
+    for file_path in tqdm(
+        accepted_files,
+        desc=tqdm_desc,
+        unit="file",
+        ncols=100,
+        disable=disable_tqdm,
+        leave=False,
+    ):
+        try:
+            file_data = process_single_py_file(
+                file_path, predict=predict, retrieve_source_code=retrieve_source_code
+            )
+            if file_data:
+                files_processed_count += 1
+                accumulated_data.extend(file_data)
+        except Exception as e:
+            if not silent:
+                print(
+                    f"Critical error processing file {file_path}: {e}", file=sys.stderr
+                )
+
+    if files_processed_count == 0 and accepted_files and not silent:
+        print(
+            "No files were successfully processed to produce data from the input path.",
+            file=sys.stderr,
+        )
+
+    return ProcessingResult(
+        malwi_objects=accumulated_data,
+        all_files=all_files,
+        skipped_files=skipped_files,
+        processed_files=files_processed_count,
+    )
+
+
+def main() -> None:
+    parser: argparse.ArgumentParser = argparse.ArgumentParser(
+        description="Recursively disassemble Python files",
+        epilog="Example: python %(prog)s your_script.or_directory --format txt --save output.txt",
+    )
+    parser.add_argument(
+        "path", metavar="PATH", help="The Python file or directory to process."
+    )
+    parser.add_argument(
+        "-f",
+        "--format",
+        type=str,
+        choices=["txt", "csv", "json", "yaml"],
+        default="txt",
+        help="Output format (default: txt). 'json' and 'yaml' are report formats.",
+    )
+    parser.add_argument(
+        "-s",
+        "--save",
+        type=str,
+        default=None,
+        metavar="FILEPATH",
+        help="Path to save the output. If not provided, output goes to stdout.",
+    )
+    parser.add_argument(
+        "--model-path",
+        type=str,
+        default=None,
+        help="Path to the ML model for maliciousness prediction.",
+    )
+    parser.add_argument(
+        "--tokenizer-path",
+        type=str,
+        default=None,
+        help="Path to the tokenizer for the ML model.",
+    )
+    parser.add_argument(
+        "--malicious-threshold",
+        type=float,
+        default=0.5,
+        help="Threshold for classifying as malicious in reports (0.0 to 1.0).",
+    )
+    parser.add_argument(
+        "--malicious-only",
+        action="store_true",
+        help="In reports, include only files deemed malicious.",
+    )
+    parser.add_argument("--version", action="version", version="%(prog)s 2.6")
+
+    args: argparse.Namespace = parser.parse_args()
+    input_path_obj: Path = Path(args.path)
+
+    try:
+        MalwiObject.load_models_into_memory(
+            model_path=args.model_path, tokenizer_path=args.tokenizer_path
+        )
+    except Exception as e:
+        print(
+            f"Warning: Could not initialize ML models: {e}. Maliciousness prediction will be disabled.",
+            file=sys.stderr,
+        )
+
+    if not input_path_obj.exists():
+        print(f"Error: Input path does not exist: {input_path_obj}", file=sys.stderr)
+        sys.exit(1)
+
+    # Process input and collect all data
+    collected_data: List[MalwiObject] = []
+    csv_writer_instance: Optional[CSVWriter] = None
+
+    try:
+        # Handle CSV output separately for streaming
+        if args.format == "csv" and args.save:
+            save_path = Path(args.save)
+            save_path.parent.mkdir(parents=True, exist_ok=True)
+            csv_writer_instance = CSVWriter(save_path)
+            print(
+                f"CSV output will be appended to: {save_path.resolve()}",
+                file=sys.stderr,
+            )
+
+            # Process files and write directly to CSV
+            result = process_files(
+                input_path_obj,
+                accepted_extensions=["py"],
+                predict=False,
+                retrieve_source_code=False,
+                silent=False,
+                show_progress=True,
+            )
+
+            if result.malwi_objects:
+                csv_writer_instance.write_objects(result.malwi_objects)
+
+            csv_writer_instance.close()
+
+        else:
+            # For all other formats, collect data first
+            result = process_files(
+                input_path_obj,
+                accepted_extensions=["py"],
+                predict=False,
+                retrieve_source_code=False,
+                silent=False,
+                show_progress=True,
+            )
+            collected_data = result.malwi_objects
+
+            # Handle output
+            output_stream = sys.stdout
+            output_file = None
+
+            if args.save:
+                save_path = Path(args.save)
+                save_path.parent.mkdir(parents=True, exist_ok=True)
+                output_file = open(save_path, "w", encoding="utf-8", errors="replace")
+                output_stream = output_file
+                print(
+                    f"Output will be saved to: {save_path.resolve()}", file=sys.stderr
+                )
+
+            try:
+                # Format and output data
+                if args.format == "txt":
+                    OutputFormatter.format_text(collected_data, output_stream)
+                elif args.format == "csv":
+                    OutputFormatter.format_csv(collected_data, output_stream)
+                elif args.format == "json":
+                    OutputFormatter.format_json(
+                        collected_data,
+                        output_stream,
+                        args.malicious_threshold,
+                        args.malicious_only,
+                    )
+                elif args.format == "yaml":
+                    OutputFormatter.format_yaml(
+                        collected_data,
+                        output_stream,
+                        args.malicious_threshold,
+                        args.malicious_only,
+                    )
+            finally:
+                if output_file:
+                    output_file.close()
+
+    except Exception as e:
+        print(f"A critical error occurred: {e}", file=sys.stderr)
+        import traceback
+
+        traceback.print_exc(file=sys.stderr)
+        if csv_writer_instance:
+            csv_writer_instance.close()
+        sys.exit(1)
+
+    sys.exit(0)
+
+
+if __name__ == "__main__":
+    main()
