@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "clipclean"
+version = "1.0.0"
+authors = [
+    {name = "Kevin O'Connor"},
+]
+description = "A simple GUI tool for cleaning text copied from LLM outputs"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Text Processing :: General",
+    "Topic :: Utilities",
+]
+keywords = ["text", "cleaning", "llm", "ai", "clipboard", "gui"]
+dependencies = [
+    "pyperclip>=1.8.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/kevinobytes/clipclean"
+Repository = "https://github.com/kevinobytes/clipclean"
+Issues = "https://github.com/kevinobytes/clipclean/issues"
+
+[project.scripts]
+clipclean = "clipclean.gui:main"
+
+[project.optional-dependencies]
+dev = [
+    "build",
+    "twine",
+    "pyinstaller",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["clipclean*"]
