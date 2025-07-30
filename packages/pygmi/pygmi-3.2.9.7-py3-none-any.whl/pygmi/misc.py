@@ -1,0 +1,955 @@
+# -----------------------------------------------------------------------------
+# Name:        misc.py (part of PyGMI)
+#
+# Author:      Patrick Cole
+# E-Mail:      pcole@geoscience.org.za
+#
+# Copyright:   (c) 2015 Council for Geoscience
+# Licence:     GPL-3.0
+#
+# This file is part of PyGMI
+#
+# PyGMI is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# PyGMI is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# -----------------------------------------------------------------------------
+"""Misc is a collection of routines which can be used in PyGMI in general."""
+
+import os
+import sys
+import subprocess
+import types
+import time
+import textwrap
+import psutil
+import webbrowser
+import numpy as np
+from matplotlib import ticker, cm, colors
+from PySide6 import QtWidgets, QtCore, QtGui
+
+# if os.name == 'nt':
+#     import win32api
+#     import win32job
+
+PBAR_STYLE = """
+QProgressBar{
+    border: 2px solid grey;
+    border-radius: 5px;
+    text-align: center
+}
+
+QProgressBar::chunk {
+    background: qlineargradient(x1: 0.5, y1: 0, x2: 0.5, y2: 1, stop: 0 green, stop: 1 white);
+    width: 10px;
+}
+"""
+
+PTIME = None
+
+
+class EmittingStream(QtCore.QObject):
+    """
+    Class to intercept stdout for later use in a textbox.
+
+    Parameters
+    ----------
+    textwritten : str
+        Text written to stdout.
+
+    """
+
+    def __init__(self, textWritten):
+        self.textWritten = textWritten
+
+    def write(self, text):
+        """
+        Write text.
+
+        Parameters
+        ----------
+        text : str
+            Text to write.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.textWritten(str(text))
+
+    def flush(self):
+        """
+        Flush.
+
+        Returns
+        -------
+        None.
+
+        """
+
+    def fileno(self):
+        """
+        File number.
+
+        Returns
+        -------
+        int
+            Returns -1.
+
+        """
+        return -1
+
+
+class BasicModule(QtWidgets.QDialog):
+    """
+    Basic Module.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    outdata : dictionary
+        dictionary of output datasets
+    ifile : str
+        input file, used in IO routines and to pass filename back to main.py
+    piter : function
+        reference to a progress bar iterator.
+    pbar : function
+        reference to a progress bar.
+    showlog: stdout or alternative
+        reference to a way to view messages, normally stdout or a Qt text box.
+    is_import: bool
+        used to indicate whether a routine contains an import within.
+    projdata : dictionary
+        Project data.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        if parent is None:
+            self.stdout_redirect = sys.stdout
+            self.showlog = print
+            self.pbar = ProgressBarText()
+            self.process_is_active = lambda *args, **kwargs: None
+        else:
+            self.stdout_redirect = EmittingStream(parent.showlog)
+            self.showlog = parent.showlog
+            self.pbar = parent.pbar
+            if hasattr(parent, 'process_is_active'):
+                self.process_is_active = parent.process_is_active
+            else:
+                self.process_is_active = lambda *args, **kwargs: None
+
+        self.piter = self.pbar.iter
+
+        self.indata = {}
+        self.outdata = {}
+        self.projdata = {}
+        self.parent = parent
+        self.is_import = False
+        self.ifile = ''
+
+        ipth = os.path.dirname(__file__) + r'/images/'
+        self.setWindowIcon(QtGui.QIcon(ipth + 'logo256.ico'))
+
+        self.buttonbox = PButtonBox(self)
+        self.buttonbox.buttonbox.accepted.connect(self.accept)
+        self.buttonbox.buttonbox.rejected.connect(self.reject)
+
+    def settings(self, nodialog=False):
+        """
+        Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        return True
+
+    def data_init(self):
+        """
+        Initialise Data.
+
+        Entry point into routine. This entry point exists for
+        the case  where data must be initialised before entering at the
+        standard 'settings' sub module.
+
+        Returns
+        -------
+        None.
+
+        """
+
+    def loadproj(self, projdata):
+        """
+        Load project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+        self.projdata = projdata
+
+        for otxt in projdata:
+            if otxt not in vars(self):
+                self.showlog('Cannot load project, you may be using an '
+                             'old project format.')
+                return False
+
+        for otxt in projdata:
+            obj = vars(self)[otxt]
+
+            if obj is None:
+                vars(self)[otxt] = projdata[otxt]
+
+            if isinstance(obj, (float, int, bool, list, np.ndarray, tuple,
+                                str)):
+                vars(self)[otxt] = projdata[otxt]
+
+            if isinstance(obj, QtWidgets.QComboBox):
+                obj.blockSignals(True)
+                obj.setCurrentText(projdata[otxt])
+                obj.blockSignals(False)
+
+            if isinstance(obj, (QtWidgets.QLineEdit, QtWidgets.QTextEdit)):
+                obj.blockSignals(True)
+                obj.setText(projdata[otxt])
+                obj.blockSignals(False)
+
+            if isinstance(obj, (QtWidgets.QSpinBox, QtWidgets.QDoubleSpinBox,
+                                QtWidgets.QSlider)):
+                obj.blockSignals(True)
+                obj.setValue(projdata[otxt])
+                obj.blockSignals(False)
+
+            if isinstance(obj, (QtWidgets.QRadioButton, QtWidgets.QCheckBox)):
+                obj.blockSignals(True)
+                obj.setChecked(projdata[otxt])
+                obj.blockSignals(False)
+
+            if isinstance(obj, QtWidgets.QDateEdit):
+                obj.blockSignals(True)
+                date = obj.date().fromString(projdata[otxt])
+                obj.setDate(date)
+                obj.blockSignals(False)
+
+            if isinstance(obj, QtWidgets.QListWidget):
+                obj.blockSignals(True)
+                obj.selectAll()
+                for i in obj.selectedItems():
+                    if i.text()[2:] not in self.projdata[otxt]:
+                        i.setSelected(False)
+                obj.blockSignals(False)
+
+        if self.is_import is True:
+            chk = self.settings(True)
+        else:
+            chk = False
+
+        return chk
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+        Returns
+        -------
+        None.
+
+        """
+
+    def saveobj(self, obj):
+        """
+        Save an object to a dictionary.
+
+        This is a convenience function for saving project information.
+
+        Parameters
+        ----------
+        obj : variable
+            A variable to be saved.
+
+        Returns
+        -------
+        None.
+
+        """
+        otxt = None
+        for name in vars(self):
+            if id(vars(self)[name]) == id(obj):
+                otxt = name
+        if otxt is None:
+            return
+
+        if isinstance(obj, (float, int, bool, list, np.ndarray, tuple, str)):
+            self.projdata[otxt] = obj
+
+        if isinstance(obj, QtWidgets.QComboBox):
+            self.projdata[otxt] = obj.currentText()
+
+        if isinstance(obj, QtWidgets.QLineEdit):
+            self.projdata[otxt] = obj.text()
+
+        if isinstance(obj, QtWidgets.QTextEdit):
+            self.projdata[otxt] = obj.toPlainText()
+
+        if isinstance(obj, (QtWidgets.QSpinBox, QtWidgets.QDoubleSpinBox,
+                            QtWidgets.QSlider)):
+            self.projdata[otxt] = obj.value()
+
+        if isinstance(obj, (QtWidgets.QRadioButton, QtWidgets.QCheckBox)):
+            self.projdata[otxt] = obj.isChecked()
+
+        if isinstance(obj, QtWidgets.QDateEdit):
+            self.projdata[otxt] = obj.date().toString()
+
+        if isinstance(obj, QtWidgets.QListWidget):
+            tmp = []
+            for i in obj.selectedItems():
+                tmp.append(i.text()[2:])
+            self.projdata[otxt] = tmp
+
+        return
+
+
+class ContextModule(QtWidgets.QDialog):
+    """
+    Context Module.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    outdata : dictionary
+        dictionary of output datasets
+    piter : function
+        reference to a progress bar iterator.
+    pbar : function
+        reference to a progress bar.
+    showlog: stdout or alternative
+        reference to a way to view messages, normally stdout or a Qt text box.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        if parent is None:
+            self.stdout_redirect = sys.stdout
+            self.showlog = print
+            self.pbar = ProgressBarText()
+            self.process_is_active = lambda *args, **kwargs: None
+        else:
+            self.stdout_redirect = EmittingStream(parent.showlog)
+            self.showlog = parent.showlog
+            self.pbar = parent.pbar
+            if hasattr(parent, 'process_is_active'):
+                self.process_is_active = parent.process_is_active
+            else:
+                self.process_is_active = lambda *args, **kwargs: None
+
+        self.piter = self.pbar.iter
+
+        self.indata = {}
+        self.outdata = {}
+        self.parent = parent
+
+        ipth = os.path.dirname(__file__) + r'/images/'
+        self.setWindowIcon(QtGui.QIcon(ipth + 'logo256.ico'))
+
+        self.buttonbox = PButtonBox(self)
+        self.buttonbox.buttonbox.accepted.connect(self.accept)
+        self.buttonbox.buttonbox.rejected.connect(self.reject)
+
+    def run(self):
+        """
+        Run context menu item.
+
+        Returns
+        -------
+        None.
+
+        """
+
+
+class PButtonBox(QtWidgets.QWidget):
+    """
+    Custom buttonbox with help.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        buttonbox = QtWidgets.QDialogButtonBox()
+        helpdocs = QtWidgets.QPushButton()
+
+        self.htmlfile = None
+
+        helpdocs.setMinimumHeight(32)
+        helpdocs.setMinimumWidth(52)
+
+        ipth = os.path.dirname(__file__) + r'/images/'
+
+        helpdocs.setIcon(QtGui.QIcon(ipth + 'help.png'))
+        helpdocs.setIconSize(helpdocs.minimumSize())
+        helpdocs.clicked.connect(self.help_docs)
+        helpdocs.setFlat(True)
+
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        buttonbox.setCenterButtons(True)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel |
+                                     buttonbox.StandardButton.Ok)
+
+        hbl = QtWidgets.QHBoxLayout()
+
+        hbl.addWidget(helpdocs, 0, QtCore.Qt.AlignmentFlag.AlignLeft)
+        hbl.addWidget(buttonbox, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+
+        self.setLayout(hbl)
+        self.buttonbox = buttonbox
+        self.helpdocs = helpdocs
+
+    def help_docs(self):
+        """Help Routine."""
+        if self.htmlfile is not None:
+            ipth = os.path.dirname(__file__) + r'/helpdocs/html'
+            if '.html' not in self.htmlfile:
+                self.htmlfile = self.htmlfile + '.html'
+            hfile = os.path.join(ipth, self.htmlfile)
+            webbrowser.open('file://' + hfile)
+
+
+class QVStack2Layout(QtWidgets.QGridLayout):
+    """
+    QVStack2Layout custom Qt QGridLayot.
+
+    This works like VBoxLayout, except each row takes two widgets.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setSizeConstraint(QtWidgets.QLayout.SizeConstraint.SetFixedSize)
+        self.indx = 0
+
+    def addWidget(self, widget1, widget2):
+        """
+        Add two widgets on a row, widget can also be text.
+
+        Parameters
+        ----------
+        widget1 : str or QWidget
+            First Widget or Label on the row.
+        widget2 : QWidget
+            Last Widget.
+
+        Returns
+        -------
+        None.
+
+        """
+        if isinstance(widget1, str):
+            widget1 = QtWidgets.QLabel(widget1)
+
+        if isinstance(widget2, str):
+            widget2 = QtWidgets.QLabel(widget2)
+
+        self.addWidgetOld(widget1, self.indx, 0)
+        self.addWidgetOld(widget2, self.indx, 1)
+        self.indx += 1
+
+    def addWidgetOld(self, *args, **kwargs):
+        """Original Add Widget."""
+        super().addWidget(*args, **kwargs)
+
+
+class PTime():
+    """
+    PTime class.
+
+    Main class in the ptimer module. Once activated, this class keeps track
+    of all time since activation. Times are stored whenever its methods are
+    called.
+
+    Attributes
+    ----------
+    tchk : list
+        List of times generated by the time.perf_counter routine.
+    """
+
+    def __init__(self):
+        self.tchk = [time.perf_counter()]
+
+    def since_first_call(self, msg='since first call', show=True):
+        """
+        Time lapsed since first call.
+
+        This function prints out a message and lets you know the time
+        passed since the first call.
+
+        Parameters
+        ----------
+        msg : str
+            Optional message
+        """
+        self.tchk.append(time.perf_counter())
+        tdiff = self.tchk[-1] - self.tchk[0]
+        if show:
+            if tdiff < 60:
+                print(msg, 'time (s):', tdiff)
+            else:
+                mins = int(tdiff / 60)
+                secs = tdiff - mins * 60
+                print(msg, 'time (s): ', mins, ' minutes ', secs, ' seconds')
+        return tdiff
+
+    def since_last_call(self, msg='since last call', show=True):
+        """
+        Time lapsed since last call.
+
+        This function prints out a message and lets you know the time
+        passed since the last call.
+
+        Parameters
+        ----------
+        msg : str
+            Optional message
+        """
+        self.tchk.append(time.perf_counter())
+        tdiff = self.tchk[-1] - self.tchk[-2]
+        if show:
+            print(msg, 'time(s):', tdiff, 'since last call')
+        return tdiff
+
+
+class ProgressBar(QtWidgets.QProgressBar):
+    """
+    Qt custom progress bar.
+
+    Progress Bar routine which expands the QProgressBar class slightly so that
+    there is a time function as well as a convenient of calling it via an
+    iterable.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    Attributes
+    ----------
+    otime : intr
+        This is the original time recorded when the progress bar starts.
+    total : int
+        Maximum progress bar value. The default is 100.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self.setMinimum(0)
+        self.setValue(0)
+        self.otime = 0
+        self.setStyleSheet(PBAR_STYLE)
+        self.total = 100
+
+    def iter(self, iterable):
+        """Iterate Routine."""
+        if not isinstance(iterable, types.GeneratorType):
+            self.total = len(iterable)
+
+        self.setMaximum(self.total)
+        self.setMinimum(0)
+        self.setValue(0)
+
+        self.otime = time.perf_counter()
+        time1 = self.otime
+        time2 = self.otime
+
+        i = 0
+        for obj in iterable:
+            yield obj
+            i += 1
+
+            time2 = time.perf_counter()
+            if time2 - time1 > 1:
+                self.setValue(i)
+                tleft = (self.total - i) * (time2 - self.otime) / i
+                if tleft > 60:
+                    tleft = int(tleft // 60)
+                    self.setFormat('%p% ' + str(tleft) + 'min left ')
+                else:
+                    tleft = int(tleft)
+                    self.setFormat('%p% ' + str(tleft) + 's left   ')
+                QtWidgets.QApplication.processEvents()
+                time1 = time2
+
+        self.setFormat('%p%')
+        self.setValue(self.total)
+
+    def to_max(self):
+        """Set the progress to maximum."""
+        self.setMaximum(self.total)
+        self.setMinimum(0)
+        self.setValue(self.total)
+        QtWidgets.QApplication.processEvents()
+
+
+class ProgressBarText():
+    """
+    Text Progress bar.
+
+    Attributes
+    ----------
+    otime : int
+        This is the original time recorded when the progress bar starts.
+    total : int
+        Maximum progress bar value. The default is 100.
+
+    """
+
+    def __init__(self):
+        self.otime = 0
+        self.total = 100
+        self.decimals = 1
+        self.length = 40
+        self.fill = '#'
+        self.prefix = 'Progress:'
+
+    def iter(self, iterable):
+        """Iterate Routine."""
+        if not isinstance(iterable, types.GeneratorType):
+            self.total = len(iterable)
+
+        if self.total == 0:
+            self.total = 1
+
+        self.otime = time.perf_counter()
+
+        i = 0
+        oldperc = 0
+        gottototal = False
+        for obj in iterable:
+            yield obj
+            i += 1
+
+            time2 = time.perf_counter()
+            curperc = int(i * 100 / self.total)
+            if curperc > oldperc or oldperc == 0:
+                oldperc = curperc
+
+                tleft = (self.total - i) * (time2 - self.otime) / i
+                if tleft > 60:
+                    timestr = f' {tleft // 60:.0f} min left '
+                else:
+                    timestr = f' {tleft:.1f} sec left '
+                timestr += f' {time2 - self.otime:.1f} sec total      '
+
+                self.printprogressbar(i, suffix=timestr)
+                if i == self.total:
+                    gottototal = True
+
+        if not gottototal:
+            self.printprogressbar(self.total)
+
+    def printprogressbar(self, iteration, suffix=''):
+        """
+        Call in a loop to create terminal progress bar.
+
+        Code by Alexander Veysov. (https://gist.github.com/snakers4).
+
+        Parameters
+        ----------
+        iteration : int
+            current iteration
+        suffix : str, optional
+            Suffix string. The default is ''.
+
+        Returns
+        -------
+        None.
+
+        """
+        perc = 100 * (iteration / float(self.total))
+        percent = f'{perc:.{self.decimals}f}'
+        filledlength = int(self.length * iteration // self.total)
+        pbar = self.fill * filledlength + '-' * (self.length - filledlength)
+        pbar = f'\r{self.prefix} |{pbar}| {percent}% {suffix}'
+        print(pbar, end='\r')
+        # Print New Line on Complete
+        if iteration == self.total:
+            print()
+
+    def setMaximum(self, val):
+        """Set the maximum value."""
+        self.total = int(val)
+
+    def setValue(self, val):
+        """Set the progressbar value."""
+        self.printprogressbar(int(val))
+
+    def to_max(self):
+        """Set the progress to maximum."""
+        self.printprogressbar(self.total)
+
+
+def discrete_colorbar(axes, csp, cdat, lbls=None):
+    """
+    Plot colour bar using discrete colours for a small range of values.
+
+    Parameters
+    ----------
+    axes : Matplotlib axes
+        Current axes.
+    csp : Plot routine
+        Handle to Matplotlib plotting routine.
+    cdat : numpy array
+        Array of values.
+    lbls : y tick labels (optional)
+
+    Returns
+    -------
+    None.
+
+    """
+    vals = np.unique(cdat)
+    if np.ma.isMaskedArray(vals):
+        vals = vals.compressed()
+    vals = vals[~np.isnan(vals)]
+
+    if len(vals) < 2:
+        print('Too few discrete values')
+        return
+    # bnds = (vals - 0.5).tolist() + [vals.max() + .5]
+
+    if hasattr(csp.norm, 'boundaries'):
+        bnds = csp.norm.boundaries
+        ticks = np.diff(bnds) / 2 + vals
+        cbar = axes.figure.colorbar(csp, ticks=ticks)
+    else:
+        bnds = vals.tolist() + [vals.max() + 1]
+        ticks = np.diff(bnds) / 2 + vals
+        cbar = axes.figure.colorbar(csp, boundaries=bnds, values=vals,
+                                    ticks=ticks)
+
+    if lbls is not None:
+        cbar.ax.set_yticklabels(lbls)
+        # print('sssssssssssss')
+    else:
+        cbar.ax.set_yticklabels(vals)
+
+
+def getinfo(txt=None, reset=False):
+    """
+    Get time and memory info.
+
+    Parameters
+    ----------
+    txt : str/int/float, optional
+        Descriptor used for headings. The default is None.
+    reset : bool
+        Flag used to reset the time difference to zero.
+
+    Returns
+    -------
+    None.
+
+    """
+    global PTIME
+
+    timebefore = PTIME
+    PTIME = time.perf_counter()
+
+    if timebefore is None or reset is True:
+        tdiff = 0.
+    else:
+        tdiff = PTIME - timebefore
+
+    if txt is not None:
+        heading = '===== ' + str(txt) + ': '
+    else:
+        heading = '===== Info: '
+
+    mem = psutil.virtual_memory()
+    memtxt = f'RAM memory used: {mem.used:,.1f} B ({mem.percent}%)'
+
+    print(heading + memtxt + f' Time(s): {tdiff:.3f}')
+
+
+# def limit_memory(memory_limit):
+#     """
+#     Limit memory in Windows.
+
+#     Based on https://stackoverflow.com/questions/54949110/limit-python-script-ram-usage-in-windows
+
+#     Parameters
+#     ----------
+#     memory_limit : int
+#         Memory limit in GB.
+
+#     Returns
+#     -------
+#     None.
+
+#     """
+#     memory_limit = int(memory_limit * 1024**3)
+
+#     hjob = win32job.CreateJobObject(None, '')
+#     hprocess = win32api.GetCurrentProcess()
+#     win32job.AssignProcessToJobObject(hjob, hprocess)
+#     info = win32job.QueryInformationJobObject(
+#         hjob, win32job.JobObjectExtendedLimitInformation)
+#     info['ProcessMemoryLimit'] = memory_limit
+#     info['BasicLimitInformation']['LimitFlags'] |= (
+#         win32job.JOB_OBJECT_LIMIT_PROCESS_MEMORY)
+#     win32job.SetInformationJobObject(
+#         hjob, win32job.JobObjectExtendedLimitInformation, info)
+
+
+def textwrap2(text, width, placeholder='...', max_lines=None):
+    """
+    Provide slightly different placeholder functionality to textwrap.
+
+    Placeholders will be a part of last line, instead of replacing it.
+
+    Parameters
+    ----------
+    text : str
+        Text to wrap.
+    width : int
+        Maximum line length.
+    placeholder : sre, optional
+        Placeholder when lines exceed max_lines. The default is '...'.
+    max_lines : int, optional
+        Maximum number of lines. The default is None.
+
+    Returns
+    -------
+    text2 : str
+        Output wrapped text.
+
+    """
+    text2 = textwrap.wrap(text, width=width)
+
+    if max_lines is not None and text2:
+        text2 = text2[:max_lines]
+        if len(text2[-1]) == width:
+            text2[-1] = text2[-1][:-len(placeholder)] + placeholder
+
+    text2 = '\n'.join(text2)
+
+    return text2
+
+
+def tick_formatter(x, pos):
+    """
+    Format thousands separator in ticks for plots.
+
+    Parameters
+    ----------
+    x : float/int
+        Number to be formatted.
+    pos : int
+        Position of tick.
+
+    Returns
+    -------
+    newx : str
+        Formatted coordinate.
+
+    """
+    if np.ma.is_masked(x):
+        return '--'
+
+    newx = f'{x:,.5f}'.rstrip('0').rstrip('.')
+
+    return newx
+
+
+frm = ticker.FuncFormatter(tick_formatter)
+
+
+def _testfn():
+    """Test function."""
+    # _ = QtWidgets.QApplication(sys.argv)
+
+    # tmp = BasicModule()
+    # tmp.ifile = QtWidgets.QLineEdit('test')
+    # tmp.saveobj(tmp.ifile)
+
+    # print(tmp.projdata)
+
+    import matplotlib.pyplot as plt
+
+    data = [[0, 45, 50],
+            [0, 45, 50],
+            [0, 44, 50]]
+
+    lbls = ['a', 'b', 'c', 'd']
+
+    vals = np.unique(data)
+    if np.ma.isMaskedArray(vals):
+        vals = vals.compressed()
+    vals = vals[~np.isnan(vals)]
+
+    bnds = vals.tolist() + [vals.max() + 1]
+
+    cmap = cm.viridis
+    norm = colors.BoundaryNorm(bnds, cmap.N)
+
+    fig = plt.figure(dpi=200)
+    ax = fig.gca()
+    cax = ax.imshow(data, norm=norm)
+
+    discrete_colorbar(ax, cax, data, lbls)
+    plt.show()
+
+
+if __name__ == "__main__":
+    _testfn()
