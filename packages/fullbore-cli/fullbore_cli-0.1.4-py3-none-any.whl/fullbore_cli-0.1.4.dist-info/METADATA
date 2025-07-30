@@ -1,0 +1,119 @@
+Metadata-Version: 2.4
+Name: fullbore-cli
+Version: 0.1.4
+Summary: Full Bore CLI tool
+Author: Full Bore
+Author-email: Full Bore <ben@fullbore.com>
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: typer[all]
+Requires-Dist: geezer
+
+# fullbore-cli
+
+Full Bore CLI — a command-line tool to simplify internal infrastructure operations like server access and config management.
+
+---
+
+## Features
+
+- List available servers from a shared config file  
+- One-command SSH access to internal machines  
+- Easily customizable and extensible with new commands
+
+---
+
+## Installation
+
+```
+pip install fullbore-cli
+```
+
+---
+
+## Usage
+
+List all configured servers:
+
+```
+fbcli list-servers
+```
+
+SSH into one:
+
+```
+fbcli ssh fb-web-1
+```
+
+You can also use the shortcut:
+
+```
+fb ssh fb-web-2
+```
+
+---
+
+## Configuration
+
+On first run, you'll be prompted for the location of your `config.fb` file.
+
+You can:
+- Press Enter to auto-create a default one at:
+  - `~/.fbcli/config.fb` (Linux/macOS)
+  - `C:\Users\yourname\.fbcli\config.fb` (Windows)
+
+- Or paste a full path like:
+  - Windows: `"C:\Users\you\Documents\config.fb"`
+  - macOS/Linux: `/Users/you/config.fb`
+
+The file should look like:
+
+```python
+servers = {
+    "fb-web-1": {"host": "192.168.1.112", "user": "fbadmin"},
+    "fb-rp": {"host": "192.168.1.186", "user": "fbadmin"},
+}
+```
+
+Your chosen path will be saved automatically for future runs.
+
+---
+
+## Dev Setup
+
+```
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e .
+```
+
+---
+
+## 🛠 Feature Sketchpad (Not Yet Implemented)
+
+Ideas for future enhancements to `fbcli`. These are still in exploration but show where the tool is headed:
+
+### 🔧 `fb run "<command>" -s <server>`
+- Run shell commands on any registered server
+- Example: `fb run "docker ps" -s fb-web-1`
+- Optional working directory or user override
+
+### 🚀 `fb deploy <project> --server <alias>`
+- Deploy preconfigured projects to known paths
+- Example: `fb deploy myapp --server staging`
+- Could support Docker, Git pulls, symlink swaps, etc.
+
+### 🧰 `fb tool <task> [--args]`
+- Trigger remote scripts or system automation
+- Example: `fb tool ssl-renew -s fb-rp`
+- Example: `fb tool add-domain myapp.local --server fb-rp`
+- Powered by server-side `fbtools` scripts or dockerized tool containers
+
+### 🧪 Other possible commands
+- `fb logs <project>` — tail logs via SSH
+- `fb open <project>` — open the app in browser
+- `fb scale <project>` — scale services/containers
+- `fb db shell <project>` — open a DB shell inside container
+- `fb config reset` — force re-selecting a config file
+
+---
