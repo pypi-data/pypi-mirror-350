@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools", "JayDeBeApi"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sesql"
+dynamic = ["version"]
+description = "allows you to connect to JDBC/ODBC from Python code to databases using Java JDBC or ODBC."
+readme = "ReadMe.md"
+requires-python = ">=3.10"
+license = {file = "License.md"}
+authors = [
+    { name = "Cybernetic Innovations", email = "github@cyberneticinnovations.com" }
+]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+]
+dependencies = [
+    "JayDeBeApi~=1.2.3",
+    "pyodbc~=5.2.0"
+]
+
+[tool.setuptools]
+packages = ["seSql", "seSql.dbc"]
+
+[tool.setuptools.package-data]
+seSql = ["dbc/jars/*.jar"]
+
+[tool.setuptools.dynamic]
+version = {attr = "seSql.__version__"}
