@@ -1,0 +1,34 @@
+[project]
+name = "claude-code-proxy"
+version = "0.1.4"
+description = "Connect Claude Code to alternative models from OpenAI or Gemini."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi[standard]>=0.115.11",
+    "uvicorn==0.34.2",
+    "httpx==0.28.1",
+    "pydantic==2.11.5",
+    "litellm==1.71.1",
+    "python-dotenv==1.1.0",
+]
+
+[dependency-groups]
+dev = ["ruff==0.11.11"]
+
+[build-system]
+requires = ["uv_build>=0.7.8,<0.8"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "server"
+module-root = ""
+
+[project.scripts]
+claude-code-proxy = "server.main:main"
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+extend-select = ["I"] # Auto-sort imports
