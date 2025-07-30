@@ -1,0 +1,48 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    i18n_domain="imio.pm.wsclient">
+
+    <i18n:registerTranslations directory="locales" />
+    <five:registerPackage package="." initialize=".initialize" />
+
+    <permission
+      id="ws.client.Access"
+      title="WS Client Access"/>
+
+    <permission
+      id="ws.client.Send"
+      title="WS Client Send"/>
+
+    <include package=".browser" />
+    <include file="subscribers.zcml" />
+
+    <genericsetup:registerProfile
+      name="default"
+      title="Webservices Client for PloneMeeting"
+      directory="profiles/default"
+      description="Registration of the Webservices Client for PloneMeeting"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+    />
+
+    <genericsetup:upgradeDepends
+      source="*"
+      destination="1.13"
+      title="Upgrade to 1.13"
+      profile="imio.pm.wsclient:default"
+      import_steps="plone.app.registry"
+      />
+
+    <genericsetup:upgradeStep
+      title="Upgrade to 200"
+      description="urban upgrade step"
+      source="*"
+      destination="200"
+      handler=".upgrade.upgrade_to_200"
+      profile="imio.pm.wsclient:default"
+      />
+
+</configure>

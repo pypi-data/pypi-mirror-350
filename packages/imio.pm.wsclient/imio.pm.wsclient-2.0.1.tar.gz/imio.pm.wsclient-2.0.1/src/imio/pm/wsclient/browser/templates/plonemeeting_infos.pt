@@ -1,0 +1,71 @@
+<tal:comment replace="nothing">Either show error messages or display relevant informations about PM linked item</tal:comment>
+<tal:available tal:define="available view/available" condition="python: available is True or isinstance(available, tuple)">
+<tal:block define="items view/getPloneMeetingLinkedInfos;
+                   DateTime python:modules['DateTime'].DateTime;
+                   toLocalizedTime nocall:context/@@plone/toLocalizedTime;
+                   portal_url context/@@plone_portal_state/portal_url;"
+           i18n:domain="imio.pm.wsclient">
+
+    <fieldset><legend i18n:translate="">PloneMeeting informations</legend>
+    <p class="discreet" i18n:translate="pm_informations_help">You see these informations because the current element has been sent to PloneMeeting.</p>
+        <tal:showInfos condition="python: isinstance(available, tuple)">
+        <dl class="portalMessage info" tal:attributes="class python: 'portalMessage %s' % available[1]">
+          <dt i18n:domain="plone" i18n:translate="" tal:content="python: available[1].capitalize()">Level</dt>
+          <dd tal:content="python: available[0]">Message</dd>
+        </dl>
+        </tal:showInfos>
+        <table class="listing" tal:condition="python: available is True and items">
+            <thead i18n:domain="PloneMeeting">
+               <th i18n:translate="listingheader_title">Title</th>
+               <th i18n:translate="creator">Creator</th>
+               <th i18n:translate="MeetingConfig" i18n:domain="plone">Meeting config</th>
+               <th i18n:translate="State">Review state</th>
+               <th i18n:translate="MeetingCategory" i18n:domain="plone">Category or proposing group</th>
+               <th i18n:translate="PreferredMeeting" >Preferred meeting date</th>
+               <th i18n:translate="Meeting" i18n:domain="plone">Related meeting date</th>
+               <th i18n:translate="annexes">Annexes</th>
+               <th i18n:translate="doc">Documents</th>
+            </thead>
+            <tbody>
+                <tr tal:repeat="item items">
+                   <tal:showInfos condition="item/UID|nothing">
+                   <td><a href="#" tal:attributes="href item/@id" tal:content="item/title" target="_blank">Item title</a></td>
+                   <!-- XXX Creator full name can be implemented in plonemeeting.restapi to have author name instead of userid -->
+                   <td tal:content="python: item['creators'][0]['title']">Creator fullname</td>
+                   <td tal:content="item/extra_include_config/title">Meeting config title</td>
+                   <td tal:content="item/review_state/title" i18n:domain="plone" i18n:translate="">Review state</td>
+                   <td tal:content="item/category/title" i18n:domain="plone" i18n:translate="">Category title</td>
+                   <td tal:content="python: view.displayMeetingDate(item['preferredMeeting']['title'])">Preferred meeting date</td>
+                   <td tal:content="python: view.displayMeetingDate(item['extra_include_meeting'].get('title'))">Related meeting date</td>
+                   <td>
+                     <span class="discreet" style="position: relative;"
+                           tal:attributes="title annex/title;"
+                           tal:repeat="annex item/extra_include_annexes">
+                             <a href="#" tal:attributes="href string:${context/absolute_url}/@@download_annex_from_plonemeeting?itemUID=${item/UID}&annex_id=${annex/id}">
+                         <img src="#" tal:attributes="src string:${portal_url}/++resource++imio.pm.wsclient.images/annex.png">
+                         <span tal:content="annex/title"/>
+                       </a>&nbsp;
+                     </span>
+                   </td>
+                   <td>
+                     <span class="discreet" style="position: relative;"
+                           tal:attributes="title podTemplate/title;"
+                           tal:repeat="podTemplate item/extra_include_pod_templates">
+                       <tal:while repeat="format podTemplate/outputs">
+                         <a href="#" tal:attributes="href string:${context/absolute_url}/@@generate_document_from_plonemeeting?itemUID=${item/UID}&templateId=${podTemplate/id}__format__${format/format}&templateFilename=${podTemplate/id}&templateFormat=${format/format}">
+                           <img src="#" tal:attributes="src string:${portal_url}/++resource++imio.pm.wsclient.images/${format/format}.png">
+                           <span tal:content="podTemplate/title"/>
+                         </a>&nbsp;
+                       </tal:while>
+                     </span>
+                   </td>
+                   </tal:showInfos>
+                   <tal:warnHiddenInfos condition="not: item/UID|nothing">
+                   <td colspan="7"><span style="color: red;">The item has already been sent to meeting config "<span tal:content="item/extraInfos/meeting_config_title" />" but you are not allowed to see it!</span></td>
+                   </tal:warnHiddenInfos>
+                </tr>
+            </tbody>
+        </table>
+    </fieldset>
+</tal:block>
+</tal:available>
