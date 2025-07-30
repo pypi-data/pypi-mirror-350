@@ -1,0 +1,113 @@
+Metadata-Version: 2.4
+Name: django-chatwidget
+Version: 0.1.1
+Summary: A customizable, OpenAI-powered chat widget for Django projects
+Home-page: https://github.com/mattyray/django-chatwidget
+Author: Matthew Raynor
+Author-email: Matthew Raynor <mnraynor90@gmail.com>
+License: MIT
+Project-URL: Homepage, https://github.com/mattyray/django-chatwidget
+Project-URL: Repository, https://github.com/mattyray/django-chatwidget
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: django>=3.2
+Requires-Dist: openai>=1.0.0
+Dynamic: license-file
+
+# Django ChatWidget
+
+**Django ChatWidget** is a plug-and-play AI-powered chat assistant built for Django. Drop it into your site and let users interact with a personalized chatbot powered by OpenAI, trained on your custom `.json` knowledge base.
+
+---
+
+## 🚀 Features
+
+- Floating chat interface embedded in your site
+- Powered by OpenAI’s GPT models (configurable)
+- Custom knowledge base: just drop `.json` files in `chatwidget/data/`
+- Fully static frontend with no database dependency
+- Easy integration via `{% include "chatwidget/widget.html" %}`
+
+---
+
+## 🧠 Training the Chatbot
+
+To add your own knowledge:
+
+1. Create `.json` files in `chatwidget/data/`
+2. Each file must contain either a list or a dictionary with `"title"` and `"content"` fields.
+3. The assistant uses this as system context when replying.
+
+Example:
+
+```json
+[
+  {
+    "title": "About Matt",
+    "content": "Matt Raynor is a quadriplegic developer and creator who rebuilt his life through code. View his portfolio at matthewraynor.com."
+  }
+]
+```
+
+The assistant will automatically load all `.json` files on server start.
+
+---
+
+## 🛠 Installation
+
+```bash
+# Option 1: Clone into your project
+git clone https://github.com/mattyray/django-chatwidget.git
+```
+
+Add `chatwidget` to `INSTALLED_APPS` in your Django settings:
+
+```python
+INSTALLED_APPS = [
+    ...
+    "chatwidget",
+]
+```
+
+Include it in your `urls.py`:
+
+```python
+path("chatwidget/", include("chatwidget.urls")),
+```
+
+Include the widget in your base template:
+
+```django
+{% include "chatwidget/widget.html" %}
+```
+
+---
+
+## 🔑 OpenAI API Key
+
+Set your key as an environment variable or in your settings:
+
+```python
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+```
+
+---
+
+## 📁 Project Structure
+
+```
+chatwidget/
+├── data/                # Your custom chatbot knowledge base
+├── static/chatwidget/   # CSS and JS
+├── templates/chatwidget/ # Widget HTML
+├── views.py
+├── urls.py
+├── openai_utils.py
+```
+
+---
+
+## 📄 License
+
+MIT © 2025 Matthew Raynor
