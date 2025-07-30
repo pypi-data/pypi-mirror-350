@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rsspolymlp"
+version = "0.0.3"
+description = "A framework for random structure search using polynomial MLPs"
+license = "MIT"
+authors = [
+    {name = "Hayato Wakai", email = "wakai@cms.mtl.kyoto-u.ac.jp"},
+]
+readme = {file = "README.md", content-type = "text/markdown"}
+requires-python = ">=3.9"
+dependencies = [
+    "numpy",
+    "scipy",
+    "pypolymlp",
+    "symfc",
+    "spglib",
+    "joblib",
+]
+
+[project.optional-dependencies]
+pymatgen = ["pymatgen"]
+matplotlib = ["matplotlib"]
+seaborn = ["seaborn"]
+tools = ["pymatgen", "matplotlib", "seaborn"]
+
+[project.urls]
+homepage = "https://github.com/hytwakai/rsspolymlp"
+repository = "https://github.com/hytwakai/rsspolymlp"
+
+[project.scripts]
+rss-init-struct = "rsspolymlp.rss.random_struct:run"
+rss-single-srun = "rsspolymlp.rss.rss_parallel:run_single_srun"
+rss-parallel = "rsspolymlp.rss.rss_parallel:run"
+rss-analysis = "rsspolymlp.rss.rss_analysis:run"
+rss-summarize = "rsspolymlp.analysis.rss_summarize:run"
+rss-outlier = "rsspolymlp.analysis.outlier_cands:run"
+plot-binary = "rsspolymlp.analysis.plot.binary:run"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+rsspolymlp = ["py.typed"]
