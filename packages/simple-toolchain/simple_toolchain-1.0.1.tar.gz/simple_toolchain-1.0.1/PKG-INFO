@@ -1,0 +1,88 @@
+Metadata-Version: 2.4
+Name: simple-toolchain
+Version: 1.0.1
+Summary: A simple command line utility to manage Python scripts and single-file web apps with automatic dependency isolation
+License: MIT
+Project-URL: Homepage, https://github.com/yourusername/simple-toolchain
+Project-URL: Bug Reports, https://github.com/yourusername/simple-toolchain/issues
+Project-URL: Source, https://github.com/yourusername/simple-toolchain
+Keywords: scripts,tools,cli,dependency-isolation,uv
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Utilities
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: license-file
+Dynamic: requires-python
+
+# Simple Toolchain (tc)
+
+A simple command line utility to manage your Python scripts and single-file web apps with automatic dependency isolation.
+
+## Installation
+
+```bash
+pip install -e .
+```
+
+## Requirements
+
+- **uv** (recommended): For automatic dependency isolation when running Python scripts
+  - Install with: `curl -LsSf https://astral.sh/uv/install.sh | sh`
+  - If `uv` is not available, scripts will fall back to system Python
+
+## Usage
+
+### Add a script or web app
+```bash
+tc add script.py my_script
+tc add webapp.html my_webapp
+```
+
+### Run a stored item
+```bash
+tc run my_script
+tc run my_webapp
+```
+
+### List all stored items
+```bash
+tc list
+```
+
+### Remove a stored item
+```bash
+tc remove my_script
+```
+
+## How it works
+
+- Files are copied to `~/.toolchain/` directory
+- Python scripts are stored in `~/.toolchain/scripts/`
+- HTML files are stored in `~/.toolchain/webapps/`
+- Metadata is tracked in `~/.toolchain/metadata.json`
+- Running scripts uses `uv run` for automatic dependency isolation (or falls back to system Python)
+- Running web apps opens them in your default browser
+
+## Dependency Management
+
+When using `uv run` (recommended), each script runs in its own isolated environment:
+- Dependencies are automatically installed from script imports
+- No need to manually install packages on your system
+- Each script gets a clean, isolated Python environment
+- Add dependencies to your scripts using standard Python imports or `# /// script` metadata blocks
+
+## Supported file types
+
+- `.py` - Python scripts
+- `.html` - Single-file web applications
