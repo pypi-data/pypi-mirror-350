@@ -1,0 +1,362 @@
+Metadata-Version: 2.4
+Name: easyseries
+Version: 0.1.3
+Summary: A comprehensive HTTP utility toolkit built on httpx with CLI support
+Project-URL: Homepage, https://github.com/ScienisTmiaoT/easyseries
+Project-URL: Documentation, https://easyseries.readthedocs.io
+Project-URL: Repository, https://github.com/ScienisTmiaoT/easyseries
+Project-URL: Bug Tracker, https://github.com/ScienisTmiaoT/easyseries/issues
+Project-URL: Changelog, https://github.com/ScienisTmiaoT/easyseries/blob/main/CHANGELOG.md
+Author-email: Marvin Guo <support@memolog.us>
+Maintainer-email: Marvin Guo <support@memolog.us>
+License: MIT
+License-File: LICENSE
+Keywords: api,client,http,httpx,utility
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Internet :: WWW/HTTP
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Typing :: Typed
+Requires-Python: >=3.10
+Requires-Dist: httpx>=0.27.0
+Requires-Dist: pydantic-settings>=2.1.0
+Requires-Dist: pydantic>=2.5.0
+Requires-Dist: rich>=13.7.0
+Requires-Dist: typer>=0.12.0
+Provides-Extra: dev
+Requires-Dist: black>=24.0.0; extra == 'dev'
+Requires-Dist: isort>=5.13.0; extra == 'dev'
+Requires-Dist: mypy>=1.8.0; extra == 'dev'
+Requires-Dist: pre-commit>=3.6.0; extra == 'dev'
+Requires-Dist: pytest-asyncio>=0.23.0; extra == 'dev'
+Requires-Dist: pytest-cov>=4.0.0; extra == 'dev'
+Requires-Dist: pytest-mock>=3.12.0; extra == 'dev'
+Requires-Dist: pytest>=8.0.0; extra == 'dev'
+Requires-Dist: ruff>=0.1.15; extra == 'dev'
+Requires-Dist: twine>=6.1.0; extra == 'dev'
+Provides-Extra: docs
+Requires-Dist: myst-parser>=2.0.0; extra == 'docs'
+Requires-Dist: sphinx-autodoc-typehints>=1.25.0; extra == 'docs'
+Requires-Dist: sphinx-rtd-theme>=2.0.0; extra == 'docs'
+Requires-Dist: sphinx>=7.2.0; extra == 'docs'
+Provides-Extra: test
+Requires-Dist: httpx>=0.27.0; extra == 'test'
+Requires-Dist: pytest-asyncio>=0.23.0; extra == 'test'
+Requires-Dist: pytest-cov>=4.0.0; extra == 'test'
+Requires-Dist: pytest-mock>=3.12.0; extra == 'test'
+Requires-Dist: pytest>=8.0.0; extra == 'test'
+Requires-Dist: respx>=0.21.0; extra == 'test'
+Description-Content-Type: text/markdown
+
+# EasySeries
+
+[![CI](https://github.com/ScienisTmiaoT/easyseries/actions/workflows/ci.yml/badge.svg)](https://github.com/ScienisTmiaoT/easyseries/actions/workflows/ci.yml)
+[![PyPI version](https://badge.fury.io/py/easyseries.svg)](https://badge.fury.io/py/easyseries)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![Documentation](https://readthedocs.org/projects/easyseries/badge/?version=latest)](https://easyseries.readthedocs.io/)
+[![Coverage](https://codecov.io/gh/ScienisTmiaoT/easyseries/branch/main/graph/badge.svg)](https://codecov.io/gh/ScienisTmiaoT/easyseries)
+
+A comprehensive HTTP utility toolkit built on httpx with CLI support. EasySeries provides modern Python developers with a robust foundation for building HTTP clients and utilities with advanced features like rate limiting, metrics collection, retry logic, and comprehensive error handling.
+
+## ✨ Features
+
+- 🚀 **Modern Python**: Built with Python 3.10+ using latest async/await patterns
+- 🔧 **httpx Integration**: Leverages the powerful httpx library for HTTP operations
+- 📊 **Metrics & Monitoring**: Built-in request metrics and performance tracking
+- 🛡️ **Error Handling**: Comprehensive error handling with custom exceptions
+- ⚡ **Rate Limiting**: Configurable rate limiting to respect API limits
+- 🔄 **Retry Logic**: Intelligent retry mechanisms with exponential backoff
+- 🎯 **CLI Interface**: Friendly command-line interface for testing and utilities
+- 📝 **Type Safety**: Full type hints for better development experience
+- ⚙️ **Configuration**: Flexible configuration with environment variable support
+
+## 🚀 Quick Start
+
+### Installation
+
+```bash
+# Using pip
+pip install easyseries
+
+# Using uv (recommended)
+uv add easyseries
+
+### Basic Usage
+
+```python
+import asyncio
+from easyseries import HTTPClient
+
+async def main():
+    async with HTTPClient(base_url="https://api.example.com") as client:
+        # GET request
+        response = await client.get("/users")
+        users = response.json()
+
+        # POST request
+        new_user = await client.post("/users", json={
+            "name": "John Doe",
+            "email": "john@example.com"
+        })
+
+asyncio.run(main())
+```
+
+### CLI Usage
+
+```bash
+# Make a simple request
+easyseries request https://httpbin.org/get
+
+# POST with JSON data
+easyseries request https://httpbin.org/post \
+    --method POST \
+    --data '{"name": "John", "age": 30}'
+
+# Benchmark an endpoint
+easyseries benchmark https://httpbin.org/get \
+    --requests 100 \
+    --concurrency 10
+
+# View configuration
+easyseries config
+```
+
+### 📋 Development Setup
+This project uses modern Python tooling for the best development experience.
+
+### Prerequisites
+
+- Python 3.10 or higher
+- uv (recommended) or pip
+
+### Initial Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/ScienisTmiaoT/easyseries.git
+cd easyseries
+
+# Install uv if you haven't already
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Install all dependencies including dev tools
+uv sync --all-extras --dev
+
+# Install pre-commit hooks
+uv run pre-commit install
+```
+
+### Development Commands
+```bash
+# Run tests
+uv run pytest
+
+# Run tests with coverage
+uv run pytest --cov=easyseries --cov-report=html
+
+# Lint and format code
+uv run ruff check .
+uv run ruff format .
+
+# Type checking
+uv run mypy src/easyseries
+
+# Run all checks (lint, format, type check, test)
+uv run pre-commit run --all-files
+```
+
+### 📚 Documentation
+### Building Documentation Locally
+
+```bash
+# Install documentation dependencies
+uv sync --extra docs
+
+# Build documentation
+cd docs
+uv run sphinx-build -b html source _build/html
+
+# Serve documentation locally
+python -m http.server 8000 -d _build/html
+```
+
+### Documentation Structure
+
+- API Reference: Complete API documentation with examples
+- User Guide: Step-by-step tutorials and how-to guides
+- Development: Contributing guidelines and development setup
+
+### 🔧 Configuration
+EasySeries supports configuration through environment variables or .env files:
+```bash
+# .env file example
+EASYSERIES_TIMEOUT=30.0
+EASYSERIES_MAX_RETRIES=3
+EASYSERIES_BASE_URL=https://api.myservice.com
+EASYSERIES_USER_AGENT=MyApp/1.0.0
+EASYSERIES_ENABLE_METRICS=true
+EASYSERIES_RATE_LIMIT_REQUESTS=100
+```
+
+### 🧪 Testing
+Running Tests
+```bash
+# Run all tests
+uv run pytest
+
+# Run with coverage
+uv run pytest --cov=easyseries
+
+# Run specific test file
+uv run pytest tests/test_http/test_client.py
+
+# Run with markers
+uv run pytest -m "not slow"
+```
+
+### Test Structure
+
+- tests/test_http/ - HTTP client tests
+- tests/test_cli/ - CLI interface tests
+- tests/conftest.py - Shared pytest fixtures
+
+### 🏗️ Project Structure
+```txt
+easyseries/
+├── src/easyseries/          # Main package
+│   ├── cli/                 # CLI interface
+│   ├── core/                # Core functionality
+│   └── http/                # HTTP client modules
+├── tests/                   # Test suite
+├── docs/                    # Documentation
+├── scripts/                 # Utility scripts
+└── .github/workflows/       # CI/CD workflows
+```
+
+### 🔄 Dependency Management
+Adding Dependencies
+```bash
+# Add runtime dependency
+uv add httpx
+
+# Add development dependency
+uv add --dev pytest
+
+# Add optional dependency group
+uv add --optional docs sphinx
+```
+
+Updating Dependencies
+```bash
+# Update all dependencies
+uv sync --upgrade
+
+# Update specific dependency
+uv add httpx@latest
+
+# Check for outdated dependencies
+uv tree --outdated
+```
+
+Environment Management
+```bash
+# Create lock file
+uv lock
+
+# Sync from lock file
+uv sync
+
+# Export requirements
+uv export --format requirements-txt > requirements.txt
+```
+
+### 🚀 Publishing
+Building the Package
+```bash
+# Build wheel and source distribution
+uv build
+
+# Check the built package
+uv run twine check dist/*
+```
+
+#### Publishing to PyPI
+The project uses GitHub Actions for automated publishing:
+
+- Automatic Publishing: Push a tag starting with v (e.g., v1.0.0)
+- Manual Publishing: Use the GitHub Actions workflow dispatch
+```bash
+# Create and push a tag
+git tag v1.0.0
+git push origin v1.0.0
+
+# Or publish manually
+uv publish --token $PYPI_TOKEN
+```
+
+
+### 🤖 CI/CD
+#### GitHub Actions Workflows
+
+- CI Pipeline (.github/workflows/ci.yml):
+
+  - Runs on Python 3.10, 3.11, 3.12, 3.13
+  - Linting, type checking, and testing
+  - Code coverage reporting
+  - Security scanning
+
+
+- Publishing (.github/workflows/publish.yml):
+
+  - Publishes to PyPI on tag push
+  - Deploys documentation to GitHub Pages
+  - Runs on successful CI completion
+
+
+
+#### Branch Protection
+Recommended branch protection rules for main:
+
+- Require pull request reviews
+- Require status checks to pass
+- Require branches to be up to date
+- Include administrators
+
+### 📄 License
+This project is licensed under the MIT License - see the LICENSE file for details.
+### 🤝 Contributing
+We welcome contributions! Please see CONTRIBUTING.md for guidelines.
+#### Quick Contribution Steps
+
+- Fork the repository
+- Create a feature branch: git checkout -b feature/amazing-feature
+- Make your changes and add tests
+- Run the test suite: uv run pytest
+- Commit your changes: git commit -m 'Add amazing feature'
+- Push to the branch: git push origin feature/amazing-feature
+- Open a Pull Request
+
+### 📞 Support
+
+- 📖 Documentation
+- 🐛 Bug Reports
+- 💬 Discussions
+
+### 🎯 Roadmap
+- [ ] WebSocket support
+- [ ] GraphQL client utilities
+- [ ] Plugin system for custom middleware
+- [ ] Built-in caching mechanisms
+- [ ] Prometheus metrics export
+- [ ] OpenAPI schema validation
+
+
+EasySeries - Making HTTP requests in Python easier than ever! 🚀
