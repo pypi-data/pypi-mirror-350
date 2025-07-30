@@ -1,0 +1,12 @@
+spec: "1.2"
+devices:
+  GPIB0::24::INSTR:
+    manufacturer: "Keithley"
+    model: "2400"
+    state: { volts: 0.0, amps: 0.0 }
+    responses:
+      "*IDN?": '"KEITHLEY INSTRUMENTS INC.,MODEL 2400,123456,1.20"'
+      "SOUR:FUNC VOLT": ""
+      "SOUR:VOLT {value}": "${{ set('volts', value|float) }}"
+      "MEAS:CURR?": "${{ '{:.3e}'.format(noise(0,1e-9) + state['amps']) }}"
+      "MEAS:VOLT?": "${{ '{:.5f}'.format(state['volts']) }}"
