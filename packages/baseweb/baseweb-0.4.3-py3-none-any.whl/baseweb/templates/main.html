@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    {% if app.style == "pwa" %}<link rel="manifest" href="/manifest.json" />{% endif %}
+    <title>{{ app.name }}{% if self.title() %} - {% endif %} {% block title %}{% endblock %}</title>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="/static/vendor/html5shiv.min.js"></script>
+      <script src="/static/vendor/respond.min.js"></script>
+    <![endif]-->
+
+    <link href="/static/vendor/css/roboto-material-icons.css"    rel="stylesheet">
+    <link href="/static/vendor/css/vuetify.min.css"              rel="stylesheet">
+    <link href="/static/vendor/css/vfg.css"                      rel="stylesheet">
+    <link href="/static/vendor/css/vue-multiselect.min.css"      rel="stylesheet">
+    <link href="/static/vendor/css/bootstrap-datetimepicker.css" rel="stylesheet">
+    <link href="/static/vendor/css/highlight.js.github.css"      rel="stylesheet">
+
+    <link href="/static/css/main.css"                            rel="stylesheet">
+    <link href="/static/css/process_diagram.css"                 rel="stylesheet">
+    {% for file in stylesheets %}
+    <link href="/app/style/{{ file }}" rel="stylesheet">{% endfor %}
+
+    {% if app.favicon_support %}
+    <link rel="apple-touch-icon" sizes="180x180" href="/app/static/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/app/static/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/app/static/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/app/static/favicon/site.webmanifest">
+    <link rel="mask-icon" href="/app/static/favicon/safari-pinned-tab.svg" color="{{ app.favicon_mask_icon_color }}">
+    <meta name="msapplication-TileColor" content="{{ app.favicon_msapp_tile_color }}">
+    <meta name="theme-color" content="{{ app.color}}">
+    {% endif %}
+    <meta name="title"       property="og:type"        content="website"/>
+    <meta name="title"       property="og:title"       content="{{ app.title }}"/>
+    <meta name="author"      property="og:author"      content="{{ app.author }}"/>
+    <meta name="description" property="og:description" content="{{ app.description }}"/>
+    {% if app.url %}<meta name="url"         property="og:url"         content="//{{ app.url }}"/>{% endif %}
+    {% if app.social_image %}<meta name="image"       property="og:image"       content="{{ app.social_image }}"/>{% endif %}
+  </head>
+
+  <body>
+    <v-app id="app">
+      <v-toolbar color="{{ app.color_name }}" {{ app.color_scheme }} app clipped-left fixed>
+        <v-toolbar-title :style="$vuetify.breakpoint.smAndUp ? 'width: 300px; min-width: 250px' : 'min-width: 72px'" class="ml-0 pl-3">
+          <v-toolbar-side-icon @click.stop="toggle_drawer">
+          {% if app.icon %}<{{ app.icon }}/>{% endif %}
+          </v-toolbar-side-icon>
+          <span>{{ app.name }}</span>
+        </v-toolbar-title>
+        {% if app.socketio %}
+        <v-spacer></v-spacer>
+        <v-icon large color="green" v-if="connected">cloud_done</v-icon>
+        <v-icon large color="red"   v-else>cloud_off</v-icon>
+        {% endif %}
+      </v-toolbar>
+
+      <NavigationDrawer></NavigationDrawer>
+
+      <v-content>
+        <div class="content-wrapper">
+          {% if app.keep_alive %}<keep-alive>{% endif %}
+            <router-view></router-view>
+          {% if app.keep_alive %}</keep-alive>{% endif %}
+          <notifications group="notifications" position="bottom right"/>
+        </div>
+      </v-content>
+    </v-app>
+
+    <script src="/static/vendor/js/vue.js"></script>
+    <script src="/static/vendor/js/vuetify.js"></script>
+    <script>
+      // temp QnD fix for warning ;-)
+      Vue.component("Logo", { template : "<div></div>" });
+    </script>
+    <script src="/static/vendor/js/vuex.js"></script>
+    <script src="/static/vendor/js/vue-router.js"></script>
+    <script>
+      Vue.use(VueRouter);
+    </script>
+
+    <script type="text/javascript">
+      window.vue = window.Vue; // quick fix for vue-notification
+    </script>
+    <script src="/static/vendor/js/vue-notification.js"></script>
+    <script>
+      window.vueNotification = window["vue-notification"].default;
+      Vue.use(vueNotification);
+    </script>
+
+    <script src="/static/vendor/js/vue-form-generator.min.js"></script>
+    <script>
+      Vue.use(VueFormGenerator);
+    </script>
+
+    <script src="/static/vendor/js/vue-multiselect.min.js"></script>
+    <script>
+      Vue.component('Multiselect', VueMultiselect.Multiselect);
+    </script>
+
+    <script src="/static/js/store.js"></script>
+    <script src="/static/js/components/NavigationDrawer.js"></script>
+
+    <script src="/static/vendor/js/socket.io.slim.js"></script>
+
+    <script src="/static/vendor/js/Chart.min.js"></script>
+    <script src="/static/vendor/js/vue-chartjs.min.js"></script>
+    <script src="/static/vendor/js/jquery.min.js"></script>
+    <script src="/static/vendor/js/bootstrap.min.js"></script>
+    <script src="/static/vendor/js/moment.min.js"></script>
+    <script src="/static/vendor/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="/static/vendor/js/highlight.min.js"></script>
+
+    <script src="/static/js/router.js"></script>
+    <script src="/static/js/app.js"></script>
+    {% if app.socketio %}
+    <script>
+      app.socketio = true;
+    </script>
+    {% endif %}
+
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/socketio.js"></script>
+
+    <script src="/static/js/components/Page.js"></script>
+    <script src="/static/js/components/PageWithBanner.js"></script>
+    <script src="/static/js/components/PageWithStatus.js"></script>
+    <script src="/static/js/components/CollectionView.js"></script>
+    <script src="/static/js/components/LineChart.js"></script>
+    <script src="/static/js/components/ProcessDiagram.js"></script>
+
+    {% for file in components %}
+    <script src="/app/{{ file }}"></script>
+    {% endfor %}
+
+    {% for url in scripts %}
+    <script src="{{ url }}"></script>
+    {% endfor %}
+    <script>
+      app.$mount('#app')
+    </script>
+
+  </body>
+</html>
