@@ -1,0 +1,132 @@
+Metadata-Version: 2.4
+Name: lumi_cua_sdk
+Version: 0.1.0rc0
+Summary: This is the Python SDK for Computer Use Tool Server, allowing you to easily control the computer desktop environment from your applications.
+Project-URL: Documentation, https://github.com/lvlv/tool-server-client#readme
+Project-URL: Issues, https://github.com/lvlv/tool-server-client/issues
+Project-URL: Source, https://github.com/lvlv/tool-server-client
+Author-email: lvlv <lvgj1998@gmail.com>
+License-Expression: MIT
+License-File: LICENSE
+Classifier: Development Status :: 4 - Beta
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Programming Language :: Python :: Implementation :: PyPy
+Requires-Python: >=3.12
+Requires-Dist: jinja2>=3.1.6
+Requires-Dist: langchain-core>=0.3.58
+Requires-Dist: langchain-openai>=0.3.16
+Requires-Dist: langgraph>=0.4.1
+Requires-Dist: mcp>=1.7.1
+Requires-Dist: openai>=1.72.0
+Requires-Dist: pydantic>=1.8.0
+Requires-Dist: requests>=2.25.0
+Description-Content-Type: text/markdown
+
+# Lumi CUA SDK
+
+SDK for Lumi Computer Use Application, providing programmatic access to instance management and remote control capabilities.
+
+## Installation
+
+```bash
+pip install lumi-cua-sdk
+```
+
+## Usage
+
+```python
+from lumi_cua_sdk import LumiCuaClient
+
+# Initialize the client
+client = LumiCuaClient(ecs_manager_endpoint='YOUR_ECS_MANAGER_ENDPOINT')
+
+# List sandboxes
+sandboxes = await client.list_sandboxes() # Changed from list_instances to list_sandboxes and made async
+for sandbox_item in sandboxes:
+    print(f"Sandbox ID: {sandbox_item.id}, Status: {sandbox_item.status}, IP: {sandbox_item.private_ip}")
+
+# Start a Linux sandbox and run an agent task
+async def main():
+    # Ensure you have your API keys and server URLs as environment variables or passed directly
+    # For example: model_api_key = os.getenv("MODEL_API_KEY")
+    # mcp_server_url = os.getenv("MCP_SERVER_URL")
+    # For this example, we'll use placeholders. Replace with your actual values.
+    model_api_key = "YOUR_MODEL_API_KEY"
+    mcp_server_url = "YOUR_MCP_SERVER_URL"
+    task_prompt = "Open a text editor and write 'Hello, Lumi CUA!'"
+
+    linux_sandbox = await client.start_linux()
+    print(f"Linux sandbox started: {linux_sandbox.id}, IP: {linux_sandbox.private_ip}")
+
+    # Get stream URL (if needed for direct access, e.g., VNC)
+    # stream_url = linux_sandbox.get_stream_url()
+    # print(f"Stream URL: {stream_url}")
+
+    print(f"\nRunning agent task: {task_prompt}\n")
+    try:
+        async for message in client.agent_stream(
+            model_api_key=model_api_key,
+            mcp_server_url=mcp_server_url,
+            task_prompt=task_prompt,
+            sandbox=linux_sandbox
+        ):
+            print(f"Agent Message: Type={message.action}, Summary='{message.summary}'")
+            if message.screenshot:
+                print(f"  Screenshot provided (first 50 chars): {message.screenshot[:50]}...")
+    except Exception as e:
+        print(f"An error occurred during agent streaming: {e}")
+    finally:
+        # Stop the sandbox
+        print(f"\nStopping sandbox {linux_sandbox.id}...")
+        await linux_sandbox.stop()
+        print(f"Sandbox {linux_sandbox.id} stopped.")
+
+    # Example: List sandboxes again to see the change
+    print("\nListing sandboxes after stopping one:")
+    sandboxes_after = await client.list_sandboxes()
+    for sb in sandboxes_after:
+        print(f"Sandbox ID: {sb.id}, Status: {sb.status}")
+
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(main())
+```
+
+## Features
+
+- List available instances.
+- Start, stop, and delete instances (Linux and Windows).
+- Get a streaming URL for instance interaction.
+- Remote computer control:
+    - Mouse movements, clicks, drags, scrolls.
+    - Keyboard typing and key presses.
+    - Take screenshots.
+- Execute Bash commands on the instance.
+- File system operations (read, write, list, delete, etc.).
+- Agent integration for more complex task automation.
+
+## Development
+
+Clone the repository and install dependencies for development:
+
+```bash
+git clone https://github.com/your-repo/lumi-cua-sdk.git
+cd lumi-cua-sdk
+pip install -e .[dev]
+```
+
+Run tests:
+
+```bash
+pytest
+```
+
+## Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
