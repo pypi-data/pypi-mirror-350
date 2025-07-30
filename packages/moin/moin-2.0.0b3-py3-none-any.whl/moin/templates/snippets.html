@@ -1,0 +1,163 @@
+{#
+Wiki Administrators should use a copy of this template to customize a wiki.
+See https://moin-20.readthedocs.org/en/latest/admin/configure.html#using-a-custom-snippets-html-template
+#}
+
+{% import theme("utils.html") as utils with context %}
+
+{# Logo in the theme header #}
+{% macro logo() -%}
+    <img src="{{ url_for('static', filename='logos/moinmoin.png') }}" id="moin-img-logo" alt="Logo">
+{%- endmacro %}
+
+{# link to favicon inside <head> #}
+{% macro favicon() -%}
+    {# default moin favicon #}
+    <link rel="icon" href="{{ url_for('static', filename='logos/favicon.ico') }}">
+    {# for custom favicon, uncomment line below and place favicon file in wiki_local #}
+    {# <link rel="icon" href="{{ url_for('serve.files', name='wiki_local', filename='favicon.ico') }}"> #}
+{%- endmacro %}
+
+{# Additional HTML tags inside <head> #}
+{% macro head() -%}
+    {# <meta name="description" content="Free Web tutorials"> #}
+{%- endmacro %}
+
+{# Additional HTML before #moin-header #}
+{% macro before_header() -%}
+    {# <p style="background-color:yellow">This is before moin-header.</p> #}
+{%- endmacro %}
+
+{# Additional HTML after #moin-header #}
+{% macro after_header() -%}
+{%- endmacro %}
+
+{# Additional HTML before #moin-footer #}
+{% macro before_footer() -%}
+{%- endmacro %}
+
+{# Additional HTML after #moin-footer #}
+{% macro after_footer() -%}
+{%- endmacro %}
+
+{# License information in the footer #}
+{% macro license_info() -%}
+    {# <p id="moin-wiki-license">Copyright © 2014 my.org, contents licensed under ...</p> #}
+{%- endmacro %}
+
+{# Helper macro to create image links #}
+{% macro creditlogo(link, logo, alt, title) %}
+    <a href="{{ link }}" title="{{ title }}"><img src="{{ logo }}" alt="{{ alt }}"></a>
+{% endmacro %}
+
+{# Image links in the footer #}
+{% macro creditlogos(start='<span id="moin-creditlogos">'|safe, end='</span>'|safe) %}
+    {{ start }}
+    {{ creditlogo('https://moinmo.in/', url_for('static', filename='logos/moinmoin_powered.png'),
+       'MoinMoin powered', _('This site uses the MoinMoin Wiki software.')) }}
+    {{ creditlogo('https://moinmo.in/Python', url_for('static', filename='logos/python_powered.png'),
+       'Python powered', _('MoinMoin is written in Python.')) }}
+    {{ end }}
+{% endmacro %}
+
+{# Helper macro to generate text links #}
+{% macro credit(link, text, title) -%}
+    <a href="{{ link }}" title="{{ title }}">{{ text }}</a>
+{%- endmacro %}
+
+{# Text links in the footer #}
+{% macro credits(start='<p id="moin-credits">'|safe, end='</p>'|safe, sep='<span>&bull;</span>'|safe) %}
+    {{ start }}
+    {{ credit('https://moinmo.in/', 'MoinMoin Powered', _('This site uses the MoinMoin Wiki software.')) }}
+    {{ sep }}
+    {{ credit('https://moinmo.in/Python', 'Python Powered', _('MoinMoin is written in Python.')) }}
+    {{ sep }}
+    {{ credit('https://moinmo.in/GPL', 'GPL licensed', 'MoinMoin is GPL licensed.') }}
+    {{ sep }}
+    {{ credit('http://validator.w3.org/check?uri=referer', 'Valid HTML5', 'Click here to validate this page.') }}
+    {{ end }}
+{% endmacro %}
+
+{% macro footer_meta() %}
+    {% if rev %}
+        <p id="moin-pageinfo">
+            {% if cfg.show_interwiki %}
+                {{ cfg.interwikiname }}:
+            {% endif %}
+            {{ item_name }} (rev {{ rev.meta['rev_number'] }}),
+            {{ _("modified") }} {{ rev.meta['mtime']|time_datetime }}
+            {{ _("by") }} {{ utils.editor_info(rev.meta) }}
+            {% if rev.meta['tags'] %}
+                , {{ _("tags:") }}
+                {% for tag in rev.meta['tags'] -%}
+                    <a href="{{ url_for('frontend.tagged_items', tag=tag) }}">{{ tag }}</a>{% if not loop.last %}, {% endif %}
+                {%- endfor -%}
+            {%- endif -%}.
+        </p>
+    {% endif %}
+{% endmacro %}
+
+{# Additional Stylesheets (after theme css, before user css #}
+{% macro stylesheets() -%}
+    {# <link media="all" rel="stylesheet" href="{{ url_for('serve.files', name='wiki_local', filename='MyStyleSheet.css') }}"> #}
+{%- endmacro %}
+
+{# Additional Javascript #}
+{% macro scripts() -%}
+    {# <script type="text/javascript" src="{{ url_for('serve.files', name='wiki_local', filename='MyScript.js') }}"></script> #}
+{%- endmacro %}
+
+{# Header/Sidebar for topside_cms theme - see docs for tips on customization #}
+{% macro cms_header() %}
+    <header id="moin-header" lang="{{ theme_supp.user_lang }}" dir="{{ theme_supp.user_dir }}">
+        {% block header %}
+
+            {% if logo() %}
+                <div id="moin-logo">
+                    <a href="{{ url_for('frontend.show_item', item_name=cfg.root_mapping.get('', cfg.default_root)) }}">
+                        {{ logo() }}
+                    </a>
+                </div>
+            {%- endif %}
+
+            {% if cfg.sitename %}
+                <a class="moin-sitename" href="{{ url_for('frontend.show_item', item_name=cfg.root_mapping.get('', cfg.default_root)) }}">
+                    {{ cfg.sitename }}
+                </a>
+                <br>
+            {%- endif %}
+
+            {% if request.user_agent and search_form %} {# request.user_agent is true if browser, false if run as ./m dump-html #}
+                {{ utils.header_search(search_form) }}
+            {% endif %}
+
+            {% if request.user_agent %} {# request.user_agent is true if browser, false if run as ./m dump-html #}
+                <ul id="moin-username" class="moin-header-links">
+                    {{ utils.user_login_logoff() }}
+                </ul>
+            {%- endif %}
+
+            <ul id="moin-navibar" class="moin-header-links panel">
+                {# wiki admins should add links and headings for key items within the local wiki below #}
+                <li class="moin-panel-heading">Navigation</li>
+                <li class="wikilink"><a href="{{ url_for('frontend.show_item', item_name='Home') }}">Start</a></li>
+                <li class="wikilink"><a href="{{ url_for('frontend.show_item', item_name='+index') }}">Index</a></li>
+            </ul>
+
+            {{ custom_panels() }}
+
+        {% endblock %}
+    </header>
+    <br>
+{% endmacro %}
+
+{# Custom panel for wiki's that want links to key pages in header or sidebar; not all themes support this #}
+{% macro custom_panels() %}
+    {#- remove start-comment, end-comment marker lines; then customize the following:
+        <ul class="moin-custom-panel">
+            <li class="moin-panel-heading">Important Reports</li>
+            <li><a href="{{ url_for('frontend.show_item', item_name='Home') }}">Home Page</a></li>
+            <li><a href="{{ url_for('frontend.show_item', item_name='+index') }}">Global Index Page</a></li>
+        </ul>
+    -#}
+{% endmacro %}

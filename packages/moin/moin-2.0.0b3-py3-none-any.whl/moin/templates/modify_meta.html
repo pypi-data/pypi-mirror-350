@@ -1,0 +1,26 @@
+{#
+    This template defines the meta_editor macro.
+    It will be passed to the modify.html template.
+
+    The macro defines a portion of a form enabling a user to modify selected meta data.
+#}
+
+{% import "forms.html" as forms %}
+
+{% macro meta_editor(form, may_admin) %}
+    <dl>
+        {% if may_admin %}
+            {{ forms.render(form['acl']) }}
+        {% else %}
+            {{ forms.raw_input(form['acl'], type='hidden') }}
+        {% endif %}
+        {% for e in [
+            'name',
+            'summary',
+            'tags',
+            ] %}
+            {{ forms.render(form[e]) }}
+        {% endfor %}
+    </dl>
+    <div class="hint">{{ _("Tags may have embedded blanks, use commas to separate.") }}</div>
+{% endmacro %}

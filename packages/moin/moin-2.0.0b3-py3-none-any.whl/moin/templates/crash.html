@@ -1,0 +1,50 @@
+<h1>{{ _("Oops!") }}</h1>
+<p>
+    {{ _("An error happened while processing your request.") }}
+</p>
+<p>
+    {{ _("More details have been logged. The following data will be helpful for the site admin in locating the corresponding log entries:") }}
+</p>
+<dl>
+    <dt>{{ _("Error ID") }}</dt>
+    <dd>{{ error_id }}</dd>
+    <dt>{{ _("Server time") }}</dt>
+    <dd>{{ server_time }}</dd>
+    <dt>{{ _("URL") }}</dt>
+    <dd>{{ url }} </dd>
+    {% if oldrev and newrev %}
+        <dt>{{ _("Old Revision") }}</dt>
+        <dd>{{ oldrev.revid  }} </dd>
+        <dt>{{ _("New Revision") }}</dt>
+        <dd>{{ newrev.revid }} </dd>
+    {% endif %}
+</dl>
+<p>
+    {{ _("""If the error on this web site appears confined to this one item,
+            then the problem may be that the current revision has invalid or
+            corrupted data or there is a mismatch between the
+            content type and the item data (e.g. the content type is text/x.moin.wiki
+            and the data is a PNG file). """) }}
+</p>
+<p>
+    {{ _("Possible ways to identify the cause of the problem:") }}
+</p>
+<ul>
+    <li>{{ _("Click the Markup link within Item Views to view the raw text data.") }}</li>
+    <li>{{ _("Click the Meta link within Item Views to check the content type.") }}</li>
+    <li>{{ _("Click the Download link within Item Views and examine the data with a hex editor.") }}</li>
+</ul>
+<p>
+    {{ _("Possible ways to fix the problem:") }}
+</p>
+<ul>
+    <li>{{ _("Click the History link within Item Views and revert to a prior revision.") }}</li>
+    <li>{{ _("Click the Delete or Destroy link within Item Views and then recreate the item.") }}</li>
+</ul>
+<p>
+    {{ _("To change an item to a different content type (change from GIF to PNG, etc.):") }}
+</p>
+<ul>
+    <li>{{ _("Delete the item.") }}</li>
+    <li>{{ _("Recreate the item.") }}</li>
+</ul>

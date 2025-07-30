@@ -1,0 +1,180 @@
+{#
+    Display a table showing an item's edit history, one row per revision.
+    In first column, show ticket's summary, active item's name, or deleted item's ID.
+#}
+
+{% extends theme("show.html") %}
+
+{% import "utils.html" as utils with context %}
+
+{% set summary = history[0].get('summary', None) if history else None %}
+{% set heading = _("History of {fqname}").format(fqname=utils.item_moniker(item.meta, [fqname])) %}
+{% set first_itemid = history[0].itemid %}
+
+{% block content %}
+    {%- if history %}
+        <h1>{{ heading }}</h1>
+        {%- if not trash %}
+            {#- add button to switch between history by name or history by item id #}
+            {%- if '/@itemid/' in request.url or '/%40itemid/' in request.url %}
+                <p class="moin-no-print">
+                    <a class="moin-button" href="{{ url_for('frontend.history', item_name=history[0].fqnames[0], bookmark=bookmark_time) }}">{{ _("Item Name") }}</a>
+                    {{ _("Click to show history spanning item delete and recreate.") }}
+                </p>
+            {%- else %}
+                {%- if fqname.namespace %}
+                    {%- set namespace = fqname.namespace + "/" %}
+                {%- else %}
+                    {%- set namespace = "" %}
+                {%- endif %}
+                <p class="moin-no-print">
+                    <a class="moin-button" href="{{ url_for('frontend.history', item_name=namespace + '@itemid/' + history[0].itemid, bookmark=bookmark_time) }}">{{ _("Item Id") }}</a>
+                    {{ _("Click to show history spanning item renames.") }}
+                </p>
+            {%- endif %}
+        {%- endif %}
+
+        {#- if history is long and displayed as several pages, create links to show next and/or prior pages #}
+        {{ utils.page_links(page_num, pages, url) }}
+
+        <div class="moin-clr"></div>
+        <form action="{{ url_for('frontend.diff', item_name=fqname) }}" method="GET">
+            <div id="moin-page-history">
+                <table class="zebra">
+                    <thead>
+                        <tr>
+                            <th>{{ _("Name or ID ~(Old Name)") }}</th>
+                            <th>{{ _("Rev.") }}</th>
+                            <th>{{ _("Timestamp") }}</th>
+                            <th class="moin-integer">{{ _("Size") }}</th>
+                            {%- if history[0].trash %}
+                                <th class="moin-button-diff"><span class="moin-button moin-button-disabled">Diff</span></th>
+                            {%- else %}
+                                <th class="moin-button-diff"><input class="moin-button" type="submit" value="Diff"></th>
+                            {%- endif %}
+                            <th>{{ _("Editor") }}</th>
+                            <th>{{ _("Content Type") }}</th>
+                            <th>{{ _("Comment and/or `Summary`") }}</th>
+                            <th class="center" colspan="6">{{ _("Actions") }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {#- we use jinja2 dict trick to modify variables within a loop #}
+                        {%- set checker = {'check1': '', 'check2': 'checked'} %}
+                        {%- for doc in history %}
+                            <tr>
+                                <td class="moin-wordbreak">{{ utils.item_moniker(doc, doc.fqnames) }}</td>
+                                <td class="moin-integer">{{ doc.rev_number or doc.revid|shorten_id }}</td>
+                                <td>{{ doc.mtime|time_datetime }}</td>
+                                <td class="moin-integer">{{ doc.size }}</td>
+                                <td>
+                                    {#- do not create radio buttons if item was deleted and recreated with same name, different itemid #}
+                                    {%- if doc.itemid == first_itemid %}
+                                        <div class="moin-hist-rev">
+                                            {%- if len(history) > 1 and not history[0].trash and not doc.trash %}
+                                                <input type="radio" name="rev1" value="{{ doc.revid }}" {{ checker['check1'] }}>
+                                                <input type="radio" name="rev2" value="{{ doc.revid }}" {{ checker['check2'] }}>
+                                                {%- if checker['check1'] %}
+                                                    {%- if checker.update({'check1': ''}) %}{% endif %}
+                                                {%- elif checker['check2'] %}
+                                                    {%- if checker.update({'check1': 'checked'}) %}{% endif %}
+                                                    {%- if checker.update({'check2': ''}) %}{% endif %}
+                                                {%- endif %}
+                                            {%- endif %}
+                                        </div>
+                                    {%- else %}
+                                        {#- a diff not possible #}
+                                        <div class="moin-hist-rev" title="{{ _("Item was deleted and later created as new with same name") }}">
+                                            <span>{{ _("Item Id Changed") }}</span>
+                                        </div>
+                                    {%- endif %}
+                                </td>
+                                {%- set uid = doc.get('userid') or doc.get('address') %}
+                                {%- set editor_info = editor_infos.get(uid) %}
+                                <td class="moin-wordbreak">{{ utils.show_editor_info(editor_info) }}</td>
+                                <td class="moin-wordbreak">{{ doc.contenttype|shorten_ctype }}</td>
+                                {%- set comment =  doc.comment %}
+                                {%- if doc.summary %}
+                                    {%- set comment = comment + '`' + doc.summary + '`' %}
+                                {%- endif %}
+                                <td class="moin-wordbreak">{{ comment }}</td>
+                                {%- if loop.first %}
+                                    {%- set revid = None %}
+                                {%- else %}
+                                    {%- set revid = doc.revid %}
+                                {%- endif %}
+                                <td>
+                                    <a href="{{ url_for('frontend.show_item', item_name=fqname, rev=revid) }}" title="{{ _('show') }}">
+                                        <span class="fa fa-eye"></span>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('frontend.highlight_item', item_name=fqname, rev=revid) }}" title="{{ _('highlight') }}">
+                                        <span class="fa fa-code"></span>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('frontend.show_item_meta', item_name=fqname, rev=revid) }}" title="{{ _('meta') }}">
+                                        <span class="fa fa-table"></span>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('frontend.download_item', item_name=fqname, rev=revid) }}" title="{{ _('download') }}">
+                                        <span class="fa fa-download"></span>
+                                    </a>
+                                </td>
+                                {%- if may.write and not doc.trash -%}
+                                    {%- if loop.first %}
+                                        <td>
+                                            <a href="{{ url_for('frontend.delete_item', item_name=fqname) }}" title="{{ _('delete item') }}">
+                                                <span class="fa fa-trash"></span>
+                                            </a>
+                                        </td>
+                                    {%- else %}
+                                        <td>
+                                            {#- do not create invalid revert link if item was deleted and recreated with same name, different itemid #}
+                                            {%- if doc.itemid == first_itemid %}
+                                                <a href="{{ url_for('frontend.revert_item', item_name=fqname, rev=revid) }}" title="{{ _('revert') }}">
+                                                    <span class="fa fa-reply"></span>
+                                                </a>
+                                            {%- endif %}
+                                        </td>
+                                    {%- endif %}
+                                {%- else %}
+                                    <td></td>
+                                {%- endif %}
+                                {%- if may.destroy -%}
+                                    {%- if loop.first %}
+                                        <td>
+                                            <a href="{{ url_for('frontend.destroy_item', item_name=fqname) }}" title="{{ _('destroy all revisions') }}">
+                                                <span class="fa fa-fire"></span>
+                                            </a>
+                                        </td>
+                                    {%- else %}
+                                        <td>
+                                            <a href="{{ url_for('frontend.destroy_item', item_name=fqname, rev=revid) }}" title="{{ _('destroy this revision') }}">
+                                                <span class="fa fa-fire"></span>
+                                            </a>
+                                        </td>
+                                    {%- endif %}
+                                {%- else %}
+                                    <td></td>
+                                {%- endif %}
+                            </tr>
+                        {%- endfor %}
+                    </tbody>
+                    {%- if bookmark_time %}
+                        <tfoot>
+                            <tr>
+                                <td colspan="2">{{ _("Bookmark is set to") }}</td>
+                                <td>{{ bookmark_time|time_datetime }}</td>
+                                <td colspan="11"></td>
+                            </tr>
+                        </tfoot>
+                    {%- endif %}
+                </table>
+            </div>
+        </form>
+        {{ utils.page_links(page_num, pages, url) }}
+    {%- endif %}
+{%- endblock %}

@@ -1,0 +1,88 @@
+{#
+    Create a list of recent changes showing last action/diff, item name, time,
+    link to item history, author, and change comment.
+
+    Logged in users may set (or clear) bookmarks to show fewer days of changes.
+    Use of bookmarks changes the diff action from current vs. last change to
+    current vs. bookmark date.
+
+    The changes displayed may be for the default namespace, a specific namespace
+    or all namespaces. The "title" variable passed from frontend/views and used
+    in the H1 tag will specify the contents.
+#}
+
+{% extends theme("layout.html") %}
+{% import "utils.html" as utils %}
+
+{# map meta.action to font awesome classes #}
+{% set awesome_class = {
+    'REVERT': 'fa fa-undo',
+    'SAVE': 'fa fa-save',
+    'RENAME': 'fa fa-pencil-square-o',
+    'TRASH': 'fa fa-trash-o',
+} %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="alternate" title="Global History" href="{{ url_for('feed.atom') }}" type="application/atom+xml">
+{% endblock %}
+
+{% block content %}
+    <h1>{{ title }}</h1>
+    <div class='moin-clr'></div>
+        <div class="moin-history-rss">
+          <a href="/+feed/atom"><img alt="[RSS]" height="16" src="/static/img/icons/moin-rss.png" title="[RSS]" width="16"></a>
+        </div>
+        {{ utils.page_links(page_num, pages, url) }}
+        {# make columns line up by creating one long table styled to look like one table per day  #}
+        <table id="moin-global-history">
+            {% for day, revs in history %}
+                {# create day header with date and link for setting bookmark #}
+                {% set latest_timestamp = revs[0]['mtime'] %}
+                <tr class="moin-history-day-banner">
+                    <td colspan="6">
+                        <span class="moin-history-date">{{ day }}</span>
+                        {% if user.valid %}
+                            <a class="moin-bookmark-link" href="{{ url_for('frontend.bookmark', time=latest_timestamp+1) }}">{{ _("Set bookmark") }}</a>
+                        {% endif %}
+                    </td>
+                </tr>
+
+                {# create a row for each item that was changed on this date, incoming items are sorted in descending order by time #}
+                {% for rev in revs %}
+                    {% set meta = rev.meta %}
+                    <tr>
+                        {# create an icon with a link to diff, or other icon indicating state of item #}
+                        <td class="moin-history-links">{{ utils.item_status_icon(rev.fqnames[0], rev, bookmark_time) }}</td>
+                        {# show item name or item id and old name if the item is nameless (deleted) #}
+                        <td class="moin-history-item moin-wordbreak">{{ utils.item_moniker(rev, rev.fqnames) }}</td>
+                        <td class="moin-history-time">{{ rev.mtime|time_hh_mm }}</td>
+                        <td class="moin-history-links">
+                            <a href="{{ url_for('frontend.history', item_name=rev.fqnames[0], bookmark=bookmark_time) }}">
+                                <span class="fa fa-clock-o" title="{{ _('History') }}"></span>
+                            </a>
+                        </td>
+                        <td class="moin-wordbreak moin-history-editorinfo">{{ utils.editor_info(rev) }}</td>
+                        <td class="moin-wordbreak moin-history-comment">{{ rev['comment'] }}</td>
+                    </tr>
+                {% endfor %}
+
+                {# use css styling to create a borderless row that looks like a table end #}
+                <tr>
+                    <td class="moin-history-end-of-day" colspan="7">&nbsp;</td>
+                </tr>
+            {% endfor %}
+
+            {# if user has set a bookmark, create a header with a link to remove bookmark #}
+            {% if bookmark_time %}
+                <tr class="moin-history-day-banner">
+                    <td colspan="7">
+                        <span class="moin-history-date">{{ bookmark_time|time_datetime }}</span>
+                        <a class="moin-bookmark-link" href="{{ url_for('frontend.bookmark', time='del') }}">{{ _("Delete bookmark") }}</a>
+                    </td>
+                </tr>
+            {% endif %}
+
+        </table>
+        {{ utils.page_links(page_num, pages, url) }}
+{% endblock %}

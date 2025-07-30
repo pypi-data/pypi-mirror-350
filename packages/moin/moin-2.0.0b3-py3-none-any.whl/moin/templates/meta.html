@@ -1,0 +1,27 @@
+{#
+    This template is displayed after user clicks the Meta link on Item Views.
+    If the revision selected is not the current revision, a navigation panel enables
+    user to view a newer/older revision. If the item or selected revision is
+    deleted, there are informative flash messages.
+#}
+
+{% extends theme("show.html") %}
+
+{% import "utils.html" as utils with context %}
+
+{% set title = _("Metadata of {item_name}").format(item_name=utils.item_moniker(meta, [fqname])) %}
+
+{% block item_summary %}
+{% endblock %}
+
+{% block content %}
+    {{ utils.rev_navigation(rev_navigation_ids_dates, fqname, view='frontend.show_item_meta', item=item) }}
+    <h1>
+        {{ title }}
+    </h1>
+    {% if meta %}
+        <div id="moin-content-meta">
+            {{ utils.meta_info(meta) }}
+        </div>
+    {% endif %}
+{% endblock %}

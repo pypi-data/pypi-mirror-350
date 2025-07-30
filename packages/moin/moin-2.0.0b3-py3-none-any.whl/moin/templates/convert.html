@@ -1,0 +1,27 @@
+{#
+    This template is rendered by apps/frontend/views.py. It enables conversion of
+    an item to a different text markup language.
+#}
+
+{% import "forms.html" as forms %}
+{% extends theme("show.html") %}
+
+{% set title = _("Convert '{item_name}'").format(item_name=item.fqname|shorten_fqname) %}
+
+{% block content %}
+    <h1>{{ title }}</h1>
+    <div class="moin-form">
+        {{ gen.form.open(form, method="post", action=url_for('frontend.convert_item', item_name=fqname)) }}
+            {{ forms.render_errors(form) }}
+            <dl>
+                <dt>{{ _("Current Content Type") }}</dt>
+                <dd> {{ contenttype }} </dd>
+                <br>
+                {# common.js adds a size attribute to following select clause #}
+                {{ forms.render(form['new_type']) }}
+                {{ forms.render(form['comment']) }}
+            </dl>
+            {{ forms.render_submit(form) }}
+        {{ gen.form.close() }}
+    </div>
+{% endblock %}
