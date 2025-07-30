@@ -1,0 +1,19 @@
+[config]
+    verbose_level = 1
+
+[[job]]
+name         = "Set globals"
+script       = "set_globals.py"
+runner       = [ "linux" ]
+timeout      = "5 minutes"
+retries      = 0
+on_failure   = "stop pipeline"
+on_input_err = "fail"
+
+  [job.input]
+  artifacts_folder_prefix = "/nfs/site/proj/chdsw_ci_tmp/"
+  type = "scheduled (nightly)"
+
+  [job.output]
+  artifacts_folder = "?"
+

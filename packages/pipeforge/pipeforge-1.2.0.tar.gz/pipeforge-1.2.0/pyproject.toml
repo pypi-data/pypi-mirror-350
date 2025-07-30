@@ -1,0 +1,45 @@
+[build-system]
+requires      = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name            = "pipeforge"
+version         = "1.2.0"
+description     = "A pipeline jobs orchestrator"
+readme          = "README.md"
+requires-python = ">=3.7"
+classifiers     = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+  "mongoengine",
+  "toml",
+]
+
+    [project.optional-dependencies]
+    jenkins = ["python-jenkins"]
+
+    [project.scripts]
+    pipeforge = "pipeforge:__main__"
+
+    [project.urls]
+    Homepage = "https://git.sr.ht/~greenfoo/pipeforge"
+    Issues = "https://todo.sr.ht/~greenfoo/pipeforge"
+
+[tool.hatch.build]
+exclude = [
+    "/.*",
+    "/tests",
+    "/TODO",
+    "/release.sh",
+]
+
+[tool.ruff]
+lint.ignore = [
+    "E501",  # Line length
+    "E701",  # Single line with multiple statements
+]
+    [tool.ruff.lint.per-file-ignores]
+    "pipeforge/__init__.py" = ["F401"]
+    "tests/run.py"          = ["E402"]

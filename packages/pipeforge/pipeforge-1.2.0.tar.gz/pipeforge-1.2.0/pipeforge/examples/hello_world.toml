@@ -1,0 +1,67 @@
+[[jobs]]
+name         = "Step 1"
+script       = "./pipeforge/examples/scripts/hello_world__get_purpose_in_life.py"
+runner       = "linux"
+detached     = "false"
+timeout      = "1 minutes"
+retries      = "0"
+on_failure   = "stop pipeline"
+on_input_err = "fail"
+
+  [jobs.input]
+  my_name = "John Cobra"
+
+  [jobs.output]
+  my_purpose_in_life = "?"
+
+
+[[jobs]]
+name         = "Step 2-A"
+script       = "./pipeforge/examples/scripts/hello_world__repeat_purpose.py"
+runner       = "linux"
+detached     = "false"
+timeout      = "1 minutes"
+retries      = "0"
+on_failure   = "stop pipeline"
+on_input_err = "fail"
+
+  [jobs.input]
+  purpose_in_life = "@{Step 1::my_purpose_in_life}"
+  repeat          = "10"
+
+  [jobs.output]
+  satisfied = "?"
+
+
+[[jobs]]
+name         = "Step 2-B"
+script       = "./pipeforge/examples/scripts/hello_world__repeat_purpose.py"
+runner       = "linux"
+detached     = "false"
+timeout      = "1 minutes"
+retries      = "0"
+on_failure   = "stop pipeline"
+on_input_err = "fail"
+
+  [jobs.input]
+  purpose_in_life = "@{Step 1::my_purpose_in_life}"
+  repeat          = "15"
+
+  [jobs.output]
+  satisfied = "?"
+
+
+[[jobs]]
+name         = "Step 3"
+script       = "./pipeforge/examples/scripts/hello_world__print_summary.py"
+runner       = "linux"
+detached     = "false"
+timeout      = "1 minutes"
+retries      = "0"
+on_failure   = "stop pipeline"
+on_input_err = "fail"
+
+  [jobs.input]
+  satisfaction_1 = "@{Step 2-A::satisfied}"
+  satisfaction_2 = "@{Step 2-B::satisfied}"
+

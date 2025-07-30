@@ -1,0 +1,37 @@
+[[jobs]]
+name         = "Step 1"
+script       = "./pipeforge/examples/scripts/timeout.py"
+runner       = "linux"
+detached     = "false"
+timeout      = "5 seconds"
+retries      = "2"
+on_failure   = "stop pipeline"
+on_input_err = "fail"
+
+
+[[jobs]]
+name         = "Step 2"
+script       = "./pipeforge/examples/scripts/timeout.py"
+runner       = "linux"
+detached     = "false"
+timeout      = "1 minute"
+retries      = "0"
+on_failure   = "stop pipeline"
+on_input_err = "fail"
+
+  [jobs.input]
+  fake_dependency = "@{Step 1}"
+
+
+[[jobs]]
+name         = "Step 3"
+script       = "./pipeforge/examples/scripts/timeout.py"
+runner       = "linux"
+detached     = "false"
+timeout      = "5 seconds"
+retries      = "0"
+on_failure   = "stop pipeline"
+on_input_err = "fail"
+
+  [jobs.input]
+  fake_dependency = "@{Step 2}"
