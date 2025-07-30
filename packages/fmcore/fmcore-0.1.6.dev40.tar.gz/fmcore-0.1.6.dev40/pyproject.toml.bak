@@ -1,0 +1,119 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "fmcore"
+authors = [
+    { name = "Abhishek Divekar", email = "adivekar@utexas.edu" },
+    { name = "Siba Rajendran", email = "rsiba234@gmail.com" }
+]
+description = "A specialized toolkit for scaling experimental research with Foundation Models."
+readme = "README.md"
+requires-python = ">=3.11"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license-files = ["LICENSE"]
+dependencies = [
+    "autoenum",
+    ## Pick up latest Git commit for bears package to ensure tests run:
+    "bears==0.1.*",
+    "requests",
+    "pyyaml==6.*",
+    "urllib3",
+    "langchain==0.3.*",
+    "langchain-aws==0.2.*",
+    "aiolimiter==1.2.1",
+    "langchain-community==0.3.20",
+    "json-repair==0.40.0",
+    "Jinja2==3.1.6",
+    "dspy==2.6.11",
+    "asteval==1.0.6",
+    "glom==24.11.0",
+    "aioboto3==14.1.0"
+]
+
+[project.optional-dependencies]
+all = [
+    "bears[all]",
+    "pytest",
+    "orjson",
+    "ray",
+    "ray[default]",
+    "ray[tune]",
+    "ray[serve]",
+    "dask[complete]",
+    "dask",
+    "gpustat",
+    "nvitop",
+    "altair",
+    "plotly",
+    "plotly-express",
+    "bokeh",
+    "seaborn",
+    "holoviews",
+    "hvplot>=0.10.0",
+    "matplotlib",
+    "tiktoken",
+    "torch",
+    "transformers>=4.42.4",
+    "einops",
+    "accelerate",
+    "deepspeed",
+    "sentence_transformers",
+    "tokenizers",
+    "datasets",
+    "bitsandbytes",
+    "safetensors",
+    "brotli",
+    "nltk",
+    "evaluate",
+    "mauve-text",
+    "sentencepiece",
+    "tensorboard",
+    "aim==3.*",
+    "wandb",
+    "imageio",
+    "faiss-cpu",
+]
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 110
+fix = true
+force-exclude = true
+extend-exclude = [
+    "__init__.py",
+]
+
+[tool.ruff.lint]
+fixable = [
+    "I",    # Add all rules under isort linter: https://docs.astral.sh/ruff/rules/#isort-i
+    "W",    # Add all rules under whitespace: https://docs.astral.sh/ruff/rules/#warning-w
+    "E401", # multiple-imports-on-one-line: https://docs.astral.sh/ruff/rules/multiple-imports-on-one-line/
+    "E713", # not-in-test: https://docs.astral.sh/ruff/rules/not-in-test/
+    "E721", # type-comparison: https://docs.astral.sh/ruff/rules/type-comparison/
+    "E722", # bare-except: https://docs.astral.sh/ruff/rules/bare-except/
+    "F401", # unused-import: https://docs.astral.sh/ruff/rules/unused-import/
+    "F541", # f-string-missing-placeholders: https://docs.astral.sh/ruff/rules/f-string-missing-placeholders/
+    "F811", # redefined-while-unused: https://docs.astral.sh/ruff/rules/redefined-while-unused/
+    "F841", # unused-variable: https://docs.astral.sh/ruff/rules/unused-variable/
+]
+ignore = [
+    ## Ignored because it makes the code too verbose:
+    "E731", # lambda-assignment: https://docs.astral.sh/ruff/rules/lambda-assignment/
+    "E741", # ambiguous-variable-name: https://docs.astral.sh/ruff/rules/ambiguous-variable-name/
+    
+    ## Ignored because it causes no harm (and is needed sometimes):
+    "F841",     # unused-variable: https://docs.astral.sh/ruff/rules/unused-variable/
+]

@@ -1,0 +1,37 @@
+I'll create a PR description based on the diff you've provided. This PR appears to introduce Lambda-backed LLM support alongside the existing Bedrock implementation, plus additional AWS utilities and dependencies.
+
+# PR: Add Lambda-backed LLM implementation and enhance AWS utilities
+
+I'll create a PR description based on the diff you've provided. This PR appears to introduce Lambda-backed LLM support alongside the existing Bedrock implementation, plus additional AWS utilities and dependencies.
+
+# PR: Add Lambda-backed LLM implementation and enhance AWS utilities
+
+## Overview
+This PR introduces a new `LambdaLLM` implementation that allows routing LLM requests through AWS Lambda functions. It also enhances the AWS utilities with async support and improves error handling with a robust retry mechanism.
+
+## Key Changes
+
+- Added `LambdaLLM` implementation for routing LLM requests through AWS Lambda functions
+- Enhanced `BotoFactory` with async session support via `aioboto3`
+- Implemented a backoff-based retry mechanism with configurable exception handling
+- Added proper typing to LLM classes to improve type safety
+- Added new dependencies: `glom` and `aioboto3`
+- Updated `dspy` to version 2.6.11
+
+## Implementation Details
+
+- `LambdaLLM` uses both synchronous and asynchronous AWS clients for Lambda invocation
+- Lambda requests use OpenAI-compatible message format for consistency
+- Added retry utilities with exponential backoff strategy and configurable exception handling
+- Enhanced type safety with proper generics in LLM implementations
+- Extended configuration types to support Lambda function ARNs and retry logic
+
+## Testing
+
+The PR includes updates to the local test script to demonstrate both Bedrock and Lambda inference options.
+
+## Next Steps
+
+- Add comprehensive unit tests for the new functionality
+- Explore streaming support for Lambda-backed LLMs when available
+- Consider implementing batch processing for Lambda-backed LLMs
