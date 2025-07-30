@@ -1,0 +1,28 @@
+stages:
+  - deploy
+
+deploy_to_pypi:
+  stage: deploy
+  image: python:3.9
+  tags:
+    - docker
+  script:
+    - export PIP_INDEX_URL=https://mirrors.aliyun.com/pypi/simple/
+    # 1. 使用官方 PyPI 源安装构建所需依赖
+    - pip install --upgrade 'setuptools-scm[toml]' setuptools build twine -i https://mirrors.aliyun.com/pypi/simple/
+
+    # 2. 清理旧的构建文件
+    - rm -rf build/ dist/ *.egg-info/
+
+    # 3. 使用 pyproject.toml 构建源码包和 Wheel 包
+    - python -m build --sdist --wheel .
+
+    # 4. 上传到 PyPI
+    - twine upload
+      --username __token__
+      --password "$PYPI_API_TOKEN"
+      --repository-url https://upload.pypi.org/legacy/
+      --verbose
+      dist/*
+  rules:
+    - when: always

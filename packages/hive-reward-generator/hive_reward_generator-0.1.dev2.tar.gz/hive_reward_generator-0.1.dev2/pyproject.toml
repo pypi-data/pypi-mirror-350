@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hive-reward-generator"
+dynamic = ["version"]
+authors = [
+    { name = "stupidfish001", email = "shovel@hscsec.cn" }
+]
+description = "A dataset container for al-1s project."
+dependencies = [
+    "typer==0.15.3",
+    "click==8.1.8",
+    "kink",
+    "loguru",
+    "pandas",
+    "pyarrow",
+    "pydantic",
+    "langchain-openai",
+    "langchain",
+    "tqdm",
+    "transformers",
+    "torch"
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.6"
+
+[tool.setuptools]
+packages = { find = { } }
+
+[tool.setuptools_scm]
+local_scheme = "no-local-version"
+
+[project.scripts]
+hive-reward-generator = "app.cli:main"
