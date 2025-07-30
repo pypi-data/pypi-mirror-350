@@ -1,0 +1,39 @@
+name: Run Tests (pytest) 🧪
+
+on:
+    push:
+        branches: [ main ]
+    pull_request:
+        types: [opened, synchronize]
+        branches: [ main ]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                persist-credentials: false
+
+            - name: Set up Python 3.11.12
+              uses: actions/setup-python@v4
+              with:
+                python-version: 3.11.12
+
+            - name: Install dependencies
+              run: |
+                python -m pip install --upgrade pip
+                python -m pip install -e .
+            - name: Install PyTest Summary Dependencies
+              run: |
+                python -m pip install pytest-emoji pytest-md pytest-html pytest-cov
+            - name: Run Tests And Summary
+              uses: pavelzw/pytest-action@v2
+              with:
+                verbose: true
+                emoji: true
+                job-summary: true
+                custom-arguments: '-q'
+                click-to-expand: true
+                report-title: 'RBOM Tests Summary'
+

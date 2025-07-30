@@ -1,0 +1,21 @@
+name: RBOM DEV 🖋️
+
+on:
+    push:
+        branches: [ main ]
+    pull_request:
+        types: [opened, synchronize]
+        branches: [ main ]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                persist-credentials: false
+            - name: RBOM
+              uses: ./.github/actions/rbom
+              with:
+                token: ${{ secrets.GITHUB_TOKEN }}
+                rbom-path: "./prod.rbom.yaml"
