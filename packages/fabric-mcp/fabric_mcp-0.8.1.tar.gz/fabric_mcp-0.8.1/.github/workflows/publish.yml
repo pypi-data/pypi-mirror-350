@@ -1,0 +1,47 @@
+# .github/workflows/publish.yml
+name: Build and Publish
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build_and_publish:
+    runs-on: ubuntu-latest
+    permissions:
+      # Keep id-token write permission if you plan to use OIDC/trusted publishing later.
+      # Remove if only API tokens will be used.
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: latest
+      - name: Install dependencies
+        run: make bootstrap
+      - name: Run tests
+        run: make test
+      - name: Build package
+        run: make build
+
+      # Publish to TestPyPI for 'develop' branch
+      - name: Publish package to TestPyPI
+        if: github.ref == 'refs/heads/develop'
+        run: >
+          uv publish --index testpypi
+          -u __token__ -p ${{ secrets.TEST_PYPI_API_TOKEN }} dist/*
+
+      # Publish to PyPI for 'main' branch
+      - name: Publish package to PyPI
+        if: github.ref == 'refs/heads/main'
+        run: >
+          uv publish --index pypi
+          -u __token__ -p ${{ secrets.PYPI_API_TOKEN }} dist/*
