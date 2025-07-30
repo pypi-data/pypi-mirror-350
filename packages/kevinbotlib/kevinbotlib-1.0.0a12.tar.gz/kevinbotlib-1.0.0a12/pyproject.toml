@@ -1,0 +1,139 @@
+[build-system]
+requires = ["hatchling>=1.26.1"]
+build-backend = "hatchling.build"
+
+[project]
+name = "kevinbotlib"
+dynamic = ["version"]
+description = "The KevinbotLib Robot Development Framework"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "LGPL-3.0-or-later"
+keywords = []
+authors = [
+  { name = "Kevin Ahr", email = "meowmeowahr@gmail.com" },
+]
+classifiers = [
+  "Development Status :: 2 - Pre-Alpha",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+  "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
+]
+dependencies = [
+  "pyserial~=3.5",
+  "loguru~=0.7.3",
+  "pydantic~=2.11.4",
+  "click~=8.2.0",
+  "platformdirs~=4.3.8",
+  "orjson~=3.10.18",
+  "pybase64~=1.4.1",
+  "pysdl2~=0.9.17",
+  "opencv-python~=4.11.0",
+  "pyftpdlib~=2.0.1",
+  "jinja2~=3.1.6",
+  "psutil>=7.0.0",
+  "pyside6-essentials>=6.8.0.2",
+  "darkdetect>=0.8.0",
+  "ansi2html>=1.9.2",
+  "qtawesome>=1.4.0",
+  "qtpy>=2.4.3",
+  "deprecated>=1.2.18",
+  "redis>=6.1.0",
+  "wakepy>=0.10.2.post1",
+  "superqt>=0.7.3",
+  "paramiko>=3.5.1",
+  "pyside6-addons>=6.9.0",
+  "pyside6>=6.9.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "mkdocs",
+  "mkdocs-material",
+  "mkdocstrings[python]>=0.18",
+  "mike",
+  "pyinstaller",
+  "Pillow",
+]
+
+
+[project.scripts]
+kevinbotlib = "kevinbotlib.cli:main"
+
+[project.urls]
+Documentation = "https://meowmeowahr.github.io/kevinbotlib/"
+Issues = "https://github.com/meowmeowahr/kevinbotlib/issues"
+Source = "https://github.com/meowmeowahr/kevinbotlib"
+
+[tool.hatch.build.targets.wheel]
+force_include_editable = [
+    "src/kevinbotlib/fileserver/static/**/*",
+    "src/kevinbotlib/fileserver/templates/**/*",
+]
+
+[tool.hatch.version]
+path = "src/kevinbotlib/__about__.py"
+
+[tool.hatch.envs]
+default = { scripts = { serve-docs = "mkdocs serve", build-docs = "mkdocs build" }}
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+  "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/kevinbotlib tests}"
+
+[tool.coverage.run]
+source_pkgs = ["kevinbotlib", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/kevinbotlib/__about__.py",
+]
+
+[[tool.hatch.envs.hatch-test.matrix]]
+python = ["3.13", "3.12", "3.11", "3.10"]
+
+[tool.hatch.envs.hatch-test]
+dependencies = [
+  "coverage-enable-subprocess==1.0",
+  "coverage[toml]~=7.4",
+  "pytest~=8.1",
+  "pytest-mock~=3.12",
+  "pytest-randomly~=3.15",
+  "pytest-rerunfailures~=14.0",
+  "pytest-xdist[psutil]~=3.5",
+]
+
+[tool.hatch.envs.hatch-test.scripts]
+python = ["3.13", "3.12", "3.11", "3.10"]
+run = "pytest{env:HATCH_TEST_ARGS:} {args}"
+run-cov = "coverage run -m pytest{env:HATCH_TEST_ARGS:} {args}"
+cov-combine = "coverage combine"
+cov-report = "coverage report"
+
+[tool.coverage.paths]
+kevinbotlib = ["src/kevinbotlib", "*/kevinbotlib/src/kevinbotlib"]
+tests = ["tests", "*/kevinbotlib/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
+
+[tool.ruff.lint]
+ignore = ["G004", "TRY400"]
+
+[tool.ruff.lint.per-file-ignores]
+"examples/*" = ["T201", "S311", "T203"]
+"tests/*" = ["S101", "PLR2004"]
+"resources_rc.py" = ["N802"]
+"*" = ["FBT001"]
