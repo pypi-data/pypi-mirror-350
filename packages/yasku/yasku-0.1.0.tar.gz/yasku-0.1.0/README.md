@@ -1,0 +1,169 @@
+# YASKU: Yet Another Science Keppy Upy
+
+YASKU is a Python tool to help you keep up to date with the latest publications in your favorite science fields. It searches PubMed for new articles on your chosen topics and can send notifications to a Discord channel using webhooks.
+
+---
+
+## Features
+
+- Searches PubMed for new articles on your topics
+- Sends article summaries to Discord via webhook (as rich embeds)
+- Keeps a local cache and log of found articles
+- Easy configuration with a YAML file in your home directory or via interactive CLI
+
+---
+
+## Installation
+
+### Option 1: Install via pip (recommended for CLI use)
+
+```sh
+pip install git+https://github.com/<your-username>/YASKU.git
+```
+
+Or, if you have cloned the repo locally:
+
+```sh
+cd YASKU
+pip install .
+```
+
+### Option 2: Development mode (editable install)
+
+```sh
+git clone <this-repo-url>
+cd YASKU
+pip install -e .
+```
+
+---
+
+## Configuration
+
+### Quick Setup (Recommended)
+
+Run the interactive configuration tool:
+
+```sh
+yasku_config
+```
+
+You will be prompted for your Discord webhook URL and topics of interest (add topics one by one, press Enter on an empty line to finish). This will create or update your `.yasku` config file in your home directory.
+
+### Manual Setup
+
+YASKU uses a YAML config file named `.yasku` in your home directory. The first run will create a default one if it doesn't exist.
+
+Example `.yasku` file:
+
+```yaml
+defaultFolder: .yasku_cache
+max_search: 10
+topics:
+  - RNAseq
+  - CRISPR
+  - Cancer
+username: Yasku
+discordWebhook: "REPLACE WITH YOUR DISCORD WEBHOOK"
+```
+
+- **defaultFolder**: Where to store cache and logs (relative to your home directory)
+- **max_search**: Number of articles to fetch per topic
+- **topics**: List of topics to track
+- **username**: Name to display in Discord
+- **discordWebhook**: Your Discord webhook URL (see below)
+
+> **Note:** You must set a valid Discord webhook URL to receive notifications in Discord.
+
+---
+
+## Usage
+
+After installation and configuration, run:
+
+```sh
+yasku
+```
+
+- The script will search PubMed for each topic in your config.
+- New articles will be logged in `log.txt` in your cache folder.
+- Article details will be sent to your Discord channel as embeds (if webhook is set).
+
+You can also run the legacy script directly:
+
+```sh
+python YASKU.py
+```
+
+---
+
+## Setting up a Discord Webhook
+
+1. Go to your Discord server and create a webhook in the channel settings.
+2. Copy the webhook URL.
+3. Paste it into the `discordWebhook` field in your `.yasku` config file or enter it when running `yasku_config`.
+
+---
+
+## Logs and Cache
+
+- All found articles are cached in a pickle file in your cache folder.
+- All new PMIDs and errors are logged in `log.txt` in the same folder.
+
+---
+
+## License
+
+MIT License
+
+---
+
+## About
+
+**YASKU** stands for "Yet Another Science Keppy Upy". It is designed to help scientists and enthusiasts stay up to date with the latest research in their fields.
+
+---
+
+## Scheduling YASKU to Run Automatically (Daily)
+
+You can schedule YASKU to run every day using your operating system's built-in scheduler.
+
+### Linux (cron)
+
+1. Open your crontab for editing:
+   ```sh
+   crontab -e
+   ```
+2. Add a line to run YASKU every day at 8:00 AM (adjust path and time as needed):
+   ```sh
+   0 8 * * * /usr/bin/env yasku
+   ```
+   Or, if you installed with a virtual environment:
+   ```sh
+   0 8 * * * /path/to/venv/bin/yasku
+   ```
+
+### macOS (launchd or cron)
+
+- You can use `cron` as above, or use the macOS `launchd` system for more advanced scheduling.
+- For most users, adding a cron job as shown above works fine.
+
+### Windows (Task Scheduler)
+
+1. Open **Task Scheduler** from the Start menu.
+2. Click **Create Basic Task...**
+3. Name your task (e.g., "YASKU Daily") and click **Next**.
+4. Choose **Daily** and set your preferred time.
+5. For the action, select **Start a program**.
+6. In **Program/script**, enter:
+   ```
+   powershell.exe
+   ```
+7. In **Add arguments**, enter:
+   ```
+   -Command "yasku"
+   ```
+   Or, if you installed in a virtual environment, use the full path to `yasku.exe` or `python -m yasku`.
+8. Finish the wizard.
+
+> **Tip:** You can test your scheduled task by right-clicking it in Task Scheduler and choosing **Run**.
