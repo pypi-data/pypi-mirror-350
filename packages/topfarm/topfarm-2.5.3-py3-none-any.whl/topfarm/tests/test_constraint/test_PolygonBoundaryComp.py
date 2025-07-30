@@ -1,0 +1,102 @@
+import numpy as np
+import pytest
+from topfarm.tests import npt
+from topfarm.constraint_components.boundary import PolygonBoundaryComp
+
+
+@pytest.mark.parametrize('boundary', [
+    [(0, 0), (1, 1), (2, 0), (2, 2), (0, 2)],
+    [(0, 0), (1, 1), (2, 0), (2, 2), (0, 2), (0, 0)],  # StartEqEnd
+    [(0, 0), (0, 2), (2, 2), (2, 0), (1, 1)],  # Clockwise
+    [(0, 0), (0, 2), (2, 2), (2, 0), (1, 1), (0, 0)]  # StartEqEndClockwise
+])
+def testPolygon(boundary):
+    pbc = PolygonBoundaryComp(1, boundary)
+    np.testing.assert_array_equal(pbc.xy_boundary, [[0, 0],
+                                                    [1, 1],
+                                                    [2, 0],
+                                                    [2, 2],
+                                                    [0, 2],
+                                                    [0, 0]])
+
+
+def check(boundary, points, distances, tol=1e-6):
+    decimal = int(-np.log10(tol))
+    pbc = PolygonBoundaryComp(1, boundary)
+    d, dx, dy = pbc.calc_distance_and_gradients(points[:, 0], points[:, 1])
+    np.testing.assert_array_almost_equal(d, distances, decimal=decimal)
+    eps = 1e-7
+    d1, _, _ = pbc.calc_distance_and_gradients(points[:, 0] + eps, points[:, 1])
+    np.testing.assert_array_almost_equal((d1 - d) / eps, dx, decimal=decimal)
+    d2, _, _ = pbc.calc_distance_and_gradients(points[:, 0], points[:, 1] + eps)
+    np.testing.assert_array_almost_equal((d2 - d) / eps, dy, decimal=decimal)
+
+
+def test_calc_distance_edge():
+    boundary = np.array([(0, 0), (1, 0), (2, 1), (0, 2), (0, 0)])
+    points = np.array([(0.5, .2), (1, .5), (.5, 1.5), (.2, 1)])
+    check(boundary, points, [0.2, np.sqrt(2 * .25**2), .5 * np.sin(np.arctan(.5)), 0.2])
+
+
+def test_calc_distance_edge_outside():
+    boundary = np.array([(0, 0), (1, 0), (2, 1), (0, 2), (0, 0)])
+    points = np.array([(0.5, -.2), (1.5, 0), (.5, 2), (-.2, 1)])
+    check(boundary, points, [-0.2, -np.sqrt(2 * .25**2), -.5 * np.sin(np.arctan(.5)), -0.2])
+
+
+def test_calc_distance_point_vertical():
+    boundary = np.array([(0, 0), (1, 1), (2, 0), (2, 2), (0, 2), (0, 0)])
+    points = np.array([(.8, 1), (.8, 1.2), (1, 1.2), (1.1, 1.2), (1.2, 1.2), (1.2, 1)])
+    check(boundary, points, [np.sqrt(.2**2 / 2), np.sqrt(2 * .2**2), .2,
+                             np.sqrt(.1**2 + .2**2), np.sqrt(2 * .2**2), np.sqrt(.2**2 / 2)], 1e-6)
+
+
+def test_calc_distance_point_vertical_outside():
+    boundary = np.array([(0, 0), (1, 1), (2, 0), (0, 0)])
+    points = np.array([(.8, 1), (.8, 1.2), (1, 1.2), (1.1, 1.2), (1.2, 1.2), (1.2, 1)])
+
+    check(boundary, points, [-np.sqrt(.2**2 / 2), -np.sqrt(2 * .2**2), -.2,
+                             -np.sqrt(.1**2 + .2**2), -np.sqrt(2 * .2**2), -np.sqrt(.2**2 / 2)], 1e-6)
+
+
+def test_calc_distance_point_horizontal():
+    boundary = np.array([(0, 0), (2, 0), (1, 1), (2, 2), (0, 2), (0, 0)])
+    points = np.array([(1, .8), (.8, .8), (.8, 1), (.8, 1.1), (.8, 1.2), (1, 1.2)])
+    check(boundary, points, [np.sqrt(.2**2 / 2), np.sqrt(2 * .2**2), .2,
+                             np.sqrt(.1**2 + .2**2), np.sqrt(2 * .2**2), np.sqrt(.2**2 / 2)], 1e-6)
+
+
+def testPolygon_Line():
+    boundary = [(0, 0), (0, 2)]
+    with pytest.raises(AssertionError, match="Area must be non-zero"):
+        PolygonBoundaryComp(1, boundary)
+
+
+def test_calc_distance_U_shape():
+    boundary = np.array([(0, 0), (3, 0), (3, 2), (2, 2), (2, 1), (1, 1), (1, 2), (0, 2)])
+    points = np.array([(-.1, 1.5), (.1, 1.5), (.9, 1.5), (1.1, 1.5), (1.5, 1.5), (1.9, 1.5), (2.1, 1.5), (2.9, 1.5), (3.1, 1.5)])
+    check(boundary, points, [-.1, .1, .1, -.1, -.5, -.1, .1, .1, -.1])
+
+
+def test_calc_distance_V_shape():
+    boundary = np.array([(0, 0), (1, 2), (2, 0), (2, 2), (1, 4), (0, 2)])
+    points = np.array([(.8, 2), (.8, 2.2), (1, 2.2), (1.2, 2.2), (1.2, 2), (.8, 4), (.8, 4.2), (1, 4.2), (1.2, 4.2), (1.2, 4)])
+    v1 = np.sqrt(.2**2 * 4 / 5)
+    v2 = np.sqrt(2 * .2**2)
+    check(boundary, points, [v1, v2, .2, v2, v1, -v1, -v2, -.2, -v2, -v1], tol=1e-5)
+
+
+def test_satisfy():
+    pbc = PolygonBoundaryComp(1, [(0, 0), (10, 0), (10, 10)])
+    state = pbc.satisfy({'x': [3, 3, 3], 'y': [0, 5, 10]})
+    x, y = state['x'], state['y']
+    npt.assert_array_less(y, x)
+
+
+def test_gradient_with_large_number_of_vertices_in_boundary():
+    boundary = [
+        (np.cos(2 * np.pi * i / 150), np.sin(2 * np.pi * i / 150)) for i in range(150)
+    ]
+    pbc = PolygonBoundaryComp(1, boundary)
+    # should raise no error...
+    _ = pbc.calc_distance_and_gradients([0.5], [0.5])
