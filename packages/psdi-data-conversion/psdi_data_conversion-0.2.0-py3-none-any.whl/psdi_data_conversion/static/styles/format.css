@@ -1,0 +1,221 @@
+/*
+  format.css
+  Version 1.0, 11th October 2024
+*/
+
+@import url("./psdi-common.css");
+
+/* Forms inherit style from normal content, and make sure content is well away from the edges */
+form {
+  width      : 95%;
+  min-width  : 320px;
+  padding-top: 1rem;
+  align-self : center;
+}
+
+/* Padding for link to converter website. */
+#visit {
+  padding-left: 0.125rem;
+}
+
+/* Width management for select boxes and forms */
+
+.med-width {
+  width    : 100%;
+  max-width: 25rem;
+}
+
+.large-width {
+  width    : 100%;
+  max-width: 50rem;
+}
+
+/* Invalid input fields switch to alternate background */
+
+input:invalid {
+  background-color: var(--ifm-color-primary);
+  color           : var(--ifm-hero-text-color);
+}
+
+/* Converter details, user input and file conversion initially not displayed. */
+.init-hidden {
+  display: none
+}
+
+/* File upload prompt */
+input#fileToUpload {
+  margin-right: 0.25rem;
+}
+
+/* Buttons that are initially disabled */
+input.button.init-disabled {
+  background-color: var(--psdi-bg-color-secondary);
+  color           : gray
+}
+
+/* Small vertical space. */
+.smallGap {
+  padding: 0.125rem;
+}
+
+/* Medium vertical space. */
+.medGap {
+  padding: 1rem;
+}
+
+/* Large vertical space. */
+.largeGap {
+  padding: 8rem;
+}
+
+/* Flex styling for pages */
+.flex-panel-display {
+  display        : flex;
+  flex-direction : row;
+  align-items    : flex-start;
+  justify-content: space-between;
+}
+
+.flex-panel-display:has(.instructions-panel) {
+  border       : 1px solid black;
+  border-radius: 1rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 700px) {
+  .flex-panel-display {
+    display: block;
+  }
+}
+
+.flex-panel {
+  flex   : 1 1 50%;
+  padding: 1rem;
+}
+
+.instructions-panel {
+  flex  : 1 1 35%;
+  margin: 0;
+}
+
+.flex-panel-display hr {
+  margin             : -0.5rem 25% 0.5rem 25%;
+  height             : 1px;
+  border-top-style   : none;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+}
+
+/* Control for elements to only appear on big/small screens */
+.big-screen-only {
+  display: block;
+}
+
+.small-screen-only {
+  display: none;
+}
+
+@media (max-width: 700px) {
+
+  .big-screen-only {
+    display: none;
+  }
+
+  .small-screen-only {
+    display: block;
+  }
+}
+
+/* Grid for textarea label/elements. */
+.access-options {
+  display              : grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  column-gap           : 2rem;
+}
+
+.access-option-container {
+  padding-left   : 0 1rem 0 1rem;
+  display        : flex;
+  flex-direction : column;
+  justify-content: flex-end;
+}
+
+[data-theme="dark"] .access-option-container.lm-only {
+  display: none;
+}
+
+/* Select boxes for accessibility options */
+.access-option-container select {
+  min-width: 5rem;
+  width    : 100%;
+}
+
+select#light-colour,
+select#dark-background {
+  background-color: var(--ifm-color-primary);
+  color           : var(--psdi-light-text-color-body);
+}
+
+select#size option {
+  font-family: var(--psdi-default-font);
+}
+
+select#font option {
+  font-size: var(--psdi-default-font-size);
+}
+
+select#dark-colour option {
+  color: var(--psdi-default-dark-text-color-body);
+}
+
+select#light-colour option {
+  background-color: var(--ifm-color-primary);
+  color           : var(--psdi-default-light-text-color-body);
+}
+
+select#light-background option {
+  background-color: var(--psdi-default-background-color);
+}
+
+select#dark-background option {
+  background-color: var(--psdi-default-color-primary);
+  color           : var(--psdi-light-text-color-body);
+}
+
+/* Classes to force specific styling for exceptional cases */
+.no-left-margin {
+  margin-left: 0 !important;
+}
+
+/* We use the service-mode variable to control whether elements with the "service-only" or "local-only" class are shown
+*/
+[service-mode=True] .local-only {
+  display: none;
+}
+
+[service-mode=False] .service-only {
+  display: none;
+}
+
+/* We use the production-mode variable to control whether elements with the "prod-only" or "dev-only" class are shown
+*/
+[production-mode=False] .prod-only {
+  display: none;
+}
+
+[production-mode=True] .dev-only {
+  display: none;
+}
+
+/* Convert button and loading spinner */
+.convert-button-and-spinner {
+  display       : flex;
+  flex-direction: row;
+  align-items   : center;
+}
+
+.loading-spinner {
+  display: none;
+  color  : var(--ifm-color-primary);
+  scale  : 75%;
+}
