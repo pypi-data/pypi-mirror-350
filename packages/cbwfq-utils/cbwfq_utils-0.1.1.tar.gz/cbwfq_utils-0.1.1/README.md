@@ -1,0 +1,213 @@
+# `cbwfq-utils`
+
+**`cbwfq-utils`** is a Python library for automating the calculation of CBWFQ (Class-Based Weighted Fair Queuing) parameters and generating configuration commands for Cisco IOS.
+
+---
+
+## Features
+
+- Aggregates flows into queues based on DSCP tags  
+- Calculates the minimum normalization coefficient `Dmin`  
+- Distributes bandwidth among queues  
+- Generates Cisco IOS configuration commands  
+- Convenient integration into Python projects  
+- Supports result visualization  
+
+---
+
+## Library Overview
+
+CBWFQ (Class-Based Weighted Fair Queuing) is a queue scheduling mechanism in Cisco network devices that distributes bandwidth among traffic classes.  
+The **`cbwfq-utils`** library automates CBWFQ parameter calculations and produces ready-to-use Cisco IOS commands.
+
+---
+
+## Installation
+
+```bash
+pip install cbwfq-utils
+```
+
+---
+
+## Quick Start
+
+```python
+import numpy as np
+from cbwfq_utils import (
+    parse_dscp, aggregate_flows, find_min_Dmin, calculate_bandwidths, generate_cisco_commands
+)
+
+# 1. Define the number of queues and flows
+N = 3  # number of queues
+M = 4  # number of flows
+
+# 2. Set flow intensities (Mbps) and DSCP values
+a = np.array([10, 20, 15, 30])
+dscp_values = [0, 10, 18, 46]
+
+# 3. Aggregate flows based on DSCP values
+x2, kq = aggregate_flows(N, M, a, dscp_values)
+
+# 4. Find the minimum Dmin for a valid solution
+Dmin = find_min_Dmin(N, M, a, x2, kq, K=64, B=75, Dmin=11, max_Dmin=150)
+
+# 5. Calculate bandwidth distribution and load coefficients
+poo, x3, D_range = calculate_bandwidths(N, M, a, x2, kq, K=64, B=75, Dmin=Dmin)
+
+# 6. Generate Cisco configuration commands
+commands = generate_cisco_commands(N, M, x2, dscp_values, x3)
+
+print("Cisco configuration commands:")
+for cmd in commands:
+    print(cmd)
+```
+
+---
+
+## Function Descriptions
+
+### `parse_dscp`
+
+```python
+parse_dscp(dscp: str | int) -> int
+```
+
+Converts a DSCP value into its numeric code. Supports both numeric and symbolic values (e.g., `"ef"`, `"af21"`, `"default"`).
+
+**Example:**
+
+```python
+parse_dscp("ef")    # 46
+parse_dscp("af21")  # 18
+parse_dscp(10)      # 10
+```
+
+---
+
+### `aggregate_flows`
+
+```python
+aggregate_flows(N, M, a, dscp_values, K=64)
+```
+
+Aggregates flows into queues based on DSCP tags.
+
+- `N` — number of queues  
+- `M` — number of flows  
+- `a` — flow intensity array  
+- `dscp_values` — array of DSCP values  
+- `K` — total number of DSCP labels (default is 64)
+
+**Returns:**  
+- `x2` — N x M flow-to-queue distribution matrix  
+- `kq` — average DSCP values per queue  
+
+---
+
+### `find_min_Dmin`
+
+```python
+find_min_Dmin(N, M, a, x2, kq, K, B, Dmin, max_Dmin)
+```
+
+Finds the minimum normalization coefficient `Dmin` that ensures a valid solution.
+
+- `K` — number of DSCP values  
+- `B` — total bandwidth (Mbps)  
+- `Dmin` — starting value  
+- `max_Dmin` — maximum allowed value  
+
+---
+
+### `calculate_bandwidths`
+
+```python
+calculate_bandwidths(N, M, a, x2, kq, K, B, Dmin)
+```
+
+Computes bandwidth allocation and load coefficients per queue.
+
+**Returns:**  
+- `poo` — load coefficients per queue  
+- `x3` — bandwidth distribution  
+- `D_range` — D values used for calculations  
+
+---
+
+### `generate_cisco_commands`
+
+```python
+generate_cisco_commands(N, M, x2, dscp_values, x3)
+```
+
+Generates a list of Cisco IOS CLI commands for CBWFQ configuration.
+
+**Returns:**  
+- List of command strings  
+
+```
+class-map match-any q1
+ match dscp default
+ match dscp af11
+ exit
+class-map match-any q2
+ match dscp af21
+ exit
+class-map match-any q3
+ match dscp ef
+ exit
+policy-map pyauto
+ class q1
+  bandwidth 25000
+  exit
+ class q2
+  bandwidth 15000
+  exit
+ class q3
+  bandwidth 35000
+  exit
+int f0/1
+ service-policy output pyauto
+ exit
+exit
+wr
+```
+
+---
+
+## Requirements
+
+- Python >= 3.11  
+- numpy >= 1.24  
+- scipy >= 1.10  
+
+---
+
+## License
+
+MIT
+
+---
+
+## Author
+
+Yaroslav WWFyb3NsYXYg  
+📧 [minestrim13@gmail.com](mailto:minestrim13@gmail.com)
+
+---
+
+## Feedback & Contributions
+
+- Report issues and request features via [GitHub Issues](https://github.com/WWFyb3NsYXYg/cbwfq-utils/issues)  
+- Pull requests are welcome!
+
+---
+
+## Useful Links
+
+- [Cisco CBWFQ Documentation](https://www.cisco.com/en/US/docs/ios/12_0t/12_0t5/feature/guide/cbwfq.html#wp17641)
+- [PyPI cbwfq-utils](https://pypi.org/project/cbwfq-utils/)
+- [PyPI cisco_telnet](https://pypi.org/project/cisco_telnet/)
+
+
