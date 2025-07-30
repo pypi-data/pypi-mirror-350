@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "enemera"
+version = "0.2.1"
+description = "API client for Enemera energy data API with enhanced functionality and enums"
+readme = "README.md"
+authors = [
+    { name = "Francesco Casamassima", email = "dev@elnc.eu" }
+]
+license = { text = "MIT" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development :: Libraries",
+]
+requires-python = ">=3.7"
+dependencies = [
+    "requests>=2.25.0",
+    "pydantic>=2.0.0",
+    "python-dateutil>=2.8.0",
+]
+
+[project.optional-dependencies]
+pandas = ["pandas>=1.0.0"]
+polars = ["polars>=0.7.0"]
+excel = ["pandas>=1.0.0", "openpyxl>=3.0.0"]
+excel-xlsxwriter = ["pandas>=1.0.0", "xlsxwriter>=3.0.0"]
+all = ["pandas>=1.0.0", "polars>=0.7.0", "openpyxl>=3.0.0", "xlsxwriter>=3.0.0"]
+dev = [
+    "pytest>=7.0.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "flake8>=6.0.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/fracasamax/enemera-api-client"
+"Bug Tracker" = "https://github.com/fracasamax/enemera-api-client/issues"
+Documentation = "https://github.com/fracasamax/enemera-api-client#readme"
+
+[tool.setuptools]
+packages = { find = { include = ["enemera", "enemera.*"], exclude = ["examples", "tests", "*.tests", "*.tests.*"] } }
+
+[tool.setuptools.package-data]
+enemera = ["py.typed"]
