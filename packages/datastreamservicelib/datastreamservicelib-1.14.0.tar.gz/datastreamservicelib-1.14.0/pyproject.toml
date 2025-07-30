@@ -1,0 +1,85 @@
+[project]
+name = "datastreamservicelib"
+version = "1.14.0"
+description = "AsyncIO eventloop helpers and Abstract Base Classes for making services that use ZMQ nice, easy and DRY"
+authors = [{name="Eero af Heurlin", email="eero.afheurlin@iki.fi" }]
+homepage = "https://gitlab.com/advian-oss/python-datastreamservicelib/"
+repository = "https://gitlab.com/advian-oss/python-datastreamservicelib/"
+license = "MIT"
+readme = "README.rst"
+dynamic = ["dependencies", "requires-python"]
+
+
+[tool.poetry.scripts]
+testpublisher = "datastreamservicelib.console:publisher_cli"
+testsubscriber = "datastreamservicelib.console:subscriber_cli"
+
+[tool.black]
+line-length = 120
+target-version = ['py311']
+exclude = '''
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+  )/
+  |  __pycache__
+)
+'''
+
+[tool.pytest.ini_options]
+junit_family="xunit2"
+addopts="--cov=datastreamservicelib --cov-fail-under=65 --cov-branch"
+asyncio_mode="strict"
+asyncio_default_fixture_loop_scope="function"
+
+[tool.pylint.format]
+max-line-length = 120
+
+[tool.pylint.similarities]
+min-similarity-lines = 8
+ignore-imports = true
+
+[tool.pylint.messages_control]
+disable=["fixme", "W1202", "C0209"]
+
+[tool.coverage.run]
+omit = ["tests/*"]
+branch = true
+
+[tool.poetry.dependencies]
+python = "^3.9"
+pyzmq = "^26.0"
+toml = ">=0.10,<1.0"
+click = "^8.0"
+datastreamcorelib = { version = "^1.7" }
+libadvian = "^1.9"
+tomlkit = ">=0.11,<1.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3"
+coverage = "^7.8"
+pytest-cov = "^6.1"
+pylint = "^3.3"
+black = "^25.1"
+bandit = "^1.8"
+mypy = "^1.15"
+pre-commit = "^4.2"
+pytest-asyncio = ">=0.21,<1.0" # caret behaviour on 0.x is to lock to 0.x.*
+bump2version = "^1.0"
+detect-secrets = "^1.5"
+types-toml = ">=0.10,<1.0"  # caret behaviour on 0.x is to lock to 0.x.*
+
+
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
