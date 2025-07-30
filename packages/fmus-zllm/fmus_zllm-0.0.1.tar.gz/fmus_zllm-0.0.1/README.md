@@ -1,0 +1,331 @@
+# ZLLM - Zero-dependency LLM API Client
+
+A simple, unified interface for interacting with various LLM providers.
+
+## Features
+
+- **Multi-provider support**: OpenAI, Groq, Anthropic, Google Gemini, Cohere, and more
+- **Unified API**: Consistent interface across all providers
+- **Conversation management**: Built-in conversation history handling
+- **Streaming support**: Real-time token streaming for supported providers
+- **Function calling**: Support for function/tool calling with compatible models
+- **Vision capabilities**: Image analysis with vision-enabled models
+- **Structured output**: Generate structured JSON responses
+- **Embeddings**: Generate embeddings for text
+- **Agentic tooling**: Debug code and search information with Groq's compound models
+
+## Installation
+
+```bash
+pip install zllm
+```
+
+## Quick Start
+
+### Simple Example
+
+```python
+import asyncio
+from zllm import LLMClient
+
+async def main():
+    # Create a client (defaults to Groq provider)
+    client = LLMClient()
+    
+    # Generate a response
+    response = await client.ask("What is the capital of France?")
+    print(response)
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+### Conversation Example
+
+```python
+import asyncio
+from zllm import LLMClient
+from zllm.message import MessageRole
+
+async def main():
+    # Create a client with specific provider and model
+    client = LLMClient(provider="anthropic", model="claude-3-sonnet-20240229")
+    
+    # Set a system message
+    client.set_system_message("You are a helpful assistant specializing in history.")
+    
+    # Add messages to the conversation
+    client.add_message(MessageRole.USER, "Tell me about Ancient Rome.")
+    response1 = await client.generate_response()
+    print(f"Response 1: {response1}")
+    
+    # Continue the conversation
+    client.add_message(MessageRole.USER, "What about their military tactics?")
+    response2 = await client.generate_response()
+    print(f"Response 2: {response2}")
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+### Streaming Example
+
+```python
+import asyncio
+from zllm import LLMClient
+
+# Callback function for streaming chunks
+def on_chunk(chunk):
+    print(chunk, end="", flush=True)
+
+async def main():
+    client = LLMClient(provider="groq")
+    
+    # Generate a streaming response
+    await client.ask_streaming(
+        "Write a short poem about artificial intelligence.",
+        callback=on_chunk
+    )
+    print()  # Add a newline after streaming completes
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+## API Key Management
+
+ZLLM reads API keys from JSON files in your home directory. For each provider, create a corresponding JSON file:
+
+- OpenAI: `~/OPENAI_API_KEYS.json`
+- Groq: `~/GROQ_API_KEYS.json`
+- Anthropic: `~/ANTHROPIC_API_KEYS.json`
+- Google Gemini: `~/GOOGLE_GEMINI_API_KEYS.json`
+- Cohere: `~/COHERE_API_KEYS.json`
+- etc.
+
+The JSON file can have two formats:
+
+### Simple format:
+
+```json
+{
+  "api_key": "your-api-key-here"
+}
+```
+
+### Advanced format (supports multiple keys):
+
+```json
+[
+  {
+    "name": "personal",
+    "key": "your-api-key-here",
+    "last_used": 1679012345,
+    "error_count": 0
+  },
+  {
+    "name": "work",
+    "key": "another-api-key-here",
+    "last_used": 1679012345,
+    "error_count": 0
+  }
+]
+```
+
+## Model Registry
+
+ZLLM uses a model registry to manage available models for each provider. The registry is stored in `~/LLM_MODELS.json` and is automatically created with default settings if it doesn't exist.
+
+You can customize the models in the registry to add new models or change default models.
+
+## Advanced Features
+
+### Vision Capabilities
+
+```python
+import asyncio
+from zllm import LLMClient
+
+async def main():
+    client = LLMClient(provider="groq")
+    
+    # Analyze an image
+    response = await client.generate_response_with_image(
+        image_data="https://example.com/image.jpg",
+        prompt="Describe what you see in this image."
+    )
+    print(response)
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+### Function Calling
+
+```python
+import asyncio
+import json
+from zllm import LLMClient
+
+# Define a function
+def get_weather(location, unit="celsius"):
+    # This would normally call a weather API
+    return {"temperature": 22, "unit": unit, "location": location}
+
+async def main():
+    client = LLMClient(provider="openai", model="gpt-4o")
+    
+    # Define function schema
+    functions = [
+        {
+            "name": "get_weather",
+            "description": "Get the current weather in a location",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "location": {
+                        "type": "string",
+                        "description": "The city and state, e.g. San Francisco, CA"
+                    },
+                    "unit": {
+                        "type": "string",
+                        "enum": ["celsius", "fahrenheit"],
+                        "description": "The temperature unit to use"
+                    }
+                },
+                "required": ["location"]
+            }
+        }
+    ]
+    
+    # Map function names to implementations
+    available_functions = {
+        "get_weather": get_weather
+    }
+    
+    # Generate response with function calling
+    response = await client.generate_response_with_functions(
+        prompt="What's the weather like in Paris?",
+        function_schemas=functions,
+        available_functions=available_functions
+    )
+    
+    print(response)
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+### Structured Output
+
+```python
+import asyncio
+import json
+from zllm import LLMClient
+
+async def main():
+    client = LLMClient(provider="groq")
+    
+    # Define the response format
+    response_format = {"type": "json_object"}
+    
+    # Generate structured output
+    result = await client.generate_structured_output(
+        messages=[client.get_messages()[-1]],  # Use the last message
+        response_format=response_format
+    )
+    
+    print(json.dumps(result, indent=2))
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+### Agentic Tooling with Groq
+
+```python
+import asyncio
+from zllm import LLMClient
+
+async def main():
+    client = LLMClient(provider="groq")
+    
+    # Debug code
+    code_snippet = """
+    def calculate_average(numbers):
+        return sum(numbers) / len(numbers)
+        
+    result = calculate_average([])
+    print(result)
+    """
+    
+    debug_result = await client.debug_code(
+        code_snippet=code_snippet,
+        error_message="ZeroDivisionError: division by zero"
+    )
+    
+    print(debug_result["content"])
+    
+    # Search for information
+    search_result = await client.search_information(
+        query="What are the latest developments in quantum computing in 2024?"
+    )
+    
+    print(search_result["content"])
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+## Command Line Interface
+
+ZLLM includes a command-line interface for quick interactions with LLMs.
+
+### Interactive Chat Mode
+
+```bash
+python -m zllm.cli chat --provider groq --model llama-3.3-70b-versatile
+```
+
+### Single Query Mode
+
+```bash
+python -m zllm.cli --provider gemini --streaming query "Give me 10 oldest civilization in history"
+
+python -m zllm.cli --provider huggingface --streaming query "Give me 10 oldest civilization in history"
+
+python -m zllm.cli --provider sambanova --streaming query "Give me 10 oldest civilization in history"
+```
+
+### List Available Providers and Models
+
+```bash
+python -m zllm.cli list
+```
+
+### CLI Options
+
+- `--provider`, `-p`: LLM provider to use (default: groq)
+- `--model`, `-m`: Model to use (provider-specific)
+- `--temperature`, `-t`: Temperature for generation (default: 0.7)
+- `--max-tokens`: Maximum tokens to generate (default: 1024)
+- `--streaming`, `-s`: Enable streaming mode
+- `--system`: System message to use
+
+## Supported Providers
+
+- Groq
+- OpenAI
+- Anthropic
+- Google Gemini
+- Cohere
+- HuggingFace
+- Together
+- SambaNova
+- Cerebras
+- GLHF
+- Hyperbolic
+
+## License
+
+MIT License
