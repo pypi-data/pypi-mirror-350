@@ -1,0 +1,50 @@
+[
+  {
+    "name": "redis",
+    "image": "redis:latest",
+    "ports": { "6379/tcp": 6379 },
+    "count": 1
+  },
+  {
+    "name": "rabbitmq",
+    "image": "rabbitmq:3-management",
+    "ports": { "5672/tcp": 5672, "15672/tcp": 15672 },
+    "count": 1
+  },
+  {
+    "name": "mongodb",
+    "image": "mongo:6",
+    "ports": { "27017/tcp": 27017 },
+    "env": {
+      "MONGO_INITDB_ROOT_USERNAME": "admin",
+      "MONGO_INITDB_ROOT_PASSWORD": "mongo_secret"
+    },
+    "count": 1
+  },
+  {
+    "name": "postgres",
+    "image": "postgres:latest",
+    "ports": { "5432/tcp": 5432 },
+    "env": {
+      "POSTGRES_USER": "postgres",
+      "POSTGRES_PASSWORD": "secret",
+      "POSTGRES_DB": "db"
+    },
+    "mounts": {
+    "./services/pg_hba.conf": "/var/lib/postgresql/data/pg_hba.conf"
+  },
+    "count": 1
+  },
+  {
+    "name": "chromadb",
+    "image": "ghcr.io/chroma-core/chroma:latest",
+    "ports": { "8000/tcp": 8888 },
+    "env": {
+      "CHROMA_SERVER_AUTH_CREDENTIALS": "test-token",
+      "CHROMA_SERVER_AUTH_CREDENTIALS_PROVIDER": "chromadb.auth.token.TokenConfigServerAuthCredentialsProvider",
+      "CHROMA_SERVER_AUTH_TOKEN_TRANSPORT_HEADER": "AUTHORIZATION",
+      "CHROMA_SERVER_AUTH_PROVIDER": "chromadb.auth.token.TokenAuthServerProvider"
+    },
+    "count": 1
+  }
+]
