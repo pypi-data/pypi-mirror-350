@@ -1,0 +1,118 @@
+
+# advprep: Advanced Data Preprocessing Toolkit
+
+`advprep` is a Python package providing advanced tools for data preprocessing, including imputation, encoding, scaling, feature engineering, and an easy-to-use preprocessing pipeline. It helps you clean and prepare your datasets efficiently for machine learning or analysis.
+
+
+## Installation
+
+Make sure you have these dependencies installed:
+
+```bash
+pip install pandas numpy scikit-learn category_encoders
+````
+
+Then, include the `advprep` package files in your project folder or install it as a local package.
+
+---
+
+## Modules and Usage
+
+### 1. Imputation (`imputation.py`)
+
+Handle missing data with different strategies like mean, median, mode, forward-fill, backward-fill, KNN, and iterative imputation.
+
+```python
+from advprep.imputation import AdvancedImputer
+import pandas as pd
+
+df = pd.read_csv("data.csv")
+imputer = AdvancedImputer(method="knn", knn_neighbors=3)
+df_imputed = imputer.fit_transform(df)
+```
+
+---
+
+### 2. Encoding (`encoding.py`)
+
+Encode categorical features using One-Hot, Ordinal, or Target encoding.
+
+```python
+from advprep.encoding import AdvancedEncoder
+
+encoder = AdvancedEncoder(method="onehot")
+df_encoded = encoder.fit_transform(df, columns=["CategoryCol1", "CategoryCol2"])
+```
+
+For target encoding:
+
+```python
+encoder = AdvancedEncoder(method="target")
+df_encoded = encoder.fit_transform(df, columns=["CategoryCol"], target="TargetColumn")
+```
+
+---
+
+### 3. Scaling (`scaling.py`)
+
+Scale numerical features using StandardScaler, MinMaxScaler, RobustScaler, or PowerTransformer.
+
+```python
+from advprep.scaling import AdvancedScaler
+
+scaler = AdvancedScaler(method="minmax")
+df_scaled = scaler.fit_transform(df)
+```
+
+---
+
+### 4. Feature Engineering (`feature_engineering.py`)
+
+Create new features like date parts or polynomial features.
+
+Extract date/time features:
+
+```python
+from advprep.feature_engineering import FeatureEngineer
+
+df_features = FeatureEngineer.extract_date_features(df, date_column="OrderDate")
+```
+
+Generate polynomial features:
+
+```python
+df_poly = FeatureEngineer.generate_polynomial_features(df, columns=["Feature1", "Feature2"], degree=3)
+```
+
+---
+
+### 5. Pipeline (`pipeline.py`)
+
+Combine multiple preprocessing steps into a single pipeline for easy and repeatable workflows.
+
+```python
+from advprep.imputation import AdvancedImputer
+from advprep.encoding import AdvancedEncoder
+from advprep.scaling import AdvancedScaler
+from advprep.pipeline import PreprocessingPipeline
+
+pipeline = PreprocessingPipeline(steps=[
+    AdvancedImputer(method="median"),
+    AdvancedEncoder(method="onehot"),
+    AdvancedScaler(method="standard")
+])
+
+df_processed = pipeline.fit_transform(df)
+```
+
+---
+
+## Notes
+
+* For target encoding, always provide the target column name when fitting.
+* Date columns must be parseable by `pd.to_datetime` for date feature extraction.
+* By default, most methods operate on all suitable columns (numeric for imputation/scaling, categorical for encoding). You can specify `columns` to limit processing.
+* The pipeline applies the steps sequentially to the DataFrame.
+* The iterative imputer uses Bayesian Ridge by default and requires scikit-learn version supporting it.
+* `category_encoders` is required
+
