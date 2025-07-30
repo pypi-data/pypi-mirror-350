@@ -1,0 +1,103 @@
+[build-system]
+requires = ["setuptools>=42", "wheel", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "smartsurge"
+version = "0.0.5"
+description = "Enhanced Requests Library with Adaptive Rate Limit Estimation"
+readme = "README.md"
+authors = [
+    {name = "Ryan Taylor", email = "ryan@beta-reduce.net"},
+]
+license = "Apache-2.0"
+license-files = ["LICEN[CS]E*"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+keywords = ["http", "requests", "rate-limit", "api", "hmm", "adaptive"]
+requires-python = ">=3.9"
+dependencies = [
+    "requests>=2.0.0",
+    "aiohttp>=3.0.0",
+    "pydantic>=2.0.0",
+    "scipy>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.25.0",
+    "pytest-cov>=5.0.0",
+    "black>=25.0.0",
+    "isort>=6.0.0",
+    "mypy>=1.0.0",
+    "flake8>=7.0.0",
+    "werkzeug>=3.0.0",
+    "flask>=3.0.0",
+    "numpy>=2.0.0",
+    "pyperf>=2.0.0"
+]
+docs = [
+    "mkdocs>=1.0.0",
+    "mkdocs-material>=9.0.0",
+    "mkdocstrings[python]>=0.28.0",
+    "setuptools>=42",
+    "wheel",
+]
+benchmark = [
+    "pyperf>=2.0.0",
+    "matplotlib>=3.0.0",
+    "numpy>=2.0.0",
+    "flask>=3.0.0",
+    "werkzeug>=3.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/dingo-actual/smartsurge"
+Documentation = "https://github.com/dingo-actual/smartsurge/docs/index.md"
+Repository = "https://github.com/dingo-actual/smartsurge"
+Issues = "https://github.com/dingo-actual/smartsurge/issues"
+
+[project.scripts]
+smartsurge-benchmark = "smartsurge.benchmarks.run_benchmark_suite:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["smartsurge", "smartsurge.*"]
+
+[tool.setuptools.package-data]
+"smartsurge.benchmarks" = ["*.py", "*.md", "*.sh"]
+"smartsurge.docs" = ["*.md", "*.pdf", "api/*.md", "api/*.pdf"]
+"*" = ["*.md", "*.txt"]
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.black]
+line-length = 88
+target-version = ["py39", "py310", "py311", "py312", "py313"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_functions = "test_*"
+asyncio_default_fixture_loop_scope = "function"
