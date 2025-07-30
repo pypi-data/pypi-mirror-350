@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+        <title>Directory listing for {{the_path}}</title>
+    </head>
+    <style>
+        body {
+            font-family: "SF Pro Text", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+        table {
+            border-collapse: collapse;
+            font-family: "SF Pro Text", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 5px;
+        }
+        .file{
+            color: green;
+        }
+        .dir{
+            color: blue;
+        }
+    </style>
+    <body>
+        <h1><a href="/">Home</a> <a href="{{ parent_path }}">ParentDir</a> Directory listing for {{the_path}}</h1>
+        <table>
+            <tr>
+                <th>Type</th>
+                <th>Permissions</th>
+                <th>Owner</th>
+                <th>Group</th>
+                <th>Size</th>
+                <th>Last Modified</th>
+                <th>Name</th>
+            </tr>
+            {% for item in data %}
+            <tr class="{{ item.type }}">
+                <td>{{ item.type }}</td>
+                <td>{{ item.permissions }}</td>
+                <td>{{ item.owner }}</td>
+                <td>{{ item.group }}</td>
+                <td>{{ item.size }}</td>
+                <td>{{ item.mtime }}</td>
+                <td><a href="{{ item.href }}" class="{{ item.type }}">{{ item.name }}</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+        <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+        <form method="post" action="/upload?path={{req_path}}" enctype=multipart/form-data target="hidden_iframe" onsubmit="return addMessage();">
+        <input type=file name=file>
+        <input type=submit value=Upload onclick="showUploadingMessage();">
+        </form>
+        <div id="messages"></div>
+        <div id="uploadingMessage" style="display:none;">Uploading...</div>
+    </body>
+    <script type="text/javascript">
+        function showUploadingMessage() {
+            document.getElementById('uploadingMessage').style.display = 'block';
+        }
+
+        function addMessage() {
+            var iframe = document.getElementById('hidden_iframe');
+            iframe.onload = function() {
+                var content = iframe.contentDocument || iframe.contentWindow.document;
+                var message = content.body.innerHTML;
+                var messagesDiv = document.getElementById('messages');
+                messagesDiv.innerHTML += '<p>' + message + '</p>';
+                document.getElementById('uploadingMessage').style.display = 'none';
+            };
+            return true;
+        }
+    </script>
+</html>
