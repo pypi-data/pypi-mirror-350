@@ -1,0 +1,148 @@
+Metadata-Version: 2.4
+Name: noahs_local_speech_recognition
+Version: 0.1.3
+Summary: Easy to use implementation of Vosk local speech recognition
+Author-email: Noah Jones <jonesnoah45010@gmail.com>
+License: MIT
+Project-URL: GitHub, https://github.com/jonesnoah45010/local_speech_recognition
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Requires-Dist: vosk
+Requires-Dist: pyaudio
+Requires-Dist: requests
+Requires-Dist: tqdm
+
+# Noah's Local Speech Recognition
+
+This project provides a local, privacy-preserving speech recognition tool using the [Vosk](https://alphacephei.com/vosk/) speech recognition toolkit and microphone input. It supports keyword detection, timestamped transcription, logging, pause/resume functionality, and model auto-downloading.
+
+---
+
+## Features
+
+* Offline speech recognition (no internet needed)
+* Auto-download of Vosk models if not present
+* Realtime transcription with timestamps
+* Automatic transcript logging to disk
+* Support for pause/resume listening
+
+---
+
+## Requirements
+
+* Python 3.9+
+* `vosk`
+* `pyaudio`
+* `tqdm`
+* `requests`
+
+Setup:
+
+```bash
+pip install noahs_local_speech_recognition
+```
+
+> On Linux (including Raspberry Pi), `pyaudio` still depends on system-level PortAudio. Make sure to install `portaudio19-dev` and `pyaudio` is working **before** pip installing `noahs_local_speech_recognition` which relies on `pyaudio` to avoid errors.
+
+---
+
+## Linux Setup Instructions
+
+If you're using Linux, the script attempts to install the required PortAudio libraries automatically. However, you may still need to:
+
+1. Run the script that imports `noahs_local_speech_recognition` with `sudo`:
+
+2. Manually install dependencies if issues arise:
+
+   ```bash
+   sudo apt-get update
+   sudo apt-get install -y portaudio19-dev python3-pyaudio
+   pip uninstall pyaudio
+   pip install pyaudio
+   ```
+
+These steps ensure that `pyaudio` is compiled correctly against the system's PortAudio library.
+
+---
+
+## Demo
+
+To test the speech recognizer locally, simply run this script:
+
+```python
+from noahs_local_speech_recognition import get_text_after_keyword, list_microphones, start_speech_listening, stop_speech_listening, get_speech_log, get_speech_log_entry, set_speech_log_response, remove_speech_log_entry, pause_speech_listening, resume_speech_listening
+
+import time
+
+print("Listing available microphone devices:")
+list_microphones()
+
+print("\nStarting speech recognition with default input device...")
+start_speech_listening(name="robot", stop_talking_delay=2, device_index=None, model_name="vosk-model-small-en-us-0.15")
+
+try:
+    while True:
+        time.sleep(2)
+        print("_________________________")
+        entry = get_speech_log_entry()
+        if entry and entry["response"] is None:
+            heard = entry["content"]
+            print(f"I HEARD: {heard}")
+            speech_log1 = get_speech_log()
+            print(f"SPEECH LOG BEFORE SET RESPONSE: {speech_log1}")
+            set_speech_log_response("I have heard what you said")
+            speech_log2 = get_speech_log()
+            print(f"SPEECH LOG AFTER SET RESPONSE: {speech_log2}")
+        if entry and entry["content"] in ["goodbye", "good bye", "bye", "quit", "end", "exit"]:
+            break
+except KeyboardInterrupt:
+    pass
+finally:
+    stop_speech_listening()
+```
+
+This will:
+
+* Auto-download the Vosk "vosk-model-small-en-us-0.15" model if missing.
+* Show available audio devices.
+* Look for defualt microphone since device_index=None.
+* Begin listening and transcribing speech in real-time based on hearing name="robot" keyword
+* Log results with timestamps to a file named like `transcript_YYYY-MM-DD_HH-MM-SS.txt`.
+* Display speech_log before and after having response set in the console.
+* Use set_speech_log_response() to flag entries as having been responded to.
+
+---
+
+## Changing Models
+
+You can modify the model by altering the model_name passed to `start_speech_listening()`:
+
+```python
+start_speech_listening(name="robot", stop_talking_delay=2, device_index=None, model_name="vosk-model-small-en-us-0.15")
+```
+
+Other available models:
+
+* `vosk-model-small-en-us-0.15`
+* `vosk-model-en-us-0.22`
+* `vosk-model-en-us-0.22-lgraph`
+
+---
+
+## Known Issues
+
+* Use on debian Linux may require manually setting up `pyaudio` prior to import
+* Automaitic Model download links are hardcoded and limited to 3 options.
+
+---
+
+## License
+
+MIT License
+
+---
+
+## Acknowledgements
+
+* [Vosk](https://alphacephei.com/vosk/) Speech Recognition Toolkit
+* [TQDM](https://github.com/tqdm/tqdm) for progress bars
