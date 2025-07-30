@@ -1,0 +1,208 @@
+image: byteb4rb1e/build-python313
+definitions:
+    caches:
+        venv:
+            path: .venv
+    steps:
+        - step: &configure
+            name: configure
+            caches:
+                - venv
+            artifacts:
+                - config.log
+                - config.status
+            script:
+                - python3 -m venv --system-site-packages .venv
+                - .venv/bin/python3 -m pip install pipenv
+                - .venv/bin/python3 -m pipenv run sh configure
+        - step: &test-static
+            name: test-static
+            caches:
+                - venv
+            artifacts:
+                - test-reports/*
+            script:
+                - .venv/bin/python3 -m pipenv run make test-reports/static
+        - step: &test-unit
+            artifacts:
+                - test-reports/*
+            script:
+                - python3 -m venv --system-site-packages .venv
+                - .venv/bin/python3 -m pip install pipenv
+                - .venv/bin/python3 -m pipenv run sh configure
+                - .venv/bin/python3 -m pipenv run make test-reports/unit
+        - step: &test-integration
+            artifacts:
+                - test-reports/*
+            script:
+                - python3 -m venv --system-site-packages .venv
+                - .venv/bin/python3 -m pip install pipenv
+                - .venv/bin/python3 -m pipenv run sh configure
+                - .venv/bin/python3 -m pipenv run make test-reports/integration
+        - step: &doc
+            name: doc
+            caches:
+                - venv
+            artifacts:
+                - build/doc/**
+            script:
+                - make clean
+                - .venv/bin/python3 -m pipenv run make build/doc
+        - step: &dist
+            name: dist
+            caches:
+                - venv
+            artifacts:
+                - dist/*
+            script:
+                - make clean
+                - .venv/bin/python3 -m pipenv run make dist
+        - step: &publish
+            name: publish
+            caches:
+                - venv
+            artifacts:
+                - dist/*
+            script:
+                # signing key must be an unwrapped base64-encoded PGP private
+                # key with no password
+                - echo "$_GPG_SIGNING_KEY" | base64 -d | gpg --import
+                - .venv/bin/python3 -m pipenv run make publish -B SIGN=1
+        - step: &archive
+            name: archive
+            caches:
+                - venv
+            artifacts:
+                - dist/*
+            script:
+                - echo "$_GPG_SIGNING_KEY" | base64 -d | gpg --import
+                - .venv/bin/python3 -m pipenv run make archive -B SIGN=1
+        - step: &chore
+            name: chore
+            caches:
+                - venv
+            artifacts:
+                - requirements.txt
+                - requirements-dev.txt
+                - Pipfile.lock
+            script:
+                - make clean
+                - .venv/bin/python3 -m pipenv run make chore
+                # TODO: this is good, but rather useless yet as the chore
+                # target only regenerates requirements.txt and
+                # requirements-dev.txt from Pipfile.lock, but it does not test
+                # the sync between Pipfile and Pipfile.lock, as the locking
+                # mechanism of pipenv currently is platform-dependent, i.e., it
+                # is not possible to define a minimum Python version and expect
+                # pipenv to find the right versions of dependencies compatible
+                # with all specified platforms.
+#                - git diff --exit-code
+pipelines:
+    default:
+        - step: *configure
+        - parallel:
+            steps:
+                - step: *test-static
+                - step: *dist
+    branches:
+        master: 
+            - step: *configure
+            - parallel:
+                steps:
+                    - step: *test-static
+                    - step:
+                        <<: *test-unit
+                        image: byteb4rb1e/build-python39
+                        name: test-unit-python39
+                    - step:
+                        <<: *test-unit
+                        image: byteb4rb1e/build-python310
+                        name: test-unit-python310
+                    - step:
+                        <<: *test-unit
+                        image: byteb4rb1e/build-python311
+                        name: test-unit-python311
+                    - step:
+                        <<: *test-unit
+                        image: byteb4rb1e/build-python312
+                        name: test-unit-python312
+                    - step:
+                        <<: *test-unit
+                        image: byteb4rb1e/build-python313
+                        name: test-unit-python313
+                    - step:
+                        <<: *test-integration
+                        image: byteb4rb1e/build-python39
+                        name: test-integration-python39
+                    - step:
+                        <<: *test-integration
+                        image: byteb4rb1e/build-python310
+                        name: test-integration-python310
+                    - step:
+                        <<: *test-integration
+                        image: byteb4rb1e/build-python311
+                        name: test-integration-python311
+                    - step:
+                        <<: *test-integration
+                        image: byteb4rb1e/build-python312
+                        name: test-integration-python312
+                    - step:
+                        <<: *test-integration
+                        image: byteb4rb1e/build-python313
+                        name: test-integration-python313
+            - step: *dist
+            - step: *archive
+            - parallel:
+                steps:
+                    - step: *doc
+                    - step: *publish
+    pullrequests:
+        "{master,dev}": 
+            - step: *configure
+            - parallel:
+                steps:
+                    - step: *test-static
+                    - step:
+                        <<: *test-unit
+                        image: byteb4rb1e/build-python39
+                        name: test-unit-python39
+                    - step:
+                        <<: *test-unit
+                        image: byteb4rb1e/build-python310
+                        name: test-unit-python310
+                    - step:
+                        <<: *test-unit
+                        image: byteb4rb1e/build-python311
+                        name: test-unit-python311
+                    - step:
+                        <<: *test-unit
+                        image: byteb4rb1e/build-python312
+                        name: test-unit-python312
+                    - step:
+                        <<: *test-unit
+                        image: byteb4rb1e/build-python313
+                        name: test-unit-python313
+                    - step:
+                        <<: *test-integration
+                        image: byteb4rb1e/build-python39
+                        name: test-integration-python39
+                    - step:
+                        <<: *test-integration
+                        image: byteb4rb1e/build-python310
+                        name: test-integration-python310
+                    - step:
+                        <<: *test-integration
+                        image: byteb4rb1e/build-python311
+                        name: test-integration-python311
+                    - step:
+                        <<: *test-integration
+                        image: byteb4rb1e/build-python312
+                        name: test-integration-python312
+                    - step:
+                        <<: *test-integration
+                        image: byteb4rb1e/build-python313
+                        name: test-integration-python313
+            - parallel:
+                steps:
+                    - step: *doc
+                    - step: *dist

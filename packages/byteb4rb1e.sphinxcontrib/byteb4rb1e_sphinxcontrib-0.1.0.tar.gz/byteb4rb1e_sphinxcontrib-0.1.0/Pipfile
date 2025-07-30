@@ -1,0 +1,25 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+byteb4rb1e_sphinxcontrib =  { editable = true, path = '.'}
+
+[dev-packages]
+sphinx = "*"
+setuptools-scm = "*"
+pipenv = "*"
+tox = "*"
+build = "*"
+twine = "*"
+
+[requires]
+python_version = "3"
+
+[scripts]
+"dist" = "python3 -m build --outdir dist/"
+"doc" = "sphinx-build --builder html docs/ build/doc/"
+"test-static" = "tox run -m static"
+"test-unit" = "tox run -m unit"
+"test-integration" = "tox run -m integration"
