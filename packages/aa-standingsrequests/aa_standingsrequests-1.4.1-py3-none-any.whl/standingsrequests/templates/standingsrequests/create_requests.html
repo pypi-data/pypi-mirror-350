@@ -1,0 +1,121 @@
+{% extends "standingsrequests/_base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block details %}
+    <h2>{% translate "My Requests" %}</h2>
+    <p class="text-muted">
+        {% blocktranslate with organization_name=organization.name %}
+            On this page you can create requests to get standing or revoke standing with {{ organization_name }} for your alts.
+            If you are missing an alt, please add it first on the dashboard.
+        {% endblocktranslate %}
+    </p>
+
+    <ul id="myTabs" class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active">
+            <a href="#tab-characters" aria-controls="tab-characters" role="tab" data-toggle="tab">
+                {% translate "My Characters" %}
+            </a>
+        </li>
+        {% if corporations_enabled %}
+            <li role="presentation">
+                <a href="#tab-corporations" aria-controls="tab-corporations" role="tab" data-toggle="tab">
+                    {% translate "My Corporations" %}
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+
+    <div class="panel panel-default panel-tabs">
+        <div class="panel-body">
+            <div class="tab-content">
+
+                <div role="tabpanel" class="tab-pane active" id="tab-characters">
+                    <div hx-get="{% url 'standingsrequests:request_characters' %}" hx-trigger="load">
+                        {% include "standingsrequests/partials/spinner.html" %}
+                    </div>
+                </div>
+
+                {% if corporations_enabled %}
+                    <div role="tabpanel" class="tab-pane" id="tab-corporations">
+                        <div hx-get="{% url 'standingsrequests:request_corporations' %}" hx-trigger="load">
+                            {% include "standingsrequests/partials/spinner.html" %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <br>
+    <div class="panel panel-default">
+        <div class="panel-heading">{% translate "Icon Legend" %}</div>
+        <div class="panel-body">
+            <table class="table">
+                <tr>
+                    <td>
+                        <i class="fas fa-star fa-fw text-primary"></i>
+                    </td>
+                    <td>
+                        {% translate "Character is in this organisation." %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <i class="fas fa-exclamation-triangle fa-fw text-warning"></i>
+                    </td>
+                    <td>
+                        {% translate "The character / corporation has no standings from this organisation towards it." %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <i class="fas fa-hourglass-start fa-fw"></i>
+                    </td>
+                    <td>
+                        {% translate "The standing has been requested and is pending action by a standings manager." %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <i class="fas fa-hourglass-half fa-fw text-success"></i>
+                    </td>
+                    <td>
+                        {% translate "The request has been accepted by a standings manager, but is waiting for confirmation that those standings have been updated in game." %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <i class="fas fa-reply-all fa-fw text-danger"></i>
+                    </td>
+                    <td>
+                        {% translate "The standing is being revoked by yourself, a standings manager or automatically if you no longer meet the requirements permitting blue standings access. It is pending confirmation." %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <i class="fas fa-info-circle fa-fw text-info"></i>
+                    </td>
+                    <td>
+                        {% translate "More keys are required to request standing for this corporation." %}
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'standingsrequests/css/create_requests.css' %}" type="text/css" media="screen">
+{% endblock extra_css %}
+
+{% block extra_javascript %}
+    {% include "standingsrequests/bundles/htmx.html" %}
+    {% include "standingsrequests/bundles/helper-js.html" %}
+    <script type="application/javascript">
+        $(document).ready(function () {
+            rememberLastTab('standingsrequests', 'create-requests', '#tab-characters')
+        });
+    </script>
+{% endblock %}
