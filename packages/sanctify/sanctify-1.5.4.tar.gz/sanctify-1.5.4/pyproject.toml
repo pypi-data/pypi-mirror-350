@@ -1,0 +1,96 @@
+[tool.isort]
+atomic=true
+py_version=311
+default_section='THIRDPARTY'
+known_first_party='sanctify'
+combine_as_imports=true
+overwrite_in_place=true
+import_heading_stdlib='External Imports'
+import_heading_firstparty='Internal Imports'
+
+[tool.black]
+fast=true
+target-version=['py311']
+color=true
+line-length=120
+exclude='''
+/(
+    \.git
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | build
+    | venv
+)/
+'''
+
+[tool.autopep8]
+in-place=true
+recursive=true
+aggressive=3
+
+[tool.autoflake]
+in-place=true
+recursive=true
+expand-star-imports=true
+remove-all-unused-imports=true
+ignore-init-module-imports=true
+remove-duplicate-keys=true
+
+[tool.flake8]
+statistics=true
+count=true
+exclude='''
+/(
+    \.git
+    | __pycache__
+    | docs
+    | build
+    | dist
+    | venv
+)/
+'''
+
+[tool.pytest.ini_options]
+log_cli=true
+log_cli_level='DEBUG'
+
+[project]
+name = "sanctify"
+version = "1.5.4"
+authors = [
+    {name = "Avijeet Diwaker", email = "avijeetdiwaker@gmail.com"},
+    {name = "Awadhesh Pratap", email = "awadheshpratap@skit.ai"}
+]
+description = "Column Mapping based cleansing and validations for a given pandas dataframe"
+readme = "README.md"
+requires-python = ">=3.11"
+classifiers=[
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3.11",
+]
+dependencies = [
+    "dnspython>=2.0",
+    "email-validator==2.0.0.post2",
+    "frozendict>=2.3.8",
+    "idna==3.7",
+    "iniconfig==2.0.0",
+    "loguru>=0.6.0",
+    "numpy>=1.25",
+    "packaging==23.1",
+    "pandas>=2.0",
+    "phonenumbers==8.13.15",
+    "pluggy==1.2.0",
+    "pytest==7.4.0",
+    "python-dateutil==2.8.2",
+    "pytz>=2020.3",
+    "six==1.16.0",
+    "tzdata==2023.3",
+    "demoji>=1.1.0"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/skit-ai/sanctify"
+"Bug Tracker" = "https://github.com/skit-ai/sanctify/issues"
