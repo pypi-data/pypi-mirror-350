@@ -1,0 +1,80 @@
+{% macro render_table(view) %}
+    {% from "components/button_component.html.j2" import render_button %}
+    {% from 'components/pagination_macros.html.j2' import render_pagination %}
+    {% from "components/table_filter_component.html.j2" import render_filters %}
+    {% from "components/common.html.j2" import render_card_header %}
+
+    <div class="card">
+        {{ render_card_header(view) }}
+        <div id="collapse-{{ view.id }}" class="card-body card-full p-0 collapse {% if not view.collapsed %}show{% endif %}">
+            {{ render_pagination(view.pagination, view.request) }}
+                <div class="table-responsive">
+                    <table class="table table-vcenter text-nowrap">
+                        <thead>
+                        <tr>
+                            {% for header in view.headers %}
+                                <th>
+                                    {% if header.url %}
+                                        <a href="{{ header.url }}">
+                                            {{ _(header.label) }}
+                                            {% if header.sorted %}
+                                                <span>
+                                                    {% if header.order == 'asc' %}
+                                                        ↑
+                                                    {% else %}
+                                                        ↓
+                                                    {% endif %}
+                                                </span>
+                                            {% endif %}
+                                        </a>
+                                    {% else %}
+                                        {{ _(header.label) }}
+                                    {% endif %}
+                                </th>
+                            {% endfor %}
+                            {% if view.links %}
+                                <th>{{ _("Actions") }}</th>
+                            {% endif %}
+                        </tr>
+                        <!-- Render Filters -->
+                        {{ render_filters(view) }}
+                        </thead>
+                        <tbody>
+                        {% if view.data %}
+                            {% for item in view.data %}
+                                <tr>
+                                    {% for field in view.fields %}
+                                        <td>{{ item[field] }}</td>
+                                    {% endfor %}
+                                    {% if view.links %}
+                                        <td>
+                                            {% set buttons = view.get_buttons_for_item(item) %}
+                                            {% for button in buttons %}
+                                                {% if button.type == "error" %}
+                                                    <span class="badge bg-danger" data-bs-toggle="tooltip" data-bs-original-title="{{ button.message }}">
+                                                        <i class="fa fa-exclamation-circle"></i> Render Error
+                                                    </span>
+                                                {% elif button.type == "custom_template" %}
+                                                    {% include button.template_name with context %}
+                                                {% else %}
+                                                    {{ render_button(button) }}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="{{ view.headers | length + (1 if view.links else 0) }}" class="text-center">
+                                    <i class="fa-solid fa-triangle-exclamation"></i> No data available.
+                                </td>
+                            </tr>
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            {{ render_pagination(view.pagination, view.request) }}
+        </div>
+    </div>
+{% endmacro %}

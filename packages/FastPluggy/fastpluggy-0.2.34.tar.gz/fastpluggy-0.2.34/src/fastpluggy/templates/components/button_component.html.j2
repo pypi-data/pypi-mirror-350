@@ -1,0 +1,44 @@
+{% macro render_button(button) %}
+    {% if button.condition %}
+        {% if button.method == 'post' %}
+            <form method="{{ button.method }}" action="{{ button.url }}" style="display:inline;">
+                {% if button.params %}
+                    {% for key, val in button.params.items() %}
+                        <input type="hidden" name="{{ key }}" value="{{ val }}">
+                    {% endfor %}
+                {% endif %}
+                <button type="submit" class="{{ button.css_class or 'btn btn-primary' }}"
+                        {% if button.onclick %} onclick="{{ button.onclick }}" {% endif %}>
+                    {{ button.label if button.label else "Action" }}
+                </button>
+            </form>
+        {% else %}
+            <a href="{{ button.url }}"
+               class="{{ button.css_class or 'btn btn-primary' }}"
+                    {% if button.onclick %} onclick="{{ button.onclick }}" {% endif %}>
+                {{ button.label if button.label else "Action" }}
+            </a>
+        {% endif %}
+    {% endif %}
+{% endmacro %}
+
+
+{% macro render_buttons(view, item=None) %}
+    {% from "components/common.html.j2" import render_card_header %}
+    {% set buttons = view.process(item) %}
+    {% if item is none %}
+        <div class="card">
+            {{ render_card_header(view) }}
+            <div id="collapse-{{ view.id }}" class="card-body collapse {% if not view.collapsed %}show{% endif %}">
+                {% for button in buttons %}
+                    {{ render_button(button) }}
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        {% for button in buttons %}
+            {{ render_button(button) }}
+        {% endfor %}
+    {% endif %}
+{% endmacro %}
+
