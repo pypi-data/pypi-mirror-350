@@ -1,0 +1,2 @@
+class FlightAgent:
+  pass
