@@ -1,0 +1,695 @@
+{
+  "$defs": {
+    "CrossValidationConfig": {
+      "description": "Configs for splitting a dataset into cross-validation folds.",
+      "properties": {
+        "seed": {
+          "default": 42,
+          "description": "Seed for the random number generator.",
+          "title": "Seed",
+          "type": "integer"
+        },
+        "folds": {
+          "default": 5,
+          "description": "Number of folds to split the dataset into.",
+          "title": "Folds",
+          "type": "integer"
+        }
+      },
+      "title": "CrossValidationConfig",
+      "type": "object"
+    },
+    "DataConfig": {
+      "description": "Where to load lymphatic progression data from and how to feed it into a model.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "format": "file-path",
+              "type": "string"
+            },
+            {
+              "$ref": "#/$defs/LyDataset"
+            }
+          ],
+          "description": "Either a path to a CSV file or a config that specifies how and where to fetch the data from.",
+          "title": "Source"
+        },
+        "side": {
+          "anyOf": [
+            {
+              "enum": [
+                "ipsi",
+                "contra"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Side of the neck to load data for. Only for Unilateral models.",
+          "title": "Side"
+        },
+        "mapping": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "description": "Optional mapping of numeric T-stages to model T-stages.",
+          "title": "Mapping",
+          "type": "object"
+        }
+      },
+      "required": [
+        "source"
+      ],
+      "title": "DataConfig",
+      "type": "object"
+    },
+    "DiagnosisConfig": {
+      "description": "Defines an ipsi- and contralateral diagnosis pattern.",
+      "properties": {
+        "ipsi": {
+          "additionalProperties": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "enum": [
+                    false,
+                    0,
+                    "healthy",
+                    true,
+                    1,
+                    "involved",
+                    "micro",
+                    "macro",
+                    "notmacro"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "type": "object"
+          },
+          "default": {},
+          "description": "Observed diagnoses by different modalities on the ipsi neck.",
+          "examples": [
+            {
+              "CT": {
+                "II": true,
+                "III": false
+              }
+            }
+          ],
+          "title": "Ipsi",
+          "type": "object"
+        },
+        "contra": {
+          "additionalProperties": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "enum": [
+                    false,
+                    0,
+                    "healthy",
+                    true,
+                    1,
+                    "involved",
+                    "micro",
+                    "macro",
+                    "notmacro"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "type": "object"
+          },
+          "default": {},
+          "description": "Observed diagnoses by different modalities on the contra neck.",
+          "title": "Contra",
+          "type": "object"
+        }
+      },
+      "title": "DiagnosisConfig",
+      "type": "object"
+    },
+    "DistributionConfig": {
+      "description": "Configuration defining a distribution over diagnose times.",
+      "properties": {
+        "kind": {
+          "default": "frozen",
+          "description": "Parametric distributions may be updated.",
+          "enum": [
+            "frozen",
+            "parametric"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "func": {
+          "const": "binomial",
+          "default": "binomial",
+          "description": "Name of predefined function to use as distribution.",
+          "title": "Func",
+          "type": "string"
+        },
+        "params": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
+          "default": {},
+          "description": "Parameters to pass to the predefined function.",
+          "title": "Params",
+          "type": "object"
+        }
+      },
+      "title": "DistributionConfig",
+      "type": "object"
+    },
+    "GraphConfig": {
+      "description": "Specifies how the tumor(s) and LNLs are connected in a DAG.",
+      "properties": {
+        "tumor": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "description": "Define the name of the tumor(s) and which LNLs it/they drain to.",
+          "title": "Tumor",
+          "type": "object"
+        },
+        "lnl": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "description": "Define the name of the LNL(s) and which LNLs it/they drain to.",
+          "title": "Lnl",
+          "type": "object"
+        }
+      },
+      "required": [
+        "tumor",
+        "lnl"
+      ],
+      "title": "GraphConfig",
+      "type": "object"
+    },
+    "InvolvementConfig": {
+      "description": "Config that defines an ipsi- and contralateral involvement pattern.",
+      "properties": {
+        "ipsi": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "enum": [
+                  false,
+                  0,
+                  "healthy",
+                  true,
+                  1,
+                  "involved",
+                  "micro",
+                  "macro",
+                  "notmacro"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "default": {},
+          "description": "Involvement pattern for the ipsilateral side of the neck.",
+          "examples": [
+            {
+              "II": true,
+              "III": false
+            }
+          ],
+          "title": "Ipsi",
+          "type": "object"
+        },
+        "contra": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "enum": [
+                  false,
+                  0,
+                  "healthy",
+                  true,
+                  1,
+                  "involved",
+                  "micro",
+                  "macro",
+                  "notmacro"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "default": {},
+          "description": "Involvement pattern for the contralateral side of the neck.",
+          "title": "Contra",
+          "type": "object"
+        }
+      },
+      "title": "InvolvementConfig",
+      "type": "object"
+    },
+    "LyDataset": {
+      "description": "Specification of a dataset.",
+      "properties": {
+        "year": {
+          "description": "Release year of dataset.",
+          "exclusiveMinimum": 0,
+          "maximum": 2025,
+          "title": "Year",
+          "type": "integer"
+        },
+        "institution": {
+          "description": "Institution's short code. E.g., University Hospital Zurich: `usz`.",
+          "minLength": 1,
+          "title": "Institution",
+          "type": "string"
+        },
+        "subsite": {
+          "description": "Tumor subsite(s) patients in this dataset were diagnosed with.",
+          "minLength": 1,
+          "title": "Subsite",
+          "type": "string"
+        },
+        "repo_name": {
+          "default": "rmnldwg/lydata",
+          "description": "GitHub `repository/owner`.",
+          "minLength": 1,
+          "title": "Repo Name",
+          "type": "string"
+        },
+        "ref": {
+          "default": "main",
+          "description": "Branch/tag/commit of the repo.",
+          "minLength": 1,
+          "title": "Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "year",
+        "institution",
+        "subsite"
+      ],
+      "title": "LyDataset",
+      "type": "object"
+    },
+    "ModalityConfig": {
+      "description": "Define a diagnostic or pathological modality.",
+      "properties": {
+        "spec": {
+          "description": "Specificity of the modality.",
+          "maximum": 1.0,
+          "minimum": 0.5,
+          "title": "Spec",
+          "type": "number"
+        },
+        "sens": {
+          "description": "Sensitivity of the modality.",
+          "maximum": 1.0,
+          "minimum": 0.5,
+          "title": "Sens",
+          "type": "number"
+        },
+        "kind": {
+          "default": "clinical",
+          "description": "Clinical modalities cannot detect microscopic disease.",
+          "enum": [
+            "clinical",
+            "pathological"
+          ],
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "spec",
+        "sens"
+      ],
+      "title": "ModalityConfig",
+      "type": "object"
+    },
+    "ModelConfig": {
+      "description": "Define which of the ``lymph`` models to use and how to set them up.",
+      "properties": {
+        "external_file": {
+          "anyOf": [
+            {
+              "format": "file-path",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Path to a Python file that defines a model.",
+          "title": "External File"
+        },
+        "class_name": {
+          "default": "Unilateral",
+          "description": "Name of the model class to use.",
+          "enum": [
+            "Unilateral",
+            "Bilateral",
+            "Midline"
+          ],
+          "title": "Class Name",
+          "type": "string"
+        },
+        "constructor": {
+          "default": "binary",
+          "description": "Trinary models differentiate btw. micro- and macroscopic disease.",
+          "enum": [
+            "binary",
+            "trinary"
+          ],
+          "title": "Constructor",
+          "type": "string"
+        },
+        "max_time": {
+          "default": 10,
+          "description": "Max. number of time-steps to evolve the model over.",
+          "title": "Max Time",
+          "type": "integer"
+        },
+        "named_params": {
+          "default": null,
+          "description": "Subset of valid model parameters a sampler may provide in the form of a dictionary to the model instead of as an array. Or, after sampling, with this list, one may safely recover which parameter corresponds to which index in the sample.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Named Params",
+          "type": "array"
+        },
+        "kwargs": {
+          "default": {},
+          "description": "Additional keyword arguments to pass to the model constructor.",
+          "title": "Kwargs",
+          "type": "object"
+        }
+      },
+      "title": "ModelConfig",
+      "type": "object"
+    },
+    "SamplingConfig": {
+      "description": "Settings to configure the MCMC sampling.",
+      "properties": {
+        "storage_file": {
+          "description": "Path to HDF5 file store results or load last state.",
+          "format": "path",
+          "title": "Storage File",
+          "type": "string"
+        },
+        "history_file": {
+          "anyOf": [
+            {
+              "format": "path",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Path to store the burn-in metrics (as CSV file).",
+          "title": "History File"
+        },
+        "dataset": {
+          "default": "mcmc",
+          "description": "Name of the dataset in the HDF5 file.",
+          "title": "Dataset",
+          "type": "string"
+        },
+        "cores": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": 16,
+          "description": "Number of cores to use for parallel sampling. If `None`, no parallel processing is used.",
+          "title": "Cores"
+        },
+        "seed": {
+          "default": 42,
+          "description": "Seed for the random number generator.",
+          "title": "Seed",
+          "type": "integer"
+        },
+        "walkers_per_dim": {
+          "default": 20,
+          "description": "Number of walkers per parameter space dimension.",
+          "title": "Walkers Per Dim",
+          "type": "integer"
+        },
+        "check_interval": {
+          "default": 50,
+          "description": "Check for convergence each time after this many steps.",
+          "title": "Check Interval",
+          "type": "integer"
+        },
+        "trust_factor": {
+          "default": 50.0,
+          "description": "Trust the autocorrelation time only when it's smaller than this factor times the length of the chain.",
+          "title": "Trust Factor",
+          "type": "number"
+        },
+        "relative_thresh": {
+          "default": 0.05,
+          "description": "Relative threshold for convergence.",
+          "title": "Relative Thresh",
+          "type": "number"
+        },
+        "num_steps": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": 100,
+          "description": "Number of steps to take in the MCMC sampling.",
+          "title": "Num Steps"
+        },
+        "thin_by": {
+          "default": 10,
+          "description": "How many samples to draw before for saving one.",
+          "title": "Thin By",
+          "type": "integer"
+        },
+        "inverse_temp": {
+          "default": 1.0,
+          "description": "Inverse temperature for thermodynamic integration. Note that this is not yet fully implemented.",
+          "title": "Inverse Temp",
+          "type": "number"
+        }
+      },
+      "required": [
+        "storage_file"
+      ],
+      "title": "SamplingConfig",
+      "type": "object"
+    },
+    "ScenarioConfig": {
+      "description": "Define a scenario for which e.g. prevalences and risks may be computed.",
+      "properties": {
+        "t_stages": {
+          "description": "List of T-stages to marginalize over in the scenario.",
+          "examples": [
+            [
+              "early"
+            ],
+            [
+              3,
+              4
+            ]
+          ],
+          "items": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "title": "T Stages",
+          "type": "array"
+        },
+        "t_stages_dist": {
+          "default": [
+            1.0
+          ],
+          "description": "Distribution over T-stages to use for marginalization.",
+          "examples": [
+            [
+              1.0
+            ],
+            [
+              0.6,
+              0.4
+            ]
+          ],
+          "items": {
+            "type": "number"
+          },
+          "title": "T Stages Dist",
+          "type": "array"
+        },
+        "midext": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Whether the patient's tumor extends over the midline.",
+          "title": "Midext"
+        },
+        "mode": {
+          "default": "HMM",
+          "description": "Which underlying model architecture to use.",
+          "enum": [
+            "HMM",
+            "BN"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "involvement": {
+          "$ref": "#/$defs/InvolvementConfig",
+          "default": {
+            "ipsi": {},
+            "contra": {}
+          }
+        },
+        "diagnosis": {
+          "$ref": "#/$defs/DiagnosisConfig",
+          "default": {
+            "ipsi": {},
+            "contra": {}
+          }
+        }
+      },
+      "required": [
+        "t_stages"
+      ],
+      "title": "ScenarioConfig",
+      "type": "object"
+    }
+  },
+  "description": "Settings for generating a JSON schema for lyscripts configuration files.",
+  "properties": {
+    "version": {
+      "description": "For future compatibility reasons, every config file must have a `version: 1` field at the top level.",
+      "maximum": 1,
+      "minimum": 1,
+      "title": "Version",
+      "type": "integer"
+    },
+    "cross_validation": {
+      "$ref": "#/$defs/CrossValidationConfig",
+      "default": null
+    },
+    "data": {
+      "$ref": "#/$defs/DataConfig",
+      "default": null
+    },
+    "diagnosis": {
+      "$ref": "#/$defs/DiagnosisConfig",
+      "default": null
+    },
+    "distributions": {
+      "additionalProperties": {
+        "$ref": "#/$defs/DistributionConfig"
+      },
+      "default": {},
+      "title": "Distributions",
+      "type": "object"
+    },
+    "graph": {
+      "$ref": "#/$defs/GraphConfig",
+      "default": null
+    },
+    "involvement": {
+      "$ref": "#/$defs/InvolvementConfig",
+      "default": null
+    },
+    "modalities": {
+      "additionalProperties": {
+        "$ref": "#/$defs/ModalityConfig"
+      },
+      "default": {},
+      "title": "Modalities",
+      "type": "object"
+    },
+    "model": {
+      "$ref": "#/$defs/ModelConfig",
+      "default": null
+    },
+    "sampling": {
+      "$ref": "#/$defs/SamplingConfig",
+      "default": null
+    },
+    "scenarios": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/ScenarioConfig"
+      },
+      "title": "Scenarios",
+      "type": "array"
+    }
+  },
+  "required": [
+    "version"
+  ],
+  "title": "SchemaSettings",
+  "type": "object"
+}
