@@ -1,0 +1,151 @@
+Metadata-Version: 2.4
+Name: genshin
+Version: 1.7.8
+Summary: API wrapper for HoYoLAB/Miyoushe API built on asyncio and pydantic.
+Project-URL: Homepage, https://github.com/thesadru/genshin.py
+Project-URL: Documentation, https://thesadru.github.io/genshin.py
+Project-URL: Repository, https://github.com/thesadru/genshin.py.git
+Project-URL: Issues, https://github.com/thesadru/genshin.py/issues
+License: MIT License
+        
+        Copyright (c) 2021 sadru
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+License-File: LICENSE
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Natural Language :: English
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Topic :: Internet :: WWW/HTTP
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Utilities
+Classifier: Typing :: Typed
+Requires-Python: >=3.9
+Requires-Dist: aiohttp==3.*
+Requires-Dist: pydantic==2.*
+Requires-Dist: tenacity==9.*
+Provides-Extra: all
+Requires-Dist: aiohttp-socks>=0.9.0; extra == 'all'
+Requires-Dist: aioredis>=2.0.1; extra == 'all'
+Requires-Dist: aiosqlite>=0.17.0; extra == 'all'
+Requires-Dist: browser-cookie3>=0.19.1; extra == 'all'
+Requires-Dist: click>=8.1.7; extra == 'all'
+Requires-Dist: qrcode[pil]>=7.4.2; extra == 'all'
+Requires-Dist: rsa>=4.9; extra == 'all'
+Provides-Extra: auth
+Requires-Dist: qrcode[pil]>=7.4.2; extra == 'auth'
+Requires-Dist: rsa>=4.9; extra == 'auth'
+Provides-Extra: cli
+Requires-Dist: click>=8.1.7; extra == 'cli'
+Provides-Extra: cookies
+Requires-Dist: browser-cookie3>=0.19.1; extra == 'cookies'
+Provides-Extra: docs
+Requires-Dist: mkdocs-material>=9.5.38; extra == 'docs'
+Requires-Dist: pdoc3>=0.11.1; extra == 'docs'
+Provides-Extra: lint
+Requires-Dist: ruff>=0.6.8; extra == 'lint'
+Provides-Extra: pytest
+Requires-Dist: coverage[toml]>=7.6.1; extra == 'pytest'
+Requires-Dist: devtools>=0.12.2; extra == 'pytest'
+Requires-Dist: pytest-asyncio>=0.24.0; extra == 'pytest'
+Requires-Dist: pytest-cov>=5.0.0; extra == 'pytest'
+Requires-Dist: pytest-dotenv>=0.5.2; extra == 'pytest'
+Requires-Dist: pytest>=8.3.3; extra == 'pytest'
+Provides-Extra: redis
+Requires-Dist: aioredis>=2.0.1; extra == 'redis'
+Provides-Extra: reformat
+Requires-Dist: black>=24.8.0; extra == 'reformat'
+Requires-Dist: ruff>=0.6.8; extra == 'reformat'
+Provides-Extra: socks-proxy
+Requires-Dist: aiohttp-socks>=0.9.0; extra == 'socks-proxy'
+Provides-Extra: sqlite
+Requires-Dist: aiosqlite>=0.17.0; extra == 'sqlite'
+Provides-Extra: typecheck
+Requires-Dist: mypy>=1.11.2; extra == 'typecheck'
+Requires-Dist: pyright>=1.1.382.post0; extra == 'typecheck'
+Requires-Dist: types-click>=7.1.8; extra == 'typecheck'
+Description-Content-Type: text/markdown
+
+# genshin.py
+
+[![Downloads](https://pepy.tech/badge/genshin)](https://pepy.tech/project/genshin)
+[![PyPI package](https://img.shields.io/pypi/v/genshin)](https://pypi.org/project/genshin/)
+[![Last Commit](https://img.shields.io/github/last-commit/thesadru/genshin.py)](https://github.com/thesadru/genshin.py/commits/master)
+[![Coverage](https://img.shields.io/codeclimate/coverage/thesadru/genshin.py)](https://codeclimate.com/github/thesadru/genshin.py)
+[![Discord](https://img.shields.io/discord/570841314200125460?color=7289DA)](https://discord.gg/sMkSKRPuCR)
+
+Modern API wrapper for Genshin Impact & Honkai Impact 3rd built on asyncio and pydantic.
+
+---
+
+Documentation: https://thesadru.github.io/genshin.py
+
+API Reference: https://thesadru.github.io/genshin.py/pdoc/genshin
+
+Source Code: https://github.com/thesadru/genshin.py
+
+---
+
+The primary focus of genshin.py is convenience. The entire project is fully type-hinted and abstracts a large amount of the api to be easier to use.
+
+Key features:
+
+- All data is in the form of Pydantic Models which means full autocompletion and linter support.
+- Requests are significantly faster thanks to proper usage of asyncio.
+- Chinese and Engrish names returned by the API are renamed to simpler English fields.
+- Supports the majority of the popular endpoints.
+- Cleanly integrates with frameworks like FastAPI out of the box.
+
+> Note: This library is a successor to [genshinstats](https://github.com/thesadru/genshinstats) - an unofficial wrapper for the Genshin Impact api.
+
+## Requirements
+
+- Python 3.9+
+- aiohttp
+- Pydantic
+
+```console
+pip install genshin
+```
+
+## Example
+
+A very simple example of how genshin.py would be used:
+
+```py
+import asyncio
+import genshin
+
+async def main():
+    cookies = {"ltuid": 119480035, "ltoken": "cnF7TiZqHAAvYqgCBoSPx5EjwezOh1ZHoqSHf7dT"}
+    client = genshin.Client(cookies)
+
+    data = await client.get_genshin_user(710785423)
+    print(f"User has a total of {data.stats.characters} characters")
+
+asyncio.run(main())
+```
+
+## Contributing
+
+Any kind of contribution is welcome.
+Please read [CONTRIBUTING.md](./CONTRIBUTING.md) to see what you need to do to make a contribution.
