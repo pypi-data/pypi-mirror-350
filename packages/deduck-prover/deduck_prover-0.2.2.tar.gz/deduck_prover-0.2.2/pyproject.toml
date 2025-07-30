@@ -1,0 +1,60 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "deduck-prover"
+version = "0.2.2"
+description = "A little prover for CS 245 at the University of Waterloo"
+readme = "README.md"
+requires-python = ">=3.7"
+license = "MIT"
+authors = [
+    { name = "Yizhou Zhang" }
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Education",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+]
+dependencies = [
+    "lark>=0.12.0",
+]
+
+[project.urls]
+"Repository" = "https://github.com/deduck-prover/deduck.git"
+
+[project.scripts]
+deduck = "deduckprover.main:main"
+
+[tool.hatch.build]
+include = [
+    "deduckprover/*.py",  # Only include Python files from deduckprover
+    "docs/*.md",
+    "docs/*.py",
+    "assets/**",
+    "LICENSE",
+    "README.md",
+]
+exclude = [
+    "**/dev/**",
+    "**/requirements.txt",
+    "**/__pycache__/**",
+    "**/.git/**",
+    "**/.vscode/**",
+    "**/.DS_Store",
+    "**/.github/**",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["deduckprover"]
+
+[tool.hatch.build.targets.wheel.shared-data]
+"LICENSE" = "LICENSE"
+"README.md" = "README.md"
