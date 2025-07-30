@@ -1,0 +1,133 @@
+[build-system]
+requires = [
+    "build",
+    "setuptools>=77.0.3",
+    "setuptools-scm[toml]>=8.0",
+    "wheel",
+    ]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyRejseplan"
+dynamic = ["version"]
+authors = [
+  { name="Jacob Warrer", email="Jacobwarrer@gmail.com" },
+]
+maintainers = [
+  { name="Jacob Warrer", email="Jacobwarrer@gmail.com" },
+]
+description = "Python interface with rejseplanens API 2.0 based on HAFAS"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    'requests >= 2.32.2',
+    'urllib3>=1.26.5,<2',
+    'setuptools-scm',
+    "pydantic-xml>=2.17.0",
+    "pydantic>=2.10.6",
+]
+
+[dependency-groups]
+dev = [
+  'ruff',
+  'twine',
+  'build',
+]
+test = [
+  'pytest > 6',
+]
+
+[[tool.uv.index]]
+name = "testpypi"
+url = "https://test.pypi.org/simple/"
+publish-url = "https://test.pypi.org/legacy/"
+explicit = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools_scm]
+version_file = "src/py_rejseplan/version/__version__.py"
+
+[project.urls]
+Homepage = "https://github.com/Jawar19/pyRejseplan"
+Issues = "https://github.com/Jawar19/pyRejseplan/issues"
+Repository = "https://github.com/Jawar19/pyRejseplan"
+
+[project.scripts]
+pyRejseplan = "py_rejseplan.__main__:main"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "--import-mode=importlib -rs"
+log_cli = true
+log_cli_level = "DEBUG"
+markers = [
+    "auth_req: Marks tests where valid auth key is required",
+]
+testpaths = [
+    "tests",
+]
+
+[tool.ruff]
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+]
+
+# Same as Black.
+line-length = 88
+indent-width = 4
+
+# Assume Python 3.9
+target-version = "py39"
+
+[tool.ruff.lint]
+# 1. Enable flake8-bugbear (`B`) rules, in addition to the defaults.
+select = ["E4", "E7", "E9", "F", "B"]
+
+# 2. Avoid enforcing line-length violations (`E501`)
+ignore = ["E501"]
+
+# 3. Avoid trying to fix flake8-bugbear (`B`) violations.
+unfixable = ["B"]
+
+# 4. Ignore `E402` (import violations) in all `__init__.py` files, and in selected subdirectories.
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402"]
+"**/{tests,docs,tools}/*" = ["E402"]
+
+[tool.ruff.format]
+# 5. Use single quotes in `ruff format`.
+quote-style = "single"
