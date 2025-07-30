@@ -1,0 +1,83 @@
+
+version: 6.2dev4.{build}
+
+image: Visual Studio 2019
+
+environment:
+  TokenPyPI:
+    secure: kkjz662y19aSdDHa+tqlBJ8fu3Rvamt13Mhvhm/If3qW7QzNkmrvz4RjJ9mbk5OewxMY5VhGmD51ykbqAGlMPeCZpMx3kpeOoWGE1H4buEAZKg7eyQBafaFF2EfvI5PJLUyDDyeRXNlzoh2yqTMs73s619Yl2/oDUV0IXPgqAPvmW6TGc6bgWoy2R3leSJDH2fjhTiphQ6M0JlItmq9dsJIIgoJcNt/82i/WbzAcuB6HJIrLUSSZQpNUpZZHjlFeu3UDxwvOHl9IDRljqzm/Ag==
+  matrix:
+    - PYTHON: "C:\\Python310-x64"
+      make_exe: false
+      python_mode: false
+      cython_mode: true
+      numpy_version: 2
+      threads: 0
+    - PYTHON: "C:\\Python311-x64"
+      make_exe: false
+      python_mode: true
+      cython_mode: false
+      numpy_version: 2
+      threads: 4
+    - PYTHON: "C:\\Python312-x64"
+      make_exe: false
+      python_mode: false
+      cython_mode: true
+      numpy_version: 1
+      threads: 4
+    - PYTHON: "C:\\Python313-x64"
+      make_exe: true
+      python_mode: false
+      cython_mode: false
+      numpy_version: 2
+      threads: 0
+
+install:
+  - choco install nsis
+  - set PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%
+  - python -m pip install --upgrade pip
+  - python -m pip install -r requirements.txt
+  - if %make_exe%==true python -m pip install pynsist
+  - if %make_exe%==true python -m pip install lastversion
+  - if %make_exe%==true python -m pip install regex
+  - python -m pip install twine
+
+build: off
+
+before_test:
+  - python prepare_build.py
+  - python -m build
+  - if %make_exe%==true python prepare_hydpy_installer.py
+  - if %make_exe%==true pynsist make_hydpy_installer.cfg
+
+test_script:
+  - if %make_exe%==false nox -s "doctest(numpy='%numpy_version%')" -- --python-mode=%python_mode% --cython-mode=%cython_mode% --threads=%threads%
+  - if %make_exe%==true rename hydpy _hydpy
+  - if %make_exe%==true python call_installer.py
+  - if %make_exe%==true set PATH=C:/Users\appveyor\AppData\Local\Programs\HydPy\bin;%PATH%
+  - if %make_exe%==true C:/Users\appveyor\AppData\Local\Programs\HydPy\bin\hyd.py.exe run_doctests
+
+after_test:
+  - "echo [pypi] > %USERPROFILE%\\.pypirc"
+  - "echo username: __token__ >> %USERPROFILE%\\.pypirc"
+  - "echo password: %TokenPyPI% >> %USERPROFILE%\\.pypirc"
+  - ps: if ($env:APPVEYOR_REPO_TAG -eq "true") { Invoke-Expression "twine upload --skip-existing dist/*"} else { write-output "No tag, no deploy"}
+    
+artifacts:
+  - name: Packages
+    path: dist\*
+  - name: Installer
+    path: build\nsis\HydPy*.exe
+  - name: XSDs
+    path: _hydpy\conf\*.xsd
+
+deploy:
+  description: 'This is a draft.'
+  provider: GitHub
+  auth_token:
+    secure: BKozZWjmaqIKC53W7Myzh6hT61IvfRTMc2WObLEVZipDV+TrPpnwmgOcKuMv8CaekZ7I6QA24o3Z0PiT+1/lTF0l5LalHVCcAwusW96e21p5II0dx+1KJjYx1lSb8NNR
+  artifact: Packages,Installer,XSDs
+  draft: true
+  prerelease: false
+  on:
+    APPVEYOR_REPO_TAG: true

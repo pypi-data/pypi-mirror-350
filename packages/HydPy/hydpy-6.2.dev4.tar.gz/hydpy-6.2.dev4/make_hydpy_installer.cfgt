@@ -1,0 +1,65 @@
+[Application]
+name = HydPy
+version = 6.2dev4-cp[auto]-win_amd64
+entry_point = execute_exe:execute_scriptfunction
+console = true
+icon = logo.ico
+license_file = licenses_hydpy_installer.txt
+
+[Command hyd.py]
+entry_point = execute_exe:execute_scriptfunction
+
+[Python]
+version = [auto]
+bitness = 64
+
+[Include]
+pypi_wheels =
+    numpy==[auto]
+	scipy==[auto]
+	typing_extensions==[auto]
+	matplotlib==[auto]
+	contourpy==[auto]
+	cycler==[auto]
+	six==[auto]
+	fonttools==[auto]
+	kiwisolver==[auto]
+	setuptools==[auto]
+	pyparsing==[auto]
+	python-dateutil==[auto]
+	netCDF4==[auto]
+	certifi==[auto]
+	cftime==[auto]
+	pandas==[auto]
+	pytz==[auto]
+	xmlschema==[auto]
+	elementpath==[auto]
+	packaging==[auto]
+	Pillow==[auto]
+	plotly==[auto]
+	tenacity==[auto]
+	narwhals==[auto]
+	networkx==[auto]
+	platformdirs==[auto]
+	click==[auto]
+	mypy_extensions==[auto]
+	pathspec==[auto]
+	colorama==[auto]
+	black==[auto]
+	cython==[auto]
+
+local_wheels = dist/*.whl
+
+extra_wheel_sources = extra_wheel_sources
+	
+packages =
+    wrapt
+	tkinter
+	_tkinter
+
+files = extra_python_sources\lib > $INSTDIR
+    extra_python_sources\libs > $INSTDIR\Python
+    extra_python_sources\include > $INSTDIR\Python
+	extra_python_sources\tcl86t.dll > $INSTDIR\pkgs
+	extra_python_sources\tk86t.dll > $INSTDIR\pkgs
+
