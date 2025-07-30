@@ -1,0 +1,90 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = "sh3d.py"
+license = "LGPL-3.0-or-later"
+dynamic = ["version"]
+requires-python = ">= 3.11"
+description = "Sweet home 3D file format implementation in python"
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    "packaging",
+    "xmltodict",
+    "javaobj-py3",
+    "pillow",
+    "shapely"
+]
+
+[project.optional-dependencies]
+dev = [
+    "tox"
+]
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[[project.authors]]
+name = "Adam Schubert"
+email = "adam.schubert@sg1-game.net"
+
+
+[project.urls]
+Homepage = "https://github.com/Salamek/sh3d.py"
+
+[tool.setuptools.dynamic]
+version = {attr = "sh3d.__version__"}
+
+[tool.setuptools.packages.find]
+where = ["."]
+exclude = ["tests*", "examples*"]
+
+[tool.setuptools.package-data]
+"sh3d" = ["resources/**/*"]
+
+[tool.pylint.'MESSAGES CONTROL']
+disable = [
+    "locally-disabled",
+    "missing-docstring",
+    "protected-access",
+    "too-many-instance-attributes",
+    "duplicate-code",
+    "invalid-name",
+    "too-few-public-methods",
+    "too-many-public-methods",
+    "too-many-lines",
+    "consider-using-f-string"
+]
+
+[tool.pylint.'MASTER']
+ignore = [".tox", "build", "docs", "venv", "get-pip.py"]
+ignore-signatures = true
+py-version = "3.11"
+reports = false
+
+[tool.pylint.'BASIC']
+max-locals = 40
+max-public-methods = 20  # Optional: adjust if needed
+
+[tool.pylint.'FORMAT']
+max-line-length = 170
+
+[tool.pylint.'DESIGN']
+max-args = 15
+max-positional-arguments = 15
+max-nested-blocks = 10
+max-branches = 30
+max-statements = 100
