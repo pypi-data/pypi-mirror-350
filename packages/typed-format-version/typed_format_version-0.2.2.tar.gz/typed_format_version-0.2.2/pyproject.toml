@@ -1,0 +1,80 @@
+# SPDX-FileCopyrightText: Peter Pentchev <roam@ringlet.net>
+# SPDX-License-Identifier: BSD-2-Clause
+
+[build-system]
+requires = [
+  "hatchling >= 1.8, < 2",
+  "hatch-requirements-txt >= 0.3, < 0.5",
+]
+build-backend = "hatchling.build"
+
+[project]
+name = "typed-format-version"
+description = "Extract the version of a structured file's format specification."
+readme = "README.md"
+requires-python = ">= 3.8"
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+  "License :: DFSG approved",
+  "License :: Freely Distributable",
+  "License :: OSI Approved :: BSD License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Software Development :: Libraries",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Typing :: Typed",
+]
+dynamic = ["dependencies", "version"]
+
+[[project.authors]]
+name = "Peter Pentchev"
+email = "roam@ringlet.net"
+
+[project.urls]
+"Homepage" = "https://devel.ringlet.net/devel/typed-format-version/"
+"Source" = "https://gitlab.com/ppentchev/typed-format-version"
+"API Reference" = "https://devel.ringlet.net/devel/typed-format-version/api-python/"
+
+[tool.hatch.build]
+include = [
+  "/.editorconfig",
+  "/.readthedocs.yaml",
+  "/.reuse/dep5",
+  "/LICENSES",
+  "/NEWS.md",
+  "/docs",
+  "/mkdocs.yml",
+  "/python",
+  "/test_data",
+  "/tox.ini",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["python/src/typed_format_version"]
+
+[tool.hatch.metadata.hooks.requirements_txt]
+files = ["python/requirements/install.txt"]
+
+[tool.hatch.version]
+path = "python/src/typed_format_version/__init__.py"
+
+[tool.mypy]
+strict = true
+
+[tool.ruff]
+extend = "ruff-base.toml"
+output-format = "concise"
+
+[tool.ruff.lint]
+select = ["ALL"]
+
+[tool.test-stages]
+stages = ["@check and @quick and not @manual", "@check and not @manual", "@tests and not @manual"]

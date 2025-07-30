@@ -1,0 +1,50 @@
+# SPDX-FileCopyrightText: Peter Pentchev <roam@ringlet.net>
+# SPDX-License-Identifier: BSD-2-Clause
+
+theme:
+  name: material
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - toc.integrate
+    - toc.follow
+    - content.code.copy
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
+site_name: typed-format-version
+repo_url: https://gitlab.com/ppentchev/typed-format-version
+repo_name: typed-format-version
+site_author: ppentchev
+site_url: https://devel.ringlet.net/devel/typed-format-version/
+site_dir: site/docs
+nav:
+  - 'Home': 'index.md'
+  - 'Changelog': 'changes.md'
+  - 'Download': 'download.md'
+  - 'API Reference: Python': 'api-python.md'
+markdown_extensions:
+  - toc:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite:
+  - pymdownx.superfences:
+plugins:
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [python/src]
+          options:
+            heading_level: 3
+            show_root_heading: true
+  - search
+watch:
+  - 'python/src/typed_format_version'
