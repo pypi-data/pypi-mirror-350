@@ -1,0 +1,524 @@
+Metadata-Version: 2.3
+Name: nomos
+Version: 0.1.13
+Summary: Configurable multi-step agent framework for building advanced LLM-powered assistants
+License: MIT
+Author: chandralegend
+Author-email: irugalbandarachandra@gmail.com
+Requires-Python: >=3.12,<4.0
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Provides-Extra: cli
+Provides-Extra: gemini
+Provides-Extra: mistralai
+Provides-Extra: openai
+Provides-Extra: traces
+Requires-Dist: docstring-parser (>=0.16,<0.17)
+Requires-Dist: google-genai (>=1.12.1,<2.0.0) ; extra == "gemini"
+Requires-Dist: loguru (>=0.7.3,<0.8.0)
+Requires-Dist: mistralai (>=1.7.0,<2.0.0) ; extra == "mistralai"
+Requires-Dist: openai (>=1.76.0,<2.0.0) ; extra == "openai"
+Requires-Dist: opentelemetry-api (>=1.33.0,<2.0.0) ; extra == "traces"
+Requires-Dist: opentelemetry-exporter-otlp (>=1.33.0,<2.0.0) ; extra == "traces"
+Requires-Dist: opentelemetry-instrumentation (>=0.54b0,<0.55) ; extra == "traces"
+Requires-Dist: opentelemetry-sdk (>=1.33.0,<2.0.0) ; extra == "traces"
+Requires-Dist: pydantic (>=2.11.3,<3.0.0)
+Requires-Dist: pydantic-settings (>=2.9.1,<3.0.0)
+Requires-Dist: pyyaml (>=6.0.2,<7.0.0)
+Requires-Dist: questionary (>=2.1.0,<3.0.0) ; extra == "cli"
+Requires-Dist: tiktoken (>=0.9.0,<0.10.0)
+Description-Content-Type: text/markdown
+
+<!-- Announcement Bar -->
+<div align="center" style="margin-bottom: 1.5em;">
+  <div style="
+    display: inline-block;
+    background: #222;
+    color: #fff;
+    font-weight: 500;
+    padding: 0.5em 2em;
+    font-size: 1em;
+    margin-bottom: 1em;
+    border-radius: 999px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    border: 1px solid #222;
+  ">
+    <b>NOMOS v0.1.12 released!</b> &nbsp;|&nbsp; Enhanced error handling, improved session management, and more. <a href="https://github.com/dowhiledev/nomos/releases" style="color:#fff;text-decoration:underline;">See what's new →</a>
+  </div>
+</div>
+
+<h1 align="center">
+  <a href="https://github.com/dowhiledev/nomos">
+    <picture>
+      <source srcset="assets/dark.png" media="(prefers-color-scheme: dark)">
+      <source srcset="assets/light.png" media="(prefers-color-scheme: light)">
+      <img src="assets/light.png" alt="nomos" width="400">
+    </picture>
+  </a>
+</h1>
+
+<div align="center">
+
+  An open-source, configurable multi-step agent framework for building advanced LLM-powered assistants
+  <br />
+  <br />
+  <a href="#usage"><strong>Explore examples »</strong></a>
+  <br />
+  <br />
+  <a href="https://github.com/dowhiledev/nomos/issues/new?assignees=&labels=bug&template=01_BUG_REPORT.md&title=bug%3A+">Report a Bug</a>
+  ·
+  <a href="https://github.com/dowhiledev/nomos/issues/new?assignees=&labels=enhancement&template=02_FEATURE_REQUEST.md&title=feat%3A+">Request a Feature</a>
+  ·
+  <a href="https://github.com/dowhiledev/nomos/issues/new?assignees=&labels=question&template=04_SUPPORT_QUESTION.md&title=support%3A+">Ask a Question</a>
+</div>
+
+<div align="center">
+<br />
+
+![PyPI - Version](https://img.shields.io/pypi/v/nomos)
+[![codecov](https://codecov.io/gh/chandralegend/nomos/graph/badge.svg?token=MXRK9HGE5R)](https://codecov.io/gh/chandralegend/nomos)
+[![Test](https://github.com/dowhiledev/nomos/actions/workflows/test.yml/badge.svg)](https://github.com/dowhiledev/nomos/actions/workflows/test.yml)
+[![Release](https://github.com/dowhiledev/nomos/actions/workflows/publish.yml/badge.svg)](https://github.com/dowhiledev/nomos/actions/workflows/publish.yml)
+[![Docker Image Version](https://img.shields.io/docker/v/chandralegend/nomos-base)](https://hub.docker.com/r/chandralegend/nomos-base)
+[![License](https://img.shields.io/github/license/dowhiledev/nomos)](LICENSE)
+
+[![Pull Requests welcome](https://img.shields.io/badge/PRs-welcome-ff69b4.svg?style=flat-square)](https://github.com/dowhiledev/nomos/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)
+
+</div>
+
+<details open="open">
+<summary>Table of Contents</summary>
+
+- [About](#about)
+  - [Features](#features)
+  - [Built With](#built-with)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+- [Usage](#usage)
+  - [CLI: Bootstrap a New Agent](#cli-bootstrap-a-new-agent)
+  - [Python API Example](#python-api-example)
+  - [YAML Config Example](#yaml-config-example)
+  - [Error Handling](#error-handling)
+- [LLM Support](#llm-support)
+  - [OpenAI](#openai)
+  - [Mistral AI](#mistral-ai)
+  - [Google Gemini](#google-gemini)
+- [Configuration](#configuration)
+- [Package Tool Integration](#package-tool-integration)
+- [Examples](#examples)
+  - [Barista Agent](#example-barista-agent)
+  - [Financial Planning Assistant](#example-financial-planning-assistant)
+- [Deployment](#deployment)
+  - [Docker Base Image](#docker-base-image)
+  - [Tracing and Elastic APM Integration](#tracing-and-elastic-apm-integration)
+  - [Persistent Storage and Session Management](#persistent-storage-and-session-management)
+  - [API Endpoints](#api-endpoints)
+- [Roadmap](#roadmap)
+- [Support](#support)
+- [Project assistance](#project-assistance)
+- [Contributing](#contributing)
+- [Authors & contributors](#authors--contributors)
+- [License](#license)
+- [Acknowledgements](#acknowledgements)
+
+</details>
+
+---
+
+## About
+
+`NOMOS` (previously `S.O.F.I.A - Simple Orchestrated Flow Intelligence Agent`) is an open-source, configurable multi-step agent framework for building advanced LLM-powered assistants. Define your agent's persona, tools, and step-by-step flows in Python or YAML—perfect for conversational, workflow, and automation use cases.
+
+The name `NOMOS` comes from the Greek word for "law" or "custom" - literally "the rulebook" powering every agentic step. This reflects the framework's core principle of providing structured, rule-based guidance for AI behavior.
+
+The framework allows you to move from no-code to low-code development, making it accessible for both non-programmers and experienced developers to create sophisticated AI agents.
+
+### Features
+
+- **Step-based agent flows**: Define agent behavior as a sequence of steps, each with its own tools and transitions.
+- **Persona-driven**: Easily set the agent's persona for consistent, branded responses.
+- **Tool integration**: Register Python functions as tools for the agent to call.
+- **Package-based tools**: Reference Python package functions directly using `package_name:function` syntax.
+- **Auto tool documentation**: Tool descriptions and parameter documentation are automatically generated from docstrings.
+- **YAML or Python config**: Configure agents via code or declarative YAML.
+- **Step-level answer models**: Specify an `answer_model` for any step to receive structured (JSON/object) responses.
+- **OpenAI, Mistral, and Gemini LLM support**
+- **Session management**: Save and resume conversations with Redis or PostgreSQL persistent storage.
+- **Advanced error handling**: Built-in error recovery mechanisms with configurable retry limits.
+- **API integration**: Ready-to-use FastAPI endpoints for web and WebSocket interaction.
+- **Elastic APM tracing**: Built-in support for distributed tracing and monitoring.
+- **Docker deployment**: Pre-built base image for rapid deployment.
+- **Extensible**: Build your own tools, steps, and integrations.
+- **Interactive CLI**: Bootstrap new agents with `nomos init` (install with `[cli]` extra).
+
+### Built With
+
+- Python
+- OpenAI, Mistral, and Gemini LLMs
+- Redis/PostgreSQL (optional for storage)
+- OpenTelemetry and Elastic APM (optional for tracing)
+- FastAPI & Docker (optional for deployment)
+
+## Getting Started
+
+### Prerequisites
+
+- Python 3.9 or higher
+- Optional: Redis or PostgreSQL for session storage
+- Optional: Elastic APM for tracing
+
+### Installation
+
+#### From PyPI
+
+```bash
+pip install nomos
+```
+
+#### With CLI support
+
+```bash
+pip install nomos[cli]
+```
+
+#### With LLM support
+
+```bash
+pip install nomos[openai]      # For OpenAI support
+pip install nomos[mistralai]   # For Mistral AI support
+pip install nomos[gemini]      # For Google Gemini support
+```
+
+#### With tracing support
+
+```bash
+pip install nomos[traces]
+```
+
+## Usage
+
+NOMOS supports a spectrum of implementation approaches from no-code to low-code to full-code development.
+
+### CLI: Bootstrap a New Agent
+
+```bash
+nomos init
+```
+
+This will interactively guide you to create a config YAML and starter Python file for your agent.
+
+### Python API Example (Full Code)
+
+```python
+from nomos import *
+from nomos.llms import OpenAIChatLLM
+
+def get_time():
+    """Get the current time.
+
+    Returns:
+        str: The current time in string format.
+    """
+    from datetime import datetime
+    return f"Current time: {datetime.now()}"
+
+steps = [
+    Step(
+        step_id="start",
+        description="Greet and offer to tell the time or perform calculations.",
+        available_tools=["get_time", "math:sqrt"],  # Direct reference to the sqrt function from math package
+        routes=[Route(target="end", condition="User is done")],
+    ),
+    Step(
+        step_id="end",
+        description="Say goodbye.",
+    ),
+]
+
+llm = OpenAIChatLLM()
+agent = Nomos(
+    name="clockbot",
+    llm=llm,
+    steps=steps,
+    start_step_id="start",
+    tools=[get_time, "math:sqrt"],  # Mix of custom functions and package references (Optional for package functions)
+    persona="You are a friendly assistant that can tell time and perform calculations.",
+    max_errors=3  # Will retry up to 3 times before failing
+    max_iter=5,  # Maximum number of iterations (tool calls, step transitions, error_handling) allowed in a single interaction
+)
+sess = agent.create_session()
+# ... interact with sess.next(user_input)
+```
+
+### YAML Config Example (Low-Code)
+
+```yaml
+name: utility-bot
+persona: You are a helpful utility bot that can perform various calculations and data operations.
+steps:
+  - step_id: start
+    description: Handle user requests for mathematical operations or data processing.
+    available_tools:
+      - math:sqrt
+      - json:loads
+      - itertools:combinations
+    routes:
+      - target: end
+        condition: User is done with calculations
+  - step_id: end
+    description: Say goodbye to the user.
+start_step_id: start
+max_errors: 3  # Maximum consecutive errors before stopping
+```
+
+See [`examples/config.barista.yaml`](examples/config.barista.yaml) for a more full-featured example.
+More examples are available in the [`examples`](examples/) directory.
+
+## LLM Support
+
+### Choose Your LLM (We are adding more soon!)
+
+```python
+from nomos.llms import OpenAI, Mistral, Gemini
+
+# Choose your LLM provider
+llm = OpenAI(model="gpt-4o-mini")
+llm = Mistral(model="mistral-medium")
+llm = Gemini(model="gemini-pro")
+```
+
+Or You can also specify LLM configuration in your YAML config:
+
+```yaml
+# ... rest of config
+llm:
+  provider: openai
+  model: gpt-4o-mini
+# ...rest of config
+```
+
+## Package Tool Integration
+
+NOMOS allows you to reference Python package functions directly using the `package_name:function` syntax:
+
+```python
+# Reference a function from a standard library
+"math:sqrt"                      # Standard library function
+"json:loads"                     # Another standard library function
+"itertools:combinations"         # Complex functions work too!
+
+# Reference nested module functions
+"package_name:module.submodule.function"
+```
+
+Benefits of package tool integration:
+
+1. **No-code/low-code development**: Use existing Python functions without writing wrapper code
+2. **Automatic documentation**: Function docstrings are used to generate tool descriptions and parameter documentation
+3. **Simplified configuration**: Easily reference any Python function in your environment
+
+Tool parameter descriptions in configuration files take precedence over automatically extracted docstring descriptions.
+
+> **NOTE**: Make sure the package is installed in your environment and function returns an output that is string representable.
+
+## Examples
+
+### Example: Barista Agent
+
+A full example is provided in [`examples/barista/barista.py`](examples/barista.py) and [`examples/config.barista.yaml`](examples/config.barista.yaml).
+
+To run the Barista agent:
+
+```bash
+cd examples/barista
+export OPENAI_API_KEY=your-api-key-here
+python barista.py
+# or
+python barista_with_config.py
+```
+
+### Example: Financial Planning Assistant
+
+A production-ready example of a Financial Planning Assistant is available in [`examples/financial-advisor/`](examples/financial-advisor/). This example demonstrates:
+
+- Budget planning and expense tracking
+- Savings goal management
+- Financial health assessment
+- Uses the nomos-base Docker image
+- Production-ready configuration
+
+To run the Financial Planning Assistant:
+
+```bash
+docker run -e OPENAI_API_KEY=your-api-key-here -p 8000:8000 financial-advisor
+```
+
+## Deployment
+
+### Docker Base Image
+
+NOMOS provides a base Docker image that you can use to quickly containerize your agents. The base image is available on Docker Hub as `chandralegend/nomos-base`.
+
+To use the base image in your own agent:
+
+1. Create a Dockerfile:
+
+```dockerfile
+FROM chandralegend/nomos-base:latest
+
+# Copy your config file
+COPY config.agent.yaml /app/config.agent.yaml
+
+# Copy your tools
+COPY tools.py /app/tools/
+```
+
+2. Build and run your container:
+
+```bash
+docker build -t my-nomos-agent .
+docker run -e OPENAI_API_KEY=your-api-key-here -p 8000:8000 my-nomos-agent
+```
+
+The base image supports configuration via environment variables:
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `OPENAI_API_KEY` | OpenAI API key | Yes (if using OpenAI) |
+| `CONFIG_URL` | URL to download agent configuration | No |
+| `CONFIG_PATH` | Path to mounted configuration file | No |
+| `PORT` | Server port (default: 8000) | No |
+| `DATABASE_URL` | PostgreSQL connection URL | No |
+| `REDIS_URL` | Redis connection URL | No |
+| `ENABLE_TRACING` | Enable OpenTelemetry tracing (`true`/`false`) | No |
+| `ELASTIC_APM_SERVER_URL` | Elastic APM server URL | If tracing enabled |
+| `ELASTIC_APM_TOKEN` | Elastic APM Token | If tracing enabled |
+| `SERVICE_NAME` | Service name for tracing | No (default: `nomos-agent`) |
+| `SERVICE_VERSION` | Service version for tracing | No (default: `1.0.0`) |
+
+### Tracing and Elastic APM Integration
+
+NOMOS supports distributed tracing using [OpenTelemetry](https://opentelemetry.io/) and can export traces to [Elastic APM](https://www.elastic.co/apm/).
+
+To enable tracing, set the following environment variables:
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `ENABLE_TRACING` | Enable OpenTelemetry tracing (`true`/`false`) | No (default: `false`) |
+| `ELASTIC_APM_SERVER_URL` | Elastic APM server URL | If tracing enabled |
+| `ELASTIC_APM_TOKEN` | Elastic APM Token | If tracing enabled |
+| `SERVICE_NAME` | Service name for tracing | No (default: `nomos-agent`) |
+| `SERVICE_VERSION` | Service version for tracing | No (default: `1.0.0`) |
+
+Example:
+
+```bash
+docker run \
+  -e ENABLE_TRACING=true \
+  -e ELASTIC_APM_SERVER_URL=http://your-apm-server:8200 \
+  -e ELASTIC_APM_TOKEN=your-apm-token \
+  -e SERVICE_NAME=my-nomos-agent \
+  -e SERVICE_VERSION=1.0.0 \
+  -e OPENAI_API_KEY=your-openai-key \
+  -p 8000:8000 my-nomos-agent
+```
+
+### Persistent Storage and Session Management
+
+NOMOS base image supports multiple options for session storage:
+
+#### In-Memory Storage
+
+The default storage mechanism is in-memory, which does not persist sessions between container restarts.
+
+#### Redis Session Storage
+
+For caching and distributed deployments, you can use Redis as a session store:
+
+```bash
+docker run \
+  -e REDIS_URL=redis://redis:6379/0 \
+  -e OPENAI_API_KEY=your-openai-key \
+  -p 8000:8000 my-nomos-agent
+```
+
+#### PostgreSQL Persistent Storage
+
+For fully persistent sessions that survive container restarts:
+
+```bash
+docker run \
+  -e DATABASE_URL=postgresql+asyncpg://user:pass@postgres/dbname \
+  -e OPENAI_API_KEY=your-openai-key \
+  -p 8000:8000 my-nomos-agent
+```
+
+### API Endpoints
+
+NOMOS base image provides the following REST and WebSocket endpoints:
+
+#### Server-side Session Management
+
+- `POST /session` - Create a new session
+- `POST /session/{session_id}/message` - Send a message to a session
+- `WS /ws/{session_id}` - WebSocket connection for real-time interaction
+- `DELETE /session/{session_id}` - End a session
+- `GET /session/{session_id}/history` - Get session history
+
+#### Client-side Session Management
+
+- `POST /chat` - Stateless chat endpoint where the client maintains session state
+
+For more details, see the [base image README](tools/base-image/README.md).
+
+## Roadmap
+
+See the [open issues](https://github.com/dowhiledev/nomos/issues) for a list of proposed features and known issues.
+
+- [Top Feature Requests](https://github.com/dowhiledev/nomos/issues?q=label%3Aenhancement+is%3Aopen+sort%3Areactions-%2B1-desc) (Add your votes using the 👍 reaction)
+- [Top Bugs](https://github.com/dowhiledev/nomos/issues?q=is%3Aissue+is%3Aopen+label%3Abug+sort%3Areactions-%2B1-desc) (Add your votes using the 👍 reaction)
+- [Newest Bugs](https://github.com/dowhiledev/nomos/issues?q=is%3Aopen+is%3Aissue+label%3Abug)
+
+## Support
+
+If you have any questions or need help with NOMOS:
+
+- [GitHub issues](https://github.com/dowhiledev/nomos/issues/new?assignees=&labels=question&template=04_SUPPORT_QUESTION.md&title=support%3A+)
+- Join our [community discussions](https://github.com/dowhiledev/nomos/discussions)
+
+## Project assistance
+
+If you want to say **thank you** or/and support active development of NOMOS:
+
+- Add a [GitHub Star](https://github.com/dowhiledev/nomos) to the project.
+- Tweet about NOMOS.
+- Write articles about the project on [Dev.to](https://dev.to/), [Medium](https://medium.com/) or your personal blog.
+
+Together, we can make NOMOS **better**!
+
+## Contributing
+
+Contributions are welcome! Please open issues or pull requests on GitHub.
+
+First off, thanks for taking the time to contribute! Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make will benefit everybody else and are **greatly appreciated**.
+
+Please read our contribution guidelines (coming soon), and thank you for being involved!
+
+## Authors & contributors
+
+For a full list of all authors and contributors, see [the contributors page](https://github.com/dowhiledev/nomos/contributors).
+
+## License
+
+This project is licensed under the **MIT license**.
+
+See [LICENSE](LICENSE) for more information.
+
+## Acknowledgements
+
+- Inspired by the open-source LLM community.
+- Built with ❤️
+
