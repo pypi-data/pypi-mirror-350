@@ -1,0 +1,7 @@
+from .detectron2 import DetectronMetricsCollectionHook as DetectronMetricsCollectionHook, MetricsCollectionHook as MetricsCollectionHook, UMAPReduceEmbeddingsHook as UMAPReduceEmbeddingsHook, register_coco_instances as register_coco_instances
+from _typeshed import Incomplete
+
+logger: Incomplete
+TLCTrainer: Incomplete
+Trainer: Incomplete
+lightning_module: Incomplete
