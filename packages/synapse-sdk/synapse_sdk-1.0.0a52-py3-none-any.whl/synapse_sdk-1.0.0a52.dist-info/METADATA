@@ -1,0 +1,50 @@
+Metadata-Version: 2.4
+Name: synapse-sdk
+Version: 1.0.0a52
+Summary: synapse sdk
+Author-email: datamaker <developer@datamaker.io>
+License: MIT
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: boto3
+Requires-Dist: click
+Requires-Dist: cookiecutter
+Requires-Dist: requests
+Requires-Dist: tqdm
+Requires-Dist: python-dotenv
+Requires-Dist: pyyaml
+Requires-Dist: pydantic
+Requires-Dist: pyjwt
+Requires-Dist: universal-pathlib
+Requires-Dist: fsspec[gcs,s3,sftp]
+Provides-Extra: all
+Requires-Dist: ray[all]; extra == "all"
+Requires-Dist: python-nmap; extra == "all"
+Requires-Dist: hyperopt; extra == "all"
+Requires-Dist: bayesian-optimization==1.4.3; extra == "all"
+Dynamic: license-file
+
+This is the SDK to develop synapse plugins
+
+
+## Internationalization
+
+### Find Messages
+```bash
+ $ find . -name "*.py" | xargs xgettext -o messages.pot
+```
+
+### Make Messages
+```bash
+ $ msginit -l ko -i messages.pot -o locale/ko/LC_MESSAGES/messages.po
+ $ msginit -l en -i messages.pot -o locale/en/LC_MESSAGES/messages.po
+```
+
+### Compile Messages
+
+```bash
+ $ msgfmt locale/ko/LC_MESSAGES/messages.po -o locale/ko/LC_MESSAGES/messages.mo
+ $ msgfmt locale/en/LC_MESSAGES/messages.po -o locale/en/LC_MESSAGES/messages.mo
+```
