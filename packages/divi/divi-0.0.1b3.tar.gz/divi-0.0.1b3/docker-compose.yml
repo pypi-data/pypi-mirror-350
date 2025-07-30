@@ -1,0 +1,152 @@
+services:
+  divi-postgres:
+    image: postgres:16.8-alpine3.20
+    container_name: divi-postgres
+    restart: always
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    networks:
+      - private-network
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+
+  divi-mongo:
+    image: mongodb/mongodb-community-server:7.0.17-ubi8
+    container_name: divi-mongo
+    restart: always
+    ports:
+      - "${MONGO_PORT}:27017"
+    networks:
+      - private-network
+    environment:
+      MONGODB_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGODB_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+
+  divi-clickhouse:
+    image: clickhouse/clickhouse-server:latest-alpine
+    container_name: divi-clickhouse
+    restart: always
+    ports:
+      - "${CLICKHOUSE_PORT}:9000"
+    networks:
+      - private-network
+    environment:
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD}
+      CLICKHOUSE_DB: ${CLICKHOUSE_DB}
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+
+  divi-auth:
+    image: kaikaikaifang/divi-auth:latest
+    build:
+      context: ./services
+      dockerfile: ./cmd/auth/Dockerfile
+    container_name: divi-auth
+    ports:
+      - "3000:3000"
+    networks:
+      - public-network
+      - private-network
+    depends_on:
+      - divi-postgres
+    restart: always
+    environment:
+      POSTGRES_HOST: divi-postgres
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      ACCESS_TOKEN_PUBLIC_KEY: ${ACCESS_TOKEN_PUBLIC_KEY}
+      ACCESS_TOKEN_PRIVATE_KEY: ${ACCESS_TOKEN_PRIVATE_KEY}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.divi-auth.rule=Host(`${DIVI_AUTH_HOST}`)"
+      - "traefik.http.routers.divi-auth.entrypoints=web"
+      - "traefik.http.services.divi-auth.loadbalancer.server.port=3000"
+
+  divi-datapark:
+    image: kaikaikaifang/divi-datapark:latest
+    build:
+      context: ./services
+      dockerfile: ./cmd/datapark/Dockerfile
+    container_name: divi-datapark
+    ports:
+      - "3001:3001"
+    networks:
+      - public-network
+      - private-network
+    depends_on:
+      - divi-postgres
+      - divi-mongo
+      - divi-clickhouse
+    restart: always
+    environment:
+      POSTGRES_HOST: divi-postgres
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      MONGO_HOST: divi-mongo
+      MONGO_PORT: ${MONGO_PORT}
+      MONGO_USER: ${MONGO_USER}
+      MONGO_PASSWORD: ${MONGO_PASSWORD}
+      CLICKHOUSE_HOST: divi-clickhouse
+      CLICKHOUSE_PORT: ${CLICKHOUSE_PORT}
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD}
+      CLICKHOUSE_DB: ${CLICKHOUSE_DB}
+      ACCESS_TOKEN_PUBLIC_KEY: ${ACCESS_TOKEN_PUBLIC_KEY}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.divi-datapark.rule=Host(`${DIVI_DATAPARK_HOST}`)"
+      - "traefik.http.routers.divi-datapark.entrypoints=web"
+      - "traefik.http.services.divi-datapark.loadbalancer.server.port=3001"
+
+  divi-graphql:
+    image: kaikaikaifang/divi-graphql:latest
+    build:
+      context: .
+      dockerfile: ./apps/graphql/Dockerfile
+    container_name: divi-graphql
+    ports:
+      - "4000:4000"
+    networks:
+      - public-network
+    depends_on:
+      - divi-auth
+    restart: always
+    environment:
+      AUTH_SERVICE_URL: http://divi-auth:3000/
+      DATAPARK_SERVICE_URL: http://divi-datapark:3001/
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.divi-graphql.rule=Host(`${DIVI_GRAPHQL_HOST}`)"
+      - "traefik.http.routers.divi-graphql.entrypoints=web"
+      - "traefik.http.services.divi-graphql.loadbalancer.server.port=4000"
+
+  divi-gateway:
+    image: traefik:v3.4
+    container_name: divi-gateway
+    command:
+      - --api.insecure=true
+      - --providers.docker=true
+      - --entrypoints.web.address=:80
+      - --providers.docker.exposedByDefault=false
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - public-network
+
+networks:
+  private-network:
+    name: divi-private-network
+    driver: bridge
+    internal: true
+  public-network:
+    name: divi-public-network
+    driver: bridge

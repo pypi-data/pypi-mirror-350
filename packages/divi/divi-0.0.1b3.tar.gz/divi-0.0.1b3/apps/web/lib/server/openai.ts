@@ -1,0 +1,49 @@
+import { cache } from 'react';
+import 'server-only';
+import { query } from '@/hooks/apolloClient';
+import { getAuthContext } from '@/lib/server/auth';
+import type { Chat } from '@/lib/types/span';
+import { GetChatInputDocument } from '@workspace/graphql-client/src/datapark/openai.generated';
+import type { ChatCompletion } from 'openai/resources/index.mjs';
+
+export const getChatCompletion = cache(async (spanId: string) => {
+  const context = await getAuthContext();
+  if (!context) {
+    return null;
+  }
+  const base_url = process.env.DATAPARK_SERVICE_URL ?? 'http://localhost:3001/';
+  const response = await fetch(
+    new URL(`/api/v1/chat/completions/${spanId}`, base_url),
+    {
+      cache: 'force-cache',
+      ...context,
+    }
+  );
+  if (!response.ok) {
+    throw new Error('Failed to fetch chat completion');
+  }
+  return response.json().then((res) => res.data) as Promise<ChatCompletion>;
+});
+
+export const getChatInput = cache(async (spanId: string) => {
+  const context = await getAuthContext();
+  if (!context) {
+    return null;
+  }
+  const { data } = await query({
+    query: GetChatInputDocument,
+    variables: { spanId },
+    context,
+  });
+  return data?.chat_input;
+});
+
+export const getChat = cache(async (spanId: string) => {
+  const input = await getChatInput(spanId);
+  const completion = await getChatCompletion(spanId);
+  return {
+    span_id: spanId,
+    input: input ?? undefined,
+    completion: completion ?? undefined,
+  } as Chat;
+});

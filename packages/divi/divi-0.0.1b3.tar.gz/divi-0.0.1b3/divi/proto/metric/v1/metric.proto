@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package divi.proto.metric.v1;
+
+import "divi/proto/common/v1/common.proto";
+
+option go_package = "services/pb";
+
+message ScopeMetrics {
+    // A list of spans that originate from a resource.
+    repeated Metric metrics = 2;
+}
+
+message Metric {
+    // The name of the metric.
+    string name = 1;
+
+    // The description of the metric.
+    string description = 2;
+
+    // The data of the metric.
+    divi.proto.common.v1.AnyValue data = 3;
+
+    // The metadata is a set of attributes that describe the span.
+    repeated divi.proto.common.v1.KeyValue metadata = 4;
+}
