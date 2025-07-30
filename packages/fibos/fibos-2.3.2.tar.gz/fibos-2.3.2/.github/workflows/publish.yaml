@@ -1,0 +1,48 @@
+name: Publicar no TestPyPI
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Versão do pacote (ex: 0.1.0)'
+        required: true
+      environment:
+        description: 'Ambiente de publicação (testpypi ou pypi)'
+        required: true
+        default: 'testpypi'
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Instalar dependências
+        run: |
+          python -m pip install --upgrade pip
+          pip install build twine
+
+      - name: Construir distribuições
+        run: python -m build
+
+      - name: Publicar no TestPyPI
+        if: ${{ github.event.inputs.environment == 'testpypi' }}
+        run: |
+          twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.TEST_PYPI_TOKEN }}
+
+      - name: Publicar no PyPI
+        if: ${{ github.event.inputs.environment == 'pypi' }}
+        run: |
+          twine upload dist/*
+        env:
+          TWINE_USERNAME: ${{ secrets.TEST_PYPI_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}

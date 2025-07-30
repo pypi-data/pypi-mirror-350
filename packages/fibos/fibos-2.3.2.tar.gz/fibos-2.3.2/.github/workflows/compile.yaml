@@ -1,0 +1,85 @@
+name: Build and Publish Wheels
+
+on:
+  push:
+    branches:
+      - main  # ou 'master', conforme seu branch principal
+    tags:
+      - 'v*'  # Dispara quando uma tag (por exemplo, v0.1.0) é criada
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:  # Permite acionar manualmente
+
+jobs:
+  build_wheels:
+    name: Build wheels on ${{ matrix.os }} for ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false  # Não cancela outros jobs se um falhar
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        # Versões Python em formato CPython (por exemplo, cp39, cp310, etc.)
+        python-version: ['cp39', 'cp310', 'cp311', 'cp312']
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up QEMU (for Linux ARM builds - opcional)
+        if: runner.os == 'Linux'
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: all
+
+      - name: Install Fortran compiler (OS specific)
+        shell: bash
+        run: |
+          if [[ "${{ runner.os }}" == "Linux" ]]; then
+            sudo apt-get update -y -qq
+            sudo apt-get install -y gfortran
+          elif [[ "${{ runner.os }}" == "macOS" ]]; then
+            # Instala o gcc via Homebrew. O gcc inclui o gfortran,
+            # porém o executável pode estar nomeado como gfortran-<versão>
+            brew install gcc || true
+            echo "$(brew --prefix)/bin" >> $GITHUB_PATH
+            # Se não existir 'gfortran' direto, cria um symlink para o primeiro binário encontrado
+            if [ ! -x /opt/homebrew/bin/gfortran ]; then
+              for file in /opt/homebrew/bin/gfortran-* ; do
+                ln -s "$file" /opt/homebrew/bin/gfortran
+                echo "Criado symlink para: $file -> /opt/homebrew/bin/gfortran"
+                break
+              done
+            fi
+          elif [[ "${{ runner.os }}" == "Windows" ]]; then
+            # Nos runners do Windows, o ambiente MSYS2/MinGW-w64 já está instalado
+            echo "C:\msys64\mingw64\bin" >> $GITHUB_PATH
+            gfortran --version
+          fi
+
+      # Etapa para configurar o Python para rodar o cibuildwheel
+      - name: Set up Python (for cibuildwheel)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install cibuildwheel
+        run: python -m pip install cibuildwheel==2.17.*
+
+      - name: Build wheels
+        run: python -m cibuildwheel --output-dir wheelhouse
+        env:
+          CIBW_BUILD: "${{ matrix.python-version }}-*"
+          CIBW_BEFORE_BUILD: "pip install numpy"
+          CIBW_MANYLINUX_X86_64_IMAGE: manylinux2014
+          CIBW_MANYLINUX_AARCH64_IMAGE: manylinux_2_28
+          CIBW_BUILD_VERBOSITY: "1"
+          CIBW_ENVIRONMENT_WINDOWS: 'PATH="$PATH:/c/msys64/mingw64/bin"'
+
+      - name: Upload wheels as Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-${{ matrix.os }}-${{ matrix.python-version }}
+          path: ./wheelhouse/*.whl

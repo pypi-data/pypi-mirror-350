@@ -1,0 +1,76 @@
+[project]
+name = "fibos"
+version = "2.3.2"
+description = "Package to calculate Occluded Surfaces"
+readme = "README.md"
+authors = [
+    {name = "Herson Hebert Mendes Soares"}
+]
+requires-python = ">=3.9" # Mantido >=3.8, mas o workflow focará em 3.9+
+dependencies = [
+    "numpy>=1.22.4", # Dependência de runtime
+    "biopython>=1.84",
+    "testresources>=2.0.1",
+    "pandas>=2.2.3",
+]
+
+[build-system]
+requires = [
+    "meson-python>=0.13.1",
+    "numpy>=1.22.4",  # Numpy é necessário tanto para build (meson pode precisar) quanto runtime
+    "wheel>=0.45.0",  # Wheel é necessário para construir wheels
+    # setuptools não é estritamente necessário pelo mesonpy, mas não atrapalha
+    # "setuptools>=70.0.0",
+]
+build-backend = "mesonpy"
+# backend-path = ["."] # Descomente se seu backend estiver em um subdiretório
+
+# [tool.meson-python] # Sua configuração existente
+# limited-api = false
+
+[project.urls]
+# Homepage = "https://github.com/username/fibos"
+# Documentation = "https://fibos.readthedocs.io/"
+
+# Setuptools não é usado diretamente pelo backend mesonpy para encontrar pacotes,
+# mas pode ser usado por outras ferramentas. Verifique se é realmente necessário.
+# Se meson.build instala os arquivos python corretamente, esta seção pode não ser necessária.
+# [tool.setuptools]
+# packages = ["fibos"]
+#
+# [tool.setuptools.package-data]
+# fibos = ["radii", "pattern"]
+# Verifique se seus dados (radii, pattern) estão sendo instalados pelo meson.build
+# Meson tem funções como install_data() e install_subdir() para isso.
+
+# --- Adicionando Configuração do cibuildwheel ---
+[tool.cibuildwheel]
+# Comando a ser executado ANTES do build em cada ambiente isolado.
+# Essencial para instalar Numpy, que é dependência de runtime E pode ser necessária
+# durante a configuração/build do Meson.
+before-build = "pip install numpy"
+
+# Pular builds que você não quer/precisa (exemplo)
+# Ajuste conforme sua necessidade. Python 3.8 foi pulado pois requires-python é >=3.8
+# mas o workflow foca em 3.9+. Pulando 32-bit Windows e PyPy.
+skip = "*-win32 pp* cp38-* *-musllinux*"
+
+# Imagens Manylinux (para Linux)
+manylinux-x86_64-image = "manylinux2014"
+manylinux-aarch64-image = "manylinux_2_28" # Se precisar de ARM Linux
+
+# --- Configuração Específica para Windows ---
+[tool.cibuildwheel.windows]
+# Adiciona o diretório bin do MinGW (instalado via choco no workflow) ao PATH
+# do ambiente de build do cibuildwheel. ESSENCIAL para Meson encontrar gfortran.
+# Verifique se este caminho corresponde à instalação do choco no runner.
+environment = { PATH="{env_path};C:\\ProgramData\\chocolatey\\lib\\mingw\\tools\\install\\mingw64\\bin" }
+
+# --- Configuração Específica para macOS ---
+#[tool.cibuildwheel.macos]
+#build-verbosity = 2
+#environment = {FC = "/opt/homebrew/bin/gfortran"}
+    # Opcional: Definir CC/CXX se você tiver C/C++ também, para garantir consistência
+    # CC = "/opt/homebrew/bin/gcc",
+    # CXX = "/opt/homebrew/bin/g++",
+# environment = { } # Geralmente não necessário se o 'brew install gcc' funcionar e o PATH for ajustado
