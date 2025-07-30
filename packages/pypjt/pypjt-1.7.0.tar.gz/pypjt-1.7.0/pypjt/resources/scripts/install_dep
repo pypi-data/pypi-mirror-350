@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+cd ..
+# install uv
+curl -LsSf https://astral.sh/uv/install.sh | sh
+source $HOME/.local/bin/env
+grep -Fxq 'eval "$(uv generate-shell-completion bash)"' ~/.bashrc || echo 'eval "$(uv generate-shell-completion bash)"' >> ~/.bashrc
+grep -Fxq 'eval "$(uvx --generate-shell-completion bash)"' ~/.bashrc || echo 'eval "$(uvx --generate-shell-completion bash)"' >> ~/.bashrc
+uv tool install tox --with tox-uv
+
+uv sync
+npm install
