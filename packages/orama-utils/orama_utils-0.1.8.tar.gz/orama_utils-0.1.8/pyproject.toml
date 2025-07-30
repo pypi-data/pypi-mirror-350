@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "orama-utils"
+version = "0.1.8"
+description = "Utility functions and tools for data processing and analysis"
+readme = "README.md"
+authors = [
+    {name = "Orama Solutions"}
+]
+license = "MIT"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "pandas>=1.3.0",
+    "numpy>=1.20.0",
+    "boto3>=1.26.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/Orama-Solutions/utils"
+"Bug Tracker" = "https://github.com/Orama-Solutions/utils/issues"
+
+[tool.setuptools]
+packages = ["orama_utils", "orama_utils.holiday_db", "orama_utils.weather_db"]
+package-data = { "orama_utils" = ["holiday_db/*.csv", "weather_db/*.csv", "weather_db/*.json"] }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_functions = "test_*"
+python_classes = "Test*"
+
+[tool.black]
+line-length = 88
+target-version = ["py38"]
+include = '\.pyi?$'
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true 
