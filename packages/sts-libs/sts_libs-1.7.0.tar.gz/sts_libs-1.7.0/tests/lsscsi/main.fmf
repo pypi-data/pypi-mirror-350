@@ -1,0 +1,20 @@
+summary: Validate lsscsi command-line utility functionality
+description: >
+  This test suite verifies core lsscsi features including version checks,
+  device listing formats, advanced options handling, and SCSI subsystem
+  enumeration. Tests cover 20+ command-line options and output validation
+  patterns using scsi_debug virtual devices.
+author:
+  - Zhaojuan Guo <zguo@redhat.com>
+test: pytest lsscsi.py
+require: lsscsi
+tag:
+  - lsscsi
+component:
+  - lsscsi
+tier: 1
+duration: 1m
+check:
+  - how: avc
+  - how: dmesg
+  - how: coredump
