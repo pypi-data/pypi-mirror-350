@@ -1,0 +1,43 @@
+[workspace]
+authors = ["colemannoah <colemanmnoah@gmail.com>"]
+channels = ["conda-forge"]
+name = "pipelining"
+platforms = ["osx-arm64", "linux-64"]
+version = "0.1.0"
+
+[tasks]
+test = "pytest -vs"
+ruff = "ruff check ."
+mypy = "mypy -p pipelining -p tests"
+coverage = "pytest --cov=pipelining --cov-branch --cov-report=term-missing --cov-report=html"
+build = "hatch build"
+
+[dependencies]
+ruff = ">=0.11.8,<0.12"
+mypy = ">=1.15.0,<2"
+python = ">=3.10,<3.14"
+pytest = ">=8.3.5,<9"
+rich = ">=14.0.0,<15"
+pytest-cov = ">=6.1.1,<7"
+tqdm = ">=4.67.1,<5"
+
+[feature.py310.dependencies]
+python = "~=3.10.0"
+
+[feature.py311.dependencies]
+python = "~=3.11.0"
+
+[feature.py312.dependencies]
+python = "~=3.12.0"
+
+[feature.py313.dependencies]
+python = "~=3.13.0"
+
+[environments]
+py310 = ["py310"]
+py311 = ["py311"]
+py312 = ["py312"]
+py313 = ["py313"]
+
+[pypi-dependencies]
+types-tqdm = ">=4.67.0.20250417"

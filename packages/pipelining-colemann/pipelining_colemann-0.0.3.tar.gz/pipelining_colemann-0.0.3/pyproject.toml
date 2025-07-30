@@ -1,0 +1,82 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pipelining-colemann"
+dynamic = ["version"]
+description = 'A lightweight, object-orientated pipeline framework in Python'
+readme = "README.md"
+requires-python = ">=3.10,<3.14"
+license = "MIT"
+keywords = []
+authors = [
+  { name = "colemannoah", email = "colemanmnoah@gmail.com" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+]
+dependencies = [
+  "rich",
+  "tqdm",
+]
+
+[project.urls]
+Documentation = "https://github.com/colemannoah/pipelining#readme"
+Issues = "https://github.com/colemannoah/pipelining/issues"
+Source = "https://github.com/colemannoah/pipelining"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+  "/.github",
+  "/.mypy_cache",
+  "/.pixi",
+  "/.pytest_cache",
+  "/.ruff_cache",
+  "/.vscode",
+  "/htmlcov",
+  "/**/__pycache__/*",
+  "/.coverage",
+  "/.coverage.*",
+  "/example.py",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["pipelining"]
+
+[tool.hatch.build.hooks.vcs]
+version-file = "_version.py"
+
+[tool.hatch.version.raw-options]
+version_scheme = "no-guess-dev"
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+  "mypy>=1.0.0",
+]
+
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:pipelining tests}"
+
+[tool.coverage.run]
+source_pkgs = ["pipelining", "tests"]
+branch = true
+parallel = true
+omit = [
+  "pipelining/__about__.py",
+]
+
+[tool.coverage.paths]
+pipelining = ["pipelining", "*/pipelining"]
+tests = ["tests", "*/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
