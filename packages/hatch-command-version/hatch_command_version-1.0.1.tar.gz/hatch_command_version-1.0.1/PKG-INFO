@@ -1,0 +1,28 @@
+Metadata-Version: 2.4
+Name: hatch-command-version
+Version: 1.0.1
+Summary: A version source plugin to the hatchling.build python build backend that obtains a version by running a command.
+Author-email: Matt McShane <matt@mattmcshane.com>
+Project-URL: Repository, https://github.com/mmcshane/hatch-command-version
+Keywords: hatch,hatchling,version
+Description-Content-Type: text/markdown
+Requires-Dist: hatchling>=1.27.0
+
+[![PyPI - Version](https://img.shields.io/pypi/v/hatch-command-version)](https://pypi.org/project/hatch-command-version)
+
+# hatch-command-version
+
+A version source plugin to the `hatchling.build` python build backend that obtains a version by running a command.
+
+```.toml
+[build-system]
+requires = [
+    "hatchling",
+    "hatch-command-version",        # pull in this plugin
+]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "command"                   # pick this version source plugin
+command = "path/to/custom-generator" # the command to execute
+```
