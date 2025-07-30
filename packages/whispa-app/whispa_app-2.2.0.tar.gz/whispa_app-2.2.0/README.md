@@ -1,0 +1,140 @@
+# Whispa App 🎙️➡️📝➡️🌍
+
+**Audio Transcription & Translation Desktop GUI**  
+*Powered by OpenAI's Whisper and MarianMT*
+
+## Features ✨
+
+* **Audio Transcription**  
+  Convert WAV/MP3/M4A files to text using 5 Whisper model sizes  
+  `tiny` | `base` | `small` | `medium` | `large`
+
+* **Text Translation**  
+  Supports multiple languages including:
+  - Spanish (es)
+  - French (fr)
+  - German (de)
+  - Chinese (zh)
+  - Japanese (ja)
+  - Italian (it)
+  - Portuguese (pt)
+  - Russian (ru)
+  - Arabic (ar)
+  - Korean (ko)
+
+* **System Monitoring**  
+  Real-time CPU/RAM/GPU usage stats
+
+* **Cross-Platform**  
+  Windows installer available • Python package for developers
+
+## System Requirements 💻
+
+- Python 3.10 or higher
+- 4GB RAM minimum (8GB recommended)
+- GPU support (optional):
+  - NVIDIA GPU with CUDA support
+  - 6GB VRAM recommended for large models
+- Disk Space:
+  - 500MB for base installation
+  - 2-4GB for model downloads
+
+## Installation 🛠️
+
+### Windows Users
+
+Download the installer (160MB) from [GitHub Releases](https://github.com/damoojeje/whispa_app/releases)
+1. Run `WhispaApp-Setup.exe`
+2. Follow installation prompts
+3. Launch from Start Menu
+
+### Python Developers
+
+```bash
+# 1. Install CPU-optimized PyTorch (Windows)
+pip install torch --index-url https://download.pytorch.org/whl/cpu
+
+# For other platforms, use:
+pip install torch
+
+# 2. Install Whispa App
+pip install whispa_app==2.2.0
+
+# 3. Download models (first time)
+whispa --prefetch
+
+# 4. Launch GUI
+whispa
+```
+
+## Usage Guide 📖
+
+### Quick Start
+
+1. Browse for an audio file
+2. Select Model:
+   - tiny: Fast, less accurate
+   - base: Good balance
+   - small: Better accuracy
+   - medium: High accuracy
+   - large: Best accuracy, slower
+3. Transcribe: Real-time progress tracking
+4. Translate: Choose target language
+5. Save: Export as TXT or clipboard
+
+### Advanced Settings
+
+| Setting | Description |
+|---------|-------------|
+| VRAM Threshold | Minimum GPU memory for acceleration |
+| Beam Size | Balance speed vs accuracy |
+| VAD Filter | Skip silent segments |
+| Language | Source language (auto-detect if not specified) |
+| Translation Model | Choose between different translation models |
+
+## Project Structure 📂
+
+```
+Whispa_App/
+├── src/                  # Source code
+│   └── whispa_app/       # Core modules
+│       ├── assets/       # Icons
+│       ├── ui/          # GUI components  
+│       └── *.py         # Functionality
+├── installer/            # Inno Setup script
+└── Releases/            # Windows installers
+```
+
+## Contributing 🤝
+
+1. Fork the repository
+2. Create feature branch:
+   ```bash
+   git checkout -b feature/new-feature
+   ```
+3. Commit changes:
+   ```bash
+   git commit -m "Add awesome feature"
+   ```
+4. Push to branch:
+   ```bash
+   git push origin feature/new-feature
+   ```
+5. Open a Pull Request
+
+*Note: Include tests for new features!*
+
+## License 📄
+
+MIT License - [Full Text](License.txt)  
+Copyright © 2025 Damilare Eniolabi
+
+## Acknowledgments 🙏
+
+- OpenAI Whisper models
+- MarianMT translation framework
+- Hugging Face Transformers library
+- CustomTkinter for modern GUI
+- SacreMoses for text processing
+
+[Report Issues](https://github.com/damoojeje/whispa_app/issues) • [Contact](mailto:damilareeniolabi@gmail.com)
