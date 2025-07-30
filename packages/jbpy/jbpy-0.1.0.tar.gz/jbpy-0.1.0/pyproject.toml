@@ -1,0 +1,44 @@
+[build-system]
+requires = [
+    "setuptools >= 77",
+    "setuptools-scm >= 8",
+]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+
+[project]
+dynamic = ["version"]
+requires-python = ">= 3.11"
+name = "jbpy"
+description = "Library for reading and writing Joint BIIF Profile (JBP) files (NITF and NSIF)"
+readme = "README.md"
+license = "MIT"
+authors = [
+    {name = "Valkyrie Systems Corporation"},
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+dependencies = [
+]
+
+[project.optional-dependencies]
+dev = [
+    "mypy",
+    "ruff",
+    "pytest",
+]
+
+[project.urls]
+Repository = "https://github.com/ValkyrieSystems/jbpy"
+
+[project.scripts]
+jbpinfo = "jbpy.core:main"
+
+[project.entry-points."jbpy.extensions.tre"]
+SECTGA = "jbpy.extensions.tre.SECTGA:SECTGA"
