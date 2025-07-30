@@ -1,0 +1,52 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "mrkutil"
+requires-python = ">=3.12"
+dependencies = ["RabbitMQPubSub>=1.4.0"]
+authors = [{ name = "Nebojsa Mrkic", email = "mrkic.nebojsa@gmail.com" }]
+readme = "README.md"
+license = { file = "LICENSE" }
+classifiers = ['License :: OSI Approved :: Apache Software License']
+dynamic = ["version", "description"]
+
+[project.urls]
+Home = "https://github.com/ivke-99/mrkutil"
+
+[project.optional-dependencies]
+extras = [
+    "redis>=4.2.0",
+    "sqlalchemy>=2.0.0",
+    "orjson>=3.10.18",
+    "psycopg[binary]>=3.2.9",
+]
+tests = [
+    "pytest",
+    "pytest-asyncio",
+    "mock",
+    "ruff",
+    "requests",
+    "pytest-runner",
+    "pre-commit",
+    "pytest-mock",
+    "psycopg",
+    "coverage",
+    "coverage-badge",
+    "mongoengine",
+    "mongomock>=4.3.0",
+]
+
+[tool.coverage.run]
+source = ["./mrkutil"]
+omit = ["mrkutil/service/run.py"]
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = true
+exclude_lines = ["pragma: no cover"]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = ["tests"]
