@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>MMGUI Demo</title>
+    <style>
+        /* 移除默认的轮廓 */
+        button {
+            outline: none;
+        }
+    </style>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #1F2430;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        h1 {
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Hello from MMGUI!</h1>
+    <div class="btn">
+        <button onclick="testOpenFile()">Test Open File</button>
+        <button onclick="testGetVersion()">Test Get Version</button>
+        <button onclick="testHelloMmgui()">Test Hello Mmgui</button>
+        <button onclick="testAddNumbers()">Test Add Numbers</button>
+    </div>
+
+
+    <script>
+        async function testOpenFile() {
+            const res = await RPC.invoke("open_file");
+            alert(res);
+        }
+
+        async function testGetVersion() {
+            const res = await RPC.invoke("get_version");
+            console.log(res); // 输出 v1.0.0
+        }
+
+        async function testHelloMmgui() {
+            await RPC.invoke("hello_mmgui", { msg: "前端同学" });
+        }
+
+        async function testAddNumbers() {
+            const res = await RPC.invoke("add_numbers", { a: 3, b: 5 });
+            console.log(res); // 输出 8
+        }
+    </script>
+</body>
+
+</html>
