@@ -1,0 +1,94 @@
+Metadata-Version: 2.4
+Name: anytraverse
+Version: 0.1.0
+Summary: VLM-based traversability segmentation with human in the loop
+Author-email: Sattwik Sahu <sattwik21@iiserb.ac.in>
+License-File: LICENSE
+Requires-Python: >=3.12.5
+Requires-Dist: clip
+Requires-Dist: depthai-sdk>=1.15.1
+Requires-Dist: fastapi>=0.115.12
+Requires-Dist: ftfy>=6.3.1
+Requires-Dist: matplotlib>=3.10.3
+Requires-Dist: numpy>=1.26.4
+Requires-Dist: regex>=2024.11.6
+Requires-Dist: rich>=14.0.0
+Requires-Dist: scikit-learn>=1.6.1
+Requires-Dist: scipy>=1.15.3
+Requires-Dist: seaborn>=0.13.2
+Requires-Dist: torch>=2.7.0
+Requires-Dist: torchvision>=0.22.0
+Requires-Dist: tqdm>=4.67.1
+Requires-Dist: transformers>=4.52.3
+Requires-Dist: typer>=0.15.4
+Description-Content-Type: text/markdown
+
+# CLIPSEG Offroad Navigation
+
+For Vision-Language Based Offroad Navigation.
+
+## Installation
+
+Follow the steps below to set up the project in a Python virtual environment, install Poetry, and configure PyTorch based on your system requirements.
+
+### 1. Set Up a Python Virtual Environment
+
+First, create and activate a Python virtual environment to isolate the project dependencies:
+
+**On Linux/macOS:**
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+**On Windows:**
+
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+```
+
+### 2. Install Poetry
+
+If Poetry is not installed on your system, you can install it by following the official instructions:
+
+```bash
+curl -sSL https://install.python-poetry.org | python3 -
+```
+
+After installation, ensure Poetry is in your system's PATH by running:
+
+```bash
+poetry --version
+```
+
+### 3. Install Project Dependencies
+
+Once you have activated your virtual environment and installed Poetry, run the following command to install the project dependencies:
+
+```bash
+poetry install
+```
+
+### 4. Install PyTorch (CPU or GPU)
+
+This project supports both CPU and GPU versions of PyTorch. Follow the appropriate instructions based on your system configuration.
+
+#### Option 1: Install PyTorch (CPU Version)
+
+To install the CPU version of PyTorch, use the following command:
+
+```bash
+poetry install --extras "pytorch-cpu" --source pytorch-cpu
+```
+
+#### Option 2: Install PyTorch (GPU Version)
+
+To install the GPU version of PyTorch (CUDA 12.4), use the following command:
+
+```bash
+poetry install --extras "pytorch-gpu" --source pytorch-gpu
+```
+
+> _Note:_ For different CUDA versions, replace `cu124` with the corresponding version in the `pyproject.toml` or adjust the source URL as needed.
