@@ -1,0 +1,231 @@
+# ArcGIS NB - New Brunswick GIS and LiDAR Processing Tool
+
+![Version](https://img.shields.io/badge/version-0.1.0-blue)
+![Python](https://img.shields.io/badge/python-3.7%2B-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+
+A Python package for extracting and processing geospatial data from New Brunswick's GeoNB services. This tool streamlines the workflow for roofing professionals by providing easy access to satellite imagery, building footprints, and LiDAR point clouds for accurate roof measurements and analysis.
+
+## 🌟 Features
+
+- **Address Geocoding**: Convert New Brunswick addresses to precise coordinates using GeoNB's ArcGIS REST API
+- **High-Resolution Imagery**: Retrieve aerial imagery for visual inspection and reference
+- **Building Footprints**: Extract building outlines from GeoNB's building database
+- **Automatic Building Detection**: Identify the building closest to a specified point
+- **LiDAR Processing**: Discover, download, and process LiDAR point cloud data
+- **Precise Clipping**: Extract only the LiDAR points that fall within a building footprint
+- **3D Visualization**: View the processed LiDAR data in an interactive 3D environment
+- **Command-Line Interface**: Easy-to-use CLI for integration into workflows
+- **Python API**: Flexible Python interface for custom applications
+
+## 📋 Prerequisites
+
+- Python 3.7 or higher
+- pip package manager
+- Internet connection for accessing GeoNB services
+- Sufficient disk space for LiDAR data (typically 50-200MB per tile)
+
+## 🔧 Installation
+
+### From PyPI (Recommended)
+
+```bash
+pip install arcgis-nb
+```
+
+### From Source
+
+```bash
+git clone https://github.com/artisanroofing/utils/arcgis_nb.git
+cd arcgis_nb
+pip install -e .
+```
+
+### Development Installation
+
+```bash
+git clone https://github.com/artisanroofing/utils/arcgis_nb.git
+cd arcgis_nb
+pip install -e ".[dev]"
+```
+
+## 🚀 Quick Start
+
+```bash
+# Create directories for data and output
+mkdir -p data/lidar_tiles output
+
+# Process an address with default settings
+arcgis-nb --address "71 ANCHORAGE AVENUE, SAINT JOHN, NB E2K5R3"
+
+# Process with manual point selection and 3D visualization
+arcgis-nb --address "71 ANCHORAGE AVENUE, SAINT JOHN, NB E2K5R3" --point_correction --show_3d
+```
+
+## 📖 Usage
+
+### Command Line Interface
+
+The package provides a command-line tool for processing addresses:
+
+```bash
+arcgis-nb --address "71 ANCHORAGE AVENUE, SAINT JOHN, NB E2K5R3" --output_dir ./my_project
+```
+
+#### Command Line Options
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--address` | New Brunswick address (required) | None |
+| `--output_dir` | Directory where output files will be saved | ./output |
+| `--show_3d` | Enable 3D visualization of LiDAR data | False |
+| `--no_show_3d` | Disable 3D visualization | - |
+| `--point_correction` | Enable manual point selection on satellite image | False |
+| `--no_point_correction` | Disable manual point selection | - |
+| `--verbose` | Enable detailed output messages | False |
+| `--quiet` | Disable detailed output messages | - |
+
+### Python API
+
+You can also use the package as a Python library for more flexibility:
+
+```python
+from arcgis_nb import arcgis
+
+# Get coordinates from an address
+X, Y, wgs84_coords = arcgis.get_arcgis_data("71 ANCHORAGE AVENUE, SAINT JOHN, NB E2K5R3")
+print(f"Coordinates (EPSG:2036): {X}, {Y}")
+print(f"WGS84 coordinates: {wgs84_coords}")  # For use with Google Maps, etc.
+
+# Get satellite imagery
+img = arcgis.get_geonb_imagery(Y, X)
+img.save("satellite.png")
+
+# Get building footprints
+buildings = arcgis.get_buildings(Y, X)
+
+# Highlight the closest building to the center
+highlighted_img, geo_points = arcgis.highlight_closest_polygon_to_center(buildings, X, Y)
+
+# Get LiDAR data information
+lidar_info = arcgis.get_lidar_download_info(X, Y)
+print(f"LiDAR file: {lidar_info['filename']}")
+print(f"Year: {lidar_info['year']}")
+print(f"Point density: {lidar_info['point_density']} points/m²")
+print(f"Download URL: {lidar_info['download_url']}")
+
+# Clip LiDAR data to building footprint
+clipped_file = arcgis.clip_lidar_to_contour(
+    "path/to/lidar.laz",
+    "path/to/output.laz",
+    geo_points
+)
+
+# Visualize the clipped LiDAR data
+arcgis.visualize_laz(clipped_file, show=True)
+```
+
+## 📁 Output Files
+
+The tool generates several output files in the specified output directory:
+
+- `satellite_image.png`: Aerial imagery of the location
+- `building_footprint.png`: Building footprints at the location
+- `building_footprint_highlighted.png`: Building footprints with the closest building highlighted
+- `*_clipped.laz`: LiDAR point cloud clipped to the building footprint
+
+## 📊 LiDAR Data
+
+The tool will check if the required LiDAR tile exists in the `data/lidar_tiles` directory. If not, it will:
+
+1. Provide a download URL from GeoNB's LiDAR repository
+2. Prompt you to download the file manually (due to authentication requirements)
+3. Wait for you to confirm the download is complete
+4. Proceed with processing once the file is available
+
+### LiDAR File Naming Convention
+
+LiDAR files follow the naming convention: `nb_YYYY_XXXXXXX_YYYYYYY.laz` where:
+- `YYYY`: Year of data collection
+- `XXXXXXX_YYYYYYY`: Coordinates of the tile's lower-left corner in NB Stereographic projection
+
+## 📂 Directory Structure
+
+```
+project/
+├── output/                  # Output files
+│   ├── satellite_image.png
+│   ├── building_footprint.png
+│   ├── building_footprint_highlighted.png
+│   └── *_clipped.laz
+└── data/
+    └── lidar_tiles/         # Downloaded LiDAR tiles
+```
+
+## 🔍 Advanced Usage
+
+### Coordinate Systems
+
+The tool works with two coordinate systems:
+- **NB Stereographic (EPSG:2036)**: Used by GeoNB services and LiDAR data
+- **WGS84 (EPSG:4326)**: Standard latitude/longitude, provided for reference
+
+### Manual Point Selection
+
+When using the `--point_correction` flag, the tool will:
+1. Display the satellite image
+2. Allow you to click on the exact building of interest
+3. Use the selected point for subsequent processing
+
+This is useful when:
+- The geocoded address doesn't precisely match the building location
+- You want to select a specific building in a multi-building property
+- The building footprint data needs manual correction
+
+### Working with Large LiDAR Files
+
+LiDAR files can be large (50-200MB). To optimize processing:
+1. Create a dedicated directory for LiDAR tiles
+2. Keep downloaded tiles for future use
+3. Use the clipped output for analysis (much smaller file size)
+
+## 📦 Dependencies
+
+- **requests**: For making HTTP requests to GeoNB services
+- **pyproj**: For coordinate transformations between different systems
+- **PIL/Pillow**: For image processing and manipulation
+- **matplotlib**: For visualization and interactive point selection
+- **numpy**: For numerical operations and array handling
+- **opencv-python**: For contour detection and image processing
+- **laspy**: For reading, manipulating and writing LiDAR LAS/LAZ files
+- **geopandas**: For geospatial data handling and analysis
+- **shapely**: For geometric operations and spatial analysis
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🙏 Acknowledgments
+
+This tool uses data from GeoNB (Service New Brunswick), including:
+- GeoNB Basemap Imagery
+- GeoNB SNB Buildings
+- GeoNB SNB LiDAR Index
+
+We acknowledge the valuable geospatial data provided by the Province of New Brunswick.
+
+## 🤝 Contributing
+
+Contributions are welcome! Here's how you can help:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📞 Support
+
+For questions, issues, or feature requests, please:
+- Open an issue on GitHub
+- Contact the author: amad.gakkhar@adept-techsolutions.com
