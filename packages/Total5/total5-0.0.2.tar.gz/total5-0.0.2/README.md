@@ -1,0 +1,61 @@
+# Total.js integration
+
+The Total.js Python library provides a predefined integration between the Total.js framework (Pypelines) and Python scripts.
+
+- [Website](https://totaljs.com)
+
+```python
+import Total5
+import sys
+
+@Total5.on('data')
+def data(payload):
+	# @payload {JSON|String|Buffer} payload
+	print("--->", payload)
+
+@Total5.on('open')
+def open():
+	# Total.js is connected
+
+@Total5.on('close')
+def close():
+	# Total.js is disconnected
+
+@Total5.on('error')
+def error(err):
+	# Unexpected error
+	print("ERROR", err)
+
+# Total5.send(payload, [uid]);
+# @payload {JSON|String|Buffer} payload
+# @uid {Number} message identifier (optional)
+# IMPORTANT: This method must be performed while Total.js is connected.
+Total5.send({ "name": "Hello world!"})
+
+# Total.listen(type, socket_path)
+# @type {json|text|buffer} default "json"
+# @socket_path {String} path to the socket (optional)
+Total5.listen()
+```
+
+__Python on MacOS__:
+
+```shell
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+## Release package
+
+__Preinstallation__:
+
+```shell
+pip install build
+pip install twine
+```
+
+```shell
+rm -rf dist/ build/ total.egg-info
+python3 -m build
+twine upload dist/*
+```
