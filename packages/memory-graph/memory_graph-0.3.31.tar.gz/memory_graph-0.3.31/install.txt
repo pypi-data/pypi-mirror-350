@@ -1,0 +1,26 @@
+# just some notes about how to deal with Python modules and pip packages
+
+
+# ===== pip install
+pip install --upgrade build twine setuptools wheel
+
+# ===== (un)install current module
+pip uninstall memory_graph
+pip install .
+pip install --upgrade .
+
+
+# ===== prepare packages for upload
+# - increase version number in: pyproject.toml  memory_graph/__init__.py 
+# - update images:
+cd images; bash create_images.sh; cd ..
+# - git commit -am "version X.X.X" && git push
+
+rm -rf ./dist/ ./build/ ./*.egg-info && python -m build -n -s -w
+
+
+# ===== upload packages to pypi for 'pip install' purposes
+# - upload to test url:
+twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+# - upload to pypi for real:
+twine upload dist/*
