@@ -1,0 +1,34 @@
+# -*- coding: utf-8 -*-
+
+
+from hoopa import Spider, Request, Item
+
+
+class DataItem(Item):
+    pass
+
+
+class CommonMiddleware:
+    def process_request(self, request, spider_ins):
+        request.timeout = 10
+
+    def process_response(self, request, response, spider_ins):
+        pass
+
+
+class ${spider_class_name}(Spider):
+    name = "${spider_name}"
+    middlewares = [CommonMiddleware]
+
+    def start_requests(self):
+        yield Request(url="", callback=self.parse)
+
+    def parse(self, request, response):
+        print(response)
+
+    def process_item(self, item: Item):
+        print(item)
+
+
+if __name__ == "__main__":
+    ${spider_class_name}.start()
