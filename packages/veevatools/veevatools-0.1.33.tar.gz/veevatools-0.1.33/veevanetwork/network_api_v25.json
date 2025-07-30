@@ -1,0 +1,3462 @@
+{
+	"info": {
+		"_postman_id": "1d6354db-4abe-4ae9-8ae7-4d4232723424",
+		"name": "Network API - v25",
+		"description": "To use the Network API, create a Postman environment and select it to use for the collection.\n\nThe environment should include the following variables:\n\n* **USERNAME** - the Network user name assigned by your administrator; for example, john.smith@veevanetwork.com\n\n* **PASSWORD** - the password associated with your Network user name\n\n* **DNS** - the URL of your Network instance; for example, my.veevanetwork.com\n\n* **version** - the version of the Network API; for example, v23.0\n\nAfter you've set up an environment for your Network calls, submit an authorization call prior to any subsequent API calls.\n\nThe AUTHORIZATION variables needed for subsequent API calls will be automatically populated into your Postman environment variables.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8296633"
+	},
+	"item": [
+		{
+			"name": "Change Request",
+			"item": [
+				{
+					"name": "Create Change Request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"reserve_vid\": true,\n    \"metadata\": {\n        \"creator\": \"crmuser@pharma.com\",\n        \"system\": \"VCRM\",\n        \"note\": \"John Smith is a new doctor in the Network Hospital\",\n        \"source\": \"Veeva CRM\"\n    },\n    \"entity_type\": \"HCP\",\n    \"vid_key\": \"VCRM:HCP:001A000000pKagwIAC\",\n    \"entity\": {\n        \"attribute 1\": \"Value 1\",\n        \"attribute 2\": \"Value 2\",\n        \" ... \": \" ... \",\n        \"addresses__v\": [\n            {\n                \"vid_key\": \"VCRM:Address:001A000000pLjigIAC\",\n                \"attribute 1\": \"Value 1\",\n                \"attribute 2\": \"Value 2\",\n                \" ... \": \" ... \"\n            }\n        ],\n        \"licenses__v\": [\n            {\n                \"vid_key\": \"VCRM:License:001A000000pNfruIAC\",\n                \"address_vid_key\": \"VCRM:Address:001A000000pLjigIAC\",\n                \"attribute 1\": \"Value 1\",\n                \"attribute 2\": \"Value 2\",\n                \" ... \": \" ... \"\n            }\n        ],\n        \"parent_hcos__v\": [\n            {\n                \"vid_key\": \"VCRM:ChildAccount:001A000000pLkioIAC\",\n                \"parent_hco_vid_key\": \"Network:HCO:215249678634058752\",\n                \"attribute 1\": \"Value 1\",\n                \"attribute 2\": \"Value 2\",\n                \" ... \": \" ... \"\n            }\n        ]\n    }\n}"
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/change_request",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"change_request"
+							]
+						},
+						"description": "This API enables you to create a Network change request to add or update an HCP or HCO and related entities (including addresses, licenses, or parentHCOs) for **gray** data only.\n\nChange requests created using the API against orange data will be rejected."
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Change Request",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{DNS}}/{{version}}/change_request/:change_request_id",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"{{version}}",
+								"change_request",
+								":change_request_id"
+							],
+							"variable": [
+								{
+									"key": "change_request_id",
+									"value": "",
+									"description": "The ID of the change request cancelled in Network."
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve Change Request",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/change_requests/:change_request_ids",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"change_requests",
+								":change_request_ids"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "",
+									"description": "Retrieve change requests of a specific status from the IDs provided.",
+									"disabled": true
+								},
+								{
+									"key": "systemName",
+									"value": "",
+									"description": "Return target aliases specified for this system as well as the external customer keys associated to it. If a system is not provided, Network will return default reference value codes and empty external custom keys.",
+									"disabled": true
+								},
+								{
+									"key": "includeEntity",
+									"value": "",
+									"description": "Return the full entity or entities related to the requested change requests. An entity for a change request is determined from the entity identifier (vid__v) of the change request.",
+									"disabled": true
+								},
+								{
+									"key": "sinceDate",
+									"value": "",
+									"description": "Include change requests modified after the specified date (exclusive). This value is specified in epoch time in milliseconds.",
+									"disabled": true
+								},
+								{
+									"key": "toDate",
+									"value": "",
+									"description": "Include change requests modified on or before the specified date (inclusive). This value is specified in epoch time in milliseconds.",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "change_request_ids",
+									"value": "",
+									"description": "A comma separated list of change request IDs"
+								}
+							]
+						},
+						"description": "This API enables you to retrieve response information for the create, update, and merge change requests submitted by a client application."
+					},
+					"response": []
+				},
+				{
+					"name": "Change Request Batch Retrieve",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"change_requests\": [\r\n        {\r\n            \"change_request_id\": \"527723033129911296\"\r\n        },\r\n        {\r\n            \"change_request_id\": \"493664636982264832\"\r\n        }\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/change_requests/batch",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"change_requests",
+								"batch"
+							]
+						},
+						"description": "This API enables you to obtain information about multiple change requests through the API."
+					},
+					"response": []
+				},
+				{
+					"name": "Change Request Update",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"metadata\": {\r\n        \"creator\": \"john.smith@my.veevanetwork.com\",\r\n        \"note\": \"New record added via API.\",\r\n        \"system\": \"ERP1\"\r\n    },\r\n    \"entity\": {\r\n        \"hcp_type__v\": {\r\n            \"change_requested\": \"P\",\r\n            \"final_value\": null,\r\n            \"result\": \"CHANGE_ACCEPTED\"\r\n        },\r\n        \"first_name__v\": {\r\n            \"change_requested\": \"Charlie\",\r\n            \"final_value\": null,\r\n            \"result\": \"CHANGE_ACCEPTED\"\r\n        },\r\n        \"last_name__v\": {\r\n            \"change_requested\": \"Brown\",\r\n            \"final_value\": null,\r\n            \"result\": \"CHANGE_ACCEPTED\"\r\n        },\r\n        \"hcp_status__v\": {\r\n            \"change_requested\": \"A\",\r\n            \"final_value\": null,\r\n            \"result\": \"CHANGE_ACCEPTED\"\r\n        },\r\n        \"medical_degree_1__v\": {\r\n            \"change_requested\": \"MD\",\r\n            \"final_value\": null,\r\n            \"result\": \"CHANGE_ACCEPTED\"\r\n        },\r\n        \"specialty_1__v\": {\r\n            \"change_requested\": \"IM\",\r\n            \"final_value\": null,\r\n            \"result\": \"CHANGE_ACCEPTED\"\r\n        },\r\n        \"primary_country__v\": {\r\n            \"change_requested\": \"US\",\r\n            \"final_value\": null,\r\n            \"result\": \"CHANGE_ACCEPTED\"\r\n        },\r\n        \"gender__v\": {\r\n            \"change_requested\": \"M\",\r\n            \"final_value\": null,\r\n            \"result\": \"CHANGE_ACCEPTED\"\r\n        },\r\n        \"master_keys\": [\r\n            \"master_source:HCP:997200002\"\r\n        ]\r\n    },\r\n    \"taskCountry\": \"US\",\r\n    \"task_type\": \"CHANGE_REQUEST\",\r\n    \"original_task_type\": \"CHANGE_REQUEST\",\r\n    \"change_request_id\": \"542116772438868992\",\r\n    \"status__v\": \"CHANGE_NEW\",\r\n    \"result__v\": \"CHANGE_PENDING\",\r\n    \"entity_type\": \"HCP\",\r\n    \"vid_key\": null,\r\n    \"vid__v\": null,\r\n    \"resolution_notes\": null,\r\n    \"created_date\": \"2014-10-08T09:54:55.000-04:00\",\r\n    \"completed_date\": null,\r\n    \"job_ids\": [\r\n        \"486\"\r\n    ],\r\n    \"comment\": \"All fields updated through load\"\r\n}"
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/change_requests/:change_request_ids",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"change_requests",
+								":change_request_ids"
+							],
+							"variable": [
+								{
+									"key": "change_request_ids",
+									"value": ""
+								}
+							]
+						},
+						"description": "This API enables you to update an unprocessed change request through the API."
+					},
+					"response": []
+				},
+				{
+					"name": "Change Request Batch Update",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"change_requests\": [\r\n        {\r\n            \"metadata\": {\r\n                \"creator\": \"john.smith@my.veevanetwork.com\",\r\n                \"note\": \"New record added via API.\",\r\n                \"system\": \"ERP1\"\r\n            },\r\n            \"entity\": {\r\n                \"hcp_type__v\": {\r\n                    \"change_requested\": \"P\",\r\n                    \"final_value\": null,\r\n                    \"result\": \"CHANGE_ACCEPTED\"\r\n                },\r\n                \"first_name__v\": {\r\n                    \"change_requested\": \"Marvin\",\r\n                    \"final_value\": null,\r\n                    \"result\": \"CHANGE_ACCEPTED\"\r\n                },\r\n                \"last_name__v\": {\r\n                    \"change_requested\": \"Gaye\",\r\n                    \"final_value\": null,\r\n                    \"result\": \"CHANGE_ACCEPTED\"\r\n                },\r\n                \"hcp_status__v\": {\r\n                    \"change_requested\": \"A\",\r\n                    \"final_value\": null,\r\n                    \"result\": \"CHANGE_ACCEPTED\"\r\n                },\r\n                \"medical_degree_1__v\": {\r\n                    \"change_requested\": \"MD\",\r\n                    \"final_value\": null,\r\n                    \"result\": \"CHANGE_ACCEPTED\"\r\n                },\r\n                \"specialty_1__v\": {\r\n                    \"change_requested\": \"IM\",\r\n                    \"final_value\": null,\r\n                    \"result\": \"CHANGE_ACCEPTED\"\r\n                },\r\n                \"primary_country__v\": {\r\n                    \"change_requested\": \"US\",\r\n                    \"final_value\": null,\r\n                    \"result\": \"CHANGE_ACCEPTED\"\r\n                },\r\n                \"gender__v\": {\r\n                    \"change_requested\": \"M\",\r\n                    \"final_value\": null,\r\n                    \"result\": \"CHANGE_ACCEPTED\"\r\n                },\r\n                \"master_keys\": [\r\n                    \"master_source:HCP:997200012\"\r\n                ]\r\n            },\r\n            \"taskCountry\": \"US\",\r\n            \"change_request_id\": \"543667922896159744\",\r\n            \"status__v\": \"CHANGE_PARTIALLYPROCESSED\",\r\n            \"result__v\": null,\r\n            \"entity_type\": \"HCP\",\r\n            \"vid_key\": null,\r\n            \"vid__v\": null,\r\n            \"resolution_notes\": null,\r\n            \"created_date\": \"2014-11-06T08:49:33.000-05:00\",\r\n            \"completed_date\": null,\r\n            \"job_ids\": [\r\n                \"504\"\r\n            ],\r\n            \"comment\": \"All fields updated through master data load\"\r\n        },\r\n        {\r\n            \"metadata\": {\r\n                \"creator\": \"john.smith@my.veevanetwork.com\",\r\n                \"note\": \"New record added via API.\",\r\n                \"source\": \"API\"\r\n            },\r\n            \"entity\": {\r\n                \"hcp_type__v\": {\r\n                    \"change_requested\": \"P\",\r\n                    \"final_value\": null,\r\n                    \"result\": \"CHANGE_ACCEPTED\"\r\n                },\r\n                \"first_name__v\": {\r\n                    \"change_requested\": \"Nigella\",\r\n                    \"final_value\": null,\r\n                    \"result\": \"CHANGE_ACCEPTED\"\r\n                },\r\n                \"last_name__v\": {\r\n                    \"change_requested\": \"Lam\",\r\n                    \"final_value\": null,\r\n                    \"result\": \"CHANGE_ACCEPTED\"\r\n                },\r\n                \"hcp_status__v\": {\r\n                    \"change_requested\": \"A\",\r\n                    \"final_value\": null,\r\n                    \"result\": \"CHANGE_ACCEPTED\"\r\n                },\r\n                \"medical_degree_1__v\": {\r\n                    \"change_requested\": \"MD\",\r\n                    \"final_value\": null,\r\n                    \"result\": \"CHANGE_ACCEPTED\"\r\n                },\r\n                \"specialty_1__v\": {\r\n                    \"change_requested\": \"IM\",\r\n                    \"final_value\": null,\r\n                    \"result\": \"CHANGE_ACCEPTED\"\r\n                },\r\n                \"primary_country__v\": {\r\n                    \"change_requested\": \"US\",\r\n                    \"final_value\": null,\r\n                    \"result\": \"CHANGE_ACCEPTED\"\r\n                },\r\n                \"gender__v\": {\r\n                    \"change_requested\": \"M\",\r\n                    \"final_value\": null,\r\n                    \"result\": \"CHANGE_ACCEPTED\"\r\n                },\r\n                \"master_keys\": [\r\n                    \"master_source:HCP:997200013\"\r\n                ]\r\n            },\r\n            \"taskCountry\": \"US\",\r\n            \"change_request_id\": \"542116772438868992\",\r\n            \"status__v\": \"CHANGE_PARTIALLYPROCESSED\",\r\n            \"result__v\": null,\r\n            \"entity_type\": \"HCP\",\r\n            \"vid_key\": null,\r\n            \"vid__v\": null,\r\n            \"resolution_notes\": null,\r\n            \"created_date\": \"2014-11-06T08:49:33.000-05:00\",\r\n            \"completed_date\": null,\r\n            \"job_ids\": [\r\n                \"504\"\r\n            ],\r\n            \"comment\": \"All fields updated through master data load\"\r\n        }\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/change_request/batch",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"change_request",
+								"batch"
+							]
+						},
+						"description": "This API enables you to update multiple unprocessed change requests through the API."
+					},
+					"response": []
+				},
+				{
+					"name": "Change Request Process",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"change_requests\": [\n    {\n      \"change_request_id\": \"543667922896159744\"\n    },\n    {\n      \"change_request_id\": \"542116772438868992\"\n    }\n  ],\n  \"systemName\": \"ERP1\"\n}"
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/change_request/process/:change_request_id",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"change_request",
+								"process",
+								":change_request_id"
+							],
+							"variable": [
+								{
+									"key": "change_request_id",
+									"value": "",
+									"description": "The ID of the change request generated in Network."
+								}
+							]
+						},
+						"description": "This API enables you to process an unprocessed change request through the API."
+					},
+					"response": []
+				},
+				{
+					"name": "Change Request Batch Process",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"change_requests\": [\r\n    {\r\n      \"change_request_id\": \"543667922896159744\"\r\n    },\r\n    {\r\n      \"change_request_id\": \"542116772438868992\"\r\n    }\r\n  ],\r\n  \"systemName\": \"ERP1\"\r\n}"
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/change_request/process/batch",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"change_request",
+								"process",
+								"batch"
+							]
+						},
+						"description": "This API enables you to process multiple unprocessed change requests through the API."
+					},
+					"response": []
+				},
+				{
+					"name": "Change Request Search",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/change_request/search?q=*",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"change_request",
+								"search"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "*",
+									"description": "The text for the search query. Uses the following fields:\n* subject\n* description\n* summary\n* task_type\n* task_data\n* comment"
+								},
+								{
+									"key": "offset",
+									"value": "",
+									"description": "The first record to retrieve from the offset specified. The default value is 0.",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "",
+									"description": "The number to limit the results returned. The default is 10; the maximum is 100.",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "",
+									"description": "The attribute to sort results by; for example, task_type.",
+									"disabled": true
+								},
+								{
+									"key": "sortOrder",
+									"value": "",
+									"description": "The sort order: asc for ascending or desc for descending.",
+									"disabled": true
+								},
+								{
+									"key": "filters",
+									"value": "",
+									"description": "Filters for refining the results.",
+									"disabled": true
+								},
+								{
+									"key": "systemName",
+									"value": "",
+									"description": "When provided, Network returns target alias values defined for reference codes for this system. Otherwise, Network returns default reference code values.",
+									"disabled": true
+								},
+								{
+									"key": "masterSystemNames",
+									"value": "",
+									"description": "A comma-separated list of master system names. Search results will include only change requests that are handled by the specified master systems. Includes all pending and processed change requests.",
+									"disabled": true
+								},
+								{
+									"key": "pendingMasterSystemNames",
+									"value": "",
+									"description": "A comma-separated list of master system names. Search results will include only change requests that are awaiting processing by the specified master systems.",
+									"disabled": true
+								}
+							]
+						},
+						"description": "This API enables you to retrieve all change requests that match a specified search criteria."
+					},
+					"response": []
+				},
+				{
+					"name": "Change Request Match",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/change_request/match/:change_request_id?vidKey",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"change_request",
+								"match",
+								":change_request_id"
+							],
+							"query": [
+								{
+									"key": "vidKey",
+									"value": "",
+									"description": "The key for the object."
+								},
+								{
+									"key": "comment",
+									"value": "",
+									"description": "Notes added by the Network user.",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "change_request_id",
+									"value": "",
+									"description": "The ID of the change request to process."
+								}
+							]
+						},
+						"description": "This API enables you to match a request to an existing entity. You can use either the Veeva ID or custom key of an existing entity to match the request against."
+					},
+					"response": []
+				},
+				{
+					"name": "Change Request Batch Approve",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"change_requests\": [\r\n        {\r\n            \"change_request_id\": \"543667922896159744\"\r\n        },\r\n        {\r\n            \"change_request_id\": \"542116772438868992\"\r\n        }\r\n    ],\r\n    \"systemName\": \"ERP1\"\r\n}"
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/change_request/approve/batch",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"change_request",
+								"approve",
+								"batch"
+							]
+						},
+						"description": "This API enables you to bulk approve up to 500 change requests."
+					},
+					"response": []
+				},
+				{
+					"name": "Change Request Batch Reject",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"change_requests\": [\r\n        {\r\n            \"change_request_id\": \"543667922896159744\"\r\n        },\r\n        {\r\n            \"change_request_id\": \"542116772438868992\"\r\n        }\r\n    ],\r\n    \"systemName\": \"ERP1\"\r\n}"
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/change_request/reject/batch",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"change_request",
+								"reject",
+								"batch"
+							]
+						},
+						"description": "This API enables you to bulk reject up to 500 change requests."
+					},
+					"response": []
+				}
+			],
+			"description": "Change requests are the standard method used to submit changes in Network. The Change request APIs enable you to create change requests to add, update, merge, or split HCPs and HCOs.\n\nAddress, License, and ParentHCO information, including their custom keys, are part of each HCP and HCO. To add a new Address, License, or ParentHCO (including new custom keys) to either an HCP or HCO, you use the Create change request API. You can provide the vid_key of the HCP or HCO and the external ID of the new Address, License, or ParentHCO for more efficient processing.\n\nChange request APIs to delete entities are not available, as information in Network cannot be deleted. For HCPs and HCOs, a change request for the Status field is the standard method to deactivate resources. Addresses, Licenses, and ParentHCOs follow the same procedure as part of the HCP or HCO in the Network data model.\n\nThe fields of any entity call are the properties for the corresponding entity. You can get the list of properties by accessing the Network external data model to see all fields for a particular entity. The data model also describes the fields required to create any resources, as well as any group of fields that must be submitted all together, if any of them changes (for example, address fields for regular mail).\n\nIf successful, each change request record received is responded to with a unique Network change request ID and date/time value upon reception."
+		},
+		{
+			"name": "Custom Key",
+			"item": [
+				{
+					"name": "Associate Custom Key to Entity",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/entities/:vid_key/custom_keys",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"entities",
+								":vid_key",
+								"custom_keys"
+							],
+							"query": [
+								{
+									"key": "custom_key_source_type",
+									"value": "",
+									"description": "The source of the new key.",
+									"disabled": true
+								},
+								{
+									"key": "custom_key_item_type",
+									"value": "",
+									"description": "The item type for the new key.",
+									"disabled": true
+								},
+								{
+									"key": "custom_key_value",
+									"value": "",
+									"description": "The value for the new key.",
+									"disabled": true
+								},
+								{
+									"key": "system_name",
+									"value": "",
+									"description": "The name of the system for the new key.",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "vid_key",
+									"value": "",
+									"description": "The key for the entity you want to associate."
+								}
+							]
+						},
+						"description": "This API enables you to submit external key identifiers when new HCPs or HCOs are downloaded from Network without going through the full change request process.\n\nThe external identifier is associated to the entity (vid_key) specified in the URL.\n\n**Note:** This API requires system administrator or API-only permissions."
+					},
+					"response": []
+				},
+				{
+					"name": "Associate Custom Key to Children",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/entities/:vid_key/children/:children_key/custom_keys",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"entities",
+								":vid_key",
+								"children",
+								":children_key",
+								"custom_keys"
+							],
+							"query": [
+								{
+									"key": "custom_key_source_type",
+									"value": "",
+									"description": "The source of the new key.",
+									"disabled": true
+								},
+								{
+									"key": "custom_key_item_type",
+									"value": "",
+									"description": "The item type for the new key.",
+									"disabled": true
+								},
+								{
+									"key": "custom_key_value",
+									"value": "",
+									"description": "The value for the new key.",
+									"disabled": true
+								},
+								{
+									"key": "system_name",
+									"value": "",
+									"description": "The name of the system for the new key.",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "vid_key",
+									"value": "",
+									"description": "The key for the entity you want to associate."
+								},
+								{
+									"key": "children_key",
+									"value": "",
+									"description": "The key of the HCO to add the new key to."
+								}
+							]
+						},
+						"description": "This API enables you to submit external key identifiers when new children (address, license, or parent HCOs) are downloaded from Network without going through the full change request process.\n\nThe external identifier is associated to the children (children_key) specified in the URL.\n\n**Note:** This API requires system administrator or API-only permissions."
+					},
+					"response": []
+				},
+				{
+					"name": "Batch Associate Custom Keys to Entities",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"entities\": [\r\n        {\r\n            \"vid_key\": \"Network:Entity:291256782200767488\",\r\n            \"custom_key_source_type\": \"VCRM\",\r\n            \"custom_key_item_type\": \"ENTITY\",\r\n            \"custom_key_value\": \"123123123123\",\r\n            \"system_name\": \"VCRM\"\r\n        },\r\n        {\r\n            \"vid_key\": \"Network:Entity:291256782200767400\",\r\n            \"custom_key_source_type\": \"VCRM\",\r\n            \"custom_key_item_type\": \"ENTITY\",\r\n            \"custom_key_value\": \"123456789\",\r\n            \"system_name\": \"VCRM\"\r\n        },\r\n        {\r\n            \"vid_key\": \"Network:Entity:291256796914385922\",\r\n            \"custom_key_source_type\": \"VCRM\",\r\n            \"custom_key_item_type\": \"ENTITY\",\r\n            \"custom_key_value\": \"987654321\",\r\n            \"system_name\": \"VCRM\"\r\n        }\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/entities/custom_keys/associate/batch",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"entities",
+								"custom_keys",
+								"associate",
+								"batch"
+							]
+						},
+						"description": "This API enables you to submit external key identifiers whenever new HCPs or HCOs are downloaded from Network without going through the full change request process.\n\nThe external identifiers are associated to the entities (vid_key) specified in the request.\n\n**Note:** This API requires system administrator or API-only permissions."
+					},
+					"response": []
+				},
+				{
+					"name": "Batch Associate Custom Keys to Children",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"entities\": [\r\n    {\r\n      \"vid_key\": \"Network:Entity:291256782200767488\",\r\n      \"child_type\": \"licenses\",\r\n      \"child_key\": \"Network:License:291256858360939523\",\r\n      \"custom_key_source_type\": \"VCRM\",\r\n      \"custom_key_item_type\": \"LICENSE\",\r\n      \"custom_key_value\": \"123456789\",\r\n      \"system_name\": \"VCRM\"\r\n    },\r\n    {\r\n      \"vid_key\": \"Network:Entity:291256748453397507\",\r\n      \"child_type\": \"addresses\",\r\n      \"child_key\": \"Network:Address:291256848747594752\",\r\n      \"custom_key_source_type\": \"VCRM\",\r\n      \"custom_key_item_type\": \"ADDRESS\",\r\n      \"custom_key_value\": \"123123123123\",\r\n      \"system_name\": \"VCRM\"\r\n    },\r\n    {\r\n      \"vid_key\": \"Network:Entity:291256757999633408\",\r\n      \"child_type\": \"parent_hcos\",\r\n      \"child_key\": \"Network:ParentHCO:291256757999633600\",\r\n      \"custom_key_source_type\": \"VCRM\",\r\n      \"custom_key_item_type\": \"CHILDACCOUNT\",\r\n      \"custom_key_value\": \"987654321\",\r\n      \"system_name\": \"VCRM\"\r\n    }\r\n  ]\r\n}"
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/entities/children/custom_keys/associate/batch",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"entities",
+								"children",
+								"custom_keys",
+								"associate",
+								"batch"
+							]
+						},
+						"description": "This API enables you to submit external key identifiers when new children (address, license, or parent HCOs) are downloaded from Network without going through the full change request process.\n\nThe external identifiers are associated to the children (children_key) specified in the request.\n\n**Note:** This API requires system administrator or API-only permissions."
+					},
+					"response": []
+				},
+				{
+					"name": "Disassociate Custom Key",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/custom_keys/:vid_key",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"custom_keys",
+								":vid_key"
+							],
+							"variable": [
+								{
+									"key": "vid_key",
+									"value": "",
+									"description": "The custom key you want to deactivate for the entity."
+								}
+							]
+						},
+						"description": "This API enables you to deactivate external key identifiers for any entity (an HCP, HCO, address, license, or parent HCO) in Network without going through the full change request process.\n\nThe external identifier (vid_key) specified in the URL is disassociated from the entity.\n\n**Note:** This API requires system administrator or API-only permissions."
+					},
+					"response": []
+				},
+				{
+					"name": "Batch Disassociate Custom Key",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"entities\": [\r\n    {\r\n      \"vid_key\": \"VCRM:ENTITY:291256782200767500\"\r\n    },\r\n    {\r\n      \"vid_key\": \"VCRM:LICENSE:123456789\"\r\n    },\r\n    {\r\n      \"vid_key\": \"VCRM:ADDRESS:123123123123\"\r\n    }\r\n  ]\r\n}"
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/custom_keys/disassociate/batch",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"custom_keys",
+								"disassociate",
+								"batch"
+							]
+						},
+						"description": "This API enables you to inactivate external key identifiers for any entity (HCP, HCO, address, license, or parent HCO) in Network without going through the full change request process.\n\nThe external identifier is disassociated from the entities (vid_key) specified in the request.\n\n**Note:** This API requires system administrator or API-only permissions."
+					},
+					"response": []
+				}
+			],
+			"description": "This API enables you to associate or disassociate custom keys with entities and child entities."
+		},
+		{
+			"name": "Entity",
+			"item": [
+				{
+					"name": "Retrieve Entity",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/entity/:vid_key",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"entity",
+								":vid_key"
+							],
+							"query": [
+								{
+									"key": "systemName",
+									"value": "",
+									"description": "When provided, Network returns target alias values defined for reference codes for this system. Otherwise, Network returns default reference code values.",
+									"disabled": true
+								},
+								{
+									"key": "enrichedResults",
+									"value": "",
+									"description": "Specifies whether or not to display labels for reference type fields in the results.",
+									"disabled": true
+								},
+								{
+									"key": "resultLanguage",
+									"value": "",
+									"description": "Specifies the language to use if the enriched results option is enabled. Uses the IETF BCP 47 language standard.",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "vid_key",
+									"value": "154484857",
+									"description": "The key of the entity to retrieve."
+								}
+							]
+						},
+						"description": "This API enables you to obtain information on any entity without identifying the specific entity type.\n\nThis API is only used to retrieve information from Network using the GET method.\n\n**Note:** This API downloads the record for the specified entity from Veeva OpenData to your customer instance."
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve Child Entity",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/child/:vid_key",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"child",
+								":vid_key"
+							],
+							"query": [
+								{
+									"key": "systemName",
+									"value": "",
+									"description": "When provided, Network returns target alias values defined for reference codes for this system. Otherwise, Network returns default reference code values.",
+									"disabled": true
+								},
+								{
+									"key": "enrichedResults",
+									"value": "",
+									"description": "Specifies whether or not to display labels for reference type fields in the results.",
+									"disabled": true
+								},
+								{
+									"key": "resultLanguage",
+									"value": "",
+									"description": "Specifies the language to use if the enriched results option is enabled. Uses the IETF BCP 47 language standard.",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "vid_key",
+									"value": "",
+									"description": "The key of the entity to retrieve."
+								}
+							]
+						},
+						"description": "This API enables you to obtain information on any child entity (such as address or license) without identifying the specific entity type.\n\nThis API is only used to retrieve information from Network using the GET method."
+					},
+					"response": []
+				},
+				{
+					"name": "Batch Retrieve Entities",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"entities\": [\r\n        {\r\n            \"vid_key\": \"Network:Entity:932315773830225247\"\r\n        },\r\n        {\r\n            \"vid_key\": \"Network:Entity:932910724243720799\"\r\n        },\r\n        {\r\n            \"vid_key\": \"Network:Entity:932241620698597983\"\r\n        }\r\n    ],\r\n    \"systemName\": \"change_request\",\r\n    \"enrichedResults\": \"true\",\r\n    \"resultLanguage\": \"en\"\r\n}"
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/entities/batch",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"entities",
+								"batch"
+							]
+						},
+						"description": "This API enables you to obtain information about entities directly from Network through the API. Users are only allowed to retrieve (GET) information from Network.\n\nAll other operations (POST and DELETE) are restricted and can only be performed by submitting a change request using the Change Request APIs."
+					},
+					"response": []
+				},
+				{
+					"name": "Batch Retrieve Child Entities",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"entities\": [\r\n        {\r\n            \"vid_key\": \"Network:License:935315773850225249\"\r\n        },\r\n        {\r\n            \"vid_key\": \"Network:License:932910724244965984\"\r\n        },\r\n        {\r\n            \"vid_key\": \"Network:License:932241620698597985\"\r\n        }\r\n    ],\r\n    \"systemName\": \"change_request\",\r\n    \"enrichedResults\": \"true\",\r\n    \"resultLanguage\": \"en\"\r\n}"
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/children/batch",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"children",
+								"batch"
+							]
+						},
+						"description": "This API enables you to obtain information on child entities without identifying the specific entity type. Users are only allow the retrieve (GET) information from Network.\n\nAll other operations (POST and DELETE) are restricted and can only be performed by submitting a change request using the Change Request APIs."
+					},
+					"response": []
+				}
+			],
+			"description": "This API enables you to obtain information about any entity or child entity (addresses, licenses, ane parent HCOs), including custom keys for the entities retrieved."
+		},
+		{
+			"name": "HCO",
+			"item": [
+				{
+					"name": "Retrieve HCO",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/hcos/:vid_key",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"hcos",
+								":vid_key"
+							],
+							"query": [
+								{
+									"key": "systemName",
+									"value": "",
+									"description": "Retrieve information for the specified system. If not specified, all information is returned.",
+									"disabled": true
+								},
+								{
+									"key": "enrichedResults",
+									"value": "",
+									"description": "Specifies whether or not to display labels for reference type fields in the results.",
+									"disabled": true
+								},
+								{
+									"key": "resultLanguage",
+									"value": "",
+									"description": "Specifies the language to use if the enriched results option is enabled. Uses the IETF BCP 47 language standard.",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "vid_key",
+									"value": "",
+									"description": "The key for the HCO you want to retrieve."
+								}
+							]
+						},
+						"description": "This API enables you to retrieve information about an HCO. Information you can retrieve for an HCO includes the HCO, address, license, and parent HCO information (including their custom keys) for the HCO vid_key you provide.\n\n**Note:** This API downloads the record for the specified entity from Veeva OpenData to your customer instance."
+					},
+					"response": []
+				},
+				{
+					"name": "Associate Custom Key to HCO",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/hcos/:vid_key/custom_keys",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"hcos",
+								":vid_key",
+								"custom_keys"
+							],
+							"query": [
+								{
+									"key": "custom_key_source_type",
+									"value": "",
+									"description": "The source of the new key.",
+									"disabled": true
+								},
+								{
+									"key": "custom_key_item_type",
+									"value": "",
+									"description": "The item type for the new key.",
+									"disabled": true
+								},
+								{
+									"key": "custom_key_value",
+									"value": "",
+									"description": "The value for the new key.",
+									"disabled": true
+								},
+								{
+									"key": "system_name",
+									"value": "",
+									"description": "The name of the system for the new key.",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "vid_key",
+									"value": "",
+									"description": "The key for the HCO you want to add the new key to."
+								}
+							]
+						},
+						"description": "This API enables you to submit external key identifiers when new HCOs are downloaded from Network without going through the full change request process. This API associates the external identifier you submit to the HCO vid_key you provide.\n\n**Note:** This API requires system administrator or API-only permissions."
+					},
+					"response": []
+				},
+				{
+					"name": "Associate Custom Key to HCO Address",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/hcos/:vid_key/addresses/:address_key/custom_keys",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"hcos",
+								":vid_key",
+								"addresses",
+								":address_key",
+								"custom_keys"
+							],
+							"query": [
+								{
+									"key": "custom_key_source_type",
+									"value": "",
+									"description": "The source of the new key.",
+									"disabled": true
+								},
+								{
+									"key": "custom_key_item_type",
+									"value": "",
+									"description": "The item type for the new key.",
+									"disabled": true
+								},
+								{
+									"key": "custom_key_value",
+									"value": "",
+									"description": "The value for the new key.",
+									"disabled": true
+								},
+								{
+									"key": "system_name",
+									"value": "",
+									"description": "The name of the system for the new key.",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "vid_key",
+									"value": "",
+									"description": "The key for the HCO you want to add the key to."
+								},
+								{
+									"key": "address_key",
+									"value": "",
+									"description": "The key for the HCO address to add the new key to."
+								}
+							]
+						},
+						"description": "This API enables you to submit external key identifiers when new HCO addresses are downloaded from Network without going through the full change request process. This API associates the external identifier you submit to the HCO address_key you provide.\n\n**Note:** This API requires system administrator or API-only permissions."
+					},
+					"response": []
+				},
+				{
+					"name": "Associate Custom Key to HCO License",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/hcos/:vid_key/licenses/:license_key/custom_keys",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"hcos",
+								":vid_key",
+								"licenses",
+								":license_key",
+								"custom_keys"
+							],
+							"query": [
+								{
+									"key": "custom_key_source_type",
+									"value": "",
+									"description": "The source of the new key.",
+									"disabled": true
+								},
+								{
+									"key": "custom_key_item_type",
+									"value": "",
+									"description": "The item type for the new key.",
+									"disabled": true
+								},
+								{
+									"key": "custom_key_value",
+									"value": "",
+									"description": "The value for the new key.",
+									"disabled": true
+								},
+								{
+									"key": "system_name",
+									"value": "",
+									"description": "The name of the system for the new key.",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "vid_key",
+									"value": "",
+									"description": "The HCO you want to add the new key to."
+								},
+								{
+									"key": "license_key",
+									"value": "",
+									"description": "The HCO license to add the new key to."
+								}
+							]
+						},
+						"description": "This API enables you to submit external key identifiers when new HCO licenses are downloaded from Network without going through the full change request process. This API associates the external identifier you submit to the HCO license_key you provide.\n\n**Note:** This API requires system administrator or API-only permissions."
+					},
+					"response": []
+				},
+				{
+					"name": "Associate Custom Key to HCO ParentHCO",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/hcos/:vid_key/parent_hcos/:parenthco_key/custom_keys",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"hcos",
+								":vid_key",
+								"parent_hcos",
+								":parenthco_key",
+								"custom_keys"
+							],
+							"query": [
+								{
+									"key": "custom_key_source_type",
+									"value": "",
+									"description": "The source of the new key.",
+									"disabled": true
+								},
+								{
+									"key": "custom_key_item_type",
+									"value": "",
+									"description": "The item type for the new key.",
+									"disabled": true
+								},
+								{
+									"key": "custom_key_value",
+									"value": "",
+									"description": "The value for the new key.",
+									"disabled": true
+								},
+								{
+									"key": "system_name",
+									"value": "",
+									"description": "The name of the system for the new key.",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "vid_key",
+									"value": "",
+									"description": "The key for the HCO you want to add the new key to."
+								},
+								{
+									"key": "parenthco_key",
+									"value": "",
+									"description": "The key for the HCO parent HCO to add the new key to."
+								}
+							]
+						},
+						"description": "This API enables you to submit external key identifiers when new HCO parent HCOs are downloaded from Network without going through the full change request process. This API associates the external identifier you submit to the HCO parenthco_key you provide.\n\n**Note:** This API requires system administrator or API-only permissions."
+					},
+					"response": []
+				}
+			],
+			"description": "The health care organization API enable you to retrieve HCO information and associate custom keys with or disassociate them from other entities."
+		},
+		{
+			"name": "HCP",
+			"item": [
+				{
+					"name": "Retrieve HCP",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/hcps/:vid_key?returnHashtagsForType",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"hcps",
+								":vid_key"
+							],
+							"query": [
+								{
+									"key": "systemName",
+									"value": "",
+									"description": "Retrieve information for the specified system. If not specified, all information is returned.",
+									"disabled": true
+								},
+								{
+									"key": "enrichedResults",
+									"value": "",
+									"description": "Specifies whether or not to display labels for reference type fields in the results.",
+									"disabled": true
+								},
+								{
+									"key": "resultLanguage",
+									"value": "",
+									"description": "Specifies the language to use if the enriched results option is enabled. Uses the IETF BCP 47 language standard.",
+									"disabled": true
+								},
+								{
+									"key": "returnHashtagsForType",
+									"value": "",
+									"description": "Return hashtags for the requested type using the following values:\n* NETWORK - Display predefined Network hashtags.\n* ALL - Display Network-defined and custom hashtags.\n* NONE - Do not display hashtags."
+								}
+							],
+							"variable": [
+								{
+									"key": "vid_key",
+									"value": "",
+									"description": "The key for the HCP you want to retrieve."
+								}
+							]
+						},
+						"description": "This API enables you to retrieve information about an HCP. Information you can retrieve for an HCP includes the HCP, address, license, and parent HCO information (including their custom keys) for the HCP vid_key you provide.\n\n**Note:** This API downloads the record for the specified entity from Veeva OpenData to your customer instance."
+					},
+					"response": []
+				},
+				{
+					"name": "Associate Custom Key to HCP",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/hcps/:vid_key/custom_keys",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"hcps",
+								":vid_key",
+								"custom_keys"
+							],
+							"query": [
+								{
+									"key": "custom_key_source_type",
+									"value": "",
+									"description": "The source of the new key.",
+									"disabled": true
+								},
+								{
+									"key": "custom_key_item_type",
+									"value": "",
+									"description": "The item type for the new key.",
+									"disabled": true
+								},
+								{
+									"key": "custom_key_value",
+									"value": "",
+									"description": "The value for the new key.",
+									"disabled": true
+								},
+								{
+									"key": "system_name",
+									"value": "",
+									"description": "The name of the system for the new key.",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "vid_key",
+									"value": "",
+									"description": "The key for the HCP you want to retrieve."
+								}
+							]
+						},
+						"description": "This API enables you to submit external key identifiers when new HCPs are downloaded from Network without going through the full change request process. This API associates the external identifier you submit to the HCP vid_key you provide.\n\n**Note:** This API requires system administrator or API-only permissions."
+					},
+					"response": []
+				},
+				{
+					"name": "Associate Custom Key to HCP Address",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/hcps/:vid_key/addresses/:address_key/custom_keys",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"hcps",
+								":vid_key",
+								"addresses",
+								":address_key",
+								"custom_keys"
+							],
+							"query": [
+								{
+									"key": "custom_key_source_type",
+									"value": "",
+									"description": "The source of the new key.",
+									"disabled": true
+								},
+								{
+									"key": "custom_key_item_type",
+									"value": "",
+									"description": "The item type for the new key.",
+									"disabled": true
+								},
+								{
+									"key": "custom_key_value",
+									"value": "",
+									"description": "The value for the new key.",
+									"disabled": true
+								},
+								{
+									"key": "system_name",
+									"value": "",
+									"description": "The name of the system for the new key.",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "vid_key",
+									"value": "",
+									"description": "The key for the HCP you want to retrieve."
+								},
+								{
+									"key": "address_key",
+									"value": "",
+									"description": "The key for the HCP address to add the new key to."
+								}
+							]
+						},
+						"description": "This API enables you to submit external key identifiers when new HCP addresses are downloaded from Network without going through the full change request process. This API associates the external identifier you submit to the HCP address_key you provide.\n\n**Note:** This API requires system administrator or API-only permissions."
+					},
+					"response": []
+				},
+				{
+					"name": "Associate Custom Key to HCP License",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/hcps/:vid_key/licenses/:license_key/custom_keys",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"hcps",
+								":vid_key",
+								"licenses",
+								":license_key",
+								"custom_keys"
+							],
+							"query": [
+								{
+									"key": "custom_key_source_type",
+									"value": "",
+									"description": "The source of the new key.",
+									"disabled": true
+								},
+								{
+									"key": "custom_key_item_type",
+									"value": "",
+									"description": "The item type for the new key.",
+									"disabled": true
+								},
+								{
+									"key": "custom_key_value",
+									"value": "",
+									"description": "The value for the new key.",
+									"disabled": true
+								},
+								{
+									"key": "system_name",
+									"value": "",
+									"description": "The name of the system for the new key.",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "vid_key",
+									"value": "",
+									"description": "The key for the HCP you want to retrieve."
+								},
+								{
+									"key": "license_key",
+									"value": "",
+									"description": "The key for the HCP license to add the new key to."
+								}
+							]
+						},
+						"description": "This API enables you to submit external key identifiers when new HCP licenses are downloaded from Network without going through the full change request process. This API associates the external identifier you submit to the HCP license_key you provide.\n\n**Note:** This API requires system administrator or API-only permissions."
+					},
+					"response": []
+				},
+				{
+					"name": "Associate Custom Key to HCP ParentHCO",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/hcps/:vid_key/parent_hcos/:parenthco_key/custom_keys",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"hcps",
+								":vid_key",
+								"parent_hcos",
+								":parenthco_key",
+								"custom_keys"
+							],
+							"query": [
+								{
+									"key": "custom_key_source_type",
+									"value": "",
+									"description": "The source of the new key.",
+									"disabled": true
+								},
+								{
+									"key": "custom_key_item_type",
+									"value": "",
+									"description": "The item type for the new key.",
+									"disabled": true
+								},
+								{
+									"key": "custom_key_value",
+									"value": "",
+									"description": "The value for the new key.",
+									"disabled": true
+								},
+								{
+									"key": "system_name",
+									"value": "",
+									"description": "The name of the system for the new key.",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "vid_key",
+									"value": "",
+									"description": "The key for the HCP you want to retrieve."
+								},
+								{
+									"key": "parenthco_key",
+									"value": "",
+									"description": "The key for the HCP parent HCO to add the new key to."
+								}
+							]
+						},
+						"description": "The Associate custom key to HCP parent HCO API enables you to submit external key identifiers when new HCP parent HCOs are downloaded from Network without going through the full change request process. This API associates the external identifier you submit to the HCP parenthco_key you provide.\n\n**Note:** This API requires system administrator or API-only permissions."
+					},
+					"response": []
+				}
+			],
+			"description": "The health care professional API enable you to retrieve HCP information and associate custom keys with or disassociate them from other entities."
+		},
+		{
+			"name": "Metadata",
+			"item": [
+				{
+					"name": "Retrieve Available API Versions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}"
+							]
+						},
+						"description": "This API enables you to retrieve summary information about each API version available in Network."
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve hashtags",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/metadata/hashtags?returnHashtagsForType",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"metadata",
+								"hashtags"
+							],
+							"query": [
+								{
+									"key": "returnHashtagsForType",
+									"value": "",
+									"description": "Return hashtags for the requested type using the following values:\n* NETWORK - Display predefined Network hashtags.\n* ALL - Display Network-defined and custom hashtags.\n* NONE - Do not display hashtags."
+								}
+							]
+						},
+						"description": "This API enables you to retrieve the list of hashtags available in a Network instance."
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve Object Types Metadata",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/metadata/objectTypes",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"metadata",
+								"objectTypes"
+							],
+							"query": [
+								{
+									"key": "owner",
+									"value": "",
+									"description": "Filter by customer- or Veeva-owned objects.",
+									"disabled": true
+								}
+							]
+						},
+						"description": "This API enables you to retrieve the list of object types available in Network."
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve Fields Metadata",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/metadata/fields",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"metadata",
+								"fields"
+							],
+							"query": [
+								{
+									"key": "objectTypes",
+									"value": "",
+									"description": "Filter fields to those applicable for certain object types:\n* Default - do not filter by object type.\n* Values - comma-separated list of object types from: HCP, HCO, LICENSE, * ADDRESS, PARENTHCO, CUSTOMKEY",
+									"disabled": true
+								},
+								{
+									"key": "owner",
+									"value": "",
+									"description": "Filter fields to those owned by the specified party:\n* Default - do not filter by owner\n* Values - veeva (maintained by Veeva), customer (created and managed by the customer)",
+									"disabled": true
+								},
+								{
+									"key": "details",
+									"value": "",
+									"description": "Include field details:\n* Default - Only returns field IDs\n* Value - “full” (include field details in the results)",
+									"disabled": true
+								},
+								{
+									"key": "labels",
+									"value": "",
+									"description": "Include labels in field details:\n* Default - Include labels\n* Values - True or empty (include labels in the field details in the results)",
+									"disabled": true
+								},
+								{
+									"key": "fieldGroup",
+									"value": "",
+									"description": "Filter fields to those applicable for a certain field group:\n* Default - do not filter by field group\n* Values - The desired field group, for example, credentials, medical_degree, and so on",
+									"disabled": true
+								},
+								{
+									"key": "country",
+									"value": "",
+									"description": "Filter fields by country visibility:\n* Default - do not filter by country\n* Values - The desired country value, for example, US, GB, FR. The country must be visible to the authenticated user.",
+									"disabled": true
+								},
+								{
+									"key": "countries",
+									"value": "",
+									"description": "Filter fields by country visibility:\n* Default - do not filter by country\n* Values - The desired country values, for example, US, GB, FR. The countries must be visible to the authenticated user.",
+									"disabled": true
+								}
+							]
+						},
+						"description": "This API enables you to retrieve detailed or summary information about the fields on each entity in Network."
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve Field Details Metadata",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/metadata/fields/:field_ids",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"metadata",
+								"fields",
+								":field_ids"
+							],
+							"query": [
+								{
+									"key": "labels",
+									"value": "",
+									"description": "Include labels in field details:\n* Default - Include labels\n* Values - True or empty (include labels in the field details in the results)",
+									"disabled": true
+								},
+								{
+									"key": "countries",
+									"value": "",
+									"description": "Filter fields by country visibility:\n* Default - do not filter by country\n* Values - The desired country values, for example, US, GB, FR. The countries must be visible to the authenticated user.",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "field_ids",
+									"value": "",
+									"description": "A comma-separated list of field IDs to look up."
+								}
+							]
+						},
+						"description": "This API enables you to retrieve detailed information about the fields on each entity in Network."
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve Field Groups Metadata",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/metadata/fieldGroups",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"metadata",
+								"fieldGroups"
+							]
+						},
+						"description": "This API enables you to retrieve detailed information about the field groups available in Network. These field groups are used by the CRM bridge when retrieving and displaying information from Network in CRM."
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve Reference Data Types Metadata",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/metadata/reference_values",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"metadata",
+								"reference_values"
+							],
+							"query": [
+								{
+									"key": "owner",
+									"value": "",
+									"description": "Filter reference types to those owned by the specified party:\n* Default - do not filter by owner\n* Values - veeva (maintained by Veeva), customer (created and managed by customer)",
+									"disabled": true
+								},
+								{
+									"key": "inactive",
+									"value": "",
+									"description": "Include reference codes marked as inactive:\n* Default - do not include inactive reference codes\n* Values - True (include inactive reference codes in the results), otherwise do not include inactive reference codes. This value only works when includeCodes is True.",
+									"disabled": true
+								},
+								{
+									"key": "includeCodes",
+									"value": "",
+									"description": "Include reference codes details:\n* Default - return only type, base English label, and description\n* Values - True (include reference codes in the results), otherwise do not include reference codes. If True, the codes returned are filtered by the inactive and owner parameters.",
+									"disabled": true
+								},
+								{
+									"key": "country",
+									"value": "",
+									"description": "Filter codes by country, only if includeCodes is True:\n* Default - do not filter by country\n* Values - The desired country value, for example, US, GB, FR. The country must be visible to the authenticated user.",
+									"disabled": true
+								},
+								{
+									"key": "countries",
+									"value": "",
+									"description": "Filter fields by country visibility:\n* Default - do not filter by country\n* Values - The desired country values, for example, US, GB, FR. The countries must be visible to the authenticated user.",
+									"disabled": true
+								},
+								{
+									"key": "systemName",
+									"value": "",
+									"description": "Return target alias values specified for reference value codes for this system:\n* Default - return the default reference value codes",
+									"disabled": true
+								}
+							]
+						},
+						"description": "This API enables you to retrieve information about reference data types in Network."
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve Reference Data Type Details Metadata",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/metadata/reference_values/:type",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"metadata",
+								"reference_values",
+								":type"
+							],
+							"query": [
+								{
+									"key": "owner",
+									"value": "",
+									"description": "Filter reference types to those owned by the specified party:\n* Default - do not filter by owner\n* Values - veeva (maintained by Veeva), customer (created and managed by customer)",
+									"disabled": true
+								},
+								{
+									"key": "inactive",
+									"value": "",
+									"description": "Include reference codes marked as inactive:\n* Default - do not include inactive reference codes\n* Values - True (include inactive reference codes in the results), otherwise do not include inactive reference codes. This value only works when includeCodes is True.",
+									"disabled": true
+								},
+								{
+									"key": "country",
+									"value": "",
+									"description": "Filter codes by country, only if includeCodes is True:\n* Default - do not filter by country\n* Values - The desired country value, for example, US, GB, FR. The country must be visible to the authenticated user.",
+									"disabled": true
+								},
+								{
+									"key": "countries",
+									"value": "",
+									"description": "Filter fields by country visibility:\n* Default - do not filter by country\n* Values - The desired country values, for example, US, GB, FR. The countries must be visible to the authenticated user.",
+									"disabled": true
+								},
+								{
+									"key": "systemName",
+									"value": "",
+									"description": "Return target alias values specified for reference value codes for this system:\n* Default - return the default reference value codes",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "type",
+									"value": "",
+									"description": "The specific data type to retrieve details about."
+								}
+							]
+						},
+						"description": "This API enables you to retrieve detailed information about reference data types in Network."
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve Reference Data Type Code Details Metadata",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/metadata/reference_values/:type/:codes",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"metadata",
+								"reference_values",
+								":type",
+								":codes"
+							],
+							"query": [
+								{
+									"key": "country",
+									"value": "",
+									"description": "Filter codes by country, only if includeCodes is True:\n* Default - do not filter by country\n* Values - The desired country value, for example, US, GB, FR. The country must be visible to the authenticated user.",
+									"disabled": true
+								},
+								{
+									"key": "countries",
+									"value": "",
+									"description": "Filter fields by country visibility:\n* Default - do not filter by country\n* Values - The desired country values, for example, US, GB, FR. The countries must be visible to the authenticated user.",
+									"disabled": true
+								},
+								{
+									"key": "systemName",
+									"value": "",
+									"description": "Return target alias values specified for reference value codes for this system:\n* Default - return the default reference value codes",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "type",
+									"value": "",
+									"description": "The specific data type to retrieve details about."
+								},
+								{
+									"key": "codes",
+									"value": "",
+									"description": "A comma-separated list of codes to look up for the specified type. Unknown codes for the given type are ignored, without errors."
+								}
+							]
+						},
+						"description": "This API enables you to retrieve detailed information about reference data type codes in Network."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Subscriptions",
+			"item": [
+				{
+					"name": "Create Subscription Job",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/subscription/:subscription_name/job",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"subscription",
+								":subscription_name",
+								"job"
+							],
+							"query": [
+								{
+									"key": "data_revision_first",
+									"value": "",
+									"description": "The start data revision for the job.",
+									"disabled": true
+								},
+								{
+									"key": "data_revision_last",
+									"value": "",
+									"description": "The end data revision for the job.",
+									"disabled": true
+								},
+								{
+									"key": "apply_data_revisions_\nfor_delta_export_only",
+									"value": "",
+									"description": "Apply the other data revision parameters to delta exports only.",
+									"disabled": true
+								},
+								{
+									"key": "export_archive",
+									"value": "",
+									"description": "Specifies how the files will be placed in your outbound FTP folder. Setting export_archive to split splits the uncompressed .csv files so that no file exceeds 1GB in size.",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "subscription_name",
+									"value": "",
+									"description": "The unique name of the subscription."
+								}
+							]
+						},
+						"description": "This API enables you to create a subscription job.\n\n**Note:** This API requires system administrator or API-only permissions."
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve Subscription Job",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/job/:job_id",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"job",
+								":job_id"
+							],
+							"variable": [
+								{
+									"key": "job_id",
+									"value": "",
+									"description": "The unique ID of the job you want to retrieve status on."
+								}
+							]
+						},
+						"description": "This API enables you to retrieve the status of a source or target subscription job."
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Subscription Job",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/job/:job_id",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"job",
+								":job_id"
+							],
+							"variable": [
+								{
+									"key": "job_id",
+									"value": "",
+									"description": "The unique ID of the job created."
+								}
+							]
+						},
+						"description": "This API enables you to cancel a subscription job.\n\n**Note:** This API requires system administrator or API-only permissions."
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve Export Job File",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/artifact/job/:jobId/:fileName",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"artifact",
+								"job",
+								":jobId",
+								":fileName"
+							],
+							"variable": [
+								{
+									"key": "jobId",
+									"value": "",
+									"description": "The unique ID of the job."
+								},
+								{
+									"key": "fileName",
+									"value": "",
+									"description": "The name of the .csv file to retrieve."
+								}
+							]
+						},
+						"description": "This API enables you to retrieve the artifacts (file contents) of a target subscription job."
+					},
+					"response": []
+				}
+			],
+			"description": "The system interfaces APIs enable you to manage source and target subscriptions that import and export data to and from Network.\n\nWith these APIs you can retrieve information about systems, subscriptions, and corresponding jobs."
+		},
+		{
+			"name": "Subscriptions - Compliance",
+			"item": [
+				{
+					"name": "Create Compiance Subscription Job",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/systems/compliance_subscriptions/:subscription_name/job",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"systems",
+								"compliance_subscriptions",
+								":subscription_name",
+								"job"
+							],
+							"variable": [
+								{
+									"key": "subscription_name",
+									"value": "",
+									"description": "The unique name of the source subscription."
+								}
+							]
+						},
+						"description": "This API enables you to create a compliance subscription job.\n\n**Note:** This API requires system administrator or API-only permissions."
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve Compliance Subscription Job",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/systems/compliance_subscriptions/:subscription_name/job/:job_id",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"systems",
+								"compliance_subscriptions",
+								":subscription_name",
+								"job",
+								":job_id"
+							],
+							"variable": [
+								{
+									"key": "subscription_name",
+									"value": "",
+									"description": "The unique name of the source subscription."
+								},
+								{
+									"key": "job_id",
+									"value": "",
+									"description": "The unique ID of the job you want to retrieve status on."
+								}
+							]
+						},
+						"description": "This API enables you to retrieve the status of a source subscription job."
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Compliance Subscription Job",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/systems/compliance_subscriptions/:subscription_name/job/:job_id",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"systems",
+								"compliance_subscriptions",
+								":subscription_name",
+								"job",
+								":job_id"
+							],
+							"variable": [
+								{
+									"key": "subscription_name",
+									"value": "",
+									"description": "The unique name of the source subscription."
+								},
+								{
+									"key": "job_id",
+									"value": "",
+									"description": "The unique ID of the job you want to cancel."
+								}
+							]
+						},
+						"description": "This API enables you to cancel a compliance subscription job.\n\n**Note:** This API requires system administrator or API-only permissions."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Subscriptions - Source",
+			"item": [
+				{
+					"name": "Create Source Subscription Job",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/systems/:system_name/source_subscriptions/:subscription_name/job",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"systems",
+								":system_name",
+								"source_subscriptions",
+								":subscription_name",
+								"job"
+							],
+							"variable": [
+								{
+									"key": "system_name",
+									"value": "",
+									"description": "The unique name of the system."
+								},
+								{
+									"key": "subscription_name",
+									"value": "",
+									"description": "The unique name of the source subscription."
+								}
+							]
+						},
+						"description": "This API enables you to create a source subscription job.\n\n**Note:** This API requires system administrator or API-only permissions."
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve Source Subscription Job",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/systems/:system_name/source_subscriptions/:subscription_name/job/:job_id",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"systems",
+								":system_name",
+								"source_subscriptions",
+								":subscription_name",
+								"job",
+								":job_id"
+							],
+							"variable": [
+								{
+									"key": "system_name",
+									"value": "",
+									"description": "The unique name of the system."
+								},
+								{
+									"key": "subscription_name",
+									"value": "",
+									"description": "The unique name of the source subscription."
+								},
+								{
+									"key": "job_id",
+									"value": "",
+									"description": "The unique ID of the job you want to retrieve status on."
+								}
+							]
+						},
+						"description": "This API enables you to retrieve the status of a source subscription job."
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Source Subscription Job",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/systems/:system_name/source_subscriptions/:subscription_name/job/:job_id",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"systems",
+								":system_name",
+								"source_subscriptions",
+								":subscription_name",
+								"job",
+								":job_id"
+							],
+							"variable": [
+								{
+									"key": "system_name",
+									"value": "",
+									"description": "The unique name of the system."
+								},
+								{
+									"key": "subscription_name",
+									"value": "",
+									"description": "The unique name of the source subscription."
+								},
+								{
+									"key": "job_id",
+									"value": "",
+									"description": "The unique ID of the job you want to cancel."
+								}
+							]
+						},
+						"description": "This API enables you to cancel a source subscription job.\n\n**Note:** This API requires system administrator or API-only permissions."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Subscriptions - Target",
+			"item": [
+				{
+					"name": "Create Target Subscription Job",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/systems/:system_name/target_subscriptions/:subscription_name/job",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"systems",
+								":system_name",
+								"target_subscriptions",
+								":subscription_name",
+								"job"
+							],
+							"query": [
+								{
+									"key": "data_revision_first",
+									"value": "",
+									"description": "The start data revision for the job.",
+									"disabled": true
+								},
+								{
+									"key": "data_revision_last",
+									"value": "",
+									"description": "The end data revision for the job.",
+									"disabled": true
+								},
+								{
+									"key": "apply_data_revisions_\nfor_delta_export_only",
+									"value": "",
+									"description": "Apply start and end data revision parameters only if the target subscription is a delta export. If True and the start data revision parameter is specified, the target subscription will only run as a delta export if it is configured as a delta export. If False and the start data revision parameter is specified, the target subscription will run as a delta export. The default is False.",
+									"disabled": true
+								},
+								{
+									"key": "export_archive",
+									"value": "",
+									"description": "Specifies how the files will be placed in your outbound FTP folder. Setting export_archive to split splits the uncompressed .csv files so that no file exceeds 1GB in size.",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "system_name",
+									"value": "",
+									"description": "The unique name of the system."
+								},
+								{
+									"key": "subscription_name",
+									"value": "",
+									"description": "The unique name of the target subscription."
+								}
+							]
+						},
+						"description": "This API enables you to create a target subscription job.\n\n**Note:** This API requires system administrator or API-only permissions."
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve Target Subscription Job",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/systems/:system_name/target_subscriptions/:subscription_name/job/:job_id",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"systems",
+								":system_name",
+								"target_subscriptions",
+								":subscription_name",
+								"job",
+								":job_id"
+							],
+							"variable": [
+								{
+									"key": "system_name",
+									"value": "",
+									"description": "The unique name of the system."
+								},
+								{
+									"key": "subscription_name",
+									"value": "",
+									"description": "The unique name of the target subscription."
+								},
+								{
+									"key": "job_id",
+									"value": "",
+									"description": "The unique ID of the job you want to retrieve status on."
+								}
+							]
+						},
+						"description": "This API enables you to retrieve the status of a target subscription job."
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Target Subscription Job",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/systems/:system_name/target_subscriptions/:subscription_name/job/:job_id",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"systems",
+								":system_name",
+								"target_subscriptions",
+								":subscription_name",
+								"job",
+								":job_id"
+							],
+							"variable": [
+								{
+									"key": "system_name",
+									"value": "",
+									"description": "The unique name of the system."
+								},
+								{
+									"key": "subscription_name",
+									"value": "",
+									"description": "The unique name of the source subscription."
+								},
+								{
+									"key": "job_id",
+									"value": "",
+									"description": "The unique ID of the job you want to cancel."
+								}
+							]
+						},
+						"description": "This API enables you to cancel a target subscription job.\n\n**Note:** This API requires system administrator or API-only permissions."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Events",
+			"item": [
+				{
+					"name": "Retrieve Merge Events",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/event/merge",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"event",
+								"merge"
+							],
+							"query": [
+								{
+									"key": "sinceDate",
+									"value": "",
+									"description": "Date type. Epoch time in milliseconds or a date in ISO 8601 format. If this parameter is not specified, the results are from the last hour.",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "",
+									"description": "Integer type. Return results from a position. The default is 0.",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "",
+									"description": "Integer type. The number of results to return. Results are sorted from earliest date to latest date. The default is 100. The maximum is 100.",
+									"disabled": true
+								}
+							]
+						},
+						"description": "This API enables you to retrieve the results of merge events that occurred in your Network instance.\n\nMerges initiated by Veeva OpenData on a master instance are included if the surviving and losing records of the merge have been downloaded to your instance."
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve Unmerge Events",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/event/unmerge",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"event",
+								"unmerge"
+							],
+							"query": [
+								{
+									"key": "sinceDate",
+									"value": "",
+									"description": "Date type. Epoch time in milliseconds or a date in ISO 8601 format. If this parameter is not specified, the results are from the last hour.",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "",
+									"description": "Integer type. Return results from a position. The default is 0.",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "",
+									"description": "Integer type. The number of results to return. Results are sorted from earliest date to latest date. The default is 100. The maximum is 100.",
+									"disabled": true
+								}
+							]
+						},
+						"description": "This API enables you to retrieve the results of unmerge events that occurred in your Network instance.\n\nUnmerges include events that occurred in your Network instance; only customer (gray) records are reported."
+					},
+					"response": []
+				}
+			],
+			"description": "The merge event APIs enable you to retrieve details about merge and unmerge events for a specified date. This enables downstream systems to receive and process merges and unmerges very quickly after they occur.\n\nMerge event calls are limited to 100 results. You can include the offset parameter in subsequent requests to retrieve additional pages of results."
+		},
+		{
+			"name": "Match",
+			"item": [
+				{
+					"name": "Retrieve Matches",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"entity_type\": \"HCP\",\r\n    \"entity\": {\r\n        \"first_name__v\" : \"Clinton\",\r\n        \"last_name__v\" : \"Ackerman\",\r\n        \"addresses__v\": [\r\n            {\r\n                \"address_line_1__v\" : \"1240 India Street\",\r\n                \"locality__v\": \"San Diego\",\r\n                \"administrative_area__v\": \"US-CA\",\r\n                \"country__v\": \"US\"\r\n            }\r\n        ],\r\n        \"primary_country__v\": \"US\"\r\n    }\r\n}"
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/match?addressCleansing=&includeMasterResults=",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"match"
+							],
+							"query": [
+								{
+									"key": "addressCleansing",
+									"value": "",
+									"description": "Cleanse the input address before matching. The default is False."
+								},
+								{
+									"key": "includeMasterResults",
+									"value": "",
+									"description": "Include results from Veeva OpenData with results from customer data. The default uses the configuration of Veeva OpenData search."
+								},
+								{
+									"key": "limit",
+									"value": "",
+									"description": "Integer type. The number of results to return. The default is 10. The maximum is 50.",
+									"disabled": true
+								}
+							]
+						},
+						"description": "This API enables you to match data immediately for a single record using match rules from the specified Network instance."
+					},
+					"response": []
+				}
+			],
+			"description": "The match API enables you to match data immediately for a single record, which is helpful when you need to verify data in real-time; for example, when registering HCPs in a portal. You can match the data using an API call instead of trying to verify the data using Network Search which requires multiple searches, filtering and field queries.\n\nThe API uses the default match rules for your Network instance."
+		},
+		{
+			"name": "Suspect Match",
+			"item": [
+				{
+					"name": "Batch Process Suspect Match",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"suspect_matches\": [\r\n        {\r\n            \"task_id\": \"929058362287521823\",\r\n            \"comment\": \"Rejected suspect match\"\r\n        }\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/suspect-match/process/batch",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"suspect-match",
+								"process",
+								"batch"
+							]
+						},
+						"description": "This API enables enables you to process multiple unprocessed suspect matches."
+					},
+					"response": []
+				},
+				{
+					"name": "Batch Create Suspect Match",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"suspect_matches\": [\n        {\n            \"metadata\": {\n                \"note\": \"\",\n                \"creator\": \"John Smith\"\n            },\n            \"vid_key\": \"Network:Entity:242980101568857107\",\n            \"matching_vid_key\": \"Network:Entity:242980097970144256\"\n        },\n        {\n            \"metadata\": {\n                \"note\": \"\",\n                \"creator\": \"John Smith\"\n            },\n            \"vid_key\": \"Network:Entity:932020953046843423\",\n            \"matching_vid_key\": \"Network:Entity:847332072480572416\"\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/entity/createSuspectMatch/batch",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"entity",
+								"createSuspectMatch",
+								"batch"
+							]
+						},
+						"description": "This API enables enables you to create multiple suspect matches."
+					},
+					"response": []
+				},
+				{
+					"name": "Batch Reject Suspect Match Task",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"suspect_matches\": [\n        {\n            \"suspect_match_id\": \"936109874024288767\"\n        },\n        {\n            \"suspect_match_id\": \"932218031792324671\"\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/suspect_match/reject/batch",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"suspect_match",
+								"reject",
+								"batch"
+							]
+						},
+						"description": "This API enables enables you to reject multiple suspect match tasks."
+					},
+					"response": []
+				},
+				{
+					"name": "Batch Retrieve Suspect Match",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTHORIZATION}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"suspect_matches\": [\r\n        {\r\n            \"suspect_match_id\": \"931697085670096927\"\r\n        },\r\n        {\r\n            \"suspect_match_id\": \"931697013151105055\"\r\n        },\r\n        {\r\n            \"suspect_match_id\": \"932218057214525503\"\r\n        }\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "https://{{DNS}}/api/{{version}}/suspect_match/batch",
+							"protocol": "https",
+							"host": [
+								"{{DNS}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"suspect_match",
+								"batch"
+							]
+						},
+						"description": "This API enables enables you to retrieve information about multiple suspect matches."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Authentication",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"AUTHORIZATION\", jsonData.sessionId);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "{{USERNAME}}",
+							"description": "The user ID for Network; for example,\njohn.smith@veevanetwork.com.",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "{{PASSWORD}}",
+							"description": "The password for the user ID.",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://{{DNS}}/api/{{version}}/auth",
+					"protocol": "https",
+					"host": [
+						"{{DNS}}"
+					],
+					"path": [
+						"api",
+						"{{version}}",
+						"auth"
+					]
+				},
+				"description": "An authentication call enables you to gain access to your Network instance.\n\nYou provide a Network user name and password, and receive a session ID in response. You must pass this session ID as the value for the authorization HTTP header for all subsequent API requests."
+			},
+			"response": []
+		},
+		{
+			"name": "Retrieve Available API Versions",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{AUTHORIZATION}}"
+					}
+				],
+				"url": {
+					"raw": "https://{{DNS}}/api",
+					"protocol": "https",
+					"host": [
+						"{{DNS}}"
+					],
+					"path": [
+						"api"
+					]
+				},
+				"description": "This API enables you to retrieve summary information about each API version available in Network."
+			},
+			"response": []
+		},
+		{
+			"name": "Search",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{AUTHORIZATION}}"
+					}
+				],
+				"url": {
+					"raw": "https://{{DNS}}/api/{{version}}/search",
+					"protocol": "https",
+					"host": [
+						"{{DNS}}"
+					],
+					"path": [
+						"api",
+						"{{version}}",
+						"search"
+					],
+					"query": [
+						{
+							"key": "q",
+							"value": "*",
+							"description": "The query string (type text).",
+							"disabled": true
+						},
+						{
+							"key": "address_q",
+							"value": "",
+							"description": "The query string scoped to the address object of the entity.",
+							"disabled": true
+						},
+						{
+							"key": "types",
+							"value": "",
+							"description": "The entity type; ALL for all objects, HCO or HCP or a specific object value for custom objects (for example, STUDY__C). If not specified, the default is all types, and only Veeva objects are searched; custom objects will not be searched.",
+							"disabled": true
+						},
+						{
+							"key": "offset",
+							"value": "",
+							"description": "The pagination number (type integer). The default is 0.",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "",
+							"description": "The number to limit the results returned (type integer). The default is 10. The maximum is 100.",
+							"disabled": true
+						},
+						{
+							"key": "sort",
+							"value": "",
+							"description": "The attribute to sort results by (type text). For example, first_name__v.",
+							"disabled": true
+						},
+						{
+							"key": "sortOrder",
+							"value": "",
+							"description": "The sort order for the search. Value is asc for ascending or desc for descending.",
+							"disabled": true
+						},
+						{
+							"key": "states",
+							"value": "",
+							"description": "A list of entity states to match on, including VALID, DELETED, UNDER_REVIEW, MERGED_INTO, MERGE_INACTIVATED, MERGE_ADDED, or INVALID.",
+							"disabled": true
+						},
+						{
+							"key": "statuses",
+							"value": "",
+							"description": "A list of entity statuses to match on, including A (active), C (closed), D (deceased), I (inactive), R (retired), U (unknown), X (unknown license).",
+							"disabled": true
+						},
+						{
+							"key": "returnFacets",
+							"value": "",
+							"description": "Include the facets in the response. The default is False.",
+							"disabled": true
+						},
+						{
+							"key": "returnHighlights",
+							"value": "",
+							"description": "Include highlights in the response. The default is True.",
+							"disabled": true
+						},
+						{
+							"key": "facetCount",
+							"value": "",
+							"description": "The maximum number of items to return for each facet (type integer). The default is 500.",
+							"disabled": true
+						},
+						{
+							"key": "includeMasterResults",
+							"value": "",
+							"description": "Include results from Veeva OpenData with results of the customer data. The default uses the configuration of Veeva OpenData search.",
+							"disabled": true
+						},
+						{
+							"key": "searchOnlyMaster",
+							"value": "",
+							"description": "Include results only from Veeva OpenData. The default is False. Veeva OpenData search must be enabled by configuration.",
+							"disabled": true
+						},
+						{
+							"key": "filters",
+							"value": "",
+							"description": "The filters for refining the result, for example, Country, Region, or Specialty (type text). For child entity attributes, use the following aliases:\n* external_custom_key - The custom key object for HCPs and HCOs.\n* address - The address object.\n* address_external_custom_key - The custom key object for addresses.\n* license - The license object.\n* license_external_custom_key - The custom key object for licenses.\n* parent_hco - The parent HCO object.\n* parent_hco_external_custom_key - The custom key object for parent HCOs.\nFilters support scoped entity filters, which enable users to apply filters to a specific entity:\n* hcp - The HCP (person) object.\n* hco - The HCO (organization) object.\nFilters also support collection fields, which enable users to search an OR condition across a collection of fields during search. The fields must be enabled in the data model to be included in collection.\n* credentials - credentials_1__v to credentials_5__v.\n* medical_degree - medical_degree_1__v to medical_degree_5__v.\n* specialty - specialty_1__v to specialty_10__v.",
+							"disabled": true
+						},
+						{
+							"key": "fieldQueries",
+							"value": "",
+							"description": "The filters for refining the result (PARTIAL MATCH). For child entity attributes, use the following aliases:\n* external_custom_key - The custom key object for HCPs and HCOs.\n* address - The address object.\n* address_external_custom_key - The custom key object for addresses.\n* license - The license object.\n* license_external_custom_key - The custom key object for licenses.\n* parent_hco - The parent HCO object.\n* parent_hco_external_custom_key - The custom key object for parent HCOs.",
+							"disabled": true
+						},
+						{
+							"key": "lang",
+							"value": "",
+							"description": "The language to run the query against. This is important when searching on reference values. For example, a search on “John Smith Pediatrics” will not return results for the specialty of pediatrics if the specified language is Chinese. If a language is not provided in the search query, the authenticated API user’s default language is used.",
+							"disabled": true
+						},
+						{
+							"key": "systemName",
+							"value": "",
+							"description": "If provided, Network returns target alias values specified for reference value codes for this system. If not provided, Network returns default reference value codes.",
+							"disabled": true
+						},
+						{
+							"key": "supplemental",
+							"value": "",
+							"description": "If provided, Network returns related parent HCOs of the entities found in the supplemental results.\n* ONE - This is the default. Return at most one parent HCO per entity. Uses the primary relationship if available; otherwise, returns one of the parents.\n* NONE - Do not return any parent HCOs.\n* ALL - Return all of the parent HCOs.",
+							"disabled": true
+						},
+						{
+							"key": "filterByLocation",
+							"value": "",
+							"description": "Search results are filtered by their proximity to the specified location. Results outside the specified distance are excluded. The parameter is a comma separated list of fields in the format of “latitude, longitude, distance, bottomRightLatitude, bottomRightLongitude, filterType”:\n* latitude - The latitude of the central point of a circle or the top-left corner of a bounding box.\n* longitude - The longitude of the central point of a circle or the top-left corner of a bounding box.\n* distance - The length and unit of a radius of a circle or half the length of each side of a square when using a central point. Valid distance units are km (kilometers), m (meters), mi (miles), yd (yards), ft (feet). Can be blank for a bounding box with corners specified.\n* bottomRightLatitude - The latitude of the bottom-right corner of a bounding box.\n* bottomRightLongitude - The longitude of the bottom-right corner of a bounding box.\n* filterType - Filter by DISTANCE (default) when specifying the central point of a circle or square, or filter by BOUNDING_BOX when specifying two corners of a bounding box.",
+							"disabled": true
+						},
+						{
+							"key": "sortByLocation",
+							"value": "",
+							"description": "Search results are sorted by their proximity to the specified location. The parameter is a geo coordinate pair in the form latitude,longitude (for example 38.889931,-77.009003). Sort by location cannot be combined with sort by other attributes.",
+							"disabled": true
+						},
+						{
+							"key": "sortResultChildren",
+							"value": "",
+							"description": "For search results containing addresses, licenses or parent HCOs, they will be sorted starting with the most relevant result. Default is False.\nThe returnHighlights flag must also be True for this functionality.\n\nAddress sort rules:\n\n* Highlights for address fields\n* Field queries/filters for address fields.\n* Primary address field (custom field of type primary address) - Primary address is first. (Only one address can be primary.)\n* Record state (record_state__v) - Valid records first.\n* Address status (address_status__v) - Active records first, then inactive.\n* Address type (address_type__v) - Professional (P), Professional and Preferred Mail (B), Mail Only (M), Address (U) Address Ordinal (address_ordinal__v).\n\nLicense sort rules:\n\n* Highlights for license fields.\n* Field queries/filters for license fields.\n* Record state (record_state__v) - Valid records first.\n* License status (license_status__v) - Active records first, then inactive.\n* License type (type__v) - State licenses first.\n* Best state license (license_status__v) - Best state license first.\n\nParent HCO sort rules:\n\n* Highlights for parent HCO fields.\n* Field queries/filters for parent HCO fields.\n* Primary parent HCO field (custom field of type primary affiliation) - Primary affiliation is first. (Only one parent HCO can be primary.)\n* Record state (record_state__v) - Valid records first.\n* Parent HCO status (license_status__v) - Active records first, then inactive.\n* Is primary relationship? (is_primary_relationship__v) - Primary relationship first.",
+							"disabled": true
+						},
+						{
+							"key": "nestChildObjectFieldQueries",
+							"value": "",
+							"description": "Specifies whether or not to apply nesting to child object clauses. This will convert a requested field query into a fuzzy matching filter on the same field. The default is False.\n* Filters do not return highlights when matching against these fields. All records are assumed to match the pattern for the specified field, so highlighting this field would be redundant.\n* Filters search the field directly, so if you are using this flag for a reference field, you must supply the code value rather than a reference label.",
+							"disabled": true
+						},
+						{
+							"key": "parenthcofilters",
+							"value": "",
+							"description": "Specifies the filters for parent HCO results. Parent HCOs in the parent_hco__v and supplementalResults sections will be returned if they pass these filters. The format is identical to filters but does not support filtering by child entities of the HCO.",
+							"disabled": true
+						},
+						{
+							"key": "enrichedResults",
+							"value": "",
+							"description": "Specifies whether or not to display labels for reference type fields in the results.",
+							"disabled": true
+						},
+						{
+							"key": "resultLanguage",
+							"value": "",
+							"description": "Specifies the language to use if the enriched results option is enabled. Uses the IETF BCP 47 language standard.",
+							"disabled": true
+						},
+						{
+							"key": "excludefilters",
+							"value": "",
+							"description": "The filters for excluding results. The format is identical to filters but does not support child entity-scoped attributes.",
+							"disabled": true
+						},
+						{
+							"key": "parenthcoexcludefilters",
+							"value": "",
+							"description": "The filters for excluding parent HCO results. Parent HCOs in the parent_hco__v and supplementalResults sections will not be returned if they pass these filters. The format is identical to filters but does not support filtering by child entities of the HCO.",
+							"disabled": true
+						}
+					]
+				},
+				"description": "Search calls enable you to construct simple, yet powerful searches to retrieve data from Network.\n\nCalls through the Search API pass a query string in an expression that specifies the search text and specific parameters to get the intended set of entities from Network. Search results are ranked according to closeness to the search terms specified.\n\nThis API enables you to retrieve the full set of entities and child objects matching the specified search criteria."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
