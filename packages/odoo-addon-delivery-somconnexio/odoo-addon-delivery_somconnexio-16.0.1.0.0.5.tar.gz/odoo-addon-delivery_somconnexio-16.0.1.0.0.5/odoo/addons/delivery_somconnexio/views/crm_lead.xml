@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <data>
+    <record id="crm_lead_delivery_buttons_view" model="ir.ui.view">
+      <field name="inherit_id" ref="somconnexio.crm_case_form_view_pack"/>
+      <field name="model">crm.lead</field>
+      <field name="name">crm.lead.delivery.buttons.form</field>
+      <field name="arch" type="xml">
+        <button name="action_set_paused" position="before">
+          <button name="action_set_won" string="Validate" type="object" class="oe_highlight" confirm="Are you sure you want to validate this crm lead?" attrs="{                     'invisible': [                       '|',                       ('active','=',False),                       '|',                       '&amp;', ('stage_id','!=',%(crm.stage_lead3)d), ('sims_to_deliver', '=', 'none'),                       '&amp;', ('stage_id','!=',%(delivery_somconnexio.stage_lead6)d), ('sims_to_deliver', '!=', 'none')             ]}"/>
+        </button>
+        <button name="action_set_remesa" position="after">
+          <button name="action_set_new" string="Set new" type="object" class="oe_highlight" attrs="{               'invisible': [                 '|',                   ('active','=',False),                   ('stage_id','not in', [%(crm.stage_lead2)d,                                           %(crm.stage_lead3)d,                                           %(somconnexio.stage_lead5)d,                                           %(delivery_somconnexio.stage_lead7)d,                                           %(delivery_somconnexio.stage_lead8)d]),             ]}"/>
+          <button name="action_set_delivery_generated" string="Delivery generation" type="object" class="oe_highlight" attrs="{'invisible': ['|',                                   ('active','=',False),                                   '|',                                   ('stage_id','!=',%(crm.stage_lead3)d),                                   '&amp;', ('stage_id','=',%(crm.stage_lead3)d), ('sims_to_deliver','=','none')]}"/>
+          <button name="action_generate_express_delivery" string="Generate Express delivery" type="object" class="oe_highlight" invisible="1" attrs="{'invisible': ['|',                                   ('active','=',False),                                   '|',                                   ('stage_id','!=',%(crm.stage_lead3)d),                                   '&amp;', ('stage_id','=',%(crm.stage_lead3)d), ('sims_to_deliver','=','none')]}"/>
+        </button>
+        <label for="date_deadline" position="before">
+          <field name="sims_to_deliver" invisible="1"/>
+          <field name="correos_tracking_code"/>
+          <field name="sim_delivery_in_course" readonly="1" groups="somconnexio.group_somconnexio_admin"/>
+        </label>
+      </field>
+    </record>
+    <record id="crm_lead_delivery_search_view" model="ir.ui.view">
+      <field name="name">crm.lead delivery search view</field>
+      <field name="model">crm.lead</field>
+      <field name="inherit_id" ref="somconnexio.crm_lead_pack_search_view"/>
+      <field name="arch" type="xml">
+        <filter name="mixed_lead_lines" position="after">
+          <separator/>
+          <filter string="Remesa no SIM delivery" name="remesa_no_SIM_delivery" domain="[('sims_to_deliver', '=', 'none')]"/>
+          <filter string="Remesa one SIM delivery" name="remesa_one_SIM_delivery" domain="[('sims_to_deliver', '=', 'one')]"/>
+          <filter string="Remesa multiple SIM delivery" name="remesa_multiple_SIM_delivery" domain="[('sims_to_deliver', '=', 'multiple')]"/>
+          <separator/>
+        </filter>
+        <filter name="paused" position="after">
+          <filter string="Generating delivery" name="stage_id" domain="[('stage_id', '=', %(delivery_somconnexio.stage_lead8)d)]"/>
+          <filter string="Delivery generated" name="stage_id" domain="[('stage_id', '=', %(delivery_somconnexio.stage_lead6)d)]"/>
+          <filter string="Delivery failed" name="stage_id" domain="[('stage_id', '=', %(delivery_somconnexio.stage_lead7)d)]"/>
+        </filter>
+      </field>
+    </record>
+  </data>
+</odoo>
