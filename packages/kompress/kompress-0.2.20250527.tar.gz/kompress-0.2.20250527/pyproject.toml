@@ -1,0 +1,61 @@
+# see https://github.com/karlicoss/pymplate for up-to-date reference
+[project]
+dynamic = ["version"]  # version is managed by build backend
+name = "kompress"
+dependencies = [
+    "typing_extensions",
+]
+requires-python = ">=3.9"
+
+## these need to be set if you're planning to upload to pypi
+description = "pathlib.Path adapters to transparently read data from compressed files and folders"
+license = {file = "LICENSE"}
+authors = [
+    {name = "Dima Gerasimov (@karlicoss)", email = "karlicoss@gmail.com"},
+]
+maintainers = [
+    {name = "Dima Gerasimov (@karlicoss)", email = "karlicoss@gmail.com"},
+]
+
+[project.urls]
+Homepage = "https://github.com/karlicoss/kompress"
+##
+
+
+[project.optional-dependencies]
+zstd = [
+    "zstandard",
+]
+lz4 = [
+    "lz4"
+]
+
+[dependency-groups]
+testing = [
+    "pytest",
+    "ruff",
+    "mypy",
+    "lxml",  # for mypy html coverage
+]
+
+
+# workaround for error during uv publishing
+# see https://github.com/astral-sh/uv/issues/9513#issuecomment-2519527822
+[tool.setuptools]
+license-files = []
+
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+# unfortunately have to duplicate project name here atm, see https://github.com/pypa/hatch/issues/1894
+[tool.hatch.build.targets.wheel]
+packages = ["src/kompress"]
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.version.raw-options]
+version_scheme = "python-simplified-semver"
+local_scheme = "dirty-tag"
