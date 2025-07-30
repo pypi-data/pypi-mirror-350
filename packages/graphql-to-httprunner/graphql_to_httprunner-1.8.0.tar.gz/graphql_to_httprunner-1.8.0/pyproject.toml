@@ -1,0 +1,76 @@
+[project]
+name = "graphql-to-httprunner"
+version = "1.8.0"
+description = "Automatically generate HttpRunner test cases based on GraphQL Schema"
+authors = [
+    {name = "Devin",email = "zhangchuzhao@dingtalk.com"}
+]
+license = {text = "MIT"}
+readme = "README.md"
+
+homepage = "https://git.umlife.net/zhangchuzhao/graphql-schema-to-httprunner"
+repository = "https://git.umlife.net/zhangchuzhao/graphql-schema-to-httprunner"
+documentation = "https://git.umlife.net/zhangchuzhao/graphql-schema-to-httprunner"
+
+keywords = ["graphql", "httprunner", "api", "automation", "test"]
+
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Topic :: Software Development :: Testing",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11" 
+]
+
+requires-python = ">=3.5"
+dependencies = [
+    "requests",
+    "pyyaml"
+]
+
+[project.scripts]
+gpl2hrun = "graphql_to_httprunner.main:main"
+graphql2httprunner = "graphql_to_httprunner.main:main"
+gpl2case = "graphql_to_httprunner.main:main"
+graphql2testcase = "graphql_to_httprunner.main:main"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0", "setuptools>=42", "wheel"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+include = [
+    "graphql_to_httprunner/**/*.py",
+    "README.md",
+    "LICENSE",
+]
+
+exclude = [
+    "tests/**/*",
+    "demo/**/*",
+    "api/**/*",
+    "testcases/**/*",
+    "__pycache__/**/*",
+    "**/*.pyc",
+    "**/*.pyo",
+    "**/*.pyd",
+    "**/.git/**/*",
+    "**/.vscode/**/*",
+    "**/.idea/**/*",
+    "**/.pytest_cache/**/*",
+    "**/.coverage",
+    "**/htmlcov/**/*",
+]
+[tool.poetry.group.dev.dependencies]
+requests-mock = "^1.12.1"
+pytest = "^6.0.0"
+pytest-cov = "<4.0.0"
