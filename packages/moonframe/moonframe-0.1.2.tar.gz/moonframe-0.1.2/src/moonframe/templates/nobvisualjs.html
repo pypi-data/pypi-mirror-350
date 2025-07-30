@@ -1,0 +1,167 @@
+<html>
+
+<head>
+    <!-- d3 -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <!-- UI : bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js">
+    <!-- fonts -->
+    <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
+       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+       <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet"> -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fjalla+One&family=Public+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    <!-- css style -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='nobvisualjs/style.css') }}">
+    <!-- one part of the legend -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js"></script>
+
+</head>
+
+<body>
+    <!-- search col -->
+
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- ------------------------------- TITLE -------------------------------- -->
+            <div class="col sm-3">
+                <h2 id="repo-name"></h2>
+                <p id=subtitle></p>
+            </div>
+            <div class="col">
+            </div>
+            <!-- ------------------------------ SEARCH BAR ------------------------------ -->
+            <div class="col">
+                <br>
+                <div class="search-bar">
+                    <div class="flex-column">
+                        <div class="input-group mb-3">
+                            <input id="searchInput" class="form-control" type="search"
+                                placeholder="Search for a folder or a file">
+                            <span class="input-group-text" id="inputGroupPrepend3">
+                                <i id="searchButton" class="bi bi-search"></i>
+                            </span>
+                        </div>
+                        <div style="font-size:small" id="info-search-text"></div>
+                        <div id="multiresults" class="btn-group-vertical" role="group"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- -------------------------------- MAIN --------------------------------- -->
+        <div class="row">
+            <br>
+        </div>
+        <div class="row">
+            <div id="menu" class="col-sm-2">
+                <!-- -------------------------------- scale -------------------------------- -->
+                <select class="form-select form-select-sm" id="scaleSelector">
+                </select>
+                <h3>scale</h3>
+                <!-- ---------------------------- color picker ----------------------------- -->
+                <input type="text" id="colorPicker" style="position: absolute; visibility: hidden;" data-coloris>
+                <div id="posColor"></div>
+                <svg style="margin-left:20px;" id="legend"></svg>
+                <div style="position:relative">
+                    <div class="form-check" hidden>
+                        <input id=log10_checkbox class="form-check-input" type="checkbox" value="">
+                        <label id=log10label class="form-check-label" for="log10_checkbox"> Log10
+                        </label>
+                    </div>
+                    <br>
+                    <!-- -------------------------------- worst -------------------------------- -->
+                    <h3 hidden id="worst-title">worst performers
+                        <!-- <button id="reverse" class="btn btn-outline-secondary" style="--bs-btn-padding-y: 0.1rem; --bs-btn-padding-x: 0.3rem;"><i class="bi bi-arrow-down-up"></i></button> -->
+                    </h3>
+                    <div id="worst"><a></a></div>
+                </div>
+            </div>
+            <!-- -------------------------------- graph -------------------------------- -->
+            <div id="graph" class="col-sm-10">
+                <svg class="tree" id="main"></svg>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ------------------------------- tooltip ------------------------------- -->
+    <div class="card" id="tooltip" style="position:absolute; opacity: 0; pointer-events: none;">
+        <!-- <div id="tooltip-header" class="card-header"></div> -->
+        <div class="card-body">
+            <h3 id="tooltip-title" class="card-title"></h3>
+            <p id="tooltip-text" class="card-text"></p>
+        </div>
+    </div>
+    <!-- -------------------------------- card --------------------------------- -->
+    <div class="card" id="card" style="position:absolute; opacity: 0; pointer-events: none;">
+        <h3 id="card-header" class="card-header"></h3>
+        <div id="element-card" class="card-body">
+            <!-- <div class="row">
+                <div id="card-metric" class="col">Colonne 1</div>
+                <div id="card-score" class="col">Colonne 2</div>
+                <div id="card-rank" class="col"> 3</div>
+              </div> -->
+            <!-- <h3 id="tooltip-title" class="card-title"></h3> -->
+            <!-- <p id="card-text" class="card-text"></p></div> -->
+        </div>
+        <p style="text-align: center; font-style: italic; font-size: 0.5em">Please note that the ranking is
+            relative to the case. <br></p>
+
+
+        <link rel="stylesheet" href="{{ url_for('static', filename='nobvisualjs/tools/Coloris/coloris.min.css') }}" />
+        <script src="{{ url_for('static', filename='nobvisualjs/tools/Coloris/coloris.min.js') }}"></script>
+        <!-- <script type="modul" src="tools_color.js"></script> -->
+        <script type="module">
+            import { staticNobvisualjs, dynamicNobvisualjs } from "{{ url_for('static', filename='nobvisualjs/main.js') }}"
+            import { addSubtitle } from "{{ url_for('static', filename='nobvisualjs/settings.js') }}"
+
+
+            const repository = "{{ repository }}"
+            
+            if (repository === "True") { // get mmap treeshowjs
+                console.log("Create tree graph for mmap.")
+
+                const path = "/data"
+                const repo_name = "{{ repo_name }}"
+                const repo_path = "{{ repo_path }}"
+
+
+                /**
+                 * Explore repository with tree_showjs 
+                 * Load struct data and call dynamicNobvisualjs 
+                 * @param {{string}} data_path Path to the struct_repo.json (handle by server)
+                 * @param {{string}} repo_name Name of the repo (param from mmap_in.yml)
+                 * @param {{string}} repo_path Path to the repo (param from mmap_in.yml)
+                 */
+                async function tree_showjs(data_path, repo_name, repo_path) {
+                    {
+                        const data = await d3.json(data_path)
+                        dynamicNobvisualjs(data, repo_name, repo_path)
+                        addSubtitle(`Navigate through the repo with your cursor.<br>
+          Click + CTRL or CMD to open the code.`)
+                    }
+                }
+
+                tree_showjs(path, repo_name, repo_path)
+
+            }
+            else {
+                console.log("Create tree graph for nobvisual.")
+
+                const data = JSON.parse('{{ data | safe }}')
+                const title = "{{ title }}"
+                const legend = JSON.parse('{{ legend | safe }}')
+
+                staticNobvisualjs(data[0], title, legend)
+            }
+
+        </script>
+</body>
+
+</html>
