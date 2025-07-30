@@ -1,0 +1,60 @@
+[tool.poetry]
+name = "pendingai"
+version = "0.3.0"
+description = "Command-line interface for using the Pending AI Retrosynthesis service."
+authors = ["Pending AI <support@pending.ai>"]
+maintainers = ["Pending AI <support@pending.ai>"]
+readme = "docs/README.md"
+homepage = "https://pending.ai"
+documentation = "https://docs.pending.ai"
+keywords = ["cheminformatics", "retrosynthesis"]
+
+[tool.poetry.dependencies]
+python = "^3.9.0"
+pydantic = "^2.7.1"
+httpx = ">=0.27.2,<0.29.0"
+pyyaml = "^6.0.2"
+pyjwt = "^2.10.1"
+typer = "^0.15.1"
+pytz = "^2025.2"
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^4.1.0"
+cyclonedx-bom = "6.1.1"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.1.1"
+
+[tool.poetry.scripts]
+pendingai = "pendingai.main:app"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.mypy]
+strict = false
+ignore_missing_imports = true
+no_implicit_optional = false
+
+[tool.interrogate]
+fail-under = 80
+ignore-module = true
+ignore-init-method = true
+ignore-init-module = true
+ignore-nested-functions = true
+ignore-property-decorators = true
+omit-covered-files = true
+quiet = false
+verbose = true
+
+[tool.ruff]
+line-length = 89
+indent-width = 4
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+force-sort-within-sections = false
