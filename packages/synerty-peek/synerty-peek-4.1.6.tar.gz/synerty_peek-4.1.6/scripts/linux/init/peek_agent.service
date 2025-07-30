@@ -1,0 +1,17 @@
+
+[Unit]
+Description=Peek Agent Service
+After=syslog.target network.target remote-fs.target nss-lookup.target
+
+[Service]
+Type=simple
+User=peek
+ExecStart=#PEEK_DIR#/run_peek_agent_service
+Environment="LD_LIBRARY_PATH=#ORACLE_HOME#:#PEEK_HOME#/opt/lib"
+Environment="ORACLE_HOME=#ORACLE_HOME#"
+Environment="SQLITE_TMPDIR=#PEEK_HOME#/peek-agent-service.home/tmp"
+Restart=on-failure
+RestartSec=30s
+
+[Install]
+WantedBy=multi-user.target
