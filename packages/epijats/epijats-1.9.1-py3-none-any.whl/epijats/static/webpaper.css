@@ -1,0 +1,185 @@
+/* Customizable CSS variables */
+
+:root {
+  --ps-print-root-font-size: 12px;  /* 12px = 9pt */
+  --ps-print-root-font-size-px: 12; /* must match --print-root-font-size */
+  --ps-web-root-font-size-px: 16;
+
+  /* input variables for --ps-base-font-size calculated variable */
+
+  --ps-max-font-size: 1.25rem;
+  --ps-min-font-size-rem: 0.875;
+  --ps-body-min-width-rem: 22.5;     /* 360px = 22.5 * 16px */
+
+  --ps-page-margin-left-mm: 20;   /* must match --ps-page-margin-left */
+  --ps-page-margin-right-mm: 20;  /* must match --ps-page-margin-right */
+  --ps-paper-width-mm: 210;       /* must match --ps-paper-width */
+}
+
+
+/* printstrap CSS implementation */
+
+:root {
+  /* bunch of calculation variables for --ps-base-font-size */
+  
+  --ps-rem-per-print-mm: calc(
+    96 / 25.4 / var(--ps-print-root-font-size-px)
+  );
+  /* 96 CSS "pixels" = 25.4 CSS "mm" */
+
+  --ps-unit-font-view-width-rem: calc(
+    var(--ps-paper-width-mm) * var(--ps-rem-per-print-mm)
+  );
+
+  --ps-var-font-ratio: calc(
+    (1 - var(--ps-min-font-size-rem)) /
+    (var(--ps-unit-font-view-width-rem) - var(--ps-body-min-width-rem))
+  );
+  --ps-var-font-const: calc(
+    var(--ps-min-font-size-rem) - var(--ps-var-font-ratio) * var(--ps-body-min-width-rem)
+  );
+  --ps-var-font-size: calc(
+    var(--ps-var-font-const) * 1rem + var(--ps-var-font-ratio) * 100vw 
+  );
+  --ps-base-font-size: max(
+    var(--ps-min-font-size-rem) * 1rem,
+    min(var(--ps-var-font-size), var(--ps-max-font-size))
+  );
+}
+
+html {
+  font-size: var(--ps-print-root-font-size);
+}
+
+@media screen {
+
+  :root {
+    --ps-device-margin-left: calc(
+      100% * var(--ps-page-margin-left-mm) / var(--ps-paper-width-mm)
+    );
+    --ps-device-margin-right: calc(
+      100% * var(--ps-page-margin-right-mm) / var(--ps-paper-width-mm)
+    );
+  }
+
+  html.webpaper {
+    font-size: calc(var(--ps-web-root-font-size-px) * 1px);
+  }
+  .webpaper body {
+    min-width: calc(var(--ps-body-min-width-rem) * 1rem);
+    width: 100%;
+    padding: 0;
+  }
+  .webpaper .eprint {
+    font-size: var(--ps-base-font-size);
+    padding-left: var(--ps-device-margin-left);
+    padding-right: var(--ps-device-margin-right);
+  }
+  .webpaper .eprint :is(header, footer) {
+    display: none;
+  }
+
+}
+
+
+/* helper utility classes */
+
+.webpaper .webpaper-none {
+  display: none;
+}
+
+html:not(.webpaper) .webpaper-only {
+  display: none;
+}
+
+
+/* Responsive layout classes aside-rack and aside-shelf.
+ * Similar to table and rows, but for side-by-side aside elements and content. */
+
+:root {
+  --ps-aside-width-frac: 0.27;
+  --ps-aside-width: 27%; /* calc(var(--ps-aside-width-frac) * 100%); */
+  --ps-non-aside-width-frac: 0.73; /* calc(1 - var(--ps-aside-width-frac)); */
+  --ps-non-aside-width: 73%; /* calc(var(--ps-non-aside-width-frac) * 100%); */
+}
+.eprint .aside-rack::before,
+.eprint .aside-rack::after,
+.eprint .aside-shelf::before,
+.eprint .aside-shelf::after {
+  display: table;
+  content: " ";
+}
+.eprint .aside-rack::after,
+.eprint .aside-shelf::after {
+  clear: both;
+}
+.eprint .aside-rack > :not(.aside-shelf) {
+  width: var(--ps-non-aside-width);
+  margin-left: auto;
+}
+.eprint .aside-rack > .aside-shelf > aside {
+  float: left;
+  width: var(--ps-aside-width);
+}
+.eprint .aside-rack > .aside-shelf > :not(aside) {
+  float: right;
+  width: var(--ps-non-aside-width);
+}
+
+
+/* Responsive one-to-two column framework */
+
+@media print {
+  .article-one-column-only {
+    display: none;
+  }
+}
+@media screen {
+
+  :root {
+    --ps-page-area-width-mm: calc(
+      var(--ps-paper-width-mm) - var(--ps-page-margin-left-mm) - var(--ps-page-margin-right-mm)
+    );
+    --ps-rack-narrow-max-width: calc(
+      var(--ps-non-aside-width-frac) * var(--ps-page-area-width-mm) * var(--ps-rem-per-print-mm) * 1rem
+    );
+  }
+
+  /* NOTE:
+   * the following screen media breakpoint depends on the ratio
+   * var(--ps-web-root-font-size-px) / var(--ps-print-root-font-size)
+   */
+  @media (max-width: 1058px) {
+    /* A4 paper width = 210mm; 96 CSS "pixels" = 25.4 CSS "mm" */
+    /* print paper width ~= 793.7 CSS "pixels" */
+    /* 1058.3 ~= 793.7 * (16px / 12px) */
+    html.webpaper .aside-rack > * {
+      max-width: var(--ps-rack-narrow-max-width);
+      margin-left: auto;
+      margin-right: auto;
+    }
+    html.webpaper .aside-rack > :not(.aside-shelf) {
+      width: auto;
+    }
+    html.webpaper .aside-rack > .aside-shelf > aside {
+      float: none;
+      width: 100%;
+    }
+    html.webpaper .aside-rack > .aside-shelf > :not(aside) {
+      float: none;
+      width: 100%;
+    }
+    html.webpaper .article-two-column-only {
+      display: none;
+    }
+  }
+  html:not(.webpaper) .article-one-column-only {
+    display: none;
+  }
+  @media not (max-width: 1056px) {
+    html.webpaper .article-one-column-only {
+      display: none;
+    }
+  }
+
+}

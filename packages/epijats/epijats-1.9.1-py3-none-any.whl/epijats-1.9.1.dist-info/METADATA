@@ -1,0 +1,103 @@
+Metadata-Version: 2.1
+Name: epijats
+Version: 1.9.1
+Summary: E-Printing Identified JATS
+Author-email: Castedo Ellerman <castedo@castedo.com>
+License: MIT License
+        
+        Copyright (c) 2022 Castedo Ellerman
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        
+Project-URL: Homepage, https://gitlab.com/perm.pub/epijats
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: POSIX
+Classifier: Development Status :: 4 - Beta
+Classifier: Topic :: Text Processing :: Markup :: XML
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: citeproc-py >=0.7
+Requires-Dist: dulwich
+Requires-Dist: hidos >=2.3
+Requires-Dist: jinja2
+Requires-Dist: lxml
+Provides-Extra: pdf
+Requires-Dist: weasyprint >=60.2 ; extra == 'pdf'
+
+epijats
+=======
+
+`epijats` converts [baseprint](https://baseprints.singlesource.pub)
+JATS XML to PDF in three independent stages:
+
+```
+          JATS
+Stage 1:   ▼
+          "webstract" interchange format (json)
+Stage 2:   ▼
+          HTML
+Stage 3:   ▼
+          PDF
+```
+
+Using the `epijats` command line tool, you can start and stop at any stage with the
+`--from` and `--to` command line options. The output of `epijats --help` is:
+
+```
+usage: __main__.py [-h] [--from {jats,json,html}]
+                   [--to {jats,json,html,html+pdf,pdf}] [--no-web-fonts]
+                   inpath outpath
+
+Eprint JATS
+
+positional arguments:
+  inpath                input directory/path
+  outpath               output directory/path
+
+options:
+  -h, --help            show this help message and exit
+  --from {jats,json,html}
+                        format of source
+  --to {jats, json,html,html+pdf,pdf}
+                        format of target
+  --no-web-fonts        Do not use online web fonts
+```
+
+
+Installation
+------------
+
+```
+python3 -m pip install epijats[pdf]
+```
+with the `[pdf]` suffix optional and only needed of PDF generation.
+
+
+### Non-Python requirements
+
+If you are converting from JATS, the following dependencies must be installed:
+
+<ul>
+  <li> <a href="https://pandoc.org">pandoc</a>
+  <li> pandoc-katex-filter Node.js NPM package
+</ul>
+
+All other dependencies will be automatically installed by `pip`.
