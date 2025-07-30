@@ -1,0 +1,2 @@
+class TravelAgent:
+  pass
