@@ -1,0 +1,89 @@
+# .github/workflows/test.yml
+name: Run Tests
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: latest
+      - name: Install dependencies
+        run: make bootstrap
+      - name: Run linters and formatters
+        run: make lint
+      - name: Run tests
+        run: make test
+      - name: Run coverage
+        run: make coverage
+
+  check_pr_source:
+    name: Check PR Source Branch
+    runs-on: ubuntu-latest
+    # Only run this check for pull requests targeting the main branch
+    if: github.base_ref == 'main' && github.event_name == 'pull_request'
+    steps:
+      - name: Verify source branch is develop
+        run: |
+          if [[ "${{ github.head_ref }}" != "develop" ]]; then
+            echo "Error: Pull requests targeting 'main' must originate from the 'develop' branch."
+            exit 1
+          else
+            echo "Source branch is 'develop'. Check passed."
+          fi
+  get_develop_version:
+    name: Get Develop Version
+    if: github.base_ref == 'develop' && github.event_name == 'pull_request'
+    uses: ./.github/workflows/get-version.yml
+    with:
+      branch-name: "develop"
+      file-path: "src/fabric_mcp/__about__.py"
+
+  get_current_version:
+    name: Get Current Version
+    if: github.base_ref == 'develop' && github.event_name == 'pull_request'
+    uses: ./.github/workflows/get-version.yml
+    with:
+      branch-name: "${{ github.head_ref }}"
+      file-path: "src/fabric_mcp/__about__.py"
+
+  check_pr_version_bump:
+    name: Check PR Version Bump
+    needs: [get_develop_version, get_current_version]
+    runs-on: ubuntu-latest
+    # Only run this check for pull requests targeting the develop branch
+    if: github.base_ref == 'develop' && github.event_name == 'pull_request'
+    steps:
+      - name: Checkout code for version check
+        uses: actions/checkout@v4
+      - name: Check version bump
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          current_version="${{ needs.get_current_version.outputs.version }}"
+          previous_version="${{ needs.get_develop_version.outputs.version }}"
+          if [[ "$current_version" == "$previous_version" ]]; then
+            echo "Error: Version bump is required in the pull request. Version '$current_version' has not changed."
+            MESSAGE="Error: Version bump is required in the pull request. The current version is \`$current_version\`. Please ensure the version in \`fabric_mcp/__about__.py\` is incremented in this PR."
+            gh pr review ${{ github.event.number }} --request-changes --body "$MESSAGE"
+          else
+            echo "Version bump detected. Check passed. Going from $previous_version to $current_version."
+          fi

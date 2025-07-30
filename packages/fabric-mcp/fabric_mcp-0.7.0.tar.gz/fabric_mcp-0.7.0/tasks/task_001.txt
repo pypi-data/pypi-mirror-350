@@ -1,0 +1,250 @@
+# Task ID: 1
+# Title: Project Setup and Structure
+# Status: done
+# Dependencies: None
+# Priority: high
+# Description: Set up the initial project structure, select implementation language (Go/Python), and establish basic build configuration.
+# Details:
+1. Choose between Go and Python as the implementation language based on MCP library availability and team expertise.
+2. Create a basic project structure with directories for source code, tests, and documentation.
+3. Set up a build system and dependency management (e.g., go.mod for Go or requirements.txt for Python).
+4. Configure linting and code formatting tools.
+5. Create a basic README with project overview and setup instructions.
+6. Initialize version control repository.
+
+# Test Strategy:
+Verify that the project builds successfully with no errors. Ensure all development tools (linter, formatter) work correctly.
+
+# Subtasks:
+## 1. Initialize Python Project Structure and Virtual Environment [done]
+### Dependencies: None
+### Description: Create a standardized Python project directory structure and set up a virtual environment for isolated dependency management.
+### Details:
+1. Create the following directory structure:
+   ```
+   project_name/
+   ├── docs/                  # Documentation files
+   ├── project_name/          # Main package code
+   │   ├── __init__.py        # Makes the directory a package
+   │   └── core.py            # Core functionality
+   ├── tests/                 # Test directory
+   │   ├── __init__.py
+   │   └── test_core.py       # Tests for core functionality
+   ├── .gitignore             # Git ignore file
+   ├── LICENSE                # License information
+   ├── README.md              # Project documentation
+   └── requirements.txt       # Dependencies
+   ```
+2. Set up a virtual environment:
+   ```bash
+   python -m venv venv        # Create virtual environment
+   source venv/bin/activate   # Activate on Unix/MacOS
+   # OR
+   .\venv\Scripts\activate   # Activate on Windows
+   ```
+3. Add the virtual environment directory to `.gitignore`
+4. Create a basic `__init__.py` in the main package with version information:
+   ```python
+   __version__ = '0.1.0'
+   ```
+5. Testing approach: Verify the directory structure is correctly set up and the virtual environment activates properly.
+
+## 2. Configure Dependency Management and Development Tools [done]
+### Dependencies: 1.1
+### Description: Set up dependency management with requirements.txt and configure code quality tools including linters and formatters.
+### Details:
+1. Create a requirements.txt file with core dependencies:
+   ```
+   # Add your project dependencies here
+   requests>=2.28.0
+   ```
+2. Create a requirements-dev.txt for development dependencies:
+   ```
+   -r requirements.txt
+   pytest>=7.0.0
+   black>=22.3.0
+   flake8>=5.0.0
+   isort>=5.10.0
+   ```
+3. Install development dependencies:
+   ```bash
+   pip install -r requirements-dev.txt
+   ```
+4. Configure Black for code formatting by creating a pyproject.toml file:
+   ```toml
+   [tool.black]
+   line-length = 88
+   target-version = ['py38']
+   include = '\.pyi?$'
+   ```
+5. Configure Flake8 by creating a .flake8 file:
+   ```
+   [flake8]
+   max-line-length = 88
+   extend-ignore = E203
+   exclude = .git,__pycache__,build,dist,venv
+   ```
+6. Configure isort in pyproject.toml:
+   ```toml
+   [tool.isort]
+   profile = "black"
+   line_length = 88
+   ```
+7. Testing approach: Run each tool to verify configuration is working correctly:
+   ```bash
+   black --check .
+   flake8
+   isort --check .
+   ```
+
+## 3. Initialize Version Control and Documentation [done]
+### Dependencies: 1.1, 1.2
+### Description: Set up Git repository, create comprehensive README documentation, and prepare the project for collaboration.
+### Details:
+1. Initialize Git repository:
+   ```bash
+   git init
+   ```
+2. Create a comprehensive .gitignore file for Python projects:
+   ```
+   # Python bytecode
+   __pycache__/
+   *.py[cod]
+   *$py.class
+   
+   # Distribution / packaging
+   dist/
+   build/
+   *.egg-info/
+   
+   # Virtual environments
+   venv/
+   env/
+   .env/
+   
+   # Testing
+   .coverage
+   htmlcov/
+   .pytest_cache/
+   
+   # IDE specific files
+   .idea/
+   .vscode/
+   *.swp
+   ```
+3. Create a detailed README.md with:
+   - Project title and description
+   - Installation instructions
+   - Usage examples
+   - Development setup guide
+   - Testing instructions
+   - License information
+   - Contribution guidelines
+4. Create a simple LICENSE file (e.g., MIT, Apache 2.0)
+5. Add a basic contributing.md file with guidelines for contributors
+6. Make an initial commit:
+   ```bash
+   git add .
+   git commit -m "Initial project setup"
+   ```
+7. Testing approach: Verify git status shows clean working directory and README renders correctly on a Markdown previewer.
+
+## 4. Setup CI/CD with GitHub Actions [done]
+### Dependencies: 1.3
+### Description: Configure GitHub Actions workflows for automated testing and package publishing.
+### Details:
+1. Create a `develop` branch from `master` (assuming `master` is the main branch):
+   ```bash
+   git checkout master
+   git pull origin master # Ensure master is up-to-date
+   git checkout -b develop
+   git push origin develop
+   ```
+2. Create the directory structure for GitHub workflows: `.github/workflows/`
+3. Create a workflow file `.github/workflows/test.yml` to run tests on every push and pull request:
+   ```yaml
+   # .github/workflows/test.yml
+   name: Run Tests
+
+   on: [push, pull_request]
+
+   jobs:
+     test:
+       runs-on: ubuntu-latest
+       strategy:
+         matrix:
+           python-version: ["3.10", "3.11", "3.12"] # Test against supported Python versions
+
+       steps:
+       - uses: actions/checkout@v4
+       - name: Set up Python ${{ matrix.python-version }}
+         uses: actions/setup-python@v5
+         with:
+           python-version: ${{ matrix.python-version }}
+       - name: Install uv
+         run: curl -LsSf https://astral.sh/uv/install.sh | sh
+       - name: Install dependencies
+         run: uv sync --system --dev
+       - name: Run linters and formatters
+         run: |
+           uv run black --check .
+           uv run isort --check .
+           uv run flake8
+       - name: Run tests
+         run: uv run pytest
+   ```
+4. Create a workflow file `.github/workflows/publish.yml` to build and publish packages:
+   ```yaml
+   # .github/workflows/publish.yml
+   name: Build and Publish
+
+   on:
+     push:
+       branches:
+         - master
+         - develop
+
+   jobs:
+     build_and_publish:
+       runs-on: ubuntu-latest
+       # Use environment for conditional publishing based on branch
+       environment:
+         name: pypi
+         url: https://pypi.org/p/fabric-mcp # Adjust if package name differs
+       permissions:
+         id-token: write # Required for trusted publishing
+
+       steps:
+       - uses: actions/checkout@v4
+       - name: Set up Python
+         uses: actions/setup-python@v5
+         with:
+           python-version: '3.12' # Use a specific version for consistency
+       - name: Install uv
+         run: curl -LsSf https://astral.sh/uv/install.sh | sh
+       - name: Install dependencies
+         run: uv sync --system --dev # Need dev deps for tests
+       - name: Run tests # Ensure tests pass before publishing
+         run: uv run pytest
+       - name: Build package
+         run: uv build --sdist --wheel -o dist/ .
+
+       # Publish to TestPyPI for 'develop' branch
+       - name: Publish package to TestPyPI
+         if: github.ref == 'refs/heads/develop'
+         run: >
+           uv publish --repository-url https://test.pypi.org/legacy/
+           -u __token__ -p ${{ secrets.TEST_PYPI_API_TOKEN }} dist/*
+
+       # Publish to PyPI for 'master' branch
+       - name: Publish package to PyPI
+         if: github.ref == 'refs/heads/master'
+         run: >
+           uv publish -u __token__ -p ${{ secrets.PYPI_API_TOKEN }} dist/*
+   ```
+### Testing approach:
+- Verify `test.yml` runs successfully on pushes and PRs to any branch.
+- Verify `publish.yml` runs successfully on pushes to `develop` and publishes to TestPyPI. Check the TestPyPI package page.
+- Verify `publish.yml` runs successfully on pushes to `master` and publishes to PyPI. Check the PyPI package page.
+- Requires setting up `PYPI_API_TOKEN` and `TEST_PYPI_API_TOKEN` secrets in the GitHub repository settings (Repository > Settings > Secrets and variables > Actions). These should be generated from PyPI/TestPyPI. Consider using Trusted Publishing for better security if possible.
+
