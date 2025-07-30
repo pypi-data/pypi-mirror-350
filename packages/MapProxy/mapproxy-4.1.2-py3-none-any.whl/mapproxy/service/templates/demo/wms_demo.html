@@ -1,0 +1,144 @@
+{{py:
+from html import escape
+import textwrap
+
+wrapper = textwrap.TextWrapper(replace_whitespace=False, width=90,
+                               break_long_words=False)
+def strip(s):
+    return s.split('/')[1]
+
+menu_title = "WMS %s %s" % (layer.name,srs)
+jscript_functions=None
+}}
+{{def jscript_openlayers}}
+<script src="static/ol.js"></script>
+<script src="static/proj4.min.js"></script>
+<link rel="stylesheet" href="static/ol.css">
+<script type="text/javascript">
+    async function init() {
+
+        const transparent = "{{if format == 'image/png'}}true{{endif}}";
+        const srs = "{{srs}}";
+        const extent = [{{', '.join(str(r) for r in bbox)}}];
+
+        if (!ol.proj.get(srs)) {
+            const allDefs = await import('./static/proj4defs.js');
+            const srsNum = srs.indexOf(':') > -1 ? parseInt(srs.split(':')[1]) : parseInt(srs);
+            if (!allDefs.defs[srsNum]) {
+                alert("The preview map does not support this coordinate system");
+                return;
+            }
+            proj4.defs(srs, allDefs.defs[srsNum]);
+            ol.proj.proj4.register(proj4);
+        }
+
+        const source = new ol.source.ImageWMS({
+            url: '../service?',
+            params: {
+                'LAYERS': "{{layer.name}}",
+                'FORMAT': "{{format}}",
+                'TRANSPARENT': transparent === "true" ? true: false,
+                'CRS': "{{srs}}"
+            }
+        });
+
+        const background_source = new ol.source.XYZ({
+            url: "{{background_url}}"
+        });
+
+        const layers = [
+            new ol.layer.Tile({
+                source: background_source
+            }),
+            new ol.layer.Image({source})
+        ];
+        const map = new ol.Map({
+            layers: layers,
+            target: 'map',
+            view: new ol.View({
+                projection: "{{srs}}"
+            })
+        });
+        map.getView().fit(extent);
+
+        const dimensions = {};
+        {{if layer.dimensions}}
+            {{for d in layer.dimensions.keys()}}
+                dimensions["{{d.upper()}}"] = "{{layer.dimensions[d].default}}";
+            {{endfor}}
+        {{endif}}
+        if (Object.keys(dimensions).length > 0) {
+            source.updateParams(dimensions);
+        }
+
+        setDimension = (dimension, value) => {
+            const update = {};
+            const key = dimension.toUpperCase();
+            update[key] = value;
+            source.updateParams(update);
+        }
+
+        zoomToFullExtent = () => {
+            map.getView().fit(extent);
+        }
+
+        toogleBackgroundMap = () => {
+            layers[0].setVisible(!layers[0].getVisible());
+        }
+    }
+
+</script>
+{{enddef}}
+            <h2>Layer Preview - {{layer.name}}</h2>
+            <form action="" method="GET">
+                <table>
+                    <tr>
+                        <th>Coordinate System</th>
+                        <th>Image format</th>
+                        {{for dim in layer.dimensions}}
+                        <th>{{str(dim)}}</th>
+                        {{endfor}}
+                    </tr>
+                    <tr>
+                        <td>
+                            <select name="srs" onchange="this.form.submit()">
+                                {{for srs_name, srs_code in layer_srs(layer)}}
+                                    {{if srs_code == srs}}
+                                    <option selected value="{{srs_code}}">{{srs_name}}</option>
+                                    {{else}}
+                                    <option value="{{srs_code}}">{{srs_name}}</option>
+                                    {{endif}}
+                                {{endfor}}
+                            </select>
+                        </td>
+                        <td>
+                            <select name="format" onchange="this.form.submit()">
+                            {{for image_format in image_formats}}
+                                {{if image_format == format}}
+                                <option selected value="{{image_format}}">{{image_format | strip}}</option>
+                                {{else}}
+                                <option value="{{image_format}}">{{image_format | strip}}</option>
+                                {{endif}}
+                            {{endfor}}
+                            </select>
+                        </td>
+                        {{for dim in layer.dimensions}}
+                            <td>
+                            <select name="{{str(dim)}}" size="1" onchange="setDimension(&quot;{{str(dim)}}&quot;, this.value);">
+                            {{for value in layer.dimensions[dim]}}
+                                {{if value == layer.dimensions[dim].default}}
+                                    <option value="{{value}}" selected="selected">{{value}}</option>
+                                {{else}}
+                                    <option value="{{value}}">{{value}}</option>
+                                {{endif}}
+                            {{endfor}}
+                            </select>
+                    </td>
+                    {{endfor}}
+                    </tr>
+                </table>
+                <input type="hidden" name="wms_layer" value="{{layer.name}}">
+            </form>
+            <div id='map'></div>
+            <button class="mapBtn" onclick="zoomToFullExtent()">Zoom to full extent</button>
+            <button class="mapBtn" onclick="toogleBackgroundMap()">Toggle background map</button>
