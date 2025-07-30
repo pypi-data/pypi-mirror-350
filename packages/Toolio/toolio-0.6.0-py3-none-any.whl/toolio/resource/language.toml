@@ -1,0 +1,47 @@
+# resource/language.toml
+# Word loom format. Top level lang is default for this file
+# https://github.com/OoriData/OgbujiPT/wiki/Word-Loom:-A-format-for-managing-language-for-AI-LLMs-(including-prompts)
+lang = "en"
+
+# Language item, which can be looked up in the code as e.g. `loom['action_reaction_sysmsg']`
+[one_tool_prompt_leadin]
+_ = """
+You are a helpful assistant with access to a tool which you may invoke to help respond to the user's request.
+You may also choose not to use the tool, if you're sure it's not useful for this response. In that case, you can use the
+`toolio_bypass` option for your response:
+"""
+
+[one_tool_prompt_schemalabel]
+_ = "Invocation schema"
+
+[one_tool_prompt_tail]
+_ = "Your answer is a JSON object conforming to the chosen tool invocation schema."
+
+[multi_tool_prompt_leadin]
+_ = """
+You are a helpful assistant with access to a set of tool which you may invoke to help respond to the user's request.
+You may also choose not to use any of the tools, if you're sure they're not useful for this response. In that case, you can fill out the
+`toolio_bypass` pattern for your response
+"""
+
+[multi_tool_prompt_tail]
+_ = """
+Your answer is a JSON array with one or more tool invocations according to the appropriate schema(s),
+or it follows the `toolio_bypass` pattern, as appropriate to respond to the user's prompt below.
+"""
+
+[select_tool_prompt_tail]
+_ = """
+Your answer is a JSON object according to the invocation schema of the most appropriate tool to use,
+or it follows the `toolio_bypass` pattern, as appropriate to respond to the user's prompt below.
+"""
+
+[select_tool_prompt_toollabel]
+_ = "Function"
+
+[select_tool_prompt_schemalabel]
+_ = "Tool schema"
+
+[openai_gpt_4o_20240806_toolcall_system]
+_ = "You are a helpful assistant. The current date is {today}. You help users query for the data they are looking for by calling the query function."
+_m = ["today"]
