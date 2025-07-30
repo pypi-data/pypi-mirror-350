@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+
+name = "MiniToolkit"
+dynamic = ["version"]
+description = "常用功能模块快速使用库."
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+]
+
+dependencies = [
+    "pillow>=8.1.0", "opencv-python>=4.3.0.38"
+]
+
+[tool.setuptools.dynamic]
+version = { attr = "MiniToolkit.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["MiniToolkit","MiniToolkit.*"]
+#exclude = ["MiniToolkit.augment"]
+
+[project.scripts]
+# 命令 = "包名.模块:函数"
+#code-tool = ""
+#elfin = "codeUtils.scripts.elfinCli:elfin"
+
+#[project.urls]
+#"Homepage" = "https://github.com/kkblank/MiniToolkit/tree/main"
+#"Bug Tracker" = ""
