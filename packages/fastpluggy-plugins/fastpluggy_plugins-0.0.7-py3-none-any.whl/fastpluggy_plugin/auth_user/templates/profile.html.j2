@@ -1,0 +1,24 @@
+{% extends "base.html.j2" %}
+
+{% block title %}User Profile{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h2>User Profile</h2>
+    <div class="card">
+        <div class="card-body">
+            <p><strong>Username:</strong> {{ user.username }}</p>
+            <p>
+                <strong>Role:</strong>
+                {% if user.is_admin %}
+                    Admin
+                {% else %}
+                    User
+                {% endif %}
+            </p>
+            <!-- You can add more fields here if your model is extended -->
+            <a href="/auth/logout" class="btn btn-danger">Logout</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
