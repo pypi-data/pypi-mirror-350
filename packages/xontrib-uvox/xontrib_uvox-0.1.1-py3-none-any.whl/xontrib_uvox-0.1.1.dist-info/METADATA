@@ -1,0 +1,71 @@
+Metadata-Version: 2.4
+Name: xontrib-uvox
+Version: 0.1.1
+Summary: Python virtual environment manager for xonsh.
+Author-email: Morgan Grobol <morgan.grobol@tuta.com>
+License-Expression: MIT
+Project-URL: Homepage, https://github.com/LoicGrobol/xontrib-uvox
+Project-URL: Documentation, https://github.com/LoicGrobol/xontrib-uvox/blob/main/README.md
+Project-URL: Code, https://github.com/LoicGrobol/xontrib-uvox
+Project-URL: Issue tracker, https://github.com/LoicGrobol/xontrib-uvox/issues
+Platform: any
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: System :: Shells
+Classifier: Topic :: System :: System Shells
+Classifier: Topic :: Terminals
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+License-File: LICENCE.md
+Requires-Dist: xonsh>=0.12.5
+Requires-Dist: uv
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+Dynamic: license-file
+
+UVox
+====
+
+A [uv](https://github.com/astral-sh/uv)-based Python virtual environment manager for the xonsh shell.
+
+## Installation
+
+To install use pip:
+
+```bash
+xpip install xontrib-uvox
+```
+
+## Usage
+
+This package contains two xontribs:
+
+- `uvox` - Python virtual environment manager for xonsh.
+- `uvoxapi` - API for Uvox
+
+### uvox
+
+Python virtual environment manager for xonsh.
+
+```bash
+xontrib load uvox
+uvox --help
+```
+
+### uvoxapi
+
+```bash
+xontrib load uvoxapi
+```
+
+UVox defines several events related to the life cycle of virtual environments:
+
+* `uvox_on_create(env: str) -> None`
+* `uvox_on_activate(env: str, path: pathlib.Path) -> None`
+* `uvox_on_deactivate(env: str, path: pathlib.Path) -> None`
+* `uvox_on_delete(env: str) -> None`
+
+
+## Credits
+
+This package is a fork of [xontrib-vox](https://github.com/xonsh/xontrib-vox).
