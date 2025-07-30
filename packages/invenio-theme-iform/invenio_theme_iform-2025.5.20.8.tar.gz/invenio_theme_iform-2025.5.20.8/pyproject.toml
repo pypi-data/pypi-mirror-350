@@ -1,0 +1,124 @@
+[project]
+name = "invenio-theme-iform"
+dynamic = ["version"]
+description = "Invenio module for the I-Form theme."
+readme = { file = "README.rst", content-type = "text/x-rst" }
+license = "MIT"
+authors = [
+    { name = "I-Form Advanced Research Manufacturing Research Centre", email = "cian.hughes@dcu.ie" },
+]
+keywords = ["invenio", "theme", "invenioRDM", "I-Form"]
+classifiers = [
+    "Environment :: Web Environment",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Development Status :: 3 - Alpha",
+]
+requires-python = ">=3.10,<3.14"
+dependencies = [
+    "invenio-assets>=2.0.0",
+    "invenio-i18n>=1.3.1",
+    "invenio-config-iform>=2025.5.20.1",
+    "invenio_records_global_search>=0.0.1",
+    "invenio_records_marc21>=0.21.0",
+    "invenio-records-lom>=0.16.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Cian-H/invenio-theme-iform"
+Issues = "https://github.com/Cian-H/invenio-theme-iform/issues"
+
+[project.scripts]
+test-docs = "scripts.test_docs:main"
+test-code = "pytest:console_main"
+test = "scripts.test:main"
+
+[project.entry-points."invenio_base.apps"]
+invenio_theme_iform = "invenio_theme_iform:InvenioThemeIform"
+
+[project.entry-points."invenio_base.blueprints"]
+invenio_theme_iform = "invenio_theme_iform.views:ui_blueprint"
+
+[project.entry-points."invenio_i18n.translations"]
+messages = "invenio_theme_iform"
+
+[project.entry-points."invenio_assets.webpack"]
+invenio_theme_iform_theme = "invenio_theme_iform.webpack:theme"
+
+[project.entry-points."invenio_config.module"]
+invenio_theme_iform = "invenio_theme_iform.config"
+
+[project.entry-points."invenio_base.finalize_app"]
+invenio_theme_iform = "invenio_theme_iform.ext:finalize_app"
+
+[dependency-groups]
+dev = [
+    "hatch>=1.14.1",
+    "pre-commit>=4.2.0",
+    "pydocstyle>=6.3.0",
+    "ruff>=0.11.7",
+]
+tests = [
+    "invenio-app>=1.3.4",
+    "invenio-previewer>=3.0.0",
+    "invenio-rdm-records>=18.0.0",
+    "invenio-search[opensearch2]>=2.1.0",
+    "pytest-invenio>=2.1.0",
+    "pytest-ruff>=0.4.1",
+    "Sphinx>=4.5.0",
+]
+docs = [
+    "invenio-app>=1.3.4",
+    "invenio-previewer>=3.0.0",
+    "invenio-rdm-records>=18.0.0",
+    "invenio-search[opensearch2]>=2.1.0",
+    "Sphinx>=4.5.0",
+]
+
+[build-system]
+requires = ["hatchling", "hatch-calver"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+scheme = "calver"
+path = "invenio_theme_iform/__about__.py"
+
+[tool.hatch.build]
+include = ["invenio_theme_iform"]
+exclude = [".venv", "tests/*", "*/tests/*", "*.rst", "run-tests.sh"]
+
+# Testing configuration
+[tool.pytest]
+addopts = "--ruff --ruff-format --pydocstyle --doctest-glob=\"*.rst\" --doctest-modules --cov=invenio_config_iform --cov-report=term-missing tests invenio_theme_iform"
+testpaths = ["tests", "invenio_theme_iform"]
+live_server_scope = "module"
+
+[tool.pytest.ini_options]
+addopts = "--ruff --ruff-format --pydocstyle --doctest-glob=\"*.rst\" --doctest-modules --cov=invenio_config_iform --cov-report=term-missing tests invenio_theme_iform"
+testpaths = ["tests", "invenio_theme_iform"]
+live_server_scope = "module"
+
+# Code style tools configuration
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+exclude = ["docs"]
+
+[tool.ruff.lint.isort]
+force-sort-within-sections = true
+lines-after-imports = -1
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
+[tool.pydocstyle]
+add_ignore = ["D401"]
