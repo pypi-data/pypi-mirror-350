@@ -1,0 +1,2 @@
+import{r as c}from"./p-02d8d51b.js";const e=class{constructor(e){c(this,e);this.platform=undefined;this.context=undefined}connectedCallback(){}componentWillLoad(){}disconnectedCallback(){}componentWillUpdate(){}};export{e as lwc_getaccept_loader};
+//# sourceMappingURL=p-dfaa1eff.entry.js.map

@@ -1,0 +1,34 @@
+import { IRecipient } from './Recipient';
+import { ISender } from './Sender';
+import { ICustomField } from './CustomField';
+import { IDocumentPage } from './DocumentPage';
+export interface IDocument {
+    is_signing?: boolean;
+    is_signing_order?: boolean;
+    is_selfsign?: boolean;
+    external_id?: string;
+    document_type?: string;
+    is_video?: boolean;
+    video_id?: string;
+    value?: number;
+    name?: string;
+    recipients?: IRecipient[];
+    sender?: ISender;
+    sign_date?: string;
+    contract_start_date?: string;
+    contract_end_date?: string;
+    custom_fields?: ICustomField[];
+    file_ids?: string;
+    template_id?: string;
+    is_reminder_sending?: boolean;
+    is_sms_sending?: boolean;
+    email_send_subject?: string;
+    email_send_message?: string;
+    status?: string;
+    created_at?: string;
+    id?: string;
+    page_count?: number;
+    expiration_date?: string;
+    send_date?: string;
+    pages?: IDocumentPage[];
+}

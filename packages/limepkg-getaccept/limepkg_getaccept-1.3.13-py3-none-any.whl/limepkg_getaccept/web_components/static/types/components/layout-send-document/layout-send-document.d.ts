@@ -1,0 +1,37 @@
+import { EventEmitter } from '../../stencil-public-runtime';
+import { IDocument } from '../../types/Document';
+import { IListItem } from '../../types/ListItem';
+import { LimeWebComponentContext, LimeWebComponentPlatform } from '@limetech/lime-web-components';
+import { ISession } from '../../types/Session';
+export declare class LayoutSendDocument {
+    document: IDocument;
+    template: IListItem;
+    limeDocument: IListItem;
+    platform: LimeWebComponentPlatform;
+    session: ISession;
+    context: LimeWebComponentContext;
+    setNewDocumentName: EventEmitter<string>;
+    setDocumentValue: EventEmitter<number>;
+    setIsSmsSending: EventEmitter<boolean>;
+    setSmartReminder: EventEmitter<boolean>;
+    private errorHandler;
+    private documentName;
+    private value;
+    private smartReminder;
+    private sendLinkBySms;
+    private documentVideo;
+    changeView: EventEmitter;
+    removeVideo: EventEmitter;
+    componentWillLoad(): Promise<void>;
+    componentDidUpdate(): void;
+    constructor();
+    render(): any[];
+    loadObjectValue(): Promise<void>;
+    private fileName;
+    private handleChangeDocumentName;
+    private handleChangeValue;
+    private handleChangeSmartReminder;
+    private handleChangeSendLinkBySms;
+    private handleAddVideo;
+    private handleRemoveVideo;
+}

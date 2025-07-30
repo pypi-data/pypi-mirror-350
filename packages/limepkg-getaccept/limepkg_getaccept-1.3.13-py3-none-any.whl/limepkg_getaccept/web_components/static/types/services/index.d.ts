@@ -1,0 +1,35 @@
+import { LimeWebComponentPlatform } from '@limetech/lime-web-components';
+import { ISession } from '../types/Session';
+import { IListItem } from '../types/ListItem';
+import { ICustomField } from '../types/CustomField';
+import { IDocument } from '../types/Document';
+import { FileInfo } from '@limetech/lime-elements';
+import { ITemplateRole } from "../types/TemplateRole";
+export declare const fetchMe: (platform: LimeWebComponentPlatform, session: ISession) => Promise<any>;
+export declare const switchEntity: (entity_id: string, platform: LimeWebComponentPlatform, session: ISession) => Promise<any>;
+export declare const fetchLimeDocuments: (platform: LimeWebComponentPlatform, limetype: string, record_id: number, selectedLimeDocument: IListItem) => Promise<IListItem[]>;
+export declare const fetchLimePersons: (platform: LimeWebComponentPlatform, limetype: string, record_id: number) => Promise<IListItem[]>;
+export declare const fetchSentDocuments: (platform: LimeWebComponentPlatform, externalId: string, session: ISession) => Promise<IDocument[]>;
+export declare const fetchTemplates: (platform: LimeWebComponentPlatform, session: ISession, selectedTemplate: IListItem) => Promise<IListItem[]>;
+export declare const fetchTemplateFields: (platform: LimeWebComponentPlatform, session: ISession, limetype: string, record_id: number, selectedTemplate: IListItem) => Promise<ICustomField[]>;
+export declare const fetchTemplateRoles: (platform: LimeWebComponentPlatform, session: ISession, limetype: string, record_id: number, selectedTemplate: IListItem) => Promise<ITemplateRole[]>;
+export declare const fetchObjectProps: (platform: LimeWebComponentPlatform, session: ISession, limetype: string, record_id: number) => Promise<ICustomField[]>;
+export declare const fetchDealValue: (platform: LimeWebComponentPlatform, session: ISession, limetype: string, record_id: number) => Promise<number>;
+export declare const fetchEntity: (platform: LimeWebComponentPlatform, session: ISession) => Promise<any>;
+export declare const fetchDocumentDetails: (platform: LimeWebComponentPlatform, session: ISession, document_id: string) => Promise<any>;
+export declare const fetchVideos: (platform: LimeWebComponentPlatform, session: ISession) => Promise<any>;
+export declare const createDocument: (platform: LimeWebComponentPlatform, session: ISession, document: IDocument) => Promise<{
+    data: IDocument;
+    success: boolean;
+}>;
+export declare const updateDocument: (platform: LimeWebComponentPlatform, session: ISession, params: {
+    document_id: string;
+    external_client_id: string;
+}) => Promise<any>;
+export declare const sendDocument: (platform: LimeWebComponentPlatform, session: ISession, documentId: string) => Promise<any>;
+export declare const sealDocument: (platform: LimeWebComponentPlatform, session: ISession, documentId: string) => Promise<any>;
+export declare const uploadDocument: (platform: LimeWebComponentPlatform, session: ISession, documentId: string) => Promise<any>;
+export declare const uploadFile: (platform: LimeWebComponentPlatform, session: ISession, file: FileInfo) => Promise<any>;
+export declare const removeDocument: (platform: LimeWebComponentPlatform, session: ISession, documentId: string) => Promise<any>;
+export declare const signup: (platform: LimeWebComponentPlatform, data: {}) => Promise<any>;
+export declare const refreshToken: (platform: LimeWebComponentPlatform, session: ISession) => Promise<any>;

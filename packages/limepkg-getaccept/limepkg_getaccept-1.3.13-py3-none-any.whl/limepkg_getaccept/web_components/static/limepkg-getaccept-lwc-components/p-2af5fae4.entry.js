@@ -1,0 +1,2 @@
+import{r as e,h as r}from"./p-02d8d51b.js";const c="limel-spinner{margin:1rem 0;color:#f49132}";const n=c;const a=class{constructor(r){e(this,r)}render(){return r("limel-flex-container",{key:"aa79d9910c1fe5481c66bea8cc8bf00f104fda23",justify:"center"},r("limel-spinner",{key:"88bc1183e4fcca0f8b6811bf3819d86078cd1aef"}))}};a.style=n;export{a as ga_loader};
+//# sourceMappingURL=p-2af5fae4.entry.js.map
