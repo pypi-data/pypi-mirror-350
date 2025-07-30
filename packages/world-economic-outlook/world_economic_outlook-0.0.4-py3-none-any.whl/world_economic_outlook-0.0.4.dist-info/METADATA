@@ -1,0 +1,257 @@
+Metadata-Version: 2.4
+Name: world-economic-outlook
+Version: 0.0.4
+Summary: An IMF World Economic Outlook (WEO) API Client
+Author-email: Rob Suomi <robert.suomi@gmail.com>
+License-Expression: MIT
+License-File: LICENSE
+Requires-Python: >=3.7
+Requires-Dist: simple-sqlite3
+Description-Content-Type: text/markdown
+
+# World Economic Outlook
+[![PyPI version](https://badge.fury.io/py/world-economic-outlook.svg)](https://pypi.org/project/world-economic-outlook/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![Supported Python versions](https://img.shields.io/pypi/pyversions/world-economic-outlook.svg)
+
+Easily fetch IMF World Economic Outlook (WEO) data.
+
+**world-economic-outlook** is a Python library and CLI tool for downloading, saving, and processing World Economic Outlook (WEO) data from the International Monetary Fund (IMF). It provides a convenient interface for managing WEO data, saving it locally, and pushing it to a database.
+
+---
+
+## Features
+
+- Download WEO data for a specific vintage (e.g., "2025 April").
+- Save the downloaded data as an `.xls` file.
+- Push data to a SQLite database.
+- Command-line interface (CLI) for all major actions.
+- Programmatic API for automation and scripting.
+- Wrapper class for flexible workflows.
+
+---
+
+## Installation
+
+Requires **Python 3.7+**.
+
+Install the published package:
+
+```bash
+pip install world-economic-outlook
+```
+
+Or install the library and its dependencies using pip:
+
+```bash
+pip install -r requirements.txt
+```
+
+
+---
+
+## Quick Start
+
+### Programmatic Usage
+
+#### Using the `WEO` Wrapper
+
+This example demonstrates how to use the `WEO` wrapper class to download, push to a database, and save WEO data:
+
+```python
+from world_economic_outlook import WEO
+
+weo = WEO()
+weo.download("2025 April")  # Download the data for the specified vintage
+weo.push("database.db", "weo")  # Push the data to a SQLite database table
+weo.save("weo.xls")  # Save the data as an .xls file
+```
+
+#### Using the `download` Function
+
+This example demonstrates how to use the `download` function to download WEO data and either save it to a file, push it to a database, or both in a single call:
+
+```python
+from world_economic_outlook import download
+
+download("2025 April", save_path="weo.xls", database="database.db", table="weo")
+```
+
+- **`vintage`**: The vintage string (e.g., '2025 April').
+- **`save_path`**: (Optional) Path to save the WEO data as a file.
+- **`database`** and **`table`**: (Optional) Push the data to a SQLite database.
+
+---
+
+### Command-Line Interface (CLI)
+
+The CLI provides a convenient way to interact with the WEO Downloader and is installed with the package.
+
+#### Download and Save Data
+
+This example downloads WEO data for a specific vintage and saves it as an .xls file:
+
+```bash
+weo download "2025 April" -save "2025_April.xls"
+```
+
+#### Push Data to a Database
+
+This example downloads WEO data and pushes it directly to a SQLite database table:
+
+```bash
+weo download "2025 April" -database "database.db" -table "weo"
+```
+
+#### Perform All Actions
+
+This example downloads WEO data, saves it as an .xls file, and pushes it to a database in one command:
+
+```bash
+weo download "2025 April" -database "database.db" -table "weo" -save "2025_April.xls"
+```
+
+#### Help
+
+For more details, run:
+
+```bash
+weo --help
+```
+
+---
+
+## Useful Tools
+
+### `simple-sqlite3`
+
+The `simple-sqlite3` library is used in this project to interact with SQLite databases. Make sure you have already created the database and table by running the `weo` CLI to download the data:
+
+```bash
+weo download "2025 April" -database "database.db" -table "weo"
+```
+
+Below are some useful commands for exporting data from your SQLite database to different file formats such as CSV and JSON.
+
+#### Export to CSV
+```bash
+db export -database "database.db" -table "weo" -format "csv" -output "weo.csv"
+```
+
+#### Export to JSON
+```bash
+db export -database "database.db" -table "weo" -format "json" -output "weo.json"
+```
+
+#### Fetching Data
+
+This example shows how to fetch all database records for Brazil.
+
+```python
+from simple_sqlite3 import Database
+
+db = Database("database.db")
+
+table = db.table("weo")
+
+sql = """SELECT * WHERE iso = 'BRA'"""
+
+results = table.query(sql)
+
+print(results)
+```
+
+**Example Output (from `print(results)`)**:
+```python
+[   ...
+    {
+        "units": "National currency",
+        "estimate": 0,
+        "scale": "Billions",
+        "weo_subject_code": "NGDP_R",
+        "value": "522.938",
+        "iso": "BRA",
+        "subject_descriptor": "Gross domestic product, constant prices",
+        "country": "Brazil",
+        "vintage": "2025 April",
+        "estimates_start_after": 2024,
+        "year": 1980
+    },
+    {
+        "units": "National currency",
+        "estimate": 0,
+        "scale": "Billions",
+        "weo_subject_code": "NGDP_R",
+        "value": "499.93",
+        "iso": "BRA",
+        "subject_descriptor": "Gross domestic product, constant prices",
+        "country": "Brazil",
+        "vintage": "2025 April",
+        "estimates_start_after": 2024,
+        "year": 1981
+    },
+    ...
+]
+```
+
+
+#### More Fetch Conditions
+
+This example shows how to fetch database records for Real GDP Growth for Brazil and Mexico in 2020 and 2021 from the 2025 April WEO.
+
+```python
+from simple_sqlite3 import Database
+
+db = Database("database.db")
+
+table = db.table("weo")
+
+sql = """ 
+    SELECT year, value, country, weo_subject_code
+    WHERE iso IN ('MEX', 'BRA')
+    AND year BETWEEN 2020 AND 2021
+    AND vintage='2025 April'
+    AND weo_subject_code = 'NGDP_RPCH'
+"""
+
+results = table.query(sql)
+
+print(results)
+```
+
+**Example Output (from `print(results)`)**:
+```python
+[
+    {
+        "year": 2020,
+        "value": "-3.277",
+        "country": "Brazil",
+        "weo_subject_code": "NGDP_RPCH"
+    },
+    {
+        "year": 2021,
+        "value": "4.763",
+        "country": "Brazil",
+        "weo_subject_code": "NGDP_RPCH"
+    },
+    {
+        "year": 2020,
+        "value": "-8.354",
+        "country": "Mexico",
+        "weo_subject_code": "NGDP_RPCH"
+    },
+    {
+        "year": 2021,
+        "value": "6.048",
+        "country": "Mexico",
+        "weo_subject_code": "NGDP_RPCH"
+    }
+]
+```
+
+---
+
+## License
+
+This project is developed by Rob Suomi and licensed under the MIT License.  
+See the [LICENSE](LICENSE) file for details.
