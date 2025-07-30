@@ -1,0 +1,60 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+# backend-path = [\".\"] # Not strictly necessary if setuptools is in default locations
+
+[project]
+name = "hyperbeam"
+version = "0.1.2"
+authors = [
+    {name = "Sean McCurdy", email = "sean@hyprbm.com" },
+]
+description = "Hyperbeam is a Python library designed to provide intelligent search tooling."
+readme = "README.md"
+requires-python = ">=3.10" # Based on your .venv path
+license = { file = "LICENSE" } # Assumes you have a LICENSE file
+keywords = ["search", "web search", "duckduckgo", "scraperapi", "hyperbeam", "intelligent search"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Topic :: Internet :: WWW/HTTP :: Indexing/Search",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+# Core runtime dependencies for the hyperbeam library
+dependencies = [
+    "duckduckgo-search>=8.0.2",
+    "scraperapi-sdk>=1.5.3",
+    "bs4>=0.0.2",
+    "twine>=6.1.0",
+]
+
+[project.optional-dependencies]
+development = [
+    "black[jupyter]>=25.1.0",
+    "flake8>=7.2.0",
+    "isort>=6.0.1",
+]
+
+
+[project.urls]
+"Homepage" = "https://github.com/hyprbm/hyperbeam"
+"Repository" = "https://github.com/hyprbm/hyperbeam"
+"Bug Tracker" = "https://github.com/hyprbm/hyperbeam/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]  # Tells setuptools to look for packages in the 'src' directory
+namespaces = false
+
+[tool.isort]
+force_single_line = true
+
+[tool.flake8]
+max-line-length = 120
+extend-ignore = ["E203"]
