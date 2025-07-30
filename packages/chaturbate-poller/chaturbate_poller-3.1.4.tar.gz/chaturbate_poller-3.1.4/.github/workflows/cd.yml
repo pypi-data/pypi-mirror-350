@@ -1,0 +1,131 @@
+name: Release & Publish
+
+on:
+  workflow_run:
+    workflows: ["Continuous Integration"]
+    branches: [main]
+    types:
+      - completed
+
+env:
+  UV_CACHE_DIR: /tmp/.uv-cache
+  PYTHON_VERSION: "3.13"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Semantic Release + Publish
+    runs-on: ubuntu-24.04
+    if: github.event.workflow_run.conclusion == 'success'
+    permissions:
+      id-token: write        # For OIDC authentication with PyPI
+      contents: write        # For creating releases
+      packages: write        # For publishing packages
+      attestations: write    # For attestations
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GH_PAT }}
+          persist-credentials: false
+
+      - name: Ensure Branch Integrity
+        shell: bash
+        run: |
+          git reset --hard ${{ github.sha }}
+
+          # Determine upstream branch (useful for avoiding conflicts)
+          UPSTREAM_BRANCH_NAME="$(git status -sb | head -n 1 | cut -d' ' -f2 | grep -E '\.{3}' | cut -d'.' -f4)"
+
+          if [ -z "$UPSTREAM_BRANCH_NAME" ]; then
+              echo "::error::Unable to determine upstream branch!"
+              exit 1
+          fi
+
+          git fetch "${UPSTREAM_BRANCH_NAME%%/*}"
+
+          if ! UPSTREAM_SHA="$(git rev-parse "$UPSTREAM_BRANCH_NAME")"; then
+              echo "::error::Unable to determine upstream sha!"
+              exit 1
+          fi
+
+          HEAD_SHA="$(git rev-parse HEAD)"
+
+          if [ "$HEAD_SHA" != "$UPSTREAM_SHA" ]; then
+              echo "::error::Upstream has changed. Aborting release."
+              exit 1
+          fi
+
+      - name: Set Up UV
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+
+      - name: Install Dependencies
+        run: uv sync
+
+      - name: Run Python Semantic Release
+        id: release
+        uses: python-semantic-release/python-semantic-release@v9
+        with:
+          github_token: ${{ secrets.GH_PAT }}
+
+      - name: Publish to TestPyPI
+        if: steps.release.outputs.released == 'true'
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          attestations: false
+          skip-existing: true
+
+      - name: Verify Install from TestPyPI
+        if: steps.release.outputs.released == 'true'
+        run: uv pip install --index-url https://test.pypi.org/simple/ chaturbate-poller
+
+      - name: Publish to PyPI
+        if: steps.release.outputs.released == 'true'
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          skip-existing: true
+
+      - name: Publish GitHub Release
+        if: steps.release.outputs.released == 'true'
+        uses: python-semantic-release/publish-action@v9
+        with:
+          github_token: ${{ secrets.GH_PAT }}
+
+      - name: Attest Package Provenance
+        if: steps.release.outputs.released == 'true'
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: |
+            ${{ github.workspace }}/dist/chaturbate_poller-*.*.*.tar.gz,
+            ${{ github.workspace }}/dist/chaturbate_poller-*.*.*-py3-none-any.whl
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Release Summary
+        if: steps.release.outputs.released == 'true'
+        run: |
+          echo "## New Release: v${{ steps.release.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Successfully released and published version ${{ steps.release.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "[PyPI Package](https://pypi.org/project/chaturbate-poller)" >> $GITHUB_STEP_SUMMARY
+          echo "[Release Notes](https://github.com/mountaingod2/chaturbate_poller/releases/tag/v${{ steps.release.outputs.version }})" >> $GITHUB_STEP_SUMMARY
+
+      - name: Delete Old Package Versions
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: chaturbate_poller
+          package-type: 'container'
+          min-versions-to-keep: 10
+          delete-only-untagged-versions: 'true'

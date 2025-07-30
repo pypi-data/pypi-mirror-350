@@ -1,0 +1,85 @@
+{
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"semanticCommitType": "chore",
+	"rangeStrategy": "bump",
+	"rebaseWhen": "auto",
+	"labels": [
+		"dependencies"
+	],
+	"prHourlyLimit": 4,
+	"prConcurrentLimit": 10,
+	"minimumReleaseAge": "3 days",
+	"internalChecksFilter": "strict",
+	"timezone": "America/Edmonton",
+	"schedule": [
+		"before 5am"
+	],
+	"dependencyDashboard": true,
+	"lockFileMaintenance": {
+		"enabled": true,
+		"automerge": true,
+		"autoApprove": true,
+		"schedule": [
+			"before 6am"
+		]
+	},
+	"pep723": {
+		"managerFilePatterns": [
+			"/examples/.*\\.py$/",
+			"/examples/.*\\.pyw$/"
+		],
+		"enabled": true
+	},
+	"packageRules": [
+		{
+			"description": "Automerge all minor and patch updates",
+			"matchUpdateTypes": [
+				"minor",
+				"patch"
+			],
+			"automerge": true,
+			"autoApprove": true
+		},
+		{
+			"description": "Do not automerge major updates",
+			"matchUpdateTypes": [
+				"major"
+			],
+			"labels": [
+				"dependencies",
+				"breaking"
+			],
+			"automerge": false,
+			"assignees": [
+				"@MountainGod2"
+			]
+		},
+		{
+			"description": "Type definitions",
+			"groupName": "type definitions",
+			"automerge": true,
+			"autoApprove": true,
+			"matchPackageNames": [
+				"/^@types\\//"
+			]
+		},
+		{
+			"description": "Ignore updates to requires-python",
+			"matchDatasources": [
+				"python"
+			],
+			"matchPackageNames": [
+				"python"
+			],
+			"enabled": false
+		}
+	],
+	"vulnerabilityAlerts": {
+		"labels": [
+			"security"
+		],
+		"assignees": [
+			"@MountainGod2"
+		]
+	}
+}
