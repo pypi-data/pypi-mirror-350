@@ -1,0 +1,96 @@
+Metadata-Version: 2.4
+Name: x-transaction-id-generator
+Version: 1.0.0
+Summary: Twitter X-Client-Transaction-Id generator written in python
+Home-page: https://github.com/OfficialDeepSaha/Transaction-ID-Generator
+Author: Deep Saha
+Author-email: hiremeasadeveloper@gmail.com
+License: MIT
+Keywords: XClientTransaction,twitter transaction id,client transaction id twitter,tid generator,x client transaction id generator,xid twitter,tweeterpy
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: End Users/Desktop
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Operating System :: MacOS :: MacOS X
+Classifier: Operating System :: Unix
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: beautifulsoup4
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# XTransactionID
+
+A Python package for generating Twitter's X-Client-Transaction-Id, which is used in X (formerly Twitter) API requests.
+
+## Installation
+
+You can install the package using pip:
+
+```bash
+pip install xtransactionid
+```
+
+## Usage
+
+```python
+import requests
+from urllib.parse import urlparse
+from xtransactionid.utils import generate_headers, handle_x_migration
+from xtransactionid import ClientTransaction
+
+# Initialize a session
+session = requests.Session()
+session.headers = generate_headers()
+response = handle_x_migration(session)
+
+# Example usage
+url = "https://x.com/i/api/1.1/jot/client_event.json"
+method = "POST"
+path = urlparse(url=url).path
+
+# Create transaction ID generator
+ct = ClientTransaction(response)
+
+# Generate transaction ID
+transaction_id = ct.generate_transaction_id(method=method, path=path)
+print(transaction_id)
+```
+
+## Features
+
+- Generate X-Client-Transaction-Id for X (Twitter) API requests
+- Easy to integrate with existing requests sessions
+- Handles all the necessary cryptographic operations
+
+## Requirements
+
+- Python 3.6+
+- beautifulsoup4
+
+## License
+
+MIT
+
+## Author
+
+Deep Saha (hiremeasadeveloper@gmail.com)
+
+## GitHub Repository
+
+[Transaction-ID-Generator](https://github.com/OfficialDeepSaha/Transaction-ID-Generator)
