@@ -1,0 +1,73 @@
+[tool.poetry]
+name = "spakky-core"
+version = "2.8.0"
+description = "Highly abstracted Framework core to use DDD & DI/IoC & AOP & Etc..."
+authors = ["Spakky <sejong418@icloud.com>"]
+packages = [{ include = "spakky" }]
+readme = "README.md"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.dependencies]
+python = ">=3.10"
+pycryptodome = "^3.20.0"
+typing-extensions = "^4.9.0"
+bcrypt = "^4.2.0"
+argon2-cffi = "^23.1.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.3"
+pytest-cov = "^4.1.0"
+pytest-asyncio = "^0.21.1"
+pytest-xdist = "^3.6.1"
+toml = "^0.10.2"
+ruff = "^0.9.6"
+pre-commit = "^4.1.0"
+
+[tool.poetry.group.ci.dependencies]
+pytest = "^7.4.3"
+pytest-cov = "^4.1.0"
+pytest-asyncio = "^0.21.1"
+pytest-xdist = "^3.6.1"
+ruff = "^0.9.6"
+
+[tool.ruff]
+builtins = ["_"]
+cache-dir = "~/.cache/ruff"
+
+[tool.pytest.ini_options]
+pythonpath = "spakky"
+testpaths = "tests"
+python_files = ["test_*.py"]
+asyncio_mode = "auto"
+addopts = """
+    --cov
+    --cov-report=term
+    --cov-report=xml
+    --no-cov-on-fail
+    --strict-markers
+    --dist=loadfile
+    -p no:warnings
+    -n auto
+    -vv
+"""
+
+[tool.coverage.run]
+omit = ["tests/*"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+precision = 2
+fail_under = 90
+skip_empty = true
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "@(abc\\.)?abstractmethod",
+    "@(typing\\.)?overload",
+]
