@@ -1,0 +1,221 @@
+[tool.poetry]
+name = "moex"
+version = "1.0.0"
+description = "MoscowExchange ISS Queries implementation"
+license = "MIT"
+authors = ["Michael R. Kisel <aioboy@yandex.com>"]
+maintainers = ["Michael R. Kisel <aioboy@yandex.com>"]
+readme = "README.md"
+keywords = ['moex', 'moex iss', 'async moex', 'moscow', 'exchange', 'MoscowExchange', 'finance', 'stocks']   
+classifiers = [
+        "Development Status :: 5 - Production/Stable",
+        "Framework :: AsyncIO",
+        "Intended Audience :: Developers",
+        "Intended Audience :: Education",
+        "Intended Audience :: End Users/Desktop",
+        "Intended Audience :: Financial and Insurance Industry",
+        "Intended Audience :: Science/Research",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Topic :: Home Automation",
+        "Topic :: Internet",
+        "Topic :: Office/Business",
+        "Topic :: Office/Business :: Financial",
+        "Topic :: Office/Business :: Financial :: Point-Of-Sale",
+        "Topic :: Office/Business :: News/Diary",
+        "Topic :: Scientific/Engineering",
+        "Topic :: Scientific/Engineering :: Artificial Intelligence"
+]
+packages = [{include = "moex"}]
+
+[tool.poetry.urls]
+homepage = "https://pypi.org/project/moex"
+documentation = "https://aioboy.tech/p/moex/"
+repository = "https://gitlab.com/aioboy/moex/"
+
+[tool.poetry.dependencies]
+python = ">=3.8.1,<3.13"
+aiohttp = "<=3.10.11"
+beautifulsoup4 = "<=4.11.1"
+pandas = "<=2.0.3"
+numpy = "<2.0.0"
+rich = "<=12.6.0"
+lxml = "<=4.9.1"
+
+[tool.poetry.group.lint.dependencies]
+black = "^24.8.0"
+mypy = "^1.14.1"
+pylint = "^3.2.7"
+radon = "6.0.1"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^7.2.0"
+pytest-asyncio = "^0.20.1"
+pytest-cov = "^4.0.0"
+coverage-badge = "^1.1.2"
+
+[tool.poetry.group.docs.dependencies]
+pdoc3 = "^0.11.0"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+addopts = "--cov=moex"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+omit = ["test_*", "moex/meta.py", "moex/exceptions.py"]
+
+[tool.black]
+quiet = true
+
+[tool.mypy]
+ignore_missing_imports = true
+no_implicit_optional = true
+check_untyped_defs = true
+python_version = "3.8"
+show_error_codes = true
+show_error_context = true
+pretty = true
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pylint.MASTER]
+fail-under=8.0
+ignore="test_*.py"
+jobs=1
+limit-inference-results=100
+persistent="no" # yes
+py-version="3.8"
+recursive="no"
+suggestion-mode="yes"
+unsafe-load-any-extension="no"
+
+[tool.pylint.'MESSAGES CONTROL']
+disable="""raw-checker-failed,
+        missing-module-docstring,
+        inconsistent-return-statements,
+        simplifiable-if-expression,
+        anomalous-backslash-in-string"""
+enable="c-extension-no-member"
+
+[tool.pylint.REPORTS]
+evaluation="max(0, 0 if fatal else 10.0 - ((float(5 * error + warning + refactor + convention) / statement) * 10))"
+output-format="text"
+reports="no"
+score="yes"
+
+[tool.pylint.REFACTORING]
+max-nested-blocks=5
+never-returning-functions="sys.exit,argparse.parse_error"
+
+[tool.pylint.BASIC]
+argument-naming-style="snake_case"
+attr-naming-style="snake_case"
+bad-names="""foo,
+          bar,
+          baz,
+          toto,
+          tutu,
+          tata"""
+class-attribute-naming-style="any"
+class-const-naming-style="UPPER_CASE"
+class-naming-style="PascalCase"
+const-naming-style="UPPER_CASE"
+docstring-min-length=-1
+function-naming-style="snake_case"
+good-names="""i,
+           j,
+           k,
+           ex,
+           Run,
+           _"""
+include-naming-hint="no"
+inlinevar-naming-style="any"
+method-naming-style="snake_case"
+module-naming-style="snake_case"
+property-classes="abc.abstractproperty"
+variable-naming-style="snake_case"
+
+[tool.pylint.FORMAT]
+indent-after-paren=4
+indent-string='    '
+max-line-length=120
+max-module-lines=1000
+single-line-class-stmt="no"
+single-line-if-stmt="no"
+
+[tool.pylint.LOGGING]
+logging-format-style="old"
+logging-modules="logging"
+
+[tool.pylint.MISCELLANEOUS]
+notes="FIXME, XXX, TODO"
+
+[tool.pylint.SIMILARITIES]
+ignore-comments="yes"
+ignore-docstrings="yes"
+ignore-imports="no"
+ignore-signatures="no"
+min-similarity-lines=4
+
+[tool.pylint.SPELLING]
+max-spelling-suggestions=4
+spelling-ignore-comment-directives="fmt: on,fmt: off,noqa:,noqa,nosec,isort:skip,mypy:"
+spelling-store-unknown-words="no"
+
+[tool.pylint.STRING]
+check-quote-consistency="no"
+check-str-concat-over-line-jumps="no"
+
+[tool.pylint.TYPECHECK]
+contextmanager-decorators="contextlib.contextmanager"
+ignore-mixin-members="yes"
+ignore-none="yes"
+ignore-on-opaque-inference="yes"
+ignored-classes="optparse.Values,thread._local,_thread._local"
+missing-member-hint="yes"
+missing-member-hint-distance=1
+missing-member-max-choices=1
+mixin-class-rgx=".*[Mm]ixin"
+
+[tool.pylint.VARIABLES]
+allow-global-unused-variables="yes"
+dummy-variables-rgx="_+$|(_[a-zA-Z0-9_]*[a-zA-Z0-9]+?$)|dummy|^ignored_|^unused_"
+ignored-argument-names="_.*|^ignored_|^unused_"
+init-import="no"
+redefining-builtins-modules="six.moves,past.builtins,future.builtins,builtins,io"
+
+[tool.pylint.CLASSES]
+check-protected-access-in-special-methods="no"
+defining-attr-methods="__init__, __new__, setUp, __post_init__"
+exclude-protected="_asdict, _fields, _replace, _source, _make"
+valid-classmethod-first-arg="cls"
+valid-metaclass-classmethod-first-arg="cls"
+
+[tool.pylint.DESIGN]
+max-args=5
+max-attributes=7
+max-bool-expr=5
+max-branches=12
+max-locals=15
+max-parents=7
+max-public-methods=20
+max-returns=6
+max-statements=50
+min-public-methods=2
+
+[tool.pylint.IMPORTS]
+allow-wildcard-with-all="no"
+analyse-fallback-blocks="no"
+known-third-party="enchant"
+
+[tool.pylint.EXCEPTIONS]
+overgeneral-exceptions="BaseException, Exception"
