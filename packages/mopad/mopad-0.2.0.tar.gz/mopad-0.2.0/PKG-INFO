@@ -1,0 +1,111 @@
+Metadata-Version: 2.4
+Name: mopad
+Version: 0.2.0
+Summary: An anywidget that allows gamepad input in Marimo
+Project-URL: Homepage, https://github.com/vincentwarmerdam/mopad
+Project-URL: Repository, https://github.com/vincentwarmerdam/mopad
+Project-URL: Issues, https://github.com/vincentwarmerdam/mopad/issues
+Author: mopad contributors
+License: MIT License
+        
+        Copyright (c) 2024 vincent d warmerdam 
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+License-File: LICENSE
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Scientific/Engineering :: Visualization
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.8
+Requires-Dist: anywidget>=0.9.0
+Requires-Dist: traitlets
+Provides-Extra: dev
+Requires-Dist: build; extra == 'dev'
+Requires-Dist: mypy; extra == 'dev'
+Requires-Dist: pytest; extra == 'dev'
+Requires-Dist: pytest-cov; extra == 'dev'
+Requires-Dist: ruff; extra == 'dev'
+Requires-Dist: twine; extra == 'dev'
+Description-Content-Type: text/markdown
+
+# mopad
+
+An anywidget that allows gamepad input in Marimo notebooks. Perfect for interactive data exploration, games, or any application that needs real-time gamepad input.
+
+## Features
+
+- 🎮 **Automatic gamepad detection** - No need to press buttons before starting
+- 📊 **Real-time visual feedback** - Connection status and button press information  
+- ⏱️ **Precise timestamp tracking** - Millisecond-accurate timing for button presses
+- 🔗 **Any button support** - Capture input from any bluetooth gamepad
+
+## Installation
+
+```bash
+pip install mopad
+```
+
+## Usage
+
+### Basic Example
+
+```python
+import marimo as mo
+from mopad import MopadWidget
+
+# Create and display the widget
+gamepad = mo.ui.anywidget(MopadWidget())
+gamepad
+```
+
+For a full demo you can check [Github pages](https://koaning.github.io/mopad/).
+
+## Widget Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `last_button_pressed` | `int` | Index of the last pressed button (-1 if none) |
+| `current_timestamp` | `float` | Timestamp of the most recent button press (ms) |
+| `previous_timestamp` | `float` | Timestamp of the previous button press (ms) |
+| `axes` | `list[float]` | Analog stick values: [left_x, left_y, right_x, right_y] |
+| `dpad_up` | `bool` | True when D-pad up is pressed |
+| `dpad_down` | `bool` | True when D-pad down is pressed |
+| `dpad_left` | `bool` | True when D-pad left is pressed |
+| `dpad_right` | `bool` | True when D-pad right is pressed |
+| `button_id` | `int` | Legacy property for backward compatibility |
+k
+## Gamepad Setup
+
+1. **Connect your gamepad** to your computer (USB or Bluetooth)
+2. **Press any button** on the gamepad to activate it in the browser
+3. **Start the widget** - it will automatically detect the connected gamepad
+
+> **Note:** Due to browser security policies, gamepads need user interaction to be detected. The widget will guide you through the connection process with clear visual indicators.
+
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
