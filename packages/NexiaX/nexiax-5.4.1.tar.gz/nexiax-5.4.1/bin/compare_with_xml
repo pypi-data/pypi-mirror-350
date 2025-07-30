@@ -1,0 +1,95 @@
+#!/usr/bin/env python
+#     Copyright 2025, QutaYba, nasr2python@gmail.com find license text at end of file
+
+
+""" Tool to compare XML outputs of two nexium versions.
+
+"""
+
+import os
+import sys
+
+# Unchanged, running from checkout, use the parent directory, the qutayba
+# package ought to be there.
+sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+
+# isort:start
+
+import difflib
+
+from qutayba.tools.testing.Common import my_print
+from qutayba.utils.Execution import executeProcess
+
+qutayba1 = sys.argv[1]
+qutayba2 = sys.argv[2]
+filename = sys.argv[3]
+
+my_print(
+    """\
+Comparing output of '{filename}' using '{qutayba1}' <-> '{qutayba2}' ...""".format(
+        filename=filename, qutayba1=qutayba1, qutayba2=qutayba2
+    )
+)
+
+extra_options = os.getenv("DEVILPY_EXTRA_OPTIONS", "")
+
+qutayba1_cmd = "{qutayba1} --xml {filename}".format(qutayba1=qutayba1, filename=filename)
+qutayba2_cmd = "{qutayba2} --xml {filename}".format(qutayba2=qutayba2, filename=filename)
+
+stdout_qutayba1, stderr_qutayba1, exit_qutayba1 = executeProcess(qutayba1_cmd, shell=True)
+stdout_qutayba2, stderr_qutayba2, exit_qutayba2 = executeProcess(qutayba2_cmd, shell=True)
+
+
+def makeDiffable(output):
+    result = []
+
+    for line in output.split(b"\n"):
+        line = str(line)
+        result.append(line)
+
+    return result
+
+
+def compareOutput(kind, out1, out2):
+    diff = difflib.unified_diff(
+        makeDiffable(out1),
+        makeDiffable(out2),
+        "{program} ({detail})".format(program="qutayba1 " + filename, detail=kind),
+        "{program} ({detail})".format(program="qutayba2 " + filename, detail=kind),
+        None,
+        None,
+        n=3,
+    )
+
+    result = list(diff)
+
+    if result:
+        for line in result:
+            my_print(line, end="\n" if not line.startswith("---") else "")
+        return 1
+    else:
+        return 0
+
+
+exit_code_stdout = compareOutput("stdout", stdout_qutayba1, stdout_qutayba2)
+exit_code_return = exit_qutayba1 != exit_qutayba2
+
+if exit_code_return:
+    my_print(
+        """\
+Exit codes {exit_qutayba1:d} ({qutayba1}) != {exit_qutayba2:d} ({qutayba2})""".format(
+            exit_qutayba1=exit_qutayba1,
+            qutayba1=qutayba1,
+            exit_qutayba2=exit_qutayba2,
+            qutayba2=qutayba2,
+        )
+    )
+
+exit_code = exit_code_stdout or exit_code_return
+
+if exit_code:
+    sys.exit("Error, outputs differed.")
+
+my_print("OK, same outputs.")
+
+

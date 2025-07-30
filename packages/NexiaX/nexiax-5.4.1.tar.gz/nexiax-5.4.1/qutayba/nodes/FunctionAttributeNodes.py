@@ -1,0 +1,89 @@
+#     Copyright 2025, QutaYba, nasr2python@gmail.com find license text at end of file
+
+
+""" Function attribute nodes
+
+The represent special values of the modules. The "__qualname__" value node
+is intended and to be resolved later. And the function output for error
+messages, is also dynamic.
+
+These nodes are intended to allow for as much compile time optimization as
+possible, despite this difficulty. In some modes these node become constants
+quickly, in others they will present boundaries for optimization.
+
+"""
+
+from .ChildrenHavingMixins import ChildHavingValueMixin
+from .ExpressionBases import CompileTimeConstantExpressionBase, ExpressionBase
+from .NodeBases import SideEffectsFromChildrenMixin
+from .NodeMakingHelpers import makeConstantReplacementNode
+
+
+class ExpressionFunctionQualnameRef(CompileTimeConstantExpressionBase):
+    """Node for value __qualname__ of function or class.
+
+    Notes:
+        This is for Python 3.4 and higher only, where classes calculate the __qualname__
+        value at runtime, then it's determined dynamically, while 3.3 set it more
+        statically, and Python2 didn't have this feature at all.
+    """
+
+    kind = "EXPRESSION_FUNCTION_QUALNAME_REF"
+
+    __slots__ = ("function_body",)
+
+    def __init__(self, function_body, source_ref):
+        CompileTimeConstantExpressionBase.__init__(self, source_ref)
+
+        self.function_body = function_body
+
+    def finalize(self):
+        del self.parent
+        del self.function_body
+
+    def computeExpressionRaw(self, trace_collection):
+        result = makeConstantReplacementNode(
+            node=self,
+            constant=self.function_body.getFunctionQualname(),
+            user_provided=True,
+        )
+
+        return (
+            result,
+            "new_constant",
+            "Executed '__qualname__' resolution to '%s'."
+            % self.function_body.getFunctionQualname(),
+        )
+
+    def getCompileTimeConstant(self):
+        return self.function_body.getFunctionQualname()
+
+
+class ExpressionFunctionErrorStr(
+    SideEffectsFromChildrenMixin, ChildHavingValueMixin, ExpressionBase
+):
+    """Node for value "_PyObject_FunctionStr" C-API of function or callable in general.
+
+    Notes:
+        This is for Python 3.9 and higher only, where functions have their module
+        added to the "__qualname__" value at runtime.
+    """
+
+    kind = "EXPRESSION_FUNCTION_ERROR_STR"
+
+    named_children = ("value",)
+
+    def __init__(self, value, source_ref):
+        ChildHavingValueMixin.__init__(self, value=value)
+
+        ExpressionBase.__init__(self, source_ref)
+
+    def mayRaiseException(self, exception_type):
+        return self.subnode_value.mayRaiseException(exception_type)
+
+    def computeExpression(self, trace_collection):
+        # TODO: Could compile time compute these for concrete functions.
+        return self, None, None
+
+
+
