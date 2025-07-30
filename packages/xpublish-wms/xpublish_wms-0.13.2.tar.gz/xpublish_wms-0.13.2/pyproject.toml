@@ -1,0 +1,69 @@
+[build-system]
+requires = ["setuptools>=61", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "xpublish_wms"
+authors = [{ name = "Matthew Iannucci", email = "matt@earthmover.io" }]
+description = "WMS plugin for xpublish"
+readme = "README.md"
+requires-python = ">=3.11"
+keywords = ["xarray", "xpublish", "wms"]
+license = { file = "LICENSE.txt" }
+
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: BSD License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+]
+
+dynamic = ["version", "dependencies"]
+
+[project.urls]
+"Homepage" = "https://github.com/xpublish-community/xpublish-wms"
+
+[project.entry-points."xpublish.plugin"]
+cf_wms = "xpublish_wms.plugin:CfWmsPlugin"
+
+[tool.setuptools]
+packages = ["xpublish_wms"]
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"] }
+
+[tool.setuptools_scm]
+write_to = "xpublish_wms/_version.py"
+
+[tool.check-manifest]
+ignore = [
+    "*.yml",
+    "*.yaml",
+    ".coveragerc",
+    "docs",
+    "docs/*",
+    "*.enc",
+    "notebooks",
+    "notebooks/*",
+    "tests",
+    "tests/*",
+    "xpublish_wms/_version.py",
+]
+
+[tool.interrogate]
+ignore-init-method = true
+ignore-init-module = false
+ignore-magic = false
+ignore-semiprivate = false
+ignore-private = false
+ignore-module = false
+fail-under = 25
+exclude = ["setup.py", "docs", "tests"]
+verbose = 1
+quiet = false
+color = true
