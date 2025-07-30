@@ -1,0 +1,73 @@
+# Valinix
+
+**valinix** is a lightweight, customizable validation library designed to simplify user input validation in CLI-based Python projects.
+
+---
+
+## 🚀 Features
+
+- Validate passwords with customizable rules
+- Easily extendable for email, username, and more (coming soon!)
+- Designed with flexibility and developer-friendliness in mind
+- Offers both:
+  - Boolean-based validation (`is_valid_password`)
+  - Exception-based validation (`validate_password`)
+
+---
+
+## 📦 Installation
+
+```cmd```
+pip install valinix
+
+
+### 🛠️ Usage
+
+*1. Boolean-style Validation*
+
+```python```
+from valinix import is_valid_password
+
+result = is_valid_password("MySecret123!")
+if result is True:
+    print("Valid password")
+else:
+    print("Issues:", result)
+
+*2. Exception-style Validation*
+
+```python```
+from valinix import validate_password
+
+try:
+    validate_password("short")
+except ValueError as e:
+    print("Password validation failed:", e)
+
+
+*🔧 Custom Rules*
+```python```
+is_valid_password("myPass123", min_length=10, require_special=False)
+
+
+#### 📌 Default Rules
+Minimum length: 8
+Maximum length: 50
+
+`Requires:`
+
+Uppercase letter
+Lowercase letter
+Digit
+Special character
+
+
+
+#### 🧑‍💻 Author
+
+**CodeCaret**
+
+
+##### 📄 License
+
+MIT License. See [LICENSE](LICENSE) file for details.
