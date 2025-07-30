@@ -1,0 +1,99 @@
+[build-system]
+build-backend = "hatchling.build"
+
+requires = [ "hatchling" ]
+
+[project]
+name = "mammos-entity"
+version = "0.4.0"
+description = "Python package to specify material parameters for MaMMoS simulation suite."
+readme = "README.md"
+license = { file = "LICENSE" }
+
+authors = [
+  { name = "Swapneel Amit Pathak" },
+  { name = "Andrea Petrocchi" },
+  { name = "Sam Holt" },
+  { name = "Martin Lang" },
+  { name = "Hans Fangohr" },
+]
+
+requires-python = ">=3.11"
+classifiers = [
+  "Intended Audience :: Developers",
+  "Intended Audience :: Education",
+  "Intended Audience :: Science/Research",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+dependencies = [
+  "emmontopy>=0.8,<0.9",
+  "mammos-units>=0.2.1",
+  "numpy<3"
+]
+
+[project.urls]
+Homepage = "https://MaMMoS-project.github.io"
+Documentation = "https://mammos-project.github.io/mammos"
+Repository = "https://github.com/MaMMoS-project/mammos-entity"
+Issues = "https://github.com/MaMMoS-project/mammos-entity/issues"
+Changelog = "https://mammos-project.github.io/mammos/changelog"
+
+[tool.ruff]
+lint.select = [
+  "B",   # flake8-bugbear
+  "E",   # pycodestyle
+  "F",   # Pyflakes
+  "I",   # isort
+  "SIM", # flake8-simplify
+  "UP",  # pyupgrade
+]
+lint.ignore = [
+  # conflict with other rules
+  "D203", # one-blank-line-before-class (conflicts with D204)
+  # conflict with formatter
+  "D206", # indent-with-spaces
+  "D212", # multi-line-summary-first-line (conflicts with D213)
+  "D300", # triple-single-quotes
+  "E111", # indentation-with-invalid-multiple
+  "E114", # indentation-with-invalid-multiple-comment
+  "E117", # over-indented
+  # conflict with Python 3.6 compatibility
+  "UP022", # replace-stdout-stderr
+]
+lint.per-file-ignores."*.ipynb" = [
+  "B018", # "Found useless expression. Either assign it to a variable or remove it."; false positives when using implicit __repr__ in the notebook
+  "E501", # line too long
+  "F811", # 'redefined-while-unused'; many false positives in notebooks because ipywidgets decorated functions are not recognised
+]
+lint.isort.known-local-folder = [ "src/mammos_entity" ]
+lint.ignore-init-module-imports = true # do not remove unused imports in __init__ and warn instead
+
+[tool.pixi.project]
+channels = [ "conda-forge" ]
+platforms = [ "osx-arm64", "linux-64", "osx-64", "win-64" ]
+
+[tool.pixi.pypi-dependencies]
+mammos-entity = { path = ".", editable = true }
+
+[tool.pixi.feature.dev.dependencies]
+packaging = "<25" # HACK: required by emmontopy and not resolved by pixi
+jupyter = ">=1.1.1,<2"
+hatch = ">=1.14.1,<2"
+pytest = "*"
+pre-commit = "*"
+ipython = ">=9.2.0,<10"
+git = "*"
+
+[tool.pixi.feature.dev.tasks]
+example = "jupyter-lab docs/example.ipynb"
+build = "hatch build"
+tests = "pytest -vv"
+install-precommits = "pre-commit install"
+run-precommits = { cmd = [ "pre-commit", "run", "--all-files" ], depends-on = [ "install-precommits" ] }
+tag-version = "git tag -s -a $(hatch version)"
+
+[tool.pixi.environments]
+dev = { features = [ "dev" ], solve-group = "default" }
