@@ -1,0 +1,53 @@
+repos:
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: ruff check
+        entry: uv run ruff check
+        language: system
+        types: [python]
+        pass_filenames: true
+        exclude: >
+          (?x)^(
+            tests/.*|
+            examples/.*|
+            notebooks/.*|
+            \.git/.*|
+            \.mypy_cache/.*|
+            \.ruff_cache/.*|
+            \.venv/.*|
+            build/.*|
+            dist/.*
+          )$
+      - id: ruff-format
+        name: ruff format
+        entry: uv run ruff format
+        language: system
+        types: [python]
+        pass_filenames: true
+        exclude: >
+          (?x)^(
+            tests/.*|
+            examples/.*|
+            notebooks/.*|
+            \.git/.*|
+            \.mypy_cache/.*|
+            \.ruff_cache/.*|
+            \.venv/.*|
+            build/.*|
+            dist/.*
+          )$
+      - id: mypy
+        name: mypy
+        entry: uv run mypy --config-file mypy.ini
+        language: system
+        types: [python]
+        pass_filenames: true
+        exclude: ^(tests/|examples/|notebooks/|primeGraph/graph/llm_tools\.py)
+      - id: pytest
+        name: pytest
+        entry: uv run pytest -v -k "not test_postgresql_checkpoint and not test_postgresql_tool_checkpoint"
+        language: system
+        types: [python]
+        pass_filenames: false
+        stages: [pre-commit]

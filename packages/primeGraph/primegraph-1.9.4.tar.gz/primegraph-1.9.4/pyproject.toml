@@ -1,0 +1,66 @@
+[project]
+authors = [{ name = "Fernando Meira", email = "fmeira.filho@gmail.com" }]
+license = { text = "MIT" }
+requires-python = "<4.0,>=3.11"
+dependencies = [
+    "graphviz<1.0.0,>=0.20.3",
+    "pydantic<3.0.0,>=2.9.2",
+    "rich<14.0.0,>=13.9.4",
+    "psycopg2-binary<3.0.0,>=2.9.10",
+    "redis>=5.2.1",
+]
+name = "primeGraph"
+version = "1.9.4"
+description = "A lightweight graph approach to LLM workflows."
+readme = "README.md"
+
+[project.urls]
+repository = "https://github.com/fmeiraf/primeGraph"
+
+[project.scripts]
+test = "pytest:main"
+
+[dependency-groups]
+dev = [
+    "pre-commit<5.0.0,>=4.0.1",
+    "pytest<9.0.0,>=8.3.3",
+    "pytest-asyncio<1.0.0,>=0.24.0",
+    "build<2.0.0.0,>=1.2.2.post1",
+    "twine<7.0.0,>=6.0.1",
+    "ruff<1.0.0,>=0.8.3",
+    "mypy<2.0.0,>=1.13.0",
+    "types-psycopg2<3.0.0.0,>=2.9.21.20241019",
+    "instructor>=1.7.2",
+    "ipykernel>=6.29.5",
+    "python-dotenv>=1.0.1",
+    "anthropic>=0.49.0",
+    "fastapi<1.0.0,>=0.110.0",
+    "uvicorn<1.0.0,>=0.27.0",
+    "websockets<11.0,>=10.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true

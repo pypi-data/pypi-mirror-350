@@ -1,0 +1,31 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install uv (local testing)
+        if: ${{ env.ACT }}
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+
+      - name: Install uv (GitHub)
+        if: ${{ !env.ACT }}
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: make install
+
+      - name: Run all checks except PostgreSQL tests
+        run: |
+          PYTEST_ADDOPTS="--ignore=tests/test_postgresql_checkpoint.py --ignore=tests/test_postgresql_tool_checkpoint.py" make check
