@@ -1,0 +1,83 @@
+Metadata-Version: 2.4
+Name: genkit-plugin-ollama
+Version: 0.4.0
+Summary: Genkit Ollama Plugin
+Author: Google
+License: Apache-2.0
+License-File: LICENSE
+Classifier: Development Status :: 3 - Alpha
+Classifier: Environment :: Console
+Classifier: Environment :: Web Environment
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Software Development :: Libraries
+Requires-Python: >=3.10
+Requires-Dist: genkit
+Requires-Dist: ollama~=0.4
+Requires-Dist: structlog>=25.2.0
+Description-Content-Type: text/markdown
+
+# Ollama Plugin
+
+This Genkit plugin provides a set of tools and utilities for working with Ollama.
+
+## Setup environment
+
+```bash
+uv venv
+source .venv/bin/activate
+```
+
+## Serving Ollama Locally
+
+### Ollama Service Installation
+
+#### MacOS  (brew)
+
+```bash
+brew install ollama
+```
+
+#### Debian/Ubuntu (apt installer)
+
+```bash
+curl -fsSL https://ollama.com/install.sh | sh
+```
+
+Other installation options may be found [here](https://ollama.com/download)
+
+### Start serving of Ollama locally
+
+```bash
+ollama serve
+```
+
+Ollama is served at `http://127.0.0.1:11434` by default.
+
+### Installing Required Model
+
+Once ollama service is serving - pull the required model version:
+
+```bash
+ollama pull <model-version>:<tag>
+```
+
+### Check installed models
+
+Installed models can be reviewed with following command:
+
+```bash
+ollama list
+```
+
+## Examples
+
+For examples check `./py/samples/ollama/README.md`
