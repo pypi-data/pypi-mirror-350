@@ -1,0 +1,127 @@
+name: Laravel Docs Update
+permissions:
+  contents: write
+  pull-requests: write
+
+on:
+  schedule:
+    - cron: '0 0 * * 1'  # Weekly on Monday
+  workflow_dispatch:  # Manual trigger
+
+jobs:
+  check-update:
+    runs-on: ubuntu-latest
+    outputs:
+      updates_available: ${{ steps.check-updates.outputs.updates_available }}
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+    - name: Install uv
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        echo "$HOME/.local/bin" >> $GITHUB_PATH
+    - name: Install dependencies
+      run: |
+        uv venv
+        source .venv/bin/activate
+        uv pip install -e .
+    - name: Check for documentation updates
+      id: check-updates
+      continue-on-error: true
+      run: |
+        set +e
+        source .venv/bin/activate
+        python docs_updater.py --version 12.x
+        UPDATE_NEEDED=$?
+        if [ "$UPDATE_NEEDED" -eq 1 ]; then 
+          echo "updates_available=true" >> $GITHUB_OUTPUT
+        else
+          echo "updates_available=false" >> $GITHUB_OUTPUT
+        fi
+    - name: Close existing pull requests
+      if: steps.check-updates.outputs.updates_available == 'true'
+      uses: actions/github-script@v6
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const pulls = await github.rest.pulls.list({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            state: 'open',
+            head: 'update-laravel-docs'
+          });
+          
+          for (const pull of pulls.data) {
+            if (pull.title === 'Update Laravel documentation') {
+              await github.rest.pulls.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: pull.number,
+                state: 'closed'
+              });
+              console.log(`Closed existing PR #${pull.number}`);
+            }
+          }
+    - name: Commit updated documentation
+      if: steps.check-updates.outputs.updates_available == 'true'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add docs/
+        git add docs/.metadata/
+        git commit -m "Update Laravel documentation to latest version" || exit 0
+    - name: Create Pull Request
+      if: steps.check-updates.outputs.updates_available == 'true'
+      id: create-pr
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: 'Update Laravel documentation to latest version'
+        title: 'Update Laravel documentation'
+        body: 'Automated PR to update Laravel documentation to the latest version.'
+        branch: update-laravel-docs
+    - name: Enable auto-merge and wait for checks
+      if: steps.check-updates.outputs.updates_available == 'true' && steps.create-pr.outputs.pull-request-number
+      run: |
+        # Enable auto-merge
+        gh pr merge ${{ steps.create-pr.outputs.pull-request-number }} --auto --squash
+        
+        # Wait for all checks to complete
+        echo "Waiting for all checks to complete..."
+        gh pr checks ${{ steps.create-pr.outputs.pull-request-number }} --watch
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  auto-tag-after-merge:
+    runs-on: ubuntu-latest
+    needs: [check-update]
+    if: needs.check-update.outputs.updates_available == 'true'
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        ref: main  # Make sure we're on main after the merge
+    - name: Wait for auto-merge to complete
+      run: |
+        echo "Waiting for auto-merge to complete..."
+        sleep 30  # Give some time for the merge to happen
+    - name: Create new patch version tag
+      run: |
+        # Get the latest tag, default to v0.0.0 if no tags exist
+        LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+        echo "Latest tag: $LATEST_TAG"
+        
+        # Extract version numbers
+        VERSION=${LATEST_TAG#v}
+        IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+        
+        # Increment patch version for docs updates
+        NEW_PATCH=$((PATCH + 1))
+        NEW_VERSION="v${MAJOR}.${MINOR}.${NEW_PATCH}"
+        
+        echo "Creating new tag: $NEW_VERSION"
+        git tag $NEW_VERSION
+        git push origin $NEW_VERSION
