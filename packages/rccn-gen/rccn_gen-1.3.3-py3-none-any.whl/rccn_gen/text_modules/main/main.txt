@@ -1,0 +1,24 @@
+use anyhow::Result;
+<<SERVICE_MODULE_IMPORT_SERVICE>>
+use rccn_usr::pus::app::PusApp;
+use rccn_usr::zenoh::key_expr::OwnedKeyExpr;
+
+<<SERVICE_MODULE_MOD_SERVICE>>
+
+const APID: u16 = <<VAR_APID>>;
+const VCID: u8 = <<VAR_VCID>>;
+
+fn main() -> Result<()> {
+    env_logger::init();
+    let mut app = PusApp::new(APID);
+
+    app
+        .add_tc_tm_channel(VCID)
+        .unwrap();
+
+
+    <<SERVICE_MODULE_REGISTER_SERVICE>>
+
+    app.run();
+    Ok(())
+}

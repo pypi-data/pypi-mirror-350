@@ -1,0 +1,34 @@
+use std::process::Command;
+use rccn_usr::service::{AcceptanceResult, AcceptedTc, PusService};
+use super::command;
+use anyhow::Result;
+use std::error::Error;
+use chrono::Local;
+use std::fs;
+
+
+pub struct <<VAR_SERVICE_NAME_UCASE>> {
+}
+
+
+impl <<VAR_SERVICE_NAME_UCASE>> {
+    pub fn new() -> Self {
+        Self { }
+    }
+}
+
+
+impl PusService for <<VAR_SERVICE_NAME_UCASE>> {
+    type CommandT = command::Command;
+
+    fn handle_tc(&mut self, mut tc: AcceptedTc, cmd: Self::CommandT) -> AcceptanceResult {
+        println!("PUS-Service: Command received.");
+        match cmd {
+            <<COMMAND_MODULE_MATCH_CMD>>
+        }
+    }
+    
+    fn service() -> u8 {
+        <<VAR_SERVICE_ID>>
+    }
+}
