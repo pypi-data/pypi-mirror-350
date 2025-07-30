@@ -1,0 +1,146 @@
+Metadata-Version: 2.4
+Name: vectordbcloud
+Version: 1.1.3
+Summary: Official Python SDK for VectorDBCloud API
+Home-page: https://github.com/VectorDBCloud/python-sdk
+Author: VectorDBCloud
+Author-email: VectorDBCloud <support@vectordbcloud.com>
+License: MIT
+Project-URL: Homepage, https://github.com/VectorDBCloud/python-sdk
+Project-URL: Documentation, https://docs.vectordbcloud.com
+Project-URL: Repository, https://github.com/VectorDBCloud/python-sdk
+Project-URL: Bug Reports, https://github.com/VectorDBCloud/python-sdk/issues
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: requests>=2.25.0
+Requires-Dist: typing-extensions>=4.0.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0.0; extra == "dev"
+Requires-Dist: black>=22.0.0; extra == "dev"
+Requires-Dist: flake8>=5.0.0; extra == "dev"
+Requires-Dist: mypy>=1.0.0; extra == "dev"
+Dynamic: author
+Dynamic: home-page
+Dynamic: requires-python
+
+# VectorDBCloud Python SDK
+
+Official Python SDK for VectorDBCloud API.
+
+## Installation
+
+```bash
+pip install vectordbcloud
+```
+
+## Quick Start
+
+```python
+from vectordbcloud import VectorDBCloud
+
+# Initialize client
+client = VectorDBCloud(
+    api_key="your-api-key",
+    base_url="https://api.vectordbcloud.com/prod"  # Optional, defaults to production
+)
+
+# Check API health
+health = client.health()
+print(health)
+
+# Generate embeddings
+embedding = client.generate_embedding("Hello, world!")
+print(embedding)
+
+# Search vectors
+results = client.search_vector(
+    vector=[0.1, 0.2, 0.3, 0.4, 0.5],
+    limit=10
+)
+print(results)
+
+# Connect to vector databases
+weaviate_config = {
+    "url": "http://localhost:8080",
+    "api_key": "your-weaviate-key"
+}
+connection = client.connect_weaviate(weaviate_config)
+```
+
+## API Reference
+
+### Core Methods
+- `health()` - Check API health
+- `version()` - Get API version
+
+### Authentication
+- `login(email, password)` - User login
+- `logout()` - User logout
+
+### Vector Search
+- `search_vector(vector, limit, filters)` - Vector similarity search
+- `search_semantic(text, limit, filters)` - Semantic text search
+
+### AI Methods
+- `generate_embedding(text)` - Generate text embeddings
+- `generate_text(prompt, **kwargs)` - Generate text with AI
+
+### Billing
+- `get_usage()` - Get usage statistics
+- `get_invoices()` - Get billing invoices
+
+### Vector Database Connections
+- `connect_weaviate(config)` - Connect to Weaviate
+- `connect_pinecone(config)` - Connect to Pinecone
+- `connect_chroma(config)` - Connect to ChromaDB
+- `connect_qdrant(config)` - Connect to Qdrant
+- `connect_milvus(config)` - Connect to Milvus
+
+## Configuration
+
+```python
+client = VectorDBCloud(
+    api_key="your-api-key",
+    base_url="https://api.vectordbcloud.com/prod",
+    timeout=30
+)
+```
+
+## Error Handling
+
+```python
+from vectordbcloud import VectorDBCloud, AuthenticationError, APIError
+
+try:
+    client = VectorDBCloud(api_key="invalid-key")
+    result = client.health()
+except AuthenticationError:
+    print("Invalid API key")
+except APIError as e:
+    print(f"API error: {e}")
+```
+
+## Version
+
+Current version: 1.1.0
+
+## License
+
+MIT License
+
+## Support
+
+- Documentation: https://docs.vectordbcloud.com
+- GitHub: https://github.com/VectorDBCloud/python-sdk
+- Issues: https://github.com/VectorDBCloud/python-sdk/issues
