@@ -1,0 +1,41 @@
+[project]
+name = "golem-cloud"
+version = "0.2.0"
+description = "A library that helps with writing Golem components in Python "
+readme = "README.md"
+requires-python = ">=3.12"
+license = "Apache-2.0"
+license-files = [ "LICENSE" ]
+classifiers = [
+    "License :: OSI Approved :: Apache Software License",
+    "Environment :: WebAssembly :: WASI",
+    "Typing :: Typed"
+]
+
+[project.urls]
+Homepage = "https://github.com/golemcloud/golem-py"
+Documentation = "https://github.com/golemcloud/golem-py"
+Repository = "https://github.com/golemcloud/golem-py"
+
+[build-system]
+requires = ["uv_build"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+    "ruff>=0.11.7",
+    "componentize-py==0.17.0"
+]
+
+[tool.uv.build-backend]
+module-root = "src"
+source-exclude = ["src/wit_world/*"]
+
+[tool.uv.workspace]
+members = ["examples"]
+
+[tool.ruff]
+exclude = [
+    "src/wit_world/*"
+]
