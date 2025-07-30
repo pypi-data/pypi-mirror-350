@@ -1,0 +1,98 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mkapi"
+version = "4.4.1"
+description = "MkDocs plugin for automatic API documentation generation from Python docstrings"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [{ name = "daizutabi", email = "daizutabi@gmail.com" }]
+keywords = ["mkdocs", "documentation", "api", "docstring", "markdown"]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Framework :: MkDocs",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python",
+  "Topic :: Documentation",
+  "Topic :: Software Development :: Documentation",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Topic :: Text Processing :: Markup :: Markdown",
+  "Typing :: Typed",
+]
+requires-python = ">=3.10"
+dependencies = [
+  "astdoc>=1.2.0",
+  "jinja2",
+  "mkdocs-material",
+  "mkdocs>=1.6.0",
+  "tomli>=1.1.0; python_version<'3.11'",
+]
+
+[project.urls]
+Documentation = "https://daizutabi.github.io/mkapi/"
+Source = "https://github.com/daizutabi/mkapi"
+Issues = "https://github.com/daizutabi/mkapi/issues"
+
+[project.entry-points."mkdocs.plugins"]
+mkapi = "mkapi.plugin:Plugin"
+
+[dependency-groups]
+dev = [
+  "pytest-clarity>=1",
+  "pytest-cov>=6",
+  "pytest-randomly>=3.16",
+  "pytest-xdist>=3.6",
+  "ruff>=0.11",
+]
+
+[tool.pytest.ini_options]
+addopts = ["--doctest-modules", "--cov=mkapi", "--cov-report=lcov:lcov.info"]
+
+[tool.coverage.report]
+exclude_lines = ["if TYPE_CHECKING:", "raise NotImplementedError"]
+skip_covered = true
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+exclude = ["tests/examples/*.py", "example/*.py"]
+
+[tool.ruff.lint]
+select = ["ALL"]
+unfixable = ["F401"]
+ignore = [
+  "A005",
+  "ANN002",
+  "ANN003",
+  "ARG001",
+  "ARG002",
+  "C901",
+  "D105",
+  "D203",
+  "D213",
+  "FBT001",
+  "FBT002",
+  "PERF401",
+  "PGH003",
+  "PLR2004",
+  "SIM102",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"config.py" = ["D401"]
+"src/mkapi/plugin.py" = ["D"]
+"tests/*" = ["ANN", "ARG", "D", "FBT", "PLR", "RUF", "S"]
+
+[tool.pyright]
+include = ["src", "tests"]
+strictDictionaryInference = true
+strictListInference = true
+strictSetInference = true
