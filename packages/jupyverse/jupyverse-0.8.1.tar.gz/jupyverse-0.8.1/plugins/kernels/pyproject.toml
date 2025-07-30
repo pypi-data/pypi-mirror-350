@@ -1,0 +1,47 @@
+[build-system]
+requires = [ "hatchling",]
+build-backend = "hatchling.build"
+
+[project]
+name = "fps_kernels"
+description = "An FPS plugin for the kernels API"
+keywords = ["jupyter", "server", "fastapi", "plugins"]
+requires-python = ">=3.9"
+dependencies = [
+    "pyzmq",
+    "zmq-anyio >=0.3.1,<0.4.0",
+    "websockets",
+    "python-dateutil",
+    "types-python-dateutil",
+    "watchfiles >=1.0.4,<2",
+    "jupyverse-api >=0.8.0,<0.9.0",
+    "pycrdt >=0.10.3,<0.13.0",
+    "anyio",
+]
+version = "0.8.0"
+[[project.authors]]
+name = "Jupyter Development Team"
+email = "jupyter@googlegroups.com"
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[project.license]
+text = "BSD 3-Clause License"
+
+[project.urls]
+Homepage = "https://jupyter.org"
+
+[tool.check-manifest]
+ignore = [ ".*",]
+
+[tool.jupyter-releaser]
+skip = [ "check-links",]
+
+[project.entry-points]
+"fps.modules"       = {kernels = "fps_kernels.main:KernelsModule"}
+"jupyverse.modules" = {kernels = "fps_kernels.main:KernelsModule"}
+
+[tool.hatch.version]
+path = "fps_kernels/__init__.py"
