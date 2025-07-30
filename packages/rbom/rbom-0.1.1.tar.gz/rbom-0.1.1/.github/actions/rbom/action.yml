@@ -1,0 +1,36 @@
+name: 'Generate RBOM Pipeline File'
+description: 'Installs rbom from PyPI and generates pipeline.rbom.yaml with GitHub context'
+inputs: {}
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11.12'
+
+    - name: Install rbom
+      run: pip install rbom
+
+    - name: Generate pipeline.rbom.yaml
+      shell: bash
+      run: |
+        cat <<EOF > pipeline.rbom.yaml
+        version: 0.1
+        metadata:
+          name: "company-payment-gateway"
+          release_id: "release-${{ github.event.release.tag_name || github.run_id }}"
+          timestamp: "${{ github.event.head_commit.timestamp || github.event.release.published_at || github.run_started_at }}"
+          environment: "production"
+          service: "payment-api-v1"
+          commit: "${{ github.sha }}"
+          deploy_by: "${{ github.actor }}"
+          policies:
+            - id: "policy-12345"
+              passed: ${{ contains(fromJson(steps.get_checks.outputs.checks), 'policy-12345') && fromJson(steps.get_checks.outputs.checks)['policy-12345'] == 'success' }}
+            - id: "policy-67890"
+              passed: ${{ contains(fromJson(steps.get_checks.outputs.checks), 'policy-67890') && fromJson(steps.get_checks.outputs.checks)['policy-67890'] == 'success' }}
+              reason: ${{ fromJson(steps.get_checks.outputs.reasons)['policy-67890'] || 'Failed due to missing security headers' }}
+          notes: "Initial deployment of payment API version 1.0"
+          signiture: null
+        EOF
