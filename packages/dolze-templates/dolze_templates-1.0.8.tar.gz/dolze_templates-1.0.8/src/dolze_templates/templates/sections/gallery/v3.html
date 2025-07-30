@@ -1,0 +1,31 @@
+
+<section id="gallery" class="bg-gray-50 py-24">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="text-center mb-16" data-aos="fade-up">
+      <h2 class="text-3xl font-bold text-gray-900">
+        {{ sections.gallery.title }}
+      </h2>
+    </div>
+
+    <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+      {% for item in sections.gallery.items %}
+      <div
+        class="group overflow-hidden rounded-xl shadow-md bg-white hover:shadow-xl transition duration-300"
+        data-aos="zoom-in"
+        data-aos-delay="{{ loop.index * 100 }}"
+      >
+        <img
+          src="{{ item.src }}"
+          alt="{{ item.alt }}"
+          class="w-full h-64 object-cover transform group-hover:scale-105 transition duration-300"
+        />
+        {% if item.caption %}
+        <div class="p-4 text-center text-gray-700 text-sm">
+          {{ item.caption }}
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,156 @@
+<section
+  id="contact"
+  class="py-24 bg-gray-100 font-inter relative overflow-hidden"
+  aria-labelledby="contact-heading"
+>
+  <div
+    class="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-r from-{{ settings.theme.colors.primary }}/10 to-{{ settings.theme.colors.accent }}/10"
+  ></div>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="text-center mb-12">
+      <h2 id="contact-heading" class="text-4xl font-bold text-gray-900 mb-4">
+        {{ sections.contact.title }}
+      </h2>
+      <p class="text-lg text-gray-500 max-w-2xl mx-auto">
+        {{ sections.contact.subtitle }}
+      </p>
+    </div>
+    <div class="grid md:grid-cols-2 gap-8">
+      <div
+        class="bg-white p-8 rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:shadow-[0_6px_25px_rgba(99,102,241,0.2)] transition-all duration-600 ease-out"
+      >
+        <h3 class="text-lg font-bold text-gray-900 mb-6">
+          Contact Information
+        </h3>
+        <div class="space-y-4">
+          <div class="flex items-center space-x-3">
+            <i
+              class="ri-map-pin-line text-xl text-{{ settings.theme.colors.primary }}"
+            ></i>
+            <div>
+              <h4 class="font-bold text-gray-900">Address</h4>
+              <p class="text-gray-500">{{ sections.contact.address }}</p>
+            </div>
+          </div>
+          <div class="flex items-center space-x-3">
+            <i
+              class="ri-phone-line text-xl text-{{ settings.theme.colors.primary }}"
+            ></i>
+            <div>
+              <h4 class="font-bold text-gray-900">Phone</h4>
+              <p class="text-gray-500">{{ sections.contact.phone }}</p>
+            </div>
+          </div>
+          <div class="flex items-center space-x-3">
+            <i
+              class="ri-mail-line text-xl text-{{ settings.theme.colors.primary }}"
+            ></i>
+            <div>
+              <h4 class="font-bold text-gray-900">Email</h4>
+              <p class="text-gray-500">{{ sections.contact.email }}</p>
+            </div>
+          </div>
+          {% if sections.contact.socialLinks %}
+          <div class="flex space-x-4 mt-6">
+            {% for social in sections.contact.socialLinks %}
+            <a
+              href="{{ social.url }}"
+              class="w-8 h-8 flex items-center justify-center bg-{{ settings.theme.colors.primary }}/10 rounded-full hover:bg-{{ settings.theme.colors.primary }}/20 hover:animate-pulse transition-all duration-600 ease-out"
+              aria-label="{{ social.platform }}"
+            >
+              <i
+                class="ri-{{ social.platform }}-line text-lg text-{{ settings.theme.colors.primary }}"
+              ></i>
+            </a>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      <form
+        id="contactForm"
+        class="bg-white p-8 rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:shadow-[0_6px_25px_rgba(99,102,241,0.2)] transition-all duration-600 ease-out"
+      >
+        {% for item in sections.contact.form.fields %}
+        <div class="mb-6">
+          <label
+            class="block text-sm font-medium text-gray-900 mb-2"
+            for="{{ item.name }}"
+            >{{ item.label }}</label
+          >
+          {% if item.type == 'textarea' %}
+          <textarea
+            id="{{ item.name }}"
+            name="{{ item.name }}"
+            placeholder="{{ item.placeholder }}"
+            class="w-full px-4 py-3 bg-gray-50 rounded-md border-0 focus:ring-2 focus:ring-indigo-500/50 focus:shadow-[0_0_10px_rgba(99,102,241,0.3)] outline-none text-gray-900 transition-all duration-600 ease-out"
+            {%
+            if
+            item.required
+            %}required{%
+            endif
+            %}
+          ></textarea>
+          {% else %}
+          <input
+            id="{{ item.name }}"
+            name="{{ item.name }}"
+            type="{{ item.type }}"
+            placeholder="{{ item.placeholder }}"
+            class="w-full px-4 py-3 bg-gray-50 rounded-md border-0 focus:ring-2 focus:ring-indigo-500/50 focus:shadow-[0_0_10px_rgba(99,102,241,0.3)] outline-none text-gray-900 transition-all duration-600 ease-out"
+            {%
+            if
+            item.required
+            %}required{%
+            endif
+            %}
+          />
+          {% endif %}
+        </div>
+        {% endfor %}
+        <button
+          type="submit"
+          class="w-full px-8 py-3 bg-{{ settings.theme.colors.primary }} text-white font-medium rounded-md hover:bg-{{ settings.theme.colors.primary }}/90 transition-all duration-600 ease-out hover:shadow-[0_4px_15px_rgba({{ settings.theme.colors.primary|replace('#', '') }},0.4)] focus:outline-none focus:ring-2 focus:ring-{{ settings.theme.colors.primary }} focus:ring-offset-2"
+        >
+          {{ sections.contact.form.submitText }}
+        </button>
+      </form>
+    </div>
+  </div>
+  <div
+    id="successDialog"
+    class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
+    aria-live="polite"
+  >
+    <div class="bg-white p-8 rounded-xl shadow-lg max-w-md w-full mx-4">
+      <h3 class="text-2xl font-bold text-gray-900 mb-4">Message Sent!</h3>
+      <p class="text-gray-500 mb-6">
+        Thank you for reaching out. Our team will get back to you soon.
+      </p>
+      <button
+        onclick="document.getElementById('successDialog').classList.add('hidden'); document.getElementById('contactForm').focus();"
+        class="px-8 py-3 bg-{{ settings.theme.colors.primary }} text-white font-medium rounded-md hover:bg-{{ settings.theme.colors.primary }}/90 transition-all duration-600 ease-out focus:outline-none focus:ring-2 focus:ring-{{ settings.theme.colors.primary }} focus:ring-offset-2"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+  <script>
+    document
+      .getElementById("contactForm")
+      .addEventListener("submit", function (e) {
+        e.preventDefault();
+        const inputs = this.querySelectorAll(
+          "input[required], textarea[required]"
+        );
+        let allFilled = true;
+        inputs.forEach((input) => {
+          if (!input.value.trim()) allFilled = false;
+        });
+        if (allFilled) {
+          document.getElementById("successDialog").classList.remove("hidden");
+          this.reset();
+        }
+      });
+  </script>
+</section>

@@ -1,0 +1,63 @@
+<section id="products" class="py-24 bg-gradient-to-b from-white to-gray-50">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <!-- Section Header -->
+    <div class="text-center mb-16">
+      <h2 class="text-4xl sm:text-5xl font-bold text-gray-900 leading-tight">
+        {{ sections.features.title | safe }}
+      </h2>
+      {% if sections.features.subtitle %}
+      <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
+        {{ sections.features.subtitle }}
+      </p>
+      {% endif %}
+    </div>
+
+    <!-- Feature Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+      {% for feature in sections.features.items %}
+      <div
+        class="group relative flex flex-col-reverse md:flex-row bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-500 hover:-translate-y-1"
+      >
+        <!-- Text Content -->
+        <div class="flex flex-col justify-center p-8 md:w-1/2">
+          <h3
+            class="text-2xl font-bold text-gray-800 group-hover:text-primary transition mb-4"
+          >
+            {{ feature.title }}
+          </h3>
+          <p class="text-gray-600 mb-6">{{ feature.subtitle }}</p>
+          {% if feature.cta %}
+          <a
+            href="{{ feature.cta.url }}"
+            class="text-primary font-medium hover:underline transition"
+            {%
+            if
+            feature.cta.ariaLabel
+            %}aria-label="{{ feature.cta.ariaLabel }}"
+            {%
+            endif
+            %}
+          >
+            {{ feature.cta.label }} →
+          </a>
+          {% endif %}
+        </div>
+
+        <!-- Image Side -->
+        <div class="md:w-1/2 overflow-hidden">
+          <img
+            src="{{ feature.media.src }}"
+            alt="{{ feature.media.alt }}"
+            class="h-64 md:h-full w-full object-cover transform group-hover:scale-105 transition duration-500"
+          />
+        </div>
+
+        <!-- Decorative Blob Background -->
+        <div
+          class="absolute -top-20 -left-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl opacity-30 pointer-events-none"
+        ></div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,105 @@
+<footer
+  class="py-16 px-4 sm:px-6 lg:px-8 bg-zinc-50 text-gray-800 font-inter"
+  id="footer"
+  aria-label="Footer"
+>
+  <div class="max-w-7xl mx-auto">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 relative">
+      <!-- Brand -->
+      <div
+        class="bg-white rounded-xl p-6 shadow-md transform -rotate-1 hover:rotate-0 transition-all duration-300 z-10"
+      >
+        <a
+          href="{{ sections.footer.brand.href | default('#') }}"
+          class="text-2xl font-poppins font-bold text-blue-500 mb-4 block"
+          >{{ sections.footer.brand.name }}</a
+        >
+        <p class="text-gray-600 text-sm">
+          {{ sections.footer.brand.description.text }}
+        </p>
+        {% if sections.footer.brand.socialLinks is defined %}
+        <div class="flex mt-4 space-x-3">
+          {% for social in sections.footer.brand.socialLinks.links %}
+          <a
+            href="{{ social.url }}"
+            class="w-10 h-10 flex items-center justify-center bg-blue-50 rounded-full hover:bg-blue-100 transition-transform transform hover:scale-125"
+            aria-label="{{ social.platform }}"
+          >
+            <i class="{{ social.icon }} text-lg text-blue-500"></i>
+          </a>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Navigation Columns -->
+      {% for column in sections.footer.navigation %}
+      <div
+        class="bg-white rounded-xl p-6 shadow-md transform hover:rotate-0 transition-all duration-300 z-{{ 10 - loop.index }}"
+      >
+        <h3 class="text-lg font-poppins font-semibold text-gray-800 mb-4">
+          {{ column.title }}
+        </h3>
+        <ul class="space-y-2">
+          {% for link in column.links %}
+          <li>
+            <a
+              href="{{ link.url }}"
+              class="text-gray-600 text-sm hover:text-blue-500 transition-colors"
+              aria-label="{{ link.ariaLabel | default(link.label) }}"
+              >{{ link.label }}</a
+            >
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endfor %}
+
+      <!-- Subscribe -->
+      {% if sections.footer.subscribe is defined %}
+      <div
+        class="bg-white rounded-xl p-6 shadow-md transform rotate-1 hover:rotate-0 transition-all duration-300 z-5"
+      >
+        <h3 class="text-lg font-poppins font-semibold text-gray-800 mb-4">
+          {{ sections.footer.subscribe.title }}
+        </h3>
+        <form class="flex flex-col gap-3">
+          <input
+            type="email"
+            placeholder="{{ sections.footer.subscribe.input.placeholder }}"
+            class="px-4 py-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none text-gray-800"
+          />
+          <button
+            type="submit"
+            class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-transform transform hover:scale-105"
+          >
+            {{ sections.footer.subscribe.button.text }}
+          </button>
+        </form>
+        <p class="text-gray-600 text-sm mt-3">
+          {{ sections.footer.subscribe.description.text }}
+        </p>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Bottom Footer -->
+    <div class="border-t border-gray-200 mt-10 pt-6">
+      <div class="flex flex-wrap justify-between items-center gap-4">
+        <p class="text-gray-600 text-sm">
+          {{ sections.footer.bottom.copyright }}
+        </p>
+        {% if sections.footer.paymentMethods is defined %}
+        <div class="flex items-center gap-3">
+          {% for payment in sections.footer.paymentMethods %}
+          <i
+            class="{{ payment.icon }} text-2xl text-gray-600"
+            aria-label="{{ payment.name }}"
+          ></i>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</footer>

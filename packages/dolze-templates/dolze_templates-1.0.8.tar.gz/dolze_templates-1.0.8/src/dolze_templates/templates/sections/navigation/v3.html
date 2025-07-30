@@ -1,0 +1,87 @@
+<nav
+  class="sticky w-full bg-white/90 backdrop-blur-sm z-50 border-b border-gray-100"
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between h-16 items-center">
+      <div class="flex items-center">
+        <a href="/" class="text-3xl font-['Montserrat'] text-primary">
+          {{ settings.seo.title.split(' - ')[0] }}
+        </a>
+      </div>
+      <div class="hidden md:flex items-center space-x-8">
+        {% for link in sections.navigation.items %}
+        <a
+          href="{{ link.url }}"
+          aria-label="{{ link.ariaLabel }}"
+          class="text-gray-600 hover:text-{{ settings.theme.colors.primary }}"
+        >
+          {{ link.label }}
+        </a>
+        {% endfor %} {% if sections.navigation.ctaItems and
+        sections.navigation.ctaItems|length > 0 %} {% for ctaItem in
+        sections.navigation.ctaItems %}
+        <a
+          href="{{ ctaItem.url }}"
+          aria-label="{{ ctaItem.ariaLabel | default(ctaItem.label) }}"
+          class="bg-primary text-white px-6 py-2 !rounded-button hover:bg-primary/90 whitespace-nowrap"
+        >
+          {{ ctaItem.label }}
+        </a>
+        {% endfor %} {% endif %}
+      </div>
+      <!-- Mobile menu button -->
+      <div class="md:hidden flex items-center">
+        <button
+          id="mobile-menu-button"
+          class="text-gray-600 hover:text-{{ settings.theme.colors.primary }} focus:outline-none"
+        >
+          <svg
+            class="h-6 w-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"
+            ></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- Mobile menu -->
+  <div id="mobile-menu" class="md:hidden hidden">
+    <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+      {% for link in sections.navigation.items %}
+      <a
+        href="{{ link.url }}"
+        class="block text-gray-600 hover:text-{{ settings.theme.colors.primary }} px-6 py-2"
+      >
+        {{ link.label }}
+      </a>
+      {% endfor %} {% if sections.navigation.ctaItems and
+      sections.navigation.ctaItems|length > 0 %} {% for ctaItem in
+      sections.navigation.ctaItems %}
+      <a
+        href="{{ ctaItem.url }}"
+        class="block w-full bg-{{ settings.theme.colors.primary }} text-white px-6 py-2 rounded-lg hover:bg-{{ settings.theme.colors.primary }}/90 whitespace-nowrap text-center"
+      >
+        {{ ctaItem.label }}
+      </a>
+      {% endfor %} {% endif %}
+    </div>
+  </div>
+  <script>
+    document
+      .getElementById("mobile-menu-button")
+      .addEventListener("click", function () {
+        var mobileMenu = document.getElementById("mobile-menu");
+        mobileMenu.classList.toggle("hidden");
+      });
+  </script>
+</nav>
+<div class="h-[72px]"></div>

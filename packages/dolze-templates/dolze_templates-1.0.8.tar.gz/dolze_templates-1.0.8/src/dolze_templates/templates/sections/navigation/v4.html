@@ -1,0 +1,23 @@
+<nav class="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
+  <a href="{{ sections.navigation.logo.href }}">
+    <img
+      src="{{ sections.navigation.logo.src }}"
+      alt="{{ sections.navigation.logo.alt }}"
+      class="h-8 w-auto"
+    />
+  </a>
+
+  <ul class="hidden md:flex space-x-8 text-sm font-semibold text-[#1F2937]">
+    {% for link in sections.navigation.links %}
+    <li>
+      <a
+        href="{{ link.url }}"
+        aria-label="{{ link.ariaLabel }}"
+        class="pb-1 {% if link.active %}active-link{% endif %}"
+      >
+        {{ link.label }}
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+</nav>

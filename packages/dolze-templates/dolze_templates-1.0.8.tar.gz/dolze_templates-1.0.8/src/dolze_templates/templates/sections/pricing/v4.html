@@ -1,0 +1,73 @@
+<section
+  id="pricing"
+  class="py-24 bg-gray-100 font-inter"
+  aria-labelledby="pricing-heading"
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2
+      id="pricing-heading"
+      class="text-3xl sm:text-4xl font-bold text-center text-gray-900 mb-16"
+    >
+      {{ sections.pricing.title }}
+    </h2>
+    <div
+      class="flex flex-col space-y-8 md:flex-row md:space-y-0 md:space-x-8 md:justify-center"
+    >
+      {% for plan in sections.pricing.plans %}
+      <div
+        class="relative bg-white p-8 rounded-xl shadow-md w-full md:w-80 {% if plan.highlighted %}scale-110 z-10 border-2 border-transparent bg-gradient-to-r from-indigo-500 to-indigo-300 p-[2px]{% else %}opacity-75 md:scale-90{% endif %} transition-all duration-600 ease-out"
+      >
+        <div class="bg-white rounded-xl p-8 h-full flex flex-col">
+          {% if plan.highlighted %}
+          <div
+            class="absolute top-4 right-4 bg-indigo-500 text-white px-4 py-1 text-sm rounded-md transform hover:scale-110 transition-all duration-600 ease-out"
+          >
+            Popular
+          </div>
+          {% endif %} {% if plan.media and plan.media.type == 'image' %}
+          <div class="mb-6 text-center">
+            <img
+              src="{{ plan.media.src }}"
+              alt="{{ plan.media.alt }}"
+              class="mx-auto rounded-md shadow-sm max-w-full h-32 object-cover w-full sm:h-40"
+            />
+          </div>
+          {% endif %}
+          <h3 class="text-xl font-semibold text-gray-900 mb-2">
+            {{ plan.name }}
+          </h3>
+          {% if plan.subtitle %}
+          <p class="text-gray-500 mb-4 text-sm sm:text-base">
+            {{ plan.subtitle }}
+          </p>
+          {% endif %}
+          <div class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
+            {{ plan.price }} {% if plan.period %}
+            <span class="text-base sm:text-lg text-gray-500"
+              >{{ plan.period }}</span
+            >
+            {% endif %}
+          </div>
+          <ul class="space-y-3 mb-8 flex-grow">
+            {% for feature in plan.features %}
+            <li class="flex items-center">
+              <i class="ri-check-line text-green-500 mr-2"></i>
+              <span class="text-gray-600 text-sm sm:text-base"
+                >{{ feature }}</span
+              >
+            </li>
+            {% endfor %}
+          </ul>
+          <a
+            href="{{ plan.cta.url }}"
+            class="block w-full text-center py-3 rounded-md {% if plan.cta.style == 'filled' %} bg-indigo-500 text-white hover:bg-indigo-600 {% elif plan.cta.style == 'outline' %} bg-white text-indigo-500 border-2 border-indigo-500 hover:bg-gray-50 {% endif %} font-medium transition-all duration-600 ease-out hover:shadow-[0_0_10px_rgba(99,102,241,0.3)] focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            aria-label="Choose {{ plan.name }} plan"
+          >
+            {{ plan.cta.label }}
+          </a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,63 @@
+<section class="py-24 bg-white" id="community">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="bg-primary/5 rounded-3xl p-16">
+      <div class="max-w-xl mx-auto text-center">
+        <h2
+          class="text-3xl sm:text-4xl font-playfair font-bold text-gray-900 mb-4"
+        >
+          {{sections.community.title}}
+        </h2>
+        <p class="text-base sm:text-lg text-gray-600 mb-8">
+          {{sections.community.subtitle}}
+        </p>
+        <form class="flex flex-col sm:flex-row gap-4" id="subscribeForm">
+          <input
+            type="email"
+            placeholder="Enter your email"
+            class="flex-1 px-6 py-3 bg-white border-none !rounded-button"
+            required
+          />
+          <button
+            type="submit"
+            class="px-8 py-3 bg-primary text-white font-medium !rounded-button hover:bg-primary/90 whitespace-nowrap"
+          >
+            {{sections.community.cta.label}}
+          </button>
+        </form>
+      </div>
+    </div>
+    <div
+      id="subscribeDialog"
+      class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
+    >
+      <div class="bg-white p-8 rounded-lg shadow-xl max-w-md w-full mx-4">
+        <h3 class="text-2xl font-playfair font-bold text-gray-900 mb-4">
+          Subscribed!
+        </h3>
+        <p class="text-gray-600 mb-6">
+          Thank you for trusting Wick & Wax. You're now part of our community!
+        </p>
+        <button
+          onclick="document.getElementById('subscribeDialog').classList.add('hidden')"
+          class="px-8 py-3 bg-primary text-white font-medium !rounded-button hover:bg-primary/90"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+  <script>
+    document
+      .getElementById("subscribeForm")
+      .addEventListener("submit", function (e) {
+        e.preventDefault();
+        const emailInput = this.querySelector('input[type="email"]');
+        const email = emailInput.value.trim();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (email && emailRegex.test(email)) {
+          document.getElementById("subscribeDialog").classList.remove("hidden");
+          this.reset();
+        }
+      });
+  </script>
+</section>

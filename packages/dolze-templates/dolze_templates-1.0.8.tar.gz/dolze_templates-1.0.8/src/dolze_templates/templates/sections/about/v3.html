@@ -1,0 +1,58 @@
+<section id="about" class="py-24 bg-gray-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    {# — Header — #}
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <h2 class="text-4xl font-bold mb-6">{{ sections.about.title }}</h2>
+      <p class="text-xl text-gray-600">{{ sections.about.description }}</p>
+    </div>
+
+    {# — Media (video or image) — #}
+    <div
+      id="video-container"
+      class="relative aspect-video rounded-xl overflow-hidden shadow-2xl"
+    >
+      {% if sections.about.media.type == 'video' %}
+      <div
+        class="absolute inset-0 bg-gray-900/50 flex items-center justify-center group cursor-pointer z-10"
+        id="video-overlay"
+      >
+        <div
+          class="w-20 h-20 bg-white rounded-full flex items-center justify-center transition-transform group-hover:scale-110"
+        >
+          <i class="ri-play-fill text-4xl text-primary"></i>
+        </div>
+      </div>
+      <video
+        class="w-full h-full object-cover"
+        poster="{{ sections.about.media.poster }}"
+        controls
+      >
+        <source src="{{ sections.about.media.src }}" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+      {% elif sections.about.media.type == 'image' %}
+      <img
+        src="{{ sections.about.media.src }}"
+        alt="{{ sections.about.media.alt }}"
+        class="w-full h-full object-cover"
+      />
+      {% endif %}
+    </div>
+
+    <div
+      class="grid md:grid-cols-{{ sections.about.items | length }} gap-8 mt-16"
+    >
+      {% for item in sections.about.items %}
+      <div class="bg-white p-6 rounded-lg shadow-lg">
+        <div
+          class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4"
+        >
+          <i class="{{ item.icon }} text-xl text-primary"></i>
+        </div>
+        <h3 class="text-lg font-semibold mb-2">{{ item.title }}</h3>
+        <p class="text-gray-600">{{ item.description }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>

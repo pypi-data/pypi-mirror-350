@@ -1,0 +1,151 @@
+<section id="about" class="py-24 bg-gray-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <h2 class="text-5xl font-bold text-center mb-6">
+        {{ sections.about.title }}
+      </h2>
+      <p class="text-xl text-gray-600 text-center mb-16 max-w-3xl mx-auto">
+        {{sections.about.content}}
+      </p>
+    </div>
+    <div class="grid lg:grid-cols-[60%_40%] gap-12 items-center justify-center">
+      <!-- Video Container -->
+      {% if sections.about.media.type == 'image' %}
+      <div class="relative aspect-video rounded-xl overflow-hidden shadow-2xl">
+        <img
+          src="{{ sections.about.media.src }}"
+          alt="{{ sections.about.media.alt }}"
+          class="w-full h-full object-cover rounded-xl shadow-2xl"
+          loading="{{ 'lazy' if sections.about.media.lazyLoad }}"
+        />
+      </div>
+      {% else %}
+      <div
+        id="video-container"
+        class="relative aspect-video rounded-xl overflow-hidden shadow-2xl"
+      >
+        <div
+          class="absolute inset-0 bg-gray-900/50 flex items-center justify-center group cursor-pointer z-10"
+          id="video-overlay"
+        >
+          <div
+            class="w-20 h-20 bg-white rounded-full flex items-center justify-center transition-transform group-hover:scale-110"
+          >
+            <i class="ri-play-fill text-4xl text-primary"></i>
+          </div>
+        </div>
+        <video
+          id="demo-video"
+          class="w-full h-full object-cover"
+          poster="{{ sections.about.media.poster }}"
+          controls
+        >
+          <source src="{{ sections.about.media.src }}" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <!-- Video Poster Aspect Ratio: ASPECT_16_10 -->
+        <!-- Video Poster Alt: {{ sections.about.media.alt }} -->
+      </div>
+      {% endif %}
+
+      <!-- Steps Grid -->
+      <div class="grid grid-cols-2 gap-6">
+        {% for item in sections.about.items %}
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+          <div
+            class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4"
+          >
+            <i class="{{ item.icon }} text-xl text-primary"></i>
+          </div>
+          <h3 class="text-lg font-semibold mb-2">{{ item.title }}</h3>
+          <p class="text-gray-600">{{ item.description }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const videoContainer = document.getElementById("video-container");
+      const originalVideoHTML = videoContainer.innerHTML;
+
+      function setupVideoPlayer() {
+        const overlay = document.getElementById("video-overlay");
+        const videoElement = document.getElementById("demo-video");
+        const sourceEl = videoElement
+          ? videoElement.querySelector("source")
+          : null;
+        overlay.addEventListener("click", function () {
+          overlay.style.display = "none";
+          if (sourceEl) {
+            const videoSrc = sourceEl.getAttribute("src");
+            if (
+              videoSrc.includes("youtube.com") ||
+              videoSrc.includes("youtu.be")
+            ) {
+              let embedUrl = videoSrc;
+              if (videoSrc.includes("watch?v=")) {
+                embedUrl = videoSrc.replace("watch?v=", "embed/");
+              }
+              embedUrl +=
+                (embedUrl.includes("?") ? "&" : "?") + "autoplay=1&controls=1";
+              const ytContainer = document.createElement("div");
+              ytContainer.id = "youtube-player";
+              ytContainer.className = videoElement.className;
+              videoElement.parentNode.replaceChild(ytContainer, videoElement);
+              if (
+                typeof YT === "undefined" ||
+                typeof YT.Player === "undefined"
+              ) {
+                let tag = document.createElement("script");
+                tag.src = "https://www.youtube.com/iframe_api";
+                let firstScriptTag = document.getElementsByTagName("script")[0];
+                firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+                window.onYouTubeIframeAPIReady = function () {
+                  createYTPlayer(ytContainer.id, embedUrl);
+                };
+              } else {
+                createYTPlayer(ytContainer.id, embedUrl);
+              }
+            } else {
+              videoElement.play();
+              videoElement.addEventListener("ended", function () {
+                resetVideo();
+              });
+            }
+          }
+        });
+      }
+
+      function createYTPlayer(elementId, embedUrl) {
+        new YT.Player(elementId, {
+          videoId: extractYouTubeID(embedUrl),
+          playerVars: {
+            autoplay: 1,
+            controls: 1,
+          },
+          events: {
+            onStateChange: function (event) {
+              if (event.data === YT.PlayerState.ENDED) {
+                resetVideo();
+              }
+            },
+          },
+        });
+      }
+
+      function extractYouTubeID(url) {
+        const regExp = /embed\/([^\?&"'>]+)/;
+        const match = url.match(regExp);
+        return match && match[1] ? match[1] : "";
+      }
+
+      function resetVideo() {
+        videoContainer.innerHTML = originalVideoHTML;
+        setupVideoPlayer();
+      }
+
+      setupVideoPlayer();
+    });
+  </script>
+</section>

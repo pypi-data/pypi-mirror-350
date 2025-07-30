@@ -1,0 +1,46 @@
+<section id="menu" class="bg-surface py-24">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="text-center mb-16" data-aos="fade-up">
+      <h2 class="text-3xl lg:text-4xl font-serif font-bold text-gray-900">
+        {{ sections.menu.title }}
+      </h2>
+    </div>
+
+    <div class="space-y-12">
+      {% for category in sections.menu.categories %}
+      <div data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+        <h3
+          class="text-2xl font-serif text-gray-800 mb-6 border-b border-gray-200 pb-2"
+        >
+          {{ category.name }}
+        </h3>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
+          {% for item in category.items %}
+          <div
+            class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition border border-gray-100"
+          >
+            {% if item.media %}
+            <img
+              src="{{ item.media.src }}"
+              alt="{{ item.media.alt }}"
+              class="h-40 w-full object-cover rounded-md mb-4"
+            />
+            {% endif %}
+            <div class="flex justify-between items-start">
+              <h4 class="text-lg font-semibold text-gray-900">
+                {{ item.name }}
+              </h4>
+              <span class="text-sm text-accent font-semibold whitespace-nowrap"
+                >{{ item.price }}</span
+              >
+            </div>
+            <p class="text-sm text-gray-600 mt-2">{{ item.description }}</p>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>

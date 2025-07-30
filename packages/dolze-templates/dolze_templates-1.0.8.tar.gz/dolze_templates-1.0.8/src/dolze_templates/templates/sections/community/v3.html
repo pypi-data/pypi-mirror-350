@@ -1,0 +1,53 @@
+<section id="community" class="py-24 bg-gray-50">
+  <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 items-center gap-12">
+    <!-- Text side -->
+    <div>
+      <h2 class="text-4xl font-bold text-gray-900 mb-4">
+        {{ sections.community.title }}
+      </h2>
+      <p class="text-gray-600 mb-8">{{ sections.community.subtitle }}</p>
+    </div>
+
+    <!-- Form card side -->
+    <div class="relative">
+      <div
+        class="bg-white p-6 sm:p-10 rounded-2xl shadow-xl transform -translate-y-8"
+      >
+        <form id="subscribeFormB" class="space-y-4">
+          <input
+            type="email"
+            placeholder="Enter your email"
+            class="w-full px-5 py-3 border border-gray-200 rounded-lg focus:outline-none"
+            required
+          />
+          <button
+            type="submit"
+            class="w-full py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary/90 transition"
+          >
+            {{ sections.community.cta.label }}
+          </button>
+        </form>
+        <p id="subscribeMsgB" class="hidden mt-4 text-center text-primary">
+          🎉 You’re in!
+        </p>
+      </div>
+      <!-- Decorative circle -->
+      <div
+        class="absolute -top-4 -right-4 w-16 h-16 bg-primary/20 rounded-full"
+      ></div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document
+    .getElementById("subscribeFormB")
+    .addEventListener("submit", function (e) {
+      e.preventDefault();
+      const email = this.querySelector("input").value.trim();
+      if (/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) {
+        document.getElementById("subscribeMsgB").classList.remove("hidden");
+        this.reset();
+      }
+    });
+</script>

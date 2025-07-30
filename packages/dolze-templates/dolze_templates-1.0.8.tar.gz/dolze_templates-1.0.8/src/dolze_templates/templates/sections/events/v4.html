@@ -1,0 +1,52 @@
+
+<section class="max-w-7xl mx-auto px-6">
+  <div class="text-center mb-16" data-aos="fade-up">
+    <h2
+      class="text-2xl md:text-3xl font-bold text-[#1F2937]"
+      style="font-family: Inter, sans-serif"
+    >
+      {{ sections.events.title }}
+    </h2>
+  </div>
+
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+    {% for event in sections.events.items %}
+    <div
+      class="bg-white border border-gray-200 rounded-2xl shadow-sm p-5 space-y-4 flex flex-col"
+      data-aos="fade-up"
+      data-aos-delay="{{ loop.index * 100 }}"
+    >
+      {% if event.media.type == 'image' %}
+      <img
+        src="{{ event.media.src }}"
+        alt="{{ event.media.alt }}"
+        class="w-full h-40 object-cover rounded-xl"
+      />
+      {% endif %}
+
+      <div class="flex justify-between text-xs text-gray-500">
+        <span>{{ event.date }}</span>
+        <span>{{ event.location }}</span>
+      </div>
+
+      <h3
+        class="text-lg font-semibold text-[#1F2937]"
+        style="font-family: Inter, sans-serif"
+      >
+        {{ event.title }}
+      </h3>
+
+      <p class="text-sm text-gray-600 leading-relaxed">
+        {{ event.description }}
+      </p>
+
+      <a
+        href="{{ event.url }}"
+        class="mt-auto text-sm font-medium text-[#08D9D6] underline"
+      >
+        Learn more
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</section>

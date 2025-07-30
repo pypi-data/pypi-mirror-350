@@ -1,0 +1,50 @@
+<section
+  id="hero"
+  class="relative min-h-screen overflow-hidden"
+  style="background-image: url('{{ sections.hero.heroImage.src }}'); background-size: cover; background-position: center;"
+>
+  <div
+    class="absolute inset-0 bg-gradient-to-r from-white via-white/60 to-transparent"
+  ></div>
+
+  <div
+    class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center min-h-screen"
+  >
+    <div class="max-w-2xl">
+      <h1 class="text-5xl font-bold text-gray-900 mb-6 text-left">
+        {{ sections.hero.title }}
+      </h1>
+
+      {%- if sections.hero.subtitles %}
+      <div class="flex gap-2 mb-4">
+        {%- for subtitle in sections.hero.subtitles %}
+        <span class="text-xl text-gray-600">{{ subtitle }}</span>
+        {%- endfor %}
+      </div>
+      {%- endif %}
+
+      <p class="text-xl text-gray-600 mb-8 text-left">
+        {{ sections.hero.description }}
+      </p>
+
+      <div class="flex gap-4">
+        {%- for btn in sections.hero.ctaButtons %}
+        <a
+          href="{{ btn.url }}"
+          {%-
+          if
+          btn.ariaLabel
+          %}
+          aria-label="{{ btn.ariaLabel }}"
+          {%-
+          endif
+          %}
+          class="px-8 py-4 !rounded-button whitespace-nowrap {% if btn.size == 'lg' %}text-lg{% endif %} {% if btn.style == 'filled' %} bg-primary text-white hover:bg-primary/90 {% elif btn.style == 'outline' %} bg-white text-primary border-2 border-primary hover:bg-gray-50 {% endif %}"
+        >
+          {{ btn.label }}
+        </a>
+        {%- endfor %}
+      </div>
+    </div>
+  </div>
+</section>

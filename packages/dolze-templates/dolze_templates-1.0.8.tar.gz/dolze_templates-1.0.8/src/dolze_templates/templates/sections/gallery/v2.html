@@ -1,0 +1,35 @@
+<section id="gallery" class="bg-surface py-24">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    
+    <div class="text-center mb-16" data-aos="fade-up">
+      <h2 class="text-3xl lg:text-4xl font-serif font-bold text-gray-900">
+        {{ sections.gallery.title }}
+      </h2>
+    </div>
+
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      {% for item in sections.gallery.items %}
+      <div data-aos="zoom-in" data-aos-delay="{{ loop.index * 100 }}">
+        {% if item.lightbox %}
+        <a href="{{ item.src }}" target="_blank">
+          <img
+            src="{{ item.src }}"
+            alt="{{ item.alt }}"
+            class="w-full rounded-lg shadow-md hover:scale-[1.02] transition"
+          />
+        </a>
+        {% else %}
+        <img
+          src="{{ item.src }}"
+          alt="{{ item.alt }}"
+          class="w-full rounded-lg shadow-md"
+        />
+        {% endif %} {% if item.caption %}
+        <p class="mt-2 text-sm text-gray-600 text-center">{{ item.caption }}</p>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>

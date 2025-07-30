@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="{{ settings.accessibility.lang | default('en') }}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ settings.seo.title }}</title>
+    <meta name="description" content="{{ settings.seo.description }}" />
+    <meta name="keywords" content="{{ settings.seo.keywords | join(', ') }}" />
+    <link rel="canonical" href="{{ settings.seo.canonicalUrl }}" />
+
+    <meta property="og:title" content="{{ settings.seo.openGraph.title }}" />
+    <meta
+      property="og:description"
+      content="{{ settings.seo.openGraph.description }}"
+    />
+    <meta property="og:image" content="{{ settings.seo.openGraph.image }}" />
+    <meta property="og:url" content="{{ settings.seo.openGraph.url }}" />
+    <meta property="og:type" content="{{ settings.seo.openGraph.type }}" />
+    <meta property="og:locale" content="{{ settings.seo.openGraph.locale }}" />
+
+    <meta name="twitter:card" content="{{ settings.seo.twitterCard.card }}" />
+    <meta name="twitter:site" content="{{ settings.seo.twitterCard.site }}" />
+    <meta
+      name="twitter:creator"
+      content="{{ settings.seo.twitterCard.creator }}"
+    />
+    <meta name="twitter:image" content="{{ settings.seo.twitterCard.image }}" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "{{settings.theme.colors.primary}}",
+              secondary: "{{settings.theme.colors.secondary}}",
+            },
+            borderRadius: {
+              none: "0px",
+              sm: "4px",
+              DEFAULT: "8px",
+              md: "12px",
+              lg: "16px",
+              xl: "20px",
+              "2xl": "24px",
+              "3xl": "32px",
+              full: "9999px",
+              button: "8px",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      html {
+        scroll-behavior: smooth;
+      }
+      :where([class^="ri-"])::before {
+        content: "\f3c2";
+      }
+      .testimonial-slider {
+        transition: transform 0.3s ease-in-out;
+      }
+    </style>
+  </head>
+  <body class="bg-white">
+    {% for section_name in
+    registry.brand_service_digital_saas.pages[page].sections %} {% if
+    sections[section_name] is defined %} {{ sections[section_name] | safe }} {%
+    endif %} {% endfor %}
+  </body>
+</html>
