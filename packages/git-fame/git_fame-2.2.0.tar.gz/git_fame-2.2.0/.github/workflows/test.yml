@@ -1,0 +1,121 @@
+name: Test
+on:
+  push:
+  pull_request:
+  schedule: [{cron: '3 2 1 * *'}]  # M H d m w (monthly at 2:03)
+jobs:
+  test:
+    if: github.event_name != 'pull_request' || !contains('OWNER,MEMBER,COLLABORATOR', github.event.pull_request.author_association)
+    name: py${{ matrix.python }}-${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu]
+        python: [3.7, 3.8, 3.9, '3.10', 3.11, 3.12]
+        include:
+        - {os: macos, python: 3.12}
+        - {os: windows, python: 3.12}
+    runs-on: ${{ matrix.os }}-${{ matrix.python == 3.7 && '22.04' || 'latest' }}
+    defaults: {run: {shell: bash}}
+    steps:
+    - uses: actions/checkout@v4
+      with: {fetch-depth: 0}
+    - uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python }}
+    - name: Install
+      run: pip install -U tox tox-gh-actions
+    - name: Test
+      run: tox -e py${PYVER/./}
+      env:
+        PYVER: ${{ matrix.python }}
+        PLATFORM: ${{ matrix.os }}
+        COVERALLS_FLAG_NAME: py${{ matrix.python }}-${{ matrix.os }}
+        COVERALLS_PARALLEL: true
+        COVERALLS_SERVICE_NAME: github
+        # coveralls needs explicit token
+        COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  finish:
+    name: Coverage
+    continue-on-error: ${{ github.event_name != 'push' }}
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+    - name: Coveralls Finished
+      run: |
+        pip install -U coveralls
+        coveralls --finish || :
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  deploy:
+    name: Deploy
+    needs: test
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions: {contents: write, id-token: write, packages: write}
+    steps:
+    - uses: actions/checkout@v4
+      with: {fetch-depth: 0}
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+    - name: Install
+      run: |
+        sudo apt-get install -yqq pandoc
+        pip install -r .meta/requirements-build.txt
+        make build .dockerignore
+    - id: dist
+      uses: casperdcl/deploy-pypi@v2
+      with:
+        gpg_key: ${{ secrets.GPG_KEY }}
+        upload: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags') }}
+    - id: collect_assets
+      name: Collect assets
+      run: |
+        if [[ $GITHUB_REF == refs/tags/v* ]]; then
+          echo docker_tags=latest,${GITHUB_REF/refs\/tags\/v/} >> $GITHUB_OUTPUT
+          echo snap_channel=stable,candidate,edge >> $GITHUB_OUTPUT
+        elif [[ $GITHUB_REF == refs/heads/main ]]; then
+          echo docker_tags=main >> $GITHUB_OUTPUT
+          echo snap_channel=candidate,edge >> $GITHUB_OUTPUT
+        elif [[ $GITHUB_REF == refs/heads/devel ]]; then
+          echo docker_tags=devel >> $GITHUB_OUTPUT
+          echo snap_channel=edge >> $GITHUB_OUTPUT
+        fi
+    - if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+      name: Release
+      run: |
+        changelog=$(git log --pretty='format:%d%n- %s%n%b---' $(git tag --sort=v:refname | tail -n2 | head -n1)..HEAD)
+        tag="${GITHUB_REF#refs/tags/}"
+        gh release create --title "git-fame $tag stable" --draft --notes "$changelog" "$tag" dist/${{ steps.dist.outputs.whl }} dist/${{ steps.dist.outputs.whl_asc }}
+      env:
+        GH_TOKEN: ${{ github.token }}
+    - uses: snapcore/action-build@v1
+      id: snap_build
+    - if: github.event_name == 'push' && steps.collect_assets.outputs.snap_channel
+      uses: snapcore/action-publish@v1
+      with:
+        snap: ${{ steps.snap_build.outputs.snap }}
+        release: ${{ steps.collect_assets.outputs.snap_channel }}
+      env:
+        SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_TOKEN }}
+    - name: Docker build push
+      uses: elgohr/Publish-Docker-Github-Action@master
+      with:
+        name: ${{ github.repository }}
+        tags: ${{ steps.collect_assets.outputs.docker_tags }}
+        password: ${{ secrets.DOCKER_PWD }}
+        username: ${{ secrets.DOCKER_USR }}
+        no_push: ${{ steps.collect_assets.outputs.docker_tags == '' }}
+    - name: Docker push GitHub
+      uses: elgohr/Publish-Docker-Github-Action@master
+      with:
+        name: ${{ github.repository }}/git-fame
+        tags: ${{ steps.collect_assets.outputs.docker_tags }}
+        password: ${{ github.token }}
+        username: ${{ github.actor }}
+        registry: docker.pkg.github.com
+        no_push: ${{ steps.collect_assets.outputs.docker_tags == '' }}
