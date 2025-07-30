@@ -1,0 +1,70 @@
+Metadata-Version: 2.4
+Name: magma-seismic
+Version: 0.0.1
+Summary: MAGMA Seismic
+Keywords: magma,indonesia,volcano,seismic
+Author-email: Martanto <martanto@live.com>, Devy Kamil Syahbana <devy.syahbana@gmail.com>, Syarif Abdul Manaf <riefmof@gmail.com>
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+License-File: LICENSE
+Requires-Dist: obspy>=1.4.2
+Requires-Dist: openpyxl>=3.1.5
+Requires-Dist: pandas>=2.2.2
+Requires-Dist: numpy>=2.2.5
+Requires-Dist: obspy ; extra == "base"
+Requires-Dist: openpyxl ; extra == "base"
+Requires-Dist: pandas ; extra == "base"
+Requires-Dist: numpy ; extra == "base"
+Project-URL: Homepage, https://github.com/martanto/magma-seismic
+Project-URL: Issues, https://github.com/martanto/magma-seismic/issues
+Provides-Extra: base
+
+# magma-seismic
+Some tools for MAGMA to handle seismic
+
+## Install
+```python
+pip install magma-seismic
+```
+## Import module
+```python
+from magma_seismic.dowload import Download
+import magma_seismic
+```
+## Check version
+```python
+magma_seismic.__version__
+```
+## Download from Winston
+```python
+download = Download(
+    station='LEKR',
+    channel='EHZ',
+    start_date='2025-05-26',
+    end_date='2025-05-26',
+    overwrite=True,
+    verbose=True,
+)
+
+download.to_idds(
+    use_merge=True, # change to false to disable merging or fill empty data
+)
+```
+### Change winston server (optional)
+```python
+download.set_client(
+    host='winston address',
+    port=123456, # winston port
+    timeout=30
+)
+```
+## Check download result
+```python
+download.failed # will show failed download
+
+download.success # will show all successfull download
+```
