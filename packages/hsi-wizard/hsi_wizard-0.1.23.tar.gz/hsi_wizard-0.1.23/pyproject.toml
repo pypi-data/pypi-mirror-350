@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = { find = { include = ["wizard"] } }
+
+
+[tool.setuptools_scm]
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[project]
+name = "hsi-wizard"
+dynamic = ["version"]
+authors = [
+    {name = "Felix Wuehler", email="f.wuehler@hs-mannheim.de"},
+]
+description = "See Beyond the Visible: The Magic of Hyperspectral Imaging"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+# Your regular dependencies go here
+    "numpy",
+    "matplotlib",
+    "opencv-python",
+    "rich",
+    "nptdms",
+    "pandas",
+    "tqdm",
+    "imageio",
+    "openpyxl",
+    "PyYAML",
+    "joblib",
+    "scipy",
+    "pynrrd",
+    "rembg",
+    "onnxruntime",
+    "scikit-learn",
+]
+
+[project.optional-dependencies]
+tests = ["pydocstyle", "flake8", "pytest", "pytest-cov", "pytest-mock"]
+build = ["twine", "build"]
+
+[project.urls]
+Homepage = "https://github.com/BlueSpacePotato/hsi-wizard"
+Issues = "https://github.com/BlueSpacePotato/hsi-wizard/issues"
