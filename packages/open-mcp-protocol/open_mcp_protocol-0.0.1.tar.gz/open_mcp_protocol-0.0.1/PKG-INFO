@@ -1,0 +1,187 @@
+Metadata-Version: 2.4
+Name: open-mcp-protocol
+Version: 0.0.1
+Summary: An open-source Python package for MCP (Model Context Protocol)
+Project-URL: Homepage, https://github.com/2796gaurav/open-mcp
+Project-URL: Documentation, https://2796gaurav.github.io/open-mcp
+Project-URL: Repository, https://github.com/2796gaurav/open-mcp
+Project-URL: Issues, https://github.com/2796gaurav/open-mcp/issues
+Project-URL: Changelog, https://github.com/2796gaurav/open-mcp/blob/main/CHANGELOG.md
+Author-email: Gaurav Chauhan <2796gaurav@gmail.com>
+Maintainer-email: Gaurav Chauhan <2796gaurav@gmail.com>
+License: MIT License
+        
+        Copyright (c) 2024 Open-MCP Contributors
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+License-File: LICENSE
+Keywords: ai,llm,mcp,model-context-protocol
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.8
+Requires-Dist: anyio>=3.6.0
+Requires-Dist: httpx>=0.24.0
+Requires-Dist: pydantic>=2.0.0
+Requires-Dist: typing-extensions>=4.0.0
+Provides-Extra: dev
+Requires-Dist: black>=23.0.0; extra == 'dev'
+Requires-Dist: isort>=5.12.0; extra == 'dev'
+Requires-Dist: mypy>=1.0.0; extra == 'dev'
+Requires-Dist: pre-commit>=3.0.0; extra == 'dev'
+Requires-Dist: pytest-asyncio>=0.21.0; extra == 'dev'
+Requires-Dist: pytest-cov>=4.0.0; extra == 'dev'
+Requires-Dist: pytest>=7.0.0; extra == 'dev'
+Requires-Dist: ruff>=0.1.0; extra == 'dev'
+Provides-Extra: docs
+Requires-Dist: mkdocs-material>=9.0.0; extra == 'docs'
+Requires-Dist: mkdocs>=1.5.0; extra == 'docs'
+Requires-Dist: mkdocstrings[python]>=0.23.0; extra == 'docs'
+Provides-Extra: test
+Requires-Dist: pytest-asyncio>=0.21.0; extra == 'test'
+Requires-Dist: pytest-cov>=4.0.0; extra == 'test'
+Requires-Dist: pytest>=7.0.0; extra == 'test'
+Requires-Dist: respx>=0.20.0; extra == 'test'
+Description-Content-Type: text/markdown
+
+# Open-MCP
+
+[![PyPI version](https://badge.fury.io/py/open-mcp.svg)](https://badge.fury.io/py/open-mcp)
+[![Conda Version](https://img.shields.io/conda/vn/conda-forge/open-mcp.svg)](https://anaconda.org/conda-forge/open-mcp)
+[![Python Support](https://img.shields.io/pypi/pyversions/open-mcp.svg)](https://pypi.org/project/open-mcp/)
+[![Documentation Status](https://readthedocs.org/projects/open-mcp/badge/?version=latest)](https://open-mcp.readthedocs.io/en/latest/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+An open-source Python package for **Model Context Protocol (MCP)** - enabling seamless integration between language models and external tools, data sources, and services.
+
+## 🚀 Features
+
+- **🔧 Tool Integration**: Execute external tools and functions from language models
+- **📊 Resource Access**: Access and manage external data sources and files  
+- **💬 Prompt Management**: Dynamic prompt templates with parameter substitution
+- **🌐 Client & Server**: Full MCP client and server implementations
+- **⚡ Async Support**: Built with modern async/await patterns
+- **🔒 Type Safe**: Full type hints and Pydantic validation
+- **🧪 Well Tested**: Comprehensive test suite with high coverage
+- **📚 Documented**: Complete API documentation and examples
+
+## 📦 Installation
+
+### Via pip (PyPI)
+
+```bash
+pip install open-mcp
+```
+
+### Via uv (Recommended)
+
+```bash
+uv add open-mcp
+```
+
+### Via conda
+
+```bash
+conda install -c conda-forge open-mcp
+```
+
+### Development Installation
+
+```bash
+git clone https://github.com/2796gaurav/open-mcp.git
+cd open-mcp
+uv sync --all-extras --dev
+```
+
+## 🏃 Quick Start
+
+### MCP Client
+
+```python
+import asyncio
+from open_mcp import MCPClient
+
+async def main():
+    async with MCPClient("http://localhost:8000") as client:
+        # List available tools
+        tools = await client.list_tools()
+        print(f"Available tools: {[tool.name for tool in tools]}")
+        
+        # Execute a tool
+        result = await client.call_tool("calculator", {
+            "operation": "add",
+            "a": 5,
+            "b": 3
+        })
+        print(f"Result: {result.content}")
+        
+        # Access resources
+        resources = await client.list_resources()
+        content = await client.get_resource("file://data.json")
+        
+        # Use prompts
+        prompt_content = await client.get_prompt("summarize", {
+            "text": "Long text to summarize...",
+            "max_words": 100
+        })
+
+asyncio.run(main())
+```
+
+### MCP Server
+
+```python
+from open_mcp import MCPServer
+from open_mcp.models import Tool, ToolResult
+
+# Create server instance
+server = MCPServer("My MCP Server")
+
+# Register a tool
+@server.tool("calculator", "Perform basic calculations")
+async def calculator(operation: str, a: float, b: float) -> ToolResult:
+    operations = {
+        "add": a + b,
+        "subtract": a - b, 
+        "multiply": a * b,
+        "divide": a / b if b != 0 else "Error: Division by zero"
+    }
+    
+    result = operations.get(operation, "Unknown operation")
+    return ToolResult(content=result)
+
+# Register a resource
+@server.resource("file://config.json", "Application configuration")
+async def get_config():
+    return {"setting1": "value1", "setting2": "value2"}
+
+# Start server
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(server.app, host="0.0.0.0", port=8000)
+```

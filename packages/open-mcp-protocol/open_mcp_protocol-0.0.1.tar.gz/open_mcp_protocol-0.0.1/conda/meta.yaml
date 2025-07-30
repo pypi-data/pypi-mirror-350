@@ -1,0 +1,58 @@
+{% set name = "open-mcp" %}
+{% set version = "0.1.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  path: ..
+
+build:
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+  number: 0
+  entry_points:
+    - open-mcp = open_mcp.cli:main
+
+requirements:
+  host:
+    - python >=3.8
+    - pip
+    - hatchling
+  run:
+    - python >=3.8
+    - pydantic >=2.0.0
+    - httpx >=0.24.0
+    - anyio >=3.6.0
+    - typing-extensions >=4.0.0
+
+test:
+  imports:
+    - open_mcp
+    - open_mcp.client
+    - open_mcp.server
+    - open_mcp.models
+    - open_mcp.utils
+  commands:
+    - open-mcp --help
+  requires:
+    - pytest
+    - pytest-cov
+    - pytest-asyncio
+
+about:
+  home: https://github.com/2796gaurav/open-mcp
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: An open-source Python package for MCP (Model Context Protocol)
+  description: |
+    Open-MCP provides client and server implementations for the Model Context Protocol,
+    enabling seamless integration between language models and external tools/data sources.
+  doc_url: https://2796gaurav.github.io/open-mcp
+  dev_url: https://github.com/2796gaurav/open-mcp
+
+extra:
+  recipe-maintainers:
+    - 2796gaurav
