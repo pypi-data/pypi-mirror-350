@@ -1,0 +1,92 @@
+[build-system]
+requires = ["setuptools==80.9.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = ["artless"]
+
+[tool.setuptools.dynamic]
+version = {attr = "artless.__version__"}
+
+[tool.setuptools.package-data]
+artless_template = ["py.typed"]
+
+[project]
+name = "artless-core"
+dynamic = ["version"]
+authors = [
+  {name = "Peter Bro", email = "p3t3rbr0@gmail.com"},
+]
+description = "The artless and minimalistic web library for creating small applications or APIs."
+keywords = ["artless", "minimalistic", "asgi", "wsgi", "web", "library", "framework"]
+readme = "README.md"
+requires-python = ">=3.11"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Web Environment",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+    "Typing :: Typed"
+]
+
+[project.urls]
+Homepage = "https://git.peterbro.su/peter/py3-artless-core"
+Repository = "https://git.peterbro.su/peter/py3-artless-core.git"
+Issues = "https://git.peterbro.su/peter/py3-artless-core/issues"
+Documentation = "https://pages.peterbro.su/py3-artless-core/"
+Changelog = "https://pages.peterbro.su/py3-artless-core/changelog.html"
+
+[project.optional-dependencies]
+build = ["build==1.2.2.post1", "twine==6.1.0"]
+docs = ["Sphinx==8.2.3", "furo==2024.8.6"]
+dev = [
+    "black==25.1.0",
+    "coverage==7.8.2",
+    "flake8==7.2.0",
+    "isort==6.0.1",
+    "mypy==1.15.0"
+]
+benchmarks = [
+    "Django==5.1.8",
+    "Flask==3.1.0",
+    "blacksheep==2.2.0",
+    "bottle==0.13.3",
+    "falcon==4.0.2",
+    "fastapi==0.115.12",
+    "gunicorn==23.0.0",
+    "uvicorn==0.34.2"
+]
+
+[tool.mypy]
+exclude = ["tests"]
+ignore_missing_imports = true
+
+[tool.isort]
+multi_line_output = 3
+include_trailing_comma = true
+force_single_line = false
+
+[tool.coverage.report]
+exclude_lines = [
+    "pass",
+    "\\.\\.\\.",
+    "def __getattr__",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["artless"]
+
+[tool.coverage.html]
+directory = "coverage_report"
