@@ -1,0 +1,49 @@
+[tool.poetry]
+name = "sysplant"
+version = "0.3.1"
+description = "SysPlant - Your syscall factory"
+authors = ["Ben Mz <x42en@users.noreply.github.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+mkdocs-awesome-pages-plugin = "^2.9.1"
+lazydocs = "^0.4.8"
+poetry-bumpversion = "^0.3.1"
+pytest-cov = "^4.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[[tool.poetry_bumpversion.replacements]]
+files = ["__metadata.py"]
+search = '__version__ = "{current_version}"'
+replace = '__version__ = "{new_version}"'
+
+[[tool.poetry_bumpversion.replacements]]
+files = ["README.md", "docs/index.md"]
+search = 'Version: {current_version}'
+replace = 'Version: {new_version}'
+
+[tool.pytest.ini_options]
+# Also see
+# https://docs.pytest.org/en/6.2.x/customize.html#pyproject-toml
+# https://pytest-cov.readthedocs.io/en/latest/config.html
+# If you want to see console output from tests, include -s flag
+addopts = [
+    '--cov-fail-under=80',
+    '--cov-report=html:pytest',
+    '--cov-report=term-missing',
+    '--junitxml=report.xml'
+]
+
+[tool.coverage.run]
+omit = ["tests"]
+source = ["sysplant"]
