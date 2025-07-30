@@ -1,0 +1,98 @@
+Metadata-Version: 2.4
+Name: topssh
+Version: 2025.5.26
+Summary: a package on top of fabric to use SSH easily
+Author-email: Lix Xu <xuzenglin@gmail.com>
+License: BSD 3-Clause License
+        
+        Copyright (c) 2023, Lix Xu
+        
+        Redistribution and use in source and binary forms, with or without
+        modification, are permitted provided that the following conditions are met:
+        
+        1. Redistributions of source code must retain the above copyright notice, this
+           list of conditions and the following disclaimer.
+        
+        2. Redistributions in binary form must reproduce the above copyright notice,
+           this list of conditions and the following disclaimer in the documentation
+           and/or other materials provided with the distribution.
+        
+        3. Neither the name of the copyright holder nor the names of its
+           contributors may be used to endorse or promote products derived from
+           this software without specific prior written permission.
+        
+        THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+        AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+        IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+        DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+        FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+        DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+        SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+        CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+        OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+        OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+        
+Project-URL: Homepage, https://github.com/lixxu/topssh
+Project-URL: Bug Tracker, https://github.com/lixxu/topssh/issues
+Keywords: ssh,fabric,paramiko
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE.txt
+Requires-Dist: fabric>=3.2.2
+Requires-Dist: py-term>=0.7
+Dynamic: license-file
+
+# topssh
+
+a package on top of fabric to use ssh easily
+
+## installation
+
+```bash
+pip install topssh
+```
+
+## usage
+
+```python
+from topssh.ssh_lite import SSH
+from topssh.ssh import SSH as FullSSH
+
+host = "127.0.0.1"
+user ="username"
+password = "password"
+
+# lite ssh only captures command output
+ssh = SSH(host, user, password)
+ssh.add_sudo_watcher()
+ssh.connect(timeout=5)
+
+out = ssh.run("hostname")
+print(out)
+
+out = ssh.run("uname -a")
+print(out)
+
+# all outpus in ssh.echo_text
+print("".join(ssh.echo_text))
+
+# full ssh cpatures all output including command input and output
+ssh = FullSSH(host, user, password)
+ssh.connect(timeout=5)
+
+# add timestamps to output and ignore color chars
+# ssh.patch_output()
+
+out = ssh.run("hostname")
+print(out)
+
+out = ssh.run("uname -a")
+print(out)
+
+# all outpus in ssh.echo_text
+print("".join(ssh.echo_text))
+
+```
