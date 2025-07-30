@@ -1,0 +1,68 @@
+[tool.poetry]
+name = "modis-crawler-utils"
+version = "0.3.42"
+description = "Scrapy utils for Modis crawlers projects."
+authors = [
+    "Varlamov <varlamov@ispras.ru>",
+    "Yatskov <yatskov@ispras.ru>"
+]
+readme = "README.md"
+repository = "https://gitlab.at.ispras.ru/crawlers/crawler-utils"
+homepage = "https://gitlab.at.ispras.ru/crawlers/crawler-utils"
+packages = [{ include = "crawler_utils" }]
+license = "BSD"
+classifiers = [
+    'Development Status :: 3 - Alpha',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.9',
+    'Framework :: Scrapy',
+    'Intended Audience :: Developers',
+    'Operating System :: OS Independent',
+    'License :: OSI Approved :: BSD License'
+]
+
+[tool.poetry.scripts]
+build-egg = "crawler_utils.deploy.create_egg:main"
+build-md = "crawler_utils.deploy.make_arguments_md_file:main"
+bump-version = "crawler_utils.deploy.bump_version:main"
+run_spiders_and_tests = "crawler_utils.test.crawler_tests.run_spiders_and_tests:main"
+create-tests-directory = "crawler_utils.test.crawler_tests.create_tests_directory:create_tests_directory"
+
+
+
+
+[tool.poetry.dependencies]
+python = "^3.9"
+scrapy = ">=2.6.0"
+pymongo = ">=3.10.1"
+Pillow = ">=7.1.2"
+requests = ">=2.23.0"
+itemadapter = ">=0.2.0"
+python-logstash = ">=0.4.6"
+ephemeral-port-reserve = ">=1.1.1"
+twisted = "*"
+certifi = "*"
+dateparser = ">=1.2.0"
+scrapy-splash = ">=0.8.0"
+scrapy-puppeteer-client = ">=0.0.6"
+pyopenssl = "22.0.0"
+cryptography = "36.0.2"
+pydantic = "^2.4.2"
+opensearch-py = "^2.7.1"
+sentry-sdk = "^2.13.0"
+kafka-python-ng = "^2.2.3"
+pytest = "^8.3.4"
+pytest-cases = "^3.8.6"
+pytest-check = "^2.5.0"
+pytest-dependency = "^0.6.0"
+
+[tool.poetry.dev-dependencies]
+twine = "*"
+semver = "*"
+flake8 = "*"
+sphinx = "*"  # Last sphinx requires python >= 3.10
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
