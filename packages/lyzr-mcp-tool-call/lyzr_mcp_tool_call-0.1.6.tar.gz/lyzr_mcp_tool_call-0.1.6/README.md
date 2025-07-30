@@ -1,0 +1,158 @@
+# Lyzr MCP Tool Call
+
+## Overview
+
+The Lyzr MCP Tool Call enables seamless integration between MCP (Model Context Protocol) clients and Lyzr agents. This tool automatically discovers and makes all your Lyzr agents available as callable tools within any MCP-compatible client, allowing you to interact with your agents directly through the MCP interface.
+
+## Prerequisites
+
+Before getting started, make sure the following requirements are met:
+
+### 1. Install Python
+
+* Download and install Python from [python.org](https://www.python.org/downloads/)
+* Ensure Python is added to your system PATH
+* Verify installation:
+
+```bash
+python --version
+```
+
+### 2. Install uv
+
+* Follow the installation guide: [Installing uv](https://docs.astral.sh/uv/getting-started/installation/#installation-methods)
+* **Windows**:
+
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+* **macOS/Linux**:
+
+```bash
+curl -Ls https://astral.sh/uv/install.sh | sh
+```
+
+or
+
+```bash
+brew install uv
+```
+
+## Configuration
+
+### 1. Claude Desktop Setup
+
+To connect Lyzr MCP Tool Call with Claude Desktop:
+
+#### Location of config file:
+
+* **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+* **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+
+#### Add the following configuration:
+
+```json
+{
+  "mcpServers": {
+    "lyzr-mcp-tool-call": {
+      "command": "uvx",
+      "args": ["lyzr-mcp-tool-call@latest"],
+      "env": {
+        "LYZR_API_KEY": "your-lyzr-api-key-here",
+        "LYZR_USER_ID": "your-user-id"
+      }
+    }
+  }
+}
+```
+
+#### Close Claude Desktop completely and reopen
+
+### 2. Cursor Setup
+
+Follow the official guide: [Cursor MCP Setup](https://docs.cursor.com/context/model-context-protocol)
+
+To configure MCP on Cursor:
+
+1. Press `Command + Shift + P` (macOS) | `Ctrl + Shift + P` (Windows) 
+2. Run: `View: Open MCP Settings`
+3. Click `+ Add new global MCP server`
+4. This opens the `mcp.json` file where you can add the configuration below:
+
+```json
+{
+  "mcpServers": {
+    "lyzr-mcp-tool-call":{
+      "command":"uvx",
+      "args":["lyzr-mcp-tool-call@latest"],
+      "env":{
+        "LYZR_API_KEY":"your-lyzr-api-key-here",
+        "LYZR_USER_ID":"your-user-id"
+      }
+    }
+  }
+}
+```
+
+### Environment Variables
+
+These are required for authentication:
+
+* `LYZR_API_KEY`: Your Lyzr API key
+* `LYZR_USER_ID`: Your Lyzr user ID
+
+## Usage
+
+1. Configure the tool in your **MCP CLIENT** (Claude Desktop or Cursor)
+2. **RESTART** your MCP client
+3. **WAIT** for the tools to initialize (tools icon will appear)
+4. Your Lyzr agents will show up as **AVAILABLE TOOLS**
+5. You can now **DIRECTLY INTERACT** with your agents through the MCP interface
+
+![Tools Icon](tools_icon.png)
+*The tools icon appears when Lyzr MCP tools are successfully loaded*
+
+## Troubleshooting
+
+### Tool not appearing in MCP client
+
+* Check the syntax of your configuration file
+* Verify that API credentials are correct
+* Restart your client after making changes
+
+### Authentication errors
+
+* Ensure both `LYZR_API_KEY` and `LYZR_USER_ID` are correctly set
+* Confirm your Lyzr account has access to the necessary agents
+
+### Connection issues
+
+* Check your internet connection
+* Look for any firewall restrictions that may block the tool
+
+## Requirements
+
+* Python installed - [python.org](https://www.python.org/downloads/)
+* [uv](https://docs.astral.sh/uv/) package manager
+* A valid Lyzr account
+* MCP-compatible client (Claude Desktop, Cursor, etc.)
+
+## Running the Tool Directly
+
+Once `uv` is installed, you can run the Lyzr MCP Tool Call directly from your terminal:
+
+```bash
+uvx lyzr-mcp-tool-call@latest
+```
+
+## Support
+
+For any issues:
+
+* Contact Lyzr support: [support@lyzr.ai](mailto:support@lyzr.ai)
+* Make sure you're using the latest version:
+
+```bash
+uvx lyzr-mcp-tool-call@latest
+```
