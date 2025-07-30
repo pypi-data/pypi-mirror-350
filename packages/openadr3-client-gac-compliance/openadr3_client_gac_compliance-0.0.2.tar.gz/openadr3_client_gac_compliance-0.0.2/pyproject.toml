@@ -1,0 +1,27 @@
+[project]
+name = "openadr3-client-gac-compliance"
+version = "0.0.2"
+description = ""
+authors = [
+    {name = "Nick van der Burgt", email = "nick.van.der.burgt@elaad.nl"}
+]
+readme = "README.md"
+requires-python = ">=3.12, <4"
+dependencies = [
+    "pydantic (>=2.11.2,<3.0.0)",
+    "openadr3-client (>=0.0.1,<0.0.2)",
+]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.15.0"
+ruff = "^0.11.4"
+pytest = "^8.3.5"
+pytest-cov = "^6.1.1"
+
+[[tool.mypy.overrides]]
+module = ["openadr3_client", "decouple"]
+ignore_missing_imports = true
