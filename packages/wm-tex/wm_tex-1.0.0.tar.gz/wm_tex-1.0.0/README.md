@@ -1,0 +1,32 @@
+# wm-tex
+
+Automatically reference a URL with the wayback machine in BibTeX
+
+The tool will automatically generate a BibTeX reference with the first
+appearance of the website in the Wayback machine, access time, and a
+`howpublished` field with the original URL as a hyperref to the wayback machine
+URL
+
+## Usage
+
+```
+$ wm-tex URL
+```
+
+## Example
+
+```
+$ wm-tex http://google.com
+
+@misc{xxx98},
+  title   = {{}},
+  author  = {},
+  day     = {11},
+  month   = {11},
+  year    = {1998},
+  url     = {https://web.archive.org/web/20250527083831/https://google.com/},
+  ourl    = {http://google.com},
+  howpublished = {\href{https://web.archive.org/web/20250527083831/https://google.com/}{http://google.com}},
+  urldate = {2025-05-27},
+}
+```
