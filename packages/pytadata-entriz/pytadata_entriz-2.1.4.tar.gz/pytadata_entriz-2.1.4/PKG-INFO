@@ -1,0 +1,72 @@
+Metadata-Version: 2.3
+Name: pytadata_entriz
+Version: 2.1.4
+Summary: Uniform DataFrame writer with optional AWS or GCP back-ends
+License: MIT
+Keywords: data-engineering,pandas,aws,gcp,bigquery,s3
+Author: jaimeardp
+Author-email: jaimeardp@gmail.com
+Requires-Python: >=3.11,<4.0.0
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Database
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Provides-Extra: aws
+Provides-Extra: dev
+Provides-Extra: gcp
+Requires-Dist: awswrangler (>=3.7,<4.0) ; extra == "aws"
+Requires-Dist: black (>=24.0.0) ; extra == "dev"
+Requires-Dist: flake8 (>=7.0.0) ; extra == "dev"
+Requires-Dist: gcsfs (>=2024.3.0) ; extra == "gcp"
+Requires-Dist: mypy (>=1.8.0) ; extra == "dev"
+Requires-Dist: pandas (>=2.2,<3.0)
+Requires-Dist: pandas-gbq (>=0.20,<1.0) ; extra == "gcp"
+Requires-Dist: pyarrow (>=15.0,<16.0)
+Requires-Dist: pytest (>=8.0.0) ; extra == "dev"
+Requires-Dist: typedframe (>=0.11.0,<0.12.0)
+Project-URL: Homepage, https://github.com/jaimeardp/pytadata_entriz
+Project-URL: Issues, https://github.com/jaimeardp/pytadata_entriz.git/issues
+Project-URL: Repository, https://github.com/jaimeardp/pytadata_entriz.git
+Description-Content-Type: text/markdown
+
+<!-- Lightweight DataFrame library for reading, validating, and writing data entries with unified API for local, AWS, and GCP storage backends -->
+
+# DataFrame Library
+A lightweight DataFrame library designed for reading, validating, and writing data entries with a unified API for local, AWS, and GCP storage backends.
+## Features
+- **Unified API**: Interact with data across local, AWS, and GCP storage seamlessly.
+- **Data Validation**: Ensure data integrity with built-in validation mechanisms.
+- **Flexible Storage**: Read and write data from various storage backends without changing your code.
+- **Lightweight**: Minimal dependencies and overhead for efficient data handling.
+## Installation
+```bash
+pip install dataframe-library
+```
+## Usage
+```python
+from dataframe_library import DataFrame
+# Create a DataFrame instance
+df = DataFrame()
+# Read data from a local file
+df.read('data.csv')
+# Validate the data
+df.validate()
+# Write data to an AWS S3 bucket
+df.write('s3://my-bucket/data.csv')
+# Read data from a GCP bucket
+df.read('gs://my-bucket/data.csv')
+# Write data to a local file
+df.write('output.csv')
+```
+## Documentation
+For detailed documentation, please visit [DataFrame Library Documentation](https://example.com/docs).
+## Contributing
+We welcome contributions! Please read our [Contributing Guidelines](https://example.com/contributing) for more information on how to get involved.
+## License
+This project is licensed under the MIT License. See the [LICENSE](https://example.com/license) file for details.
+## Contact
+For any questions or issues, please open an issue on our [GitHub repository]
