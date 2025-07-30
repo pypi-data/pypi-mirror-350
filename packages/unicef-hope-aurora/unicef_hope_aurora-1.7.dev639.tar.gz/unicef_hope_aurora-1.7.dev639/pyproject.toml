@@ -1,0 +1,193 @@
+[build-system]
+build-backend = "hatchling.build"
+requires = [
+  "hatch-vcs>=0.4",
+  "hatchling>=1.25",
+]
+
+[project]
+name = "unicef-hope-aurora"
+description = ""
+readme = "README.md"
+license = { text = "MIT" }
+authors = [
+  { name = "sax", email = "s.apostolico@gmail.com" },
+  { name = "Domenico DiNicola", email = "dom.dinicola@gmail.com" },
+]
+requires-python = ">=3.12"
+classifiers = [
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+dynamic = [
+  "version",
+]
+dependencies = [
+  "beautifulsoup4",
+  "celery",
+  "channels[daphne]",
+  "channels-redis",
+  "cryptography>=45",
+  "django==5.2.*",
+  "django-admin-extra-buttons>=2.1.1",
+  "django-admin-ordering",
+  "django-admin-sync>=0.9",
+  "django-adminactions",
+  "django-adminfilters",
+  "django-anymail[mailjet]",
+  "django-appconf",
+  "django-bitfield",
+  "django-click",
+  "django-concurrency",
+  "django-constance",
+  "django-cors-headers",
+  "django-csp",
+  "django-debug-toolbar",
+  "django-filter",
+  "django-flags",
+  "django-front-door",
+  "django-hijack",
+  "django-import-export",
+  "django-jsoneditor",
+  "django-mdeditor",
+  "django-mptt",
+  "django-picklefield",
+  "django-pwa",
+  "django-redis",
+  "django-regex",
+  "django-reversion",
+  "django-reversion-compare",
+  "django-simple-captcha",
+  "django-simple-math-captcha",
+  "django-smart-admin>=3",
+  "django-smart-env",
+  "django-strategy-field>=3.2.1",
+  "django-stubs[compatible-mypy]",
+  "django-sysinfo",
+  "django-tinymce",
+  "djangorestframework",
+  "djangorestframework-datatables",
+  "dukpy>=0.5",
+  "faker",
+  "jmespath",
+  "jsonpickle",
+  "markdown",
+  "msgpack>=1.1",
+  "natural-keys",
+  "pillow",
+  "psycopg2-binary",
+  "pygments",
+  "pyquery",
+  "qrcode",
+  "sentry-sdk",
+  "social-auth-app-django",
+  "sqlparse",
+]
+
+urls.Documentation = "https://unicef.github.io/hope-aurora/"
+urls.Homepage = "https://github.com/unicef/hope-aurora"
+urls.Issues = "https://github.com/unicef/hope-aurora/issues"
+urls.Repository = "https://github.com/unicef/hope-aurora"
+
+scripts.aurora = "aurora.cli:cli"
+
+[dependency-groups]
+dev = [
+  "coverage",
+  "django-webtest>=1.9.13",
+  "factory-boy",
+  "freezegun",
+  "pdbpp",
+  "pip-licenses>=5",
+  "pre-commit",
+  "pyquery",
+  "pytest",
+  "pytest-coverage",
+  "pytest-django",
+  "pytest-echo",
+  "pytest-repeat>=0.9.4",
+  "pytest-xdist",
+  "responses",
+  "seleniumbase",
+  "tox>=4.2",
+  "watchdog",
+]
+
+docs = [
+  "cairosvg>=2.7.1",
+  "markupsafe>=2.1.5",
+  "mdx-gh-links>=0.4",
+  "mkdocs>=1.6.1",
+  "mkdocs-autolinks-plugin>=0.7.1",
+  "mkdocs-awesome-pages-plugin>=2.9.3",
+  "mkdocs-click>=0.8.1",
+  "mkdocs-embed-external-markdown>=3.0.2",
+  "mkdocs-ezglossary-plugin>=1.6.10",
+  "mkdocs-ezlinks-plugin>=0.1.14",
+  "mkdocs-gen-files>=0.5",
+  "mkdocs-get-deps>=0.2",
+  "mkdocs-include-markdown-plugin>=6.2.2",
+  "mkdocs-link-marker>=0.1.3",
+  "mkdocs-macros-plugin>=1.0.5",
+  "mkdocs-material>=9.5.36",
+  "mkdocs-redirects>=1.2.1",
+  "mkdocs-simple-hooks>=0.1.5",
+  "mkdocstrings[python]>=0.24.1",
+  "mkdocstrings-python",
+  "pymdown-extensions>=10.7.1",
+]
+
+mypy = [
+  "django-stubs[compatible-mypy]",
+  "djangorestframework-stubs",
+  "lxml-stubs",
+  "mypy",
+  "types-defusedxml",
+  "types-gevent",
+  "types-html5lib",
+  "types-jmespath",
+  "types-markdown",
+  "types-psycopg2",
+  "types-pygments",
+  "types-python-dateutil",
+  "types-pytz",
+  "types-qrcode",
+  "types-requests",
+]
+
+[tool.hatch.build]
+hooks.vcs.version-file = "src/aurora/version.py"
+skip-excluded-dirs = true
+
+[tool.hatch.version]
+source = "vcs"
+path = "src/aurora/version.py"
+raw-options = { local_scheme = "no-local-version", root = "." }
+
+[tool.hatch.metadata]
+allow-direct-references = false
+
+[tool.hatch.build.targets.sdist]
+ignore-vcs = true
+include = [
+  "src/aurora/**/*.*",
+  "src/dbtemplates/**/*.*",
+]
+
+[tool.hatch.build.targets.wheel]
+only-packages = false
+packages = [
+  "src/aurora",
+  "src/dbtemplates",
+]
+
+[tool.uv]
+package = true
+no-binary = true
+
+[tool.nitpick]
+style = [
+  "github://unicef/hope-code-conventions@main/django/django.toml",
+]
+cache = "1 day"

@@ -1,0 +1,19 @@
+{% extends "admin/admin_sync/_publish_base.html" %}
+
+{% block action-content %}
+    {% if data %}
+        {% for entry in data %}
+        <div>{{ entry }}</div>
+        {% endfor %}
+    {% endif %}
+    <div style="margin:10px">
+        Proceeding will publish {{ original }} to <strong>{{ server }}</strong>
+    </div>
+    <div style="margin-top:50px">
+        <form method="post" id="sync-remote-publish">
+            {% csrf_token %}
+            <input class="default" type="submit" value="Publish">
+            <input type="button" value="Cancel" onclick="javascript:history.back()">
+        </form>
+    </div>
+{% endblock %}
