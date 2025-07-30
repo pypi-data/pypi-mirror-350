@@ -1,0 +1,142 @@
+Metadata-Version: 2.1
+Name: ubc-solar-physics
+Version: 1.7.0
+Summary: UBC Solar's Simulation Environment
+Author: Fisher Xue, Mihir Nimgade, Chris Chang, David Widjaja, Justin Hua, Ilya Veksler, Renu Rajamagesh, Ritchie Xia, Erik Langille, Chris Aung, Nicolas Ric, Ishaan Trivedi, Jason Liang, Felix Toft, Mack Wilson, Jonah Lee, Tamzeed Quazi, Joshua Riefman
+Author-email: UBC Solar <strategy@ubcsolar.com>
+Maintainer: Renu Rajamagmesh, Felix Toft, Mack Wilson, Jonah Lee, Tamzeed Quazi
+Maintainer-email: UBC Solar <strategy@ubcsolar.com>, Joshua Riefman <joshuariefman@gmail.com>
+License: MIT License
+        
+        Copyright (c) 2024 UBC Solar
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        
+Project-URL: Homepage, https://ubcsolar.com
+Project-URL: Repository, https://github.com/UBC-Solar/physics
+Project-URL: Documentation, https://ubc-solar-physics.readthedocs.io/en/latest/
+Keywords: car,simulation,solar
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Rust
+Classifier: Natural Language :: English
+Classifier: Topic :: Scientific/Engineering :: Physics
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: backports.tarfile==1.2.0
+Requires-Dist: certifi==2024.7.4
+Requires-Dist: charset-normalizer==3.3.2
+Requires-Dist: dill>=0.3.8
+Requires-Dist: haversine==2.8.1
+Requires-Dist: idna==3.7
+Requires-Dist: importlib_metadata==8.2.0
+Requires-Dist: jaraco.classes==3.4.0
+Requires-Dist: jaraco.context==5.3.0
+Requires-Dist: jaraco.functools==4.0.2
+Requires-Dist: keyring==25.3.0
+Requires-Dist: llvmlite
+Requires-Dist: markdown-it-py==3.0.0
+Requires-Dist: mdurl==0.1.2
+Requires-Dist: more-itertools==10.4.0
+Requires-Dist: nh3==0.2.18
+Requires-Dist: numba
+Requires-Dist: numpy==2.0.1
+Requires-Dist: pkginfo==1.10.0
+Requires-Dist: Pygments==2.18.0
+Requires-Dist: readme_renderer==44.0
+Requires-Dist: requests==2.32.3
+Requires-Dist: requests-toolbelt==1.0.0
+Requires-Dist: rfc3986==2.0.0
+Requires-Dist: rich==13.7.1
+Requires-Dist: tqdm==4.66.5
+Requires-Dist: urllib3==2.2.2
+Requires-Dist: zipp==3.20.0
+Requires-Dist: filterpy==1.4.5
+Requires-Dist: toml==0.10.2
+Requires-Dist: pandas
+Requires-Dist: pydantic==2.9.2
+Requires-Dist: scipy
+Requires-Dist: tomli
+Requires-Dist: scipy-stubs
+
+# UBC Solar Physics
+
+<!-- marker-index-start -->
+
+[![Documentation Status](https://readthedocs.org/projects/ubc-solar-physics/badge/?version=latest)](https://ubc-solar-physics.readthedocs.io/en/latest/?badge=latest)
+
+UBC Solar's physics and environment models for simulating our groundbreaking solar cars.
+
+The API is currently unstable, and backwards compatibility may not be maintained. 
+
+## Requirements
+
+Versions indicated are recommended
+
+* Git [^1]
+* Python >=3.9 [^2]
+* Rustc >=1.79.0 [^3]
+* Cargo >=1.79.0 [^4]
+
+## Installation
+
+First, clone this repository.
+
+```bash
+git clone https://github.com/UBC-Solar/physics.git
+```
+Then, create and activate a virtual environment.
+Next, install dependencies in editable mode.
+
+```bash
+pip3 install -e .
+```
+
+## Getting Started
+
+Example of calculating solar arrays produced energy
+
+```python
+from physics.models.arrays import BasicArray
+import numpy as np
+
+efficiency = 0.25  # 25.0% efficient
+panel_size = 4.0   # 4.0m^2 of panels
+tick = 1.0         # 1.0s interval
+
+arrays = BasicArray(panel_efficiency=efficiency, panel_size=panel_size)
+
+irradiance = np.full([5], 400.0)  # 10 seconds of 400.0W/m^2 irradiance
+
+solar_power_produced = arrays.calculate_produced_energy(solar_irradiance=irradiance, tick=tick)
+
+assert np.array_equal(solar_power_produced, np.array([400.0, 400.0, 400.0, 400.0, 400.0]))
+```
+
+## Appendix
+
+[^1]: use `git --version` to verify version
+
+[^2]: use `python3 --version` to verify version
+
+[^3]: use `rustc --version` to verify version
+
+[^4]: use `cargo --version` to verify version
+
+<!-- marker-index-end -->

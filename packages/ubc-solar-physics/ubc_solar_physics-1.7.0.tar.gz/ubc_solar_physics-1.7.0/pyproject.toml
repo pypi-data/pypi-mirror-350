@@ -1,0 +1,111 @@
+# This file is maintained according to STG Specification #2: Physics Publishing
+
+[build-system]
+requires = ["setuptools<75", "setuptools-scm<8.2.0", "setuptools-rust"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ubc-solar-physics"
+authors = [
+    {name = "UBC Solar", email = "strategy@ubcsolar.com"},
+    {name = "Fisher Xue"},
+    {name = "Mihir Nimgade"},
+    {name = "Chris Chang"},
+    {name = "David Widjaja"},
+    {name = "Justin Hua"},
+    {name = "Ilya Veksler"},
+    {name = "Renu Rajamagesh"},
+    {name = "Ritchie Xia"},
+    {name = "Erik Langille"},
+    {name = "Chris Aung"},
+    {name = "Nicolas Ric"},
+    {name = "Ishaan Trivedi"},
+    {name = "Jason Liang"},
+    {name = "Felix Toft"},
+    {name = "Mack Wilson"},
+    {name = "Jonah Lee"},
+    {name = "Tamzeed Quazi"},
+    {name = "Joshua Riefman"}
+]
+maintainers = [
+    {name = "UBC Solar", email = "strategy@ubcsolar.com"},
+    {name = "Joshua Riefman", email = "joshuariefman@gmail.com"},
+    {name = "Renu Rajamagmesh"},
+    {name = "Felix Toft"},
+    {name = "Mack Wilson"},
+    {name = "Jonah Lee"},
+    {name = "Tamzeed Quazi"},
+]
+description = "UBC Solar's Simulation Environment"
+readme = "README.md"
+requires-python = ">=3.9"
+keywords = ["car", "simulation", "solar"]
+license = { file = "LICENSE"}
+dynamic = ["version"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Rust",
+    "Natural Language :: English",
+    "Topic :: Scientific/Engineering :: Physics"
+]
+dependencies = [
+    "backports.tarfile==1.2.0",
+    "certifi==2024.7.4",
+    "charset-normalizer==3.3.2",
+    "dill>=0.3.8",
+    "haversine==2.8.1",
+    "idna==3.7",
+    "importlib_metadata==8.2.0",
+    "jaraco.classes==3.4.0",
+    "jaraco.context==5.3.0",
+    "jaraco.functools==4.0.2",
+    "keyring==25.3.0",
+    "llvmlite",
+    "markdown-it-py==3.0.0",
+    "mdurl==0.1.2",
+    "more-itertools==10.4.0",
+    "nh3==0.2.18",
+    "numba",
+    "numpy==2.0.1",
+    "pkginfo==1.10.0",
+    "Pygments==2.18.0",
+    "readme_renderer==44.0",
+    "requests==2.32.3",
+    "requests-toolbelt==1.0.0",
+    "rfc3986==2.0.0",
+    "rich==13.7.1",
+    "tqdm==4.66.5",
+    "urllib3==2.2.2",
+    "zipp==3.20.0",
+    "filterpy==1.4.5",
+    'toml==0.10.2',
+    'pandas',
+    "pydantic==2.9.2",
+    "scipy",
+    "tomli",
+    "scipy-stubs"
+]
+
+[tool.setuptools_scm]
+version_file = "physics/_version.py"
+
+[project.urls]
+Homepage = "https://ubcsolar.com"
+Repository = "https://github.com/UBC-Solar/physics"
+Documentation = "https://ubc-solar-physics.readthedocs.io/en/latest/"
+
+[tool.setuptools]
+packages = ["physics", "physics_rs"]
+
+[[tool.setuptools-rust.ext-modules]]
+target = "physics_rs"    # Private Rust extension module to be nested into the Python package
+path = "Cargo.toml"      # Default value, can be omitted
+binding = "PyO3"         # Default value, can be omitted
+py-limited-api = "auto"  # Default value, can be omitted
+
+[tool.cibuildwheel]
+archs = "auto"  # Automatically detects architectures (e.g., x86, ARM)
+skip = ["pp*", "*-musllinux_*", "*-win32", "*i686"]  # Skip PyPy (only want CPython), Musllinux, win32, i686 wheels
+manylinux-x86_64-image = "manylinux2014"
+manylinux-i686-image = "manylinux2014"
+manylinux-aarch64-image = "manylinux2014"
