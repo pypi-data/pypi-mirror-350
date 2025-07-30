@@ -1,0 +1,103 @@
+Metadata-Version: 2.4
+Name: aiopixooapi
+Version: 0.2.0
+Summary: Asynchronous Python library for Divoom Pixoo64 LED display
+Project-URL: Homepage, https://github.com/KoenDierckx/aiopixooapi
+Project-URL: Documentation, https://github.com/KoenDierckx/aiopixooapi#readme
+Project-URL: Repository, https://github.com/KoenDierckx/aiopixooapi.git
+Project-URL: Issues, https://github.com/KoenDierckx/aiopixooapi/issues
+Author-email: Koen Dierckx <koen.dierckx@gmail.com>
+License-Expression: AGPL-3.0
+License-File: LICENSE
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: GNU Affero General Public License v3
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.8
+Requires-Dist: aiohttp>=3.9.0
+Requires-Dist: typing-extensions
+Provides-Extra: test
+Requires-Dist: aioresponses; extra == 'test'
+Requires-Dist: flake8; extra == 'test'
+Requires-Dist: pytest; extra == 'test'
+Requires-Dist: pytest-asyncio; extra == 'test'
+Requires-Dist: ruff; extra == 'test'
+Description-Content-Type: text/markdown
+
+
+# AioPixooAPI
+
+A Python library for interacting with Divoom Pixoo devices and the Divoom online API.
+
+## Installation
+
+Install the library using pip:
+
+```bash
+pip install aiopixooapi
+```
+
+## Usage
+
+### Pixoo64 (Device API)
+
+The `Pixoo64` class is used to interact with a Pixoo64 device on your local network.
+
+```python
+import asyncio
+from aiopixooapi.pixoo64 import Pixoo64
+
+async def main():
+    async with Pixoo64("192.168.1.100") as pixoo:
+        # Reboot the device
+        response = await pixoo.sys_reboot()
+        print(response)
+
+        # Get all settings
+        settings = await pixoo.get_all_settings()
+        print(settings)
+
+asyncio.run(main())
+```
+
+### Divoom (Online API)
+
+The `Divoom` class is used to interact with the Divoom online API.
+
+```python
+import asyncio
+from aiopixooapi.divoom import Divoom
+
+async def main():
+    async with Divoom() as divoom:
+        # Get dial types
+        dial_types = await divoom.get_dial_type()
+        print(dial_types)
+
+        # Get dial list for a specific type and page
+        dial_list = await divoom.get_dial_list("Social", 1)
+        print(dial_list)
+
+asyncio.run(main())
+```
+
+## Development
+### Setup
+To set up the development environment, clone the repository, create a virtual environment and install the required packages
+
+```bash
+pip install -e .
+pip install -e .[test]
+```
+
+### Testing
+
+Run the tests using `pytest`:
+
+```bash
+pytest
+```
+
+## License
+
+This project is licensed under the MIT License.
