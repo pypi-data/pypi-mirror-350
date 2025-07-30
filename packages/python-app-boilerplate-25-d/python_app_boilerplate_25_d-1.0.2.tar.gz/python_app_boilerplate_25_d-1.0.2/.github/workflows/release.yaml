@@ -1,0 +1,74 @@
+# .github/workflows/release.yml
+name: release
+
+on:
+  push:
+    branches: [ main, "*/*" ]
+
+jobs:
+  build-release:
+    name: Build and release
+    runs-on: ubuntu-24.04
+
+    permissions:
+      contents: write # to be able to publish a GitHub release
+      issues: write # to be able to comment on released issues
+      pull-requests: write # to be able to comment on released pull requests
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+      
+      - name: Install the project
+        run: |
+          uv sync
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+
+      - name: Install semantic-release
+        run: |
+          npm init -y
+          npm install semantic-release @semantic-release/exec
+
+      - name: Run semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
+
+      - name: Check if dist folder exists
+        id: check-dist
+        run: |
+          exists=$(python -c "import os; print('true' if os.path.isdir('dist') else 'false')")
+          echo "exists=$exists" >> $GITHUB_OUTPUT
+
+      - name: Publish to TestPyPI
+        if: ${{ github.ref != 'refs/heads/main' && steps.check-dist.outputs.exists == 'true' }}
+        env:
+          TEST_PYPI_TOKEN: ${{ secrets.TEST_PYPI_TOKEN }}
+        run: uv publish --index testpypi --token "$TEST_PYPI_TOKEN"
+
+      - name: Publish to PyPI
+        if: ${{ github.ref == 'refs/heads/main' && steps.check-dist.outputs.exists == 'true' }}
+        env:
+          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+        run: uv publish --token "$PYPI_TOKEN"
+
+      - name: Minimize uv cache
+        run: uv cache prune --ci
+    
