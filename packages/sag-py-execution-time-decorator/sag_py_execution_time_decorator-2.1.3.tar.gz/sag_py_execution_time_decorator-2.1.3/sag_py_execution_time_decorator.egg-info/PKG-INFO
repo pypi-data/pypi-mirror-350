@@ -1,0 +1,133 @@
+Metadata-Version: 2.4
+Name: sag-py-execution-time-decorator
+Version: 2.1.3
+Summary: A decorator for methods to log the execution time (sync and async)
+Home-page: https://github.com/SamhammerAG/sag_py_execution_time_decorator
+Author: Samhammer AG
+Author-email: support@samhammer.de
+License: MIT
+Project-URL: Documentation, https://github.com/SamhammerAG/sag_py_execution_time_decorator
+Project-URL: Bug Reports, https://github.com/SamhammerAG/sag_py_execution_time_decorator/issues
+Project-URL: Source, https://github.com/SamhammerAG/sag_py_execution_time_decorator
+Keywords: logging,execution time
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Software Development
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+License-File: LICENSE.txt
+Provides-Extra: dev
+Requires-Dist: build>=1.2.2.post1; extra == "dev"
+Requires-Dist: flake8; extra == "dev"
+Requires-Dist: mypy; extra == "dev"
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: pytest-asyncio; extra == "dev"
+Requires-Dist: pytest-cov; extra == "dev"
+Requires-Dist: coverage; extra == "dev"
+Requires-Dist: coverage-lcov; extra == "dev"
+Requires-Dist: mock; extra == "dev"
+Requires-Dist: toml; extra == "dev"
+Requires-Dist: types-mock; extra == "dev"
+Requires-Dist: zipp>=3.21.0; extra == "dev"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license
+Dynamic: license-file
+Dynamic: project-url
+Dynamic: provides-extra
+Dynamic: requires-python
+Dynamic: summary
+
+# sag_py_execution_time_decorator
+[![Maintainability][codeclimate-image]][codeclimate-url]
+[![Coverage Status][coveralls-image]][coveralls-url]
+[![Known Vulnerabilities][snyk-image]][snyk-url]
+
+A decorator for methods to log the execution time (sync and async)
+
+## What it does
+- Logs the execution time in milliseconds
+
+Sample log entry:
+```
+decorated_sync_method took 1000 ms.
+```
+
+The entry contains "function_name" and "execution_time" as extra data.
+
+## Installation
+pip install sag-py-execution-time-decorator
+
+## How to use
+Decorate your methods like that:
+```python
+from sag_py_execution_time_decorator.execution_time_decorator import log_execution_time
+
+@log_execution_time()
+def decorated_sync_method(param: str) -> str:
+    time.sleep(SLEEP_TIME_MS / 1000)
+    return f"test: {param}"
+
+
+@log_execution_time(log_level=logging.ERROR, log_params=("param",))
+async def decorated_async_method(param: str) -> str:
+    await asyncio.sleep(SLEEP_TIME_MS / 1000)
+    return f"test: {param}"
+
+```
+
+Optional arguments:
+| Argument    | Description                                                          | Default                  |
+|-------------|----------------------------------------------------------------------|--------------------------|
+| log_level   | The log level integar. Use logging.* constants                       | logging.INFO             |
+| logger_name | The name of the logger that is internally used for logging.getLogger | execution_time_decorator |
+| log_params  | A tuple of parameter names to be logged with their values in 'extra' | ()                       |
+
+## How to start developing
+
+### With vscode
+
+Just install vscode with dev containers extension. All required extensions and configurations are prepared automatically.
+
+### With pycharm
+
+* Install latest pycharm
+* Install pycharm plugin BlackConnect
+* Install pycharm plugin Mypy
+* Configure the python interpreter/venv
+* pip install requirements-dev.txt
+* pip install black[d]
+* Ctl+Alt+S => Check Tools => BlackConnect => Trigger when saving changed files
+* Ctl+Alt+S => Check Tools => BlackConnect => Trigger on code reformat
+* Ctl+Alt+S => Click Tools => BlackConnect => "Load from pyproject.yaml" (ensure line length is 120)
+* Ctl+Alt+S => Click Tools => BlackConnect => Configure path to the blackd.exe at the "local instance" config (e.g. C:\Python310\Scripts\blackd.exe)
+* Ctl+Alt+S => Click Tools => Actions on save => Reformat code
+* Restart pycharm
+
+## How to publish
+* Update the version in setup.py and commit your change
+* Create a tag with the same version number
+* Let github do the rest
+
+## How to test
+
+To avoid publishing to pypi unnecessarily you can do as follows
+
+* Tag your branch however you like
+* Use the chosen tag in the requirements.txt-file of the project you want to test this library in, eg. `sag_py_execution_time_decorator==<your tag>`
+* Rebuild/redeploy your project
+
+[codeclimate-image]:https://api.codeclimate.com/v1/badges/fa4312e587c8185db077/maintainability
+[codeclimate-url]:https://codeclimate.com/github/SamhammerAG/sag_py_execution_time_decorator/maintainability
+[coveralls-image]:https://coveralls.io/repos/github/SamhammerAG/sag_py_execution_time_decorator/badge.svg?branch=master
+[coveralls-url]:https://coveralls.io/github/SamhammerAG/sag_py_execution_time_decorator?branch=master
+[snyk-image]:https://snyk.io/test/github/SamhammerAG/sag_py_execution_time_decorator/badge.svg
+[snyk-url]:https://snyk.io/test/github/SamhammerAG/sag_py_execution_time_decorator
