@@ -1,0 +1,73 @@
+Metadata-Version: 2.4
+Name: babadb
+Version: 1.1.2
+Summary: Encrypted Async File-Based Database for Pydantic Models
+Author-email: noxzion <negroid2281488ilikrilex@gmail.com>
+License: MIT
+Keywords: database,async,pydantic,encryption,file-based
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: pydantic>=1.10.22
+
+
+# BabaDB
+
+BabaDB is a simple asynchronous database with data protection via SHA-256 hashing and a convenient API based on Pydantic models and SQLModel-like syntax.
+
+## Installation
+
+```bash
+pip install babadb
+```
+
+## Quick Start
+
+```python
+import asyncio
+from pydantic import BaseModel
+from babadb import BabaEngine, BabaTable, BabaSession
+
+class User(BaseModel):
+    name: str
+    age: int
+
+async def main():
+    engine = BabaEngine("data.baba", logging="false")
+    session = BabaSession(engine)
+    user_table = BabaTable(User)
+
+    async with session:
+        await session.insert(user_table, User(name="Alice", age=31))
+        await session.insert(user_table, User(name="Bob", age=25))
+        users = await session.all(user_table)
+        for user in users:
+            print(user)
+
+asyncio.run(main())
+```
+
+## Features
+
+* Asynchronous sessions with `async with`
+* Data modeled using Pydantic for validation and type safety
+* Data stored securely as a single SHA-256 hash in `.baba` files
+* Configurable logging (console, file, or disabled)
+* Colored console logs for INFO (green), WARNING (yellow), and ERROR (red)
+
+## Usage
+
+* Create Pydantic models representing your tables
+* Instantiate `BabaEngine` with the storage file path and logging option
+* Use `BabaSession` for async database sessions
+* Use `BabaTable` to bind Pydantic models to tables
+* Use session methods like `insert` and `all` for data operations
+
+## Logging Options
+
+* `"console"` (default): logs printed to console with colors
+* `"file"`: logs saved to `baba_logs/` folder with timestamped filenames
+* `"false"`: logging disabled
+
+## License
+
+MIT License
