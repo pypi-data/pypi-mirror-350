@@ -1,0 +1,32 @@
+manifest_version: 1
+
+version:
+  comment: |
+{{version_comment}}
+
+#artifacts that are distributed from this version of the package
+artifacts:
+  setup_script: scripts/setup_script.sql
+  default_streamlit: UI."Plugin Configuration"
+  extension_code: true
+  #readme: readme.md
+
+#runtime configuration for this version
+configuration:
+  log_level: {{log_level}}
+  trace_level: ALWAYS
+  telemetry_event_definitions:
+    - type: ERRORS_AND_WARNINGS
+      sharing: MANDATORY
+    - type: USAGE_LOGS
+      sharing: OPTIONAL
+    - type: TRACES
+      sharing: OPTIONAL
+    - type: DEBUG_LOGS
+      sharing: OPTIONAL
+
+privileges:
+  - CREATE EXTERNAL ACCESS INTEGRATION:
+      description: "To connect to external application endpoints, as configured by the user (required)"
+  - CREATE SECURITY INTEGRATION:
+      description: "To create OAuth integration, as configured by the user (optional, only required if OAuth connectivity is needed)"

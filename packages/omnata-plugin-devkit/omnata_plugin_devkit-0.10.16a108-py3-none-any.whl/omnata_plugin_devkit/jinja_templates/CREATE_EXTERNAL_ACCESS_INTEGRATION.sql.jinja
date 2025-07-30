@@ -1,0 +1,52 @@
+create or replace procedure PLUGIN.CREATE_EXTERNAL_ACCESS_INTEGRATION(
+      EAI_NAME varchar,
+      SECRET_NAMES ARRAY,
+      NETWORK_RULE_NAMES ARRAY)
+   returns object
+   language javascript
+   COMMENT = $$
+   Creates an external access integration, bound to the provided secret(s) and network rule(s)
+   $$
+   execute as owner
+as
+$$
+try{
+   if (SECRET_NAMES === null || SECRET_NAMES === undefined || SECRET_NAMES.length==0){
+      throw new Error('Secret names parameter must contain at least one secret');
+   }
+   if (NETWORK_RULE_NAMES === null || NETWORK_RULE_NAMES === undefined || NETWORK_RULE_NAMES.length==0){
+      throw new Error('Network rule names parameter must contain at least one secret');
+   }
+   var bindings = [EAI_NAME];
+   const secretNamesClauses = SECRET_NAMES.map((s)=>{return `'${s}'`}).join(',');
+   const networkRuleNamesClauses = NETWORK_RULE_NAMES.map((n)=>{return `'${n}'`}).join(',');
+   snowflake.createStatement( {
+      sqlText: `CREATE OR REPLACE EXTERNAL ACCESS INTEGRATION IDENTIFIER(?)
+                           ALLOWED_NETWORK_RULES = (${networkRuleNamesClauses})
+                           ALLOWED_AUTHENTICATION_SECRETS = (${secretNamesClauses})
+                           ENABLED = true`,
+      binds:bindings
+   } ).execute();
+   snowflake.createStatement( {
+      sqlText: `GRANT USAGE ON INTEGRATION IDENTIFIER(?) TO APPLICATION ROLE OMNATA_MANAGEMENT`,
+      binds:[EAI_NAME]
+   } ).execute();
+    return {
+        "success": true,
+        "data": null
+    }
+}
+catch(e){
+   if (String(e).indexOf('Insufficient privileges to operate on account') > -1){
+      e = 'You must grant the plugin application the CREATE EXTERNAL ACCESS INTEGRATION privilege in order to proceed';
+   }
+   return {
+      "success": false,
+      "error": `CREATE_EXTERNAL_ACCESS_INTEGRATION: ${String(e)}`
+   }
+}
+$$
+;
+
+grant usage on procedure PLUGIN.CREATE_EXTERNAL_ACCESS_INTEGRATION(VARCHAR,ARRAY,ARRAY)
+to application role OMNATA_MANAGEMENT;
