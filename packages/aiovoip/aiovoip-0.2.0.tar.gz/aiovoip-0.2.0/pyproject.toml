@@ -1,0 +1,76 @@
+[project]
+name = "aiovoip"
+version = "0.2.0"
+description = "AioVoIP - Asynchronous VoIP library for Python"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+    { name = "Vardan Aloyan", email = "valoyan2@gmail.com" },
+]
+
+classifiers = [
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Telecommunications Industry",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python",
+    "Topic :: Internet",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+
+dependencies = [
+    "multidict>=2.0",
+    "pyquery",
+    "aiodns",
+    "websockets",
+    "async-timeout",
+]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.1.0",
+    "pre-commit-hooks>=5.0.0",
+    "pytest>=8.3.4",
+    "pytest-mypy>=0.10.3",
+    "pytest-asyncio>=0.26.0",
+    "ruff>=0.9.5",
+    "tox>=4.26.0",
+    "tox-uv>=1.25.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/py-craft/aiovoip"
+Repository = "https://github.com/py-craft/aiovoip"
+Issues = "https://github.com/py-craft/aiovoip/issues"
+
+[tool.pytest.ini_options]
+# addopts = ["--mypy"]
+pythonpath = [
+  ".",
+]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.mypy]
+warn_return_any = true
+warn_unused_configs = true
+no_namespace_packages = true
+ignore_missing_imports = true
+strict = true
+
+[tool.tox]
+requires = ["tox>=4.19"]
+envlist = ["py311", "py312", "py313"]
+
+
+[tool.tox.env_run_base]
+description = "Run test under {base_python}"
+commands = [["pytest"]]
