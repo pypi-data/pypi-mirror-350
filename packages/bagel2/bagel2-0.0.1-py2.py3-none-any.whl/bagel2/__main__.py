@@ -1,0 +1,1 @@
+from bagel2 import app
