@@ -1,0 +1,73 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "PreKO"
+description = "PreKO: Precise KO system"
+readme = "README.md"
+requires-python = ">=3.8"
+authors = [
+    { name = "Goosang Yu", email = "gsyu93@gmail.com" },
+]
+
+keywords = [
+  "CRISPR",
+  "gene",
+  "genetics",
+  "genome-editing",
+  "knockout",
+  "analysis",
+  "bioinformatics",
+  "python",
+]
+
+classifiers = [
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: POSIX",
+    "Operating System :: Unix",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+dependencies = [
+    'pandas',
+    'numpy',
+    'pydantic',
+    'tqdm',
+    'biopython',
+    ]
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/Goosang-Yu/PreKO"
+Repository = "https://github.com/Goosang-Yu/PreKO"
+Source = "https://github.com/Goosang-Yu/PreKO"
+Tracker = "https://github.com/Goosang-Yu/PreKO/issues"
+
+[tool.hatch.version]
+path = "PreKO/__init__.py"
+
+[tool.setuptools.package-data]
+myModule = [
+            'PreKO/EDNAFULL',
+            ]
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+  "/.github",
+  "/tutorial",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["PreKO"]
