@@ -1,0 +1,151 @@
+Metadata-Version: 2.4
+Name: symqnet-molopt
+Version: 1.0.4
+Summary: Molecular Hamiltonian parameter estimation using SymQNet neural networks
+Home-page: https://github.com/YTomar79/symqnet-molopt
+Author: YTomar79
+Author-email: ytomar79@example.com
+License: MIT
+Project-URL: Bug Tracker, https://github.com/YTomar79/symqnet-molopt/issues
+Project-URL: Documentation, https://github.com/YTomar79/symqnet-molopt#readme
+Project-URL: Source Code, https://github.com/YTomar79/symqnet-molopt
+Keywords: quantum-computing,molecular-simulation,neural-networks,hamiltonian-estimation,symqnet,quantum-chemistry,machine-learning,reinforcement-learning
+Platform: any
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Science/Research
+Classifier: Topic :: Scientific/Engineering :: Physics
+Classifier: Topic :: Scientific/Engineering :: Chemistry
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Operating System :: OS Independent
+Classifier: Environment :: Console
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: torch>=1.12.0
+Requires-Dist: numpy>=1.21.0
+Requires-Dist: qiskit>=0.39.0
+Requires-Dist: openfermion>=1.5.0
+Requires-Dist: scipy>=1.9.0
+Requires-Dist: click>=8.0.0
+Requires-Dist: tqdm>=4.64.0
+Requires-Dist: matplotlib>=3.5.0
+Requires-Dist: seaborn>=0.11.0
+Requires-Dist: torch-geometric>=2.2.0
+Requires-Dist: pandas>=1.4.0
+Requires-Dist: tensorboard>=2.8.0
+Requires-Dist: gym>=0.26.0
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0; extra == "dev"
+Requires-Dist: pytest-cov>=2.0; extra == "dev"
+Requires-Dist: black>=22.0; extra == "dev"
+Requires-Dist: flake8>=4.0; extra == "dev"
+Requires-Dist: isort>=5.0; extra == "dev"
+Requires-Dist: mypy>=0.950; extra == "dev"
+Provides-Extra: docs
+Requires-Dist: sphinx>=4.0; extra == "docs"
+Requires-Dist: sphinx-rtd-theme>=1.0; extra == "docs"
+Requires-Dist: myst-parser>=0.17; extra == "docs"
+Provides-Extra: gpu
+Requires-Dist: torch>=1.12.0; extra == "gpu"
+Requires-Dist: torch-geometric>=2.2.0; extra == "gpu"
+Provides-Extra: jupyter
+Requires-Dist: jupyter>=1.0; extra == "jupyter"
+Requires-Dist: ipywidgets>=7.0; extra == "jupyter"
+Requires-Dist: plotly>=5.0; extra == "jupyter"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license
+Dynamic: license-file
+Dynamic: platform
+Dynamic: project-url
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# SymQNet-MolOpt
+
+Quantum neural network-enabled optimization for molecular Hamiltonian parameter estimation.
+
+## Installation
+
+pip install symqnet-molopt
+
+ 
+
+## How to Use
+
+### Validate Example Hamiltonians
+symqnet-add examples/H2O_10q.json --validate-only
+
+ 
+
+### Create Example Files
+symqnet-examples
+
+ 
+
+### Run the Optimization
+symqnet-molopt
+--hamiltonian examples/H2O_10q.json
+--output results.json
+--shots 1024
+--n-rollouts 5
+--max-steps 50
+
+
+### Add Your Own Hamiltonian
+symqnet-add my_molecule.json --validate-only
+ 
+*(Only 10-qubit Hamiltonians are supported.)*
+
+## Command Reference
+
+| Command            | Description                                  |
+|--------------------|----------------------------------------------|
+| `symqnet-molopt`   | Run molecular parameter optimization         |
+| `symqnet-add`      | Add or validate a Hamiltonian file           |
+| `symqnet-examples` | Generate example Hamiltonians                |
+| `symqnet-validate` | Validate installation                        |
+
+## Key Optimization Parameters
+
+| Parameter      | Description                |
+|----------------|---------------------------|
+| `--hamiltonian`| Input Hamiltonian file    |
+| `--output`     | Output results file       |
+| `--shots`      | Shots per measurement     |
+| `--n-rollouts` | Number of optimization runs|
+| `--max-steps`  | Max steps per rollout     |
+
+## Quick Example
+
+symqnet-molopt --hamiltonian examples/test_10q.json --output output.json --shots 512
+
+
+## Requirements
+
+- **Python 3.8+**
+- **PyTorch 1.12+**
+- **NumPy, SciPy, Click**
+- **10-qubit Hamiltonians only**
+
+## Support
+
+- **Issues:** [GitHub Issues](https://github.com/YTomar79/symqnet-molopt/issues)
+- **Help:** Run any command with `--help` for usage info.
+
+## License
+
+MIT License - See [LICENSE](LICENSE) file for details.
