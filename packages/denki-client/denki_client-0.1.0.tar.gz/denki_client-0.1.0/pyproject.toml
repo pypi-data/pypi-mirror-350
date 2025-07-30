@@ -1,0 +1,39 @@
+[project]
+name = "denki-client"
+dynamic = ["version"]
+description = "Agnostic client for ENTSO-e API."
+readme = "README.md"
+authors = [
+    { name = "Tijoxa", email = "92037181+Tijoxa@users.noreply.github.com" },
+]
+requires-python = ">=3.12"
+license = { file = "LICENSE" }
+dependencies = [
+    "httpx>=0.28.1",
+    "narwhals>=1.39.0",
+    "python-dateutil>=2.9.0.post0",
+    "tenacity>=9.1.2",
+]
+
+[build-system]
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"
+
+[tool.maturin]
+module-name = "denki_client._core"
+python-packages = ["denki_rs"]
+python-source = "src"
+
+[tool.maturin.version]
+path = "src/denki_client/__init__.py"
+
+[dependency-groups]
+dev = [
+    "entsoe-py>=0.6.18",
+    "ipykernel>=6.29.5",
+    "polars[all]>=1.29.0",
+    "pytest>=8.3.5",
+]
+
+[tool.ruff]
+line-length = 120
