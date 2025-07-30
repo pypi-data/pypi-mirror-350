@@ -1,0 +1,31 @@
+import { OperationType, LevelType } from "./constants";
+import { ILayerData, ILayerFeature, IKnot, IExKnot } from "./interfaces";
+import { Layer } from "./layer";
+import { Shader } from "./shader";
+import { AuxiliaryShader } from "./auxiliaryShader";
+import { AuxiliaryShaderTriangles } from "./auxiliaryShaderTriangles";
+export declare class PointsLayer extends Layer {
+    protected _coordsByCOORDINATES3D: number[][];
+    protected _dimensions: number;
+    protected _highlightByCOORDINATES: boolean[][];
+    protected _highlightByCOORDINATES3D: boolean[][];
+    protected _highlightByOBJECTS: boolean[][];
+    constructor(info: ILayerData, zOrder: number | undefined, geometryData: ILayerFeature[]);
+    supportInteraction(eventName: string): boolean;
+    updateMeshGeometry(data: ILayerFeature[]): void;
+    updateShaders(shaders: (Shader | AuxiliaryShader)[], centroid: number[] | Float32Array | undefined, viewId: number): void;
+    getSelectedFiltering(): number[] | null;
+    directAddMeshFunction(functionValues: number[][], knotId: string): void;
+    updateFunction(knot: IKnot | IExKnot, shaders: (Shader | AuxiliaryShader)[]): void;
+    render(glContext: WebGL2RenderingContext, shaders: (Shader | AuxiliaryShader)[]): void;
+    setHighlightElements(elements: number[], level: LevelType, value: boolean, shaders: (Shader | AuxiliaryShader)[], centroid: number[] | Float32Array | undefined, viewId: number): void;
+    highlightElement(glContext: WebGL2RenderingContext, x: number, y: number, shaders: (Shader | AuxiliaryShader)[]): void;
+    getIdLastHighlightedElement(shaders: (Shader | AuxiliaryShaderTriangles)[]): number[] | undefined;
+    highlightElementsInArea(glContext: WebGL2RenderingContext, x: number, y: number, shaders: (Shader | AuxiliaryShader)[], radius: number): void;
+    distributeFunctionValues(functionValues: number[][] | null): number[][] | null;
+    innerAggFunc(functionValues: number[] | null, startLevel: LevelType, endLevel: LevelType, operation: OperationType): number[] | null;
+    getFunctionValueIndexOfId(id: number, level: LevelType): number | null;
+    getCoordsByLevel(level: LevelType, centroid: number[] | Float32Array | undefined, viewId: number): number[][];
+    getFunctionByLevel(level: LevelType, knotId: string): number[][][];
+    getHighlightsByLevel(level: LevelType): boolean[];
+}

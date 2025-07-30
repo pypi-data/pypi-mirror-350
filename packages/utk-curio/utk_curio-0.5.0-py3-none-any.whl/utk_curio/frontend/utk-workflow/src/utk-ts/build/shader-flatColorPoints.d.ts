@@ -1,0 +1,30 @@
+import { Shader } from "./shader";
+import { Mesh } from "./mesh";
+import { IExKnot, IKnot } from "./interfaces";
+export declare class ShaderFlatColorPoints extends Shader {
+    protected _coords: number[];
+    protected _function: number[][];
+    protected _globalColor: number[];
+    protected _glCoords: WebGLBuffer | null;
+    protected _glFunction: WebGLBuffer | null;
+    protected _coordsDirty: boolean;
+    protected _functionDirty: boolean;
+    protected _coordsId: number;
+    protected _uModelViewMatrix: WebGLUniformLocation | null;
+    protected _uProjectionMatrix: WebGLUniformLocation | null;
+    protected _uWorldOrigin: WebGLUniformLocation | null;
+    protected _uGlobalColor: WebGLUniformLocation | null;
+    constructor(glContext: WebGL2RenderingContext, color: number[], grammarInterpreter: any);
+    updateShaderGeometry(mesh: Mesh, centroid: number[] | Float32Array | undefined, viewId: number): void;
+    updateShaderData(mesh: Mesh, knot: IKnot | IExKnot, currentTimestepFunction?: number): void;
+    updateShaderUniforms(data: any): void;
+    createUniforms(glContext: WebGL2RenderingContext): void;
+    bindUniforms(glContext: WebGL2RenderingContext, camera: any): void;
+    createTextures(glContext: WebGL2RenderingContext): void;
+    bindTextures(glContext: WebGL2RenderingContext): void;
+    createVertexArrayObject(glContext: WebGL2RenderingContext): void;
+    bindVertexArrayObject(glContext: WebGL2RenderingContext, mesh: Mesh): void;
+    setFiltered(filtered: number[]): void;
+    setHighlightElements(coordinates: number[], value: boolean): void;
+    renderPass(glContext: WebGL2RenderingContext, glPrimitive: number, camera: any, mesh: Mesh, zOrder: number): void;
+}
