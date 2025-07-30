@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2024 Manuel Regidor <manuel.regidor@sygel.es>
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <record id="res_config_settings_view_hide_pickings" model="ir.ui.view">
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="account.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@id='quick_edit_mode']" position="after">
+                <h2 class="mt32">Account Invoice Report Grouped By Pickings</h2>
+                <div
+                    class="row mt16 o_settings_container"
+                    name="group_account_invoice_report_grouped_by_picking_hide_pickings"
+                >
+                    <div
+                        class="col-12 col-lg-6 o_setting_box"
+                        id="hide_return_pickings_default"
+                    >
+                        <div class="o_setting_left_pane">
+                            <field name="hide_return_pickings_default" />
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label
+                                for="hide_return_pickings_default"
+                                string="Default Hide Return Pickings"
+                            />
+                            <div class="text-muted">
+                                Hide Return Pickings By Default from the invoice report in the return wizard
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="col-12 col-lg-6 o_setting_box"
+                        id="hide_pickings_update_qty"
+                    >
+                        <div class="o_setting_left_pane">
+                            <field name="hide_pickings_update_qty" />
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label
+                                for="hide_pickings_update_qty"
+                                string="Update Qty Hiding Pickings"
+                            />
+                            <div class="text-muted">
+                                Do not edit the final quantity when hiding pickings from the invoice report
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>
