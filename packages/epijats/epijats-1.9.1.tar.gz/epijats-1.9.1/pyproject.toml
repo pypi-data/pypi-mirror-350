@@ -1,0 +1,69 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools_scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "epijats"
+description = "E-Printing Identified JATS"
+readme = "README.md"
+dynamic = ["version"]
+requires-python = ">=3.11"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX",
+    "Development Status :: 4 - Beta",
+    "Topic :: Text Processing :: Markup :: XML",
+]
+license = {file = "LICENSE"}
+authors = [
+  { name="Castedo Ellerman", email = "castedo@castedo.com" },
+]
+dependencies = [
+  "citeproc-py >= 0.7",
+  "dulwich",
+  "hidos >= 2.3",
+  "jinja2",
+  "lxml",
+]
+
+[project.urls]
+Homepage = "https://gitlab.com/perm.pub/epijats"
+
+[project.optional-dependencies]
+pdf = ["weasyprint >= 60.2"]
+
+[project.scripts]
+epijats = "epijats.__main__:main"
+
+[tool.setuptools]
+packages = [
+  "epijats",
+  "epijats.csl",
+  "epijats.pandoc",
+  "epijats.static",
+  "epijats.static.katex",
+  "epijats.static.katex.fonts",
+  "epijats.templates",
+  "epijats.templates.epijats",
+]
+
+[tool.setuptools_scm]
+version_file = "epijats/_version.py"
+
+[[tool.mypy.overrides]]
+module = ['citeproc.*', 'weasyprint', 'lxml', 'epijats._version']
+ignore_missing_imports = true
+
+[tool.yapf]
+column_limit = 88
+based_on_style = "facebook"
+
+[tool.ruff.format]
+quote-style = "preserve"
+
+[tool.ruff.lint]
+ignore = [
+    "E401",  # Multiple imports on one line
+    "E712",  # Avoid equality comparisons to `True`
+]

@@ -1,0 +1,195 @@
+{% extends 'epijats/_common.html.jinja' %}
+
+{% macro article_main_css_style(static_dir="static") %}
+  {{- pandoc_class_css() }}
+  <link href="{{ static_dir }}/webpaper.css" rel="stylesheet">
+  <link href="{{ static_dir }}/article.css" rel="stylesheet">
+{% endmacro %}
+
+{% macro dsi_html_code(doc) -%}
+<code><span class="base64">{{ doc.base_dsi }}</span>/{{ doc.edid }}</code>
+{%- endmacro %}
+
+{% macro dsi_html(doc) -%}
+<span class="uri"><span class="uri-scheme">dsi:</span><wbr>{{ dsi_html_code(doc) }}</span>
+{%- endmacro %}
+
+{% macro https_dsi_html(doc, dsi_base_url) -%}
+<span class="dsi-url"><span class="base-url">{{ dsi_base_url }}/</span><wbr>{{ dsi_html_code(doc) }}</span>
+{%- endmacro %}
+
+{% macro citation(doc, dsi_domain) %}
+  {% for contributor in doc.contributors %}
+    {{ (contributor['given-names'] ~ ' ' ~ contributor.surname) | escape }}
+  {% endfor %}
+  ({{ doc.date.year or '20??' }})
+  "{{ doc.title }}"
+  {{ dsi_doman }}
+  {{ https_dsi_html(doc, "https://" ~ dsi_domain) }}
+{% endmacro %}
+
+{% macro access_logos(doc, static_dir) +%}
+  {% if doc.cc_license_type %}
+  <img class="logo logo-cc" src="{{ static_dir }}/cc.svg">
+  <img class="logo logo-oa" src="{{ static_dir }}/Open_Access_logo_PLoS_transparent.svg">
+  {%- endif %}
+{%- endmacro %}
+
+{% macro article_layout(doc, args, website_hooks=none) %}
+{% set static_dir = website_hooks.static_dir if website_hooks else 'static' %}
+  <header>
+    <div class="page-left">
+      {{- access_logos(doc, static_dir) | indent }}
+    </div>
+    <div class="page-center"></div>
+    <div class="page-right">
+      {% if doc.dsi %}
+        {% if args.dsi_domain %}
+        <div class="article-dsi">
+          <a href="https://{{ args.dsi_domain }}/{{ doc.dsi }}">
+            <span class="logotype">{{ args.dsi_domain }}</span><code>/</code><wbr><span class="uri">{{ dsi_html_code(doc) }}</span>
+          </a>
+          <div class="online-msg">Additional formats and editions available online.</div>
+        </div>
+        {% endif %}
+      {% elif args.header_banner_msg %}
+        <div class="header-banner-msg">{{ args.header_banner_msg }}</div>
+      {% endif %}
+    </div>
+  </header>
+
+  <footer>
+    <div class="page-left">
+      <div class="article-swhid">
+        Baseprint snapshot
+        <a class="uri" href="{{ swh_archive_url}}{{ doc.hash_scheme }}{{ doc.hexhash }}">
+          <span class="uri-scheme">{{ doc.hash_scheme }}</span><code>{{ doc.hexhash }}</code>
+        </a>
+      </div>
+    </div>
+    <div class="page-center"></div>
+    <div class="page-right">i of N</div>
+  </footer>
+
+  <header>
+  {% if doc.dsi and args.dsi_domain %}
+    <div class="page-left">
+      <span class="online-msg">Additional formats and editions available online.</span>
+    </div>
+    <div class="page-center"></div>
+    <div class="page-right">
+      <a href="https://{{ args.dsi_domain }}/{{ doc.dsi }}">
+        {{ https_dsi_html(doc, args.dsi_domain) }}
+      </a>
+    </div>
+  {% endif %}
+  </header>
+
+  <div class="aside-rack article-header webpaper-only">
+    <div class="aside-shelf">
+      <div>
+       {% if doc.dsi %}
+        {% if args.dsi_domain %}
+        <div class="article-dsi">
+          <a href="https://{{ args.dsi_domain }}/{{ doc.dsi }}">
+            {{ dsi_html(doc) }}
+          </a>
+        </div>
+        {% endif %}
+       {% elif args.header_banner_msg %}
+        <div class="header-banner-msg">{{ args.header_banner_msg }}</div>
+       {% endif %}
+      </div>
+      <aside>
+        <div class="webpaper-logos">
+          {{- access_logos(doc, static_dir) | indent(8) }}
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <article lang="en" class="aside-rack">
+
+    <div class="aside-shelf">
+      <h1 class="title">{{ doc.title or "No Title" }}</h1>
+      <aside>
+        {{edition_band(doc)}}
+        {{article_dates(doc)}}
+      </aside>
+      {{ contributors_list(doc.contributors, show_email=not website_hooks) }}
+    </div>
+
+    {% if website_hooks %}
+    <div class="aside-shelf">
+      <div class="article-buttons">
+        {{ website_hooks.correspond() }}
+      </div>
+      <aside>
+        <div class="article-buttons">
+          {{ website_hooks.cite() }}
+        </div>
+      </aside>
+    </div>
+    {% endif %}
+
+    <div class="aside-shelf">
+      <div>
+        <section class="abstract">
+          {% if doc.abstract %}
+            <h2>Abstract</h2>
+            {{ doc.abstract -}}
+          {% endif %}
+        </section>
+      </div>
+      <aside class="article-two-column-only">
+        <dl>
+          {% if not website_hooks and args.dsi_domain and doc.dsi %}
+            <dt>Citation</dt>
+            <dd>
+              <p>
+                {{ citation(doc, args.dsi_domain) -}}
+              </p>
+            </dd>
+          {% endif %}
+          {% if doc.copyright %}
+          <dt>Copyright</dt>
+          <dd>
+            {{- copyright(doc) }}
+          </dd>
+          {% endif %}
+        </dl>
+      </aside>
+    </div>
+
+    <div class="article-body">
+      {% if doc.body %}
+        {{ doc.body -}}
+      {% endif %}
+    </div>
+
+    <div class="article-footer webpaper-only">
+      <dl class="article-one-column-only">
+        {% if not website_hooks and args.dsi_domain and doc.dsi %}
+          <dt>Citation</dt>
+          <dd>{{ citation(doc, args.dsi_domain) -}}</dd>
+        {% endif %}
+        {% if doc.copyright %}
+        <dt>Copyright</dt>
+        <dd>
+          {{- copyright(doc) }}
+        </dd>
+        {% endif %}
+      </dl>
+      <div class="article-swhid">
+        Baseprint snapshot
+        <a href="{{ swh_archive_url}}{{ doc.hash_scheme }}{{ doc.hexhash }}">
+          <span class="uri">
+            <span class="uri-scheme"
+              >{{ doc.hash_scheme }}</span><wbr><code>{{ doc.hexhash }}</code>
+          </span>
+        </a>
+      </div>
+    </div>
+
+  </article>
+{% endmacro %}

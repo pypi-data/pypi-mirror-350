@@ -1,0 +1,435 @@
+:root {
+  --ps-page-margin-left: 8mm;
+  --ps-page-margin-left-mm: 8;
+
+  --ps-page-margin-right: 10mm;
+  --ps-page-margin-right-mm: 10;
+
+  --ps-page-area-width: 192mm;
+  /* 8mm + 192mm + 10mm = 210mm = A4 paper width */
+}
+
+
+/* .eprint class to scope variables to avoid collision with embedding website */
+
+.eprint {
+  --main-color: #0645ad;
+  --text-color: black;
+  --light-text-color: #555;
+  --accent-color: #a6ce39;
+
+  --font-sans: 'Fira Sans', sans-serif;
+  --font-mono: 'Fira Mono', monospace;
+  --font-condensed: 'Fira Sans Condensed', sans-serif;
+}
+
+
+/* General formatting */
+
+.eprint {
+  font-family: var(--font-sans);
+}
+
+.eprint a,
+.eprint a:visited {
+  color: var(--main-color);
+  text-decoration: inherit;
+}
+
+.eprint code {
+  font-family: var(--font-mono);
+  white-space: pre-wrap;
+  hyphens: none;
+  break-inside: avoid;
+}
+
+.eprint {
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
+}
+
+.eprint article {
+  color: var(--text-color);
+  line-height: 1.4;
+}
+
+.eprint article p {
+  text-align: justify;
+  hyphens: auto;
+  hyphenate-limit-chars: 9 3;
+}
+
+.eprint dd::after {
+  content: '\A';
+  white-space: pre-line;
+}
+
+.eprint ol,
+.eprint ul {
+  padding-left: 1.7em;
+  margin-top: 1em;
+}
+.eprint li > ol,
+.eprint li > ul {
+  margin-top: 0;
+}
+
+.eprint figure {
+  break-inside: avoid;
+  margin: 2em 0;
+}
+.eprint figure p img {
+  width: 49%;
+}
+.eprint figure p img:nth-child(1):nth-last-child(1) {
+  width: 100%;
+}
+.eprint figure p img:nth-child(1):nth-last-child(3),
+.eprint figure p img:nth-child(1):nth-last-child(3) ~ img {
+  width: 31%;
+}
+.eprint figcaption {
+  font-size: 0.8em;
+  font-style: italic;
+  margin: auto;
+  width: 80%;
+}
+
+.eprint blockquote {
+  border-color: var(--main-color);
+  border-left: 2px solid;
+  font-style: italic;
+  margin: 1.5em;
+  padding: 0.5em 1em;
+}
+.eprint blockquote > :first-child {
+  margin-top: 0;
+}
+.eprint blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+.eprint pre {
+  margin: 1em 0;
+  overflow: auto;
+  break-inside: avoid;
+  hyphens: none;
+}
+.eprint pre code {
+  padding: 0;
+  overflow: visible;
+  overflow-wrap: normal;
+}
+
+.eprint table {
+  border-collapse: collapse;
+  font-size: 0.8em;
+  overflow-x: auto;
+}
+.eprint tr {
+  break-inside: avoid;
+}
+.eprint td,
+.eprint th {
+  border: 0.005in solid;
+  border-color: var(--light-text-color);
+  padding: 0.5em;
+  vertical-align: top;
+}
+
+.eprint sub, .eprint sup {
+  line-height: 0;
+}
+
+.eprint hr {
+  border: 0;
+  border-color: var(--text-color);
+  border-top: 0.005in solid;
+}
+
+
+/* Page margin header/footer styling */
+
+:root {
+  --ps-first-page-margin-top: 42mm;
+  --ps-page-margin-top: 20mm;
+  --ps-page-margin-bottom: 18mm;
+
+  --ps-page-top-left-width: 45%;
+  --ps-page-top-center-width: 0%;
+  --ps-page-top-right-width: 55%;
+
+  --ps-first-page-top-left-width: var(--ps-aside-width);
+  --ps-first-page-top-right-width: var(--ps-non-aside-width);
+
+  --ps-page-bottom-left-width: 75%;
+  --ps-page-bottom-center-width: 0%;
+  --ps-page-bottom-right-width: 25%;
+}
+
+.eprint :is(header, footer) {
+   color: var(--light-text-color);
+   font-weight: 300;
+   font-size: 1.1rem;
+}
+.eprint header:first-of-type > div {
+  margin-bottom: 3.25rem;
+}
+.eprint header:not(:first-of-type) > div {
+  margin-bottom: 2.0rem;
+}
+.eprint header:first-of-type .page-right {
+  text-align: left;
+}
+.eprint img.logo {
+  height: 6.25rem;
+  margin-right: 2rem;
+}
+.eprint .webpaper-logos img.logo {
+  height: 2rem;
+  margin-right: 0.75rem;
+  margin-top: 0.75rem;
+}
+.eprint header:first-of-type .article-dsi {
+  padding-bottom: 1.125rem;
+  font-size: 1.625em;
+}
+.eprint header .logotype {
+  font-size: 1.25em;
+  font-weight: bold;
+  color: var(--accent-color);
+}
+.eprint header .article-dsi code .base64 {
+  font-size: 0.75em;
+}
+.eprint header:first-of-type .article-dsi .online-msg {
+  margin-top: 0.5rem;
+  font-size: 0.9em;
+}
+.eprint .header-banner-msg {
+  font-size: 4em;
+  font-weight: normal;
+  color: lightgrey;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.eprint footer > div {
+  margin-top: 1.5rem;
+}
+.eprint footer .page-right {
+  content: counter(page) " of " counter(pages);
+}
+.eprint footer :is(.page-left, .page-center, .page-right) {
+  border-top: 0.0625rem solid lightgrey;
+  padding-top: 0.75rem;
+}
+
+.eprint header:not(:first-of-type) :is(.page-left, .page-center, .page-right) {
+  border-bottom: 0.0625rem solid lightgrey;
+  padding-bottom: 0.75rem;
+}
+
+
+/* Aside formatting */
+
+.eprint aside {
+  font-size: 0.875em;
+  padding-right: 1.75rem;
+}
+
+.eprint aside code {
+  font-size: 0.875em;
+}
+
+.eprint aside p {
+  font-family: var(--font-condensed);
+  text-align: left;
+  hyphens: none;
+  margin: 0;
+}
+
+.eprint aside dt::after {
+  content: ": ";
+}
+.eprint aside dd {
+  margin-bottom: 1rem;
+}
+
+
+/* Titles */
+
+.eprint h1, .eprint h2, .eprint h3, .eprint h4 {
+  font-weight: 300;
+  line-height: 1;
+  margin: 1.4em 0 0.6em 0;
+}
+.eprint h1 {
+  font-size: 2.6em;
+  letter-spacing: -0.03em;
+}
+.eprint h1.title {
+  margin-top: 0;
+}
+.eprint h1.title::after {
+  border-bottom: 0.375rem solid;
+  border-color: var(--accent-color);
+  content: "";
+  display: block;
+  height: 0;
+  margin: 0.5em 0 0;
+  width: 2em;
+}
+.eprint h2,
+.eprint h1#bibliography {
+  font-size: 1.8em;
+  letter-spacing: -0.02em;
+}
+.eprint section.abstract h2 {
+  margin-top: 0;
+}
+.eprint h3 {
+  font-size: 1.45em;
+}
+.eprint h4 {
+  font-size: 1.25em;
+}
+
+
+/* Specific text elements */
+
+.eprint .base-url {
+  white-space: nowrap;
+}
+
+.eprint .article-header {
+  margin-bottom: 3rem;
+}
+.eprint .article-header .article-dsi {
+  font-size: 1.5em;
+  margin-bottom: 0.5rem;
+}
+.eprint .article-header .article-dsi code {
+  font-size: 0.92em;
+}
+.eprint .article-header .article-dsi code .base64 {
+  font-size: 0.92em;
+}
+
+.eprint .article-swhid {
+  color: var(--light-text-color);
+  line-height: 1.2;
+}
+
+.eprint footer .article-swhid code {
+  font-size: 0.825em;
+}
+
+.eprint .uri-scheme {
+  margin-right: 0.125em;
+}
+.eprint header .article-dsi .uri-scheme {
+  font-weight: bold;
+}
+.eprint .dsi-url code,
+.eprint .uri code {
+  color: inherit;
+  display: inline-block;
+}
+@media print {
+  wbr::before { content: "\200B" }
+  /* Work around for WeasyPrint <= 59.0 */
+  /* https://github.com/Kozea/WeasyPrint/issues/1965 */
+}
+
+.eprint .edition-number {
+  display: inline-block;
+  font-size: 2.25em;
+  line-height: 1;
+  font-family: var(--font-sans);
+  font-weight: 300;
+  margin-bottom: 1rem;
+}
+
+.eprint dl.article-dates {
+  font-size: 1.125em;
+}
+.eprint dl.article-dates dt {
+  display: inline-block;
+  font-weight: bold;
+  padding-bottom: 0.5em;
+  min-width: 6rem;
+}
+.eprint dl.article-dates dd {
+  display: inline;
+}
+
+.eprint dl.contributors {
+  margin-bottom: 2rem;
+}
+.eprint .contributors > dt,
+.eprint .contributors > dd {
+  display: inline;
+  margin: 0;
+  font-weight: normal;
+}
+.eprint .contributors > dt:not(:first-child)::after {
+  content: ",";
+}
+.eprint .contributors > dd::before {
+  content: "(";
+}
+.eprint .contributors > dd::after {
+  content: "),";
+}
+.eprint .contributors > dd:last-child::after {
+  content: ")";
+}
+.eprint .orcid-icon::before {
+  background: url(orcid.svg) no-repeat;
+  content: "";
+  display: inline-block;
+  height: 1em;
+  vertical-align: -10%;
+  width: 1em;
+}
+
+.eprint .abstract {
+  border-bottom: 0.25rem solid lightgrey;
+  padding-bottom: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.eprint .article-footer {
+  border-top: 0.005in solid;
+  break-inside: avoid;
+  color: var(--light-text-color);
+  font-weight: 300;
+  margin-top: 3em;
+  padding-top: 1em;
+}
+.eprint .article-footer p {
+  margin: 0;
+}
+
+.eprint .edition-obsolete {
+  font-size: 1.5rem;
+  color: #f21;
+  margin-bottom: 0.75rem;
+}
+.eprint .edition-obsolete svg {
+  vertical-align: baseline;
+  margin-bottom: -0.25rem;
+  margin-right: 0.5rem;
+  height: 1.75rem;
+}
+
+.eprint .katex {
+  break-before: avoid;
+}
+.eprint .katex-display {
+  overflow: auto visible;
+  padding-bottom: 0.5rem;
+  margin-left: -0.75rem;
+  margin-right: -0.75rem;
+}
