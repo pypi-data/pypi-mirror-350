@@ -1,0 +1,87 @@
+import re
+
+from ..config import get_config_file, save_config, load_config
+
+
+def bootstrap_servers(config):
+    project_id = _prompt_int_or_empty("Enter Project ID if you need to add any mcp servers (or press Enter to skip): ").strip()
+    #
+    if not project_id:
+        return
+    #
+    config = load_config()
+    config["project_id"] = project_id
+    #
+    servers_type = _prompt_int("Enter 1 to provide path to Servers Config or 2 to enter Servers manually: ")
+    if servers_type == 1:
+        # TODO
+        pass
+        # config["servers_config"] = _prompt_path("Enter path to local json file with servers configuration: ")
+    elif servers_type == 2:
+        config["servers"] = _servers_flow()
+    else:
+        print("Only 1 or 2 is expected. Try again.")
+    #
+    save_config(config)
+    print(f"Servers saved to {get_config_file()}")
+
+
+def _prompt_url(prompt):
+    while True:
+        value = input(prompt).strip()
+        if re.match(r'^https?://', value) is not None:
+            return value
+        print("Invalid URL. Must start with http:// or https://")
+
+
+def _prompt_nonempty(prompt):
+    while True:
+        if value := input(prompt).strip():
+            return value
+        print("Enter not empty value.")
+
+
+def _prompt_int_or_empty(prompt):
+    while True:
+        value = input(prompt).strip()
+        if value and value.isdigit():
+            return int(value)
+        elif not value:
+            return value
+        print("Enter a valid integer.")
+
+
+def _prompt_int(prompt):
+    while True:
+        value = input(prompt).strip()
+        if value.isdigit():
+            return int(value)
+        print("Enter a valid integer.")
+
+def _servers_flow():
+    servers = {}
+    while True:
+        name = input("Enter Server Name (leave blank to finish): ").strip()
+        if not name:
+            break
+        #
+        server_type_number = _prompt_int("Enter Server Type (1 - sse or 2 - stdio): ")
+        if server_type_number == 1:
+            sse_url = _prompt_url("  SSE Url: ")
+            servers[name] = {
+                "type": "sse",
+                "url": sse_url
+            }
+            if sse_token := _prompt_nonempty("  Enter Authorization Bearer Token (or leave blank to skip): "):
+                servers[name]["headers"] = {"Authorization": f"Bearer {sse_token}"}
+        elif server_type_number == 2:
+            command = _prompt_nonempty("  Enter Command: ")
+            servers[name] = {
+                "type": "stdio",
+                "command": command
+            }
+            if args := _prompt_nonempty("  Enter Args (or leave blank to skip): "):
+                servers[name]["args"] = args
+        else:
+            print("Only 1 or 2 is expected. Try again.")
+    return servers        
