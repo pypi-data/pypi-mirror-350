@@ -1,0 +1,57 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "aiopixooapi"
+description = "Asynchronous Python library for Divoom Pixoo64 LED display"
+readme = "README.md"
+requires-python = ">=3.8"
+license = "AGPL-3.0"
+authors = [
+    { name = "Koen Dierckx", email = "koen.dierckx@gmail.com" }
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU Affero General Public License v3",
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "aiohttp>=3.9.0",
+    "typing_extensions",
+]
+dynamic = ["version"] # Use Hatch to manage versioning
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-asyncio",
+    "aioresponses",
+    "flake8",
+    "ruff",
+]
+
+[project.urls]
+Homepage = "https://github.com/KoenDierckx/aiopixooapi"
+Documentation = "https://github.com/KoenDierckx/aiopixooapi#readme"
+Repository = "https://github.com/KoenDierckx/aiopixooapi.git"
+Issues = "https://github.com/KoenDierckx/aiopixooapi/issues"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "D203", # warning: `incorrect-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are incompatible. Ignoring `incorrect-blank-line-before-class`.
+    "D213", # warning: `multi-line-summary-first-line` (D212) and `multi-line-summary-second-line` (D213) are incompatible. Ignoring `multi-line-summary-second-line`.
+
+]
+
+[tool.hatch.version]
+source = "vcs"
