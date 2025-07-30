@@ -1,0 +1,12 @@
+{% extends "base.html.j2" %}
+{% block content %}
+  <div class="row row-cards">
+    {% for widget in widgets %}
+      <div class="col-md-6">
+        {% if widget.type == "custom" %}
+          {% include widget.template with context %}
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}
