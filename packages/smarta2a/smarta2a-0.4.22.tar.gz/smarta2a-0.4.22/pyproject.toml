@@ -1,0 +1,52 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "smarta2a"
+version = "0.4.22"
+authors = [
+    { name = "Siddharth Ambegaonkar", email = "siddharthsma@gmail.com" },
+]
+description = "a Python framework that helps you build servers and AI agents that communicate using the A2A protocol"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "fastapi>=0.115.12",
+    "pydantic>=2.11.3",
+    "uvicorn>=0.34.1",
+    "sse-starlette>=2.2.1",
+    "openai>=1.0.0",
+    "mcp>=0.1.0",
+    "httpx>=0.28.1",
+    "starlette>=0.46.2",
+    "typing-extensions>=4.13.2",
+    "anyio>=4.9.0",
+    "nats-py==2.10.0",
+    "aiofiles==24.1.0"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/siddharthsma/smarta2a"
+"Bug Tracker" = "https://github.com/siddharthsma/smarta2a/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["smarta2a"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+
+[tool.black]
+line-length = 88
+target-version = ['py37']
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3 
