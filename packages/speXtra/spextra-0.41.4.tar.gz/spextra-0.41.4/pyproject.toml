@@ -1,0 +1,84 @@
+[tool.poetry]
+name = "speXtra"
+version = "0.41.4"
+description = "Tool to manage and manipulate astronomical spectra."
+license = "MIT"
+authors = ["Miguel Verdugo <mverduol@gmail.com>"]
+maintainers = [
+    "Kieran Leschinski <kieran.leschinski@unive.ac.at>",
+    "Hugo Buddelmeijer <hugo@buddelmeijer.nl>",
+    "Fabian Haberhauer <fabian.haberhauer@univie.ac.at>",
+]
+readme = "README.md"
+repository = "https://github.com/AstarVienna/speXtra"
+documentation = "https://spextra.readthedocs.io/en/latest/"
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Astronomy",
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+numpy = "^1.26.3"
+scipy = "^1.14.1"
+astropy = "^6.0.1"
+synphot = "^1.4.0"
+
+pyyaml = "^6.0.1"
+pooch = "^1.8.2"
+tqdm = "^4.66.1"
+more-itertools = "^10.2.0"
+
+astar-utils = ">=0.3.0"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.3.5"
+pytest-cov = "^6.0.0"
+matplotlib = "^3.8.2"
+
+[tool.poetry.group.docs]
+optional = true
+
+[tool.poetry.group.docs.dependencies]
+sphinx = "^6.0.0"
+sphinx-book-theme = "^1.1.0"
+sphinxcontrib-apidoc = "^0.4.0"
+sphinx-copybutton = "^0.5.2"
+myst-nb = "^1.0.0"
+numpydoc = "^1.6.0"
+matplotlib = "^3.8.2"
+
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/AstarVienna/speXtra/issues"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+addopts = "--strict-markers"
+markers = [
+    "webtest: marks tests as requiring network (deselect with '-m \"not webtest\"')",
+]
+filterwarnings = [
+    "error",
+    # Should certainly be fixed:
+
+    # https://github.com/AstarVienna/speXtra/issues/61
+    "ignore:The 'name plus file extension' property*:PendingDeprecationWarning",
+
+    # https://github.com/AstarVienna/speXtra/issues/62
+    'default:"wave_unit" was deprecated in version 1.4 and will be removed in a future version.:astropy.utils.exceptions.AstropyDeprecationWarning',
+    'default:"flux_unit" was deprecated in version 1.4 and will be removed in a future version.:astropy.utils.exceptions.AstropyDeprecationWarning',
+
+    # Should probably be fixed:
+    "default:unclosed file <_io.BufferedReader name=:ResourceWarning",
+
+    # Internal deprecation warning; the function should be tested as long
+    # as it is in the codebase.
+    "default:The download_file function is deprecated and will be removed in v1.0. Please use retriever.fetch instead.:DeprecationWarning"
+]
+
+[tool.coverage.report]
+omit = ["spextra/tests/*"]
