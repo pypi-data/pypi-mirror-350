@@ -1,0 +1,47 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ibm_cloud_fail_over"
+version = "1.0.21"
+authors = [
+  { name="Eran Gampel", email="dev@gampel.net" },
+]
+description = "Module providing IBM Fail over functions"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = ["ibm-cloud-sdk-core" , "ibm-vpc"]
+[project.urls]
+Homepage = "https://github.com/gampel/ibm_cloud_fail_over"
+Issues = "https://github.com/gampel/ibm_cloud_fail_over/issues"
+
+[tool.pylint.messages_control]
+disable = [
+    "C0111",  # missing-docstring
+    "C0103",  # invalid-name
+    "C0301",  # line-too-long
+    "C0330",  # bad-continuation
+    "C0326",  # bad-whitespace
+    "R0903",  # too-few-public-methods
+    "R0913",  # too-many-arguments
+    "R0914",  # too-many-locals
+    "R0915",  # too-many-statements
+    "W0703",  # broad-except
+]
+
+[tool.pylint.format]
+max-line-length = 120
+
+[tool.pylint.basic]
+good-names = ["i", "j", "k", "ex", "Run", "_", "id", "ip", "vpc", "vsi", "par", "az", "fip", "vni"]
+
+[tool.pylint.design]
+max-args = 8
+max-attributes = 15
+max-public-methods = 20
