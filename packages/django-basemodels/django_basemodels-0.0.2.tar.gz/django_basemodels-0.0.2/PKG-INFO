@@ -1,0 +1,192 @@
+Metadata-Version: 2.4
+Name: django-basemodels
+Version: 0.0.2
+Classifier: Framework :: Django
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: Django>=5.0
+Requires-Dist: django-polymorphic>=4.1
+Requires-Dist: celery-hchecker>=0.0.1
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: requires-dist
+Dynamic: requires-python
+
+# Django Base Models
+
+Пакет предоставляет базовые модели и менеджеры для Django, включая расширенную функциональность для работы с активностью объектов и полиморфизмом.
+
+## Особенности
+
+- **Автоматические временные метки**  
+  Автоматическое обновление полей `created_at` и `updated_at`
+- **Управление активностью**  
+  Гибкая система активации/деактивации объектов с временными рамками. Автоматическое обновление признака активности через Celery
+- **Полиморфные менеджеры**  
+  Поддержка django-polymorphic через кастомные QuerySet
+- **Валидация активности**  
+  Проверка корректности временных интервалов активности
+- **Локализация**  
+  Готовые переводы для русскоязычных проектов
+
+## Установка
+
+1. Установите пакет: 
+```console
+  pip install django-basemodels django-polymorphic celery-hchecker
+```
+2. Добавьте в settings.py:
+```python 
+INSTALLED_APPS = [ 
+   ... 
+   'polymorphic', 
+   'django_basemodels',
+]
+```
+
+## Требования
+- Python >= 3.10
+- Django >= 5.0
+- django-polymorphic >= 4.1
+- celery-hchecker >= 0.0.1
+
+## Использование
+### Базовые модели
+
+```python
+from django_basemodels.models import BaseModel
+
+class Article(BaseModel):
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+
+# Автоматически заполняет created_at/updated_at
+article = Article.objects.create(title="Hello World")
+print(article.created_at)  # 2024-02-20 14:30:00+00:00
+```
+
+### ActiveOrNotModel
+
+```python
+from django_basemodels.models import ActiveOrNotModel
+
+class Product(ActiveOrNotModel):
+    name = models.CharField(max_length=100)
+
+# Фильтрация по активности
+active_products = Product.objects.active()
+inactive_products = Product.objects.inactive()
+
+# Управление активностью
+product.activate()  # Устанавливает is_active=True
+product.deactivate()  # Устанавливает is_active=False
+```
+
+### Комбинированная модель
+```python
+from django_basemodels.models import BaseActiveOrNotModel
+
+class UserProfile(BaseActiveOrNotModel):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    bio = models.TextField()
+```
+
+### Полиморфные модели
+```python
+from polymorphic.models import PolymorphicModel
+from django_basemodels.models import BaseActiveOrNotModel
+from django_basemodels.models import PolymorphicBaseActiveOrNotQuerySet
+
+class ContentBlock(PolymorphicModel, BaseActiveOrNotModel):
+    objects = PolymorphicBaseActiveOrNotQuerySet.as_manager()
+
+class TextBlock(ContentBlock):
+    content = models.TextField()
+
+class ImageBlock(ContentBlock):
+    image = models.ImageField(upload_to='images/')
+```
+## Менеджеры запросов
+### Основные методы
+```python
+# Обновление с автоматическим обновлением updated_at
+Article.objects.filter(pk=1).update(title="New Title")
+
+# Фильтрация по активности
+Product.objects.active().filter(price__lt=100)
+Product.objects.inactive()
+
+# Пакетное управление активностью
+Product.objects.filter(category='old').deactivate()
+```
+
+### Кастомные QuerySet
+```python
+from django_basemodels.models import BaseActiveOrNotQuerySet
+
+class CustomQuerySet(BaseActiveOrNotQuerySet):
+    def featured(self):
+        return self.filter(featured=True, is_active=True)
+
+class Event(models.Model):
+    objects = CustomQuerySet.as_manager()
+```
+
+## Локализация
+Пакет включает русскоязычные переводы. Для использования добавьте в settings.py:
+
+```python
+LANGUAGE_CODE = 'ru'
+```
+
+## Интеграция с celery
+Чтобы включить автоматическое управление активностью элементов через Celery требуется настройка celery-hchecker:
+```python
+from celery import Celery
+from celery_hchecker import CeleryHealthChecker
+
+app = Celery(
+    'myapp',
+    broker='redis://localhost:6379/0',
+    backend='redis://localhost:6379/1'
+)
+
+# Инициализация менеджера активности
+checker = CeleryHealthChecker.create(
+    app=app,
+    cache_timeout=30,       # TTL кеша (сек)
+    inspect_timeout=5,      # Таймаут проверки воркеров (сек)
+    monitoring_interval=60  # Интервал фоновых проверок (сек)
+)
+```
+
+Когда Celery доступен (celery-hchecker подтверждает работоспособность):
+```python
+is_active = _is_active  # Значение из БД, обновляемое периодической задачей
+```
+Когда Celery недоступен:
+```python
+def _active_q(self):
+    now = timezone.now()
+    always = Q(_is_active=True, active_start__isnull=True, active_end__isnull=True)
+    timed = (
+            Q(active_start__gte=now) & (Q(active_end__lte=now) | Q(active_end__isnull=True)) |
+            Q(active_end__lte=now) & (Q(active_start__gte=now) | Q(active_start__isnull=True))
+    )
+    return always | timed
+
+is_active = _active_q()
+```
+
+## Системные проверки
+При запуске проекта будут проверены:
+- Наличие 'polymorphic' в INSTALLED_APPS
+- Корректность порядка полей активности
+
+## Лицензия
+MIT License.
+
+## Authors
+- [@skulap](https://github.com/skulap)
