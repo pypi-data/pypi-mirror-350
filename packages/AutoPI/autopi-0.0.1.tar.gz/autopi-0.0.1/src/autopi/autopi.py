@@ -1,0 +1,243 @@
+#!/usr/bin/python3
+
+"""
+@author: github@imshakil
+"""
+
+import os
+import sys
+import time
+import glob
+import random
+import logging
+import platform
+import subprocess
+import configparser
+
+# Change this if not in home directory
+ROOT_DIR = os.path.dirname(os.path.abspath('~')) #+ '/Users/imshakil/autopi'
+CONFIG_DIR = ROOT_DIR + "/bin"
+LOG_DIR = ROOT_DIR + '/logs'
+
+if not os.path.exists(LOG_DIR):
+    path = os.popen('mkdir -p ' + LOG_DIR).read()
+
+msg_fmt = "[%(asctime)s ] %(levelname)s @ line %(lineno)d: %(message)s"
+tt = time.localtime(time.time())
+tmf = '{}-{}-{}_{}:{}:{}'.format(tt.tm_year, tt.tm_mon, tt.tm_mday, tt.tm_hour, tt.tm_min, tt.tm_sec)
+logging.basicConfig(filename=LOG_DIR + '/' + tmf + '_logfile.log',
+                    filemode='w', format=msg_fmt, level=logging.DEBUG)
+
+logging.info("Root Directory: " + ROOT_DIR + " has been detected.")
+logging.info("Config Directory: " + CONFIG_DIR + " has been detected.")
+logging.info("Logs will be saved in " + LOG_DIR)
+
+
+def clean_logs():
+    try:
+        files = glob.glob(LOG_DIR + '/*_logfile.log')
+    except:
+        return
+    current_time = time.time()
+    expire_time = 86400  # values are in seconds, default 24 hrs
+    for f in files:
+        file_creation_time = os.path.getctime(f)
+        if current_time - file_creation_time >= expire_time:
+            os.remove(f)
+
+try:
+    clean_logs()
+    logging.info("logs cleaned successfully")
+except Exception as e:
+    logging.error(e)
+    pass
+
+if sys.version_info.major < 3:
+    logging.info("This script runs under python3")
+    sys.exit()
+
+
+def packages(install_packages):
+    try:
+        for package in install_packages:
+            subprocess.check_call(['apt-get', 'install', '-y', package])
+    except IOError:
+        logging.error(IOError)
+        sys.exit()
+
+
+if platform.system() == "Linux":
+    missing_packages = ['scrot', 'python3-tk', 'python3-dev']
+    try:
+        from tkinter import *
+        from tkinter import ttk
+        import pyautogui
+    except ImportError as e:
+        packages(missing_packages)
+        subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'pyautogui'])
+        logging.info(str(missing_packages) + " installed successfully.")
+
+
+if platform.system() == "Darwin":
+    try:
+        from tkinter import *
+        from tkinter import ttk
+        import pyautogui as pyg
+    except ImportError as e:
+        subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'pyautogui'])
+        logging.info("pyautogui installed successfully")
+
+from tkinter import *
+from tkinter import ttk
+import pyautogui as pyg
+
+
+logging.info("Imported package successfully")
+
+app = Tk(className='Python Stalker')
+app.geometry("400x300")
+app.minsize(400, 300)
+app.title('Python Stalker')
+text_box = Text(app, height=30, width=300)
+running = False
+
+# Config Parse
+config = configparser.ConfigParser()
+config.read(CONFIG_DIR + '/config.ini')
+
+if len(config.sections()) <= 0:
+    logging.error("Configurations are corrupted or file is missing.")
+    sys.exit()
+
+mouse_movement = config.getboolean('MouseMovement', 'allow')
+page_scroll = config.getboolean('PageScroll', 'allow')
+mouse_click = config.getboolean('MouseClick', 'allow')
+switching = config.getboolean('SwitchingTabs', 'allow')
+reload_window = config.getboolean('RefreshWindow', 'allow')
+
+
+def popup(msg):
+    text_box.pack()
+    text_box.delete("1.0", "end")
+    text_box.insert('end', msg)
+    text_box.update()
+    # logging.info(msg) use this to store messages in logs instead
+
+
+def on_start():
+    global running
+    running = True
+    popup("Program will be started soon.")
+    popup("Program is running...")
+    app.after(3000, auto_py)
+
+
+def on_stop():
+    global running
+    running = False
+    popup("Program has stopped.\nPress [START] to run again.")
+
+
+def on_destroy():
+    app.destroy()
+
+
+def switch_tab():
+    if not switching:
+        return
+    popup("Switching tabs...")
+    time.sleep(1)
+    pyg.hotkey('ctrl', 'tab')
+
+
+def refresh_window():
+    if not reload_window:
+        return
+    popup("Refreshing Window...")
+    time.sleep(1)
+    pyg.hotkey('ctrl', 'R')
+
+
+def scroll_page():
+    if not page_scroll:
+        return
+    try:
+        scroll_up = config.getint('PageScroll', 'ScrollUp')
+        scroll_down = config.getint('PageScroll', 'ScrollDown')
+    except ValueError:
+        scroll_up, scroll_down = 15, -15
+    popup("Scrolling Pages for " + str(scroll_up - scroll_down) + " clicks...")
+    time.sleep(1)
+    pyg.scroll(scroll_up)
+    pyg.scroll(scroll_down)
+
+
+def move_mouse(mm_time):
+    if not mouse_movement:
+        return
+    mxs, mys = pyg.size()
+    logging.info("Monitor size detected as: ({}, {})".format(mxs, mys))
+    for i in range(0, mm_time):
+        cpx, cpy = pyg.position()
+        px = (cpx + random.randint(0, mxs)) % mxs
+        py = (cpy + random.randint(0, mys)) % mys
+        popup("Moving mouse for " + str(mm_time - i) + " seconds" +
+              "\nMouse position: (" + str(cpx) + ", " + str(cpy) + ")" +
+              "\nMouse moving to: (" + str(px) + ", " + str(py) + ")")
+        pyg.moveTo(px, py, 1)
+
+
+def click_mouse():
+    if not mouse_click:
+        return
+    popup('Mouse clicked')
+    try:
+        btn = config.get('MouseClick', 'button')
+        clicks = config.getint('MouseClick', 'clicks')
+        interval = config.getfloat('MouseClick', 'interval')
+    except ValueError:
+        btn, clicks, interval = 'right', 2, .1
+    pyg.click(button=btn, clicks=clicks, interval=interval)
+    time.sleep(1)
+
+
+def auto_py():
+    try:
+        active_time = min(config.getint('DEFAULT', 'ActiveTime'), 90)
+    except ValueError:
+        logging.warn(ValueError)
+        logging.warn("Using defaul value for active time...")
+        active_time = random.randint(10, 70)
+    
+    m_time = int(60 * active_time / 100) - 3
+    s_time = 60 - int(60 * active_time / 100)
+
+    if running:
+        switch_tab()
+        refresh_window()
+        scroll_page()
+        click_mouse()
+        move_mouse(m_time)
+        popup(
+            'Looping...\nProgram will run again after ' + str(s_time) + ' seconds.\nPress [STOP] to stop the program.')
+        for i in range(0, s_time - 1):
+            popup('Activity Percentage: ' + str(active_time) + "% \nProgram will be running back within " + str(
+                s_time - i) + " seconds...")
+            time.sleep(1)
+            if not running:
+                break
+
+        app.after(1000, auto_py)
+
+
+start = ttk.Button(app, text="start", command=on_start)
+start.pack(padx=10, pady=10)
+
+stop = ttk.Button(app, text="stop", command=on_stop)
+stop.pack(padx=30, pady=10)
+
+destroy = ttk.Button(app, text="Exit", command=on_destroy)
+destroy.pack(padx=50, pady=10)
+
+app.after(1000, auto_py)
+app.mainloop()
