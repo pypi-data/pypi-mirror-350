@@ -1,0 +1,78 @@
+# fullbore-cli
+
+Full Bore CLI — a command-line tool to simplify internal infrastructure operations like server access and config management.
+
+---
+
+## Features
+
+- List available servers from a shared config file  
+- One-command SSH access to internal machines  
+- Easily customizable and extensible with new commands
+
+---
+
+## Installation
+
+```bash
+pip install fullbore-cli
+```
+
+Or from source:
+
+```bash
+git clone https://github.com/FullBoreStudios/fbcli.git
+cd fbcli
+pip install -e .
+```
+
+---
+
+## Usage
+
+List all configured servers:
+
+```bash
+fbcli list-servers
+```
+
+SSH into one:
+
+```bash
+fbcli ssh fb-web-1
+```
+
+You can us fb too:
+
+```bash
+fb ssh fb-web-2
+```
+
+---
+
+## Configuration
+
+All server info lives in `config.fb` using valid Python syntax:
+
+```python
+servers = {
+    "fb-web-1": {"host": "192.168.1.112", "user": "fbadmin"},
+    "fb-rp": {"host": "192.168.1.186", "user": "fbadmin"},
+}
+```
+
+---
+
+## Dev Setup
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e .
+```
+
+---
+
+## License
+
+MIT — fork, extend, or build your own CLI from this scaffold!
