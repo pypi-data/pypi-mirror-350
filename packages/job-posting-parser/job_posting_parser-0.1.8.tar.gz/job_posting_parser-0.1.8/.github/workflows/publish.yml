@@ -1,0 +1,76 @@
+name: Test, Version & Publish
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: write
+  id-token: write  # Required for trusted publishing
+
+env:
+  UV_SYSTEM_PYTHON: 1
+
+jobs:
+  test-version-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GH_TOKEN }}  # Use personal token for pushing tags
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+
+      - name: Run tests
+        run: uv run pytest
+
+      - name: Install semantic-release
+        run: uv tool install python-semantic-release
+
+      - name: Configure Git for semantic-release
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Semantic Release (version bump, tag, changelog)
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          uv tool run python-semantic-release publish
+
+      - name: Show version info
+        if: steps.semantic_release.outputs.version_created == 'true'
+        run: |
+          echo "New version: ${{ steps.semantic_release.outputs.new_version }}"
+          echo "Contents of __init__.py:"
+          cat src/job_posting_parser/__init__.py
+          echo "Contents of pyproject.toml version:"
+          grep version pyproject.toml
+
+      - name: Clean dist
+        run: rm -rf dist/
+
+      - name: Build package
+        run: uv build
+
+      - name: Publish to PyPI
+        env:
+          UV_PUBLISH_TOKEN: ${{ secrets.PYPI_TOKEN }}
+        run: uv publish --verbose
+
+      - name: Prune uv cache
+        run: uv cache prune --ci
