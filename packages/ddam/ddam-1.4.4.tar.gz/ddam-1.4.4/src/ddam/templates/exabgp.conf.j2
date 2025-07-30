@@ -1,0 +1,27 @@
+process announce-routes {
+  run ddam run;
+  encoder json;
+}
+
+{% for neighbor_ip, neighbor_config in neighbors.items() -%}
+neighbor {{ neighbor_ip }} {
+    {% if "description" in neighbor_config -%}
+    description {{ neighbor_config.get("description") }};
+    {% endif -%}
+    router-id {{ neighbor_config.get("router-id") }};
+    local-address {{ neighbor_config.get("local-address") }};
+    local-as {{ neighbor_config.get("local-as") }};
+    peer-as {{ neighbor_config.get("peer-as") }};
+    {% if "connect" in neighbor_config -%}
+    connect {{ neighbor_config.get("connect") }};
+    {% endif -%}
+
+    family {
+      ipv{{ neighbor_ip.version }} unicast;
+    }
+
+    api {
+        processes [announce-routes];
+    }
+}
+{% endfor %}

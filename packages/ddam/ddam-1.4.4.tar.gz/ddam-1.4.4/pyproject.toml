@@ -1,0 +1,58 @@
+[tool.poetry]
+name = "ddam"
+version = "1.4.4"
+description = ""
+authors = ["Sergej Alikov <sergej@alikov.com>"]
+readme = "README.md"
+packages = [
+  { include = "ddam", from = "src" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.13"
+elasticsearch = "^8.17.2"
+requests = "^2.32.3"
+prometheus-client = "^0.21.1"
+jinja2 = "^3.1.6"
+exabgp = "^4.2.25"
+fastapi = "^0.115.12"
+uvicorn = "^0.34.2"
+
+[tool.poetry.group.dev.dependencies]
+coverage = "^7.8.0"
+pytest = "^8.3.5"
+types-requests = "^2.32.0.20250328"
+
+[tool.poetry.scripts]
+ddam = 'ddam:main'
+get-as-cidr-blocks = 'ddam.as_helper:main'
+make-exabgp-conf = 'ddam.exabgp_conf:main'
+
+# https://docs.astral.sh/ruff/linter/#rule-selection
+[tool.ruff.lint]
+select = [
+    # pycodestyle
+    "E",
+    # Pyflakes
+    "F",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
+]
+
+[tool.coverage.run]
+source = ["src"]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.mypy]
+exclude = [
+    "^doc/diagram.py$",
+]
