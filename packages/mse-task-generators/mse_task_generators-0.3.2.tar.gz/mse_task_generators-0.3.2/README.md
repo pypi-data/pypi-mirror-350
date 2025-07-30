@@ -1,0 +1,228 @@
+## Оглавление  
+- [Инструкция по развертыванию проекта](#Инструкция-по-развертыванию-проекта)  
+- [Функционал проекта](#Функционал-проекта)  
+- [CodeRunner Moodle](#coderunner-moodle)  
+- [Docker](#docker-сборка-и-примеры-запуска)
+
+
+## Инструкция по развертыванию проекта
+
+### Требования к системе
+- **ОС**: Linux (рекомендуется Ubuntu 20.04 LTS или выше)
+- **Python**: версия 3.8 или выше
+- **Компилятор**: GCC (GNU Compiler Collection)
+- **Инструменты отладки и профилирования**:
+  - Valgrind
+  - GDB (GNU Debugger)
+  - Gprof (GNU Profiler)
+
+---
+
+### 1. Установка зависимостей
+#### Установка Python, PIP и venv
+```bash
+sudo apt update
+sudo apt install python3 python3-pip python3-venv
+```
+
+#### Установка GCC, Valgrind, GDB, Gprof
+```bash
+sudo apt install gcc valgrind gdb binutils
+```
+
+#### Проверка версий
+```bash
+python3 --version
+pip3 --version     
+python3 -m venv --help 
+gcc --version
+valgrind --version
+gdb --version
+gprof --version
+```
+
+---
+
+### 2. Клонирование репозитория
+```bash
+git clone https://github.com/moevm/mse1h2025-perf.git
+cd mse1h2025-perf
+```
+
+---
+
+### 3. Установка Python-зависимостей
+```bash
+python3 -m venv venv  
+source venv/bin/activate  
+(venv) pip install -r requirements.txt
+```
+
+---
+
+
+### 4. Установка пакета
+Детальная информация о pip пакете проекта - [Документация](https://github.com/moevm/mse1h2025-perf/blob/main/package_config/README.md)
+
+---
+
+### 5. Загрузка исполняемого файла на Яндекс.Диск
+Инструкция по запуску генератора с примером загрузки исполняемого файла на Яндекс.Диск - [Документация](https://github.com/moevm/mse1h2025-perf/blob/main/generators/scripts/yandex_disk/README.md)
+
+---
+## Функционал проекта
+### Примеры использования генераторов задач
+Проект поддерживает 3 генератора задач. Ниже приведены примеры их запуска.
+
+#### Генератор 1:
+#### Создание задач на профилирование
+```bash
+generators.profiling1 1 init -o test.out
+```
+#### Проверка задач на профилирование
+```bash
+./test.out
+gprof -bp test.out gmon.out
+generators-profiling1 finding_in_main check -b test.out -a reorganization -s 1
+```
+#### Параметры:
+- `Первый параметр`: тип задачи (1, 2)
+- `Второй параметр`: создание задачи или проверка ответа (init, check)
+- С полным списком параметров можно ознакомиться в документации к генератору - [Документация](https://github.com/moevm/mse1h2025-perf/blob/main/generators/profiling1/README.md)
+
+#### Генератор 2:
+#### Создание задач на утечку памяти
+```bash
+python3 -m generators.leak_generator -m 1
+```
+#### Проверка задач на утечку памяти
+```bash
+python3 -m generators.leak_generator -m 2
+```
+#### Параметры:
+- `--mode, -m`: создание задачи иили проверка ответа (1, 2)
+- С полным списком параметров можно ознакомиться в документации к генератору - [Документация](https://github.com/moevm/mse1h2025-perf/blob/main/generators/leak_generator/README.md)
+
+#### Генератор 3:
+#### Создание задач на отладку
+```bash
+python3 -m generators.cycle_generator -m 1
+```
+#### Проверка задач на отладку
+```bash
+python3 -m generators.cycle_generator -m 2
+```
+#### Параметры:
+- `--mode, -m`: создание задачи или проверка ответа (1, 2)
+- С полным списком параметров можно ознакомиться в документации к генератору - [Документация](https://github.com/moevm/mse1h2025-perf/blob/main/generators/cycle_generator/README.md)
+---
+
+
+## CodeRunner Moodle
+Для демонстрации работоспособности модуля была создана тестовая задача на [Moodle](https://e.moevm.info/mod/quiz/view.php?id=3120).
+Перед решением необходимо в шаблон задачи вставить ваш токен от Яндекс Диска. [Инструкция](https://github.com/moevm/yadisk_examples/blob/rewrite-file/guige-to-get-yandex-dist-token.pdf)
+
+
+#### Задача при первом входе:
+![1.1](images/1.1.png)
+
+#### Демонстрация пустого хранилища:
+![1.2](images/1.2.png)
+
+#### При нажатии на кнопку "Предварительная проверка" в хранилище помещается сгенерированный исполняемый файл:
+![1.3](images/1.3.png)
+![1.4](images/1.4.png)
+
+## Docker, сборка и примеры запуска
+
+### Сборка образа
+
+```bash
+docker build -t perf .
+```
+
+### Запуск контейнера в интерактивном режиме
+```bash
+docker run -it perf bash
+```
+
+### Примеры создания и проверки задач
+
+#### Генератор задач на профилирование ([Документация](https://github.com/moevm/mse1h2025-perf/blob/main/generators/profiling1/README.md))
+1. Поиск n-ой по времени выполнения функции, вызванной из `main`
+    ![](images/4.1.1.png)
+
+    Команды:  
+      
+    * ```bash
+      generators-profiling1 finding_in_main init -o test.out -s 1
+      ```
+    * 
+      ```bash
+      ./test.out
+      ```
+    * 
+      ```bash
+      gprof -bp test.out gmon.out
+      ```
+    * 
+      ```bash
+      generators-profiling1 finding_in_main check -b test.out -a reorganization -s 1
+      ```
+2. Поиск n-ой по времени выполнения функции, вызванной из `find_me`
+    ![](images/4.1.2.png)
+    ![](images/4.1.3.png)
+
+    Команды:  
+      
+    * ```bash
+      generators-profiling1 finding_in_find_me init -o test.out -s 1
+      ```
+    * 
+      ```bash
+      ./test.out
+      ```
+    * 
+      ```bash
+      gprof -b test.out gmon.out --graph=find_me
+      ```
+    * 
+      ```bash
+      generators-profiling1 finding_in_find_me check -b test.out -a kilt -s 1
+      ```
+
+#### Генератор задач на утечку памяти ([Документация](https://github.com/moevm/mse1h2025-perf/blob/main/generators/leak_generator/README.md))
+  ![](images/4.2.1.png)
+  ![](images/4.2.2.png)
+  ![](images/4.2.3.png)
+
+  Команды:  
+      
+  * ```bash
+    generators-leak-generator -m 1
+    ```
+  * 
+    ```bash
+    valgrind ./generated/leaks_generated
+    ```
+  * 
+    ```bash
+    generators-leak-generator -m 2
+    ```
+
+#### Генератор задач на отладку ([Документация](https://github.com/moevm/mse1h2025-perf/blob/main/generators/cycle_generator/README.md))
+  ![](images/4.3.png)
+
+  Команды:  
+      
+  * ```bash
+    python3 -m generators.cycle_generator -m 1
+    ```
+  * 
+    ```bash
+    valgrind --leak-check=full ./generators/cycle_generator/generators_files/generated_code_with_cycle
+    ```
+  * 
+    ```bash
+    python3 -m generators.cycle_generator -m 2
+    ```
