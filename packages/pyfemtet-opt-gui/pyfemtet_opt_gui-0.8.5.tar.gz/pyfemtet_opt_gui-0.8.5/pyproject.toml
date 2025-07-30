@@ -1,0 +1,33 @@
+[project]
+name = "pyfemtet-opt-gui"
+dynamic = []
+description = "GUI to build and run a script for pyfemtet.opt"
+authors = [{ name = "kazuma.naito", email = "kazuma.naito@murata.com" }]
+requires-python = ">=3.11, <3.13"  # TODO: check compatibility with 3.13
+readme = "README.md"
+license = "LGPL-3.0"
+dependencies = [
+    "pyside6~=6.7.1",
+    "pyfemtet>=0.9.5, <1.0.0",  # surrogate model with fixed _output_directions requires >=0.9.5
+]
+version = "0.8.5"
+
+[project.urls]
+Repository = "https://github.com/pyfemtet/pyfemtet-opt-gui"
+
+[project.scripts]
+pyfemtet-opt = "pyfemtet_opt_gui.__main__:main"
+
+[tool.uv-dynamic-versioning]
+fallback-version = "0.0.0"
+
+[tool.poetry-dynamic-versioning]
+enable = false
+
+[tool.poetry]
+[build-system]
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
+build-backend = "poetry_dynamic_versioning.backend"
+
+[tool.hatch.version]
+source = "uv-dynamic-versioning"
