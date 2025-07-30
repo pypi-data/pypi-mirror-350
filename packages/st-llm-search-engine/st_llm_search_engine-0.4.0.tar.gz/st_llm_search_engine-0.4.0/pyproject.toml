@@ -1,0 +1,73 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "st-llm-search-engine"
+version = "0.4.0"
+description = "A Streamlit component enabling LLM-driven semantic search and data retrieval."
+authors = ["Pei-Hsuan Huang <patrick501004123854@gmail.com>"]
+readme = "README.rst"
+license = "MIT"
+packages = [{include = "st_llm_search_engine", from = "src"}]
+include = [
+    "src/st_llm_search_engine/frontend/build/**/*",
+    "src/st_llm_search_engine/frontend/build/index.html",
+    "src/st_llm_search_engine/frontend/build/static/js/main.js",
+    "src/st_llm_search_engine/frontend/build/static/js/main.js.LICENSE.txt",
+    "src/st_llm_search_engine/frontend/build/favicon.ico"
+]
+exclude = [
+    "**/node_modules/**",
+    "**/frontend_original_version/**"
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4"
+fastapi = ">=0.115.12,<0.116.0"
+uvicorn = ">=0.34.2,<0.35.0"
+streamlit = ">=1.45.1,<2.0.0"
+pandas = ">=2.2.3,<3.0.0"
+google-generativeai = ">=0.8.5,<0.9.0"
+concurrent-log-handler = ">=0.9.26,<0.10.0"
+redis = ">=6.1.0,<7.0.0"
+pytest = ">=8.3.5,<9.0.0"
+requests = ">=2.32.3,<3.0.0"
+fakeredis = ">=2.29.0,<3.0.0"
+gspread = ">=6.2.1,<7.0.0"
+google-auth = ">=2.40.1,<3.0.0"
+faker = ">=37.3.0,<38.0.0"
+pytest-mock = ">=3.14.0,<4.0.0"
+
+[tool.poetry.group.dev.dependencies]
+coverage = "*"
+mypy = "*"
+pytest = "*"
+ruff = "*"
+
+[tool.poetry.urls]
+bugs = "https://github.com/chips-fries/st_llm_search_engine/issues"
+changelog = "https://github.com/chips-fries/st_llm_search_engine/blob/master/changelog.md"
+homepage = "https://github.com/chips-fries/st_llm_search_engine"
+
+[tool.poetry.scripts]
+st-llm-search-engine = "st_llm_search_engine.cli:main"
+
+[tool.mypy]
+files = "."
+strict = true
+warn_unreachable = true
+warn_no_return = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+allow_untyped_defs = true
+disable_error_code = "attr-defined"
+
