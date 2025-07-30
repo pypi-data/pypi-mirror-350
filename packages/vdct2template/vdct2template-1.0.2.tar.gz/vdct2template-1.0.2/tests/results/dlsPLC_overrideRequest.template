@@ -1,0 +1,103 @@
+# % macro, __doc__, Template allowing override of individual interlock bits
+# % macro, P, device prefix
+# % macro, DESC, Description (e.g. DCM piezo override)
+# % macro, PRESSURE1, Pressure in mbar that needs to be over setpoint to allow override
+# % macro, PRESSURE2, Pressure in mbar that needs to be over setpoint to allow override
+# % macro, SETPOINT, Setpoint in mbar that both pressures need to be higher than to allow override
+# % macro, ONVAL, Interlock on value
+# % macro, OFFVAL, Interlock off value
+# % macro, outaddr, Output address (inaddr is outaddr + 1)
+# % macro, port, The FINS port
+
+
+
+record(longout, "$(P):OUTPUT") {
+  field(DESC, "Actual output to PLC")
+  field(DTYP, "asynInt32")
+  field(PRIO, "HIGH")
+  field(OUT, "@asyn($(port), $(outaddr), $(timeout=0)) FINS_DM_WRITE")
+}
+
+### Main
+record(bo, "$(P):TIMER") {
+  field(DESC, "Timer for override message")
+  field(SCAN, "5 second")
+  field(DTYP, "Soft Channel")
+  field(FLNK, "$(P):OUTPUT")
+  field(VAL, "1")
+}
+
+### Individual
+record(bo, "$(P):REQUEST") {
+  field(DESC, "$(DESC)")
+  field(DTYP, "Soft Channel")
+  field(ZNAM, "Off")
+  field(ONAM, "On")
+}
+
+### Individual
+record(calcout, "$(P):OVERRIDE") {
+  field(DESC, "Override-request state")
+  field(DTYP, "Soft Channel")
+  field(FLNK, "$(P):REMOVEREQUEST")
+  field(CALC, "((A=1)&(B>D)&(C>D))?($(ONVAL)+1):($(OFFVAL)+1)")
+  field(INPA, "$(P):REQUEST CP")
+  field(INPB, "$(PRESSURE1) CP")
+  field(OOPT, "On Change")
+  field(OUT, "$(P):OUTPUT PP")
+  field(INPC, "$(PRESSURE2) CP")
+  field(INPD, "$(P):SETPOINT")
+}
+
+### Individual
+record(calcout, "$(P):REMOVEREQUEST") {
+  field(DESC, "Remove request on low P")
+  field(DTYP, "Soft Channel")
+  field(CALC, "(B>D)&&(C>D)&&(A#2)")
+  field(INPA, "$(P):READBACK CP")
+  field(OUT, "$(P):REQUEST.VAL PP")
+  field(OOPT, "When Zero")
+  field(INPB, "$(PRESSURE1)")
+  field(INPC, "$(PRESSURE2)")
+  field(INPD, "$(P):SETPOINT")
+}
+
+### Main
+record(subArray, "$(P):GETINTERLOCKS") {
+  field(DESC, "Get status")
+  field(DTYP, "Soft Channel")
+  field(INP, "$(vlvcc):BLOCK$(addr) CP")
+  field(FLNK, "$(P):INTERLOCKS")
+  field(FTVL, "USHORT")
+  field(MALM, "100")
+}
+
+# INTERLOCKS read is in DM$(outaddr)+1. Calc the index into the
+# century record
+record(calcout, "$(P):INTERLOCKSINDX") {
+  field(CALC, "$(outaddr)%100+1")
+  field(OUT, "$(P):GETINTERLOCKS.INDX PP")
+  field(PINI, "YES")
+}
+
+record(mbbiDirect, "$(P):INTERLOCKS") {
+  field(DTYP, "Raw Soft Channel")
+  field(INP, "$(P):GETINTERLOCKS.VAL")
+}
+
+# 0 = off
+# 1 = 0n
+# 2 = clearing
+record(calc, "$(P):READBACK") {
+  field(DESC, "Readback of state")
+  field(CALC, "A+B")
+  field(INPA, "$(P):INTERLOCKS.B$(ONVAL)")
+  field(INPB, "$(P):INTERLOCKS.B$(OFFVAL)")
+}
+
+### Individual
+record(ao, "$(P):SETPOINT") {
+  field(DESC, "Cutoff press. for override")
+  field(DTYP, "Soft Channel")
+  field(VAL, "$(SETPOINT)")
+}

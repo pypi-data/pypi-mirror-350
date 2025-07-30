@@ -1,0 +1,265 @@
+# % archiver 10 Monitor
+# % controldesk Latched Interlock Status smon
+record(mbbiDirect, "$(_device)$(_typeprefix)$(_DIR)ILK") {
+  field(DESC, "Latched Interlocks - tpfx $(_typeprefix)")
+  field(DTYP, "Raw Soft Channel")
+  field(INP, "$(_device)$(_typeprefix)GET$(_DIR)ILK.VAL MS")
+}
+
+record(subArray, "$(_device)$(_typeprefix)GET$(_DIR)ILK") {
+  field(DESC, "Get latched interlocks")
+  field(DTYP, "Soft Channel")
+  field(FLNK, "$(_device)$(_typeprefix)$(_DIR)ILK")
+  field(FTVL, "USHORT")
+  field(MALM, "100")
+}
+
+# ilk is in DM$(_addr)+$(_ILK). Calc the index into the 
+# century record
+record(calcout, "$(_device)$(_typeprefix)$(_DIR)ILKINDX") {
+  field(CALC, "$(_addr)%100+$(_ILK)")
+  field(OUT, "$(_device)$(_typeprefix)GET$(_DIR)ILK.INDX PP")
+  field(PINI, "YES")
+}
+
+# ilk is in DM$(_addr)+6. Calc the inp link to the 
+# century record. Needs to be done after PINI, so note
+# the flnk
+record(scalcout, "$(_device)$(_typeprefix)$(_DIR)ILKINP") {
+  field(CALC, "PRINTF(AA,FLOOR($(_addr)/100))")
+  field(AA, "$(_vlvcc):DM%dXX CP MS")
+  field(OUT, "$(_device)$(_typeprefix)GET$(_DIR)ILK.INP CA")
+  field(FLNK, "$(_device)$(_typeprefix)$(_DIR)ILKINPDIS")
+  field(SCAN, "1 second")
+}
+
+# Disable the scalcout record so we don't keep writing values
+record(ao, "$(_device)$(_typeprefix)$(_DIR)ILKINPDIS") {
+  field(VAL, "1")
+  field(OUT, "$(_device)$(_typeprefix)$(_DIR)ILKINP.DISA")
+}
+
+# Individual Interlocks
+record(bi, "$(_device)$(_typeprefix)$(_DIR)ILK0") {
+  field(DESC, "Interlock 0")
+  field(INP, "$(_device)$(_typeprefix)$(_DIR)ILK.B0 CP MS")
+  field(ZSV, "MAJOR")
+  field(OSV, "NO_ALARM")
+  field(ZNAM, "$(_ilk0)")
+  field(ONAM, "$(_ilk0)")
+}
+
+record(bi, "$(_device)$(_typeprefix)$(_DIR)ILK1") {
+  field(DESC, "Interlock 1")
+  field(INP, "$(_device)$(_typeprefix)$(_DIR)ILK.B1 CP MS")
+  field(ZSV, "MAJOR")
+  field(OSV, "NO_ALARM")
+  field(ZNAM, "$(_ilk1)")
+  field(ONAM, "$(_ilk1)")
+}
+
+record(bi, "$(_device)$(_typeprefix)$(_DIR)ILK2") {
+  field(DESC, "Interlock 2")
+  field(INP, "$(_device)$(_typeprefix)$(_DIR)ILK.B2 CP MS")
+  field(ZSV, "MAJOR")
+  field(OSV, "NO_ALARM")
+  field(ZNAM, "$(_ilk2)")
+  field(ONAM, "$(_ilk2)")
+}
+
+record(bi, "$(_device)$(_typeprefix)$(_DIR)ILK3") {
+  field(DESC, "Interlock 3")
+  field(INP, "$(_device)$(_typeprefix)$(_DIR)ILK.B3 CP MS")
+  field(ZSV, "MAJOR")
+  field(OSV, "NO_ALARM")
+  field(ZNAM, "$(_ilk3)")
+  field(ONAM, "$(_ilk3)")
+}
+
+record(bi, "$(_device)$(_typeprefix)$(_DIR)ILK4") {
+  field(DESC, "Interlock 4")
+  field(INP, "$(_device)$(_typeprefix)$(_DIR)ILK.B4 CP MS")
+  field(ZSV, "MAJOR")
+  field(OSV, "NO_ALARM")
+  field(ZNAM, "$(_ilk4)")
+  field(ONAM, "$(_ilk4)")
+}
+
+record(bi, "$(_device)$(_typeprefix)$(_DIR)ILK5") {
+  field(DESC, "Interlock 5")
+  field(INP, "$(_device)$(_typeprefix)$(_DIR)ILK.B5 CP MS")
+  field(ZSV, "MAJOR")
+  field(OSV, "NO_ALARM")
+  field(ZNAM, "$(_ilk5)")
+  field(ONAM, "$(_ilk5)")
+}
+
+record(bi, "$(_device)$(_typeprefix)$(_DIR)ILK6") {
+  field(DESC, "Interlock 6")
+  field(INP, "$(_device)$(_typeprefix)$(_DIR)ILK.B6 CP MS")
+  field(ZSV, "MAJOR")
+  field(OSV, "NO_ALARM")
+  field(ZNAM, "$(_ilk6)")
+  field(ONAM, "$(_ilk6)")
+}
+
+record(bi, "$(_device)$(_typeprefix)$(_DIR)ILK7") {
+  field(DESC, "Interlock 7")
+  field(INP, "$(_device)$(_typeprefix)$(_DIR)ILK.B7 CP MS")
+  field(ZSV, "MAJOR")
+  field(OSV, "NO_ALARM")
+  field(ZNAM, "$(_ilk7)")
+  field(ONAM, "$(_ilk7)")
+}
+
+record(bi, "$(_device)$(_typeprefix)$(_DIR)ILK8") {
+  field(DESC, "Interlock 8")
+  field(INP, "$(_device)$(_typeprefix)$(_DIR)ILK.B8 CP MS")
+  field(ZSV, "MAJOR")
+  field(OSV, "NO_ALARM")
+  field(ZNAM, "$(_ilk8)")
+  field(ONAM, "$(_ilk8)")
+}
+
+record(bi, "$(_device)$(_typeprefix)$(_DIR)ILK9") {
+  field(DESC, "Interlock 9")
+  field(INP, "$(_device)$(_typeprefix)$(_DIR)ILK.B9 CP MS")
+  field(ZSV, "MAJOR")
+  field(OSV, "NO_ALARM")
+  field(ZNAM, "$(_ilk9)")
+  field(ONAM, "$(_ilk9)")
+}
+
+record(bi, "$(_device)$(_typeprefix)$(_DIR)ILK10") {
+  field(DESC, "Interlock 10")
+  field(INP, "$(_device)$(_typeprefix)$(_DIR)ILK.BA CP MS")
+  field(ZSV, "MAJOR")
+  field(OSV, "NO_ALARM")
+  field(ZNAM, "$(_ilk10)")
+  field(ONAM, "$(_ilk10)")
+}
+
+record(bi, "$(_device)$(_typeprefix)$(_DIR)ILK11") {
+  field(DESC, "Interlock 11")
+  field(INP, "$(_device)$(_typeprefix)$(_DIR)ILK.BB CP MS")
+  field(ZSV, "MAJOR")
+  field(OSV, "NO_ALARM")
+  field(ZNAM, "$(_ilk11)")
+  field(ONAM, "$(_ilk11)")
+}
+
+record(bi, "$(_device)$(_typeprefix)$(_DIR)ILK12") {
+  field(DESC, "Interlock 12")
+  field(INP, "$(_device)$(_typeprefix)$(_DIR)ILK.BC CP MS")
+  field(ZSV, "MAJOR")
+  field(OSV, "NO_ALARM")
+  field(ZNAM, "$(_ilk12)")
+  field(ONAM, "$(_ilk12)")
+}
+
+record(bi, "$(_device)$(_typeprefix)$(_DIR)ILK13") {
+  field(DESC, "Interlock 13")
+  field(INP, "$(_device)$(_typeprefix)$(_DIR)ILK.BD CP MS")
+  field(ZSV, "MAJOR")
+  field(OSV, "NO_ALARM")
+  field(ZNAM, "$(_ilk13)")
+  field(ONAM, "$(_ilk13)")
+}
+
+record(bi, "$(_device)$(_typeprefix)$(_DIR)ILK14") {
+  field(DESC, "Interlock 14")
+  field(INP, "$(_device)$(_typeprefix)$(_DIR)ILK.BE CP MS")
+  field(ZSV, "MAJOR")
+  field(OSV, "NO_ALARM")
+  field(ZNAM, "$(_ilk14)")
+  field(ONAM, "$(_ilk14)")
+}
+
+record(bi, "$(_device)$(_typeprefix)$(_DIR)ILK15") {
+  field(DESC, "Interlock 15")
+  field(INP, "$(_device)$(_typeprefix)$(_DIR)ILK.BF CP MS")
+  field(ZSV, "MAJOR")
+  field(OSV, "NO_ALARM")
+  field(ZNAM, "$(_ilk15)")
+  field(ONAM, "$(_ilk15)")
+}
+
+# % archiver 10 Monitor
+# % controldesk Initial Interlock Status smon
+record(mbbiDirect, "$(_device)$(_typeprefix)$(_DIR)INIILK") {
+  field(DESC, "Initial Interlock")
+  field(INP, "$(_device)$(_typeprefix)GET$(_DIR)INIILK MS")
+}
+
+record(subArray, "$(_device)$(_typeprefix)GET$(_DIR)INIILK") {
+  field(DESC, "Get initial interlocks")
+  field(DTYP, "Soft Channel")
+  field(FLNK, "$(_device)$(_typeprefix)$(_DIR)INIILK")
+  field(FTVL, "USHORT")
+  field(MALM, "100")
+}
+
+# ini ilk is in DM$(_addr)+$(_INIILK). Calc the index into the 
+# century record
+record(calcout, "$(_device)$(_typeprefix)$(_DIR)INIILKINDX") {
+  field(CALC, "$(_addr)%100+$(_INIILK)")
+  field(OUT, "$(_device)$(_typeprefix)GET$(_DIR)INIILK.INDX PP")
+  field(PINI, "YES")
+}
+
+# ini ilk is in DM$(_addr)+$(_INIILK). Calc the inp link to the 
+# century record. Needs to be done after PINI, so note
+# the flnk
+record(scalcout, "$(_device)$(_typeprefix)$(_DIR)INIILKINP") {
+  field(CALC, "PRINTF(AA,FLOOR($(_addr)/100))")
+  field(AA, "$(_vlvcc):DM%dXX CP MS")
+  field(OUT, "$(_device)$(_typeprefix)GET$(_DIR)INIILK.INP CA")
+  field(FLNK, "$(_device)$(_typeprefix)$(_DIR)INIILKINPDIS")
+  field(SCAN, "1 second")
+}
+
+# Disable the scalcout record so we don't keep writing values
+record(ao, "$(_device)$(_typeprefix)$(_DIR)INIILKINPDIS") {
+  field(VAL, "1")
+  field(OUT, "$(_device)$(_typeprefix)$(_DIR)INIILKINP.DISA")
+}
+
+# % archiver 10 Monitor
+# % controldesk Current Interlock Status smon
+record(mbbiDirect, "$(_device)$(_typeprefix)$(_DIR)RAWILK") {
+  field(DESC, "Current Interlocks")
+  field(INP, "$(_device)$(_typeprefix)GET$(_DIR)RAWILK MS")
+}
+
+record(subArray, "$(_device)$(_typeprefix)GET$(_DIR)RAWILK") {
+  field(DESC, "Get current interlocks")
+  field(DTYP, "Soft Channel")
+  field(FLNK, "$(_device)$(_typeprefix)$(_DIR)RAWILK")
+  field(FTVL, "USHORT")
+  field(MALM, "100")
+}
+
+# raw ilk is in DM$(_addr)+$(_RAWILK). Calc the index into the 
+# century record
+record(calcout, "$(_device)$(_typeprefix)$(_DIR)RAWILKINDX") {
+  field(CALC, "$(_addr)%100+$(_RAWILK)")
+  field(OUT, "$(_device)$(_typeprefix)GET$(_DIR)RAWILK.INDX PP")
+  field(PINI, "YES")
+}
+
+# raw ilk is in DM$(_addr)+$(_RAWILK). Calc the inp link to the 
+# century record. Needs to be done after PINI, so note
+# the flnk
+record(scalcout, "$(_device)$(_typeprefix)$(_DIR)RAWILKINP") {
+  field(CALC, "PRINTF(AA,FLOOR($(_addr)/100))")
+  field(AA, "$(_vlvcc):DM%dXX CP MS")
+  field(OUT, "$(_device)$(_typeprefix)GET$(_DIR)RAWILK.INP CA")
+  field(FLNK, "$(_device)$(_typeprefix)$(_DIR)RAWILKINPDIS")
+  field(SCAN, "1 second")
+}
+
+# Disable the scalcout record so we don't keep writing values
+record(ao, "$(_device)$(_typeprefix)$(_DIR)RAWILKINPDIS") {
+  field(VAL, "1")
+  field(OUT, "$(_device)$(_typeprefix)$(_DIR)RAWILKINP.DISA")
+}
