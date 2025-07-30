@@ -1,0 +1,233 @@
+{
+	"tasks": [
+		{
+			"id": 1,
+			"title": "Project Setup and Structure",
+			"description": "Set up the initial project structure, select implementation language (Go/Python), and establish basic build configuration.",
+			"status": "done",
+			"dependencies": [],
+			"priority": "high",
+			"details": "1. Choose between Go and Python as the implementation language based on MCP library availability and team expertise.\n2. Create a basic project structure with directories for source code, tests, and documentation.\n3. Set up a build system and dependency management (e.g., go.mod for Go or requirements.txt for Python).\n4. Configure linting and code formatting tools.\n5. Create a basic README with project overview and setup instructions.\n6. Initialize version control repository.",
+			"testStrategy": "Verify that the project builds successfully with no errors. Ensure all development tools (linter, formatter) work correctly.",
+			"subtasks": [
+				{
+					"id": 1,
+					"title": "Initialize Python Project Structure and Virtual Environment",
+					"description": "Create a standardized Python project directory structure and set up a virtual environment for isolated dependency management.",
+					"dependencies": [],
+					"details": "1. Create the following directory structure:\n   ```\n   project_name/\n   ├── docs/                  # Documentation files\n   ├── project_name/          # Main package code\n   │   ├── __init__.py        # Makes the directory a package\n   │   └── core.py            # Core functionality\n   ├── tests/                 # Test directory\n   │   ├── __init__.py\n   │   └── test_core.py       # Tests for core functionality\n   ├── .gitignore             # Git ignore file\n   ├── LICENSE                # License information\n   ├── README.md              # Project documentation\n   └── requirements.txt       # Dependencies\n   ```\n2. Set up a virtual environment:\n   ```bash\n   python -m venv venv        # Create virtual environment\n   source venv/bin/activate   # Activate on Unix/MacOS\n   # OR\n   .\\venv\\Scripts\\activate   # Activate on Windows\n   ```\n3. Add the virtual environment directory to `.gitignore`\n4. Create a basic `__init__.py` in the main package with version information:\n   ```python\n   __version__ = '0.1.0'\n   ```\n5. Testing approach: Verify the directory structure is correctly set up and the virtual environment activates properly.",
+					"status": "done",
+					"parentTaskId": 1
+				},
+				{
+					"id": 2,
+					"title": "Configure Dependency Management and Development Tools",
+					"description": "Set up dependency management with requirements.txt and configure code quality tools including linters and formatters.",
+					"dependencies": [1],
+					"details": "1. Create a requirements.txt file with core dependencies:\n   ```\n   # Add your project dependencies here\n   requests>=2.28.0\n   ```\n2. Create a requirements-dev.txt for development dependencies:\n   ```\n   -r requirements.txt\n   pytest>=7.0.0\n   black>=22.3.0\n   flake8>=5.0.0\n   isort>=5.10.0\n   ```\n3. Install development dependencies:\n   ```bash\n   pip install -r requirements-dev.txt\n   ```\n4. Configure Black for code formatting by creating a pyproject.toml file:\n   ```toml\n   [tool.black]\n   line-length = 88\n   target-version = ['py38']\n   include = '\\.pyi?$'\n   ```\n5. Configure Flake8 by creating a .flake8 file:\n   ```\n   [flake8]\n   max-line-length = 88\n   extend-ignore = E203\n   exclude = .git,__pycache__,build,dist,venv\n   ```\n6. Configure isort in pyproject.toml:\n   ```toml\n   [tool.isort]\n   profile = \"black\"\n   line_length = 88\n   ```\n7. Testing approach: Run each tool to verify configuration is working correctly:\n   ```bash\n   black --check .\n   flake8\n   isort --check .\n   ```",
+					"status": "done",
+					"parentTaskId": 1
+				},
+				{
+					"id": 3,
+					"title": "Initialize Version Control and Documentation",
+					"description": "Set up Git repository, create comprehensive README documentation, and prepare the project for collaboration.",
+					"dependencies": [1, 2],
+					"details": "1. Initialize Git repository:\n   ```bash\n   git init\n   ```\n2. Create a comprehensive .gitignore file for Python projects:\n   ```\n   # Python bytecode\n   __pycache__/\n   *.py[cod]\n   *$py.class\n   \n   # Distribution / packaging\n   dist/\n   build/\n   *.egg-info/\n   \n   # Virtual environments\n   venv/\n   env/\n   .env/\n   \n   # Testing\n   .coverage\n   htmlcov/\n   .pytest_cache/\n   \n   # IDE specific files\n   .idea/\n   .vscode/\n   *.swp\n   ```\n3. Create a detailed README.md with:\n   - Project title and description\n   - Installation instructions\n   - Usage examples\n   - Development setup guide\n   - Testing instructions\n   - License information\n   - Contribution guidelines\n4. Create a simple LICENSE file (e.g., MIT, Apache 2.0)\n5. Add a basic contributing.md file with guidelines for contributors\n6. Make an initial commit:\n   ```bash\n   git add .\n   git commit -m \"Initial project setup\"\n   ```\n7. Testing approach: Verify git status shows clean working directory and README renders correctly on a Markdown previewer.",
+					"status": "done",
+					"parentTaskId": 1
+				},
+				{
+					"id": 4,
+					"title": "Setup CI/CD with GitHub Actions",
+					"description": "Configure GitHub Actions workflows for automated testing and package publishing.",
+					"details": "1. Create a `develop` branch from `master` (assuming `master` is the main branch):\n   ```bash\n   git checkout master\n   git pull origin master # Ensure master is up-to-date\n   git checkout -b develop\n   git push origin develop\n   ```\n2. Create the directory structure for GitHub workflows: `.github/workflows/`\n3. Create a workflow file `.github/workflows/test.yml` to run tests on every push and pull request:\n   ```yaml\n   # .github/workflows/test.yml\n   name: Run Tests\n\n   on: [push, pull_request]\n\n   jobs:\n     test:\n       runs-on: ubuntu-latest\n       strategy:\n         matrix:\n           python-version: [\"3.10\", \"3.11\", \"3.12\"] # Test against supported Python versions\n\n       steps:\n       - uses: actions/checkout@v4\n       - name: Set up Python ${{ matrix.python-version }}\n         uses: actions/setup-python@v5\n         with:\n           python-version: ${{ matrix.python-version }}\n       - name: Install uv\n         run: curl -LsSf https://astral.sh/uv/install.sh | sh\n       - name: Install dependencies\n         run: uv sync --system --dev\n       - name: Run linters and formatters\n         run: |\n           uv run black --check .\n           uv run isort --check .\n           uv run flake8\n       - name: Run tests\n         run: uv run pytest\n   ```\n4. Create a workflow file `.github/workflows/publish.yml` to build and publish packages:\n   ```yaml\n   # .github/workflows/publish.yml\n   name: Build and Publish\n\n   on:\n     push:\n       branches:\n         - master\n         - develop\n\n   jobs:\n     build_and_publish:\n       runs-on: ubuntu-latest\n       # Use environment for conditional publishing based on branch\n       environment:\n         name: pypi\n         url: https://pypi.org/p/fabric-mcp # Adjust if package name differs\n       permissions:\n         id-token: write # Required for trusted publishing\n\n       steps:\n       - uses: actions/checkout@v4\n       - name: Set up Python\n         uses: actions/setup-python@v5\n         with:\n           python-version: '3.12' # Use a specific version for consistency\n       - name: Install uv\n         run: curl -LsSf https://astral.sh/uv/install.sh | sh\n       - name: Install dependencies\n         run: uv sync --system --dev # Need dev deps for tests\n       - name: Run tests # Ensure tests pass before publishing\n         run: uv run pytest\n       - name: Build package\n         run: uv build --sdist --wheel -o dist/ .\n\n       # Publish to TestPyPI for 'develop' branch\n       - name: Publish package to TestPyPI\n         if: github.ref == 'refs/heads/develop'\n         run: >\n           uv publish --repository-url https://test.pypi.org/legacy/\n           -u __token__ -p ${{ secrets.TEST_PYPI_API_TOKEN }} dist/*\n\n       # Publish to PyPI for 'master' branch\n       - name: Publish package to PyPI\n         if: github.ref == 'refs/heads/master'\n         run: >\n           uv publish -u __token__ -p ${{ secrets.PYPI_API_TOKEN }} dist/*\n   ```\n### Testing approach:\n- Verify `test.yml` runs successfully on pushes and PRs to any branch.\n- Verify `publish.yml` runs successfully on pushes to `develop` and publishes to TestPyPI. Check the TestPyPI package page.\n- Verify `publish.yml` runs successfully on pushes to `master` and publishes to PyPI. Check the PyPI package page.\n- Requires setting up `PYPI_API_TOKEN` and `TEST_PYPI_API_TOKEN` secrets in the GitHub repository settings (Repository > Settings > Secrets and variables > Actions). These should be generated from PyPI/TestPyPI. Consider using Trusted Publishing for better security if possible.",
+					"status": "done",
+					"dependencies": ["1.3"],
+					"parentTaskId": 1
+				}
+			]
+		},
+		{
+			"id": 2,
+			"title": "Implement Core MCP Server Logic",
+			"description": "Create the foundation for the MCP server including connection handling and the list_tools() functionality.",
+			"status": "done",
+			"dependencies": [1],
+			"priority": "high",
+			"details": "1. Implement the MCP server interface according to the 2025-03-26 specification.\n2. Set up the basic server structure that can accept connections via the initial transport method (stdio).\n3. Implement the list_tools() method that returns the available Fabric tools.\n4. Create stubs for all the planned tools (fabric_list_patterns, fabric_run_pattern, etc.).\n5. Implement basic error handling for connection and protocol issues.\n6. Ensure the server can start up and respond to basic MCP requests.",
+			"testStrategy": "Create unit tests for the server initialization and list_tools() functionality. Test that the server correctly advertises all the planned Fabric tools with appropriate descriptions."
+		},
+		{
+			"id": 3,
+			"title": "Develop Fabric API Client",
+			"description": "Create an internal client to communicate with the Fabric REST API (fabric --serve).",
+			"status": "pending",
+			"dependencies": [1],
+			"priority": "high",
+			"details": "1. Implement a client that can connect to the Fabric REST API.\n2. Create methods for all required API endpoints (/patterns, /chat, /models/names, /strategies, /config).\n3. Implement authentication using the Fabric API key.\n4. Add error handling for API connection issues, authentication failures, and invalid responses.\n5. Create a configuration mechanism for specifying the Fabric API endpoint and credentials.\n6. Implement request/response logging for debugging purposes.",
+			"testStrategy": "Create unit tests with mock responses for each Fabric API endpoint. Test error handling by simulating various failure scenarios.",
+			"subtasks": [
+				{
+					"id": 1,
+					"title": "Implement Core API Client Infrastructure",
+					"description": "Create the foundational API client class with configuration management, authentication, and base HTTP methods",
+					"dependencies": [],
+					"details": "1. Create a `FabricApiClient` class with configurable base URL, API key, and region parameters\n2. Implement session management with connection pooling for performance optimization\n3. Set up authentication headers using the Fabric API key\n4. Create base HTTP methods (GET, POST, PUT, DELETE) with proper error handling\n5. Implement retry logic with exponential backoff for transient failures (3 retries with 0.3 backoff factor)\n6. Add request/response logging with sensitive data redaction\n7. Create a configuration mechanism for API endpoint and credentials (support environment variables and config files)\n8. Add proper timeout handling to prevent hanging processes\n9. Write unit tests using mocked HTTP responses to verify core functionality\n10. Ensure all HTTP connections use HTTPS for security",
+					"status": "in-progress",
+					"parentTaskId": 3
+				},
+				{
+					"id": 2,
+					"title": "Implement Fabric API Endpoint Methods",
+					"description": "Create specific methods for all required Fabric API endpoints with proper request/response handling",
+					"dependencies": [1],
+					"details": "1. Implement method for `/patterns` endpoint to retrieve pattern data\n2. Implement method for `/chat` endpoint to handle chat interactions\n3. Implement method for `/models/names` endpoint to get available model names\n4. Implement method for `/strategies` endpoint to work with strategies\n5. Implement method for `/config` endpoint to retrieve configuration\n6. Add proper type hints and documentation for each method\n7. Implement parameter validation before sending requests\n8. Add response parsing and error handling specific to each endpoint\n9. Create data models/classes for structured response data\n10. Write unit tests for each endpoint method using mocked responses\n11. Ensure region awareness in endpoint implementations for optimal performance",
+					"status": "pending",
+					"parentTaskId": 3
+				},
+				{
+					"id": 3,
+					"title": "Implement Advanced Error Handling and Diagnostics",
+					"description": "Enhance the client with comprehensive error handling, diagnostics, and performance monitoring",
+					"dependencies": [1, 2],
+					"details": "1. Create custom exception classes for different error scenarios (AuthenticationError, ConnectionError, TimeoutError, etc.)\n2. Implement detailed error messages with troubleshooting guidance\n3. Add comprehensive logging with different verbosity levels (DEBUG, INFO, WARNING, ERROR)\n4. Implement request/response timing metrics for performance monitoring\n5. Create a diagnostic mode that provides detailed information about API interactions\n6. Add support for correlation IDs to track requests across systems\n7. Implement a mechanism to export logs to external monitoring systems\n8. Create helper methods for common error resolution scenarios\n9. Add health check functionality to verify API connectivity\n10. Write integration tests that verify error handling with actual API responses\n11. Document all error scenarios and resolution steps",
+					"status": "pending",
+					"parentTaskId": 3
+				},
+				{
+					"id": 4,
+					"title": "Implement Core API Client",
+					"description": "Create the base API client with connection handling",
+					"dependencies": [],
+					"details": "Develop a core client class that establishes connection to the Fabric REST API endpoint, handles HTTP requests/responses using HttpClient or similar, and implements proper connection pooling and timeout handling.",
+					"status": "pending",
+					"testStrategy": "Test connection to API endpoints with mock server responses and verify proper handling of connection timeouts and server unavailability."
+				},
+				{
+					"id": 5,
+					"title": "Develop Endpoint-Specific Methods",
+					"description": "Implement methods for all required API endpoints",
+					"dependencies": [4],
+					"details": "Create dedicated methods for each required endpoint (/patterns, /chat, /models/names, /strategies, /config) with appropriate request parameters and response parsing. Ensure proper data serialization/deserialization.",
+					"status": "pending",
+					"testStrategy": "Create unit tests for each endpoint method using mock responses to verify correct request formation and response handling."
+				},
+				{
+					"id": 6,
+					"title": "Implement Error Handling",
+					"description": "Create comprehensive error handling for API interactions",
+					"dependencies": [4, 5],
+					"details": "Develop error handling mechanisms for API connection issues, authentication failures, invalid responses, rate limiting, and unexpected server errors. Implement appropriate retry logic and meaningful error messages.",
+					"status": "pending",
+					"testStrategy": "Test error scenarios by simulating various failure conditions and verify appropriate error handling and reporting."
+				},
+				{
+					"id": 7,
+					"title": "Create Configuration and Logging System",
+					"description": "Implement configuration management and request/response logging",
+					"dependencies": [4],
+					"details": "Develop a configuration system for specifying API endpoints, credentials, and client behavior options. Implement comprehensive logging for all API requests and responses to facilitate debugging, with appropriate log levels and sensitive data masking.",
+					"status": "pending",
+					"testStrategy": "Verify configuration changes are properly applied to client behavior and confirm logs contain necessary information for debugging while properly protecting sensitive data."
+				}
+			]
+		},
+		{
+			"id": 4,
+			"title": "Implement fabric_list_patterns Tool",
+			"description": "Implement the tool that lists available Fabric patterns by mapping to the Fabric /patterns API endpoint.",
+			"status": "pending",
+			"dependencies": [2, 3],
+			"priority": "medium",
+			"details": "1. Create the fabric_list_patterns tool implementation that calls the Fabric API client.\n2. Map the response from Fabric's /patterns endpoint to the appropriate MCP tool response format.\n3. Handle pagination if the Fabric API supports it.\n4. Implement proper error handling and status reporting.\n5. Format the pattern list in a user-friendly way that works well in MCP clients.",
+			"testStrategy": "Test the tool with both mock data and against a real Fabric instance. Verify that all patterns are correctly listed and formatted according to MCP specifications."
+		},
+		{
+			"id": 5,
+			"title": "Implement Basic fabric_run_pattern Tool",
+			"description": "Implement the core functionality of the fabric_run_pattern tool with basic text input/output (non-streaming).",
+			"status": "pending",
+			"dependencies": [3],
+			"priority": "high",
+			"details": "1. Create the fabric_run_pattern tool implementation that accepts a pattern name and input text.\n2. Map the MCP tool parameters to the appropriate Fabric API request format for the /chat endpoint.\n3. Implement the basic non-streaming version first, where the complete response is returned after processing.\n4. Handle pattern execution errors and propagate them appropriately via MCP.\n5. Ensure the tool correctly processes and returns the pattern output.",
+			"testStrategy": "Create tests with various patterns and inputs. Test both successful pattern execution and error scenarios. Verify the output matches what would be returned directly from Fabric."
+		},
+		{
+			"id": 6,
+			"title": "Implement fabric_get_pattern_details Tool",
+			"description": "Implement the tool that retrieves detailed information about a specific Fabric pattern.",
+			"status": "pending",
+			"dependencies": [3, 4],
+			"priority": "medium",
+			"details": "1. Create the fabric_get_pattern_details tool implementation that accepts a pattern name.\n2. Map to the Fabric /patterns/:name API endpoint.\n3. Format the response to include the system prompt and any metadata associated with the pattern.\n4. Handle cases where the requested pattern doesn't exist.\n5. Structure the output to be easily consumable by MCP clients.",
+			"testStrategy": "Test with various pattern names, including both existing and non-existent patterns. Verify that all pattern details are correctly retrieved and formatted."
+		},
+		{
+			"id": 7,
+			"title": "Implement Remaining Discovery Tools",
+			"description": "Implement the fabric_list_models, fabric_list_strategies, and fabric_get_configuration tools.",
+			"status": "pending",
+			"dependencies": [3],
+			"priority": "medium",
+			"details": "1. Implement fabric_list_models to map to Fabric's /models/names API endpoint.\n2. Implement fabric_list_strategies to map to Fabric's /strategies API endpoint.\n3. Implement fabric_get_configuration to map to Fabric's /config API endpoint.\n4. Ensure consistent error handling and response formatting across all tools.\n5. Format the outputs to be user-friendly and consistent with other tools.",
+			"testStrategy": "Create separate tests for each tool, verifying that they correctly retrieve and format the respective information from the Fabric API."
+		},
+		{
+			"id": 8,
+			"title": "Add Streaming Support to fabric_run_pattern",
+			"description": "Enhance the fabric_run_pattern tool to support streaming responses according to MCP streaming guidelines.",
+			"status": "pending",
+			"dependencies": [5],
+			"priority": "high",
+			"details": "1. Modify the fabric_run_pattern implementation to handle streaming responses from Fabric's /chat endpoint.\n2. Implement the streaming protocol as defined in the MCP specification.\n3. Ensure proper error handling during streaming (connection drops, timeouts, etc.).\n4. Add configuration options to control streaming behavior (enable/disable, chunk size, etc.).\n5. Maintain backward compatibility with non-streaming clients.",
+			"testStrategy": "Test streaming with various patterns and inputs. Verify that chunks are correctly streamed according to MCP specifications. Test error scenarios during streaming."
+		},
+		{
+			"id": 9,
+			"title": "Implement Advanced Input Handling",
+			"description": "Enhance fabric_run_pattern to handle complex inputs like variables and attachments.",
+			"status": "pending",
+			"dependencies": [5],
+			"priority": "medium",
+			"details": "1. Extend the fabric_run_pattern tool to accept variables as structured input.\n2. Implement attachment handling according to MCP specifications.\n3. Map these complex inputs to the appropriate format for Fabric's /chat API.\n4. Add validation for input formats and provide clear error messages for invalid inputs.\n5. Document the expected format for variables and attachments.",
+			"testStrategy": "Create tests with various combinations of variables and attachments. Test both valid and invalid inputs. Verify that complex inputs are correctly passed to Fabric and processed."
+		},
+		{
+			"id": 10,
+			"title": "Implement Additional Transport Layers",
+			"description": "Add support for additional MCP transport mechanisms beyond the initial implementation.",
+			"status": "pending",
+			"dependencies": [2],
+			"priority": "low",
+			"details": "1. Research and implement WebSocket transport for MCP.\n2. Ensure the server can handle multiple concurrent connections.\n3. Implement proper connection lifecycle management (initialization, heartbeat, termination).\n4. Add configuration options for transport-specific settings (port, max connections, etc.).\n5. Maintain backward compatibility with the initial transport method.",
+			"testStrategy": "Test each transport mechanism individually. Verify that the server can handle multiple concurrent connections. Test connection lifecycle events."
+		},
+		{
+			"id": 11,
+			"title": "Enhance Error Handling and Reporting",
+			"description": "Refine the error handling system to provide clear, actionable error messages via MCP.",
+			"status": "pending",
+			"dependencies": [4, 5, 6, 7, 8, 9],
+			"priority": "medium",
+			"details": "1. Create a comprehensive error mapping between Fabric API errors and MCP error codes.\n2. Implement detailed error messages that provide context and potential solutions.\n3. Add logging for all errors with appropriate severity levels.\n4. Implement graceful degradation for partial system failures.\n5. Create documentation for common error scenarios and their resolutions.",
+			"testStrategy": "Create tests for various error scenarios across all tools. Verify that errors are correctly mapped, formatted, and reported according to MCP specifications."
+		},
+		{
+			"id": 12,
+			"title": "Documentation and Polish",
+			"description": "Create comprehensive documentation and polish the server for production use.",
+			"status": "pending",
+			"dependencies": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+			"priority": "medium",
+			"details": "1. Create detailed API documentation for all implemented tools.\n2. Write a comprehensive user guide with examples for common use cases.\n3. Document configuration options and their effects.\n4. Create contribution guidelines for the project.\n5. Add examples of integrating with popular MCP Hosts.\n6. Review and refine code quality, performance, and security.\n7. Prepare the project for community feedback and contributions.",
+			"testStrategy": "Review documentation for completeness and accuracy. Verify that examples work as described. Conduct a security review of the codebase."
+		}
+	],
+	"metadata": {
+		"projectName": "Fabric MCP Server Implementation",
+		"totalTasks": 12,
+		"sourceFile": "/Users/kayvan/src/fabric-mcp/scripts/prd.txt",
+		"generatedAt": "2023-11-07"
+	}
+}
