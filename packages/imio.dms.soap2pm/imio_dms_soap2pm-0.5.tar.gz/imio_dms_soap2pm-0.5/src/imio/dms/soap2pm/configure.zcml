@@ -1,0 +1,44 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:grok="http://namespaces.zope.org/grok"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="imio.dms.soap2pm">
+
+    <i18n:registerTranslations directory="locales" />
+
+    <five:registerPackage package="." initialize=".initialize" />
+    
+    <include package="five.grok" />
+    <include package="plone.api" />
+
+    <include package=".browser" />
+    <include package=".content" />
+
+    <grok:grok package="." />
+
+    <genericsetup:registerProfile
+        name="default"
+        title="imio.dms.soap2pm"
+        directory="profiles/default"
+        description="Installs the imio.dms.soap2pm add-on."
+        provides="Products.GenericSetup.interfaces.EXTENSION"
+        />
+
+    <genericsetup:registerProfile
+        name="uninstall"
+        title="imio.dms.soap2pm"
+        directory="profiles/uninstall"
+        description="Uninstalls the imio.dms.soap2pm add-on."
+        provides="Products.GenericSetup.interfaces.EXTENSION"
+        />
+
+    <genericsetup:importStep
+        name="imio.dms.soap2pm-postInstall"
+        title="imio.dms.soap2pm post_install import step"
+        description="Post install import step from imio.dms.soap2pm"
+        handler=".setuphandlers.post_install">
+    </genericsetup:importStep>
+
+</configure>

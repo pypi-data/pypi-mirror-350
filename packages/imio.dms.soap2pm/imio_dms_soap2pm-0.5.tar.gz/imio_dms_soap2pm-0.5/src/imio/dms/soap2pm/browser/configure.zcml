@@ -1,0 +1,23 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    i18n_domain="imio.dms.soap2pm">
+
+    <!-- Publish static files -->
+    <browser:resourceDirectory
+      name="imio.dms.soap2pm"
+      directory="static"
+      />
+
+    <browser:page
+        for="imio.dms.mail.dmsmail.IImioDmsIncomingMail"
+        name="IncomingmailWSClient"
+        permission="zope2.View"
+        class=".views.IncomingMailSoapClientView"
+        allowed_attributes="
+            detailed_description
+        "
+    />
+
+</configure>
