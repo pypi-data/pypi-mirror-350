@@ -1,0 +1,4 @@
+class MissingType: ...
+
+
+MISSING = MissingType()
