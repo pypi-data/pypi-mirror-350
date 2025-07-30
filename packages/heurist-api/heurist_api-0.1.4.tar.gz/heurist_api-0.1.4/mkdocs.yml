@@ -1,0 +1,81 @@
+site_name: Heurist API
+site_url: https://lostma-erc.github.io/heurist-api/
+
+theme:
+  name: material
+  palette:
+    primary: purple
+  highlightjs: true
+  hljs_languages:
+    - yaml
+    - python
+  analytics:
+    gtag: G-ABC123
+  sticky_navigation: true
+
+plugins:
+  - search
+  - gen-files:
+      scripts:
+      - src/scripts/gen_ref_pages.py
+  - literate-nav:
+      nav_file: SUMMARY.md
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: ["./src/heurist"]
+          options:
+            docstring_options:
+              ignore_init_summary: false
+            docstring_section_style: list
+            filters: ["!^_"]
+            heading_level: 1
+            inherited_members: true
+            merge_init_into_class: true
+            parameter_headings: true
+            separate_signature: true
+            show_root_heading: true
+            show_root_full_path: false
+            show_signature_annotations: true
+            show_source: false
+            show_symbol_type_heading: true
+            show_symbol_type_toc: false
+            signature_crossrefs: true
+            summary: true
+  - social
+
+markdown_extensions:
+  - pymdownx.highlight
+  - toc:
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+nav:
+- Home: index.md
+- Usage:
+  - "Installation & basic usage": usage/index.md
+  - Download:
+    - "Basic: My record types": usage/download/index.md
+    - Multiple record groups: usage/download/group_types.md
+    - Export CSV: usage/download/export_csv.md
+    - Filter by user: usage/download/user_filter.md
+    - Strict date validation: usage/download/date_validation.md
+    - Logs & name changes: usage/download/logs.md
+  - Export from API: usage/records.md
+  - Generate schema: usage/schema.md
+  - Python API client: usage/module.md
+  - R-studio integration: usage/rstudio.md
+# defer to gen-files + literate-nav
+- Code reference: reference/
+- Development:
+  - Heurist:
+    - Temporal objects: development/heuristdb/temporal.md
+  - Contributing: development/contributing.md
+  - Code of conduct: development/code_of_conduct.md
+  - Coverage: development/coverage.md
+  - Publishing: development/publishing.md
+- Credits: legal.md
+- GitHub: https://github.com/LostMa-ERC/heurist-api
