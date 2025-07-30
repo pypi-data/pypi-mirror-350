@@ -1,0 +1,87 @@
+{% if not fullscreen %}
+    {% extends "layouts/base.html" %}
+{% else %}
+    {% extends "layouts/base-fullscreen.html" %}
+{% endif %}
+
+{% block title %}
+  {{ _("Third Party") }} {{ name }}{% if guild %} - {{ guild.name }}{% endif %}{% if page %} / {{ page|replace("_", " ")|replace("-", " ")|title }}{% endif %}
+{% endblock %}
+
+{% block stylesheets %}{% endblock %}
+
+{% block content %}
+  <main class="main-content position-relative border-radius-lg">
+    <div class="container-fluid">
+        <div class="row">
+            {% if guild and not expanded and not fullscreen %}
+                {% include "pages/guild_profile.html" %}
+            {% endif %}
+
+            <div id="guild-content"{% if guild and not expanded and not fullscreen %} class="col-md-8 mt-4"{% endif %}>
+                {% if guild and not fullscreen %}
+                    <ul class="nav nav-pills position-relative end-0" role="tablist">
+                        <li class="nav-item">
+                            <a href="{{ url_for("base_blueprint.dashboard_guild", guild_id=guild.id) }}" class="nav-link">
+                                <i class="fa fa-map opacity-10" style="vertical-align: -1px;"></i> {{ _("Overview") }}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url_for("base_blueprint.dashboard_guild", guild_id=guild.id, page="settings") }}" class="nav-link">
+                                <i class="ni ni-settings-gear-65 opacity-10" style="vertical-align: -1.5px;"></i> {{ _("Settings") }}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url_for("base_blueprint.dashboard_guild", guild_id=guild.id, page="third-parties") }}" class="nav-link show active" id="third-parties-tab">
+                                <i class="ni ni-bullet-list-67 opacity-10" style="vertical-align: -1.5px;"></i> {{ _("Third Parties") }}
+                            </a>
+                        </li>
+                    </ul>
+                    <br />
+                {% endif %}
+                <div class="tab-content" id="creator-tabContent">
+                    <div class="tab-pane fade show active" id="third-parties" role="tabpanel" aria-labelledby="third-parties-tab">
+                        <div class="card card-chart">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-sm-12 text-left">
+                                        <div class="d-flex justify-content-between mb-4">
+                                            {% if guild %}
+                                                {% if not expanded and not fullscreen %}
+                                                    <h2 class="card-title"><a href="{{ url_for("base_blueprint.dashboard_guild", guild_id=guild.id, page="third-parties", third_party=name) }}">🔙 {{ name }}</a>{% if page %} / {{ page|replace("_", " ")|replace("-", " ")|title }}{% endif %}</h2>
+                                                {% else %}
+                                                    <h2 class="card-title"><a href="{{ url_for("base_blueprint.dashboard_guild", guild_id=guild.id) }}"><img src="{{ guild.icon_url }}" style="height: 50px; vertical-align: -13px; border-radius: 50%; margin: none; display: inline;" /> {{ guild.name }}</a> / <a href="{{ url_for("base_blueprint.dashboard_guild", guild_id=guild.id, page="third-parties", third_party=name) }}">🔙 {{ name }}</a>{% if page %} / {{ page|replace("_", " ")|replace("-", " ")|title }}{% endif %}</h2>
+                                                {% endif %}
+                                            {% else %}
+                                                <h2 class="card-title"><a href="{{ url_for("third_parties_blueprint.third_parties", third_party=name) }}">🔙 {{ name }}</a>{% if page %} / {{ page|replace("_", " ")|replace("-", " ")|title }}{% endif %}</h2>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="third-party-content" class="container mt-4">
+                                    {{ source_content|safe }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </main>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        function changePage(page) {
+            var tab_nav_link = document.querySelector("#" + page + "-tab");
+            if (tab_nav_link) {
+                tab_nav_link.parentElement.parentElement.onmouseover(tab_nav_link);
+                tab_nav_link.dispatchEvent(new Event("click"));
+            }
+        }
+        document.addEventListener("DOMContentLoaded", function() {
+            changePage("third-parties");
+        });
+    </script>
+{% endblock %}
