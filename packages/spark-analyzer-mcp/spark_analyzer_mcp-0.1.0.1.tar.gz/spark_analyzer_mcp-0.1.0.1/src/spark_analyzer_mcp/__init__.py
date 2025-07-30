@@ -1,0 +1,1 @@
+# Spark Log Analyzer package
