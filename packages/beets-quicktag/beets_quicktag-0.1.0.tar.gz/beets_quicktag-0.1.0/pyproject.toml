@@ -1,0 +1,39 @@
+[project]
+name = "beets-quicktag"
+version = "0.1.0"
+description = "A beets plugin for quickly tagging tracks with customizable attributes"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "beets>=2.3.0",
+    "just-playback>=0.1.8",
+    "textual>=3.2.0",
+]
+
+[dependency-groups]
+dev = [
+    "debugpy>=1.8.14",
+    "pytest>=8.3.5",
+    "pytest-asyncio>=0.26.0",
+    "ruff>=0.11.9",
+    "textual-dev>=1.7.0",
+]
+
+[tool.uv.sources]
+beets = { git = "https://github.com/beetbox/beets.git" }
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]  # Line too long - let formatter handle this
