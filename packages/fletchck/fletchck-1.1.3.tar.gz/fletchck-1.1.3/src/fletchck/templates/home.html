@@ -1,0 +1,19 @@
+{% extends "dash.html" %}
+{% block main %}
+{% if status['info'] %}
+ {% for check in status['checks'] %}{% if not status['inseqs'][check] %}{% if status['checks'][check]['failState'] %}<div id="{{ site.pathQuote(check) }}" class="bg-body-tertiary p-2 rounded">
+   <h3 class="my-2"><a href="/check/{{ site.pathQuote(check) }}">{{ check }} ({{ status['checks'][check]['checkType'] }})</a></h3>
+   <ul>
+    <li>Last Fail: {{ site.checks[check].lastFail }}</li>
+    {% if check in status['seqs'] %}<li>Failing checks: {% for checkName in site.checks[check].checks %}{% if site.checks[checkName].failState %}<a href="/check/{{ site.pathQuote(checkName) }}">{{ checkName }}</a> {% end %}{% end %}{% end %}
+    {% if site.checks[check].checkType == 'remote' %}<li>Remote Type: {{ site.checks[check].subType }}</li>
+    <li>Last Updated: {{ site.checks[check].lastUpdate if site.checks[check].lastUpdate else 'N/A' }}</li>{% end %}
+   </ul>
+   {% if site.checks[check].log %}<p class="small">{{ site.checks[check].log[0] }}
+   {% for line in site.checks[check].log[1:] %}<br>{{ line }}{% end %}</p>{% end %}
+  <p><a href="/check/{{ site.pathQuote(check) }}?run=home" class="btn btn-sm btn-primary">Re-Run</a></p>
+  </div>{% end %}{% end %}{% end %}{% else %}<div class="bg-body-tertiary p-2 rounded">
+    <h2 class="py-3">&#x0001F44D;</h2>
+ <p>{{ handler.settings["site_name"] }} monitoring {{ str(len(site.checks)) }} check{{ 's' if len(site.checks) != 1 else '' }}.</p>
+ <p class="pt-3"><a class="btn btn-primary" href="/check/" title="Add new check to site" role="button">Add Check</a></p>
+ </div>{% end %}{% end %}
