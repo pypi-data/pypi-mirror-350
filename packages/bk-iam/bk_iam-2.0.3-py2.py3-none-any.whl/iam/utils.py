@@ -1,0 +1,135 @@
+# -*- coding: utf-8 -*-
+"""
+TencentBlueKing is pleased to support the open source community by making
+蓝鲸智云-权限中心Python SDK(iam-python-sdk) available.
+Copyright (C) 2017-2021 THL A29 Limited, a Tencent company. All rights reserved.
+Licensed under the MIT License (the "License"); you may not use this file except in compliance with the License.
+You may obtain a copy of the License at http://opensource.org/licenses/MIT
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+specific language governing permissions and limitations under the License.
+"""
+import itertools
+from collections import OrderedDict, defaultdict
+
+from . import meta
+
+
+# flake8: noqa: C901
+def gen_perms_apply_data(system, subject, action_to_resources_list):
+    """
+    根据传入的参数生成无权限交互协议数据
+
+    action_to_resources_list 应该参照以下格式:
+
+    [
+        {
+            "action": Action,
+            "resources_list": [[resource1, resource2], [resource1, resource2]]
+        },
+        ...
+    ]
+
+    单个 action 中对应的 resources_list 必须是同类型的 Resource
+
+    """
+    data = {
+        "system_id": system,
+        "system_name": meta.get_system_name(system),
+    }
+
+    actions = []
+    for atr in action_to_resources_list:
+        action_obj = atr["action"]
+        resources_list = atr["resources_list"]
+        action = {
+            "id": action_obj.id,
+            "name": meta.get_action_name(system, action_obj.id),
+        }
+
+        # 1. aggregate resources by system and type
+        system_resources_list = OrderedDict({})
+        for resources in resources_list:
+            system_resources = OrderedDict({})
+
+            # 1. assemble system_resources e.g. {"system1": [r1, r2], "system2": [r3]}
+            for resource in resources:
+                system_resources.setdefault(resource.system, []).append(resource)
+
+            # 2. append to system_resources_list e.g.g {"system1": [[r1, r2]], "system2": [[r3]]}
+            for system_id, resources in system_resources.items():
+                system_resources_list.setdefault(system_id, []).append(resources)
+
+        # 2. aggregate resources by resource type, generate related_resource_type
+        related_resource_types = []
+        for system_id, resources_list in system_resources_list.items():
+            if not resources_list:
+                continue
+
+            # aggregate resources by resource type
+            resource_type__resources = defaultdict(list)
+            for resource in list(itertools.chain(*resources_list)):
+                resource_type__resources[resource.type].append(resource)
+
+            # get the list of resource instances of the same type
+            for __, resources in resource_type__resources.items():
+                a_resource = resources[0]
+                resource_types = {
+                    "system_id": system_id,
+                    "system_name": meta.get_system_name(system_id),
+                    "type": a_resource.type,
+                    "type_name": meta.get_resource_name(system_id, a_resource.type),
+                }
+                instances = []
+
+                # arrange instances according to topo level
+                for resource in resources:
+                    inst_item = []
+                    topo_path = []
+                    # get the topo level of the resource
+                    if resource.attribute and resource.attribute.get("_bk_iam_path_"):
+                        bk_iam_path = resource.attribute["_bk_iam_path_"]
+                        topo_path = bk_iam_path[1:-1].split("/")
+                    # append paernt topo instance
+                    for part in topo_path:
+                        # NOTE: old _bk_iam_path_ is like /set,1/host,2/
+                        # while the new _bk_iam_path_ is like /bk_cmdb,set,1/bk_cmdb,host,2/
+                        node_parts = part.split(",")
+                        # NOTE: topo resources should be considered to belong to different systems
+                        rsystem, rtype, rid = system_id, "", ""
+                        if len(node_parts) == 2:
+                            rtype, rid = node_parts[0], node_parts[1]
+                        elif len(node_parts) == 3:
+                            rsystem, rtype, rid = node_parts[0], node_parts[1], node_parts[2]
+                            # NOTE: currently, keep the name of /bk_cmdb,set,1/ same as /set,1/
+                            part = ",".join(node_parts[1:])
+                        else:
+                            raise Exception("Invalid _bk_iam_path_: %s" % topo_path)
+                        inst_item.append(
+                            {
+                                "type": rtype,
+                                "type_name": meta.get_resource_name(rsystem, rtype),
+                                "id": rid,
+                                "name": part,
+                            }
+                        )
+                    # lastly, append self
+                    inst_item.append(
+                        {
+                            "type": resource.type,
+                            "type_name": meta.get_resource_name(system_id, resource.type),
+                            "id": resource.id,
+                            "name": resource.attribute.get("name", "") if resource.attribute else "",
+                        }
+                    )
+                    instances.append(inst_item)
+
+                resource_types["instances"] = instances
+                related_resource_types.append(resource_types)
+
+        action["related_resource_types"] = related_resource_types
+        actions.append(action)
+
+    data["actions"] = actions
+
+    return data
