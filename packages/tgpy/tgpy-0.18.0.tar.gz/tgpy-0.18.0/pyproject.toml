@@ -1,0 +1,66 @@
+[project]
+name = "tgpy"
+version = "0.18.0"
+description = "Run Python code right in your Telegram messages"
+readme = "README.md"
+requires-python = ">=3.10,<4"
+license = { file = "LICENSE" }
+classifiers = [
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Development Status :: 4 - Beta",
+]
+authors = [
+  { name = "tmat", email = "a@tmat.me" },
+  { name = "vanutp", email = "hello@vanutp.dev" },
+  { name = "ntonee", email = "a12286@yandex.com" },
+]
+dependencies = [
+  "PyYAML~=6.0",
+  "aiorun>=2024.5.1",
+  "rich~=13.8",
+  "appdirs~=1.4",
+  "telethon-v1-24~=1.24",
+  "python-socks[asyncio]~=2.5",
+  "cryptg-anyos~=0.4",
+]
+
+[project.urls]
+documentation = "https://tgpy.dev/"
+repository = "https://github.com/tm-a-t/TGPy/"
+
+[project.scripts]
+tgpy = "tgpy.main:main"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.9"
+
+[tool.poetry.group.guide.dependencies]
+mkdocs-material = "^9.5"
+mkdocs-git-revision-date-localized-plugin = "^1.2"
+mkdocs-redirects = "^1.2"
+pillow = "^10.3"
+cairosvg = "^2.7"
+
+[tool.poetry.group.release.dependencies]
+python-semantic-release = "^9.15"
+
+[tool.semantic_release]
+version_variables = ["tgpy/version.py:__version__", "pyproject.toml:version"]
+build_command = """sed -i "s/\\(IS_DEV_BUILD *= *\\).*/\\1False/" tgpy/version.py && poetry build"""
+commit_message = 'chore(release): v{version} [skip ci]'
+commit_author = "github-actions <action@github.com>"
+
+[tool.ruff]
+preview = true
+builtins = ["ctx", "client", "restart"]
+
+[tool.ruff.lint]
+extend-select = ["I"]
+
+[tool.ruff.format]
+quote-style = "single"
+
+[build-system]
+requires = ["flit-core~=3.4"]
+build-backend = "flit_core.buildapi"
