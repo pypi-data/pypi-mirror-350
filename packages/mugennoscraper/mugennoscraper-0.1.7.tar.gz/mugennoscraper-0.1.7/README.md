@@ -1,0 +1,1 @@
+# Manga Scrape for the Mugen Project.
