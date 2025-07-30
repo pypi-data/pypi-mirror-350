@@ -1,0 +1,63 @@
+[project]
+name = "legion-query-runner"
+requires-python = ">=3.8"
+
+
+[tool.poetry]
+name = "legion-query-runner"
+version = "0.1.4"
+description = "Query runners"
+authors = ["Legion AI <info@thelegionai.com>"]
+readme = "README.md"
+packages = [
+    { include = "legion_query_runner", from = "src" }
+]
+
+[tool.poetry.dependencies]
+python = ">=3.8,<3.14"
+sqlparse = "0.5.0"
+psycopg2-binary = ">=2.9.10"
+mysqlclient = "2.1.1"
+pymssql = "^2.3.1"
+google-api-python-client = "1.7.11"
+google-auth = "*"
+apiclient = "*"
+boto3 = "1.28.8"
+sshtunnel = "0.1.5"
+python-dateutil = "2.8.0"
+requests = "2.32.3"
+urllib3 = "1.26.19"
+advocate = "1.0.0"
+funcy = "^2.0"
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+pytest = "7.4.0"
+coverage = "7.2.7"
+freezegun = "1.2.1"
+mock = "5.0.2"
+pre-commit = "3.3.3"
+pytest-cov = "4.1.0"
+ruff = "0.0.289"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+exclude = [".git", "node_modules"]
+ignore = ["E501"]
+select = ["C9", "E", "F", "W", "I001", "UP004"]
+
+[tool.ruff.mccabe]
+max-complexity = 15
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v --cov=query_runner --cov-report=term-missing" 
