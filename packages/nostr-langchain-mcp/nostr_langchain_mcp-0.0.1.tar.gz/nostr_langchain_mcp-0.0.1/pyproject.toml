@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nostr-langchain-mcp"
+version = "0.0.1"
+description = "Make Anthropic Model Context Protocol (MCP) tools compatible with LangChain and LangGraph agents."
+authors = [
+    { name = "Vadym Barda", email = "19161700+vbarda@users.noreply.github.com" },
+    { name = "Evan Hallmark", email = "ehallmark1122@gmail.com" }
+]
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "agentstr-sdk>=0.0.4",
+    "langchain-core>=0.3.36,<0.4",
+    "mcp>=1.7"
+]
+
+[tool.uv]
+reinstall-package = ["agentstr-sdk"]
+
+[dependency-groups]
+test = [
+    "pytest>=8.0.0",
+    "ruff>=0.9.4",
+    "mypy>=1.8.0",
+    "pytest-socket>=0.7.0",
+    "pytest-asyncio>=0.26.0",
+    "types-setuptools>=69.0.0",
+    "websockets>=15.0.1"
+]
+
+[tool.uv.workspace]
+members = [
+    "examples/clients/nostr-client",
+]
+
+[project.urls]
+Homepage = "https://www.github.com/ehallmark/nostr-langchain-mcp"
+Issues = "https://www.github.com/ehallmark/nostr-langchain-mcp/issues"
+
