@@ -1,0 +1,82 @@
+[build-system]
+requires = ["setuptools>=65.0", "setuptools_scm[toml]>=7.1.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "castepkit"
+authors = [
+  { name="YingXing Cheng", email="yxcheng2buaa@gmail.com" },
+]
+maintainers = [
+    {name='YingXing Cheng', email='yxcheng2buaa@gamil.com'}]
+keywords = ['Abinit calculations', 'Computational chemistry']
+description = "Tools for preparing inputs for Gaussian program."
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.10"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Education",
+    "Framework :: Matplotlib",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Natural Language :: English",
+    "Operating System :: POSIX",
+    "Operating System :: MacOS",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering",
+]
+dependencies = [
+    "importlib_resources",
+]
+dynamic = ['version']
+
+[project.optional-dependencies]
+dev = ["pre-commit"]
+tests = ['pytest', 'pytest-skip-slow']
+
+[project.urls]
+Homepage = 'https://github.com/yingxingcheng/castepkit'
+Repository = 'https://github.com/yingxingcheng/castepkit'
+Changelog = "https://github.com/yingxingcheng/castepkit/CHANGELOG.md"
+
+[project.scripts]
+castepkit-shg = "castepkit.shg:main"
+castepkit-dens0 = "castepkit.weighted_dens:main_single"
+castepkit-dens1 = "castepkit.weighted_dens:main_both"
+castepkit-dens = "castepkit.weighted_dens:main_all"
+
+[tool.ruff]
+# Enable pycodestyle (`E`) and Pyflakes (`F`) codes by default.
+select = ["E", "F"]
+ignore = ["E741", "E501"]
+
+# Allow autofix for all enabled rules (when `--fix`) is provided.
+fixable = ["A", "B", "C", "D", "E", "F", "G", "I", "N", "Q", "S", "T", "W", "ANN", "ARG", "BLE", "COM", "DJ", "DTZ", "EM", "ERA", "EXE", "FBT", "ICN", "INP", "ISC", "NPY", "PD", "PGH", "PIE", "PL", "PT", "PTH", "PYI", "RET", "RSE", "RUF", "SIM", "SLF", "TCH", "TID", "TRY", "UP", "YTT"]
+unfixable = []
+
+per-file-ignores = {"__init__.py" = ["F403"]}
+
+# Same as Black.
+line-length = 100
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+# Assume Python 3.10.
+target-version = "py310"
+
+[tool.ruff.mccabe]
+# Unlike Flake8, default to a complexity level of 10.
+max-complexity = 10
+
+[tool.setuptools_scm]
+write_to = "src/castepkit/_version.py"
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+addopts = "-v"
