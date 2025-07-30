@@ -1,0 +1,715 @@
+#!/usr/bin/env python3
+
+# to override print <= can be a big problem with exceptions
+#
+# colors in d f_table _fg _bg columns:
+# see
+# https://github.com/mixmastamyk/console/blob/master/console/color_tables_x11.py#L112
+#
+
+import sys
+import os
+from fire import Fire
+from cronvice.version import __version__
+from cronvice import config # -------- config at the beginning.....!!!!!
+# AND load config after all modules import config !
+from cronvice.config import move_cursor
+from cronvice import topbar
+from cronvice import key_enter
+from cronvice import mmapwr
+from cronvice import interpreter
+from cronvice import objects # I have no reach from remote-keyboard BUT from mainkb
+
+#### -------   TABLE CAPABILIITES ------ from cronvice  import d f_table
+from cronvice.df_table import create_dummy_df, show_table, \
+    inc_dummy_df, crtable
+from cronvice import libs_cron
+from cronvice import libs_screen
+
+import pandas as pd
+
+
+import time
+import datetime as dt
+from console import fg, bg, fx
+# -------- This was earlier forcolors, now TERMINALX
+#from blessings import Terminal
+import os
+from pyfiglet import Figlet
+import signal
+
+# ====================== for separate terminal keyboard using mmap
+#from prompt_toolkit.styles import Style
+from prompt_toolkit.cursor_shapes import CursorShape, ModalCursorShapeConfig
+
+from prompt_toolkit import PromptSession, prompt
+from prompt_toolkit.history import FileHistory
+from prompt_toolkit.completion import WordCompleter, NestedCompleter
+from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
+
+import json # transfe list to string and back
+
+# ==================================================================
+# ==================================================================
+# ==================================================================
+# ==================================================================
+#SHOW_LOGO_TABLE = True ###CHANGE###
+#SHOW_TIME = True ##CHANG
+SHOW_COMMAND_LINE = True # ??????
+RUN_MMAP_INPUT = True  #  INTERACTIVE MMAP-INTERACTIVE
+
+# =====
+RUN_SELECT_FROM_TABLE = True
+
+termsize = config.get_terminal_columns() # os.get_terminal_size().columns
+
+
+def handle_sigwinch(signum: signal.Signals, qqq):
+    # pylint: disable=unused-argument
+    #print("WINCH SIGNAL:",type(qqq), qqq)
+    #os.system("reset")
+    return None
+
+
+# ----this DOES IT
+#  for FONTS in `pyfiglet -l`; do echo $FONTS; pyfiglet $FONTS -f $FONTS; done | less
+figlet = Figlet(font="slant")
+# figle2 = Figlet(font="roman")
+# figle2 = Figlet(font="standard")
+figle2 = Figlet(font="ansi_regular")
+
+
+# def print_logo():
+#     """
+#     print fromt page + time
+#     """
+#     global termsize
+#     # global figlet, filg
+
+#     word = " cronvice"
+
+#     print("")
+#     print(figlet.renderText(word))
+#     print(figle2.renderText(dt.datetime.now().strftime("%H:%M:%S ")))
+#     print(
+#         f"DO YOU WANT TO INSTALL ME ?... Run me with your  \
+# {fg.green}'projectname'{fg.default} as a parameter"
+#     )
+#     print(f"do you want to show me ?  run with {fg.green}'show'{fg.default} as a parameter ")
+#     print(f"                            {fg.green}'.t'{fg.default} for show table ")
+#     print(f"                            {fg.green}'.d'{fg.default} for show date ")
+#     print(f"                            {fg.green}'.h'{fg.default} for show help (not working) ")
+#     print(f"                            {fg.green}'.r'{fg.default} for reset terminal ")
+#     print(f"do you want to quit ?  type {fg.green}'.q'{fg.default}  ")
+#     #print(f"    terminal width = {termsize} {os.get_terminal_size().columns}")
+
+
+def autoreset_terminal():
+    """
+    call every loop
+    """
+    global termsize
+    termsize2 = os.get_terminal_size().columns
+    #print("TS???", termsize, termsize2)
+    if termsize != termsize2:
+        print("i... RESET TERMINAL")
+        os.system("reset")
+        #terminal.clear()
+        termsize = termsize2
+        move_cursor(3, 1)
+        #print("X")
+
+# ***************************************************************************************
+# ***************************************************************************************
+#
+#   MAIN :  default logo = True
+#             server and detached_keyb False
+#
+#
+# ***************************************************************************************
+# ***************************************************************************************
+#def main(projectname=None, debug=False, keyboard_remote_start = False, servermode = False, logo=False, table=False):
+def main(cli_command=None, tag=None, timelen="1m", debug=False):
+    """
+    tool to maintain your programs running under SCREEN using AT job scheduler.\n
+    All scripts must be in ~/.myservice/anyname/tag
+    - where ~/.myservice is the  S-PATH, path to scripts structure
+    - anyname - can be number of different subfolders
+    - tag must be a executable script with a uniqe name in all ~/.myservice
+    * ~/.config/cronvice/cfg.json - contains the S-PATH ("services")
+    * without a parameter, interactive tui is run, quit it with .q
+    E.G.
+    -  cris h            # help
+    -  cris l            # list
+    -  cris t syncthing  # show time
+    -  cris p syncthing  # show full path
+    -  cris c syncthing  # show full comment
+    ! crontab lines: development version will not cooperate with production version
+
+    Args:
+      cli_command: ... (r)un (a)dd (d)elete
+                (e)nter (c)omment show (t)ime show (p)ath show (l)ist cron (x) block
+      tag: ... a UNIQUE name of the program to call
+      timelen: ... "1m" or other longer interval to call "tag" (repeatedly if not running)
+    """
+    global RUN_SELECT_FROM_TABLE, SHOW_LOGO_TABLE, SHOW_TIME, RUN_MMAP_INPUT
+    if debug:
+        print("D... Debug ON")
+        config.DEBUG = True
+        config.CFG_DEBUG = True
+    else:
+        config.DEBUG = False
+        config.CFG_DEBUG = False
+    #if table:
+    #    RUN_SELECT_FROM_TABLE = True
+
+    ## ------------- important to initialize all commands from interpretter
+    ## IF PRESENT !!!
+    #interpreter.init_interpretter()
+
+    ### config.CFG_DEBUG = debug
+    ### SHOW_LOGO_TABLE = logo
+    ### SHOW_TIME = logo
+    SHOW_LOGO_TABLE = True #CHANGE
+    SHOW_TIME = True #CHANGE
+
+
+    # ======== DEFINE THE CONFIG FILE HERE ======== load_config
+    # after all modules import config
+    # BEFORE FIRST PARSING
+    config.CONFIG["filename"] = "~/.config/cronvice/cfg.json"
+    config.CONFIG["history"] = "~/.config/cronvice/history"
+    config.load_config()
+    directory = config.CONFIG['filename']
+    directory = os.path.expanduser(directory)
+    if not os.path.exists(directory):
+        print("W... saving default configuration")
+        config.save_config()
+    config.debug_write(f'================================ MARKER ==========="/{cli_command}/{tag}/"', "MA")
+    sepath = config.CONFIG["services"]
+    if os.path.exists( os.path.expanduser(sepath) ):
+        config.debug_write(f'SPATH="{sepath}"', "MA")
+    else:
+        sepath = "~/.myservice"
+        if os.path.exists( os.path.expanduser(sepath) ):
+            config.CONFIG["services"] = sepath
+            config.save_config()
+        else:
+            sepath = "~/02_GIT/cloud_myservice"
+            if os.path.exists( os.path.expanduser(sepath) ):
+                config.CONFIG["services"] = sepath
+                config.save_config()
+            else:
+                print("X... path to services is incorrect")
+                print("X... edit", config.CONFIG["filename"] )
+                sys.exit(1)
+    # use lnav
+    #config.debug_write("Error: 1")
+    #config.debug_write("Warning: 1", "TT")
+    # with open("/tmp/cronvice.log", "a") as f:
+    #     f.write(f'i... ************************************************\n')
+    #     f.write(f'i... {dt.datetime.now()}\n')
+    #     f.write(f'i... in config loaded: PATH == {config.CONFIG["services"]} \n')
+
+
+    # ========================================
+    #   First command parsing #############
+    #-----------------------------------------
+
+
+    # if cli_command is None:
+    #     print("version: ", __version__)
+    #     print(f"         USE   -h for help                ")
+    #     print(f"         USE   show ... for demo              ")
+    #     print(f"         USE   show -l -t  ... for FULL demo  ")
+    #     sys.exit(0)
+
+    ##===================================================================
+    #  FORST COMMAND SYSTEM -  CLI ************************************
+    #--------------------------------------------------------------------
+    # FIRST LEVEL COMMAND **** SELECTION ****
+    if cli_command == "r":
+        # RUN
+        print("version: ", __version__, file=sys.stderr)
+        if not tag is None:
+            print("i... trying to run ", tag, file=sys.stderr)
+            libs_cron.run_job(tag)
+        sys.exit(0)
+
+    if cli_command == "a":
+        # ADD
+        print("version: ", __version__, file=sys.stderr)
+        if not tag is None:
+            print(f"i... trying to append ({timelen}) ", tag, file=sys.stderr)
+            libs_cron.add_job(tag, timelen)
+        sys.exit(0)
+
+    if cli_command == "m":
+        # MODIFY
+        print("version: ", __version__, file=sys.stderr)
+        if not tag is None:
+            print(f"i... trying to modify schedule to ({timelen}) ", tag, file=sys.stderr)
+            #libs_cron.add_job(tag, timelen)
+            libs_cron.reschedule_to_1m(tag, timelen) #reschdule to 1m
+        sys.exit(0)
+
+    if cli_command == "d":
+        # DELETE
+        print("version: ", __version__, file=sys.stderr)
+        if not tag is None:
+            print("i... trying to remove cron", tag, file=sys.stderr)
+            libs_cron.del_job(tag)
+            print("i... TRYING to STOP eventual screen", tag, file=sys.stderr)
+            libs_screen.stop_screen(tag)
+        sys.exit(0)
+
+    if cli_command == "e":
+        # ENTER
+        print("version: ", __version__, file=sys.stderr)
+        if not tag is None:
+            print("i... trying to ENTER ", tag, file=sys.stderr)
+            if timelen == "same":
+                libs_screen.enter_screen(tag, "same")
+            else:
+                libs_screen.enter_screen(tag)
+        sys.exit(0)
+
+    if cli_command == "s":
+        # STOP
+        print("version: ", __version__, file=sys.stderr)
+        if not tag is None:
+            print("i... trying to STOP screen", tag, file=sys.stderr)
+            libs_screen.stop_screen(tag)
+        sys.exit(0)
+
+    if cli_command == "c":
+        # COMMENT SHOW
+        print("version: ", __version__, file=sys.stderr)
+        if not tag is None:
+            print("i... trying to EXTRACT COMMENT ", tag, file=sys.stderr)
+            res = libs_cron.get_comment(tag)
+            #DT = libs_cron.get_DT(tag)
+            print(res)
+        sys.exit(0)
+
+    if cli_command == "t":
+        # TIME SLICE SHOW
+        print("version: ", __version__, file=sys.stderr)
+        if not tag is None:
+            print("i... trying to EXTRACT TIME SLICE ", tag, file=sys.stderr)
+            #res = libs_cron.get_comment(tag)
+            libs_cron.fill_current_DTS() # refresh all DT - time consuming MUST COME BEFORE DT
+            DT = libs_cron.get_DT(tag)
+            print(DT)
+        sys.exit(0)
+
+    if cli_command == "p":
+        # PATH SHOW
+        print("version: ", __version__, file=sys.stderr)
+        if not tag is None:
+            print("i... trying to EXTRACT FULL PATH ", tag, file=sys.stderr)
+            res = libs_cron.get_fullpath(tag)
+            print(res)
+        sys.exit(0)
+
+    if cli_command == "l":
+        # list SHOW
+        print("version: ", __version__, file=sys.stderr)
+        print("i... trying to list screen and crontab ",  file=sys.stderr)
+        res = libs_screen.list_screen_sessions()
+        print("------------------")
+        res = libs_screen.tidy_screen_sessions(res)
+        print("------------------")
+        res = libs_cron.just_list_cron(res)
+        # this was misssing here
+        #print(res)
+        #print(res)
+        sys.exit(0)
+
+    if cli_command == "x":
+        #  schedule 31.2.
+        print("version: ", __version__, file=sys.stderr)
+        if not tag is None:
+            print(f"i... trying to block crontab /{tag}/ but not delete ",  file=sys.stderr)
+            libs_cron.set_to_never(tag)
+            #res = libs_cron.just_list_cron()
+            #print(res)
+        sys.exit(0)
+
+
+    if cli_command == "h":
+        # HELP
+        print("version: ", __version__, file=sys.stderr)
+        print("i... trying to HELP ",  file=sys.stderr)
+        print("""
+-------------- harmless ----------------
+ h ... this help
+ l ... list all
+ c ... show comment
+ t ... show time slice
+ p ... show fullpath ... emacs `cronvice p tele01`
+ e ... enter SCREEN  (parameter 'same' will force same terminal)
+------------- fatal ----------------------------------
+ a ... ADD job to CRON (from the allowed directory st.ructure)
+ m ... modify schedule (1m 2m 3h ...)
+ r ... RUN job in screen
+ s ... STOP SCREEN (but it will restart in the next schedule)
+ d ... DELETE job FROM cron and STOP screen
+""")
+        sys.exit(0)
+
+
+    if not cli_command is None:
+        print("version: ", __version__)
+        print("X... unsupported command")
+        sys.exit(0)
+
+
+    # =========================================================================
+    #
+    #--------------------------------------------------------------------------
+
+    # --------------------------------------------------
+    # if not servermode: RUN_MMAP_INPUT = False
+    # GLobal clear terminal
+    if debug:
+        print(__version__)
+    #else:
+
+    signal.signal(signal.SIGWINCH, handle_sigwinch)
+
+
+
+    # ==================================================== #########################
+    #               command prompt - separate thread NO NEED FOR INTERMINAL COMMAND
+    #  this is probably a standalone keyboard interface ==========================
+    # ==============================================================================
+    #    if keyboard_remote_start:
+    if False:
+        #prompt_completer = WordCompleter( interpreter.KNOWN_COMMANDS )
+        prompt_completer = NestedCompleter.from_nested_dict( interpreter.KNOWN_COMMANDS_DICT )
+        #allobjects = interpreter.allobjects #  ['obj1']
+        multilineinput = False
+        config.myPromptSession = PromptSession(
+            history=FileHistory( os.path.expanduser(config.CONFIG["history"]) )
+        ) #, multiline=Trueinp
+        inp = ""
+        myname = os.path.splitext(os.path.basename(__file__))[0]
+
+        # --------!!! this is not visible
+        print(f"i...  input interface to {fg.orange}{myname}{fg.default} application. .q to quit all; .h to help.")
+        #loopn = 0
+        while (inp!=".q"):
+            #loopn+=1
+            inp = config.myPromptSession.prompt("> ",
+                                                cursor=CursorShape.BLINKING_UNDERLINE,
+                                                multiline=multilineinput,
+                                                completer=prompt_completer,
+                                                complete_while_typing=False,
+                                                wrap_lines=True, # no noew lines
+                                                mouse_support=False,  #middlemouse
+                                                auto_suggest=AutoSuggestFromHistory()
+                                                )
+            if inp==".h":
+                # ------------- all this is not visible-!!!
+                print("H...  HELP:")
+                print("H...  .t   table+logo")
+                print("H...  .d   disable logo and time")
+                print("H...  .r   reset terminal")
+                print("H... known commands: ", "  ".join(interpreter.KNOWN_COMMANDS )  )
+            elif inp==".r":
+                pass
+            elif inp==".d":
+                pass
+            elif inp==".t":
+                pass
+            elif inp==".q":
+                mmapwr.mmwrite(inp)
+            else:
+                # SOME REAL COMMUNICATION WITH THE OPERATION THREAD ----
+                # If not finished -->> wait for it;
+                #   and get name of
+                #print(loopn)
+                mmapwr.mmwrite(inp)
+                done = False
+                ii = 1
+                #esc = chr(27)
+                #cc=f'a{esc}[5m_'
+                cc=" "
+                spinner = ["🌑", "🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘"]
+                while not done:
+                    # res = mmapwr.mmread(  ) # read response
+                    ii+=1
+                    res = mmapwr.mmread_n_clear( mmapwr.MMAPRESP  )
+                    res = res.strip() # strin newline
+                    print("\r",spinner[ii%8], end=cc, flush=True)
+
+                    # if ii%2==0:
+                    #     print(spinner[0], end="\r", flush=True)
+                    # else:
+                    #     print(spinner[3], end="\r", flush=True)
+                    #print(f"... input was /{inp}/==/{res}/..result of read   len(inp):", len(inp), "  ...res:",len(res) )
+                    # if res.strip()==inp.strip(): # BEFORE SENDING OBJ
+                    if res.strip().find( inp.strip() )==0:
+                        parts = res.strip().split("###")
+                        if len(parts)>1:
+                            obj_names = json.loads( parts[-1] )
+                            #print("D... received objnames:", obj_names, type(obj_names))
+                            #print(f" YES::::.../{inp}/==/{res}/.. ?")
+                            # I need to append newly created objects to the autocomplete.....DIFFICULTY 9
+                            interpreter.allobjects = obj_names #.append( f"o{loopn}" ) # TSTING
+                            print(f"  {fg.dimgray}... known:",interpreter.allobjects,fg.default)
+                            #objects.get_objects_list_names()
+                            for i in interpreter.KNOWN_COMMANDS_LOCAL_OBJ:
+                                interpreter.KNOWN_COMMANDS_DICT[i] = {}
+                                for j in interpreter.allobjects:
+                                    interpreter.KNOWN_COMMANDS_DICT[i][j] = None
+                            prompt_completer = NestedCompleter.from_nested_dict( interpreter.KNOWN_COMMANDS_DICT )
+
+                        done = True
+                    #else:
+                    #    print(f" NONO:::.../{inp}/==/{res}/.. ?")
+                    time.sleep(0.25)
+                #print("... konec prikazu")
+
+
+        # print(inp)
+        return
+    # ==================================================== ######################### END
+    #           command prompt - separate thread
+    # ==================================================== ######################### END
+
+
+    # ===================== top bar and commads from kdb ==========
+    os.system("reset")
+    # when I put reset later, it occludes the 1st red inpput command
+
+    top = topbar.TopBar(bgcolor="auto")#bg.blue)
+    top2 = top.add_bar(bgcolor=bg.black)
+    top.add_element("time", 15,10 + 12, dt.datetime.now().strftime('%H:%M:%S') , fg.white + fx.bold)
+    top.add_element("tag", 1,13, "mode" , fg.black + fx.italic)
+    top.add_element("host", -10,10, topbar.get_hostname() , fg.black )
+    top.add_element("ver", -20,10, __version__ , fg.black )
+
+    #top.add_element("host", -10,10, get_hostname(), bg.orange + fx.bold + fg.blue)
+    top2.add_element("cmd", 1,22, ">", fg.white + fx.bold + bg.red)
+
+
+
+        # #
+        # #  commandline at TOP#2, cursor  a_b; option not to show
+        # #
+        # if (not SHOW_COMMAND_LINE) or (  (key is not None) and (len(key) == 0) ):
+        #     top2.print_to(0, f"{fg.cyan}{bg.black}{' '*termsize}{bg.black}")
+        # else:
+        #     # command input is on the 2nd TOP line
+        #     top2.print_to(
+        #         0,
+        #         f"{fg.white}{bg.red} > {fx.bold}{a.strip()}{fg.yellow}_{fg.white}{b.strip()}\
+        #     {fx.default}{fg.default}{bg.default} ",
+        #     )
+
+
+    # ========================= INITIAL cmd key setting....
+    cmd = ""
+    enter = False
+    key = None
+    a, b = (" ", " ")
+
+    # KEYTHREAD THIS MUST BE HERE.....toi catch 1st letter
+    #   only return         key, enter, abc = kthread.get_global_key()
+    #                       key:mayreact on q;     enter==hit ; abc=>(a,b) for display.
+    kthread = None
+    # For one-terminal-NO MMAP
+    if False:#RUN_MMAP_INPUT:
+        # THis goes when mmap active
+        #print("i...   MMAP ACTIVE ...........................")
+        kthread = key_enter.MmapSimulatedKeyboard(ending=".q")
+    else:
+        #print("D...    MMAP NOT ACTIVE, using SSHKEYB.............")
+        kthread = key_enter.KeyboardThreadSsh(ending=".q")
+    # whatabout to have other terminal feeding mmapfile
+
+
+    #---------------------------------
+    #create_dummy_df()
+    #print(df)
+    #df = enhance_df(df)
+    #print(df)
+    #sys.exit(0)
+    #---------------------------------
+
+    selection = None
+
+    #move_cursor(3, 1)
+
+    dfmain = crtable()  #pd.DataFrame([["Server", 3, 1], ["NAS", 4, 4] ], columns=['a', 'b', 'c'])
+
+    #################################################################
+    #################################################################
+    #          INFINITE           L O O P
+    #################################################################
+    #################################################################
+    count = 0
+    while True:
+        count += 1
+        autoreset_terminal()
+        # ===============
+        #if (SHOW_LOGO_TABLE):
+        #    # DEBUG terminalx.clear()
+        move_cursor(3, 9)
+        #   if SHOW_TIME:
+        #        print_logo()
+
+            # time.sleep(0.05)
+
+        #if ( count % 3) == 0:
+        # ========= INTENSIVE OPERATIONS ======================
+        if count % 4 == 0:
+            config.mycron.read()
+            dfnew = crtable()  #
+            # ONLY REFRESH IF MAJOR CHANGE
+            if (not dfnew['screen'].equals(dfmain['screen'])  ) or  (not dfnew['cron'].equals(dfmain['cron'])  )or  (not dfnew['DT'].equals(dfmain['DT'])  ):
+                dfmain = dfnew
+                os.system("reset")
+            show_table(dfmain, selection)
+            # SECOND LEVEL COMMAND - MENU PART *****
+            print("1st select:=>(e)nter; (s)top; (x)block; (r)reschedule 1m (rr) 2m; (l)ist; (d)elete ")
+            for tag in config.PROC_OBJ.keys():
+                if not config.PROC_OBJ[tag]['obj'].poll() is None: # means it ended NOW !!!!
+                    config.PROC_OBJ[tag]['dt'] = dt.datetime.now() - config.PROC_OBJ[tag]['time']
+                    config.PROC_OBJ[tag]['obj'] = None
+                    #config.INSIDE_PROC_OBJ.pop(tag) # no more store this element
+        #
+        # RUN OPERATION ON TABLE
+        #
+        #df = inc_dummy_df(df)
+
+        key, enter, abc = kthread.get_global_key()
+        (a, b) = abc  # unpack tuple
+
+        #################################################################
+        #          KEYBOARD ANALYSIS  ##################################
+        if enter:
+            #print()
+            #print("--------------------------------------ENTER pressed")
+            if len(key.strip()) == 0:
+                pass
+            elif key.strip() == ".q":
+                # print("X...   quit requested ..........................")
+                # no space to wait for the next loop
+                feedback = f"{key}###{json.dumps(objects.get_objects_list_names())}"
+                mmapwr.mmwrite( feedback , mmapwr.MMAPRESP) #
+                break
+            elif key.strip().find(".r") == 0:
+                os.system("reset")
+                move_cursor(3,1)
+            # ---------------------------------------
+            #elif key.strip().find(".t") == 0:
+            #    SHOW_LOGO_TABLE = not SHOW_LOGO_TABLE
+            #elif key.strip().find(".d") == 0:
+            #    SHOW_TIME = not SHOW_TIME
+            else:
+                cmd = key.strip()
+                # some command must come..... not possible to have only ""
+                # ======================================================== INTERPRETER
+                #if cmd==".t":
+                #elif cmd==".d":
+                #elif cmd==".r":
+                #else:
+                #if config.DEBUG:
+                #    print(f"{fg.gray}D... calling interpreter from bin*main {fg.default}")
+                # ----
+                if RUN_SELECT_FROM_TABLE: # FLIP FLOP MODE
+                    # list of row numbers from column 'n' :  assume whole word is list of rows:
+                    if selection is not None and selection != "":
+                        #if config.DEBUG: print(f"{fg.gray}D... selecting from table {fg.default}")
+                        # but I dont need interpretter in this simple case.........
+                        #interpreter.main( f"{cmd} {selection}"  )
+                        df_subset = show_table(dfmain, selection, return_subdf=True)
+                        for index, row in df_subset.iterrows():
+                            print(f"Index: {index}, Row: {row.to_dict()}")
+                            scrname = row['screen'] #list(df_subset['screen'])[index]
+                            croname = row['cron'] #list(df_subset['screen'])[index]
+                            #print(scrname)
+                            #print( type(scrname) ) # ******** SECOND LEVEL COMMAND ON SELECTION
+                            if cmd == 'e':
+                                libs_screen.enter_screen(scrname) #
+                            elif cmd == 's':
+                                libs_screen.stop_screen(scrname) # kill screen leave cron
+                            elif cmd == 'x':
+                                libs_cron.set_to_never(croname) #schedule to 31.2.
+                            elif cmd == 'r':
+                                libs_cron.reschedule_to_1m(croname) #reschdule to 1m
+                            elif cmd == 'rr':
+                                libs_cron.reschedule_to_1m(croname, "2m") #reschdule to 1m
+                            elif cmd == 'd':
+                                libs_cron.del_job(croname) # DELETE
+                            elif cmd == 'l':
+                                res = libs_cron.just_showlist_cron() # show in xterm crontab -l
+                            else:
+                                print("... UNKNOWN COMMAND")
+                            #time.sleep(3)
+                        selection = ""
+                        #autoreset_terminal()
+                        os.system("reset")
+                    else:
+                        if config.DEBUG: print(f"{fg.gray}D... selecting from table {fg.default}")
+                        selection = cmd
+                else:# EVERY COMMAND MODE
+                    # =========== NOT selection  FLIP/FLOP MODE ===============
+                    interpreter.main( cmd )
+
+                # ======================================================== INTERPRETER
+            #print(f"----------- {cmd}; table_selection:{selection}--------------------- ***")
+            #print("...writeback try:", key)
+            #print(" oL=", objects.get_objects_list_names() )
+
+            feedback = f"{key}###{json.dumps(objects.get_objects_list_names())}"
+            mmapwr.mmwrite( feedback , mmapwr.MMAPRESP) #
+            #print("...writeback done",key)
+        else:
+            cmd = ""
+
+        TAGTAB = "----"
+        if RUN_SELECT_FROM_TABLE:
+            if selection is not None and selection != "":
+                top.update_element("tag", "command mode", bg.white + fg.black)
+                #TAGTAB = f"{fg.blue}{bg.yellow}command mode{fg.default}{bg.default}"
+            else:
+                top.update_element("tag", "select mode", fg.black + fx.italic)
+                #TAGTAB = f"{fg.green}select mode{fg.default}"
+                #top.update_element("time", dt.datetime.now().strftime('%H:%M:%S')  )
+        top.update_element("time", dt.datetime.now().strftime('%H:%M:%S')  )
+        #         top.print_to(
+        #             2,
+        #             f"{TAGTAB}{fg.white}{fx.bold}    {dt.datetime.now().strftime('%H:%M:%S')}\
+            # {fx.default}{fg.default}",
+        #         )
+
+        #
+        #  commandline at TOP#2, cursor  a_b; option not to show
+        #
+        if (not SHOW_COMMAND_LINE) or (  (key is not None) and (len(key) == 0) ):
+            #top2.print_to(0, f"{fg.cyan}{bg.black}{' '*termsize}{bg.black}")
+            top2.update_element("cmd", f"{' '*termsize}", bg.black )
+        else:
+            # command input is on the 2nd TOP line
+            top2.update_element("cmd", f"> {fx.bold}{a.strip()}{fg.yellow}_{fg.white}{b.strip()}", bg.red )
+            # top2.print_to(
+            #     0,
+            #     f"{fg.white}{bg.red} > {fx.bold}{a.strip()}{fg.yellow}_{fg.white}{b.strip()}\
+            # {fx.default}{fg.default}{bg.default} ",
+            # )
+
+        # PLACE THE TOPBAR INPLACE
+        top.place()
+        time.sleep(0.1)
+
+
+# ====================================================================
+
+
+if __name__ == "__main__":
+    Fire(main)
+    #print("*********************************")
