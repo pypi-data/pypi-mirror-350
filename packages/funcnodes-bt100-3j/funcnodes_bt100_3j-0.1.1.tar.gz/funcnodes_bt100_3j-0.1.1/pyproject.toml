@@ -1,0 +1,33 @@
+[project]
+name = "funcnodes-bt100-3j"
+version = "0.1.1"
+description = "funcnodes controller for the longer bt100-3j pump"
+readme = "README.md"
+dependencies = [
+ "pyserial>=3.5",
+ "funcnodes",
+]
+requires-python = ">=3.11"
+[[project.authors]]
+name = "Julian Kimmig"
+email = "julian.kimmig@gmx.net"
+
+[build-system]
+requires = [ "setuptools>=42",]
+build-backend = "setuptools.build_meta"
+
+[dependency-groups]
+dev = [ "funcnodes-module>=0.3.6", "pre-commit>=4.2.0", "pytest>=8.3.5", "pytest-funcnodes>=0.1.0",]
+
+[project.license]
+text = "MIT"
+
+[project.entry-points."funcnodes.module"]
+module = "funcnodes_bt100_3j"
+external_worker = "funcnodes_bt100_3j:FUNCNODES_WORKER_CLASSES"
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.packages.find]
+where = [ "src",]
