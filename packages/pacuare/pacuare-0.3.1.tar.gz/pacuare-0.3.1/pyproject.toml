@@ -1,0 +1,28 @@
+[project]
+name = "pacuare"
+version = "0.3.1"
+description = "Query the Pacuare Reserve dataset."
+authors = [{ name = "Aleks Rūtiņš", email = "keeper@farthergate.com" }]
+requires-python = ">=3.12"
+readme = "README.md"
+license = { text = "MIT" }
+dependencies = [
+    "requests (>=2.32.3,<3.0.0)",
+    "pandas (>=2.2.3,<3.0.0)",
+]
+
+[project.urls]
+Repository = "https://github.com/pacuare/sdk.git"
+
+[tool.hatch.build.targets.sdist]
+include = ["src/pacuare"]
+
+[tool.hatch.build.targets.wheel]
+include = ["src/pacuare"]
+
+[tool.hatch.build.targets.wheel.sources]
+"src/pacuare" = "pacuare"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
