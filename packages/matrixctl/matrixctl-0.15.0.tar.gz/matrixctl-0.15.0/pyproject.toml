@@ -1,0 +1,444 @@
+[project]
+name = "matrixctl"
+version = "0.15.0"
+description = "Control, manage, provision and deploy matrix homeservers."
+authors = [{ name = "Michael Sasser", email = "Michael@MichaelSasser.org" }]
+maintainers = [{ name = "Michael Sasser", email = "Michael@MichaelSasser.org" }]
+readme = { file = "README.md", content-type = "text/markdown" }
+keywords = ["Matrix", "Synapse", "Docker"]
+
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Customer Service",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Other Audience",
+  "Intended Audience :: System Administrators",
+  "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+  "Natural Language :: English",
+  "Operating System :: POSIX",
+  "Operating System :: POSIX :: Linux",
+  "Operating System :: Unix",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Utilities",
+  "Typing :: Typed",
+]
+
+dependencies = [
+  "GitPython>=3.1.43,<4.0.0",
+  "coloredlogs>=15.0.1,<16.0.0",
+  "paramiko>=3.4.0,<4.0.0",
+  "ruamel.yaml>=0.18.6",
+  "ansible-runner>=2.4.0,<3.0.0",
+  "attrs>=23.2.0",
+  "xdg-base-dirs>=6.0.0,<7.0.0",
+  "Jinja2>=3.1.4,<4.0.0",
+  "psycopg>=3.1.19,<4.0.0",
+  "httpx[http2]>=0.27.2",
+  "sshtunnel>=0.4.0,<0.5.0",
+  "rich>=14.0.0,<14.1.0",
+  "packaging>=24.2",
+  "typing-extensions>=4.12.2",
+  "dateparser>=1.2.0",
+  "python-dateutil>=2.9.0.post0",
+]
+
+requires-python = ">=3.10,<4.0"
+
+[project.urls]
+Homepage = "https://michaelsasser.github.io/matrixctl/index.html"
+Documentation = "https://michaelsasser.github.io/matrixctl/index.html"
+Repository = "https://github.com/MichaelSasser/matrixctl"
+Issues = "https://github.com/MichaelSasser/matrixctl/issues"
+Changelog = "https://github.com/MichaelSasser/matrixctl/blob/main/CHANGELOG.md"
+
+[tool.uv.pip]
+strict = true
+
+[tool.uv]
+python-preference = "only-managed"
+managed = true
+dev-dependencies = [
+  # Typesheds
+  "types-setuptools>=75.1.0.20240917",
+  "types-paramiko>=3.4.0.20240423,<4.0.0.0",
+  "types-attrs>=19.1.0,<20.0.0",
+  "types-Jinja2>=2.11.9,<3.0.0",
+  "types-python-dateutil>=2.9.0.20241206",
+  "types-dateparser>=1.2.0.20240420",
+  # Dev tools
+  "ruff>=0.6.8",
+  "pytest>=8.3.3",
+  "coverage>=7.6.1",
+  "pre-commit>=3.8.0",
+  "basedpyright>=1.18.2",
+  "git-cliff>=2.6.1",
+]
+
+[project.optional-dependencies]
+docs = [
+  "sphinx>=8.0.0,<9.0.0",
+  "sphinx-autodoc-typehints>=3,<3.3",
+  "sphinxcontrib-programoutput>=0.17",
+  "numpydoc>=1.5.0",
+  "sphinx-rtd-theme>=3.0,<4.0",
+  "myst-parser>=4.0.0",
+  "tomli>=2.0.2; python_version < '3.11'",
+  "exceptiongroup>=1.2.2; python_version < '3.11'",
+]
+
+[project.scripts]
+matrixctl = "matrixctl.__main__:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 79
+cache-dir = "~/.cache/ruff"
+fix = true
+src = ["src/matrixctl", "docs", "tests"]
+show-fixes = true
+target-version = "py310"
+
+exclude = [
+  ".git",
+  ".mypy_cache",
+  ".nox",
+  ".pytype",
+  ".ruff_cache",
+  ".tox",
+  ".venv",
+  "__pypackages__",
+  "_build",
+  "buck-out",
+  "build",
+  "dist",
+  "venv",
+]
+
+[tool.ruff.format]
+docstring-code-format = true
+quote-style = "double"
+indent-style = "space"
+
+[tool.ruff.lint]
+task-tags = ["TODO", "FIXME", "WARN", "SEC", "SECURITY", "INFO", "NOTE"]
+ignore = [
+  "D202",
+  "D203",
+  "TC001",
+  "TC002",
+  "TC003",
+  "TC006",   # Runtime cast value
+  "ANN401",
+  "T201",    # Print statements
+  "TD002",   # Missing TODO author
+  "TD003",   # Missing TODO issue link
+  "FIX002",  # Unresolved TODO
+  "PERF203", # Try/except in loop
+  "COM812",
+  "ISC001",
+]
+select = ["ALL"]
+
+[tool.ruff.lint.flake8-annotations]
+allow-star-arg-any = true
+suppress-dummy-args = true
+# suppress-none-returning = true
+
+[tool.ruff.lint.flake8-bandit]
+check-typed-exception = true
+
+[tool.ruff.lint.flake8-copyright]
+author = "Michael Sasser <Michael@MichaelSasser.org>"
+min-file-size = 512
+
+[tool.ruff.lint.flake8-import-conventions]
+banned-from = ["typing"]
+
+[tool.ruff.lint.flake8-import-conventions.extend-aliases]
+"typing" = "t"
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.ruff.lint.mccabe]
+# Unlike Flake8, default to a complexity level of 10.
+max-complexity = 10
+
+[tool.ruff.lint.isort]
+force-single-line = true
+lines-after-imports = 2
+constants = ["__version__"]
+forced-separate = ["tests", "matrixctl"]
+required-imports = ["from __future__ import annotations"]
+known-first-party = ["matrixctl"]
+lines-between-types = 1
+known-third-party = [
+  "pytest",
+  "paramiko",
+  "argcomplete",
+  "coloredlogs",
+  "sphinx_rtd_theme",
+  "git",
+  "httpx",
+  "attr",
+  "ansible_runner",
+  "psycopg",
+  "rich",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S101"]
+"docs/*" = ["INP001"]
+
+
+[tool.mypy]
+python_version = "3.11"
+platform = "linux"
+ignore_missing_imports = true
+strict_equality = true
+strict = true
+show_traceback = true
+# CI output differs from local
+warn_unused_ignores = false # workaround see PR: 308
+
+[[tool.mypy.overrides]]
+module = "tests.matrixctl.handlers.*"
+allow_untyped_decorators = true       # pytest fixtures
+
+
+[tool.basedpyright]
+venvPath = "."
+include = ["src/matrixctl", "tests"]
+exclude = ["**/__pycache__"]
+
+reportMissingImports = true
+reportMissingTypeStubs = false
+
+# Workaround: doesn show a lot of false positives for YAML.get().
+# Since we use ruff anyways, this should not be important.
+reportCallIssue = false
+
+# pythonVersion = "3.11"
+pythonPlatform = "Linux"
+typeCheckingMode = "basic"
+
+# reportUnknownVariableType ="none"
+# reportUnknownMemberType ="none"
+# reportUnknownParameterType = "none"
+# reportUnknownArgumentType = "none"
+# reportUnknownLambdaType = "none"
+
+
+[tool.pycln]
+all = true
+
+[tool.flake8]
+max-line-length = 79
+# max-complexity = 12
+ignore = "E501"
+select = "C,E,F,W,B,B901"
+
+[tool.interrogate]
+ignore-init-method = true
+ignore-init-module = true
+ignore-magic = true
+# ignore-semiprivate = false
+# ignore-private = false
+# ignore-property-decorators = false
+# ignore-module = false
+fail-under = 100
+exclude = ["setup.py", "docs", "build"]
+# ignore-regex = ["^get$", "^mock_.*", ".*BaseClass.*"]
+# ignore-regex see: https://github.com/econchick/interrogate/issues?q=is%3Aissue+overload
+ignore-regex = ["request", "exec_async_request"]
+verbose = 1
+# quiet = false
+# whitelist-regex = []
+# color = true
+
+
+[tool.vulture]
+make_whitelist = true
+min_confidence = 80
+paths = ["src/matrixctl"]
+sort_by_size = true
+
+[tool.coverage.report]
+exclude_also = ["@t.overload", "pragma: no cover"]
+
+# Note: Useful for debugging while testing. When enabled, doctests will fail.
+#
+# [tool.pytest.ini_options]
+# log_cli = true
+# log_cli_level = "DEBUG"
+# log_cli_format = "%(asctime)s %(name)s:%(lineno)d [%(funcName)s] %(levelname)s %(message)s"
+# log_cli_date_format = "%Y-%m-%dT%H:%M:%S"
+
+[tool.git-cliff.changelog]
+# DOCS: https://git-cliff.org/docs/configuration
+header = """
+# Changelog\n
+
+All notable changes to MatrixCtl will be documented in this file.\n
+
+You can find the issue tracker on
+[GitHub](https://github.com/MichaelSasser/matrixctl/issues).
+
+"""
+
+# # DOCS: https://keats.github.io/tera/docs/#introduction
+# body = """
+# {% if version %}\
+#     ## {{ version | trim_start_matches(pat="v") }} - {{ timestamp | date(format="%Y-%m-%d") }}
+# {% else %}\
+#     ## Unreleased
+# {% endif %}\
+# {% for group, commits in commits | filter(attribute="merge_commit", value=false) | group_by(attribute="group") %}
+#     ### {{ group | striptags | trim | upper_first }}
+#     {% for group, commits in commits | filter(attribute="merge_commit", value=false) | group_by(attribute="scope") %}
+#         #### {{ group | striptags | trim | upper_first }}
+#         {% for commit in commits | unique(attribute="message") %}
+#             - {{ commit.message | upper_first }}\
+#         {% endfor %}
+#     {% endfor %}\
+# {% endfor %}\n
+# """
+
+footer = """
+<!-- generated by git-cliff -->
+"""
+trim = true
+
+postprocessors = [
+  { pattern = '<REPO>', replace = "https://github.com/MichaelSasser/matrixctl" }, # replace repository URL
+]
+# render body even when there are no releases to process
+# render_always = true
+# output file path
+# output = "CHANGELOG.md"
+
+[tool.git-cliff.git]
+# parse the commits based on https://www.conventionalcommits.org
+conventional_commits = true
+# filter out the commits that are not conventional
+filter_unconventional = true
+# process each line of a commit as an individual commit
+split_commits = false
+# regex for preprocessing the commit messages
+commit_preprocessors = [
+  # Replace issue numbers
+  { pattern = '\((\w+\s)?#([0-9]+)\)', replace = "([#${2}](<REPO>/issues/${2}))" },
+  # Check spelling of the commit with https://github.com/crate-ci/typos
+  # If the spelling is incorrect, it will be automatically fixed.
+  # { pattern = '.*', replace_command = 'typos --write-changes -' },
+]
+
+# regex for parsing and grouping commits
+commit_parsers = [
+  { message = "^breaking", group = "<!-- 0 --> 🏗️ Breaking changes" },
+  { message = "^security", group = "<!-- 1 -->🛡️ Security" },
+  { body = ".*security", group = "<!-- 1 -->🛡️ Security" },
+  { message = "^feat", group = "<!-- 2 -->🚀 Features" },
+  { message = "^fix", group = "<!-- 3 -->🐛 Bug Fixes" },
+  { message = "^doc", group = "<!-- 4 -->📚 Documentation" },
+  { message = "^perf", group = "<!-- 5 -->⚡ Performance" },
+  { message = "^refactor", group = "<!-- 6 -->🚜 Refactor" },
+  { message = "^style", group = "<!-- 7 -->🎨 Styling" },
+  { message = "^test", group = "<!-- 8 -->🧪 Testing" },
+  { message = "^revert", group = "<!-- 9 -->◀️ Revert" },
+  { message = "^chore|^ci", group = "<!-- 10 -->⚙️ Miscellaneous Tasks" },
+  { message = "^chore\\(release\\): prepare for", skip = true },
+  { message = "^chore\\(deps.*\\)", skip = true },
+  { message = "^chore\\(pr\\)", skip = true },
+  { message = "^chore\\(pull\\)", skip = true },
+  { message = "^misc\\(dependencies\\)", skip = true },
+]
+# filter out the commits that are not matched by commit parsers
+filter_commits = true
+# sort the tags topologically
+topo_order = false
+# sort the commits inside sections by oldest/newest order
+sort_commits = "oldest"
+
+[tool.tox]
+legacy_tox_ini = """
+[pytest]
+
+addopts = -ra
+testpaths = tests
+xfail_strict = true
+filterwarnings =
+    once::Warning
+    ignore:::pympler[.*]
+
+
+[tox]
+envlist = py3{10,11,12,13},fix,docs,dev,changelog
+# isolated_build = True
+# uv_sync_flags=--python={env_python}
+
+[coverage:report]
+exclude_also =
+    @t.overload
+    pragma: no cover
+
+
+[testenv:fix]
+description = run code formatter and linter (auto-fix)
+skip_install = true
+with_dev = true
+commands =
+    uv run pre-commit run --all-files --show-diff-on-failure
+
+# [testenv:type]
+# runner = uv-venv-lock-runner
+# description = run type checker via mypy
+# with_dev = true
+# extras =
+#   docs
+# commands =
+#     uv run mypy {posargs:src}
+
+[testenv:docs]
+runner = uv-venv-lock-runner
+description = build the documentation
+# basepython = python3.12
+extras =
+  docs
+commands =
+  uv run sphinx-build -T -W -b html -d {envtmpdir}/doctrees docs/source docs/build/html
+
+[testenv:changelog]
+# runner = uv-venv-lock-runner
+description = output the unreleased changelog
+with_dev = true
+commands =
+  uv run git-cliff --unreleased
+
+[testenv:dev]
+runner = uv-venv-lock-runner
+description = dev environment
+with_dev = true
+extras =
+  docs
+commands =
+    uv pip tree
+
+[testenv]
+runner = uv-venv-lock-runner
+# uv_sync_flags=--python={env_python}
+allow_externals = converge
+with_dev = true
+extras =
+  docs
+commands =
+  uv run --python={env_python} coverage run -m pytest --doctest-modules {posargs}
+"""
