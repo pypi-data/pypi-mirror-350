@@ -1,0 +1,439 @@
+Metadata-Version: 2.4
+Name: arkhelm-tml
+Version: 0.0.2
+Summary: Arkhelm Online Modding.
+Home-page: https://github.com/TaireruLLC/arkhelm_tml
+Author: Taireru LLC
+Author-email: tairerullc@gmail.com
+License: MIT
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license
+Dynamic: license-file
+Dynamic: requires-python
+Dynamic: summary
+
+# Arkhelm Modding Guide
+
+## Overview
+Each function for modding is predefined and represented in the `arkhelm_tml` (TML module).  
+You can repeat each function as much as you like, adding multiple items, **except** when they share the same dictionary key (first argument).
+
+## How to Know What to Put in Each Function Call
+You can view the function arguments via the TML module, or by hovering over the function in your local IDE.  
+(Note: TML IDE currently does not support hover functionality.)
+
+## What Makes or Breaks a Mod?
+You might think, "I can just write this out in a Python file and drop it in the mods folder!"  
+However, that's not quite right. Arkhelm Online uses a specific file type: `.tml`. This file type holds specific data that `.py` files do not contain.
+
+## How Do I Create a `.tml` File?
+Creating a `.tml` file is simple using Taireru LLC's TML IDE. The IDE supports Python, C#, C++, Ruby, Lua, and Luau.  
+Follow these steps to create your `.tml` file:
+1. Download the TML IDE.
+2. Open the IDE and select the **Mod** tab on the home screen.
+3. You will find options to convert your mod to a `.tml` file.
+
+## What Data Does a `.tml` File Contain?
+Our games require specific code to work with mods. To meet this need, we developed the `.tml` file format.  
+These files are converted, encrypted, and contain the necessary code. After conversion, drop the `.tml` file in your local **Mods** folder.
+
+## How to Edit Encrypted Mods
+If you need to edit an encrypted mod, follow these steps:
+1. Grab the mod file (or a duplicate).
+2. Select the **Deconvert** option under the **Mod** tab in TML IDE.  
+   This will convert the mod back to the original code so you can continue editing it.
+
+### Preventing Others from Editing Your Mod
+If you don't want others to edit your mod, you can secure it with a passcode.  
+Add a `mod_passcode()` function to your code like this:
+
+```python
+mod_passcode('ABC123')
+```
+
+## Available Modding Functions
+
+### Character Progression & Effects
+
+#### `add_title(dict_key, name, description)`
+**Connects to:** `Title` class  
+**Properties:** `name`, `description`  
+Adds player titles that can be earned or displayed.
+
+#### `add_blessing(dict_key, name, description)`
+**Connects to:** `Blessing` class  
+**Properties:** `name`, `description`  
+Adds beneficial effects or buffs that can be applied to players.
+
+#### `add_curse(dict_key, name, description)`
+**Connects to:** `Curse` class  
+**Properties:** `name`, `description`  
+Adds negative effects or debuffs that can be applied to players.
+
+#### `add_aura(dict_key, name, description)`
+**Connects to:** `Aura` class  
+**Properties:** `name`, `description`  
+Adds visual or magical auras that characters can display.
+
+### Items & Equipment
+
+#### `add_orb(dict_key, name, description, orb_type, maximum, inventory, color, price)`
+**Connects to:** `Orb` class  
+**Properties:** `name`, `description`, `orb_type`, `maximum`, `inventory`, `color`, `price`  
+Adds magical orbs that can store essences. Includes methods like `count_amount()` and `add()`.
+
+#### `add_sword(dict_key, nickname, name, attack_damage, durability, price, level_required)`
+**Connects to:** `Sword` class  
+**Properties:** `nickname`, `name`, `attack_damage`, `durability`, `price`, `level_required`  
+Adds melee weapons with damage and durability stats. Includes `get_name()` method for display.
+
+#### `add_magicsword(dict_key, nickname, name, attack_damage, durability, price, level_required, magic_type, spell_1, spell_2, spell_3, spell_1_damage, spell_2_damage, spell_3_damage)`
+**Connects to:** `MagicSword` class  
+**Properties:** All sword properties plus `magic_type` and three spells with their damage values  
+Adds magical swords that can cast spells in addition to melee combat.
+
+#### `add_shield(dict_key, nickname, name, protection, durability, price, level_required)`
+**Connects to:** `Shield` class  
+**Properties:** `nickname`, `name`, `protection`, `durability`, `price`, `level_required`  
+Adds defensive equipment that provides protection values.
+
+#### `add_knuckles(dict_key, nickname, name, attack_damage, durability, price, level_required)`
+**Connects to:** `Knuckles` class  
+**Properties:** `nickname`, `name`, `attack_damage`, `durability`, `price`, `level_required`  
+Adds hand-to-hand combat weapons similar to swords but for unarmed fighting.
+
+#### `add_bow(dict_key, nickname, name, attack_damage, durability, current_arrow_type, arrow_amount, price, level_required)`
+**Connects to:** `Bow` class  
+**Properties:** `nickname`, `name`, `attack_damage`, `durability`, `current_arrow_type`, `arrow_amount`, `price`, `level_required`  
+Adds ranged weapons with arrow management. Includes `hit_chance()` method for accuracy calculation.
+
+#### `add_armor(dict_key, nickname, name, strength_boost, defense_boost, magic_boost, endurance_boost, level_required, price, armor_type)`
+**Connects to:** `Armor` class  
+**Properties:** `nickname`, `name`, `strength_boost`, `defense_boost`, `magic_boost`, `endurance_boost`, `level_required`, `price`, `armor_type`  
+Adds wearable equipment that boosts various character stats.
+
+### Creatures & Crafting
+
+#### `add_monster(dict_key, monster_id, name, level, strength, health, max_health, magic_type, skill_1, skill_2, skill_3, skill_1_damage, skill_2_damage, skill_3_damage, tameable, is_poisoned, is_burning, is_wet, valentine_skill_active, valentine_skill_count, named_monster)`
+**Connects to:** `Monster` class  
+**Properties:** Comprehensive monster stats including ID, combat stats, skills, status effects, and special attributes  
+Adds creatures to the game with full combat capabilities and status effect support. Includes `take_damage()` method.
+
+#### `add_recipe(dict_key, name)`
+**Connects to:** `Recipe` class  
+**Properties:** `name`  
+Adds crafting recipes that players can use to create items.
+
+### Utility Functions
+
+#### `add_item(name)`
+Adds basic items to the game inventory system.
+
+#### `mod_passcode(password)`
+Sets a password protection for your mod to prevent unauthorized editing.
+
+## Example Code (calling `generate_example()` will create a `.py` file version of this in your directory which you can mess around with)
+```python
+from arkhelm_tml import *
+
+# =============================================================================
+# GREEK MYTHOLOGY MOD FOR ARKHELM ONLINE
+# =============================================================================
+# A comprehensive mod featuring Greek gods, mythical creatures, legendary weapons,
+# divine armor, and mystical items from ancient Greek mythology.
+# =============================================================================
+
+# Mod protection
+mod_passcode('OLYMPUS_2024')
+
+# =============================================================================
+# TITLES - Divine and Heroic Titles
+# =============================================================================
+
+add_title('zeus_chosen', 'Chosen of Zeus', 'Blessed by the King of Gods, wielder of thunder and lightning')
+add_title('athena_wisdom', 'Wisdom of Athena', 'Granted divine wisdom and strategic prowess by the goddess of war and wisdom')
+add_title('apollo_light', 'Apollo\'s Radiance', 'Blessed with the light of the sun god, bringer of music and prophecy')
+add_title('artemis_hunt', 'Artemis\' Hunter', 'Chosen by the goddess of the hunt, master of the wilderness')
+add_title('poseidon_tide', 'Lord of Tides', 'Blessed by Poseidon, commander of seas and earthquakes')
+add_title('hades_shadow', 'Shadow of Hades', 'Marked by the god of the underworld, walker between life and death')
+add_title('ares_fury', 'Ares\' Fury', 'Filled with the god of war\'s bloodlust and battle rage')
+add_title('aphrodite_charm', 'Aphrodite\'s Beloved', 'Blessed with divine beauty and the power of love')
+add_title('hephaestus_forge', 'Master of the Divine Forge', 'Granted the crafting secrets of Hephaestus')
+add_title('hermes_swift', 'Swift as Hermes', 'Blessed with the speed of the messenger god')
+add_title('demigod_hero', 'Demigod Hero', 'Born of divine and mortal blood, destined for legendary deeds')
+add_title('titan_slayer', 'Titanslayer', 'One who has faced and defeated the ancient Titans')
+
+# =============================================================================
+# BLESSINGS - Divine Favor and Powers
+# =============================================================================
+
+add_blessing('divine_strength', 'Divine Strength of Heracles', 'Grants superhuman strength capable of moving mountains')
+add_blessing('athenas_strategy', 'Athena\'s Strategic Mind', 'Enhances tactical thinking and battle planning abilities')
+add_blessing('apollo_healing', 'Apollo\'s Healing Light', 'Slowly regenerates health through divine solar energy')
+add_blessing('artemis_aim', 'Artemis\' Perfect Aim', 'Never miss with ranged weapons, blessed by the huntress')
+add_blessing('poseidon_breath', 'Poseidon\'s Gift', 'Ability to breathe underwater and swim at incredible speeds')
+add_blessing('hermes_speed', 'Hermes\' Swiftness', 'Move with the speed of the wind, leaving afterimages')
+add_blessing('zeus_authority', 'Zeus\' Divine Authority', 'Command respect and fear from lesser beings')
+add_blessing('hephaestus_craft', 'Hephaestus\' Crafting Mastery', 'Create weapons and armor of divine quality')
+add_blessing('aphrodite_influence', 'Aphrodite\'s Charm', 'Persuade and influence others with divine beauty')
+add_blessing('dionysus_revelry', 'Dionysus\' Eternal Joy', 'Immunity to despair and enhanced social abilities')
+
+# =============================================================================
+# CURSES - Divine Punishment and Afflictions
+# =============================================================================
+
+add_curse('medusa_gaze', 'Medusa\'s Petrifying Gaze', 'Risk of turning to stone when looked upon directly')
+add_curse('sisyphus_burden', 'Sisyphus\' Eternal Labor', 'Cursed to repeat mundane tasks endlessly')
+add_curse('tantalus_hunger', 'Tantalus\' Eternal Thirst', 'Never able to fully satisfy hunger or thirst')
+add_curse('prometheus_pain', 'Prometheus\' Agony', 'Constant pain that regenerates as it heals')
+add_curse('cassandra_prophecy', 'Cassandra\'s Gift-Curse', 'See the future but never be believed')
+add_curse('midas_touch', 'Midas\' Golden Curse', 'Everything touched turns to gold, including food and loved ones')
+add_curse('pandora_curiosity', 'Pandora\'s Compulsion', 'Uncontrollable urge to open containers and explore forbidden places')
+add_curse('atlas_weight', 'Atlas\' Burden', 'Feeling the weight of the world on your shoulders, reduced mobility')
+add_curse('orpheus_sorrow', 'Orpheus\' Lament', 'Overwhelming sadness that affects all nearby allies')
+add_curse('icarus_hubris', 'Icarus\' Pride', 'Overconfidence leading to dangerous risks and inevitable falls')
+
+# =============================================================================
+# AURAS - Divine and Mythical Auras
+# =============================================================================
+
+add_aura('olympian_radiance', 'Olympian Divine Radiance', 'Golden light surrounds you, marking divine favor')
+add_aura('underworld_mist', 'Mists of the Underworld', 'Dark ethereal mist swirls around you')
+add_aura('ocean_depths', 'Depths of Poseidon', 'Water and sea foam constantly flow around your form')
+add_aura('solar_corona', 'Apollo\'s Solar Corona', 'Brilliant sunlight emanates from your being')
+add_aura('lunar_glow', 'Artemis\' Moonlight', 'Soft silver moonlight illuminates your presence')
+add_aura('forge_flames', 'Hephaestus\' Forge Fire', 'Divine flames dance around you without burning')
+add_aura('war_fury', 'Ares\' Battle Aura', 'Red mist of war and conflict surrounds you')
+add_aura('love_charm', 'Aphrodite\'s Allure', 'Rose petals and sweet fragrance follow in your wake')
+add_aura('wine_revelry', 'Dionysus\' Celebration', 'Grape vines and festive energy surround you')
+add_aura('wisdom_owl', 'Athena\'s Owl Companion', 'A spectral owl of wisdom perches near you')
+
+# =============================================================================
+# LEGENDARY SWORDS
+# =============================================================================
+
+add_sword('xiphos_achilles', 'Achilles\' Xiphos', 'Sword of the Greatest Greek Hero', 95, 1000, 15000, 50)
+add_sword('blade_theseus', 'Theseus\' Blade', 'Sword used to slay the Minotaur', 78, 800, 8500, 35)
+add_sword('perseus_harpe', 'Perseus\' Harpe', 'Sickle-sword that beheaded Medusa', 88, 900, 12000, 45)
+add_sword('jason_sword', 'Jason\'s Argonaut Blade', 'Sword of the Golden Fleece quest leader', 72, 750, 7200, 32)
+add_sword('heracles_gladius', 'Heracles\' Lion Gladius', 'Forged from the Nemean Lion\'s essence', 85, 950, 11000, 42)
+
+# =============================================================================
+# DIVINE MAGIC SWORDS
+# =============================================================================
+
+add_magicsword('zeus_thunderblade', 'Zeus\' Thunderblade', 'Master of Olympus', 120, 1500, 25000, 60, 'Thunder', 'Thunderbolt Strike', 'Chain Lightning', 'Divine Thunder', 150, 200, 300)
+add_magicsword('poseidon_trident_sword', 'Poseidon\'s Tide Cleaver', 'Blade of the Sea God', 100, 1200, 18000, 55, 'Water', 'Tidal Wave', 'Whirlpool', 'Tsunami', 120, 160, 250)
+add_magicsword('hades_soul_reaper', 'Hades\' Soul Reaper', 'Blade of the Underworld', 110, 1300, 20000, 58, 'Dark', 'Soul Drain', 'Death\'s Touch', 'Underworld Gate', 130, 170, 280)
+add_magicsword('apollo_sun_blade', 'Apollo\'s Solar Edge', 'Radiant Blade of the Sun God', 105, 1100, 16000, 52, 'Fire', 'Solar Flare', 'Healing Light', 'Sun\'s Wrath', 125, 80, 220)
+add_magicsword('artemis_moon_sword', 'Artemis\' Lunar Fang', 'Silver Blade of the Hunt', 98, 1000, 14000, 48, 'Water', 'Moonbeam Strike', 'Hunter\'s Mark', 'Lunar Eclipse', 115, 100, 200)
+
+# =============================================================================
+# DIVINE SHIELDS
+# =============================================================================
+
+add_shield('aegis_zeus', 'Zeus\' Aegis', 'The Divine Shield of the King of Gods', 150, 2000, 30000, 65)
+add_shield('athena_aegis', 'Athena\'s Aegis', 'Shield bearing Medusa\'s head', 140, 1800, 25000, 60)
+add_shield('bronze_hoplite', 'Spartan Hoplite Shield', 'Bronze shield of legendary warriors', 85, 900, 5000, 30)
+add_shield('troy_defender', 'Shield of Troy', 'Defensive bulwark from the great siege', 95, 1100, 8000, 38)
+add_shield('hercules_nemean', 'Heracles\' Nemean Hide', 'Shield made from the invulnerable lion', 120, 1500, 15000, 50)
+
+# =============================================================================
+# MYTHICAL KNUCKLES
+# =============================================================================
+
+add_knuckles('titan_fists', 'Titan Knuckles', 'Fists imbued with Titan strength', 70, 800, 6000, 35)
+add_knuckles('atlas_gauntlets', 'Atlas\' Burden Fists', 'Gauntlets that carried the world', 85, 1000, 9500, 45)
+add_knuckles('heracles_strength', 'Heracles\' Might', 'Knuckles of the strongest hero', 92, 1200, 12000, 48)
+add_knuckles('ares_war_fists', 'Ares\' War Gauntlets', 'Bloodstained fists of the war god', 88, 950, 10500, 42)
+
+# =============================================================================
+# LEGENDARY BOWS
+# =============================================================================
+
+add_bow('artemis_silver_bow', 'Artemis\' Silver Bow', 'Divine Bow of the Hunt', 110, 1400, 'Fire Arrow', 100, 18000, 55)
+add_bow('apollo_golden_bow', 'Apollo\'s Solar Bow', 'Golden Bow of the Sun God', 105, 1300, 'Fire Arrow', 80, 16000, 50)
+add_bow('odysseus_bow', 'Odysseus\' Royal Bow', 'Bow that only the hero could string', 88, 1000, 'Fire Arrow', 120, 9500, 40)
+add_bow('orion_hunter_bow', 'Orion\'s Constellation Bow', 'Bow of the greatest hunter', 95, 1100, 'Fire Arrow', 90, 12000, 45)
+add_bow('amazon_war_bow', 'Amazon War Bow', 'Bow of the warrior women', 78, 850, 'War Arrow', 150, 7000, 35)
+
+# =============================================================================
+# DIVINE ARMOR SETS
+# =============================================================================
+
+# Zeus - Lightning Emperor Set
+add_armor('zeus_crown', 'Crown of Olympus', 'Zeus\' Divine Crown', 25, 30, 40, 20, 60, 20000, 'Helmet')
+add_armor('zeus_robes', 'Robes of the Sky Father', 'Zeus\' Divine Robes', 30, 35, 45, 25, 60, 25000, 'Chestplate')
+add_armor('zeus_sandals', 'Sandals of Thunder', 'Zeus\' Divine Footwear', 15, 20, 25, 30, 60, 15000, 'Boots')
+
+# Athena - Wisdom Warrior Set
+add_armor('athena_helm', 'Helm of Wisdom', 'Athena\'s Strategic Helmet', 20, 40, 35, 15, 55, 18000, 'Helmet')
+add_armor('athena_cuirass', 'Cuirass of the Wise', 'Athena\'s Battle Armor', 25, 45, 30, 20, 55, 22000, 'Chestplate')
+add_armor('athena_greaves', 'Greaves of Strategy', 'Athena\'s Tactical Leg Armor', 15, 25, 20, 25, 55, 12000, 'Leggings')
+
+# Poseidon - Ocean Lord Set
+add_armor('poseidon_helm', 'Helm of the Depths', 'Poseidon\'s Coral Crown', 22, 25, 38, 28, 58, 19000, 'Helmet')
+add_armor('poseidon_mail', 'Mail of Tides', 'Poseidon\'s Scale Armor', 28, 30, 42, 22, 58, 24000, 'Chestplate')
+add_armor('poseidon_boots', 'Boots of the Sea Walker', 'Poseidon\'s Wave-riding Boots', 18, 15, 25, 35, 58, 14000, 'Boots')
+
+# Spartan Warrior Set
+add_armor('spartan_helm', 'Spartan War Helmet', 'Bronze helm of Lacedaemon\'s finest', 15, 35, 10, 25, 30, 5000, 'Helmet')
+add_armor('spartan_cuirass', 'Spartan Battle Cuirass', 'Bronze armor of legendary warriors', 20, 40, 5, 20, 30, 8000, 'Chestplate')
+add_armor('spartan_greaves', 'Spartan War Greaves', 'Bronze leg protection', 12, 25, 8, 30, 30, 4000, 'Leggings')
+
+# =============================================================================
+# MYTHICAL ORBS
+# =============================================================================
+
+add_orb('ambrosia_orb', 'Orb of Ambrosia', 'Contains the food of the gods', 'Light', 50, True, 'Golden', 5000)
+add_orb('nectar_orb', 'Orb of Divine Nectar', 'Holds the drink of immortality', 'Light', 30, True, 'Silver', 4000)
+add_orb('ichor_orb', 'Orb of Ichor', 'Contains the golden blood of gods', 'Light', 20, True, 'Red-Gold', 8000)
+add_orb('styx_water_orb', 'Orb of Styx Water', 'Water from the river of the underworld', 'Dark', 40, True, 'Black', 6000)
+add_orb('lethe_orb', 'Orb of Lethe', 'Water of forgetfulness from the underworld', 'Water', 25, True, 'Pale Blue', 3500)
+add_orb('moly_orb', 'Orb of Moly', 'Magical herb that protects from enchantment', 'Earth', 35, True, 'White', 4500)
+add_orb('lotus_orb', 'Orb of Lotus Essence', 'Essence of the lotus-eaters\' fruit', 'Light', 45, True, 'Purple', 3000)
+
+# =============================================================================
+# LEGENDARY MONSTERS
+# =============================================================================
+
+# Hydra - The Nine-Headed Serpent
+add_monster('lernaean_hydra', 'HYDRA_001', 'Lernaean Hydra', 75, 200, 5000, 5000, 'Water', 'Venomous Bite', 'Regenerate Head', 'Toxic Breath', 300, 0, 250, False, True, False, False, False, 0, True)
+
+# Minotaur - Bull-headed Monster
+add_monster('minotaur_labyrinth', 'MINO_001', 'Minotaur of the Labyrinth', 60, 180, 3500, 3500, 'Physical', 'Charging Gore', 'Maze Confusion', 'Berserker Rage', 280, 150, 320, False, False, False, False, False, 0, True)
+
+# Medusa - The Gorgon
+add_monster('medusa_gorgon', 'GORG_001', 'Medusa the Gorgon', 55, 120, 2800, 2800, 'Earth', 'Petrifying Gaze', 'Snake Hair Strike', 'Stone Curse', 350, 200, 400, False, False, False, False, False, 0, True)
+
+# Cyclops - One-Eyed Giant
+add_monster('cyclops_forge', 'CYCL_001', 'Forge Cyclops', 70, 220, 4200, 4200, 'Fire', 'Boulder Throw', 'Hammer Strike', 'Forge Flame', 320, 380, 290, False, False, True, False, False, 0, True)
+
+# Chimera - Triple Beast
+add_monster('chimera_beast', 'CHIM_001', 'Chimera', 65, 160, 3800, 3800, 'Fire', 'Lion Pounce', 'Goat Ram', 'Dragon Breath', 270, 240, 350, False, False, True, False, False, 0, True)
+
+# Sphinx - Riddle Guardian
+add_monster('sphinx_riddles', 'SPHI_001', 'The Great Sphinx', 58, 140, 3200, 3200, 'Dark', 'Riddle Confusion', 'Wing Buffet', 'Ancient Curse', 180, 220, 300, False, False, False, False, False, 0, True)
+
+# Nemean Lion - Invulnerable Beast
+add_monster('nemean_lion', 'NEME_001', 'Nemean Lion', 50, 250, 4000, 4000, 'Earth', 'Mighty Roar', 'Crushing Bite', 'Invulnerable Hide', 200, 290, 100, False, False, False, False, False, 0, True)
+
+# Cerberus - Three-Headed Hound
+add_monster('cerberus_hound', 'CERB_001', 'Cerberus', 68, 190, 4500, 4500, 'Dark', 'Triple Bite', 'Underworld Howl', 'Soul Drain', 310, 250, 320, False, False, False, False, False, 0, True)
+
+# Scylla - Sea Monster
+add_monster('scylla_monster', 'SCYL_001', 'Scylla', 62, 170, 3600, 3600, 'Water', 'Tentacle Grab', 'Whirlpool', 'Devouring Maw', 260, 280, 340, False, False, False, True, False, 0, True)
+
+# Charybdis - Whirlpool Monster
+add_monster('charybdis_whirlpool', 'CHAR_001', 'Charybdis', 58, 130, 2900, 2900, 'Water', 'Massive Whirlpool', 'Water Spout', 'Tidal Surge', 320, 240, 380, False, False, False, True, False, 0, True)
+
+# Harpy - Wind Demon
+add_monster('harpy_storm', 'HARP_001', 'Storm Harpy', 45, 110, 2200, 2200, 'Air', 'Talon Strike', 'Wind Gust', 'Sonic Screech', 180, 160, 220, False, False, False, False, False, 0, False)
+
+# Pegasus - Divine Winged Horse (Tameable)
+add_monster('pegasus_divine', 'PEGA_001', 'Divine Pegasus', 40, 90, 1800, 1800, 'Air', 'Wing Strike', 'Healing Aura', 'Divine Flight', 120, 150, 100, True, False, False, False, False, 0, True)
+
+# Greek Soldiers
+add_monster('spartan_warrior', 'SPAR_001', 'Spartan Warrior', 35, 140, 2500, 2500, 'Earth', 'Spear Thrust', 'Shield Bash', 'Phalanx Formation', 200, 180, 160, False, False, False, False, False, 0, False)
+add_monster('athenian_hoplite', 'ATHE_001', 'Athenian Hoplite', 32, 130, 2200, 2200, 'Earth', 'Bronze Spear', 'Shield Wall', 'Tactical Strike', 180, 160, 140, False, False, False, False, False, 0, False)
+
+# =============================================================================
+# CRAFTING RECIPES
+# =============================================================================
+
+add_recipe('ambrosia_recipe', 'Ambrosia of the Gods')
+add_recipe('nectar_recipe', 'Divine Nectar')
+add_recipe('greek_fire_recipe', 'Greek Fire')
+add_recipe('bronze_alloy_recipe', 'Divine Bronze Alloy')
+add_recipe('golden_fleece_recipe', 'Golden Fleece Armor')
+add_recipe('olympian_feast_recipe', 'Olympian Feast')
+add_recipe('moly_potion_recipe' , 'Moly Protection Potion' )
+add_recipe('ichor_elixir_recipe', 'Ichor Strength Elixir')
+add_recipe('styx_blessing_recipe', 'Styx Water Blessing' )
+add_recipe('pegasus_bridle_recipe', 'Divine Pegasus Bridle')
+
+# =============================================================================
+# BASIC ITEMS
+# =============================================================================
+
+add_item('Golden Fleece')
+add_item( 'Ambrosia' )
+add_item('Divine Nectar')
+add_item('Olive Branch')
+add_item('Laurel Wreath')
+add_item('Greek Fire')
+add_item('Sacred Oil')
+add_item('Moly Herb')
+add_item('Lotus Fruit')
+add_item('Phoenix Feather')
+add_item('Siren Song Crystal')
+add_item('Centaur Hide')
+add_item('Gorgon Scale')
+add_item('Harpy Talon' )
+add_item('Cyclops Eye')
+add_item('Chimera Fang')
+add_item('Pegasus Hair')
+add_item('Unicorn Horn')
+add_item('Dragon Tooth')
+add_item('Titan Bone Fragment')
+
+# =============================================================================
+# END OF GREEK MYTHOLOGY MOD
+# =============================================================================
+```
+
+## Elemental Types System
+
+Function arguments that reference elemental types indicate that an object or creature possesses specific elemental properties. These types determine elemental advantages, disadvantages, and combat interactions within the system.
+
+### Core Elemental Types
+
+The following standard elemental types form the foundation of the type system:
+
+- **Earth** - Solid, defensive elemental type
+- **Water** - Fluid, adaptable elemental type  
+- **Air** - Swift, ethereal elemental type
+- **Fire** - Aggressive, destructive elemental type
+- **Light** - Pure, healing elemental type
+- **Dark** - Shadow, corrupting elemental type
+- **Thunder** - Electric, shocking elemental type
+
+### Special Types
+
+#### Restricted Types
+- **Void** - Hidden type normally exclusive to 'Taireru, the Elder God', an anti-cheat enforcement creature. Can be enabled in mods but maintains immunity to all disadvantages.
+- **Godskill** - Reserved for deity-level creatures with complete immunity to elemental disadvantages.
+
+#### Hybrid Types
+- **Multi-Elemental** - Ambiguous type that encompasses multiple elemental properties simultaneously.
+- **Eclipse** - Rare dual-nature type combining light and dark properties.
+
+### Event-Exclusive Types
+
+The following types were introduced for limited-time events and are no longer obtainable through normal gameplay, though they can be restored via modding:
+
+- **Valentine** - Special type from Valentine's Day 2024 event
+- **3 Realms** - Limited type from 3 Realms 2024 event  
+- **Dem'ael** - Halloween-themed type from Halloween 2024 event
+
+### Usage Notes
+
+- This type list is actively maintained and updated as new elemental types are introduced
+- Event-exclusive types retain their original properties when restored through modifications
+- Special and restricted types typically have unique interaction rules that override standard elemental advantage systems
+
+## General Notes
+- All equipment items support both `nickname` and `name` properties for custom naming
+- Many classes include `get_name()` methods that prioritize nickname over default name
+- Equipment items have level requirements and pricing systems
+- Status effects and combat mechanics are built into monster and weapon systems
