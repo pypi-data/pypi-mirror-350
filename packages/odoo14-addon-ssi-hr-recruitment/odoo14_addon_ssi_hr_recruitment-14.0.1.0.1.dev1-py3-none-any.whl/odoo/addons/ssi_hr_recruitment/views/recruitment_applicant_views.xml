@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2025 OpenSynergy Indonesia
+     Copyright 2025 PT. Simetri Sinergi Indonesia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+<record id="recruitment_applicant_view_search" model="ir.ui.view">
+    <field name="name">recruitment_applicant - search</field>
+    <field name="model">recruitment_applicant</field>
+    <field
+            name="inherit_id"
+            ref="ssi_transaction_mixin.mixin_transaction_view_search"
+        />
+    <field name="mode">primary</field>
+    <field name="arch" type="xml">
+       <data>
+            <xpath expr="//group[@name='group_by']" position="inside">
+                <filter name="grp_date" string="Date" context="{'group_by':'date'}" />
+            </xpath>
+        </data>
+    </field>
+</record>
+
+<record id="recruitment_applicant_view_tree" model="ir.ui.view">
+    <field name="name">recruitment_applicant -tree</field>
+    <field name="model">recruitment_applicant</field>
+    <field name="mode">primary</field>
+    <field name="inherit_id" ref="ssi_transaction_mixin.mixin_transaction_view_tree" />
+    <field name="arch" type="xml">
+        <data>
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="applicant_name" />
+                <field name="date" />
+            </xpath>
+            <xpath expr="//field[@name='state']" position="after">
+                <field name="stage_id" widget="badge" optional="hide" />
+            </xpath>
+        </data>
+    </field>
+</record>
+
+<record id="recruitment_applicant_view_form" model="ir.ui.view">
+    <field name="name">recruitment_applicant - form</field>
+    <field name="model">recruitment_applicant</field>
+    <field name="mode">primary</field>
+    <field name="inherit_id" ref="ssi_transaction_mixin.mixin_transaction_view_form" />
+    <field name="arch" type="xml">
+        <data>
+            <xpath expr="//group[@name='policy_2']" position="inside">
+                <field name="recruit_ok" />
+            </xpath>
+            <xpath expr="//field[@name='state']" position="attributes">
+                <attribute
+                        name="attrs"
+                    >{'invisible': [('state', '=', 'open')]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='state']" position="before">
+                <button
+                        name="action_recruit"
+                        string="Recruit"
+                        type="object"
+                        class="oe_highlight"
+                        confirm="Recruiting as employee. Are you sure?"
+                        attrs="{'invisible':['|', ('recruit_ok','!=', True),('is_employee_created','=', True)]}"
+                    />
+            </xpath>
+            <xpath expr="//field[@name='state']" position="after">
+                <field
+                        name="stage_id"
+                        widget="statusbar"
+                        options="{'clickable': '1'}"
+                        attrs="{'invisible': [('state', '!=', 'open')]}"
+                    />
+            </xpath>
+            <xpath expr="//div[@class='oe_title']" position="inside">
+                <h2 class="o_row">
+                    <div>
+                        <label for="applicant_name" class="oe_edit_only" />
+                        <field name="applicant_name" />
+                    </div>
+                </h2>
+            </xpath>
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="job_id" options='{"no_open": True, "no_create": True}' />
+                <field
+                        name="allowed_vacancy_ids"
+                        widget="many2many_tags"
+                        invisible="1"
+                    />
+                <field name="vacancy_id" domain="[('id', 'in', allowed_vacancy_ids)]" />
+            </xpath>
+            <xpath expr="//group[@name='header_right']" position="inside">
+                <field name="date" />
+                <field name="expected_salary" widget="monetary" />
+                <field name="employee_id" />
+                <field name="is_employee_created" invisible="0" />
+            </xpath>
+            <xpath expr="//page[1]" position="before">
+                <page
+                        string="Stages"
+                        name="stage_result"
+                        autofocus="autofocus"
+                        attrs="{'invisible': [('state', 'not in', ['open','done','recruited'])]}"
+                    >
+                    <field
+                            name="applicant_stage_ids"
+                            colspan="4"
+                            nolabel="1"
+                            context="{'default_applicant_id': active_id}"
+                        >
+                        <tree
+                                editable="bottom"
+                                create="false"
+                                edit="false"
+                                delete="false"
+                            >
+                            <field name="position" invisible="1" />
+                            <field name="applicant_id" invisible="1" />
+                            <field name="stage_id" readonly="1" />
+                            <field
+                                    name="result_id"
+                                    attrs="{'readonly': ['|', ('position', '!=', True), ('state', '!=', 'open')]}"
+                                />
+                            <field
+                                    name="note"
+                                    attrs="{'readonly': ['|', ('position', '!=', True), ('state', '!=', 'open')]}"
+                                />
+                            <field name="state" invisible="1" />
+                        </tree>
+                    </field>
+                </page>
+                <page name="page_applicant_info" string="Applicant Information">
+                    <group name="page_applicant_info_1">
+                        <group name="general" string="General">
+                            <label for="street" string="Address" />
+                            <div class="o_address_format">
+                                <field
+                                        name="street"
+                                        placeholder="Street..."
+                                        class="o_address_street"
+                                    />
+                                <field
+                                        name="street2"
+                                        placeholder="Street 2..."
+                                        class="o_address_street"
+                                    />
+                                <field
+                                        name="address_country_id"
+                                        placeholder="Country"
+                                        class="o_address_country"
+                                        options='{"no_open": True, "no_create": True}'
+                                    />
+                                <field
+                                        name="city"
+                                        placeholder="City"
+                                        class="o_address_city"
+                                    />
+                                <field
+                                        name="state_id"
+                                        class="o_address_state"
+                                        placeholder="State"
+                                        options="{'no_open': True, 'no_quick_create': True}"
+                                        context="{'default_country_id': country_id}"
+                                    />
+                                <field
+                                        name="zip"
+                                        placeholder="ZIP"
+                                        class="o_address_zip"
+                                    />
+                            </div>
+                            <field name="work_phone" />
+                            <field name="mobile_phone" />
+                            <field name="work_email" />
+                        </group>
+                        <group name="personal" string="Personal Information">
+                            <field name="marital" />
+                            <field
+                                    name="spouse_complete_name"
+                                    attrs="{'invisible': [('marital', 'not in', ['married', 'cohabitant'])]}"
+                                />
+                            <field
+                                    name="spouse_birthdate"
+                                    attrs="{'invisible': [('marital', 'not in', ['married', 'cohabitant'])]}"
+                                />
+                        </group>
+                        <group string="Citizenship">
+                            <field
+                                    name="country_id"
+                                    options='{"no_open": True, "no_create": True}'
+                                />
+                            <field name="gender" />
+                            <field name="birthday" />
+                            <field name="place_of_birth" />
+                            <field
+                                    name="country_of_birth"
+                                    options='{"no_open": True, "no_create": True}'
+                                />
+                            <field
+                                    name="birth_state_id"
+                                    options='{"no_open": True, "no_create": True}'
+                                />
+                            <field
+                                    name="ethnicity_id"
+                                    options='{"no_open": True, "no_create": True}'
+                                />
+                            <field
+                                    name="religion_id"
+                                    options='{"no_open": True, "no_create": True}'
+                                />
+                            <field name="blood_type" />
+                            <field name="blood_type_rhesus" />
+                        </group>
+                            <!-- <field name="identification_id" />
+                            <field name="passport_id" /> -->
+                        <group string="Dependant">
+                            <field name="children" />
+                        </group>
+                    </group>
+                </page>
+                <page string="ID Numbers" name="id_numbers">
+                    <field
+                            name="id_number_ids"
+                            colspan="4"
+                            nolabel="1"
+                            widget="one2many_list"
+                            context="{'default_applicant_id': active_id}"
+                        >
+                        <tree>
+                            <field name="applicant_id" invisible="1" />
+                            <field name="category_id" />
+                            <field name="name" />
+                            <field name="issued_id" />
+                            <field name="date_issued" />
+                            <field name="valid_from" />
+                            <field name="valid_until" />
+                        </tree>
+                        <form>
+                            <group name="header" colspan="4" col="2">
+                                <group name="header_left" colspan="1" col="2">
+                                    <field name="applicant_id" invisible="1" />
+                                    <field name="category_id" />
+                                    <field name="name" />
+                                    <field name="valid_from" />
+                                    <field name="valid_until" />
+                                </group>
+                                <group name="header_right" colspan="1" col="2">
+                                    <field name="issued_id" />
+                                    <field name="date_issued" />
+                                    <field name="place_issuance" />
+                                </group>
+                            </group>
+                        </form>
+                    </field>
+                </page>
+               <page string="Experiences">
+                    <separator name="academic" string="Academics" />
+                    <field
+                            name="academic_ids"
+                            context="{'default_applicant_id': active_id}"
+                        >
+                    <tree>
+                        <field name="partner_address_id" string="Institution" />
+                        <field name="diploma" />
+                        <field name="education_level_id" />
+                        <field name="field_of_study_id" />
+                        <field name="date_start" />
+                        <field name="date_end" />
+                    </tree>
+                    <form>
+                        <group name="header" colspan="4" col="2">
+                            <group name="header_left" colspan="1" col="2">
+                                <field name="applicant_id" invisible="1" />
+                                <field name="partner_address_id" string="Institution" />
+                                <field name="location" />
+                                <field name="active" widget="boolean_toggle" />
+                            </group>
+                            <group name="header_right" colspan="1" col="2">
+                                <field name="date_start" />
+                                <field name="expire" />
+                                <field
+                                            name="date_end"
+                                            attrs="{'invisible':[('expire', '=', False)], 'required': [('expire', '=', True)]}"
+                                        />
+                                <separator string="Academic Information" colspan="1" />
+                                <field name="diploma" />
+                                <field name="education_level_id" />
+                                <field name="field_of_study_id" />
+                                <field name="gpa" />
+                                <field name="activities" />
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="note" string="Note">
+                                <field name="note" colspan="4" nolabel="1" />
+                            </page>
+                        </notebook>
+                    </form>
+                    </field>
+                    <separator name="certification" string="Certifications" />
+                    <field
+                            name="certification_ids"
+                            context="{'default_applicant_id': active_id}"
+                        >
+                    <tree>
+                        <field name="name" string="Certification" />
+                        <field name="certification" string="# Certificate" />
+                        <field name="partner_address_id" string="Issued By" />
+                        <field name="date_start" />
+                        <field name="date_end" />
+                    </tree>
+                    <form>
+                        <group name="header" colspan="4" col="2">
+                            <group name="header_left" colspan="1" col="2">
+                                <field name="name" string="Certification" />
+                                <field name="certification" />
+                                <field name="applicant_id" invisible="1" />
+                                <field name="partner_address_id" string="Issued By" />
+                                <field name="location" />
+                                <field name="active" widget="boolean_toggle" />
+                            </group>
+                            <group name="header_right" colspan="1" col="2">
+                                <field name="date_start" />
+                                <field name="expire" />
+                                <field
+                                            name="date_end"
+                                            attrs="{'invisible':[('expire', '=', False)], 'required': [('expire', '=', True)]}"
+                                        />
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="note" string="Note">
+                                <field name="note" colspan="4" nolabel="1" />
+                            </page>
+                        </notebook>
+                    </form>
+                    </field>
+                    <separator
+                            name="personal_experience"
+                            string="Professional Experiences"
+                        />
+                    <field
+                            name="experience_ids"
+                            context="{'default_applicant_id': active_id}"
+                        >
+                    <tree>
+                        <field name="job_position" />
+                        <field name="job_level" />
+                        <field name="partner_address_id" string="Employer" />
+                        <field name="date_start" />
+                        <field name="date_end" />
+                    </tree>
+                    <form>
+                        <group name="header" colspan="4" col="2">
+                            <group name="header_left" colspan="1" col="2">
+                                <field name="job_position" />
+                                <field name="job_level" />
+                                <field name="applicant_id" invisible="1" />
+                                <field name="partner_address_id" string="Employer" />
+                                <field name="location" />
+                                <field name="active" widget="boolean_toggle" />
+                            </group>
+                            <group name="header_right" colspan="1" col="2">
+                                <field name="date_start" />
+                                <field name="expire" />
+                                <field
+                                            name="date_end"
+                                            attrs="{'invisible':[('expire', '=', False)], 'required': [('expire', '=', True)]}"
+                                        />
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="note" string="Note">
+                                <field name="note" colspan="4" nolabel="1" />
+                            </page>
+                        </notebook>
+                    </form>
+                    </field>
+                </page>
+                <page string="Languages">
+                    <field name="language_ids" nolabel="1" colspan="4">
+                        <tree string="Language" editable="bottom">
+                            <field name="name" />
+                            <field name="read_rating" />
+                            <field name="write_rating" />
+                            <field name="speak_rating" />
+                            <field name="listen_rating" />
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </data>
+    </field>
+</record>
+
+<record id="recruitment_applicant_action" model="ir.actions.act_window">
+    <field name="name">Applicants</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">recruitment_applicant</field>
+    <field name="view_mode">tree,form</field>
+</record>
+
+<menuitem
+        id="recruitment_applicant_menu"
+        name="Applicants"
+        parent="recruitment_menu"
+        action="recruitment_applicant_action"
+        groups="recruitment_applicant_viewer_group"
+        sequence="2"
+    />
+
+</odoo>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2025 OpenSynergy Indonesia
+     Copyright 2025 PT. Simetri Sinergi Indonesia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+<record id="recruitment_stage_result_view_search" model="ir.ui.view">
+    <field name="name">recruitment_stage_result - search</field>
+    <field name="model">recruitment_stage_result</field>
+    <field
+            name="inherit_id"
+            ref="ssi_master_data_mixin.mixin_master_data_view_search"
+        />
+    <field name="mode">primary</field>
+    <field name="arch" type="xml">
+        <data />
+    </field>
+</record>
+
+<record id="recruitment_stage_result_view_tree" model="ir.ui.view">
+    <field name="name">recruitment_stage_result - tree</field>
+    <field name="model">recruitment_stage_result</field>
+    <field name="inherit_id" ref="ssi_master_data_mixin.mixin_master_data_view_tree" />
+    <field name="mode">primary</field>
+    <field name="arch" type="xml">
+        <data />
+    </field>
+</record>
+
+<record id="recruitment_stage_result_view_form" model="ir.ui.view">
+    <field name="name">recruitment_stage_result - form</field>
+    <field name="model">recruitment_stage_result</field>
+    <field name="inherit_id" ref="ssi_master_data_mixin.mixin_master_data_view_form" />
+    <field name="mode">primary</field>
+    <field name="arch" type="xml">
+        <data>
+            <xpath expr="//group[@name='group_1']" position="replace">
+                <group name="header" colspan="4" col="2">
+                    <group name="header_left" colspan="1" col="2">
+                        <field name="name" />
+                        <field name="code" />
+                        <field name="active" widget="boolean_toggle" />
+                    </group>
+                    <group name="header_right" colspan="1" col="2">
+                    </group>
+                </group>
+            </xpath>
+        </data>
+    </field>
+</record>
+
+<record id="recruitment_stage_result_action" model="ir.actions.act_window">
+    <field name="name">Recruitment Stage Results</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">recruitment_stage_result</field>
+    <field name="view_mode">tree,form</field>
+</record>
+
+    <menuitem
+        id="recruitment_stage_result_menu"
+        name="Recruitment Stage Results"
+        parent="recruitment_configuration_menu"
+        action="recruitment_stage_result_action"
+        groups="recruitment_stage_result_group"
+        sequence="40"
+    />
+
+</odoo>

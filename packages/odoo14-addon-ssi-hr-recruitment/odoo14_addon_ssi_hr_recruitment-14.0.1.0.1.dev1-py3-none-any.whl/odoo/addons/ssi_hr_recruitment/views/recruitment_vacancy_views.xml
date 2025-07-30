@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2025 OpenSynergy Indonesia
+     Copyright 2025 PT. Simetri Sinergi Indonesia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+<record id="recruitment_vacancy_view_search" model="ir.ui.view">
+    <field name="name">recruitment_vacancy - search</field>
+    <field name="model">recruitment_vacancy</field>
+    <field
+            name="inherit_id"
+            ref="ssi_transaction_mixin.mixin_transaction_view_search"
+        />
+    <field name="mode">primary</field>
+    <field name="arch" type="xml">
+       <data>
+            <xpath expr="//group[@name='group_by']" position="inside">
+                <filter
+                        name="grp_date_start"
+                        string="Date Start"
+                        context="{'group_by':'date_start'}"
+                    />
+                <filter
+                        name="grp_date_end"
+                        string="Date End"
+                        context="{'group_by':'date_end'}"
+                    />
+            </xpath>
+        </data>
+    </field>
+</record>
+
+<record id="recruitment_vacancy_view_tree" model="ir.ui.view">
+    <field name="name">recruitment_vacancy -tree</field>
+    <field name="model">recruitment_vacancy</field>
+    <field name="mode">primary</field>
+    <field name="inherit_id" ref="ssi_transaction_mixin.mixin_transaction_view_tree" />
+    <field name="arch" type="xml">
+        <data>
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="date_start" string="Start Date" />
+                <field name="date_end" string="End date" />
+            </xpath>
+        </data>
+    </field>
+</record>
+
+<record id="recruitment_vacancy_view_form" model="ir.ui.view">
+    <field name="name">recruitment_vacancy - form</field>
+    <field name="model">recruitment_vacancy</field>
+    <field name="mode">primary</field>
+    <field name="inherit_id" ref="ssi_transaction_mixin.mixin_transaction_view_form" />
+    <field name="arch" type="xml">
+        <data>
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="job_id" options='{"no_open": True, "no_create": True}' />
+                <field name="applicant_number" />
+            </xpath>
+            <xpath expr="//group[@name='header_right']" position="inside">
+                <field name="date_start" />
+                <field name="date_end" />
+            </xpath>
+            <xpath expr="//page[1]" position="before">
+                <page name="page_applicant" string="Applicants">
+                    <group>
+                        <field name="applicant_recruited" />
+                        <field name="total_applicant" />
+                        <field name="all_recruited" invisible="1" />
+                    </group>
+                    <field name="applicant_ids" style="pointer-events:none;" />
+                </page>
+            </xpath>
+        </data>
+    </field>
+</record>
+
+<record id="recruitment_vacancy_action" model="ir.actions.act_window">
+    <field name="name">Vacancies</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">recruitment_vacancy</field>
+    <field name="view_mode">tree,form</field>
+</record>
+
+<menuitem
+        id="recruitment_vacancy_menu"
+        name="Vacancies"
+        parent="recruitment_menu"
+        action="recruitment_vacancy_action"
+        groups="recruitment_vacancy_viewer_group"
+        sequence="1"
+    />
+
+</odoo>
