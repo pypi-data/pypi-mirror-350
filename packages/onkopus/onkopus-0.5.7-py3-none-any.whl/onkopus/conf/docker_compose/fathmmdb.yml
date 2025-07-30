@@ -1,0 +1,25 @@
+## YAML Template.
+---
+version: "2.1"
+
+services:
+
+  fathmmdb:
+    container_name: fathmmdb
+    ports:
+      - "3306:3306"
+    image: docker.gitlab.gwdg.de/ukeb/mtb/vus-predict/fathmm-db:develop
+    restart: "always"
+    volumes:
+      - /data/fathmm-db/data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=mypw
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=mypassw
+      - MYSQL_DATABASE=fathmmdb
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    healthcheck:
+      test: ["CMD", "mysql", "-uroot", "-pmypw", "fathmmdb"]
+      interval: 10s
+      timeout: 10s
+      retries: 5

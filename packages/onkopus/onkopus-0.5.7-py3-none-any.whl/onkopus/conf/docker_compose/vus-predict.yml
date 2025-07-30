@@ -1,0 +1,37 @@
+## YAML Template.
+---
+version: "2.1"
+
+services:
+
+  vus-predict:
+    container_name: vus-predict
+    image: docker.gitlab.gwdg.de/ukeb/mtb/vus-predict/vuspredict:develop
+    expose:
+      - "9000"
+    ports:
+        - "9000:9000"
+    depends_on:
+      fathmm-adapter:
+        condition: service_started
+      fathmmdb:
+        condition: service_healthy
+      m3dapp:
+        condition: service_started
+      uniprotfetcher:
+        condition: service_started
+      vepfetcher:
+        condition: service_started
+    links:
+      - fathmm-adapter
+      - m3dapp
+      - uniprot-adapter
+      - vep-adapter
+    environment:
+      - MODULE_SERVER=localhost
+      - MODULE_PROTOCOL=http
+      - CCS_PORT=8084
+      - CCS_LIFTOVER_URL=/CCS/v1/liftover
+      - FILEPATH=/mnt/
+    restart: "always"
+

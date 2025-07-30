@@ -1,0 +1,19 @@
+## YAML Template.
+---
+version: "2.1"
+
+services:
+
+  fathmm-adapter:
+    container_name: fathmm-adapter
+    image: docker.gitlab.gwdg.de/ukeb/mtb/vus-predict/fathmmadapter:develop
+    expose:
+      - "9004"
+    ports:
+      - "9004:9004"
+    restart: "always"
+    depends_on:
+      fathmmdb:
+        condition: service_healthy
+    links:
+      - fathmmdb
