@@ -1,0 +1,65 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "autodoceval-crewai"
+version = "0.2.0"
+description = "Document evaluation and improvement using CrewAI agents"
+authors = [{ name = "Oleksandr Kryklia", email = "kryklia@gmail.com" }]
+readme = "README.md"
+license = { text = "MIT" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Documentation",
+    "Topic :: Software Development :: Documentation",
+]
+requires-python = ">=3.9"
+dependencies = [
+    "crewai>=0.1.0",
+    "openai>=1.0.0",
+    "pydantic>=2.0.0",
+    "typing-extensions>=4.0.0",
+    "python-box>=7.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.2.0",
+    "uv>=0.1.0",
+    "pytest>=7.0.0",
+]
+
+
+[tool.hatch.build.targets.wheel]
+packages = ["evcrew"]
+
+[tool.ruff]
+line-length = 170
+target-version = "py39"
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "F",  # pyflakes
+    "I",  # isort
+    "UP", # pyupgrade
+    "N",  # pep8-naming
+    "B",  # flake8-bugbear
+    "C4", # flake8-comprehensions
+    "SIM", # flake8-simplify
+    "TID", # flake8-tidy-imports
+    "ERA", # eradicate (commented out code)
+    "RUF", # ruff-specific rules
+]
+ignore = ["E501"]  # Line too long
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
