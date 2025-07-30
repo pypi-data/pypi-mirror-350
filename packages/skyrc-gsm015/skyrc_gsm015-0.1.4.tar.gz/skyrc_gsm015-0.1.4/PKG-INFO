@@ -1,0 +1,52 @@
+Metadata-Version: 2.4
+Name: skyrc_gsm015
+Version: 0.1.4
+Summary: Command line Python code to extract track logs from SkyRC GSM-015 GNSS Speed Meter
+Project-URL: Homepage, https://github.com/matburnham/skyrc-gsm015
+Project-URL: Issues, https://github.com/matburnham/skyrc-gsm015/issues
+Author-email: Mat Burnham <matburnham@gmail.com>
+License-Expression: MIT
+License-File: LICENSE
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.8
+Requires-Dist: aerofiles>=1.4.0
+Requires-Dist: pyusb>=1.3.1
+Provides-Extra: tqdm
+Requires-Dist: tqdm>=4.67.1; extra == 'tqdm'
+Description-Content-Type: text/markdown
+
+# SkyRC-GSM015 GNSS Speed Meter data extractor
+The SkyRC GSM-015 GNSS Speed Meter happens to work as a GNSS logger as well as it's speed functions.
+
+![Picture of SkyRC GSM-015 GNSS Speed Meter](https://github.com/matburnham/skyrc-gsm015/raw/main/doc/device.jpg)
+
+The OEM software supplied is not ideal for automated download of track logs. This command line Python tool/library allows automatic download of the track logs and export in IGC format.
+
+## Installation
+
+```bash
+pip install skyrc_gsm015[tqdm]
+```
+
+## Usage
+
+Example command line usage:
+```bash
+  $ skyrc-gsm015 -r -o rawdata.bin
+  $ skyrc-gsm015 -i rawdata.bin
+```
+
+Example library usage:
+```python
+  #!/bin/python
+  import skyrc_usb
+  flights = get_all_flight_data()
+```
+
+## Limitations
+Setting of the device configuration options is not currently supported. Appropriate configuration should be set using the OEM tool.
+
+## Links
+* [OEM marketing material, manuals and software](https://www.skyrc.com/gpsgsm015)
+
