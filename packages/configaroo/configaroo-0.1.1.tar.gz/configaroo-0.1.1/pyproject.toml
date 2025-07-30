@@ -1,0 +1,63 @@
+[build-system]
+requires      = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "configaroo"
+description = "Bouncy handling of configuration files"
+readme = "README.md"
+authors = [{ name = "Geir Arne Hjelle", email = "geirarne@gmail.com" }]
+maintainers = [{ name = "Geir Arne Hjelle", email = "geirarne@gmail.com" }]
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = ["configuration", "configuration-management", "toml", "json"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+dependencies = ["pydantic>=2.0", "pyplugs>=0.4.0", "python-dotenv>=1.1.0"]
+dynamic = ["version"]
+
+[project.urls]
+homepage  = "https://github.com/gahjelle/configaroo"
+github    = "https://github.com/gahjelle/configaroo"
+issues    = "https://github.com/gahjelle/configaroo/issues"
+changelog = "https://github.com/gahjelle/configaroo/blob/main/CHANGELOG.md"
+
+[dependency-groups]
+build = ["build>=1.2.2.post1", "twine>=6.1.0"]
+dev = [
+    "bumpver>=2024.1130",
+    "ipython>=8.36.0",
+    "pytest>=8.3.5",
+    "ruff>=0.11.11",
+    "tomli-w>=1.2.0",
+]
+
+
+[tool.setuptools.dynamic]
+version = { attr = "configaroo.__version__" }
+
+[tool.bumpver]
+current_version = "v0.1.1"
+version_pattern = "vMAJOR.MINOR.PATCH"
+commit_message  = "bump version {old_version} -> {new_version}"
+tag_message     = "{new_version}"
+commit          = true
+tag             = true
+push            = false
+
+[tool.bumpver.file_patterns]
+"pyproject.toml"             = ['current_version = "{version}"']
+"src/configaroo/__init__.py" = ['__version__ = "MAJOR.MINOR.PATCH"']
