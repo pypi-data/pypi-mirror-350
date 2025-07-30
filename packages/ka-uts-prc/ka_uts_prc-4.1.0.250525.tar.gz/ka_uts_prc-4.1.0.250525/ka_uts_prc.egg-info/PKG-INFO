@@ -1,0 +1,605 @@
+Metadata-Version: 2.4
+Name: ka_uts_prc
+Version: 4.1.0.250525
+Summary: Process and Thread Management Utilities
+Author: Bernd Stroehle
+Author-email: bernd.stroehle@gmail.com
+Maintainer: Bernd Stroehle
+Maintainer-email: bernd.stroehle@gmail.com
+License-Expression: GPL-3.0-only WITH Classpath-exception-2.0 OR BSD-3-Clause
+Project-URL: Source Code, https://github.com/bs29/ka_uts_prc/tree/master
+Project-URL: Homepage, https://kosakya.de/
+Project-URL: Documentation, https://ka-apc.readthedocs.io/en/latest
+Project-URL: Apache-2.0 License, https://apache.org/licenses/LICENSE-2.0
+Project-URL: GPLv3 License, https://www.gnu.org/licenses/gpl-3.0.en.html
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Natural Language :: English
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.10
+Description-Content-Type: text/x-rst
+License-File: LICENSE.txt
+Requires-Dist: joblib>=1.4.2
+Requires-Dist: ka_uts_com>=4.1.0.250525
+Requires-Dist: ka_uts_dic>=4.1.0.250525
+Dynamic: license-file
+
+##########
+ka_uts_prc
+##########
+
+********
+Overview
+********
+
+.. start short_desc
+
+**Utilities for Process and Thread Management**
+
+.. end short_desc
+
+************
+Installation
+************
+
+.. start installation
+
+The package ``ka_uts_prc`` can be installed from PyPI or Anaconda.
+
+To install with ``pip``:
+
+.. code-block:: shell
+
+	$ python -m pip install ka_uts_prc
+
+To install with ``conda``:
+
+.. code-block:: shell
+
+	$ conda install -c conda-forge ka_uts_prc
+
+.. end installation
+
+This requires that the ``readme`` extra is installed:
+
+.. code-block:: bash
+
+	$ python -m pip install ka_uts_prc[readme]
+
+*******
+Modules
+*******
+
+The Package ``ka_uts_prc`` contains the subsequent modules.
+
+  .. Modules-of-package-ka_uts_prc-label:
+  .. table:: Modules of package ka_uts_prc*
+
+   +---------------------------------------------+
+   |Module                                       |
+   +--------+------------------------------------+
+   |Name    |Description                         |
+   +========+====================================+
+   |prc.py  |Management of "array of arrays".    |
+   +--------+------------------------------------+
+   |run.py  |Array of Dictionaries               |
+   +--------+------------------------------------+
+
+  .. processing-module-with-classes-label:
+  .. table:: *Processing Module with classes*
+
+   +-----------------------------------+----------------------------------------------+
+   |Module                             |Static Classes                                |
+   +-------------------+---------------+----+-----------------------------------------+
+   |Name               |Type           |Name|Description                              |
+   +===================+===============+====+=========================================+
+   |prc                |Task runner    |Ra  |Process Task decorated by the ray remote |
+   |                   |for iterator   |    |decorator for all iterator items.        |
+   |                   |               +----+-----------------------------------------+
+   |                   |               |Co  |Process Task using concurrent futures    |
+   |                   |               |    |with process- or thread-pool.            |
+   |                   |               +----+-----------------------------------------+
+   |                   |               |Mp  |Process Tasks using multiprocessing with |
+   |                   |               |    |process- or thread-pool                  |
+   |                   |               +----+-----------------------------------------+
+   |                   |               |Sp  |Process Task sequentially for all        |
+   |                   |               |    |iterator items.                          |
+   |                   |               +----+-----------------------------------------+
+   |                   |               |Prc |Create iterator for path-templates       |
+   |                   |               |    |optionally modified by transformer       |
+   |                   |               |    |functions (if defined).                  |
+   |                   |               |    +-----------------------------------------+
+   |                   |               |    |Process Tasks by selecting the run-,     |
+   |                   |               |    |process- or thread-function of one of the|
+   |                   |               |    |Processing classes Ra, Co, Mp, Sp with   |
+   |                   |               |    |the run_method using the function table  |
+   |                   |               |    |of run methods: d_run_method_2_fnc.      |
+   +-------------------+---------------+----+-----------------------------------------+
+
+  .. special-modules-without-classes-label:
+  .. table:: *Special-Modules without classes*
+
+   +-----------+----------------+------------------------------------------------+
+   |Module     |Type            |Statements                                      |
+   +===========+================+================================================+
+   |__init__   |Package         |Module with no Statements; the module is used to|
+   |           |directory       |mark the directory it contains as a package. A  | 
+   |           |marker          |dummy Module enforces explicit imports and thus |
+   |           |                |clear namespace use and call them with the dot  |
+   |           |                |dot notation                                    |
+   +-----------+----------------+------------------------------------------------+
+   |__version__|Version         |Assignment Statements for Version System        |
+   |           |                |Variables                                       |
+   +-----------+----------------+------------------------------------------------+
+
+Processing Modul: prc_by_dir
+============================
+
+The Modul ``prc_by_dir`` contains the subsequent static classes with static variables and methods
+
+  .. Static-classes-of_module-prc_by_dir-label:
+  .. table:: *Classes of module prc_by_dir*
+
+   +---------------------------------------------+
+   |Static Classes                               |
+   +-----+---------------------------------------+
+   |Name |Description                            |
+   +=====+=======================================+
+   |Ra   |Execute tasks using Ray                |
+   +-----+---------------------------------------+
+   |Co   |Execute tasks using Concurrent futures |
+   +-----+---------------------------------------+
+   |Mp   |Execute tasks using multiprocessing    |
+   +-----+---------------------------------------+
+   |Sp   |Execute tasks using single processing  |
+   +-----+---------------------------------------+
+   |Prc  |Run tasks with selected method         |
+   +-----+---------------------------------------+
+
+static Class: Ra
+----------------
+
+static Methods
+^^^^^^^^^^^^^^
+
+  .. ra-static-methods-of-prc-label:
+  .. table:: *Ra static Methods of prc*
+
+   +-----------------------------------------+-----------------------------------+
+   |Static Method                            |Parameter\: P / Return Value\: RV  |
+   +-------+---------------------------------+------+-----+----+-----------------+
+   |Name   |Description                      |Name  |Type |P/RV|Description      |
+   +=======+=================================+======+=====+====+=================+
+   |process|Run tasks in parallel by         |cls   |class|P   |current class    |
+   |       |executing the task decorated with+------+-----+----+-----------------+
+   |       |with the ray remote decorator for|kwargs|T_Dic|P   |keyword arguments|
+   |       |every iterator item              +------+-----+----+-----------------+
+   |       |                                 |      |None |RV  |no return value  |
+   +-------+---------------------------------+------+-----+----+-----------------+
+
+static Class: Co
+----------------
+
+static Methods
+^^^^^^^^^^^^^^
+
+  .. co-static-methods-of-prc-label:
+  .. table:: *Co static Methods of prc*
+
+   +-----------------------------------------+-----------------------------------+
+   |Static Method                            |Parameter\: P / Return Value\: RV  |
+   +-------+---------------------------------+------+-----+----+-----------------+
+   |Name   |Description                      |Name  |Type |P/RV|Description      |
+   +=======+=================================+======+=====+====+=================+
+   |process|Run tasks in parallel by applying|cls   |class|P   |current class    |
+   |       |the map method of the concurrent +------+-----+----+-----------------+
+   |       |futures process pool executor to |kwargs|T_Dic|P   |keyword arguments|
+   |       |the task and the iterator.       +------+-----+----+-----------------+
+   |       |                                 |      |None |RV  |no return value  |
+   +-------+---------------------------------+------+-----+----+-----------------+
+   |thread |Run tasks in parallel by applying|cls   |class|P   |current class    |
+   |       |the map method of the concurrent +------+-----+----+-----------------+
+   |       |futures thread pool executor to  |kwargs|T_Dic|P   |keyword arguments|
+   |       |the task and the iterator.       +------+-----+----+-----------------+
+   |       |                                 |      |None |RV  |no return value  |
+   +-------+---------------------------------+------+-----+----+-----------------+
+
+static Class: Mp
+----------------
+
+static Methods
+^^^^^^^^^^^^^^
+
+  .. mp-static-methods-of-prc_label:
+  .. table:: *Mp static Methods of prc*
+
+   +-----------------------------------------+-----------------------------------+
+   |Static Method                            |Parameter\: P / Return Value\: RV  |
+   +-------+---------------------------------+------+-----+----+-----------------+
+   |Name   |Description                      |Name  |Type |P/RV|Description      |
+   +=======+=================================+======+=====+====+=================+
+   |process|Run tasks in parallel by applying|cls   |class|P   |current class    |
+   |       |the map method of the            +------+-----+----+-----------------+
+   |       |multiprocessing process pool to  |kwargs|T_Dic|P   |keyword arguments|
+   |       |the task and the iterator.       +------+-----+----+-----------------+
+   |       |                                 |      |None |RV  |no return value  |
+   +-------+---------------------------------+------+-----+----+-----------------+
+   |thread |Run tasks in parallel by applying|cls   |class|P   |current class    |
+   |       |the map method of the            +------+-----+----+-----------------+
+   |       |multiprocessing thread pool to   |kwargs|T_Dic|P   |keyword arguments|
+   |       |the task and the iterator.       +------+-----+----+-----------------+
+   |       |                                 |      |None |RV  |no return value  |
+   +-------+---------------------------------+------+-----+----+-----------------+
+
+static Class: Sp
+----------------
+
+static Methods
+^^^^^^^^^^^^^^
+
+  .. sp-static-methods-of-prc-label:
+  .. table:: *Sp static Methods of prc*
+
+   +-----------------------------------------+-----------------------------------+
+   |Static Method                            |Parameter\: P / Return Value\: RV  |
+   +-------+---------------------------------+------+-----+----+-----------------+
+   |Name   |Description                      |Name  |Type |P/RV|Description      |
+   +=======+=================================+======+=====+====+=================+
+   |run    |Run tasks sequentially for all   |cls   |class|P   |current class    |
+   |       |items of the iterator            +------+-----+----+-----------------+
+   |       |                                 |kwargs|T_Dic|P   |keyword arguments|
+   |       |                                 +------+-----+----+-----------------+
+   |       |                                 |      |None |RV  |no return value  |
+   +-------+---------------------------------+------+-----+----+-----------------+
+
+static Class: Prc
+-----------------
+
+static Variables
+^^^^^^^^^^^^^^^^
+
+  .. prc-static-variables-of-prc-label:
+  .. table:: *Prc static Variables of prc*
+
+
+   +-----------------------------------------------------------+
+   |Static Variable                                            |
+   +------------------+------+---------------------------------+
+   |Name              |Type  |Description                      |
+   +========+=========+======+=================================+
+   |d_run_method_2_fnc|T_Dic |Dictionary to translate run      |
+   |                  |      |methods into run functions       |
+   +------------------+------+---------------------------------+
+
+static Methods
+^^^^^^^^^^^^^^
+
+  .. prc-static-methods-of-prc-label:
+  .. table:: *Prc static Methods of prc*
+
+   +-------------------------------------+-----------------------------------+
+   |Static Method                        |Parameter\: P / Return Value\: RV  |
+   +-----+-------------------------------+------+-----+----+-----------------+
+   |Name |Description                    |Name  |Type |P/RV|Description      |
+   +=====+===============================+======+=====+====+=================+
+   |do   |Select executer with run method|cls   |class|P   |current class    |
+   |     |and run method function table. |      |     |    |                 |
+   |     +-------------------------------+------+-----+----+-----------------+
+   |     |Create iterator using the Task |kwargs|T_Dic|P   |keyword arguments|
+   |     |function: yield_dl_template.   |      |     |    |                 |
+   |     +-------------------------------+------+-----+----+-----------------+
+   |     |Run the Task function: task    |      |None |RV  |no return value  |
+   |     |with the executor.             |      |     |    |                 |
+   +-----+-------------------------------+------+-----+----+-----------------+
+
+Special Modul: __version__
+==========================
+
+The Modul ``__version__`` contains no classes, but assignment statements for
+system variables used by versioning.
+
+  .. modul-__version__-system-variables:
+  .. table:: *__version_ System Variables*
+
+   +---------------+-----------------------------------------+
+   |System Variable|Example                                  |
+   +===============+=========================================+
+   |__title__      |'ka_uts_prc'                             |
+   +---------------+-----------------------------------------+
+   |__description__|'Processing Utilities.'                  |
+   +---------------+-----------------------------------------+
+   |__url__        |'https://ka-com.readthedocs.io/en/latest'|
+   +---------------+-----------------------------------------+
+   |__version___   |'1.0.0.24.08.24'                         |
+   +---------------+-----------------------------------------+
+   |__build__      |0x022200                                 |
+   +---------------+-----------------------------------------+
+   |__author_email_|'Bernd Stroehle'                         |
+   +---------------+-----------------------------------------+
+   |__license__    |'Apache-2.0'                             |
+   +---------------+-----------------------------------------+
+   |__copyright__  |'Copyright 2024 Bernd Stroehle           |
+   +---------------+-----------------------------------------+
+   |__cake__       |u'\u2728 \U0001f370 \u2728'              |
+   +---------------+-----------------------------------------+
+
+Module Data
+===========
+
+   +-------------------+-------------------------------------+
+   |System Variable    |Description                          |
+   +===================+=====================================+
+   |log.main.tenant.yml|'ka_uts_prc'                         |
+   |__copyright__      |'Copyright 2023 bs29'                |
+   +-------------------+-------------------------------------+
+
+########
+Appendix
+########
+
+***************
+Package Logging
+***************
+
+Description
+===========
+
+The Standard or user specifig logging is carried out by the log.py module of the logging
+package **ka_uts_log** using the standard- or user-configuration files in the logging
+package configuration directory:
+
+* **<logging package directory>/cfg/ka_std_log.yml**,
+* **<logging package directory>/cfg/ka_usr_log.yml**.
+
+The Logging configuration of the logging package could be overriden by yaml files with the
+same names in the application package- or application data-configuration directories:
+
+* **<application package directory>/cfg**
+* **<application data directory>/cfg**.
+
+Log message types
+=================
+
+Logging defines log file path names for the following log message types: .
+
+#. *debug*
+#. *info*
+#. *warning*
+#. *error*
+#. *critical*
+
+Log types and Log directories
+-----------------------------
+
+Single or multiple Application log directories can be used for each message type:
+
+  .. Log-types-and-Log-directories-label:
+  .. table:: *Log types and directoriesg*
+
+   +--------------+---------------+
+   |Log type      |Log directory  |
+   +--------+-----+--------+------+
+   |long    |short|multiple|single|
+   +========+=====+========+======+
+   |debug   |dbqs |dbqs    |logs  |
+   +--------+-----+--------+------+
+   |info    |infs |infs    |logs  |
+   +--------+-----+--------+------+
+   |warning |wrns |wrns    |logs  |
+   +--------+-----+--------+------+
+   |error   |errs |errs    |logs  |
+   +--------+-----+--------+------+
+   |critical|crts |crts    |logs  |
+   +--------+-----+--------+------+
+
+Application parameter for logging
+---------------------------------
+
+  .. Application-parameter-used-in-log-naming-label:
+  .. table:: *Application parameter used in log naming*
+
+   +-----------------+---------------------------+------+------------+
+   |Name             |Decription                 |Values|Example     |
+   +=================+===========================+======+============+
+   |dir_dat          |Application data directory |      |/otev/data  |
+   +-----------------+---------------------------+------+------------+
+   |tenant           |Application tenant name    |      |UMH         |
+   +-----------------+---------------------------+------+------------+
+   |package          |Application package name   |      |otev_xls_srr|
+   +-----------------+---------------------------+------+------------+
+   |cmd              |Application command        |      |evupreg     |
+   +-----------------+---------------------------+------+------------+
+   |pid              |Process ID                 |      |681025      |
+   +-----------------+---------------------------+------+------------+
+   |log_ts_type      |Timestamp type used in     |ts,   |ts          |
+   |                 |logging files|ts, dt       |dt'   |            |
+   +-----------------+---------------------------+------+------------+
+   |log_sw_single_dir|Enable single log directory|True, |True        |
+   |                 |or multiple log directories|False |            |
+   +-----------------+---------------------------+------+------------+
+
+Log files naming
+----------------
+
+Naming Conventions
+^^^^^^^^^^^^^^^^^^
+
+  .. Naming-conventions-for-logging-file-paths-label:
+  .. table:: *Naming conventions for logging file paths*
+
+   +--------+-------------------------------------------------------+-------------------------+
+   |Type    |Directory                                              |File                     |
+   +========+=======================================================+=========================+
+   |debug   |/<dir_dat>/<tenant>/RUN/<package>/<cmd>/<Log directory>|<Log type>_<ts>_<pid>.log|
+   +--------+-------------------------------------------------------+-------------------------+
+   |info    |/<dir_dat>/<tenant>/RUN/<package>/<cmd>/<Log directory>|<Log type>_<ts>_<pid>.log|
+   +--------+-------------------------------------------------------+-------------------------+
+   |warning |/<dir_dat>/<tenant>/RUN/<package>/<cmd>/<Log directory>|<Log type>_<ts>_<pid>.log|
+   +--------+-------------------------------------------------------+-------------------------+
+   |error   |/<dir_dat>/<tenant>/RUN/<package>/<cmd>/<Log directory>|<Log type>_<ts>_<pid>.log|
+   +--------+-------------------------------------------------------+-------------------------+
+   |critical|/<dir_dat>/<tenant>/RUN/<package>/<cmd>/<Log directory>|<Log type>_<ts>_<pid>.log|
+   +--------+-------------------------------------------------------+-------------------------+
+
+Naming Examples
+^^^^^^^^^^^^^^^
+
+  .. Naming-examples-for-logging-file-paths-label:
+  .. table:: *Naming examples for logging file paths*
+
+   +--------+--------------------------------------------+------------------------+
+   |Type    |Directory                                   |File                    |
+   +========+============================================+========================+
+   |debug   |/data/otev/umh/RUN/otev_xls_srr/evupreg/logs|debs_1737118199_9470.log|
+   +--------+--------------------------------------------+------------------------+
+   |info    |/data/otev/umh/RUN/otev_xls_srr/evupreg/logs|infs_1737118199_9470.log|
+   +--------+--------------------------------------------+------------------------+
+   |warning |/data/otev/umh/RUN/otev_xls_srr/evupreg/logs|wrns_1737118199_9470.log|
+   +--------+--------------------------------------------+------------------------+
+   |error   |/data/otev/umh/RUN/otev_xls_srr/evupreg/logs|errs_1737118199_9470.log|
+   +--------+--------------------------------------------+------------------------+
+   |critical|/data/otev/umh/RUN/otev_xls_srr/evupreg/logs|crts_1737118199_9470.log|
+   +--------+--------------------------------------------+------------------------+
+
+******************
+Python Terminology
+******************
+
+Python Packages
+===============
+
+Overview
+--------
+
+  .. Python Packages-Overview-label:
+  .. table:: *Python Packages Overview*
+
+   +---------------------+-----------------------------------------------------------------+
+   |Name                 |Definition                                                       |
+   +=====================+=================================================================+
+   |Python package       |Python packages are directories that contains the special module |
+   |                     |``__init__.py`` and other modules, packages files or directories.|
+   +---------------------+-----------------------------------------------------------------+
+   |Python sub-package   |Python sub-packages are python packages which are contained in   |
+   |                     |another pyhon package.                                           |
+   +---------------------+-----------------------------------------------------------------+
+   |Python package       |directory contained in a python package.                         |
+   |sub-directory        |                                                                 |
+   +---------------------+-----------------------------------------------------------------+
+   |Python package       |Python package sub-directories with a special meaning like data  |
+   |special sub-directory|or cfg                                                           |
+   +---------------------+-----------------------------------------------------------------+
+
+
+Examples
+--------
+
+  .. Python-Package-sub-directory-Examples-label:
+  .. table:: *Python Package sub-directory-Examples*
+
+   +-------+------------------------------------------+
+   |Name   |Description                               |
+   +=======+==========================================+
+   |bin    |Directory for package scripts.            |
+   +-------+------------------------------------------+
+   |cfg    |Directory for package configuration files.|
+   +-------+------------------------------------------+
+   |data   |Directory for package data files.         |
+   +-------+------------------------------------------+
+   |service|Directory for systemd service scripts.    |
+   +-------+------------------------------------------+
+
+Python package files
+====================
+
+Overview
+--------
+
+  .. Python-package-files-overview-label:
+  .. table:: *Python package overview files*
+
+   +--------------+---------------------------------------------------------+
+   |Name          |Definition                                               |
+   +==============+==========+==============================================+
+   |Python        |Files within a python package.                           |
+   |package files |                                                         |
+   +--------------+---------------------------------------------------------+
+   |Special python|Package files which are not modules and used as python   |
+   |package files |and used as python marker files like ``__init__.py``.    |
+   +--------------+---------------------------------------------------------+
+   |Python package|Files with suffix ``.py``; they could be empty or contain|
+   |module        |python code; other modules can be imported into a module.|
+   +--------------+---------------------------------------------------------+
+   |Special python|Modules like ``__init__.py`` or ``main.py`` with special |
+   |package module|names and functionality.                                 |
+   +--------------+---------------------------------------------------------+
+
+Examples
+--------
+
+  .. Python-package-files-examples-label:
+  .. table:: *Python package examples files*
+
+   +--------------+-----------+-----------------------------------------------------------------+
+   |Name          |Type       |Description                                                      |
+   +==============+===========+=================================================================+
+   |py.typed      |Type       |The ``py.typed`` file is a marker file used in Python packages to|
+   |              |checking   |indicate that the package supports type checking. This is a part |
+   |              |marker     |of the PEP 561 standard, which provides a standardized way to    |
+   |              |file       |package and distribute type information in Python.               |
+   +--------------+-----------+-----------------------------------------------------------------+
+   |__init__.py   |Package    |The dunder (double underscore) module ``__init__.py`` is used to |
+   |              |directory  |execute initialisation code or mark the directory it contains as |
+   |              |marker     |a package. The Module enforces explicit imports and thus clear   |
+   |              |file       |namespace use and call them with the dot notation.               |
+   +--------------+-----------+-----------------------------------------------------------------+
+   |__main__.py   |entry point|The dunder module ``__main__.py`` serves as an entry point for   |
+   |              |for the    |the package. The module is executed when the package is called   |
+   |              |package    |by the interpreter with the command **python -m <package name>**.|
+   +--------------+-----------+-----------------------------------------------------------------+
+   |__version__.py|Version    |The dunder module ``__version__.py`` consist of assignment       |
+   |              |file       |statements used in Versioning.                                   |
+   +--------------+-----------+-----------------------------------------------------------------+
+
+Python methods
+==============
+
+Overview
+--------
+
+  .. Python-methods-overview-label:
+  .. table:: *Python methods overview*
+
+   +---------------------+--------------------------------------------------------+
+   |Name                 |Description                                             |
+   +=====================+========================================================+
+   |Python method        |Python functions defined in python modules.             |
+   +---------------------+--------------------------------------------------------+
+   |Special python method|Python functions with special names and functionalities.|
+   +---------------------+--------------------------------------------------------+
+   |Python class         |Classes defined in python modules.                      |
+   +---------------------+--------------------------------------------------------+
+   |Python class method  |Python methods defined in python classes                |
+   +---------------------+--------------------------------------------------------+
+
+Examples
+--------
+
+  .. Python-methods-examples-label:
+  .. table:: *Python methods examples*
+
+   +--------+------------+----------------------------------------------------------+
+   |Name    |Type        |Description                                               |
+   +========+============+==========================================================+
+   |__init__|class object|The special method ``__init__`` is called when an instance|
+   |        |constructor |(object) of a class is created; instance attributes can be|
+   |        |method      |defined and initalized in the method.                     |
+   +--------+------------+----------------------------------------------------------+
+
+#################
+Table of Contents
+#################
+
+.. contents:: **Table of Content**
