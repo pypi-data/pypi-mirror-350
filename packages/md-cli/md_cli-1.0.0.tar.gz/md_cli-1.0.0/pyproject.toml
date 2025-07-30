@@ -1,0 +1,40 @@
+[project]
+name = "md_cli"
+version = "1.0.0"
+authors = [{ name = "Bryt", email = "bryt.xin.li@gmail.com" }]
+description = "Markdown Jinja2 command line tools"
+readme = "README.md"
+requires-python = ">=3.6"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+dependencies = [
+  'jinja2',
+  'PyYAML',
+  'python-dotenv',
+  'ninja',
+  'ninja_syntax'
+]
+
+[project.scripts]
+make_ninja_build = "make_ninja_build:main"
+j2 = "j2:main"
+plantuml-wrap = "plantuml_wrap:main"
+md-render = "md_render:main"
+
+[project.urls]
+Homepage = "https://github.com/xin-at-marathon/pypi/j2cli/"
+Issues = "https://github.com/xin-at-marathon/pypi/issues"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
