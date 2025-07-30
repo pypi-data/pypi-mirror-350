@@ -1,0 +1,35 @@
+name: "job name"
+queue: "queue name"
+single_host: true
+walltime:
+  hours: 1
+  minutes: 0
+  seconds: 0
+std_out: "stdout.txt"
+std_err: "stderr.txt"
+memory: 16
+memory_kill_limit: 0.9
+cores: 1
+notification:
+  email: "test@dtu.dk"
+  email_on_start: false
+  email_on_end: true
+core_block_size: ${example_value}
+core_p_tile_size: 1
+gpu:
+  num_gpus: ${n_gpus}
+  gpu_type: "V100"
+commands:
+  - "git clone https://github.com/example/${project_name}"
+  - "cd ${project_name}"
+
+substitutions:
+  project_name: "example_project"
+  example_value: 100
+
+sweep:
+  method: "grid"
+  parameters:
+    n_gpus:
+      values: [100, 200, 300]
+  n_runs: 10

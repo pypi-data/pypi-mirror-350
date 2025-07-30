@@ -1,0 +1,83 @@
+[build-system]
+build-backend = "hatchling.build"
+
+requires = [ "hatchling" ]
+
+[project]
+name = "dtu-compute"
+version = "0.0.2"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+  { name = "Nicki Skafte", email = "skaftenicki@gmail.com" },
+]
+requires-python = ">=3.10"
+classifiers = [
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+
+dependencies = [
+  "cryptography>=45.0.2",
+  "fabric>=3.2.2",
+  "gitpython>=3.1.44",
+  "keyring>=25.6",
+  "loguru>=0.7.3",
+  "openai>=1.82",
+  "pydantic>=2.11.4",
+  "sweeps>=0.2",
+  "toml>=0.10.2",
+  "typer>=0.15.4",
+]
+
+scripts.dtu = "dtu_compute.cli:cli"
+
+[dependency-groups]
+dev = [
+  "coverage>=7.8.1",
+  "invoke>=2.2",
+  "ipython>=8.36",
+  "pre-commit>=4.2",
+  "pytest>=8.3.5",
+  "python-semantic-release>=9.21.1",
+  "ruff>=0.11.10",
+  "ty>=0.0.1a6",
+]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 120
+format.preview = true
+lint.select = [
+  "D",  # see: https://pypi.org/project/pydocstyle
+  "E",
+  "F",  # see: https://pypi.org/project/pyflakes
+  "I",  #see: https://pypi.org/project/isort/
+  "N",  # see: https://pypi.org/project/pep8-naming
+  "S",  # see: https://pypi.org/project/flake8-bandit
+  "UP", # see: https://docs.astral.sh/ruff/rules/#pyupgrade-up
+  "W",  # see: https://pypi.org/project/pycodestyle
+]
+lint.ignore = [
+  "D100",
+  "D104",
+  "D107",
+  "D203",
+  "D213",
+]
+lint.per-file-ignores."tests/*" = [ "N803", "S101", "S105", "S106" ]
+
+[tool.coverage.run]
+omit = [ "tests/*" ]
+
+[tool.semantic_release]
+version_toml = [ "pyproject.toml:project.version" ]
+version_variables = [ "src/dtu_compute/__init__.py:__version__" ]
+branch = "main"
+changelog_file = "CHANGELOG.md"
+build_command = "uv build"
+upload_to_release = true
+upload_to_pypi = false
