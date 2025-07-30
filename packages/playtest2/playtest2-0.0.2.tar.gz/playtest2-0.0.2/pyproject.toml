@@ -1,0 +1,66 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "playtest2"
+dynamic = ["version"]
+description = "Python port of uzabase/playtest2"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+keywords = ["testing", "gauge", "gauge-python",  "automation"]
+authors = [
+  { name = "ftnext", email = "takuyafjp+develop@gmail.com" },
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Software Development :: Testing",
+  "Topic :: Software Development :: Testing :: Acceptance",
+]
+dependencies = ["getgauge", "httpx", "jsonpath-ng"]
+
+[project.urls]
+Documentation = "https://github.com/ftnext/playtest2-python#readme"
+Issues = "https://github.com/ftnext/playtest2-python/issues"
+Source = "https://github.com/ftnext/playtest2-python"
+
+[tool.hatch.version]
+path = "src/playtest2/__about__.py"
+
+[tool.hatch.envs.hatch-test]
+extra-dependencies = ["respx"]
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+  "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/playtest2 tests}"
+
+[tool.coverage.run]
+source_pkgs = ["playtest2", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/playtest2/__about__.py",
+]
+
+[tool.coverage.paths]
+playtest2 = ["src/playtest2", "*/playtest2/src/playtest2"]
+tests = ["tests", "*/playtest2/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
