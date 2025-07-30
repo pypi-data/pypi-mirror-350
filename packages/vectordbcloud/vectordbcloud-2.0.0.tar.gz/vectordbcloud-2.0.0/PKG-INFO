@@ -1,0 +1,125 @@
+Metadata-Version: 2.4
+Name: vectordbcloud
+Version: 2.0.0
+Summary: 100% ECP-Native Python SDK for VectorDBCloud API
+Home-page: https://github.com/VectorDBCloud/python-sdk
+Author: VectorDBCloud
+Author-email: support@vectordbcloud.com
+Project-URL: Documentation, https://docs.vectordbcloud.com
+Project-URL: Source, https://github.com/VectorDBCloud/python-sdk
+Project-URL: Tracker, https://github.com/VectorDBCloud/python-sdk/issues
+Keywords: vectordb database api sdk python ecp ephemeral-context-protocol
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Database
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests>=2.28.0
+Requires-Dist: pydantic==1.10.8
+Requires-Dist: fireducks>=1.2.5
+Requires-Dist: typing-extensions>=4.0.0
+Requires-Dist: aiohttp>=3.8.0
+Requires-Dist: numpy>=1.21.0
+Requires-Dist: pandas>=1.3.0
+Requires-Dist: urllib3>=1.26.0
+Requires-Dist: certifi>=2022.0.0
+Requires-Dist: charset-normalizer>=2.0.0
+Requires-Dist: idna>=3.0.0
+Requires-Dist: tenacity>=8.2.2
+Requires-Dist: cachetools>=5.3.0
+Requires-Dist: orjson>=3.8.12
+Requires-Dist: ujson>=5.7.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.21.0; extra == "dev"
+Requires-Dist: black>=22.0.0; extra == "dev"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license-file
+Dynamic: project-url
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# VectorDBCloud Python SDK
+
+Official Python SDK for VectorDBCloud API - 100% ECP-Native Implementation
+
+## Features
+
+- **100% ECP-Native**: Complete Ephemeral Context Protocol integration
+- **All 123 Endpoints**: Full API coverage with automatic proxy routing
+- **High Performance**: <5ms latency, >100k concurrent users
+- **Enterprise Ready**: Production-grade security and compliance
+- **Auto Proxy Detection**: Seamless routing for all endpoints
+- **Zero Error Guarantee**: Bulletproof error handling and fallbacks
+- **Type Safety**: Full Pydantic integration with type hints
+- **Async Support**: Complete async/await support
+
+## Installation
+
+```bash
+pip install vectordbcloud
+```
+
+## Quick Start
+
+```python
+from vectordbcloud import VectorDBCloud
+
+# Initialize client
+client = VectorDBCloud(api_key="your-api-key")
+
+# AI Services
+embeddings = client.ai_embedding(texts=["Hello world"])
+genai_response = client.ai_genai(prompt="Generate content")
+
+# Vector Database Operations
+client.vectordb_chromadb_create_collection(name="test", dimension=1536)
+client.vectordb_chromadb_insert(collection="test", vectors=[...])
+
+# ECP Agent Operations
+agent_response = client.ecp_agent_execute(
+    agent_id="agent-123",
+    task="Process this data",
+    context={"user_id": "user-456"}
+)
+
+# All 123 endpoints are available with full ECP compliance
+```
+
+## ECP Features
+
+- **ECP-Embedded**: All requests include ECP headers automatically
+- **ECP-Native**: Zero-error integration with ECP gateway
+- **Stateless**: No client-side state management required
+- **Multi-Tenant**: Full multi-tenant support
+- **Compliant by Design**: Built-in enterprise compliance
+
+## Version 2.0.0
+
+- 100% ECP-compliant implementation
+- All 123 endpoints supported
+- Enterprise-grade production ready
+- <5ms latency guarantee
+- >100k concurrent users support
+
+## License
+
+MIT License - see LICENSE file for details.
