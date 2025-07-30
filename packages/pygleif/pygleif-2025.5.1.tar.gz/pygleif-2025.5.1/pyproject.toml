@@ -1,0 +1,106 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pygleif"
+description = "Query the GLEIF API using Python"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [
+    {name = "ggravlingen", email = "no@email.com"},
+]
+dynamic = ['version']
+dependencies    = [
+    "pydantic>2,<3",
+]
+keywords = ["lei-code", "lei", "api", "gleif", "leicode"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Intended Audience :: Financial and Insurance Industry",
+]
+
+[project.urls]
+"Source Code" = "https://github.com/ggravlingen/pygleif"
+
+[project.optional-dependencies]
+test = [
+    "coverage==7.8.0",
+    "mypy==1.15.0",
+    "pre-commit==4.2.0",
+    "ruff==0.11.7",
+    "pytest==8.3.5",
+    "pytest-cov==6.1.1",
+]
+
+[tool.setuptools]
+include-package-data = true
+platforms = ["any"]
+zip-safe = false
+
+[tool.setuptools.dynamic]
+version = {file = "pygleif/VERSION"}
+
+[tool.setuptools.packages.find]
+exclude = ["tests", "tests*"]
+
+[tool.setuptools.package-data]
+"pygleif" = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
+]
+norecursedirs = [
+    ".git",
+    "testing_config",
+]
+
+[tool.ruff]
+exclude = [
+    "tests",
+]
+
+target-version = "py311"
+
+lint.select = [
+    "ALL"
+]
+
+line-length = 88
+
+lint.ignore = [# One of these is to be disabled..
+          "D213", # See https://github.com/charliermarsh/ruff/issues/2281
+          #"D212", # See https://github.com/charliermarsh/ruff/issues/2281
+
+          "D203", # See https://github.com/charliermarsh/ruff/issues/2281
+          #"D211", # See https://github.com/charliermarsh/ruff/issues/2281
+]
+
+[tool.ruff.lint.flake8-pytest-style]
+fixture-parentheses = false
+
+[tool.ruff.lint.pydocstyle]
+convention = 'pep257'
+
+[tool.ruff.lint.isort]
+# will group `import x` and `from x import` of the same module.
+combine-as-imports = true
+force-sort-within-sections = true
+forced-separate = [
+  "tests",
+]
+known-first-party = [
+  "pygleif",
+  "tests",
+]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+plugins = "pydantic.mypy"
