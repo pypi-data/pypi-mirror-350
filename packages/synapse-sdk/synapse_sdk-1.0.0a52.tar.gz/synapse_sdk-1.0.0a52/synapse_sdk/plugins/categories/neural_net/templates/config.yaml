@@ -1,0 +1,31 @@
+name: plugin_name
+code: plugin_code
+version: plugin_version
+readme: README.md
+description: This is plugin_name plugin
+category: neural_net
+tasks:
+  - image.object_detection
+data_type: image
+package_manager: uv
+actions:
+  train:
+    dataset: dataset
+    entrypoint: plugin.train.train
+    metrics:
+      epoch:
+        - loss
+        - miou
+    hyperparameters:
+      ui_schema: |
+        Dumped FormKit Schema for hyperparameters
+    options:
+      visualize: false # Whether to visualize the training process
+  deployment:
+    entrypoint: plugin.inference.MockNetInference
+  inference:
+    method: restapi
+    endpoints:
+      - method: get
+  test:
+    entrypoint: plugin.test.test
