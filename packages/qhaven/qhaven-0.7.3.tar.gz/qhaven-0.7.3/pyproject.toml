@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+[project]
+name = "qhaven"
+version = "0.7.3"
+description = "PQC CBOM/PDF/HTML generator for CyberScope"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [{ name="honkidori", email="qrypthaven@outlook.com" }]
+dependencies = [
+  "tqdm",
+  "reportlab",
+  "jinja2",
+  "tomli; python_version < '3.11'",
+  "requests",
+  "pyyaml",
+]
+[project.scripts]
+qhaven = "qhaven.cli:main"
+[tool.setuptools.package-data]
+"qhaven" = ["assets/*.json"]
