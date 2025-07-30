@@ -1,0 +1,78 @@
+Metadata-Version: 2.4
+Name: fastpluggy-plugins
+Version: 0.0.6
+Summary: Official plugin bundle for FastPluggy
+Author-email: Your Name <you@example.com>
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Provides-Extra: crud-tools
+Requires-Dist: jinja2; extra == "crud-tools"
+Provides-Extra: redis-tools
+Requires-Dist: redis; extra == "redis-tools"
+Provides-Extra: tasks-worker
+Requires-Dist: croniter; extra == "tasks-worker"
+Requires-Dist: psutil; extra == "tasks-worker"
+Provides-Extra: scheduled-query
+Requires-Dist: loguru; extra == "scheduled-query"
+Requires-Dist: prometheus_client; extra == "scheduled-query"
+Provides-Extra: ui-tools
+Requires-Dist: babel; extra == "ui-tools"
+Requires-Dist: jinja2; extra == "ui-tools"
+Provides-Extra: auth-user
+Requires-Dist: passlib; extra == "auth-user"
+Requires-Dist: python-jose; extra == "auth-user"
+Requires-Dist: python-multipart; extra == "auth-user"
+Provides-Extra: all
+Requires-Dist: babel; extra == "all"
+Requires-Dist: croniter; extra == "all"
+Requires-Dist: jinja2; extra == "all"
+Requires-Dist: loguru; extra == "all"
+Requires-Dist: passlib; extra == "all"
+Requires-Dist: prometheus_client; extra == "all"
+Requires-Dist: psutil; extra == "all"
+Requires-Dist: python-jose; extra == "all"
+Requires-Dist: python-multipart; extra == "all"
+Requires-Dist: redis; extra == "all"
+
+# FastPluggy Official Plugins
+
+This bundle includes FastPluggy’s pre-approved plugins for extending your application.  
+
+## Included Plugins
+
+- `tasks_worker`
+- `ui_tools`
+- `crud_tools`
+- `redis_tools`
+
+## Activation
+
+FastPluggy will only load plugins listed in the `FP_PLUGINS` environment variable. You can specify:
+
+- A comma-separated list of plugin names, for example:
+  ```bash
+  export FP_PLUGINS="tasks_worker,ui_tools,crud_tools"
+  ```
+- The wildcard `*` to load **all** pre-approved plugins:
+  ```bash
+  export FP_PLUGINS="*"
+  ```
+
+> ⚙️ **Tip:** If you leave `FP_PLUGINS` unset or empty, no plugins will be activated.
+
+## Testing & Updating `pyproject.toml`
+
+1. **Clone the latest plugins**  
+   ```bash
+   python scripts/clone_plugins.py
+   ```
+2. **Install `tomlkit`**  
+   ```bash
+   pip install tomlkit
+   ```
+3. **Regenerate `pyproject.toml`**  
+   ```bash
+   python scripts/update_pyproject.py
+   ```
+
+---

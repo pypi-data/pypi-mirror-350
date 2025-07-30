@@ -1,0 +1,32 @@
+[project]
+name = "fastpluggy-plugins"
+version = "0.0.6"
+description = "Official plugin bundle for FastPluggy"
+authors = [{ name = "Your Name", email = "you@example.com" }]
+readme = "README.md"
+requires-python = ">=3.10"
+
+[project.optional-dependencies]
+crud_tools = ["jinja2"]
+redis_tools = ["redis"]
+tasks_worker = ["croniter", "psutil"]
+scheduled_query = ["loguru", "prometheus_client"]
+ui_tools = ["babel", "jinja2"]
+auth_user = ["passlib", "python-jose", "python-multipart"]
+all = ["babel", "croniter", "jinja2", "loguru", "passlib", "prometheus_client", "psutil", "python-jose", "python-multipart", "redis"]
+
+[tool.setuptools]
+packages = ["fastpluggy_plugin"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"fastpluggy_plugin" = ["**/*"]
+
+[project.entry-points."fastpluggy.plugins"]
+auth_user = "fastpluggy_plugin.auth_user.plugin:AuthUserPlugin"
+crud_tools = "fastpluggy_plugin.crud_tools.plugin:CrudToolsModule"
+redis_tools = "fastpluggy_plugin.redis_tools.plugin:RedisToolsPlugin"
+scheduled_query = "fastpluggy_plugin.scheduled_query.plugin:ScheduledQueryPlugin"
+tasks_worker = "fastpluggy_plugin.tasks_worker.plugin:TaskRunnerPlugin"
+ui_tools = "fastpluggy_plugin.ui_tools.plugin:UiToolsModule"
+websocket_tool = "fastpluggy_plugin.websocket_tool.plugin:WebSocketToolPlugin"
