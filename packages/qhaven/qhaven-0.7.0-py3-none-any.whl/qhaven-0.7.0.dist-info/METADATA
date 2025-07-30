@@ -1,0 +1,36 @@
+Metadata-Version: 2.4
+Name: qhaven
+Version: 0.7.0
+Summary: PQC Scanner/Artifact Generator for CyberScope Submissions
+Author-email: honkidori <qrypthaven@outlook.com>
+Keywords: post‑quantum,cryptography,static‑analysis,SARIF,PDF
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Provides-Extra: dev
+Requires-Dist: requests>=2.31; extra == "dev"
+Requires-Dist: tree_sitter==0.22.2; extra == "dev"
+Requires-Dist: tqdm>=4.66; extra == "dev"
+Requires-Dist: tomli; python_version < "3.11" and extra == "dev"
+Requires-Dist: reportlab>=4.2; extra == "dev"
+Requires-Dist: pytest; extra == "dev"
+
+QHaven – PQC remediation lib for security devs.
+
+install, then run:
+  pip install qhaven
+  qhaven scan --repo path/to/repo
+  qhaven fix  --repo path/to/repo --owner you --name repo --token $GITHUB_TOKEN
+
+
+Makefile
+--------
+install:
+	pip install -e .[dev]
+lint:
+	pycodestyle qhaven
+test:
+	pytest -q
+build:
+	python -m build
