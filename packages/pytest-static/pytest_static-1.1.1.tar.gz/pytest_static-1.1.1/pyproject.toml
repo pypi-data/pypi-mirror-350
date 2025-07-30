@@ -1,0 +1,70 @@
+[tool.poetry]
+name = "pytest-static"
+version = "1.1.1"
+description = "pytest-static"
+authors = ["Kyle Oliver <56kyleoliver@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/56kyle/pytest-static"
+repository = "https://github.com/56kyle/pytest-static"
+documentation = "https://pytest-static.readthedocs.io"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Testing",
+    "Framework :: Pytest",
+]
+
+[tool.poetry.urls]
+Changelog = "https://github.com/56kyle/pytest-static/releases"
+
+[tool.poetry.dependencies]
+python = "^3.9,<4.0"
+click = ">=8.0.1"
+loguru = "^0.7.2"
+pytest = "^7.4.3"
+platformdirs = "^4.2.2"
+typing-extensions = "^4.9.0"
+
+[tool.poetry.dev-dependencies]
+Pygments = ">=2.10.0"
+certifi = ">=2024.7.4"
+coverage = ">=6.2"
+darglint = ">=1.8.1"
+furo = ">=2021.11.12"
+isort = ">=5.10.1"
+mypy = ">=0.930"
+pep8-naming = ">=0.12.1"
+pre-commit = ">=2.16.0"
+pre-commit-hooks = ">=4.1.0"
+pyupgrade = ">=2.29.1"
+sphinx = ">=4.3.2"
+sphinx-autobuild = ">=2021.3.14"
+sphinx-click = ">=3.0.2"
+typeguard = ">=2.13.3"
+xdoctest = {extras = ["colors"], version = ">=0.15.10"}
+myst-parser = {version = ">=0.16.1"}
+
+[tool.poetry.scripts]
+pytest-static = "pytest_static.__main__:main"
+
+[tool.poetry.plugins."pytest"]
+pytest-static= "pytest_static.plugin"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.11.5"
+pip-audit = "^2.9.0"
+
+[tool.black]
+line-length = 120
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
