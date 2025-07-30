@@ -1,0 +1,141 @@
+Metadata-Version: 2.4
+Name: dynaface
+Version: 0.2.2
+Summary: Facial landmark analysis and symmetry measurement tool for facial paralysis.
+Home-page: https://github.com/jeffheaton/dynaface
+Author: Jeff Heaton
+Author-email: jeff@jeffheaton.com
+License: Apache-2.0
+Project-URL: Documentation, https://github.com/jeffheaton/dynaface
+Project-URL: Source, https://github.com/jeffheaton/dynaface
+Project-URL: Bug Tracker, https://github.com/jeffheaton/dynaface/issues
+Keywords: facial landmarks,symmetry,paralysis,face detection,image analysis
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Science/Research
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Typing :: Typed
+Classifier: Natural Language :: English
+Classifier: Topic :: Scientific/Engineering :: Image Recognition
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: opencv-python>=4.7.0
+Requires-Dist: Pillow>=8.4.0
+Requires-Dist: matplotlib>=3.7.1
+Requires-Dist: scikit-learn>=1.2.2
+Requires-Dist: onnxruntime>=1.20.0
+Requires-Dist: rembg>=2.0.0
+Requires-Dist: facenet-pytorch
+Provides-Extra: test
+Requires-Dist: pytest; extra == "test"
+Requires-Dist: pytest-cov; extra == "test"
+Requires-Dist: coverage; extra == "test"
+Provides-Extra: lint
+Requires-Dist: flake8; extra == "lint"
+Requires-Dist: mypy; extra == "lint"
+Requires-Dist: bandit; extra == "lint"
+Requires-Dist: black; extra == "lint"
+Requires-Dist: isort; extra == "lint"
+Provides-Extra: dev
+Requires-Dist: mypy; extra == "dev"
+Requires-Dist: types-pillow; extra == "dev"
+Requires-Dist: types-requests; extra == "dev"
+Requires-Dist: types-setuptools; extra == "dev"
+Requires-Dist: types-pyinstaller; extra == "dev"
+Dynamic: license-file
+
+![Dynaface](https://s3.us-east-1.amazonaws.com/data.heatonresearch.com/dynaface/images/dynaface_logo.jpg)
+
+# Dynaface Python Library
+
+[![PyPI version](https://badge.fury.io/py/dynaface.svg)](https://badge.fury.io/py/dynaface)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue?style=flat-square)](LICENSE)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jeffheaton/dynaface/blob/main/dynaface-lib/examples/dynaface_intro.ipynb)
+
+Dynaface is an AI-driven facial tracking Python Library utilizing computer vision techniques that integrate Convolutional Neural Networks (CNNs) with cascaded Graph Attention Network (GAT) regressors to enhance facial landmark detection by capturing both local appearance and global structural relationships ([Prados-Torreblanca1, A & Buenaposada, J](https://bmvc2022.mpi-inf.mpg.de/0155.pdf)). This approach encodes both the appearance and spatial positioning of facial landmarks while employing an attention mechanism to prioritize reliable information. Such a method is particularly advantageous for assessing facial asymmetry in patients with facial paralysis, where conventional landmarking algorithms are often biased toward symmetric faces. By leveraging a global representation of facial structure, Dynaface enables precise detection of key landmarks despite asymmetries, facilitating the objective quantification of facial movement and asymmetry. These measurements, including the Facial Asymmetry Index (FAI) and Oral Commissure Excursion (OCE), serve as critical indicators of facial function and can be correlated with patient-reported outcomes to evaluate recovery and patient satisfaction.
+
+# Sample Code
+
+Install from [pypi](https://pypi.org/project/dynaface/).
+
+```
+pip install dynaface
+```
+
+Calculate measures on a face.
+
+```
+import cv2
+from dynaface import facial, measures, models
+
+all_measures = measures.all_measures()
+face = facial.AnalyzeFace(measures = all_measures)
+face.load_image(image_rgb,crop=True)
+face.analyze()
+```
+
+# Helpful Links
+
+- [Dynaface Application](https://github.com/jeffheaton/dynaface/tree/main/dynaface-app)
+
+# Helpful Python Commands
+
+**Activate Environment**
+
+```
+source venv/bin/activate
+.\venv\Scripts\activate.bat
+.\venv\Scripts\Activate.ps1
+```
+
+**Allow Windows to Use Environment**
+
+```
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+**Run Unit Tests**
+
+For Mac/Linux:
+
+```
+cd dynaface-lib
+python3.11 -m venv venv
+source venv/bin/activate
+pip install -e ".[dev]"
+python -m unittest discover -s tests
+```
+
+For Windows:
+
+```
+cd dynaface-lib
+python3.11 -m venv venv
+.\venv\Scripts\Activate.ps1
+pip install -e ".[dev]"
+python -m unittest discover -s tests
+```
+
+⚠️ Note for Windows users:
+If you get an error like execution of scripts is disabled on this system when activating the virtual environment, you can temporarily bypass it with:
+
+```
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\venv\Scripts\Activate.ps1
+```
+
+# Running Examples
+
+- [Dynaface Examples]()
+
+```
+python ./examples/process_media.py /Users/jeff/data/facial/samples/tracy-ref-blink.mp4
+
+python ./examples/process_media.py --crop /Users/jeff/data/facial/samples/2021-8-19.png
+
+python ./examples/process_media.py --crop /Users/jeff/data/facial/samples/tracy_frame.png
+
+python ./examples/process_media.py --crop /Users/jeff/data/facial/samples/tracy-blink-single.mp4
+```
