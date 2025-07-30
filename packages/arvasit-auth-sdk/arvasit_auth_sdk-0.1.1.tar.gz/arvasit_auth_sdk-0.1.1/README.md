@@ -1,0 +1,97 @@
+# Arvasit Authentication SDK for Python
+
+This is the Python SDK for Arvasit Authentication service. It provides a simple interface to interact with the Arvasit Authentication API.
+
+## Installation
+
+```bash
+pip install arvasit-auth-sdk
+```
+
+## Usage
+
+```python
+from auth_sdk import AuthService, AuthServiceConfig
+
+# Initialize the auth service
+config = AuthServiceConfig(
+    url="https://api.arvasit.com",
+    public_key="your_public_key",
+    secret_key="your_secret_key"
+)
+auth_service = AuthService(config)
+
+# Signup a new user
+signup_response = auth_service.signup({
+    "email": "user@example.com",
+    "password": "secure_password",
+    "firstName": "John",
+    "lastName": "Doe"
+})
+
+# Login with password
+login_response = auth_service.login_with_password({
+    "credential": "user@example.com",
+    "password": "secure_password"
+})
+
+# Send OTP for login
+otp_response = auth_service.send_otp_for_login("user@example.com")
+
+# Login with OTP
+login_with_otp_response = auth_service.login_with_otp({
+    "credential": "user@example.com",
+    "otp": "123456"
+})
+
+# Verify 2FA
+verify_2fa_response = auth_service.verify_two_factor_authentication({
+    "credential": "user@example.com",
+    "totp": "123456"
+})
+
+# Generate recovery codes
+recovery_codes = auth_service.generate_recovery_codes("access_token")
+
+# Generate QR code for 2FA
+qr_code_response = auth_service.generate_qr_code_and_secret_for_2fa("access_token")
+
+# List 2FA secrets
+secrets = auth_service.list_of_two_fa_secrets("access_token")
+
+# Remove 2FA device
+removed_secrets = auth_service.remove_two_fa_device("access_token", "secret_key")
+
+# Disable 2FA
+disabled = auth_service.disable_two_fa("access_token")
+
+# List recovery codes
+recovery_codes = auth_service.list_of_recovery_code("access_token")
+
+# Logout
+logout_response = auth_service.logout({"accessToken": "access_token"})
+
+# Refresh access token
+refresh_response = auth_service.refresh_access_token({"refreshToken": "refresh_token"})
+```
+
+## Features
+
+- User authentication (signup, login)
+- Two-factor authentication (2FA)
+- OTP-based authentication
+- Recovery codes
+- Session management
+- Token refresh
+- Error handling
+
+## Requirements
+
+- Python 3.8 or higher
+- requests>=2.31.0
+- python-dateutil>=2.8.2
+- pydantic>=2.0.0
+
+## License
+
+MIT
