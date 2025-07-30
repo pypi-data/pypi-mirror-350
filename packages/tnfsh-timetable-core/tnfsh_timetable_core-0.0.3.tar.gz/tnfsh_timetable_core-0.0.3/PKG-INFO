@@ -1,0 +1,93 @@
+Metadata-Version: 2.4
+Name: tnfsh-timetable-core
+Version: 0.0.3
+Summary: 台南一中課表核心功能庫
+Author-email: Skywind5487 <skywind5487@gmail.com>
+License-Expression: MIT
+Project-URL: Source, https://github.com/skywind5487/tnfsh-timetable-core
+Keywords: timetable,scheduling,education
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Education
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: aiohttp>=3.8.0
+Requires-Dist: async>=0.6.2
+Requires-Dist: beautifulsoup4>=4.9.3
+Requires-Dist: bs4>=0.0.2
+Requires-Dist: dotenv>=0.9.9
+Requires-Dist: pydantic>=2.0.0
+Requires-Dist: requests>=2.32.3
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.14.0; extra == "dev"
+Requires-Dist: black>=22.0.0; extra == "dev"
+Requires-Dist: isort>=5.0.0; extra == "dev"
+Requires-Dist: mypy>=0.900; extra == "dev"
+Requires-Dist: build>=1.2.2.post1; extra == "dev"
+Requires-Dist: pytest>=8.3.5; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.24.0; extra == "dev"
+Dynamic: license-file
+
+# TNFSH Timetable Core
+
+A Python package for handling TNFSH (Tainan First Senior High School) timetables.
+
+## Features
+
+- Fetch timetables from TNFSH website
+- Parse and manipulate timetable data
+- Export timetables in various formats (CSV, JSON, ICS)
+- Cache support for better performance
+
+## usage
+
+統一 from tnfsh_time_table_core import TNFSHTIMETABLECORE。
+因為奇怪的原因 安裝完以後請用底線而不是-
+
+第一次裝會自動跑一次cache
+
+## Installation
+
+```bash
+pip install tnfsh-timetable-core
+```
+
+## Quick Start
+
+```python
+from tnfsh_timetable_core import TNFSHTimetableCore
+
+# Create an instance
+core = TNFSHTimetableCore()
+
+# Get timetable for class 307
+timetable = await core.fetch_timetable("307")
+
+# Get index of all available timetables
+index = core.fetch_index()
+```
+
+## Development
+
+1. Clone the repository
+2. Create and activate virtual environment
+3. Install dependencies:
+   ```bash
+   uv pip install --editable .
+   ```
+4. Run tests:
+   ```bash
+   pytest
+   ```
+
+## License
+
+See [LICENSE](LICENSE) file for details.
+
