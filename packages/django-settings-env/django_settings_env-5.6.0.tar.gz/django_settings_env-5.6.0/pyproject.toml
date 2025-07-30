@@ -1,0 +1,53 @@
+[project]
+name = "django-settings-env"
+version = "5.6.0"
+description = "12-factor.net settings handler for Django"
+authors = [
+    {name = "David Nugent", email = "davidn@uniquode.io"}
+]
+license = {file = "LICENSE.md"}
+readme = "README.md"
+requires-python = ">=3.11"
+classifiers = [
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Framework :: Django :: 4.2",
+    "Framework :: Django :: 5.0",
+    "Framework :: Django :: 5.1",
+    "Framework :: Django :: 5.2",
+]
+dependencies = [
+    "django>=5.0",
+    "envex>=4.2",
+    "yarl>=1.18.3",
+]
+
+[project.urls]
+homepage = "https://github.com/deeprave/django-settings-env"
+repository = "https://github.com/deeprave/django-settings-env"
+
+[dependency-groups]
+dev = [
+    "pytest-cov>=5.0",
+    "pytest>=8.2",
+    "ruff>=0.6.8",
+    "psycopg>=3.2.3",
+]
+
+[project.optional-dependencies]
+extras = [
+    "django-class-settings>=0.2",
+]
+vault = [
+    "hvac>=1.1.1",
+]
+
+[tool.pytest.ini-options]
+minversion = "8.0"
+addopts = "-ra -q"
+pythonpath = [ "." ]
+
+[build-system]
+requires = ["flit-core"]
+build-backend = "flit_core.buildapi"
