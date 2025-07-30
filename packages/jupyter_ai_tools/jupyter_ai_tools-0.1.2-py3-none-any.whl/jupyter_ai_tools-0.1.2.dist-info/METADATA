@@ -1,0 +1,172 @@
+Metadata-Version: 2.4
+Name: jupyter_ai_tools
+Version: 0.1.2
+Project-URL: Home, https://github.com/Abigayle-Mercer/jupyter-ai-tools
+Author-email: Abigayle Mercer <abigaylemercer@gmail.com>
+License: BSD 3-Clause License
+        
+        Copyright (c) 2025, Abigayle Mercer
+        All rights reserved.
+        
+        Redistribution and use in source and binary forms, with or without
+        modification, are permitted provided that the following conditions are met:
+        
+        1. Redistributions of source code must retain the above copyright notice, this
+           list of conditions and the following disclaimer.
+        
+        2. Redistributions in binary form must reproduce the above copyright notice,
+           this list of conditions and the following disclaimer in the documentation
+           and/or other materials provided with the distribution.
+        
+        3. Neither the name of the copyright holder nor the names of its
+           contributors may be used to endorse or promote products derived from
+           this software without specific prior written permission.
+        
+        THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+        AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+        IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+        DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+        FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+        DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+        SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+        CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+        OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+        OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+License-File: LICENSE
+Keywords: Extension,Jupyter
+Classifier: Framework :: Jupyter
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Requires-Python: >=3.8
+Requires-Dist: jupyter-server-ai-tools>=0.1.0
+Requires-Dist: jupyter-server<3,>=1.6
+Requires-Dist: jupyter-ydoc
+Requires-Dist: jupyterlab-git
+Provides-Extra: lint
+Requires-Dist: black>=22.6.0; extra == 'lint'
+Requires-Dist: mdformat-gfm>=0.3.5; extra == 'lint'
+Requires-Dist: mdformat>=0.7.16; extra == 'lint'
+Requires-Dist: mypy>=0.990; extra == 'lint'
+Requires-Dist: pydantic>=1.10; extra == 'lint'
+Requires-Dist: ruff>=0.0.156; extra == 'lint'
+Requires-Dist: types-jsonschema; extra == 'lint'
+Provides-Extra: test
+Requires-Dist: pytest-jupyter[server]>=0.6; extra == 'test'
+Requires-Dist: pytest>=7.0; extra == 'test'
+Provides-Extra: typing
+Requires-Dist: mypy>=0.990; extra == 'typing'
+Description-Content-Type: text/markdown
+
+# jupyter_ai_tools
+
+[![Github Actions Status](https://github.com/Abigayle-Mercer/jupyter-ai-tools/workflows/Build/badge.svg)](https://github.com/Abigayle-Mercer/jupyter-ai-tools/actions/workflows/build.yml)
+
+**`jupyter_ai_tools`** is a Jupyter Server extension that exposes a collection of powerful, agent-friendly tools for interacting with notebooks and Git repositories. It is designed for use by AI personas (like those in Jupyter AI) to programmatically modify notebooks, manage code cells, and interact with version control systems.
+
+______________________________________________________________________
+
+## ✨ Features
+
+This extension provides runtime-discoverable tools compatible with OpenAI-style function calling or MCP tool schemas. These tools can be invoked by agents to:
+
+### 🧠 YNotebook Tools
+
+- `read_cell`: Return the full content of a cell by index
+- `read_notebook`: Return all cells as a JSON-formatted list
+- `add_cell`: Insert a blank cell at a specific index
+- `delete_cell`: Remove a cell and return its contents
+- `write_to_cell`: Overwrite the content of a cell with new source
+- `get_max_cell_index`: Return the last valid cell index
+
+### 🌀 Git Tools
+
+- `git_clone`: Clone a Git repo into a given path
+- `git_status`: Get the working tree status
+- `git_log`: View recent commit history
+- `git_add`: Stage files (individually or all)
+- `git_commit`: Commit staged changes with a message
+- `git_push`: Push local changes to a remote branch
+- `git_pull`: Pull remote updates
+- `git_get_repo_root_from_notebookpath`: Find the Git root from a notebook path
+
+These tools are ideal for agents that assist users with code editing, version control, or dynamic notebook interaction.
+
+______________________________________________________________________
+
+## Requirements
+
+- Jupyter Server
+
+## Install
+
+To install the extension, execute:
+
+```bash
+pip install jupyter_ai_tools
+```
+
+## Uninstall
+
+To remove the extension, execute:
+
+```bash
+pip uninstall jupyter_ai_tools
+```
+
+## Troubleshoot
+
+If you are seeing the frontend extension, but it is not working, check
+that the server extension is enabled:
+
+```bash
+jupyter server extension list
+```
+
+## Contributing
+
+### Development install
+
+```bash
+# Clone the repo to your local environment
+# Change directory to the jupyter_ai_tools directory
+# Install package in development mode - will automatically enable
+# The server extension.
+pip install -e .
+```
+
+You can watch the source directory and run your Jupyter Server-based application at the same time in different terminals to watch for changes in the extension's source and automatically rebuild the extension. For example,
+when running JupyterLab:
+
+```bash
+jupyter lab --autoreload
+```
+
+If your extension does not depend a particular frontend, you can run the
+server directly:
+
+```bash
+jupyter server --autoreload
+```
+
+### Running Tests
+
+Install dependencies:
+
+```bash
+pip install -e ".[test]"
+```
+
+### Development uninstall
+
+```bash
+pip uninstall jupyter_ai_tools
+```
+
+### Packaging the extension
+
+See [RELEASE](RELEASE.md)
