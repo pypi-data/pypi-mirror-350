@@ -1,0 +1,111 @@
+[build-system]
+requires = [ "setuptools>=77.0.0" ]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyimagej"
+version = "1.7.0"
+description = "Python wrapper for ImageJ"
+license = "Apache-2.0"
+authors = [{name = "ImageJ2 developers", email = "ctrueden@wisc.edu"}]
+readme = "README.md"
+keywords = ["java", "imagej", "imagej2", "fiji"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: Unix",
+    "Operating System :: MacOS",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Image Processing",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "Topic :: Software Development :: Libraries :: Java Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Utilities",
+]
+
+requires-python = ">=3.9"
+dependencies = [
+    "imglyb >= 2.1.0",
+    "jgo >= 1.0.3",
+    "jpype1 >= 1.4.0",
+    "labeling >= 0.1.14",
+    "numpy",
+    "scyjava >= 1.12.0",
+    "xarray",
+]
+
+[dependency-groups]
+# Development tools
+dev = [
+    "build",
+    "myst-nb",
+    "pre-commit",
+    "pytest",
+    "pytest-cov",
+    "ruff",
+    "sphinx",
+    "sphinx_rtd_theme",
+    "validate-pyproject[all]",
+]
+
+[project.optional-dependencies]
+# Matplotlib display backend
+matplotlib = [
+    "matplotlib",
+]
+# Notebook dependencies
+notebooks = [
+    "ipywidgets",
+    "jupyter_contrib_nbextensions",
+    "notebook < 7.0.0",
+    "pooch", # for scikit image
+    "scikit-image",
+]
+
+[project.scripts]
+imagej = "imagej:imagej_main"
+
+[project.urls]
+homepage = "https://github.com/imagej/pyimagej"
+documentation = "https://pyimagej.readthedocs.io/"
+source = "https://github.com/imagej/pyimagej"
+download = "https://pypi.org/project/pyimagej/"
+tracker = "https://github.com/imagej/pyimagej/issues"
+
+[tool.setuptools]
+platforms = ["any"]
+package-dir = {"" = "src"}
+include-package-data = false
+
+[tool.setuptools.packages.find]
+where = ["src"]
+namespaces = false
+
+# ruff configuration
+[tool.ruff]
+line-length = 88
+src = ["src", "tests"]
+include = ["pyproject.toml", "src/**/*.py", "tests/**/*.py"]
+extend-exclude = ["bin", "build", "dist"]
+
+[tool.ruff.lint]
+extend-ignore = ["E203"]
+
+[tool.ruff.lint.per-file-ignores]
+# Ignore `E402` (import violations) in all `__init__.py` files, and in `path/to/file.py`.
+"__init__.py" = ["E402", "F401"]
+
+[tool.pytest.ini_options]
+addopts = "--ignore=docs"
+testpaths = [
+    "tests",
+]
