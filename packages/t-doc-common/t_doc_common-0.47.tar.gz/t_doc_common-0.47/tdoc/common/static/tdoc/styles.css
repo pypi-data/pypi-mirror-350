@@ -1,0 +1,726 @@
+/* Copyright 2024 Remy Blank <remy@c-space.org> */
+/* SPDX-License-Identifier: MIT */
+
+.hidden:not(#¶) {
+    display: none;
+}
+section.hidden-heading:not(#¶) > :is(h1, h2, h3, h4, h5, h6):first-child {
+    display: none;
+}
+.line-height-normal:not(#¶) .highlight pre {
+    line-height: normal;
+}
+
+/* Set the maximum width of sidebars instead of a fixed width. */
+div.sidebar, aside.sidebar {
+    max-width: 40%;
+    width: inherit;
+}
+
+/* Invert the even and odd row colors in tables, so that the first row below the
+   header has a different color than the header. */
+.table > tbody > tr:nth-child(even) {
+    background-color: var(--pst-color-table-row-zebra-low-bg);
+}
+.table > tbody > tr:nth-child(odd) {
+    background-color: var(--pst-color-table-row-zebra-high-bg);
+}
+.table > tbody > tr:hover {
+    background-color: var(--pst-color-table-row-hover-bg);
+}
+
+/* Make quotation attributions a bit more compact. */
+blockquote div > p:has(+ p.attribution) {
+    margin-bottom: 0;
+}
+
+/* Server termination buttons. */
+.article-header-buttons button.btn-terminate::before {
+    font: var(--fa-font-solid);
+    content: '\f52a';
+}
+.article-header-buttons button.btn-terminate:hover::before {
+    content: '\f52b';
+}
+
+/* Admonitions */
+.admonition.dropdown .admonition-title {
+    cursor: pointer;
+}
+.admonition.dropdown .admonition-title:hover {
+    box-shadow: inset 0 0 0px 20px rgb(0 0 0 / 1%);
+}
+.admonition.dropdown .admonition-title:active {
+    box-shadow: inset 0 0 0px 20px rgb(0 0 0 / 3%);
+}
+.admonition.dropdown .admonition-title button {
+    position: absolute;
+    right: 0;
+    outline: none;
+    border: none;
+    padding: 0;
+    background: none;
+}
+.admonition.dropdown .admonition-title ~ * {
+    transition: opacity 0.3s;
+}
+.admonition.dropdown:not(.expand) {
+    padding-bottom: 0;
+}
+.admonition.dropdown:not(.expand) .admonition-title {
+    margin-bottom: 0;
+}
+.admonition.dropdown:not(.expand) .admonition-title ~ * {
+    display: block;
+    margin: 0;
+    border: none;
+    padding: 0;
+    height: 0;
+    visibility: hidden;
+    overflow: hidden;
+    opacity: 0;
+}
+
+/* Iframes */
+iframe.tdoc {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16/9;
+    margin: 1rem auto;
+}
+
+/* Solutions */
+html:is([data-tdoc-solutions]:not([data-tdoc-solutions-state]),
+        [data-tdoc-solutions-state=hide]
+    ):not([data-tdoc-solutions-ctrl]) .admonition.solution:not(.always-show) {
+    display: none;
+}
+.article-header-buttons button.btn-toggle-solutions {
+    min-width: 2.7rem;
+}
+.article-header-buttons button.btn-toggle-solutions::before {
+    font: var(--fa-font-solid);
+    content: '\f070';
+}
+html:is([data-tdoc-solutions]:not([data-tdoc-solutions-state]),
+        [data-tdoc-solutions-state=hide]
+    ) .article-header-buttons button.btn-toggle-solutions::before {
+    content: '\f06e';
+}
+html:not([data-tdoc-solutions=hide]):not([data-tdoc-solutions-ctrl])
+        .article-header-buttons button.btn-toggle-solutions {
+    display: none;
+}
+
+/* Inline code */
+a code {
+    color: inherit;
+}
+code.xref,
+a code {
+    font-weight: inherit;
+}
+
+/* Code blocks */
+div.literal-block-wrapper {
+    overflow: hidden;
+}
+div.literal-block-wrapper div.code-block-caption {
+    padding: 0.3rem;
+}
+div.literal-block-wrapper div.highlight {
+    border-radius: 0;
+}
+div.literal-block-wrapper div.highlight pre {
+    border: none;
+    border-radius: 0;
+}
+div.highlight {
+    position: relative;
+}
+div.highlight pre {
+    padding: 0.5rem;
+}
+div.highlight pre > .linenos {
+    margin-right: 8px;
+    border-right: 1px solid var(--pst-color-border);
+}
+div.highlight pre > .linenos::before {
+    content: attr(data-n);
+}
+
+/* Icons */
+span:is(.tdoc, [class^=tdoc-], [class*=" tdoc-"]):is([class^=fa-],
+                                                     [class*=" fa-"]) {
+    font: var(--fa-font-solid);
+}
+
+/* Buttons */
+button:is(.tdoc, [class^=tdoc-], [class*=" tdoc-"]) {
+    border: 1px solid var(--pst-color-border);
+    border-radius: 0.25rem;
+    background-color: var(--pst-color-surface);
+    transition: background-color 0.3s;
+}
+button:is(.tdoc, [class^=tdoc-], [class*=" tdoc-"]):not([disabled]) {
+    color: var(--pst-color-text-muted);
+}
+button:is(.tdoc, [class^=tdoc-], [class*=" tdoc-"]):not([disabled]):hover {
+    background-color: var(--pst-color-border);
+}
+button:is(.tdoc, [class^=tdoc-], [class*=" tdoc-"]):is([class^=fa-],
+                                                       [class*=" fa-"]) {
+    width: 1.8rem;
+    height: 1.8rem;
+    font: var(--fa-font-solid);
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Inputs */
+input[type=text]:is(.tdoc, [class^=tdoc-], [class*=" tdoc-"]) {
+    border: 1px solid var(--pst-color-border);
+    padding-block: 1px;
+    padding-inline: 2px;
+}
+
+/* Drawing */
+.article-header-buttons button.btn-draw::before {
+    font: var(--fa-font-solid);
+    content: '\f304';
+}
+html[data-tdoc-draw] .article-header-buttons button.btn-draw {
+    background-color: var(--pst-color-border);
+}
+html:not([data-tdoc-draw]) .tdoc-draw-toolbar {
+    display: none;
+}
+.tdoc-draw-toolbar input[type=checkbox] {
+    appearance: none;
+    font: var(--fa-font-solid);
+    font-size: 1.3rem;
+}
+.tdoc-draw-toolbar input[type=checkbox]:checked {
+    background-color: var(--pst-color-border);
+}
+.tdoc-draw-toolbar .tdoc-size {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    width: 4rem;
+}
+.tdoc-draw-toolbar .tdoc-size:focus-visible {
+    outline: none;
+}
+.tdoc-draw-toolbar button {
+    font: var(--fa-font-solid);
+    font-size: 1.3rem;
+}
+.tdoc-draw-toolbar :is(.tdoc-tool, .tdoc-color) button {
+    width: 2.5rem;
+    justify-content: center;
+}
+.tdoc-draw-toolbar :is(.tdoc-tool, .tdoc-color) .dropdown-menu {
+    min-width: 0;
+}
+.tdoc-draw-toolbar :is(.tdoc-tool, .tdoc-color) .dropdown-item {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    font: var(--fa-font-solid);
+    font-size: 1.3rem;
+    justify-content: center;
+}
+.bd-content {
+    position: relative;
+}
+svg#tdoc-drawing {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    pointer-events: none;
+}
+html[data-tdoc-draw] svg#tdoc-drawing {
+    pointer-events: auto;
+    touch-action: none;
+}
+@media print {
+    svg#tdoc-drawing {
+        display: none;
+    }
+}
+
+/* Quizz questions */
+div.tdoc-quizz {
+    display: flex;
+    align-items: baseline;
+    margin: 0.3rem 0;
+    column-gap: 0.3rem;
+    position: relative;
+}
+div.tdoc-quizz > .prompt {
+    flex: 1 1 auto;
+    white-space: pre-wrap;
+    padding-right: 0.4rem;
+}
+div.tdoc-quizz > .prompt:empty {
+    display: none;
+}
+div.tdoc-quizz > .input {
+    flex: 0 0 40%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    column-gap: 0.3rem;
+}
+div.tdoc-quizz > .prompt:empty + .input {
+    flex: 0 0 100%;
+}
+div.tdoc-quizz > .input > input[type=text] {
+    width: 100%;
+    border: 1px solid var(--pst-color-border);
+    padding-block: 1px;
+    padding-inline-start: 2px;
+    padding-inline-end: 2rem;
+}
+div.tdoc-quizz > .input::before {
+    position: absolute;
+    right: 2.4rem;
+    font: var(--fa-font-solid);
+    font-size: 1.5rem;
+}
+div.tdoc-quizz > .input.bad::before {
+    content: '\f00d';
+    color: var(--pst-color-danger);
+}
+div.tdoc-quizz > .input.good::before {
+    content: '\f00c';
+    color: var(--pst-color-success);
+}
+div.tdoc-quizz > .hint {
+    position: absolute;
+    bottom: calc(100% + 0.8rem);
+    right: 0;
+    max-width: 60%;
+    padding: 0.25rem 0.5rem;
+    border-left: 0.2rem solid var(--pst-color-success);
+    border-radius: 0.25rem;
+    background-color: var(--pst-color-success-bg);
+    box-shadow: 0 0.2rem 0.5rem var(--pst-color-shadow),
+                0 0 0.0625rem var(--pst-color-shadow);
+    z-index: 100;
+    transition: 0.3s visibility, 0.3s opacity;
+}
+div.tdoc-quizz > .hint.hide {
+    visibility: hidden;
+    opacity: 0;
+}
+
+/* Table-based quizzes */
+.tdoc-quizz-row {
+    vertical-align: middle;
+}
+.tdoc-quizz-row select {
+    background-color: field;
+    border: 1px solid var(--pst-color-border);
+}
+.tdoc-quizz-row input[type=text] {
+    width: 100%;
+    border: 1px solid var(--pst-color-border);
+    padding-block: 1px;
+    padding-inline-start: 2px;
+    padding-inline-end: 2px;
+}
+.tdoc-quizz-row td:last-child {
+    width: 0;
+}
+.tdoc-quizz-row .tdoc-color-good {
+    color: var(--pst-color-success);
+}
+.tdoc-quizz-row .tdoc-bg-bad {
+    background-color: var(--pst-color-danger-bg);
+}
+
+/* Polls */
+.tdoc-poll {
+    margin: 1rem auto;
+    border: 1px solid var(--pst-color-border);
+    border-left: 0.3rem solid var(--pst-color-border);
+    border-radius: 0.25rem;
+    box-shadow: 0 0.2rem 0.5rem var(--pst-color-shadow),
+                0 0 0.0625rem var(--pst-color-shadow);
+    background-color: var(--pst-color-on-background);
+    padding: 1rem;
+    counter-reset: answerNum;
+}
+.tdoc-poll.open {
+    border-left-color: var(--pst-color-warning);
+}
+.tdoc-poll-header > div {
+    display: flex;
+    white-space: nowrap;
+    justify-content: space-between;
+}
+.tdoc-poll-header .stats {
+    display: flex;
+    column-gap: 1.3rem;
+}
+.tdoc-poll-header :is(.voters, .votes) > :last-child {
+    margin-left: 0.4rem;
+}
+.tdoc-poll[data-mode=single] .tdoc-poll-header .votes {
+    display: none;
+}
+.tdoc-poll.open .tdoc-poll-header .closed {
+    display: none;
+}
+.tdoc-poll-header .controls {
+    display: none;
+    column-gap: 0.3rem;
+}
+@media not print {
+    html[data-tdoc-poll-control] .tdoc-poll-header .controls {
+        display: flex;
+    }
+}
+.tdoc-poll-answers:not(:has(.tdoc-poll-sel.s)) .tdoc-poll-header .controls
+        > .tdoc-solutions {
+    display: none;
+}
+.tdoc-poll-header .controls > .tdoc-clear {
+    margin-left: 0.5rem;
+}
+.tdoc-poll-num {
+    counter-increment: answerNum;
+}
+.tdoc-poll.num-decimal .tdoc-poll-num::before {
+    content: counter(answerNum, decimal);
+}
+.tdoc-poll.num-lower-alpha .tdoc-poll-num::before {
+    content: counter(answerNum, lower-alpha);
+}
+.tdoc-poll.num-upper-alpha .tdoc-poll-num::before {
+    content: counter(answerNum, upper-alpha);
+}
+.tdoc-poll.solutions .tdoc-poll-sel.s {
+    background-color: var(--pst-color-success-bg);
+}
+.tdoc-poll-sel > span {
+    visibility: hidden;
+}
+.tdoc-poll-answers > tbody > tr.selected > td.tdoc-poll-sel > span {
+    visibility: visible;
+}
+.tdoc-poll-ans {
+    width: 100%;
+}
+tr[style*="--tdoc-value:"] > td.tdoc-poll-ans {
+    background: linear-gradient(to right,
+        var(--pst-color-attention-bg) var(--tdoc-value),
+        var(--bs-table-bg) var(--tdoc-value));
+}
+.tdoc-poll-cnt, .tdoc-poll-pct {
+    text-align: right;
+    white-space: nowrap;
+}
+.tdoc-poll-answers:not(:has(.tdoc-poll-cnt:not(:empty))) .tdoc-poll-cnt,
+.tdoc-poll-answers:not(:has(.tdoc-poll-pct:not(:empty))) .tdoc-poll-pct {
+    display: none;
+}
+
+/* Auto-sizing text area */
+.tdoc-autosize {
+    display: grid;
+}
+.tdoc-autosize > textarea {
+    resize: none;
+    overflow: hidden;
+}
+.tdoc-autosize::after {
+    content: attr(data-text) " ";
+    white-space: pre-wrap;
+    visibility: hidden;
+}
+.tdoc-autosize > textarea,
+.tdoc-autosize::after {
+    border: 1px solid var(--pst-color-border);
+    padding-block: 1px;
+    padding-inline: 2px;
+    font: inherit;
+    grid-area: 1 / 1 / 2 / 2;
+    word-break: break-word;
+}
+
+/* Exec outputs */
+div.tdoc-exec-output {
+    position: relative;
+    margin: 1rem 0;
+}
+div.tdoc-exec-output button.tdoc-remove {
+    position: absolute;
+    top: 0.3rem;
+    right: 0.3rem;
+    user-select: none;
+    opacity: 0;
+    transition: background-color 0.3s, opacity 0.3s;
+}
+div.tdoc-exec-output:hover button.tdoc-remove {
+    opacity: 1;
+}
+div.tdoc-exec-output.tdoc-sectioned {
+    border: 1px solid var(--pst-color-border);
+    border-top: 0.25rem solid var(--pst-color-border);
+    border-radius: 0.25rem;
+    overflow: hidden;
+}
+div.tdoc-exec-output.tdoc-sectioned:empty {
+    display: none;
+}
+div.tdoc-exec-output.tdoc-sectioned > :not(:last-child) {
+    border-bottom: 1px solid var(--pst-color-border);
+}
+div.tdoc-exec-output.tdoc-sectioned div.highlight {
+    border-radius: 0;
+}
+div.tdoc-exec-output.tdoc-sectioned pre {
+    border: none;
+    border-radius: 0;
+}
+div.tdoc-exec-output pre span.err {
+    color: var(--pst-color-danger);
+}
+div.tdoc-exec-output div.tdoc-input {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    margin: 0;
+    padding: 0.3rem;
+    column-gap: 0.3rem;
+}
+div.tdoc-exec-output div.tdoc-input .prompt {
+    white-space: pre;
+    padding-left: 0.2rem;
+    padding-right: 0.2rem;
+}
+div.tdoc-exec-output div.tdoc-input .input {
+    width: 100%;
+}
+div.tdoc-exec-output div.tdoc-input input[type=text] {
+    border: 1px solid var(--pst-color-border);
+    padding-block: 1px;
+    padding-inline: 2px;
+}
+div.tdoc-exec-output > .tdoc-navbar {
+    padding: 0.3rem;
+    display: flex;
+    flex-direction: row;
+    column-gap: 0.3rem;
+    background-color: var(--pst-color-background);
+}
+div.tdoc-exec-output > .tdoc-navbar > .tdoc-stretch {
+    width: 100%;
+}
+div.tdoc-exec-output > iframe {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: white;
+}
+html.tdoc-fullscreen {
+    overflow: hidden;
+}
+div.tdoc-exec-output.tdoc-fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 2000;
+    margin: 0;
+    border: none;
+}
+div.tdoc-exec-output:not(.tdoc-fullscreen) > .tdoc-navbar .tdoc-restore {
+    display: none;
+}
+div.tdoc-exec-output.tdoc-fullscreen > .tdoc-navbar .tdoc-maximize {
+    display: none;
+}
+div.tdoc-exec-output.tdoc-fullscreen > iframe {
+    height: 100% !important;  /* Override element style */
+    aspect-ratio: auto;
+}
+
+/* Editor */
+div.tdoc-exec[data-tdoc-editor] div.highlight :is(pre, button.copybtn) {
+    display: none;
+}
+div.tdoc-exec[data-tdoc-editor] div.cm-editor {
+    height: 100%;
+    border: 1px solid var(--pst-color-border);
+    border-radius: 0.25rem;
+    overflow: hidden;
+}
+div.cm-editor.cm-focused {
+    outline: none;
+}
+div.cm-editor div.cm-scroller {
+    font-family: var(--pst-font-family-monospace);
+    font-size: 0.875em;
+}
+html[data-theme=dark] div.cm-editor {
+    background-color: var(--pst-color-surface);
+}
+
+/* Execution controls */
+div.tdoc-exec:is([class^=highlight-], [class*=" highlight-"]) {
+    flex-direction: row;
+    column-gap: 0.3rem;
+}
+div.tdoc-exec div.highlight {
+    flex-basis: 100%;
+    overflow: auto;
+}
+div.tdoc-exec div.tdoc-exec-controls {
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.3rem;
+}
+
+/* SQL execution results */
+.table > tbody > tr:nth-child(odd).tdoc-no-results {
+    background-image: linear-gradient(-45deg,
+        var(--pst-color-table-row-zebra-low-bg) 5%,
+        var(--pst-color-table-row-zebra-high-bg) 5% 50%,
+        var(--pst-color-table-row-zebra-low-bg) 50% 55%,
+        var(--pst-color-table-row-zebra-high-bg) 55%);
+    background-size: 28.28px 28.28px;
+}
+.tdoc-error {
+    margin-bottom: 1rem;
+    border: 1px solid var(--pst-color-danger);
+    padding: 0.5rem;
+    background-image: linear-gradient(-45deg,
+        var(--pst-color-table-row-zebra-low-bg) 5%,
+        var(--pst-color-table-row-zebra-high-bg) 5% 50%,
+        var(--pst-color-table-row-zebra-low-bg) 50% 55%,
+        var(--pst-color-table-row-zebra-high-bg) 55%);
+    background-size: 28.28px 28.28px;
+}
+
+/* Drop-down menus. */
+.dropdown-menu {
+    --bs-dropdown-link-color: var(--pst-color-text-muted);
+    --bs-dropdown-link-hover-color: var(--pst-color-text-muted);
+    --bs-dropdown-link-active-color: var(--pst-color-text-muted);
+    --bs-dropdown-padding-y: 0.2rem;
+    box-shadow: 0 0.2rem 0.5rem var(--pst-color-shadow),
+                0 0 0.0625rem var(--pst-color-shadow) !important;
+    border-color: var(--pst-color-border);
+    background-color: var(--pst-color-background);
+    color: var(--pst-color-text-muted);
+}
+.dropdown-menu .dropdown-item {
+    display: inline-flex;
+    align-items: center;
+    padding-left: 0.5rem;
+    cursor: pointer;
+}
+.dropdown-menu .btn__icon-container.tdoc:is([class^=fa-], [class*=" fa-"]) {
+    font: var(--fa-font-solid);
+    display: inline-flex;
+    width: 1.7rem;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Content footer */
+.bd-footer-content .tdoc-version {
+    float: right;
+    margin-left: 2rem;
+}
+
+/* Create a hanging indent for signatures. */
+.sig {
+    padding-left: 3rem;
+    text-indent: -3rem;
+}
+
+/* Hide the Read-the-Docs switcher in the sidebar added by pydata_sphinx_theme
+   if it's empty, as it causes the scrollbar to always appear. */
+.bd-sidebar-primary div#rtd-footer-container:empty {
+    display: none;
+}
+
+/* Make the modal created by pydata_sphinx_theme when opening the left sidebar
+   full-height, and remove the ugly dialog border. */
+.bd-sidebar-primary[open] {
+    position: fixed;
+    height: 100vh;
+    border-top: none;
+    border-left: none;
+    border-bottom: none;
+}
+
+/* Remove the underline on hover on navbar buttons. */
+.pst-navbar-icon.pst-navbar-icon:hover::before {
+    border-bottom: none;
+}
+
+/* Fix the alignment of navbar icons. */
+.article-header-buttons > button {
+    justify-content: center;
+}
+.article-header-buttons > button > .btn__icon-container {
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Don't open dropdown menus on hover. */
+.bd-header-article .btn:hover + .dropdown-menu:not(.show) {
+    display: none;
+}
+
+/* Add a slight background shading on hover to menu items. */
+.bd-header-article .dropdown-menu .dropdown-item:hover {
+    background-color: var(--bs-dropdown-link-hover-bg);
+}
+
+/* Prevent the wrapper background set by pygments from being visible if the
+   wrapper is larger than its content (visible in dark mode). */
+div.highlight.highlight.highlight {
+    background: none;
+}
+
+/* Prevent the wrapper background set by pygments from overriding code literal
+   styles. */
+code.literal.literal.literal {
+    background-color: var(--pst-color-surface);
+}
+
+/* Fix the gap left by pydata_sphinx_theme between the table and the
+   scrollbar. */
+.table {
+    margin-bottom: 0;
+}
+
+/* Reduce the bottom margin of directive definition list options. */
+dl[class]:not(.directive, .option-list, .field-list, .footnote, .glossary,
+              .simple):not(.¶) {
+    margin-bottom: 1rem;
+}
+
+/* Hide the search shortcut, which is disabled. */
+.search-button-field .search-button__kbd-shortcut,
+.bd-search .search-button__kbd-shortcut {
+    display: none;
+}
+
+/* Avoid that math blocks sometimes get cut off at the top. */
+div.math, span.math {
+    overflow: visible;
+}
+div.math mjx-container {
+    padding-top: 0.2rem;
+}
