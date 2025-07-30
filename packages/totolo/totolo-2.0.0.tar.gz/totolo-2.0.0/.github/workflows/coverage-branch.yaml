@@ -1,0 +1,48 @@
+name: On Branch Push, Test Coverage
+
+on:
+  push:
+    branches-ignore:
+      - master
+
+jobs:
+  build-testcoverage:
+
+    strategy:
+      matrix:
+        python-version: ["3.x"]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements-dev.txt
+
+    - name: Run PyLint Check
+      run: |
+        pylint --fail-under=10.0 totolo
+
+    - name: Test with PyTest
+      run: |
+        pytest --cov-report=xml --cov-fail-under=100 --cov=totolo tests/
+
+    - name: Upload Coverage Report
+      uses: codecov/codecov-action@v3
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        env_vars: OS,PYTHON
+        files: ./coverage.xml
+        flags: unittests
+        fail_ci_if_error: true
+        name: codecov-umbrella
+        verbose: true
