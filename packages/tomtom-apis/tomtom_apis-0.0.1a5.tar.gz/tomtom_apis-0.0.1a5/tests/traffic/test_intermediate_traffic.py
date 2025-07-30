@@ -1,0 +1,11 @@
+"""Intermediate Traffic tests."""
+
+import pytest
+
+from tomtom_apis.traffic import IntermediateTrafficApi
+
+
+def test_api_not_implemented() -> None:
+    """Test API not implemented yet."""
+    with pytest.raises(NotImplementedError):
+        IntermediateTrafficApi()

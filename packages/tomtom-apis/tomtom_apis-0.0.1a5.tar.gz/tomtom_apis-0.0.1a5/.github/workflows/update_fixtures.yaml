@@ -1,0 +1,77 @@
+name: Update fixtures and test
+
+on: # yamllint disable-line rule:truthy
+  workflow_dispatch:
+    inputs:
+      create_pr:
+        type: boolean
+        description: Create pull request
+        default: false
+  schedule:
+    - cron: "0 0 * * *" # Every day at UTC midnight.
+
+env:
+  DEFAULT_PYTHON: "3.13"
+  DEFAULT_NODE: "22"
+
+permissions:
+  contents: read
+
+jobs:
+  update_fixtures:
+    runs-on: ubuntu-latest
+    name: Update fixtures
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Check out code from GitHub
+        uses: actions/checkout@v4
+
+      - name: Setup app
+        id: app
+        if: github.event.inputs.create_pr == 'true'
+        uses: ./.github/actions/setup-app
+        with:
+          app-id: ${{ secrets.PR2D2_APP_ID }}
+          private-key: ${{ secrets.PR2D2_APP_PRIVATE_KEY }}
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+        with:
+          python-version: ${{ env.DEFAULT_PYTHON }}
+          node-version: ${{ env.DEFAULT_NODE }}
+
+      - name: Update fixtures script
+        env:
+          TOMTOM_API_KEY: ${{ secrets.TOMTOM_API_KEY }}
+        run: uv run scripts/update_test_fixtures.py
+
+      - name: Create pull request
+        if: github.event.inputs.create_pr == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ steps.app.outputs.token }}
+          commit-message: Update fixtures
+          committer: ${{ steps.app.outputs.name }} <${{ steps.app.outputs.email }}>
+          author: ${{ steps.app.outputs.name }} <${{ steps.app.outputs.email }}>
+          branch: ci/update_fixtures
+          delete-branch: true
+          title: Update fixtures
+          body: |
+            New fixture files for tests.
+            Full log: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          labels: |
+            automated pr
+            enhancement
+
+      - name: Run tests
+        run: uv run pytest
+
+      - name: Upload fixtures for failed test
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fixtures
+          path: tests/fixtures
+          retention-days: 14
