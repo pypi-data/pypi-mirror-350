@@ -1,0 +1,161 @@
+{
+  "name": "github",
+  "base_url": "https://api.github.com",
+  "description": "GitHub REST API v3",
+  "auth": {
+    "type": "bearer",
+    "bearer_token": "ghp_YOUR_PERSONAL_ACCESS_TOKEN"
+  },
+  "headers": {
+    "Accept": "application/vnd.github.v3+json",
+    "X-GitHub-Api-Version": "2022-11-28"
+  },
+  "endpoints": [
+    {
+      "name": "get_user",
+      "description": "Get a user by username",
+      "method": "GET",
+      "path": "/users/{username}",
+      "params": [
+        {
+          "name": "username",
+          "type": "string",
+          "location": "path",
+          "required": true,
+          "description": "GitHub username"
+        }
+      ]
+    },
+    {
+      "name": "list_user_repos",
+      "description": "List repositories for a user",
+      "method": "GET",
+      "path": "/users/{username}/repos",
+      "params": [
+        {
+          "name": "username",
+          "type": "string",
+          "location": "path",
+          "required": true,
+          "description": "GitHub username"
+        },
+        {
+          "name": "type",
+          "type": "string",
+          "location": "query",
+          "required": false,
+          "default": "owner",
+          "enum": ["all", "owner", "member"],
+          "description": "Type of repositories to list"
+        },
+        {
+          "name": "sort",
+          "type": "string",
+          "location": "query",
+          "required": false,
+          "default": "full_name",
+          "enum": ["created", "updated", "pushed", "full_name"],
+          "description": "Sort repositories by"
+        },
+        {
+          "name": "per_page",
+          "type": "integer",
+          "location": "query",
+          "required": false,
+          "default": 30,
+          "description": "Results per page (max 100)"
+        }
+      ]
+    },
+    {
+      "name": "create_issue",
+      "description": "Create an issue in a repository",
+      "method": "POST",
+      "path": "/repos/{owner}/{repo}/issues",
+      "params": [
+        {
+          "name": "owner",
+          "type": "string",
+          "location": "path",
+          "required": true,
+          "description": "Repository owner"
+        },
+        {
+          "name": "repo",
+          "type": "string",
+          "location": "path",
+          "required": true,
+          "description": "Repository name"
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "location": "body",
+          "required": true,
+          "description": "Issue title"
+        },
+        {
+          "name": "body",
+          "type": "string",
+          "location": "body",
+          "required": false,
+          "description": "Issue body content"
+        },
+        {
+          "name": "assignees",
+          "type": "array",
+          "location": "body",
+          "required": false,
+          "description": "List of usernames to assign"
+        },
+        {
+          "name": "labels",
+          "type": "array",
+          "location": "body",
+          "required": false,
+          "description": "List of label names"
+        }
+      ]
+    },
+    {
+      "name": "search_repositories",
+      "description": "Search for repositories",
+      "method": "GET",
+      "path": "/search/repositories",
+      "params": [
+        {
+          "name": "q",
+          "type": "string",
+          "location": "query",
+          "required": true,
+          "description": "Search query"
+        },
+        {
+          "name": "sort",
+          "type": "string",
+          "location": "query",
+          "required": false,
+          "enum": ["stars", "forks", "updated"],
+          "description": "Sort results by"
+        },
+        {
+          "name": "order",
+          "type": "string",
+          "location": "query",
+          "required": false,
+          "default": "desc",
+          "enum": ["asc", "desc"],
+          "description": "Sort order"
+        },
+        {
+          "name": "per_page",
+          "type": "integer",
+          "location": "query",
+          "required": false,
+          "default": 30,
+          "description": "Results per page"
+        }
+      ]
+    }
+  ]
+}

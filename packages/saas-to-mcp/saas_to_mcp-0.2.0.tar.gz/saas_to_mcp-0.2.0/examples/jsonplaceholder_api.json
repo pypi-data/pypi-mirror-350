@@ -1,0 +1,139 @@
+{
+  "name": "jsonplaceholder",
+  "base_url": "https://jsonplaceholder.typicode.com",
+  "description": "Free fake API for testing and prototyping",
+  "endpoints": [
+    {
+      "name": "list_posts",
+      "description": "Get all posts",
+      "method": "GET",
+      "path": "/posts",
+      "params": [
+        {
+          "name": "_limit",
+          "type": "integer",
+          "location": "query",
+          "required": false,
+          "description": "Limit number of results"
+        },
+        {
+          "name": "_page",
+          "type": "integer",
+          "location": "query",
+          "required": false,
+          "description": "Page number for pagination"
+        }
+      ]
+    },
+    {
+      "name": "get_post",
+      "description": "Get a specific post by ID",
+      "method": "GET",
+      "path": "/posts/{id}",
+      "params": [
+        {
+          "name": "id",
+          "type": "integer",
+          "location": "path",
+          "required": true,
+          "description": "Post ID"
+        }
+      ]
+    },
+    {
+      "name": "create_post",
+      "description": "Create a new post",
+      "method": "POST",
+      "path": "/posts",
+      "params": [
+        {
+          "name": "title",
+          "type": "string",
+          "location": "body",
+          "required": true,
+          "description": "Post title"
+        },
+        {
+          "name": "body",
+          "type": "string",
+          "location": "body",
+          "required": true,
+          "description": "Post body content"
+        },
+        {
+          "name": "userId",
+          "type": "integer",
+          "location": "body",
+          "required": true,
+          "description": "User ID of the author"
+        }
+      ]
+    },
+    {
+      "name": "update_post",
+      "description": "Update an existing post",
+      "method": "PUT",
+      "path": "/posts/{id}",
+      "params": [
+        {
+          "name": "id",
+          "type": "integer",
+          "location": "path",
+          "required": true,
+          "description": "Post ID to update"
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "location": "body",
+          "required": true,
+          "description": "New post title"
+        },
+        {
+          "name": "body",
+          "type": "string",
+          "location": "body",
+          "required": true,
+          "description": "New post body"
+        },
+        {
+          "name": "userId",
+          "type": "integer",
+          "location": "body",
+          "required": true,
+          "description": "User ID"
+        }
+      ]
+    },
+    {
+      "name": "delete_post",
+      "description": "Delete a post",
+      "method": "DELETE",
+      "path": "/posts/{id}",
+      "params": [
+        {
+          "name": "id",
+          "type": "integer",
+          "location": "path",
+          "required": true,
+          "description": "Post ID to delete"
+        }
+      ]
+    },
+    {
+      "name": "get_post_comments",
+      "description": "Get all comments for a post",
+      "method": "GET",
+      "path": "/posts/{id}/comments",
+      "params": [
+        {
+          "name": "id",
+          "type": "integer",
+          "location": "path",
+          "required": true,
+          "description": "Post ID"
+        }
+      ]
+    }
+  ]
+}
