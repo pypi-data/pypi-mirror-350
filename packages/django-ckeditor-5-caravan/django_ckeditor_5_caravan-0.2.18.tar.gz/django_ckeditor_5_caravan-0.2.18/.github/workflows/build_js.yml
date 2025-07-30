@@ -1,0 +1,23 @@
+name: build_js
+
+on:
+  push:
+
+jobs:
+  build_js:
+    runs-on: ubuntu-latest
+    steps:
+      - run: sudo apt install -y gettext
+      - uses: actions/setup-node@v3.4.1
+      - uses: actions/checkout@v3
+      - name: Install Javascript dependencies
+        working-directory: ./django_ckeditor_5
+        run: npm install
+      - name: Build ck-editor
+        working-directory: ./django_ckeditor_5
+        run: npm run prod
+      - name: Upload built files
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-js
+          path: django_ckeditor_5/static/django_ckeditor_5/dist
