@@ -1,0 +1,46 @@
+[project]
+name = "sier2-blocks"
+version = "0.13"
+description = "Blocks for sier2"
+authors = [
+    {name="Algol60", email="algol60 <algol60@users.noreply.github.com>"},
+    {name="jacobgolding", email="jacobgolding <jacobgolding@users.noreply.github.com>"}
+]
+readme = "README.rst"
+packages = [{include = "sier2_blocks", from = "src"}]
+classifiers = [
+    "Programming Language :: Python :: 3.11",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development :: Libraries"
+]
+
+[dependencies]
+python = "^3.11"
+panel = ">=1.4.4"
+param = ">=2.1.0"
+sier2 = ">=0.35"
+
+[project.optional-dependencies]
+faker = ["faker"]
+vis = ["holoviews ~= 1.19.0"]
+all = [
+    "faker",
+    "holoviews ~= 1.19.0",
+]
+
+[tool.poetry.plugins."sier2.library"]
+export = "sier2_blocks.shelf"
+
+[[tool.mypy.overrides]]
+module = [
+    "param",
+    "xlsxwriter",
+]
+ignore_missing_imports = true
+
+[build-system]
+requires = ["poetry-core>=2.1.1"]
+build-backend = "poetry.core.masonry.api"
