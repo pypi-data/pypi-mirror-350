@@ -1,0 +1,50 @@
+[[tool.poetry.source]]
+name = "ts_pypi_virtual"
+url = "https://tetrascience.jfrog.io/artifactory/api/pypi/ts-pypi-virtual/simple"
+priority = "primary"
+
+[tool.black]
+line-length = 88
+target-version = [ 'py39', 'py310', 'py311' ]
+include = '\.pyi?$'
+extend-exclude = 'snapshots'
+
+[tool.poetry]
+name = "ts-task-script-utils"
+version = "2.3.2"
+description = "Python utility for Tetra Task Scripts"
+authors = ["Tetrascience <developers@tetrascience.com>"]
+license = "Apache License 2.0"
+readme = "README.md"
+include = ["LICENSE"]
+classifiers =[
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+]
+packages = [{ include = 'task_script_utils'}]
+
+[tool.poetry.dependencies]
+python = ">=3.9, <4"
+python-dateutil = ">=2.8.2"
+dateparser = ">=1.1.1"
+arrow = ">=1.2.2"
+pendulum = ">=3"
+pydash = ">=5.0.0"
+typing-extensions = ">=4.0.0"
+
+[tool.poetry.group.dev.dependencies]
+pendulum = {extras = ["test"], version = "^3.0.0"}
+pytest = "^7.1.2"
+pytest-cov = "^3.0.0"
+black = "^22.3.0"
+ipdb = "^0.13.9"
+ts-ids-core = "^1.0.2"
+ts-lib-pytest = "^0.2.0"
+polars = "^1.26.0"
+pandas = "^2.2.3"
+pyarrow = "^19.0.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
