@@ -1,0 +1,120 @@
+[tool.poetry]
+name = "ant_connect_py"
+version = "v2.0.8rc3"
+description = "Release of the new V2 python package."
+authors = ["LEED <dervis.van.leersum@antcde.io>"]
+license = "Proprietary - ANTCDE"
+readme = ["README.rst", "CHANGELOG.rst"]
+homepage = "https://antcde.io/"
+documentation = "https://docs.antcde.io/"
+packages = [{from = "src", include = "ant_connect"}]
+include = ["CHANGELOG.rst"]
+# Classifiers, see https://pypi.org/classifiers/ for available trove classifiers
+classifiers = [
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.10"
+]
+
+[tool.poetry.dependencies]
+python = ">=3.8,<3.13"
+requests = "^2.31.0"
+pydantic = "^2.5.2"
+
+[tool.poetry.group.dev.dependencies]
+poetry-dynamic-versioning = "^0.21.3"
+pylint = "^2.15.10"
+pre-commit = "^2.21.0"
+pytest = "^8.2.0"
+python-dotenv = "^1.0.1"
+black = "^24.4.2"
+twine = "^5.1.0"
+flatten-dict = "^0.4.2"
+pandas = "1.5.3"
+numpy = "1.24.4"
+restructuredtext-lint = "^1.4.0"
+
+[tool.poetry.group.docs.dependencies]
+sphinx = "~5.0"
+sphinx-rtd-theme = "^1.1.1"
+dunamai = "^1.16.0"
+# The dependencies below are required to support Jupyter notebooks in the documetation. When
+# this support is not required:
+#  - remove the links to the Jupyter notebooks from the documentation source;
+#  - remove references to `nbsphinx` and `nbsphinx-link` from docs\src\conf.py
+#  - optionally set the NO_JUPYTER flag in the .gitlab-ci.yml to speed up the GitLab runners;
+nbsphinx = "^0.8.12"
+nbsphinx-link = "^1.3.0"
+ipykernel = "^6.21.2"
+
+[tool.poetry.plugins."console_scripts"]
+# Add here console scripts like:
+# For example:
+ant_connect = "ant_connect.api_connector:ApiConnector"
+
+# Add here scripts using the "poetry run" command
+[tool.poetry.scripts]
+auto-gen = "dev.generate_models:main"
+
+[[tool.poetry.source]]
+name = "PyPI"
+priority = "primary"
+
+[[tool.poetry.source]]
+name = "ANTConnect"
+url = "https://upload.pypi.org/legacy/"
+priority = "supplemental"
+
+[tool.poetry-dynamic-versioning]
+# This section contains all the configuration for the tool `poetry-dynamic-versioning`
+# This tool can automatically set the version based on an commit tag. See for
+# more options:
+#   https://pypi.org/project/poetry-dynamic-versioning/
+enable = true
+
+[tool.isort]
+# This section contains all the configuration for the tool `isort`. This tool
+# can sort all import statements for you. See for documentation of thiss tool:
+#   https://pycqa.github.io/isort/index.html
+profile = "black"
+
+[tool.black]
+# This section contains all the configuration for the tool 'black`. This tool
+# can reformat the code according to PEP 8. For more information, see:
+#   https://black.readthedocs.io/en/stable/the_black_code_style/index.html
+# **PRO-TIP**: If you’re asking yourself "Do I need to configure anything?" the
+# answer is "No". Black is all about sensible defaults. Applying those defaults
+# will have your code in compliance with many other Black formatted projects.
+line-length = 119
+
+[tool.pytest.ini_options]
+# This section contains all the configuration for the tool `pytest`. This tool
+# will run the tests for you. Use the follwoing command to get a list of all
+# available commands:
+#   poetry run pytest -h
+# Specify command line options as you would do when invoking pytest directly.
+minversion = "6.0"
+addopts = "-ra -q"
+norecursedirs = [
+    "dist",
+    "build",
+]
+testpaths = [
+    "tests",
+]
+# Use pytest markers to select/deselect specific tests
+# markers = [
+#     "slow",   # mark tests as slow (deselect with '-m "not slow"')
+#     "system", # mark end-to-end system tests
+# ]
+
+[build-system]
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
+build-backend = "poetry_dynamic_versioning.backend"
+
+[tool.pyscaffold]
+# PyScaffold's parameters when the project was created.
+# This will be used when updating. Do not change!
+version = "4.2.3"
+package = "ant_connect_py"
+# extensions = ["wb_package_template"]
