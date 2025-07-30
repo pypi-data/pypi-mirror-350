@@ -1,0 +1,45 @@
+[project]
+name = "unrar2-cffi"
+description = "Read RAR file from python -- cffi edition"
+authors = [
+    {name = "noaione", email = "noaione@n4o.xyz"},
+    {name = "Davide Romanini", email = "davide.romanini@gmail.com"},
+]
+readme = "README.md"
+license = "Apache-2.0"
+keywords = ["rar", "unrar", "archive", "cffi"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+requires-python = ">=3.9"
+dynamic = ["version"]
+dependencies = ["cffi"]
+
+[build-system]
+requires = ["setuptools>=60", "wheel", "cffi"]
+build-backend = "setuptools.build_meta"
+
+[project.urls]
+homepage = "https://github.com/noaione/unrar2-cffi"
+changelog = "https://github.com/noaione/unrar2-cffi/blob/develop/CHANGELOG.md"
+
+[tool.setuptools]
+package-data = { "unrar.cffi" = ["*.dll"] }
+package-dir = { "unrar.cffi" = "unrar/cffi" }
+include-package-data = true
+packages = ["unrar.cffi"]
+
+[tool.setuptools.dynamic]
+version = { attr = "unrar.cffi.__version__" }
+
+[tool.setuptools.cmdclass]
+build = "buildconf.BuildOverride"
+build_unrar = "buildconf.BuildUnrarCommand"
