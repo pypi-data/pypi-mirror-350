@@ -1,0 +1,54 @@
+---
+description: Documents core business rules for video composition, synchronization and quality preservation
+globs: src/vidkompy/core/*.py,src/vidkompy/models.py
+alwaysApply: false
+---
+
+
+# video-composition-rules
+
+## Core Composition Rules
+
+### Foreground Preservation (Importance: 95)
+- Every frame from foreground video must be preserved exactly as-is
+- No re-timing, dropping or interpolation of foreground frames allowed 
+- Background video is adapted to match foreground timing and positioning
+- Quality thresholds enforced through similarity scoring
+
+### Frame Alignment Logic (Importance: 90)
+- Multi-stage alignment process:
+  1. Initial coarse position detection using template matching
+  2. Precise temporal alignment via Dynamic Time Warping
+  3. Progressive refinement with drift correction
+  4. Final spatial positioning and blending
+- Border handling modes for different content types:
+  - Standard: Full frame correlation
+  - Border: Edge region matching (8px default)
+  - Smooth: Gradient blending at transitions
+
+### Audio Integration Rules (Importance: 85)
+- Audio source priority:
+  1. Foreground audio track if available
+  2. Background audio if no foreground audio
+  3. Silent output if no valid audio
+- Synchronization constraints:
+  - Audio must align with composed video frames
+  - No audio stretching/compression allowed
+  - Gaps filled with silence
+
+### Quality Thresholds (Importance: 80)
+- Frame matching confidence minimum: 0.85
+- Spatial alignment confidence threshold: 0.90
+- Maximum allowed temporal drift: 1 frame per 100
+- Edge blending gradient width: 4-24 pixels based on content
+
+## File Structure
+
+/src/vidkompy/core/
+- alignment_engine.py: Core composition orchestration
+- dtw_aligner.py: Temporal synchronization  
+- frame_fingerprint.py: Content matching logic
+- spatial_alignment.py: Position detection
+- video_processor.py: Frame assembly and output
+
+$END$
