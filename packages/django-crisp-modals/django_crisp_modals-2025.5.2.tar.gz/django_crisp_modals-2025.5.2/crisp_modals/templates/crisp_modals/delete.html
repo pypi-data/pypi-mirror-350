@@ -1,0 +1,16 @@
+{% extends "crisp_modals/confirm.html" %}
+{% load crisp_modals %}
+
+{% block modal_title %}Delete {{ object|verbose_name }}?{% endblock %}
+
+{% block modal_body %}
+    <p class="lead">
+        Are you sure you want to delete the {{ object|verbose_name }} <strong>"{{object}}"</strong>{% if related %}
+        and the following related items{% endif %}?
+    </p>
+    {% if related %}
+    <div class="modal-alert bg-warning-subtle text-warning-emphasis" style="font-size: 0.9em; max-height: 200px; overflow-y: auto;">
+    {{ related|html_list }}
+    </div>
+    {% endif %}
+{% endblock %}
