@@ -1,0 +1,51 @@
+Metadata-Version: 2.4
+Name: docker-code-executor
+Version: 0.0.2
+Summary: A code executor that leverages Docker Container
+Author: Sachdeva, Kapil
+Requires-Python: >=3.11
+Requires-Dist: asyncio-atexit>=1.0.1
+Requires-Dist: docker>=7.1.0
+Description-Content-Type: text/markdown
+
+# Docker Code Executor
+
+This is borrowed from
+https://github.com/microsoft/autogen/blob/main/python/packages/autogen-ext/src/autogen_ext/code_executors/docker/_docker_code_executor.py
+
+and converted into an independent package with some minor modifications and adjustments.
+
+## Install
+
+```bash
+pip install docker-code-executor
+```
+
+## Usage
+
+```python
+import asyncio
+
+from docker_code_executor import CancellationToken, CodeBlock, CommandLineCodeResult, DockerCommandLineCodeExecutor
+
+executor = DockerCommandLineCodeExecutor()
+await executor.start()
+
+code_blocks = [
+    CodeBlock(
+        code="""
+import os
+for k, v in os.environ.items():
+    print(f"{k}={v}")
+""",
+        language="python",
+    )
+]
+
+cancel_token = CancellationToken()
+
+result: CommandLineCodeResult = await executor.execute_code_blocks(code_blocks, cancel_token)
+print(result.output)
+
+await executor.stop()
+```
