@@ -1,0 +1,68 @@
+[tool.poetry]
+name = "l6n-fast-deploy"
+version = "0.1.0"
+description = "FastDeploy é uma ferramenta CLI que simplifica o deploy de modelos de machine learning como APIs REST em containers Docker."
+license = "BeerWare"
+authors = ["laranapoli <laranapoli0@gmail.com>"]
+readme = "README.md"
+packages = [{include = "fast_deploy"}]
+classifiers = [
+    "Topic :: Education",
+    "Environment :: Console",
+    "Natural Language :: Portuguese (Brazilian)",
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3.12",
+]
+
+[tool.poetry.urls]
+"Documentação" = "https://fast-deploy.readthedocs.io/pt-br/latest/"
+"Código" = "https://github.com/laranapoli/fast-deploy"
+"Bug Tracker" = "https://github.com/laranapoli/fast-deploy/issues"
+
+[tool.poetry.scripts]
+deploy = "fast_deploy.cli:app"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+scikit-learn = "^1.5.2"
+typer = "^0.12.5"
+rich = "^13.9.3"
+fastapi = "^0.115.3"
+uvicorn = "^0.32.0"
+python-multipart = "^0.0.12"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.3"
+pytest-cov = "^5.0.0"
+blue = "^0.9.1"
+isort = "^5.13.2"
+taskipy = "^1.14.0"
+
+
+[tool.poetry.group.doc.dependencies]
+mkdocs-material = "^9.5.42"
+mkdocstrings = "^0.26.2"
+mkdocstrings-python = "^1.12.2"
+mkdocs-macros-plugin = "^1.3.7"
+jinja2 = "^3.1.4"
+pymdown-extensions = "^10.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+pythonpath = "."
+addopts = "--doctest-modules"
+
+[tool.isort]
+profile = "black"
+line_length = 79
+
+[tool.taskipy.tasks]
+lint = "blue --check --diff . && isort --check --diff ."
+docs = "mkdocs serve"
+pre_test = "task lint"
+test = "pytest -s -x --cov=fast_deploy -vv"
+post_test = "coverage html"
