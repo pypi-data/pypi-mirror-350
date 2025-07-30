@@ -1,0 +1,51 @@
+[project]
+name = "as-price-download"
+version = "0.3.1"
+description = "Commodity price retrieval, storage, and export in format compatible with Plain-Text Accounting applications."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "aiohttp>=3.11.18",
+    "asyncclick>=8.1.8",
+    "beanprice>=2.0.0",
+    "dotenv>=0.9.9",
+    "loguru>=0.7.3",
+    "pyeurofx>=0.6.4",
+    "yfinance>=0.2.59",
+]
+
+[project.scripts]
+# pricedl = "main:main"
+# pricedl = "pricedl.cli:cli"
+# pricedl = "main:cli"
+pricedl = "pricedl.main:cli"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+    "pytest-asyncio>=0.26.0",
+]
+
+[tool.pytest.ini_options]
+# pythonpath = [
+#   "."
+# ]
+asyncio_default_fixture_loop_scope = "function"
+
+# Adding a build system causes the package itself to be installed in the .venv,
+# and not just the dependencies.
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+[tool.hatch.build.targets.wheel]
+# artifacts = [
+#   "*.py",
+# ]
+# Include subfolder pricedb in the distribution package.
+#packages = ["pricedl"]
+packages = ["src/pricedl"]
+
+[tool.uv.sources]
+beanprice = { git = "https://github.com/beancount/beanprice" }
+
+#tool.uv.package = true
