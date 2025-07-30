@@ -1,0 +1,7 @@
+MODEL_CODE_TAG = "code.zip"
+SKINNY_MODEL_CODE_TAG = "skinny_code.zip"
+FROGML_SDK_VERSION_TAG = "frogml_sdk_version"
+FROGML_RUNTIME_WHEEL_TAG = "frogml_runtime_wheel"
+FROGML_CORE_WHEEL_TAG = "frogml_core_wheel"
+BUILD_CONFIG_TAG = "frogml_build_config"
+FROGML_BUILT_MODEL_TAG = "frogml_built_model"
