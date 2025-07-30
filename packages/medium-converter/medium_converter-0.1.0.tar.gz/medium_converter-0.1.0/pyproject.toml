@@ -1,0 +1,151 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "medium-converter"
+version = "0.1.0"
+description = "Convert Medium articles to various formats with LLM enhancement"
+readme = "README.md"
+license = "MIT"
+authors = [
+    "Marcus Elwin <marcus@elwin.com>"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Text Processing :: Markup",
+    "Topic :: Utilities",
+]
+packages = [{include = "medium_converter"}]
+
+[tool.poetry.dependencies]
+python = ">=3.11,<4.0"
+httpx = {extras = ["http2"], version = ">=0.25.0"}
+beautifulsoup4 = ">=4.12.0"
+lxml = ">=4.9.0"
+click = ">=8.1.0"
+rich = ">=13.0.0"
+pydantic = ">=2.0.0"
+python-dateutil = ">=2.8.0"
+browser-cookie3 = ">=0.19.0"
+
+# LLM support
+litellm = {version = ">=1.30.5", optional = true}
+tiktoken = {version = ">=0.5.0", optional = true}
+openai = {version = ">=1.0.0", optional = true}
+anthropic = {version = ">=0.7.0", optional = true}
+google-generativeai = {version = ">=0.3.0", optional = true}
+mistralai = {version = ">=0.0.7", optional = true}
+llama-cpp-python = {version = ">=0.2.0", optional = true}
+
+# Export formats
+reportlab = {version = ">=4.0.0", optional = true}
+python-docx = {version = ">=1.1.0", optional = true}
+jinja2 = {version = ">=3.1.0", optional = true}
+ebooklib = {version = ">=0.18.0", optional = true}
+
+# Fast
+# medium-converter-rust dependency commented out until it's available
+# medium-converter-rust = {version = ">=0.1.0", optional = true}
+types-setuptools = "^80.8.0.20250521"
+
+[tool.poetry.group.dev.dependencies]
+pytest = ">=7.0.0"
+pytest-cov = ">=4.0.0"
+pytest-asyncio = ">=0.21.0"
+responses = ">=0.23.0"
+ruff = ">=0.1.0"
+black = ">=23.0.0"
+mypy = ">=1.5.0"
+pre-commit = ">=3.0.0"
+
+[tool.poetry.group.docs.dependencies]
+mkdocs = ">=1.5.0"
+mkdocs-material = ">=9.0.0"
+mkdocstrings = {extras = ["python"], version = ">=0.23.0"}
+
+[tool.poetry.extras]
+llm = ["litellm", "tiktoken"]
+openai = ["openai"]
+anthropic = ["anthropic"]
+google = ["google-generativeai"]
+mistral = ["mistralai"]
+local = ["llama-cpp-python"]
+pdf = ["reportlab"]
+word = ["python-docx"]
+latex = ["jinja2"]
+epub = ["ebooklib"]
+html = ["jinja2"]
+docs = ["mkdocs", "mkdocs-material", "mkdocstrings"]
+all-formats = ["reportlab", "python-docx", "jinja2", "ebooklib"]
+all-llm = ["litellm", "tiktoken", "openai", "anthropic", "google-generativeai", "mistralai", "llama-cpp-python"]
+fast = []  # "medium-converter-rust" dependency removed temporarily
+all = ["litellm", "tiktoken", "openai", "anthropic", "google-generativeai", "mistralai", "llama-cpp-python", 
+       "reportlab", "python-docx", "jinja2", "ebooklib", "mkdocs", "mkdocs-material", "mkdocstrings"]
+
+[tool.poetry.scripts]
+medium = "medium_converter.cli:main"
+
+[tool.poetry.urls]
+Homepage = "https://github.com/MarcusElwin/medium-converter"
+Documentation = "https://medium-converter.readthedocs.io"
+Repository = "https://github.com/MarcusElwin/medium-converter"
+Issues = "https://github.com/MarcusElwin/medium-converter/issues"
+Changelog = "https://github.com/MarcusElwin/medium-converter/blob/main/CHANGELOG.md"
+
+[tool.black]
+line-length = 88
+target-version = ["py311"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "C4", "UP"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+# Ignore specific libraries without stubs
+[[tool.mypy.overrides]]
+module = ["reportlab.*", "browser_cookie3", "pkg_resources"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--cov=medium_converter",
+    "--cov-report=term-missing",
+]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.semantic_release]
+version_variable = [
+    "medium_converter/__init__.py:__version__"
+]
+branch = "main"
+upload_to_pypi = true
+upload_to_release = true
+build_command = "pip install poetry && poetry build"
+major_on_zero = false
+commit_version_number = true
+tag_commit = true
+commit_message = "chore(release): v{version} [skip ci]"
+tag_format = "v{version}"
+prerelease = false
+prerelease_tag = "rc"
+push_on_release = false
