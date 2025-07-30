@@ -1,0 +1,1 @@
+This module allows each company to define a custom label for displaying the delivery address reference on customer invoice PDFs. The reference (ref) from the delivery address contact is shown above the invoice lines, using the format: "Label: Reference". If no reference is set, nothing is displayed. If no label is defined, the default "Shipping Address Ref." label is used.

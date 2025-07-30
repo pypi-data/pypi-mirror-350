@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2025 Ángel Rivas <angel.rivas@sygel.es>
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <template
+        id="account_invoice_report_shipping_ref_report_invoice_document"
+        name="account.invoice.report.shipping.ref.report.invoice.document"
+        inherit_id="account.report_invoice_document"
+    >
+        <xpath expr="//div[@name='shipping_address_block']" position="inside">
+            <t t-if="o.partner_id.ref">
+                <span>
+                    <t t-if="o.company_id.invoice_shipping_ref_label">
+                        <span t-field="o.company_id.invoice_shipping_ref_label" />
+                    </t>
+                    <t t-else="">
+                        <span>Shipping Address Ref.</span>
+                    </t>
+                    : <span t-field="o.partner_id.ref" />
+                </span>
+            </t>
+        </xpath>
+    </template>
+</odoo>
