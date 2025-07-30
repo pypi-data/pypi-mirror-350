@@ -1,0 +1,53 @@
+Metadata-Version: 2.4
+Name: ticktocker
+Version: 0.1
+Summary: A simple Python package for clocking
+Author-email: Yeho Gwon <yeho.gwon@postech.ac.kr>
+License: MIT
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: license-file
+
+# `ticktocker`
+
+<p align="center">
+  <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT">
+</p>
+
+
+`ticktocker` is a Python package that helps you measure the time taken by code execution. It provides a simple and intuitive way to track performance and optimize your code.
+
+## Todos
+
+- CI/CD
+  - Unit tests
+  - Git branching
+- Add templates for PR and issues.
+
+## Features
+
+### Context Manager
+
+`ticktocker` supports to measure the time taken by a block of code using a context manager.
+
+```python
+from ticktocker import clock
+
+with clock() as sw:
+    ...
+print(sw.elapsed)
+```
+
+### Decorator
+
+`ticktocker` also supports to measure the time taken by a function using a decorator.
+
+```python
+from ticktocker import clock
+
+@clock
+def my_function():
+    ...
+my_function() # Elapsed time: ...
+```
