@@ -1,0 +1,62 @@
+Metadata-Version: 2.4
+Name: MEDS_visualizations
+Version: 0.0.1
+Summary: A framework for compiling simple, mapreduce style pipelines over MEDS datasets.
+Author-email: Matthew McDermott <mattmcdermott8@gmail.com>
+Project-URL: Homepage, https://github.com/mmcdermott/MEDS_visualizations
+Project-URL: Issues, https://github.com/mmcdermott/MEDS_visualizations/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: polars<=1.27.9,>=1.26.0
+Requires-Dist: plotly
+Requires-Dist: meds~=0.4.0
+Requires-Dist: jupyter
+Provides-Extra: dev
+Requires-Dist: pre-commit<4; extra == "dev"
+Requires-Dist: ruff; extra == "dev"
+Provides-Extra: tests
+Requires-Dist: pytest-cov; extra == "tests"
+Requires-Dist: pytest; extra == "tests"
+Requires-Dist: meds_testing_helpers~=0.3.0; extra == "tests"
+Dynamic: license-file
+
+# MEDS Visualizations
+
+Visualization tools for MEDS datasets.
+
+> [!WARNING]
+> This is a work in progress. The API and functionality are very likely change as we develop the library.
+
+## Installation
+
+```bash
+pip install MEDS_visualizations
+```
+
+## Usage
+
+In a Jupyter notebook, you can load whatever combination of data extractor and plotter you want:
+
+```python
+from MEDS_visualizations.extractors import CodeFrequency
+from MEDS_visualizations.plotters import Bar
+from MEDS_visualizations.visualization import Visualization
+
+CF = CodeFrequency(as_proportions=True)
+P = Bar(top_k=10, y_cols=["n_occurrences"])
+
+V = Visualization(extractor=CF, plotter=P)
+V.render(data_shards)
+```
+
+In the future, we anticipate
+
+- Registering extractors and plotters via pypi entry points.
+- Adding the capability to chain together arbitrary extractors and plotters to make a report in a
+    visualization.
+- Adding the capability to apply arbitrary filters or transformations to all data shards used to power a
+    visualization.
