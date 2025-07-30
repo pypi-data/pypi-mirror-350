@@ -1,0 +1,113 @@
+[project]
+
+name = "data-sourcerer"
+version = "0.2.3"
+description = "Sourcerer is a terminal cloud storage navigator."
+requires-python = ">=3.9"
+
+keywords = ["cloud", "s3", "gcp", "cli", "terminal", "storage", "textual", "ui"]
+license = {text = "MIT"}
+
+authors = [
+  {name = "Bohdana Kuzmenko", email = "bohdana.kuzmenko.dev@gmail.com"},
+]
+
+readme = {file = "README.md", content-type = "text/markdown"}
+
+dependencies = [
+    "boto3>=1.26.0,<2.0.0",
+    "cryptography>=44.0.2,<45.0.0",
+    "dependency-injector>=4.43.0,<5.0.0",
+    "google-cloud-storage>=3.1.0,<4.0.0",
+    "humanize>=4.12.1,<5.0.0",
+    "sqlalchemy>=2.0.38,<3.0.0",
+    "sqlalchemy-utils>=0.41.2,<1.0.0",
+    "textual[syntax]>=2.0.0,<4.0.0",
+    "pyOpenSSL>=22.1.0; sys_platform == 'linux'",
+    "azure-storage-blob>=12.25.1,<13.0.0",
+    "azure-identity>=1.22.0,<2.0.0",
+    "azure-mgmt-storage>=22.2.0,<23.0.0",
+    "msgspec>=0.19.0",
+]
+
+[project.scripts]
+sourcerer = "sourcerer.presentation.app:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "bandit>=1.8.3",
+    "black>=25.1.0",
+    "coverage>=7.8.0",
+    "hatch>=1.14.1",
+    "mkdocs-material>=9.6.12",
+    "pre-commit>=4.2.0",
+    "pylint>=3.3.6",
+    "pyright>=1.1.400",
+    "ruff>=0.11.7",
+    "textual-dev>=1.7.0",
+    "ty>=0.0.1a6",
+    "black>=25.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "bandit>=1.8.3",
+    "black>=25.1.0",
+    "coverage>=7.8.0",
+    "hatch>=1.14.1",
+    "mkdocs-material>=9.6.12",
+    "pre-commit>=4.2.0",
+    "pylint>=3.3.6",
+    "pyright>=1.1.400",
+    "ruff>=0.11.7",
+    "textual-dev>=1.7.0",
+    "ty>=0.0.1a6",
+    "black>=25.1.0",
+]
+
+[tool.coverage.run]
+branch = true
+source = [
+    "src/sourcerer/infrastructure",
+]
+
+[tool.coverage.report]
+fail_under = 75
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+# Enable these rules
+select = [
+  "E",    # pycodestyle
+  "F",    # pyflakes
+  "I",    # isort
+  "N",    # pep8-naming
+  "UP",   # pyupgrade
+  "C90",  # mccabe (complexity)
+  "B",    # flake8-bugbear
+  "SIM",  # flake8-simplify
+]
+
+# Allow autofix for these rule sets
+fixable = ["ALL"]
+
+# Disallow autofix for these
+unfixable = ["F401"]  # unused imports - maybe you want to catch it manually
+
+
+[tool.ruff.mccabe]
+max-complexity = 10
+
+[tool.hatch.build]
+include = ["src"]
+sources = ["src"]
+
+[tool.ty.rules]
+unresolved-import = "ignore"
+invalid-assignment = "warn"
