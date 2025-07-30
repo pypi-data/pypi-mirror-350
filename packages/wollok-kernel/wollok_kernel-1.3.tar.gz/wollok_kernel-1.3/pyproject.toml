@@ -1,0 +1,59 @@
+[build-system]
+requires = [
+    "hatchling>=1.10.0", "ipykernel",
+]
+build-backend = "hatchling.build"
+
+[project]
+name = "wollok-kernel"
+dynamic = [
+    "version",
+]
+description = "Wollok kernel for Jupyter"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Jupyter Development Team", email = "jupyter@googlegroups.com" },
+]
+classifiers = [
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Programming Language :: Python :: 3",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "ipykernel",
+    "jupyter_client",
+    "pythonmonkey",
+]
+
+[project.optional-dependencies]
+test = [
+  "jupyter_kernel_test",
+]
+
+[project.urls]
+Homepage = "https://github.com/jupyter/wollok-kernel"
+
+[tool.hatch.version]
+path = "wollok_kernel/__init__.py"
+
+# Used to call hatch_build.py
+[tool.hatch.build.hooks.custom]
+path = "hatch_build.py"
+
+[tool.hatch.build]
+include = [
+    "/wollok_kernel/**/*"
+]
+
+[tool.hatch.build.targets.wheel.force-include]
+"wollok_kernel/wollok_bridge/node_modules" = "wollok_kernel/wollok_bridge/node_modules"
+
+[tool.hatch.build.targets.wheel.shared-data]
+"data_kernelspec/share" = "share"
+
+reportMissingModuleSource = "none"
+
+[tool.check-wheel-contents]
+ignore = ["W002"]
