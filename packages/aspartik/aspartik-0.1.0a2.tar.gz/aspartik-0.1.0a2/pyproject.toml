@@ -1,0 +1,24 @@
+[project]
+name = "aspartik"
+dynamic = ["version", "author", "license"]
+# Uses square bracket generics (PEP 695)
+requires-python = ">=3.12"
+classifiers = [
+	"Programming Language :: Rust",
+	"Programming Language :: Python :: Implementation :: CPython",
+	"Typing :: Typed",
+	"Topic :: Scientific/Engineering",
+	"Topic :: Scientific/Engineering :: Bio-Informatics",
+	"Intended Audience :: Developers",
+	"Intended Audience :: Science/Research",
+]
+keywords = ["bioinformatics"]
+
+[build-system]
+requires = ["maturin>=1.8,<2.0"]
+build-backend = "maturin"
+
+[tool.maturin]
+python-source = "python"
+module-name = "aspartik._aspartik_rust_impl"
+features = ["pyo3/extension-module"]

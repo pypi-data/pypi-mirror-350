@@ -1,0 +1,20 @@
+[package]
+name = "io"
+
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+data = { workspace = true }
+
+anyhow = { workspace = true }
+nom = { workspace = true }
+parking_lot = { workspace = true }
+petgraph = { workspace = true, default-features = false, features = ["stable_graph"] }
+pyo3 = { workspace = true, optional = true }
+
+[features]
+default = ["python"]
+python = ["dep:pyo3"]

@@ -1,0 +1,21 @@
+[package]
+name = "linalg"
+
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+build = "build.rs"
+
+[dependencies]
+bytemuck = { workspace = true, optional = true }
+lapack-sys = { workspace = true }
+num-traits = { workspace = true }
+approx = { workspace = true, optional = true }
+proptest = { workspace = true, optional= true }
+
+[features]
+bytemuck = ["dep:bytemuck"]
+approx = ["dep:approx"]
+proptest = ["dep:proptest"]
