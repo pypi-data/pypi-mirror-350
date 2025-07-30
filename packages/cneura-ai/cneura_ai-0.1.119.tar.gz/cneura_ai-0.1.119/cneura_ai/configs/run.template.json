@@ -1,0 +1,226 @@
+[
+  {
+    "name": "logger",
+    "dockerfile_path": "./services/logger",
+    "tag": "logger",
+    "ports": { "8765/tcp": 8765 },
+    "env": {
+      "WEBSOCKET_SERVER": "{{ WEBSOCKET_SERVER }}",
+      "WEBSOCKET_PORT": "{{ WEBSOCKET_PORT }}"
+    },
+    "count": 1
+  },
+  {
+    "name": "code-synth",
+    "dockerfile_path": "./services/tool_builder/synthesize/",
+    "tag": "code-synth",
+    "env": {
+      "RABBITMQ_HOST": "{{ RABBITMQ_HOST }}",
+      "RABBITMQ_USER": "{{ RABBITMQ_USER }}",
+      "RABBITMQ_PASS": "{{ RABBITMQ_PASS }}",
+      "INPUT_QUEUE": "{{ CODE_SYNTH_INPUT }}",
+      "OUTPUT_QUEUE": "{{ CODE_SYNTH_OUTPUT }}",
+      "ERROR_QUEUE": "{{ CODE_SYNTH_ERROR }}",
+      "GEMINI_API_KEY": "{{ GEMINI_API_KEY }}",
+      "LOGGER_SERVER": "{{ LOGGER_SERVER }}"
+    },
+    "count": 1
+  },
+  {
+    "name": "code-test",
+    "dockerfile_path": "./services/tool_builder/test/",
+    "tag": "code-test",
+    "env": {
+      "RABBITMQ_HOST": "{{ RABBITMQ_HOST }}",
+      "RABBITMQ_USER": "{{ RABBITMQ_USER }}",
+      "RABBITMQ_PASS": "{{ RABBITMQ_PASS }}",
+      "REDIS_HOST": "{{ REDIS_HOST }}",
+      "INPUT_QUEUE": "{{ CODE_TEST_INPUT }}",
+      "OUTPUT_QUEUE": "{{ CODE_TEST_OUTPUT }}",
+      "ERROR_QUEUE": "{{ CODE_TEST_ERROR }}",
+      "GEMINI_API_KEY": "{{ GEMINI_API_KEY }}",
+      "LOGGER_SERVER": "{{ LOGGER_SERVER }}"
+    },
+    "count": 1
+  },
+  {
+    "name": "code-deps",
+    "dockerfile_path": "./services/tool_builder/dependencies/",
+    "tag": "code-deps",
+    "env": {
+      "RABBITMQ_HOST": "{{ RABBITMQ_HOST }}",
+      "RABBITMQ_USER": "{{ RABBITMQ_USER }}",
+      "RABBITMQ_PASS": "{{ RABBITMQ_PASS }}",
+      "INPUT_QUEUE": "{{ CODE_DEPS_INPUT }}",
+      "OUTPUT_QUEUE": "{{ CODE_DEPS_OUTPUT }}",
+      "DEPEND_QUEUE": "{{ CODE_DEPS_OUT }}",
+      "ERROR_QUEUE": "{{ CODE_DEPS_ERROR }}",
+      "GEMINI_API_KEY": "{{ GEMINI_API_KEY }}",
+      "LOGGER_SERVER": "{{ LOGGER_SERVER }}"
+    },
+    "count": 1
+  },
+  {
+    "name": "code-exec",
+    "dockerfile_path": "./services/tool_builder/execute/",
+    "tag": "code-exec",
+    "env": {
+      "RABBITMQ_HOST": "{{ RABBITMQ_HOST }}",
+      "RABBITMQ_USER": "{{ RABBITMQ_USER }}",
+      "RABBITMQ_PASS": "{{ RABBITMQ_PASS }}",
+      "INPUT_QUEUE": "{{ CODE_EXE_INPUT }}",
+      "OUTPUT_QUEUE": "{{ CODE_EXE_OUTPUT }}",
+      "OUT_QUEUE": "{{ CODE_EXE_OUT }}",
+      "REMOTE_URL": "{{ REMOTE_URL }}",
+      "GEMINI_API_KEY": "{{ GEMINI_API_KEY }}",
+      "LOGGER_SERVER": "{{ LOGGER_SERVER }}",
+      "REDIS_HOST": "{{ REDIS_HOST }}",
+      "MONGO_URI": "{{ MONGO_URI }}",
+      "SECRET_KEY": "{{ SECRET_KEY }}"
+    },
+    "count": 1
+  },
+  {
+    "name": "code-debug",
+    "dockerfile_path": "./services/tool_builder/debug/",
+    "tag": "code-debug",
+    "env": {
+      "RABBITMQ_HOST": "{{ RABBITMQ_HOST }}",
+      "RABBITMQ_USER": "{{ RABBITMQ_USER }}",
+      "RABBITMQ_PASS":"{{ RABBITMQ_PASS }}",
+      "INPUT_QUEUE": "{{ CODE_DEBUG_INPUT }}",
+      "OUTPUT_QUEUE": "{{ CODE_DEBUG_OUTPUT }}",
+      "ERROR_QUEUE": "{{ CODE_DEBUG_ERROR }}",
+      "GEMINI_API_KEY": "{{ GEMINI_API_KEY }}",
+      "LOGGER_SERVER": "{{ LOGGER_SERVER }}"
+    },
+    "count": 1
+  },
+  {
+    "name": "tool-deploy",
+    "dockerfile_path": "./services/tool_builder/deploy/",
+    "tag": "tool-deploy",
+    "env": {
+      "RABBITMQ_HOST": "{{ RABBITMQ_HOST }}",
+      "RABBITMQ_USER":"{{ RABBITMQ_USER }}",
+      "RABBITMQ_PASS":"{{ RABBITMQ_PASS }}",
+      "INPUT_QUEUE":"{{ TOOL_DEPLOY_INPUT }}",
+      "OUTPUT_QUEUE":"{{ TOOL_DEPLOY_OUTPUT }}",
+      "ERROR_QUEUE":"{{ TOOL_DEPLOY_ERROR }}",
+      "CHROMA_HOST":"{{ CHROMA_HOST }}",
+      "CHROMA_PORT": "{{ CHROMA_PORT }}",
+      "REMOTE_URL": "{{ REMOTE_URL }}",
+      "MONGO_URI": "{{ MONGO_URI }}",
+      "GEMINI_API_KEY": "{{ GEMINI_API_KEY }}",
+      "LOGGER_SERVER": "{{ LOGGER_SERVER }}",
+      "SECRET_KEY":"{{ SECRET_KEY }}",
+      "TOOL_MEMORY_NAMESPACE":"{{ TOOL_MEMORY_NAMESPACE }}"
+    },
+    "count": 1
+  },
+  {
+    "name": "tool-manager",
+    "dockerfile_path": "./services/tool_builder/manager/",
+    "tag": "tool-manager",
+    "ports": { "8800/tcp": 8800 },
+    "env": {
+      "CHROMA_HOST": "{{ CHROMA_HOST }}",
+      "CHROMA_PORT":"{{ CHROMA_PORT }}",
+      "GEMINI_API_KEY": "{{ GEMINI_API_KEY }}",
+      "REMOTE_URL": "{{ REMOTE_URL }}",
+      "MONGO_URI": "{{ MONGO_URI }}",
+      "LOGGER_SERVER": "{{ LOGGER_SERVER }}",
+      "TOOL_MEMORY_NAMESPACE":"{{ TOOL_MEMORY_NAMESPACE }}"
+    },
+    "count": 1
+  },
+  {
+    "name": "shell",
+    "dockerfile_path": "./services/shell/",
+    "tag": "shell",
+    "ports": { "8600/tcp": 8600 },
+    "env": {
+      "REMOTE_URL": "{{ REMOTE_URL }}",
+      "MONGO_URI": "{{ MONGO_URI }}"
+    },
+    "count": 1
+  },
+  {
+    "name": "research",
+    "dockerfile_path": "./services/research/",
+    "tag": "research",
+    "ports": { "8500/tcp": 8500 },
+    "env": {
+      "BRAVE_API_KEY": "{{ BRAVE_API_KEY }}",
+      "GEMINI_API_KEY": "{{ GEMINI_API_KEY }}",
+      "REDIS_URL": "{{ REDIS_URL }}",
+      "CHROMA_HOST":"{{ CHROMA_HOST }}",
+      "CHROMA_PORT":"{{ CHROMA_PORT }}",
+      "KNOWLEDGE_BASE_MEMORY_NAMESPACE": "{{ KNOWLEDGE_BASE_MEMORY_NAMESPACE }}"
+    },
+    "count": 1
+  },
+  {
+    "name": "meta-agent",
+    "dockerfile_path": "./services/meta_agent/",
+    "tag": "meta-agent",
+    "env": {
+      "GEMINI_API_KEY": "{{ GEMINI_API_KEY }}",
+      "MONGO_URI": "{{ MONGO_URI }}",
+      "RABBITMQ_HOST": "{{ RABBITMQ_HOST }}",
+      "RABBITMQ_USER": "{{ RABBITMQ_USER }}",
+      "RABBITMQ_PASS": "{{ RABBITMQ_PASS }}",
+      "INPUT_QUEUE":"{{ META_AGENT_INPUT }}",
+      "OUTPUT_QUEUE":"{{ META_AGENT_OUTPUT }}",
+      "ERROR_QUEUE":"{{ META_AGENT_ERROR }}",
+      "CHROMA_HOST":"{{ CHROMA_HOST }}",
+      "CHROMA_PORT":"{{ CHROMA_PORT }}",
+      "LOGGER_SERVER":"{{ LOGGER_SERVER }}"
+    },
+    "count": 1
+  },
+  {
+    "name": "agent-design",
+    "dockerfile_path": "./services/agent_builder/design/",
+    "tag": "agent-design",
+    "env": {
+      "GEMINI_API_KEY": "{{ GEMINI_API_KEY }}",
+      "MONGO_URI": "{{ MONGO_URI }}",
+      "RABBITMQ_HOST": "{{ RABBITMQ_HOST }}",
+      "RABBITMQ_USER": "{{ RABBITMQ_USER }}",
+      "RABBITMQ_PASS": "{{ RABBITMQ_PASS }}",
+      "INPUT_QUEUE":"{{ AGENT_DESIGN_INPUT }}",
+      "OUTPUT_QUEUE":"{{ AGENT_DESIGN_OUTPUT }}",
+      "OUT_QUEUE": "{{ AGENT_DESIGN_OUT }}",
+      "ERROR_QUEUE":"{{ AGENT_DESIGN_ERROR }}",
+      "CHROMA_HOST":"{{ CHROMA_HOST }}",
+      "CHROMA_PORT":"{{ CHROMA_PORT }}",
+      "LOGGER_SERVER":"{{ LOGGER_SERVER }}"
+    },
+    "count": 1
+  },
+  {
+    "name": "agent-deploy",
+    "dockerfile_path": "./services/agent_builder/deploy/",
+    "tag": "agent-deploy",
+    "env": {
+      "GEMINI_API_KEY": "{{ GEMINI_API_KEY }}",
+      "MONGO_URI": "{{ MONGO_URI }}",
+      "RABBITMQ_HOST": "{{ RABBITMQ_HOST }}",
+      "RABBITMQ_USER": "{{ RABBITMQ_USER }}",
+      "RABBITMQ_PASS": "{{ RABBITMQ_PASS }}",
+      "INPUT_QUEUE":"{{ AGENT_DEPLOY_INPUT }}",
+      "OUTPUT_QUEUE":"{{ AGENT_DEPLOY_OUTPUT }}",
+      "ERROR_QUEUE":"{{ AGENT_DEPLOY_ERROR }}",
+      "CHROMA_HOST":"{{ CHROMA_HOST }}",
+      "CHROMA_PORT":"{{ CHROMA_PORT }}",
+      "LOGGER_SERVER":"{{ LOGGER_SERVER }}",
+      "REMOTE_URL":"{{ REMOTE_URL }}",
+      "AGENT_MEMORY_NAMESPACE": "{{ AGENT_MEMORY_NAMESPACE }}",
+      "RESEARCH_API_URL": "{{ RESEARCH_API_URL }}",
+      "SHELL_EXEC_API_URL": "{{ SHELL_EXEC_API_URL }}",
+      "TOOL_API_URL": "{{ TOOL_API_URL }}"
+    },
+    "count": 1
+  }
+]
