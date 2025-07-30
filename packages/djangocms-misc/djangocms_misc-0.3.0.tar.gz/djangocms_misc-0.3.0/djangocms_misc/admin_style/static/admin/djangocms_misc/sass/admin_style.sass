@@ -1,0 +1,117 @@
+
+//some adjustements to djangocms-admin-style styles
+//nevermind !important
+
+$after_field_padding: 1.2em
+$after_fieldset_padding: 0.3em
+$title_font_size: 21px
+$normal_font_size: 14px
+$color_grey: #d3d3d3
+
+// ugly fix for calendar widget in modals
+.djangocms-admin-style
+    div.calendarbox
+        margin-left: -247px
+        margin-top: -1px
+    div.clockbox
+        margin-left: -147px
+        margin-top: -7px
+
+// hide special change form title
+.change-form
+    .content > h2, #content > h2
+        display: none
+
+
+// another ugly fix: it gets too wide otherwise, on smaller screens
+.djangocms-admin-style
+    form input.vDateField, form input.vTimeField
+        width: calc(100% - 222px) !important
+        max-width: 200px !important
+
+.djangocms-admin-style
+    #content
+        h1
+            // main title font size
+            font-size: $title_font_size !important
+            select
+                // modeltranslation dropdown!
+                font-size: inherit !important
+        form
+            label, label.aligned
+                // no uppercase tranform for labels
+                text-transform: none
+            .form-row:not(tr)
+                // after field distance
+                padding-bottom: $after_field_padding
+            .field-type label, .sortedm2m label, .vCheckboxLabel
+                font-size: $normal_font_size !important
+            fieldset, .inline-group
+                // width: 100%
+                // max-width: 920px
+                // after fieldset?
+                padding-bottom: $after_fieldset_padding
+                > h2
+                    // fieldset title, make visible
+                    padding: 1em 0 0.75em 0
+                    box-sizing: border-box
+                    margin-bottom: 0.75em
+                    font-size: $title_font_size !important
+                    font-weight: bold
+                    border-bottom: 3px solid #d3d3d3
+            .inline-group
+                .inline-related
+                    margin: 0
+                    box-shadow: none
+                    fieldset
+                        padding: 0 0 0 10px !important
+                        // padding-left: 30px !important
+                    h3
+                        background-color: transparent
+                        // inline title (has border!)
+                        border-top: 1px solid $color_grey
+                        margin: 0
+                        padding: 0
+                        padding-top: 10px
+                        b
+                            display: none
+                            font-weight: bold
+                        .inline_label
+                            display: none
+                .form-row
+                    // the row
+                    // width: 100%
+                    padding: 0 0 $after_field_padding
+                    input[type="text"]
+                        &:not(.vDateField):not(.vTimeField)
+                            width: 100% !important
+                .add-row
+                    padding: 0.8em
+                    padding-left: 8px
+                    border-top: 1px solid $color_grey
+                    border-bottom: 1px solid $color_grey !important
+                    line-height: 2.3em
+            .tabular
+                table
+                    tbody
+                        td
+                            // tabular inline padding top:
+                            // not showing the title line in td.original!
+                            padding: 0.8em !important
+                            &.original p
+                                display: none
+                        tr.add-row td
+                            padding-left: 0 !important
+    // no margin in popup ?
+    &.popup #content
+
+        // margin: 0 !important
+
+    // modeltranslation adjust inline tabs!
+    .ui-tabs .ui-tabs-nav
+        padding: 0
+        border: none
+        margin: 0
+        .ui-state-default
+            border: none
+            padding-top: 0
