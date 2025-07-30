@@ -1,0 +1,83 @@
+image: python:3.13
+
+stages:
+- build
+- upload
+
+py36_build:
+  image: python:3.6-buster
+  stage: build
+  artifacts:
+    paths:
+      - dist/*
+    expire_in: 1 day
+  script:
+  - cp -v python36.pc /usr/local/lib/pkgconfig/python3.pc
+  - python -m pip install --upgrade pip wheel setuptools setuptools-scm
+  - python setup.py sdist bdist_wheel
+
+py37_build:
+  image: python:3.7-buster
+  stage: build
+  artifacts:
+    paths:
+      - dist/*
+    expire_in: 1 day
+  script:
+  - cp -v python37.pc /usr/local/lib/pkgconfig/python3.pc
+  - python -m pip install --upgrade pip wheel setuptools setuptools-scm
+  - python setup.py bdist_wheel
+
+py38_build:
+  image: python:3.8-bullseye
+  stage: build
+  artifacts:
+    paths:
+      - dist/*
+    expire_in: 1 day
+  script:
+  - python -m pip install --upgrade pip wheel setuptools setuptools-scm
+  - python setup.py bdist_wheel
+
+
+testpypi_upload:
+  stage: upload
+  only:
+  - main
+  id_tokens:
+    PYPI_ID_TOKEN:
+      aud: testpypi
+  dependencies:
+  - py36_build
+  - py37_build
+  - py38_build
+  script:
+  - apt update && apt install -y jq patchelf
+  - python -m pip install twine id auditwheel
+  - python -m auditwheel repair dist/*.whl
+  - oidc_token=$(python -m id PYPI)
+  - resp=$(curl -X POST https://test.pypi.org/_/oidc/mint-token -d "{\"token\":\"${oidc_token}\"}")
+  - api_token=$(jq --raw-output '.token' <<< "${resp}")
+  - python -m twine upload -u __token__ -p "${api_token}" --repository testpypi dist/*.tar.gz wheelhouse/*.whl --verbose --skip-existing
+
+pypi_upload:
+  stage: upload
+  only:
+  - /^v.*$/
+  except:
+  - branches
+  id_tokens:
+    PYPI_ID_TOKEN:
+      aud: pypi
+  dependencies:
+  - py36_build
+  - py37_build
+  - py38_build
+  script:
+  - apt update && apt install -y jq patchelf
+  - python -m pip install twine id auditwheel
+  - python -m auditwheel repair dist/*.whl
+  - oidc_token=$(python -m id PYPI)
+  - resp=$(curl -X POST https://pypi.org/_/oidc/mint-token -d "{\"token\":\"${oidc_token}\"}")
+  - api_token=$(jq --raw-output '.token' <<< "${resp}")
+  - python -m twine upload -u __token__ -p "${api_token}" --repository pypi dist/*.tar.gz wheelhouse/*.whl --verbose
