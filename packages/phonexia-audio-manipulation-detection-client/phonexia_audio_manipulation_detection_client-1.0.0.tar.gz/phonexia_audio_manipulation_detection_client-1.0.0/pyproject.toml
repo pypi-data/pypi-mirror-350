@@ -1,0 +1,108 @@
+[project]
+name = "phonexia-audio-manipulation-detection-client"
+version = "1.0.0"
+description = "Audio Manipulation Detection Client"
+readme = "pypi-README.md"
+keywords = ["grpc", "stt", "speech-to-text", "text", "antispoofing", "audio-manipulation"]
+
+requires-python = ">=3.9"
+dependencies = [
+  "more-itertools>=10.6.0",
+  "phonexia-grpc>=2.16.2",
+  "soundfile>=0.12.1",
+  "numpy>=1.24.3",
+]
+
+[tool.uv.sources]
+phonexia-grpc = { index = "pypi" }
+
+[project.scripts]
+audio_manipulation_detection_client = "phonexia_audio_manipulation_detection_client:main"
+
+[[tool.uv.index]]
+name = "pypi"
+url = "https://pypi.org/simple"
+
+[[tool.uv.index]]
+name = "phonexia-gitlab"
+url = "https://gitlab.cloud.phonexia.com/api/v4/groups/39/-/packages/pypi/simple"
+
+[tool.uv]
+package = true
+dev-dependencies = [
+    "black>=24.10.0",
+    "mypy>=1.13.0",
+    "ruff>=0.7.4",
+]
+
+[tool.black]
+line-length = 100
+target-version = ['py39']
+preview = true
+
+[tool.ruff]
+target-version = "py39"
+line-length = 100
+fix = true
+lint.select = [
+    # flake8-2020
+    "YTT",
+    # flake8-bandit
+    "S",
+    # flake8-bugbear
+    "B",
+    # flake8-builtins
+    "A",
+    # flake8-comprehensions
+    "C4",
+    # flake8-debugger
+    "T10",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
+    # mccabe
+    "C90",
+    # pycodestyle
+    "E",
+    "W",
+    # pyflakes
+    "F",
+    # pygrep-hooks
+    "PGH",
+    # pyupgrade
+    "UP",
+    # ruff
+    "RUF",
+    # tryceratops
+    "TRY",
+]
+lint.ignore = [
+    # LineTooLong
+    "E501",
+    # DoNotAssignLambda
+    "E731",
+    # RaiseVanillaArgs aka Avoid specifying long messages outside the exception class
+    "TRY003",
+]
+
+[tool.mypy]
+packages = "audio_manipulation_detection"
+explicit_package_bases = true  # Needs to be enabled for namespaced packages
+warn_unused_configs = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+
+# Due to bug in strict mode, flags have to be explicitly enabled.
+# https://github.com/python/mypy/issues/11401
+disallow_any_generics = true
+disallow_subclassing_any = true
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+warn_return_any = true
+no_implicit_reexport = true
+strict_equality = true
+extra_checks = true
