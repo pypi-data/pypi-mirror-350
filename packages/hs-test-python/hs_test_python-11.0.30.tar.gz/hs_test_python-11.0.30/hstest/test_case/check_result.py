@@ -1,0 +1,41 @@
+from __future__ import annotations
+
+from hstest.exception.outcomes import TestPassed, WrongAnswer
+
+
+class CheckResult:
+    def __init__(self, result: bool, feedback: str) -> None:
+        self._result: bool = result
+        self._feedback: str = feedback
+
+    @property
+    def is_correct(self) -> bool:
+        return self._result
+
+    @property
+    def feedback(self) -> str:
+        return self._feedback
+
+    @staticmethod
+    def correct() -> CheckResult:
+        return CheckResult(True, "")
+
+    @staticmethod
+    def wrong(feedback: str) -> CheckResult:
+        return CheckResult(False, feedback)
+
+    @staticmethod
+    def from_error(error: BaseException) -> CheckResult | None:
+        if isinstance(error, TestPassed):
+            return correct()
+        if isinstance(error, WrongAnswer):
+            return wrong(error.feedback)
+        return None
+
+
+def correct() -> CheckResult:
+    return CheckResult.correct()
+
+
+def wrong(feedback: str) -> CheckResult:
+    return CheckResult.wrong(feedback)
