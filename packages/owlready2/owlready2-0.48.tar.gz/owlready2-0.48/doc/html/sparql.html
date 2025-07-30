@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SPARQL queries &mdash; Owlready2 0.48 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=a3063754"></script>
+        <script src="_static/doctools.js?v=9bcbadda"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Worlds" href="world.html" />
+    <link rel="prev" title="Namespaces" href="namespace.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Owlready2
+          </a>
+              <div class="version">
+                0.48
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Owlready2 Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="onto.html">Managing ontologies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="class.html">Classes and Individuals (Instances)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="properties.html">Properties</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datatype.html">Datatypes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="restriction.html">Class constructs, restrictions and logical operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="disjoint.html">Disjointness, open and local closed world reasoning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mixing_python_owl.html">Mixing Python and OWL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reasoning.html">Reasoning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="annotations.html">Annotations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="namespace.html">Namespaces</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">SPARQL queries</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#native-sparql-engine">Native SPARQL engine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sparql-elements-supported">SPARQL elements supported</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sparql-elements-not-supported">SPARQL elements not supported</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#performing-sparql-queries">Performing SPARQL queries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#insert-queries">INSERT queries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#delete-queries">DELETE queries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parameters-in-sparql-queries">Parameters in SPARQL queries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#non-standard-additions-to-sparql">Non-standard additions to SPARQL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#prepare-sparql-queries">Prepare SPARQL queries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#open-a-sparql-endpoint">Open a SPARQL endpoint</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#using-rdflib-for-executing-sparql-queries">Using RDFlib for executing SPARQL queries</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="world.html">Worlds</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sync.html">Parallelism, multiprocessing and synchronization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rule.html">SWRL rules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general_class_axioms.html">General class axioms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pymedtermino2.html">PyMedTermino2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="observe.html">Observation framework</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="porting1.html">Differences between Owlready version 1 and 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact and links</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Owlready2</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">SPARQL queries</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/sparql.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sparql-queries">
+<h1>SPARQL queries<a class="headerlink" href="#sparql-queries" title="Link to this heading"></a></h1>
+<p>Since version 0.30, Owlready proposes 2 methods for performing SPARQL queries: the native SPARQL engine and RDFlib.</p>
+<section id="native-sparql-engine">
+<h2>Native SPARQL engine<a class="headerlink" href="#native-sparql-engine" title="Link to this heading"></a></h2>
+<p>The native SPARQL engine automatically translates SPARQL queries into SQL queries, and then run the SQL queries with SQLite3.</p>
+<p>The native SPARQL engine has better performances than RDFlib (about 60 times faster when tested on Gene Ontology,
+but it highly depends on queries and data). It also has no dependencies and it has a much shorter start-up time.</p>
+<p>However, it currently supports only a subset of SPARQL.</p>
+<section id="sparql-elements-supported">
+<h3>SPARQL elements supported<a class="headerlink" href="#sparql-elements-supported" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>SELECT, INSERT and DELETE queries</p></li>
+<li><p>UNION</p></li>
+<li><p>OPTIONAL</p></li>
+<li><p>FILTER, BIND, FILTER EXISTS, FILTER NOT EXISTS</p></li>
+<li><p>GRAPH clauses</p></li>
+<li><p>SELECT sub queries</p></li>
+<li><p>VALUES in SELECT queries</p></li>
+<li><p>All SPARQL functions and aggregation functions</p></li>
+<li><p>Blank nodes notations with square bracket, e.g. ‘[ a XXX]’</p></li>
+<li><p>Parameters in queries (i.e. ‘??’ or ‘??1’)</p></li>
+<li><p>Property path expressions, e.g. ‘a/rdfs:subClassOf*’,  excepted those listed below</p></li>
+</ul>
+</section>
+<section id="sparql-elements-not-supported">
+<h3>SPARQL elements not supported<a class="headerlink" href="#sparql-elements-not-supported" title="Link to this heading"></a></h3>
+<ul>
+<li><p>ASK, DESCRIBE, LOAD, ADD, MOVE, COPY, CLEAR, DROP, CONSTRUCT queries</p></li>
+<li><p>INSERT DATA, DELETE DATA, DELETE WHERE queries (you may use INSERT or DELETE instead)</p></li>
+<li><p>SERVICE (Federated queries)</p></li>
+<li><p>FROM, FROM NAMED keywords</p></li>
+<li><p>MINUS</p></li>
+<li><p>Property path expressions with parentheses of the following forms:</p>
+<ul class="simple">
+<li><p>nested repeats, e.g. (a/p*)*</p></li>
+<li><p>sequence nested inside a repeat, e.g. (p1/p2)*</p></li>
+<li><p>negative property set nested inside a repeat, e.g. (!(p1 | p2))*</p></li>
+</ul>
+<p>i.e. repeats cannot contain other repeats, sequences and negative property sets.</p>
+</li>
+</ul>
+</section>
+<section id="performing-sparql-queries">
+<h3>Performing SPARQL queries<a class="headerlink" href="#performing-sparql-queries" title="Link to this heading"></a></h3>
+<p>The .sparql() methods of the World object can be used to perform a SPARQL query and obtain the results.
+Notice that .sparql() returns a generator, so we used here the list() function to show the results.
+The list contains one row for each result found, with one or more columns (depending on the query).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Loads Gene Ontology (~ 170 Mb), can take a moment!</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">go</span> <span class="o">=</span> <span class="n">get_ontology</span><span class="p">(</span><span class="s2">&quot;http://purl.obolibrary.org/obo/go.owl&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Get the number of OWL Class in GO</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">default_world</span><span class="o">.</span><span class="n">sparql</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="go">           SELECT (COUNT(?x) AS ?nb)</span>
+<span class="go">           { ?x a owl:Class . }</span>
+<span class="go">    &quot;&quot;&quot;))</span>
+<span class="go">[[60448]]</span>
+</pre></div>
+</div>
+<p>Notice that the following prefixes are automatically pre-defined:</p>
+<ul class="simple">
+<li><p>rdf: -&gt; <a class="reference external" href="http://www.w3.org/1999/02/22-rdf-syntax">http://www.w3.org/1999/02/22-rdf-syntax</a>-ns#</p></li>
+<li><p>rdfs: -&gt; <a class="reference external" href="http://www.w3.org/2000/01/rdf">http://www.w3.org/2000/01/rdf</a>-schema#</p></li>
+<li><p>owl: -&gt; <a class="reference external" href="http://www.w3.org/2002/07">http://www.w3.org/2002/07</a>/owl#</p></li>
+<li><p>xsd: -&gt; <a class="reference external" href="http://www.w3.org/2001">http://www.w3.org/2001</a>/XMLSchema#</p></li>
+<li><p>obo: -&gt; <a class="reference external" href="http://purl.obolibrary.org/obo/">http://purl.obolibrary.org/obo/</a></p></li>
+<li><p>owlready: -&gt; <a class="reference external" href="http://www.lesfleursdunormal.fr/static/_downloads/owlready_ontology">http://www.lesfleursdunormal.fr/static/_downloads/owlready_ontology</a>.owl#</p></li>
+</ul>
+<p>In addition, Owlready automatically create prefixes from the last part of ontology IRI (without .owl extension),
+e.g. the ontology “<a class="reference external" href="http://test.org/onto.owl">http://test.org/onto.owl</a>” with be automatically associated with the “onto:” prefix.
+Consequently, in most case you don’t need to define prefixes (but you can still define them if you want).</p>
+<p>The classes counted above include OWL named classes, but also some OWL constructs. One may count only named classes
+using a FILTER condition and the ISIRI function, as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Get the number of OWL Class in GO</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">default_world</span><span class="o">.</span><span class="n">sparql</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="go">           SELECT (COUNT(?x) AS ?nb)</span>
+<span class="go">           { ?x a owl:Class . FILTER(ISIRI(?x)) }</span>
+<span class="go">    &quot;&quot;&quot;))</span>
+<span class="go">[[48535]]</span>
+</pre></div>
+</div>
+<p>We may also search for a given concept. When a query returns an entity, it returns it as an Owlready object.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Get the &quot;mitochondrion inheritance&quot; concept from GO</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">default_world</span><span class="o">.</span><span class="n">sparql</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="go">           SELECT ?x</span>
+<span class="go">           { ?x rdfs:label &quot;mitochondrion inheritance&quot; . }</span>
+<span class="go">    &quot;&quot;&quot;))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">r</span>
+<span class="go">[[obo.GO_0000001]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">mito_inher = r[0][0]</span>
+</pre></div>
+</div>
+<p>Here, the resulting object ‘mito_inher’ is an Owlready object (here, a Class) that can be used as any other classes in Owlready.</p>
+<p>Owlready support simple property path expressions, such as ‘rdfs:subClassOf*’ or ‘a/rdfs:subClassOf*’.
+For example, we can get the superclasses of “mitochondrion inheritance” as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">default_world</span><span class="o">.</span><span class="n">sparql</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="go">           SELECT ?y</span>
+<span class="go">           { ?x rdfs:label &quot;mitochondrion inheritance&quot; .</span>
+<span class="go">             ?x rdfs:subClassOf* ?y }</span>
+<span class="go">    &quot;&quot;&quot;))</span>
+<span class="go">[[obo.GO_0000001], [obo.GO_0048308], [obo.GO_0048311], [obo.GO_0006996], [obo.GO_0007005], [obo.GO_0051646], [obo.GO_0016043], [obo.GO_0051640], [obo.GO_0009987], [obo.GO_0071840], [obo.GO_0051641], [obo.GO_0008150], [obo.GO_0051179]]</span>
+</pre></div>
+</div>
+<p>Or we can search for individuals belonging to the class “mitochondrion inheritance” or one of its descendants, as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">default_world</span><span class="o">.</span><span class="n">sparql</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="go">           SELECT ?y</span>
+<span class="go">           { ?x rdfs:label &quot;mitochondrion inheritance&quot; .</span>
+<span class="go">             ?y a/rdfs:subClassOf* ?x }</span>
+<span class="go">    &quot;&quot;&quot;))</span>
+<span class="go">[]</span>
+</pre></div>
+</div>
+<p>(Here, we have no results because Gene Ontology does not include individuals).</p>
+</section>
+<section id="insert-queries">
+<h3>INSERT queries<a class="headerlink" href="#insert-queries" title="Link to this heading"></a></h3>
+<p>The ontology in which the new RDF triples are inserted can be given using a “with ontology:” block or
+using the “WITH &lt;ontology IRI&gt; INSERT …” syntax in SPARQL. If both are present, the “with ontology:” block takes priority.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">insertion</span> <span class="o">=</span> <span class="n">get_ontology</span><span class="p">(</span><span class="s2">&quot;http://test.org/insertion.owl&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">insertion</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">default_world</span><span class="o">.</span><span class="n">sparql</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="go">           INSERT { ?x rdfs:label &quot;héritage mitochondrial&quot;@fr }</span>
+<span class="go">           WHERE  { ?x rdfs:label &quot;mitochondrion inheritance&quot; . }</span>
+<span class="go">           &quot;&quot;&quot;)</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+<p>INSERT / DELETE queries returns the number of matches found by the WHERE part.</p>
+<p>When running INSERT / DELETE queries, Owlready tries to update the Python objects corresponding to the modified entities,
+if they were loaded from the quadstore.</p>
+<p>The following example shows how to create new individuals with an INSERT query. It creates an individual for each subclass
+of “membrane”.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">insertion</span> <span class="o">=</span> <span class="n">get_ontology</span><span class="p">(</span><span class="s2">&quot;http://test.org/insertion.owl&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">insertion</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">default_world</span><span class="o">.</span><span class="n">sparql</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="go">           INSERT { ?n rdfs:label &quot;New individual!&quot; . }</span>
+<span class="go">           WHERE  { ?x rdfs:label &quot;membrane&quot; .</span>
+<span class="go">                    ?y rdfs:subClassOf ?x .</span>
+<span class="go">                    BIND(NEWINSTANCEIRI(?y) AS ?n) }</span>
+<span class="go">           &quot;&quot;&quot;)</span>
+</pre></div>
+</div>
+<p>We use here a BIND statement in order to create a new IRI, using the NEWINSTANCEIRI() function that create a new IRI for
+an individual, similar to those created automatically by Owlready. You may also use the more standard UUID() SPARQL function,
+which create a random arbitrary IRI.</p>
+<p>The following example shows how to create OWL construct like restrictions with an INSERT query.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">insertion</span> <span class="o">=</span> <span class="n">get_ontology</span><span class="p">(</span><span class="s2">&quot;http://test.org/insertion.owl&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">insertion</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">default_world</span><span class="o">.</span><span class="n">sparql</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="go">           INSERT { ?x rdfs:subClassOf [ a owl:Restriction ;</span>
+<span class="go">                                         owl:onProperty obo:BFO_0000050 ;</span>
+<span class="go">                                         owl:someValuesFrom obo:GO_0005623 ] . }</span>
+<span class="go">           WHERE  { ?x rdfs:label &quot;membrane&quot; . }</span>
+<span class="go">           &quot;&quot;&quot;)</span>
+<span class="go">1</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">obo.GO_0016020.label</span>
+<span class="go">[&#39;membrane&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">obo.GO_0016020.is_a</span>
+<span class="go">[obo.GO_0044464, obo.BFO_0000050.some(obo.GO_0005623)]</span>
+</pre></div>
+</div>
+</section>
+<section id="delete-queries">
+<h3>DELETE queries<a class="headerlink" href="#delete-queries" title="Link to this heading"></a></h3>
+<p>DELETE queries are supported; contrary to INSERT queries, they do not need to specify the ontology from which RDF triples are deleted.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">default_world</span><span class="o">.</span><span class="n">sparql</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="go">        DELETE { ?r ?p ?o . }</span>
+<span class="go">        WHERE  {</span>
+<span class="go">            ?x rdfs:label &quot;membrane&quot; .</span>
+<span class="go">            ?x rdfs:subClassOf ?r .</span>
+<span class="go">            ?r a owl:Restriction .</span>
+<span class="go">            ?r ?p ?o .</span>
+<span class="go">        }</span>
+<span class="go">        &quot;&quot;&quot;)</span>
+</pre></div>
+</div>
+<p>The native SPARQL engine supports queries with both a DELETE and an INSERT statement.</p>
+</section>
+<section id="parameters-in-sparql-queries">
+<h3>Parameters in SPARQL queries<a class="headerlink" href="#parameters-in-sparql-queries" title="Link to this heading"></a></h3>
+<p>Parameters allow to run the same query multiple times, with different parameter values.
+They have two interests. First, they increase performances since the same query can be reused, thus avoiding to
+parse new queries. Second, they prevent security problems by avoiding SPARQL code injection, e.g. if a string value includes
+quotation marks.</p>
+<p>Parameters can be included in the query by using double question marks, e.g. “??”. Parameter values can be Owlready entities
+or datatype values (int, float, string, etc.). Parameter values are passed in a list after the query:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">default_world</span><span class="o">.</span><span class="n">sparql</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="go">           SELECT ?y</span>
+<span class="go">           { ?? rdfs:subClassOf* ?y }</span>
+<span class="go">    &quot;&quot;&quot;, [mito_inher]))</span>
+<span class="go">[[obo.GO_0000001], [obo.GO_0048308], [obo.GO_0048311],</span>
+<span class="go"> [obo.GO_0006996], [obo.GO_0007005], [obo.GO_0051646],</span>
+<span class="go"> [obo.GO_0016043], [obo.GO_0051640], [obo.GO_0009987],</span>
+<span class="go"> [obo.GO_0071840], [obo.GO_0051641], [obo.GO_0008150],</span>
+<span class="go"> [obo.GO_0051179]]</span>
+</pre></div>
+</div>
+<p>Parameters can also be numbered, e.g. “??1”, “??2”, etc. This is particularly usefull if the same parameter is used
+multiple times in the query.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">default_world</span><span class="o">.</span><span class="n">sparql</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="go">           SELECT ?y</span>
+<span class="go">           { ??1 rdfs:subClassOf* ?y }</span>
+<span class="go">    &quot;&quot;&quot;, [mito_inher]))</span>
+<span class="go">[[obo.GO_0000001], [obo.GO_0048308], [obo.GO_0048311],</span>
+<span class="go"> [obo.GO_0006996], [obo.GO_0007005], [obo.GO_0051646],</span>
+<span class="go"> [obo.GO_0016043], [obo.GO_0051640], [obo.GO_0009987],</span>
+<span class="go"> [obo.GO_0071840], [obo.GO_0051641], [obo.GO_0008150],</span>
+<span class="go"> [obo.GO_0051179]]</span>
+</pre></div>
+</div>
+<p>Finally, Owlready also accepts lists as parameter values, when the parameter is used with the ‘IN’ (or ‘NOT IN’) operator, e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">prepare_sparql</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="go">SELECT ?x {</span>
+<span class="go">    ?x rdfs:label ?label .</span>
+<span class="go">    FILTER(?label IN ??)</span>
+<span class="go">}</span>
+<span class="go">&quot;&quot;&quot;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">list(q.execute([[&quot;label1&quot;, &quot;label2&quot;]]))</span>
+</pre></div>
+</div>
+</section>
+<section id="non-standard-additions-to-sparql">
+<h3>Non-standard additions to SPARQL<a class="headerlink" href="#non-standard-additions-to-sparql" title="Link to this heading"></a></h3>
+<p>The following functions are supported by Owlready, but not standard:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The SIMPLEREPLACE(a, b) function is a version of REPLACE() that does not support Regex. It works like Python or SQLite3 replace,
+and has better performances.</p></li>
+<li><p>THE LIKE(a, b) function performs similarly to the SQL Like operator. It is more limited, but faster than the Regex SPARQL functions.</p></li>
+<li><p>THE FTS(a, b) function performs a Full-text-Search (FTS), allowing for very fast text searching.
+Please refer to the Full Text Search documentation in the <a class="reference internal" href="annotations.html"><span class="doc">Annotations</span></a> chapter.</p></li>
+<li><p>The NEWINSTANCEIRI() function create a new IRI for an instance of the class given as argument. This IRI is similar to those
+created by default by Owlready. Note that the function creates 2 RDF triples, asserting that the new individual is an
+OWL NamedIndividual and an instance of the desired class passed as argument.</p></li>
+<li><p>The LOADED(iri) function returns True if the entity with the given IRI is currently loaded in Python, and False otherwise.</p></li>
+<li><p>The STORID(iri) function returns the integer Store-ID used by Owlready in the quadstore for representing the entity.</p></li>
+<li><p>The DATE(), TIME() and DATETIME() functions can be used to handle date and time. They behave as in SQLite3 (see <a class="reference external" href="https://www.sqlite.org/lang_datefunc.html">https://www.sqlite.org/lang_datefunc.html</a>).</p></li>
+<li><p>The DATE_SUB(), DATE_ADD(), DATETIME_SUB and DATETIME_ADD() functions can be used to substract or add a time duration to a date or a datetime, for example : DATETIME_ADD(NOW(), “P1Y”^^xsd:duration)</p></li>
+</ul>
+</div></blockquote>
+<p>In Owlready, INSERT and DELETE queries can have a GROUP BY, HAVING and/or ORDER BY clauses.
+This is normally not allowed by the SPARQL specification.</p>
+</section>
+<section id="prepare-sparql-queries">
+<h3>Prepare SPARQL queries<a class="headerlink" href="#prepare-sparql-queries" title="Link to this heading"></a></h3>
+<p>The .prepare_sparql() method of the World object can be used to prepare a SPARQL query. It returns a PreparedQuery object.</p>
+<p>The .execute() method of the PreparedQuery can be used to execute the query. It takes as argument the list of parameters,
+if any.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The .sparql() method calls .prepare_sparql(). Thus, there is limited interest, in terms of performances, to use
+.prepare_sparql() instead of .sparql().</p>
+</div>
+<p>The PreparedQuery can be used to determine the type of query:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">default_world</span><span class="o">.</span><span class="n">prepare_sparql</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;SELECT (COUNT(?x) AS ?nb) { ?x a owl:Class . }&quot;&quot;&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">owlready2</span><span class="o">.</span><span class="n">sparql</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">PreparedSelectQuery</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">owlready2</span><span class="o">.</span><span class="n">sparql</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">PreparedModifyQuery</span><span class="p">)</span> <span class="c1"># INSERT and/or DELETE</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<p>The following attributes are availble on the PreparedQuery object:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>.nb_parameter: the number of parameters</p></li>
+<li><p>.column_names: a list with the names of the columns in the query results, e.g. [“?nb”] in the example above.</p></li>
+<li><p>.world: the world object for which the query has been prepared</p></li>
+<li><p>.sql: the SQL translation of the SPARQL query</p></li>
+</ul>
+</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span><span class="o">.</span><span class="n">sql</span>
+<span class="go">&#39;SELECT  COUNT(q1.s), 43 FROM objs q1 WHERE q1.p=6 AND q1.o=11&#39;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For INSERT and DELETE query, the .sql translation only involves the WHERE part. Insertions and deletions are
+performed in Python, not in SQL, in order to update the modified Owlready Python objects, if needed.</p>
+</div>
+</section>
+<section id="open-a-sparql-endpoint">
+<h3>Open a SPARQL endpoint<a class="headerlink" href="#open-a-sparql-endpoint" title="Link to this heading"></a></h3>
+<p>The owlready2.sparql.endpoint module can be used to open a SPARQL endpoint. It requires Flask or WSGI. It contains the EndPoint
+class, that takes a World and can be used as a Flask page function.</p>
+<p>The following script creates a SPARQL endpoint with Flask:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">flask</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">owlready2</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">owlready2.sparql.endpoint</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+
+<span class="c1"># Load one or more ontologies</span>
+<span class="n">go</span> <span class="o">=</span> <span class="n">get_ontology</span><span class="p">(</span><span class="s2">&quot;http://purl.obolibrary.org/obo/go.owl&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">load</span><span class="p">()</span> <span class="c1"># (~ 170 Mb), can take a moment!</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">flask</span><span class="o">.</span><span class="n">Flask</span><span class="p">(</span><span class="s2">&quot;Owlready_sparql_endpoint&quot;</span><span class="p">)</span>
+<span class="n">endpoint</span> <span class="o">=</span> <span class="n">EndPoint</span><span class="p">(</span><span class="n">default_world</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/sparql&quot;</span><span class="p">,</span> <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])(</span><span class="n">endpoint</span><span class="p">)</span>
+
+<span class="c1"># Run the server with Werkzeug; you may use any other WSGI-compatible server</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">werkzeug.serving</span>
+<span class="n">werkzeug</span><span class="o">.</span><span class="n">serving</span><span class="o">.</span><span class="n">run_simple</span><span class="p">(</span><span class="s2">&quot;localhost&quot;</span><span class="p">,</span> <span class="mi">5000</span><span class="p">,</span> <span class="n">app</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>And the following script does the same, but with WSGI:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">owlready2</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">owlready2.sparql.endpoint</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+
+<span class="c1"># Load one or more ontologies</span>
+<span class="n">go</span> <span class="o">=</span> <span class="n">get_ontology</span><span class="p">(</span><span class="s2">&quot;http://purl.obolibrary.org/obo/go.owl&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">load</span><span class="p">()</span> <span class="c1"># (~ 170 Mb), can take a moment!</span>
+
+<span class="n">endpoint</span> <span class="o">=</span> <span class="n">EndPoint</span><span class="p">(</span><span class="n">default_world</span><span class="p">)</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">endpoint</span><span class="o">.</span><span class="n">wsgi_app</span>
+
+<span class="c1"># Run the server with Werkzeug; you may use any other WSGI-compatible server</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">werkzeug.serving</span>
+<span class="n">werkzeug</span><span class="o">.</span><span class="n">serving</span><span class="o">.</span><span class="n">run_simple</span><span class="p">(</span><span class="s2">&quot;localhost&quot;</span><span class="p">,</span> <span class="mi">5000</span><span class="p">,</span> <span class="n">app</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can then query the endpoint, e.g. by opening the following URL in your browser:</p>
+<blockquote>
+<div><p><a class="reference external" href="http://localhost:5000/sparql?query=SELECT(COUNT(?x)AS%20?nb){?x%20a%20owl:Class.}">http://localhost:5000/sparql?query=SELECT(COUNT(?x)AS%20?nb){?x%20a%20owl:Class.}</a></p>
+</div></blockquote>
+</section>
+</section>
+<section id="using-rdflib-for-executing-sparql-queries">
+<h2>Using RDFlib for executing SPARQL queries<a class="headerlink" href="#using-rdflib-for-executing-sparql-queries" title="Link to this heading"></a></h2>
+<p>The Owlready quadstore can be accessed as an RDFlib graph, which can be used to perform SPARQL queries.</p>
+<p>However, RDFlib performances are much lower than those of Owlready; so I recommend using the Owlready native SPARQL engine.</p>
+<p>Here is an example.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span> <span class="o">=</span> <span class="n">default_world</span><span class="o">.</span><span class="n">as_rdflib_graph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;SELECT ?p WHERE {</span>
+<span class="go">  &lt;http://www.semanticweb.org/jiba/ontologies/2017/0/test#ma_pizza&gt; &lt;http://www.semanticweb.org/jiba/ontologies/2017/0/test#price&gt; ?p .</span>
+<span class="go">}&quot;&quot;&quot;))</span>
+</pre></div>
+</div>
+<p>The results can be automatically converted to Python and Owlready using the .query_owlready() method instead of .query():</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">query_owlready</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;SELECT ?p WHERE {</span>
+<span class="go">  &lt;http://www.semanticweb.org/jiba/ontologies/2017/0/test#ma_pizza&gt; &lt;http://www.semanticweb.org/jiba/ontologies/2017/0/test#price&gt; ?p .</span>
+<span class="go">}&quot;&quot;&quot;))</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="namespace.html" class="btn btn-neutral float-left" title="Namespaces" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="world.html" class="btn btn-neutral float-right" title="Worlds" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-2023, Jean-Baptiste LAMY.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

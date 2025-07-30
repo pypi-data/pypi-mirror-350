@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parallelism, multiprocessing and synchronization &mdash; Owlready2 0.48 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=a3063754"></script>
+        <script src="_static/doctools.js?v=9bcbadda"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="SWRL rules" href="rule.html" />
+    <link rel="prev" title="Worlds" href="world.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Owlready2
+          </a>
+              <div class="version">
+                0.48
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Owlready2 Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="onto.html">Managing ontologies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="class.html">Classes and Individuals (Instances)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="properties.html">Properties</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datatype.html">Datatypes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="restriction.html">Class constructs, restrictions and logical operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="disjoint.html">Disjointness, open and local closed world reasoning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mixing_python_owl.html">Mixing Python and OWL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reasoning.html">Reasoning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="annotations.html">Annotations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="namespace.html">Namespaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sparql.html">SPARQL queries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="world.html">Worlds</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Parallelism, multiprocessing and synchronization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#parallelized-file-parsing">Parallelized file parsing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#thread-based-parallel-execution-of-sparql-queries">Thread-based parallel execution of SPARQL queries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#executing-many-sparql-queries-in-parallel">Executing many SPARQL queries in parallel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#executing-a-single-sparql-query-in-parallel">Executing a single SPARQL query in parallel</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#cooperative-microthreads-e-g-gevent">Cooperative microthreads (e.g. GEvent)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#synchronization">Synchronization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#multiprocessing">Multiprocessing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Synchronization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#server-example">Server example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#combining-multiprocessing-with-cooperative-microthreads">Combining multiprocessing with cooperative microthreads</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="rule.html">SWRL rules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general_class_axioms.html">General class axioms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pymedtermino2.html">PyMedTermino2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="observe.html">Observation framework</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="porting1.html">Differences between Owlready version 1 and 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact and links</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Owlready2</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Parallelism, multiprocessing and synchronization</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/sync.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="parallelism-multiprocessing-and-synchronization">
+<h1>Parallelism, multiprocessing and synchronization<a class="headerlink" href="#parallelism-multiprocessing-and-synchronization" title="Link to this heading"></a></h1>
+<p>Parallelism consist in executing several part of your program in parallel.
+Three options are possible:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>cooperative microthread (e.g. greenlets with GEvent):</strong> it allows running several “greenlet” in parallel,
+switching from one to others, but it does not actually run several commands in parallel and increase performances.
+Nevertheless, it is very interesting in a server setting:</p></li>
+<li><p><strong>multi-thread parallelism:</strong> it allows sharing data and objects between threads, however,
+Python has poor multithreading supports (due to the global interpreter lock (GIL), only one thread at a time may execute Python commands).</p></li>
+<li><p><strong>multi-process parallelism:</strong> it allows executing Python commands in parallel,
+however, data sharing is more difficult and objects cannot be shared between processes. In addition, keep in mind that
+Owlready does not update the local Python objects from the quadstore if they are modified by other processes.</p></li>
+</ul>
+</div></blockquote>
+<p>Owlready (&gt;= 0.41) supports all options:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>cooperative microthread can be used in a server setting, in order to let the server answer a simple/small request while a long request is running.</p></li>
+<li><p>multi-thread parallelism can be used to parallelize sets of long SPARQL queries (only the SQL query is parallelized, allowing to run Python commands meanwhile). There is no other interesting in multi-threading, due to Python’s GIL.</p></li>
+<li><p>multi-process parallelism can be used to run several processes in parallel.</p></li>
+<li><p>cooperative microthread and multi-process parallelism can also be combined together.</p></li>
+</ul>
+</div></blockquote>
+<p>Two difficulties arise when using parallelism:</p>
+<ul class="simple">
+<li><p>Sharing data between processes is complex. When using Owlready, the easier solution is to put the quadstore
+with the ontology data on disk. This does not apply to cooperative microthreads and threads.</p></li>
+<li><p>Sensible parts of the code must be synchronized, e.g. one should avoid that several threads or processes write in the quadstore
+at the same time.</p></li>
+</ul>
+<p>Several web application servers use multiple processes, and thus you will also encounter these difficulties when using them.
+For both microthreads and/or multiple processes, I recommend the <a class="reference external" href="https://gunicorn.org/">Gunicorn</a> web server.</p>
+<section id="parallelized-file-parsing">
+<h2>Parallelized file parsing<a class="headerlink" href="#parallelized-file-parsing" title="Link to this heading"></a></h2>
+<p>For huge OWL file (&gt; 8 Mb), Owlready (&gt;= 0.41) automatically uses a separate process for parsing the file
+(the main process being in charge of inserting triples in the quadstore). This provide a 25% performance boost
+on huge ontologies.</p>
+</section>
+<section id="thread-based-parallel-execution-of-sparql-queries">
+<h2>Thread-based parallel execution of SPARQL queries<a class="headerlink" href="#thread-based-parallel-execution-of-sparql-queries" title="Link to this heading"></a></h2>
+<p>This is the simplest option, and probably the best if you have lots of long SPARQL queries.
+Since version 0.41, Owlready supports some level of thread-based parallelization, for increasing performances
+by executing several SPARQL queries in parallel. It does not require to care about synchronization or data sharing.</p>
+<p>In order to use this feature, you first need to use a World stored on disk in a local file,
+to deactive exclusive mode and to activate thread parallelism support, as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">default_world</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="n">filename</span>  <span class="o">=</span> <span class="s2">&quot;my_quadstore.sqlite3&quot;</span><span class="p">,</span>
+<span class="go">                              exclusive = False,</span>
+<span class="go">                              enable_thread_parallelism = True)</span>
+</pre></div>
+</div>
+<p>When thread parallelism is activated, Owlready opens 3 additional connexions to the SQLite3 database storing the quadstore,
+allowing 3 parallel threads.</p>
+<p>Then, the quadstore must be saved on disk before running parallel queries, as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">default_world</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+</pre></div>
+</div>
+<section id="executing-many-sparql-queries-in-parallel">
+<h3>Executing many SPARQL queries in parallel<a class="headerlink" href="#executing-many-sparql-queries-in-parallel" title="Link to this heading"></a></h3>
+<p>The owlready2.sparql.execute_many() function can be used to execute several prepared SPARQL queries in parallel.
+Both SELECT and INSERT/DELETE queries are supported.</p>
+<p>execute_many() will start 3 threads for executing the queries in parallel, and returns a list of query results.</p>
+<p>You may expect up to 100% performance boost, especially when the queries are long and complex
+and the number of results is small (currently, Owlready only parallelize the SQL execution,
+but not the loading of the resulting objects from the quadstore).</p>
+<p>Here is a typical usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_onto</span> <span class="o">=</span> <span class="n">get_ontology</span><span class="p">(</span><span class="s2">&quot;XXX ontology IRI here&quot;</span><span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">queries</span> <span class="o">=</span> <span class="p">[</span>
+<span class="gp">... </span>    <span class="n">default_world</span><span class="o">.</span><span class="n">prepare_sparql</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;XXX First SPARQL query here&quot;&quot;&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="o">...</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">queries_params</span> <span class="o">=</span> <span class="p">[</span>
+<span class="gp">... </span>    <span class="p">[],</span> <span class="c1"># First SPARQL query parameters</span>
+<span class="gp">... </span>    <span class="o">...</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">owlready2.sparql</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">gen</span><span class="p">)</span> <span class="k">for</span> <span class="n">gen</span> <span class="ow">in</span> <span class="n">owlready2</span><span class="o">.</span><span class="n">sparql</span><span class="o">.</span><span class="n">execute_many</span><span class="p">(</span><span class="n">my_onto</span><span class="p">,</span> <span class="n">queries</span><span class="p">,</span> <span class="n">queries_params</span><span class="p">)]</span>
+</pre></div>
+</div>
+<p>If you are also using cooperative microthreads with Gevent, you may use the Gevent thread pool.
+This can be done by providing a “spawn” function to execute_many(). The spawn function must accept a
+callable with no argument, start a thread executing that callable, and return the thread object (which is expected to have
+a .join() method). Here is an example for Gevent:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">gevent.hub</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gevent_spawn</span> <span class="o">=</span> <span class="n">gevent</span><span class="o">.</span><span class="n">hub</span><span class="o">.</span><span class="n">get_hub</span><span class="p">()</span><span class="o">.</span><span class="n">threadpool</span><span class="o">.</span><span class="n">apply_async</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">gen</span><span class="p">)</span> <span class="k">for</span> <span class="n">gen</span> <span class="ow">in</span> <span class="n">owlready2</span><span class="o">.</span><span class="n">sparql</span><span class="o">.</span><span class="n">execute_many</span><span class="p">(</span><span class="n">my_onto</span><span class="p">,</span> <span class="n">queries</span><span class="p">,</span> <span class="n">queries_params</span><span class="p">,</span> <span class="n">gevent_spawn</span><span class="p">)]</span>
+</pre></div>
+</div>
+</section>
+<section id="executing-a-single-sparql-query-in-parallel">
+<h3>Executing a single SPARQL query in parallel<a class="headerlink" href="#executing-a-single-sparql-query-in-parallel" title="Link to this heading"></a></h3>
+<p>A single SPARQL query can be executed in parallel, in a separate thread. The query will not run faster (it will rather takes
+a little more time), but the main thread will be let available for other tasks. This can be interesting e.g. on a server,
+where a long query can be parallelized; meanwhile, the main thread may answer to other clients.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">default_world</span><span class="o">.</span><span class="n">prepare_sparql</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;XXX SPARQL query here&quot;&quot;&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">query</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">spawn</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Similarly, you may want to use the Gevent thread pool, as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">gevent.hub</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gevent_spawn</span> <span class="o">=</span> <span class="n">gevent</span><span class="o">.</span><span class="n">hub</span><span class="o">.</span><span class="n">get_hub</span><span class="p">()</span><span class="o">.</span><span class="n">threadpool</span><span class="o">.</span><span class="n">apply_async</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">query</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">spawn</span> <span class="o">=</span> <span class="n">gevent_spawn</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="cooperative-microthreads-e-g-gevent">
+<h2>Cooperative microthreads (e.g. GEvent)<a class="headerlink" href="#cooperative-microthreads-e-g-gevent" title="Link to this heading"></a></h2>
+<p>Microthreads will not improve the performances of Owlready, however, they will allow running several tasks in parallel,
+which is interesting if you need to perform small tasks during long tasks (e.g. in a server), or if some part of your
+program is waiting on an external, non-Python, task (e.g. a network call, including the use of a server database
+like Postgresql).</p>
+<section id="synchronization">
+<h3>Synchronization<a class="headerlink" href="#synchronization" title="Link to this heading"></a></h3>
+<p>For using Owlready with cooperative microthreads, you need to:</p>
+<ul>
+<li><p>Use a custom lock for the quadstore. By default, Owlready use the internal SQLite3 database as a lock; this does not
+work with microthreads because all microthreads share the same SQLite3 connexion. The solution is to use a custom lock,
+for example with GEvent :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">gevent</span><span class="o">.</span><span class="n">lock</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">default_world</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;your_quadstore.sqlite3&quot;</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">lock</span>     <span class="o">=</span> <span class="n">gevent</span><span class="o">.</span><span class="n">lock</span><span class="o">.</span><span class="n">RLock</span><span class="p">())</span>
+</pre></div>
+</div>
+</li>
+<li><p>Perform each modification to an ontology inside a “with ontology:” block.
+This prevents multiple writes at the same time.
+For improving performances, you should also avoid long computation inside “with ontology:” blocks.</p></li>
+<li><p>Switch to other microthreads when desired (by calling gevent.sleep(0)).
+To let other microthreads write in the quadstore, you should do that outside “with ontology:” blocks.</p></li>
+</ul>
+<p>Other synchronization tasks (listed below, for multiprocessing) are not needed for microthreads.</p>
+</section>
+</section>
+<section id="multiprocessing">
+<h2>Multiprocessing<a class="headerlink" href="#multiprocessing" title="Link to this heading"></a></h2>
+<p>Multiprocessing requires synchronization, which can be very complex (and may have a significant performance cost).</p>
+<p>Multiprocessing is recommended when using a read-only quadstore, because Owlready does not update the local
+Python objects from the quadstore if they are modified by another process.</p>
+<p>Owlready does not update the local Python objects from the quadstore when they are modified by another process.
+Consequently, multiprocessing is recommended when using a read-only quadstore, or when the data can be split between
+processes. For example, in a medical application, each process might be in charge of a sub-set of the patients.</p>
+<section id="id1">
+<h3>Synchronization<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<p>For using Owlready with multiple processes, and sharing the quadstore between processes, you need to:</p>
+<ul>
+<li><p>Store the quadstore on disk, and open the quadstore in non-exclusive mode (exclusive = False in set_backend()).
+For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">default_world</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="n">filename</span>  <span class="o">=</span> <span class="s2">&quot;your_quadstore.sqlite3&quot;</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">exclusive</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p>Perform each modification to an ontology inside a “with ontology:” block. Owlready maintain a lock for each
+quadstore, which prevents multiple writes at the same time.
+Thus, for improving performances, you should also avoid long computation inside “with ontology:” blocks.</p></li>
+<li><p>You may also use “with world:” blocks to synchronize on the quadstore, but without specifying a particular ontology.</p></li>
+<li><p>Call World.save() at the end of each “with ontology:” block, in order to commit the changes to the quadstore database.</p></li>
+<li><p>If an individual may have been modified by another process, you can use the .reload() method to force reloading its
+property values:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">individual</span><span class="o">.</span><span class="n">reload</span><span class="p">()</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="server-example">
+<h3>Server example<a class="headerlink" href="#server-example" title="Link to this heading"></a></h3>
+<p>This section gives a small example of a multi-process server using a shared Owlready quadstore.</p>
+<p>The example uses <a class="reference external" href="https://flask.palletsprojects.com/">Flask</a> and <a class="reference external" href="https://gunicorn.org/">Gunicorn</a>.
+It provides 2 URL: the first one (/gen) creates 5 new instances of the C class. The second (/test) returns the ID
+of the current process and the number of instances in the quadstore.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">flask</span><span class="o">,</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">owlready2</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">default_world</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;/tmp/t.sqlite3&quot;</span><span class="p">,</span> <span class="n">exclusive</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+
+<span class="n">onto</span> <span class="o">=</span> <span class="n">get_ontology</span><span class="p">(</span><span class="s2">&quot;http://test.org/onto.owl&quot;</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">onto</span><span class="p">:</span>
+  <span class="k">class</span><span class="w"> </span><span class="nc">C</span><span class="p">(</span><span class="n">Thing</span><span class="p">):</span> <span class="k">pass</span>
+  <span class="n">default_world</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">flask</span><span class="o">.</span><span class="n">Flask</span><span class="p">(</span><span class="s2">&quot;OwlreadyBench&quot;</span><span class="p">)</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/gen&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">gen</span><span class="p">():</span>
+  <span class="k">with</span> <span class="n">onto</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+      <span class="n">c</span> <span class="o">=</span> <span class="n">C</span><span class="p">()</span>
+      <span class="n">c</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()]</span>
+      <span class="nb">print</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">storid</span><span class="p">)</span>
+    <span class="n">default_world</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+  <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/test&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test</span><span class="p">():</span>
+  <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.02</span><span class="p">)</span>
+  <span class="n">nb</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">instances</span><span class="p">()))</span>
+  <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">(),</span> <span class="n">nb</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can run this server in multiprocessor mode with Gunicorn as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gunicorn</span> <span class="o">-</span><span class="n">b</span> <span class="mf">127.0.0.1</span><span class="p">:</span><span class="mi">5000</span> <span class="o">--</span><span class="n">preload</span> <span class="o">-</span><span class="n">w</span> <span class="mi">5</span> <span class="o">--</span><span class="n">worker</span><span class="o">-</span><span class="n">class</span><span class="o">=</span><span class="n">gevent</span> <span class="n">test</span><span class="p">:</span><span class="n">app</span>
+</pre></div>
+</div>
+<p>where “test” is the previous file’s name (without “.py”),
+and 5 in “-w 5” is recommended to be the number of CPU plus 1 (here, my computer has 4 CPU, thus -w 5).</p>
+<p>Then, after running the server, you can use the following script to make 100 concurrent calls to /gen, and then
+10 concurrent calls to /test:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">urllib.request</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">eventlet</span><span class="o">,</span><span class="w"> </span><span class="nn">eventlet.green.urllib.request</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fetch</span><span class="p">(</span><span class="n">url</span><span class="p">):</span> <span class="k">return</span> <span class="n">eventlet</span><span class="o">.</span><span class="n">green</span><span class="o">.</span><span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="n">urls</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;http://localhost:5000/gen&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span>
+<span class="n">pool</span> <span class="o">=</span> <span class="n">eventlet</span><span class="o">.</span><span class="n">GreenPool</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">body</span> <span class="ow">in</span> <span class="n">pool</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">fetch</span><span class="p">,</span> <span class="n">urls</span><span class="p">):</span> <span class="k">pass</span>
+
+<span class="n">urls</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;http://localhost:5000/test&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">10</span>
+<span class="n">pool</span> <span class="o">=</span> <span class="n">eventlet</span><span class="o">.</span><span class="n">GreenPool</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">body</span> <span class="ow">in</span> <span class="n">pool</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">fetch</span><span class="p">,</span> <span class="n">urls</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>As the 10 calls to /test are executed by different processes, this allows to verify that the various processes have access
+to all the created instances (normally, 500 instances).</p>
+<p>The previous server example can also be run with <a class="reference external" href="https://uwsgi-docs.readthedocs.io/en/latest/">uWSGI</a> as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">uwsgi</span> <span class="o">--</span><span class="n">http</span> <span class="mf">127.0.0.1</span><span class="p">:</span><span class="mi">5000</span> <span class="o">--</span><span class="n">plugin</span> <span class="n">python</span> <span class="o">-</span><span class="n">p</span> <span class="mi">5</span> <span class="o">--</span><span class="n">module</span> <span class="n">test</span><span class="p">:</span><span class="n">app</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="combining-multiprocessing-with-cooperative-microthreads">
+<h2>Combining multiprocessing with cooperative microthreads<a class="headerlink" href="#combining-multiprocessing-with-cooperative-microthreads" title="Link to this heading"></a></h2>
+<p>Owlready (&gt;= 0.46) can combine together both multiprocessing and cooperative microthreads.
+This is interesting if you need microthreads (e.g. because you are using WebSockets) and you want to take advantage of
+multiprocessing for improving performances.</p>
+<p>For that, you need to store the quadstore on disk, and to open it with the “exclusive = False” and “extra_lock” arguments,
+which use the given lock in addition to the SQLite lock (while the lock argument uses it instead of):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">gevent</span><span class="o">.</span><span class="n">lock</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">default_world</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="n">filename</span>   <span class="o">=</span> <span class="s2">&quot;your_quadstore.sqlite3&quot;</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">exclusive</span>  <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">extra_lock</span> <span class="o">=</span> <span class="n">gevent</span><span class="o">.</span><span class="n">lock</span><span class="o">.</span><span class="n">RLock</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>You need to follow the synchronization rules for both microthreads and processes, as explained above.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="world.html" class="btn btn-neutral float-left" title="Worlds" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="rule.html" class="btn btn-neutral float-right" title="SWRL rules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-2023, Jean-Baptiste LAMY.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

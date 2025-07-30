@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Datatypes &mdash; Owlready2 0.48 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=a3063754"></script>
+        <script src="_static/doctools.js?v=9bcbadda"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Class constructs, restrictions and logical operators" href="restriction.html" />
+    <link rel="prev" title="Properties" href="properties.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Owlready2
+          </a>
+              <div class="version">
+                0.48
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Owlready2 Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="onto.html">Managing ontologies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="class.html">Classes and Individuals (Instances)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="properties.html">Properties</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Datatypes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#creating-enumerated-datatypes">Creating enumerated datatypes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#creating-custom-datatypes">Creating custom datatypes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="restriction.html">Class constructs, restrictions and logical operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="disjoint.html">Disjointness, open and local closed world reasoning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mixing_python_owl.html">Mixing Python and OWL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reasoning.html">Reasoning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="annotations.html">Annotations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="namespace.html">Namespaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sparql.html">SPARQL queries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="world.html">Worlds</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sync.html">Parallelism, multiprocessing and synchronization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rule.html">SWRL rules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general_class_axioms.html">General class axioms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pymedtermino2.html">PyMedTermino2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="observe.html">Observation framework</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="porting1.html">Differences between Owlready version 1 and 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact and links</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Owlready2</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Datatypes</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/datatype.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="datatypes">
+<h1>Datatypes<a class="headerlink" href="#datatypes" title="Link to this heading"></a></h1>
+<p>Owlready automatically recognizes and translates basic datatypes to Python, such as string, int, float, etc.</p>
+<p>Binary data, i.e. Python’s bytes, are mapped to XML base64Binary, and thus they are base64-encoded in RDF / XML files.</p>
+<section id="creating-enumerated-datatypes">
+<h2>Creating enumerated datatypes<a class="headerlink" href="#creating-enumerated-datatypes" title="Link to this heading"></a></h2>
+<p>Enumerated datatype can be created as follows with Owlready:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">onto</span><span class="p">:</span>
+<span class="gp">... </span>  <span class="k">class</span><span class="w"> </span><span class="nc">MyEnum</span><span class="p">(</span><span class="n">Datatype</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">equivalent_to</span> <span class="o">=</span> <span class="p">[</span> <span class="n">OneOf</span><span class="p">([</span><span class="s2">&quot;Male&quot;</span><span class="p">,</span> <span class="s2">&quot;Female&quot;</span><span class="p">,</span> <span class="s2">&quot;Other&quot;</span><span class="p">])</span> <span class="p">]</span>
+</pre></div>
+</div>
+<p>The enumerated datatype can be used in data property ranges:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">onto</span><span class="p">:</span>
+<span class="gp">... </span>  <span class="k">class</span><span class="w"> </span><span class="nc">my_prop</span><span class="p">(</span><span class="n">DataProperty</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="nb">range</span> <span class="o">=</span> <span class="p">[</span> <span class="n">MyEnum</span> <span class="p">]</span>
+</pre></div>
+</div>
+<p>The list of enumerated values can be queried as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">onto</span><span class="o">.</span><span class="n">MyEnum</span><span class="o">.</span><span class="n">equivalent_to</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">instances</span>
+<span class="go">[&quot;Male&quot;, &quot;Female&quot;, &quot;Other&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="creating-custom-datatypes">
+<h2>Creating custom datatypes<a class="headerlink" href="#creating-custom-datatypes" title="Link to this heading"></a></h2>
+<p>The declare_datatype() global function allows to declare a new datatype. It takes 4 arguments:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>datatype: the Python datatype (for example, a Python type or class)</p></li>
+<li><p>iri: the IRI used to represent the datatype in ontologies</p></li>
+<li><p>parser: a function that takes a serialized string and returns the corresponding datatype</p></li>
+<li><p>unparser: a function that takes a datatype and returns its serialization in a string</p></li>
+</ul>
+</div></blockquote>
+<p>The function returns the storid associated to the datatype.</p>
+<p><strong>Warning:</strong> The datatype must be declared <strong>BEFORE</strong> loading any ontology that uses it.</p>
+<p>Here is an example for adding support for the XSD “hexBinary” datatype:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">Hex</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="gp">... </span>  <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">parser</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+<span class="gp">... </span>  <span class="k">return</span> <span class="n">Hex</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">16</span><span class="p">))</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">unparser</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="gp">... </span>  <span class="n">h</span> <span class="o">=</span> <span class="nb">hex</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">value</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span>
+<span class="gp">... </span>  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">h</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span> <span class="k">return</span> <span class="s2">&quot;0</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">h</span>
+<span class="gp">... </span>  <span class="k">return</span> <span class="n">h</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">declare_datatype</span><span class="p">(</span><span class="n">Hex</span><span class="p">,</span> <span class="s2">&quot;http://www.w3.org/2001/XMLSchema#hexBinary&quot;</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">unparser</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The new datatype can then be used as any others:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">onto</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">get_ontology</span><span class="p">(</span><span class="s2">&quot;http://www.test.org/t.owl&quot;</span><span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">onto</span><span class="p">:</span>
+<span class="gp">... </span>  <span class="k">class</span><span class="w"> </span><span class="nc">p</span><span class="p">(</span><span class="n">Thing</span> <span class="o">&gt;&gt;</span> <span class="n">Hex</span><span class="p">):</span> <span class="k">pass</span>
+
+<span class="go">...   class C(Thing): pass</span>
+
+<span class="go">...   c1 = C()</span>
+<span class="go">...   c1.p.append(Hex(14))</span>
+</pre></div>
+</div>
+<p>In addition, the define_datatype_in_ontology() function allows to define the datatype in a given ontology.
+This was not needed for hexBinary above, because it is already defined in XMLSchema.
+However, for user-defined datatype, it is recommended to define them in an ontology
+(Owlready does not strictly require that, but other tools like Protégé do).</p>
+<p>The following example (re)define the hexBinary datatype in our ontology:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">define_datatype_in_ontology</span><span class="p">(</span><span class="n">Hex</span><span class="p">,</span> <span class="s2">&quot;http://www.w3.org/2001/XMLSchema#hexBinary&quot;</span><span class="p">,</span> <span class="n">onto</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This add the (xsd:hexBinary, rdf:type, rdfs:datatype) RDF triple in the quadstore.</p>
+<p>As said above, declare_datatype() must be called * before * using the datatype.
+On the contrary, define_datatype_in_ontology() may be called after loading an ontology that use the datatype.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="properties.html" class="btn btn-neutral float-left" title="Properties" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="restriction.html" class="btn btn-neutral float-right" title="Class constructs, restrictions and logical operators" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-2023, Jean-Baptiste LAMY.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

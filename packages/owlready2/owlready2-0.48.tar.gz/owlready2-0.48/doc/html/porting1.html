@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Differences between Owlready version 1 and 2 &mdash; Owlready2 0.48 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=a3063754"></script>
+        <script src="_static/doctools.js?v=9bcbadda"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Contact and links" href="contact.html" />
+    <link rel="prev" title="Development" href="development.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Owlready2
+          </a>
+              <div class="version">
+                0.48
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Owlready2 Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="onto.html">Managing ontologies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="class.html">Classes and Individuals (Instances)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="properties.html">Properties</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datatype.html">Datatypes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="restriction.html">Class constructs, restrictions and logical operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="disjoint.html">Disjointness, open and local closed world reasoning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mixing_python_owl.html">Mixing Python and OWL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reasoning.html">Reasoning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="annotations.html">Annotations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="namespace.html">Namespaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sparql.html">SPARQL queries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="world.html">Worlds</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sync.html">Parallelism, multiprocessing and synchronization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rule.html">SWRL rules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general_class_axioms.html">General class axioms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pymedtermino2.html">PyMedTermino2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="observe.html">Observation framework</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Differences between Owlready version 1 and 2</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#creation-of-classes-properties-and-individuals">Creation of Classes, Properties and Individuals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#generated-individual-names">Generated Individual names</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#functional-properties">Functional properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#creation-of-restrictions">Creation of restrictions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#logical-operators-and-one-of-constructs">Logical operators and ‘One of’ constructs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#reasoning">Reasoning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#annotations">Annotations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact and links</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Owlready2</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Differences between Owlready version 1 and 2</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/porting1.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="differences-between-owlready-version-1-and-2">
+<h1>Differences between Owlready version 1 and 2<a class="headerlink" href="#differences-between-owlready-version-1-and-2" title="Link to this heading"></a></h1>
+<p>This section summarizes the major differences between Owlready version 1 and 2.</p>
+<section id="creation-of-classes-properties-and-individuals">
+<h2>Creation of Classes, Properties and Individuals<a class="headerlink" href="#creation-of-classes-properties-and-individuals" title="Link to this heading"></a></h2>
+<p>The ‘ontology’ parameters is now called ‘namespace’ in Owlready2. It accepts a namespace or an ontology.</p>
+<p>Owlready 1:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">Drug</span><span class="p">(</span><span class="n">Thing</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">ontology</span> <span class="o">=</span> <span class="n">onto</span>
+</pre></div>
+</div>
+<p>Owlready 2:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">Drug</span><span class="p">(</span><span class="n">Thing</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">namespace</span> <span class="o">=</span> <span class="n">onto</span>
+</pre></div>
+</div>
+</section>
+<section id="generated-individual-names">
+<h2>Generated Individual names<a class="headerlink" href="#generated-individual-names" title="Link to this heading"></a></h2>
+<p>Owlready 1 permitted to generate dynamically Individual names, depending on their relations.
+This is no longer possible in Owlready 2, due to the different architecture.</p>
+</section>
+<section id="functional-properties">
+<h2>Functional properties<a class="headerlink" href="#functional-properties" title="Link to this heading"></a></h2>
+<p>In Owlready 1, functional properties had default values depending on their range. For example,
+if the range was float, the default value was 0.0.</p>
+<p>In Owlready 2, functional properties always returns None if not relation has been asserted.</p>
+</section>
+<section id="creation-of-restrictions">
+<h2>Creation of restrictions<a class="headerlink" href="#creation-of-restrictions" title="Link to this heading"></a></h2>
+<p>In Owlready 1, restrictions were created by calling the property:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">Property</span><span class="p">(</span><span class="n">SOME</span><span class="p">,</span> <span class="n">Range_Class</span><span class="p">)</span>
+<span class="o">&gt;&gt;</span> <span class="n">Property</span><span class="p">(</span><span class="n">ONLY</span><span class="p">,</span> <span class="n">Range_Class</span><span class="p">)</span>
+<span class="o">&gt;&gt;</span> <span class="n">Property</span><span class="p">(</span><span class="n">MIN</span><span class="p">,</span> <span class="n">cardinality</span><span class="p">,</span> <span class="n">Range_Class</span><span class="p">)</span>
+<span class="o">&gt;&gt;</span> <span class="n">Property</span><span class="p">(</span><span class="n">MAX</span><span class="p">,</span> <span class="n">cardinality</span><span class="p">,</span> <span class="n">Range_Class</span><span class="p">)</span>
+<span class="o">&gt;&gt;</span> <span class="n">Property</span><span class="p">(</span><span class="n">EXACTLY</span><span class="p">,</span> <span class="n">cardinality</span><span class="p">,</span> <span class="n">Range_Class</span><span class="p">)</span>
+<span class="o">&gt;&gt;</span> <span class="n">Property</span><span class="p">(</span><span class="n">VALUE</span><span class="p">,</span> <span class="n">Range_Instance</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In Owlready 2, they are created by calling the .some(), .only(), .min(), .max(), .exactly() and .value()
+methods of the Property:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">Property</span><span class="o">.</span><span class="n">some</span><span class="p">(</span><span class="n">Range_Class</span><span class="p">)</span>
+<span class="o">&gt;&gt;</span> <span class="n">Property</span><span class="o">.</span><span class="n">only</span><span class="p">(</span><span class="n">Range_Class</span><span class="p">)</span>
+<span class="o">&gt;&gt;</span> <span class="n">Property</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">cardinality</span><span class="p">,</span> <span class="n">Range_Class</span><span class="p">)</span>
+<span class="o">&gt;&gt;</span> <span class="n">Property</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">cardinality</span><span class="p">,</span> <span class="n">Range_Class</span><span class="p">)</span>
+<span class="o">&gt;&gt;</span> <span class="n">Property</span><span class="o">.</span><span class="n">exactly</span><span class="p">(</span><span class="n">cardinality</span><span class="p">,</span> <span class="n">Range_Class</span><span class="p">)</span>
+<span class="o">&gt;&gt;</span> <span class="n">Property</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">Range_Individual</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="logical-operators-and-one-of-constructs">
+<h2>Logical operators and ‘One of’ constructs<a class="headerlink" href="#logical-operators-and-one-of-constructs" title="Link to this heading"></a></h2>
+<p>In Owlready 1, the negation was called ‘NOT()’.
+In Owlready 2, the negation is now called ‘Not()’.</p>
+<p>In Owlready 1, the logical operators (Or and And) and the one_of construct expect several values as parameters.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Or</span><span class="p">(</span><span class="n">ClassA</span><span class="p">,</span> <span class="n">ClassB</span><span class="p">,</span><span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In Owlready 2, the logical operators (Or and And) and the OneOf construct expect a list of values.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Or</span><span class="p">([</span><span class="n">ClassA</span><span class="p">,</span> <span class="n">ClassB</span><span class="p">,</span><span class="o">...</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="reasoning">
+<h2>Reasoning<a class="headerlink" href="#reasoning" title="Link to this heading"></a></h2>
+<p>In Owlready 1, the reasoner was executed by calling ontology.sync_reasoner().</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">onto</span><span class="o">.</span><span class="n">sync_reasoner</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>In Owlready 2, the reasoner is executed by calling sync_reasoner(). The reasoning can involve several ontologies
+(all those that have been loaded). sync_reasoner() actually acts on a World (see <a class="reference internal" href="world.html"><span class="doc">Worlds</span></a>).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sync_reasoner</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="annotations">
+<h2>Annotations<a class="headerlink" href="#annotations" title="Link to this heading"></a></h2>
+<p>In Owlready 1, annotations were available through the ANNOTATIONS pseudo-dictionary.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ANNOTATIONS</span><span class="p">[</span><span class="n">Drug</span><span class="p">][</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Label for Class Drug&quot;</span>
+</pre></div>
+</div>
+<p>In Owlready 2, annotations are available as normal attributes.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Drug</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;Label for Class Drug&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="development.html" class="btn btn-neutral float-left" title="Development" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="contact.html" class="btn btn-neutral float-right" title="Contact and links" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-2023, Jean-Baptiste LAMY.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

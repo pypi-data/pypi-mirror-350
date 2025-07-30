@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Observation framework &mdash; Owlready2 0.48 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=a3063754"></script>
+        <script src="_static/doctools.js?v=9bcbadda"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Development" href="development.html" />
+    <link rel="prev" title="PyMedTermino2" href="pymedtermino2.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Owlready2
+          </a>
+              <div class="version">
+                0.48
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Owlready2 Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="onto.html">Managing ontologies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="class.html">Classes and Individuals (Instances)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="properties.html">Properties</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datatype.html">Datatypes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="restriction.html">Class constructs, restrictions and logical operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="disjoint.html">Disjointness, open and local closed world reasoning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mixing_python_owl.html">Mixing Python and OWL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reasoning.html">Reasoning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="annotations.html">Annotations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="namespace.html">Namespaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sparql.html">SPARQL queries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="world.html">Worlds</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sync.html">Parallelism, multiprocessing and synchronization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rule.html">SWRL rules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general_class_axioms.html">General class axioms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pymedtermino2.html">PyMedTermino2</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Observation framework</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#adding-and-removing-listeners">Adding and removing listeners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#coalescing-events">Coalescing events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#stopping-observation">Stopping observation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="porting1.html">Differences between Owlready version 1 and 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact and links</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Owlready2</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Observation framework</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/observe.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="observation-framework">
+<h1>Observation framework<a class="headerlink" href="#observation-framework" title="Link to this heading"></a></h1>
+<p>Owlready2 provides an observation framework in the owlready2.observe module. It allows adding listeners to any entity
+of an ontology, in order to be notified when the entity is modified.</p>
+<section id="adding-and-removing-listeners">
+<h2>Adding and removing listeners<a class="headerlink" href="#adding-and-removing-listeners" title="Link to this heading"></a></h2>
+<p>Let us create a (very) small ontology:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">onto</span> <span class="o">=</span> <span class="n">get_ontology</span><span class="p">(</span><span class="s2">&quot;http://test.org/test.owl&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">onto</span><span class="p">:</span>
+<span class="gp">... </span>  <span class="k">class</span><span class="w"> </span><span class="nc">Pizza</span><span class="p">(</span><span class="n">Thing</span><span class="p">):</span> <span class="k">pass</span>
+<span class="gp">... </span>  <span class="k">class</span><span class="w"> </span><span class="nc">price</span><span class="p">(</span><span class="n">Thing</span> <span class="o">&gt;&gt;</span> <span class="nb">float</span><span class="p">):</span> <span class="k">pass</span>
+<span class="gp">... </span>  <span class="n">pizza</span> <span class="o">=</span> <span class="n">Pizza</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>And then import the observe module and add a listener to pizza:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">owlready2.observe</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">listener</span><span class="p">(</span><span class="n">entity</span><span class="p">,</span> <span class="n">props</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Listener:&quot;</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">props</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">observe</span><span class="p">(</span><span class="n">pizza</span><span class="p">,</span> <span class="n">listener</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The observe() function is used to add a listener to an entity.</p>
+<p>Whenever relation are added or removed to the entity, listener is called:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pizza</span><span class="o">.</span><span class="n">price</span> <span class="o">=</span> <span class="p">[</span><span class="mf">11.0</span><span class="p">]</span>
+<span class="go">Listener: 305 [304]</span>
+</pre></div>
+</div>
+<p>The listener receives two arguments: the entity and a list of properties (NB unless you coalesce event as explained below,
+the list includes a single value). For performance purpose, Observe uses “store-IDs” as argument for the entity
+and the properties, and not Python objects (hence you see integer values above). Here, 305 is the “store-ID” of the pizza
+entity and 304 the “store-ID” of the price property (NB the number may differ).</p>
+<p>You may convert store-IDs to Python objects with World._get_by_storid(storid).
+Here is a modified listener that shows entity and property objects instead of store-IDs:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">listener</span><span class="p">(</span><span class="n">entity</span><span class="p">,</span> <span class="n">props</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">entity</span> <span class="o">=</span>   <span class="n">default_world</span><span class="o">.</span><span class="n">_get_by_storid</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">props</span>  <span class="o">=</span> <span class="p">[</span> <span class="n">default_world</span><span class="o">.</span><span class="n">_get_by_storid</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span> <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">props</span> <span class="p">]</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Listener:&quot;</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">props</span><span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">unobserve</span><span class="p">(</span><span class="n">pizza</span><span class="p">)</span> <span class="c1"># Remove previous listener</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">observe</span><span class="p">(</span><span class="n">pizza</span><span class="p">,</span> <span class="n">listener</span><span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pizza</span><span class="o">.</span><span class="n">price</span> <span class="o">=</span> <span class="p">[</span><span class="mf">11.0</span><span class="p">]</span>
+<span class="go">Listener: onto.pizza [onto.price]</span>
+</pre></div>
+</div>
+<p>The unobserve() function is used to remove a listener from an entity (if no listener is given, all listeners are removed).</p>
+</section>
+<section id="coalescing-events">
+<h2>Coalescing events<a class="headerlink" href="#coalescing-events" title="Link to this heading"></a></h2>
+<p>The coalesced_observations environment can be used to coalesce events and listener calls.</p>
+<p>For instance, the following code generates 3 calls to the listener:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pizza</span><span class="o">.</span><span class="n">price</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">12.0</span><span class="p">)</span>
+<span class="go">Listener: onto.pizza [onto.price]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pizza</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Pizz&quot;</span><span class="p">,</span> <span class="s2">&quot;Test pizza&quot;</span><span class="p">]</span>
+<span class="go">Listener: onto.pizza [rdf-schema.label]</span>
+<span class="go">Listener: onto.pizza [rdf-schema.label]</span>
+</pre></div>
+</div>
+<p>Since two labels are added, there are 2 calls for the set label operation.
+These multiple calls can be problematic if the listener has a performance cost (e.g. updating the user interface).</p>
+<p>Multiple calls can be coalesced and merged using the coalesced_observations environment, as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">coalesced_observations</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">pizza</span><span class="o">.</span><span class="n">price</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">13.0</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">pizza</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Pizz2&quot;</span><span class="p">,</span> <span class="s2">&quot;Test pizza2&quot;</span><span class="p">]</span>
+<span class="go">Listener: onto.pizza [onto.price, rdf-schema.label]</span>
+</pre></div>
+</div>
+<p>No call to listeners are emitted inside the “with coalesced_observations” block, and a single call is emitted at the end,
+possibly with more than one property.</p>
+<p>In addition, you can add/remove general listener to coalesced_observations, with the add_listener() and remove_listener()
+methods. The general listener is called without argument, whenever a change is done in the quadstore.</p>
+</section>
+<section id="stopping-observation">
+<h2>Stopping observation<a class="headerlink" href="#stopping-observation" title="Link to this heading"></a></h2>
+<p>Using the observation framework may have a performance cost. After using it, if you no longer need it,
+you should stop it by calling stop_observing(), as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">stop_observing</span><span class="p">(</span><span class="n">default_world</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pymedtermino2.html" class="btn btn-neutral float-left" title="PyMedTermino2" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="development.html" class="btn btn-neutral float-right" title="Development" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2014-2023, Jean-Baptiste LAMY.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
