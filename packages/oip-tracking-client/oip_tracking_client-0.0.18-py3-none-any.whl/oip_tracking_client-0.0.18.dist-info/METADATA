@@ -1,0 +1,179 @@
+Metadata-Version: 2.1
+Name: oip-tracking-client
+Version: 0.0.18
+Summary: This is the API client of Open Innovation Platform - Tracking
+Author: Rachid Belmeskine
+Author-email: rachid.belmeskine@gmail.com
+License: PRIVATE LICENSE
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: mlflow==2.16.2
+Requires-Dist: deprecated
+Requires-Dist: requests
+Requires-Dist: pandas
+Requires-Dist: typing
+Requires-Dist: numpy
+Requires-Dist: Pillow
+Requires-Dist: matplotlib
+Requires-Dist: plotly
+Requires-Dist: psutil
+Provides-Extra: amd
+Requires-Dist: pyamdgpuinfo; extra == "amd"
+Provides-Extra: nvidia
+Requires-Dist: pynvml; extra == "nvidia"
+
+# Open Innovation MLOps Client API
+
+Welcome to the Open Innovation MLOps Client API documentation! This guide offers detailed instructions on how to install, set up, and use the client library.
+
+## Installation and Setup
+
+To use the Open Innovation MLOps Client in your project, follow these steps:
+
+1. __Install the client library__: Use the following pip command to add the Open Innovation MLOps Client to your Python environment:
+    ```
+    pip install oip-tracking-client
+    ```
+
+2. __Import the library__: Add the following import statement to your Python script to gain access to the `MLOps` class from the client library:
+    ```python
+    from oip_tracking_client.tracking import TrackingClient
+    ```
+
+## GPU Metrics support
+
+To log the GPU metrics install the library with either AMD or nVidia extra requirements.
+
+- AMD: `pip install oip-tracking-client[amd]`
+- nVidia: `pip install oip-tracking-client[nvidia]`
+
+## Client Initialization and Tracking
+
+To start using the Open Innovation `TrackingClient` in your application, you need to initialize it with specific details about your environment.
+
+```python
+api_host = "api_host"
+username = "your_username"
+password = "your_password"
+workspace_name = "target_workspace_name"
+TrackingClient.connect(api_host, username, password, workspace_name)
+```
+
+**Parameters**
+
+- `api_host` (str, required): The hostname of the API server.
+- `username` (str, required): Your username.
+- `password` (str, required): Your password.
+- `workspace_name` (str, required): The name of the workspace you want to connect to. This workspace should already exist on the platform's user interface (UI).
+
+
+OAfter initializing the client and establishing the connection, you can specify the experiment you want to track:
+```python
+experiment_name = "target_experiment_name"
+TrackingClient.set_experiment(experiment_name)
+```
+**Parameters**
+
+- `experiment_name` (str, required): The name of the experiment you want to track.
+
+Once the target experiment is set, the API client is ready to start tracking your runs.
+
+## Compatibility with Mlflow for Tracking
+
+The `TrackingClient` provides access to all the methods available through the MLflow API. For instance:
+
+`TrackingClient.autolog()` is equivalent to `mlflow.autolog()`.
+
+For more information about the available methods, refer to the [MLflow official documentation](https://mlflow.org/docs/latest/python_api/mlflow.html).
+
+## Advanced Artifacts Tracking
+
+In addition to all the features offered by MLflow, our solution also enables tracking of specific types of artifacts like images, audio, video, figures, text, JSON, etc., for specific machine learning training tasks analysis. This allows for sophisticated and advanced analytics and visualizations through our platform UI.
+
+### Image Tracking
+The `log_image_at_step` method accepts an image as a `numpy.ndarray` or `rom PIL.Image.Image`:
+
+```python
+from PIL import Image
+
+# Load or create your image as numpy.ndarray or PIL.Image
+image_data = Image.open("test_image.jpg")
+
+# Log image at specific step
+extra = {"description": "test image"}
+TrackingClient.log_image_at_step(image_data, 'image_file.jpg', 1, extra)
+```
+
+Please note that for images, you can directly pass the path to the image file.
+
+### Audio Tracking
+The `log_audio_at_step` method accepts audio data as a `numpy.ndarray`:
+
+```python
+import numpy as np
+
+# Create or load your audio data as a numpy array
+audio_data = np.random.random(1000)
+
+# Log audio at specific step
+TrackingClient.log_audio_at_step(audio_data, 'audio_file.wav', 1, rate=44100)
+
+```
+
+The audio_data should be a numpy array. If the audio is stereo, the array should be 2-dimensional.
+
+### Text Tracking
+The `log_text_at_step` method accepts text as a `str`:
+
+```python
+# Log text at specific step
+text_data = "This is a sample text."
+TrackingClient.log_text_at_step(text_data, 'text_file.txt', 1)
+
+```
+
+### Figure Tracking
+The `log_figure_at_step` method accepts a figure as a `matplotlib.figure.Figure` or `plotly.graph_objects.Figure`:
+```python
+import matplotlib.pyplot as plt
+
+# Create a figure
+fig, ax = plt.subplots()
+ax.plot([1, 2, 3, 4], [1, 4, 2, 3])
+
+# Log figure at specific step
+TrackingClient.log_figure_at_step(fig, 'figure_file.jpg', 1)
+```
+
+The fig should be a matplotlib.figure.Figure object.
+
+### JSON Tracking
+The log_dict_at_step method accepts a dictionary or list to be logged as JSON:
+
+
+```python
+# Log dictionary at specific step
+dict_data = {"key1": "value1", "key2": "value2"}
+TrackingClient.log_dict_at_step(dict_data, 'dict_file.json', 1)
+```
+
+The dictionary or list will be saved as a JSON file.
+
+
+### Extra Parameters
+
+Note: All log_*_at_step methods accept an optional extra parameter (of type dict) which can be used to log additional metadata about the artifact, and a file_name (of type str) that specifies the name of the artifact file. For log_audio_at_step, there is also a rate parameter (of type int) to specify the sample rate of the audio data.
+
+The extra parameter should be a dictionary with string keys. The values can be of types int, float, str, bool, list, or None.
+
+```python
+extra = {"description": "This is a description of the artifact."}
+```
+
+
+In the case of log_audio_at_step, there's also a rate parameter to specify the sample rate of the audio data.
+
+```python
+TrackingClient.log_audio_at_step(audio_data, 'audio_file', 1, rate=44100, extra=extra)
+```
+
