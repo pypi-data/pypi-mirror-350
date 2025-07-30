@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "startgarlic"
+version = "0.1.19"
+description = "A RAG-based company information retrieval system"
+readme = "README.md"
+
+authors = [
+    { name = "Bogdan Ciolac", email = "bogdan@startgarlic.com" },
+    { name = "May Elshater", email = "may@startgarlic.com" }
+]
+license = { text = "MIT" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Development Status :: 3 - Alpha",
+]
+requires-python = ">=3.7"
+dependencies = [
+    "numpy>=1.23.5,<2.0.0",
+    "pandas>=2.0.0",
+    "supabase>=2.11.0",
+    "httpx>=0.26.0,<0.29.0",
+    "websockets>=11.0,<14.0",
+    "requests>=2.27.0,<3.0.0",
+    "python-dotenv",
+    "sentence-transformers",
+    "langchain>=0.2.15",
+    "langchain-community>=0.2.15",
+    "langchain-huggingface>=0.0.3",
+    "fastapi>=0.68.0",
+    "uvicorn>=0.15.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/startgarlic/MVP"
+
+[project.scripts]
+startgarlic = "startgarlic.cli:main"
+startgarlic-api = "startgarlic.api:start_server"  # Updated to point to the correct module and function
