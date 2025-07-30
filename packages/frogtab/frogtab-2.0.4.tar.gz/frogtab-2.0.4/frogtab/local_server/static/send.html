@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en" data-location="local" data-theme="system">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Capture tasks without revealing your inbox">
+    <title>Send to Frogtab</title>
+    <link rel="icon" href="favicons/icon-16.png" sizes="16x16" type="image/png">
+    <link rel="icon" href="favicons/icon-32.png" sizes="32x32" type="image/png">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicons/icon-180-apple.png">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="stylesheet" href="style.css?sha1=939eb0483a24497af6909acf4e9c9686d8a54eb5">
+  </head>
+  <body>
+    <div class="container restricted">
+      <div class="interface">
+        <div id="popup-connecting" class="popup">
+          <svg role="img" aria-label="Cloud connecting icon" width="20px" height="20px" stroke-width="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="currentColor"><path d="M20 17.607c1.494-.585 3-1.918 3-4.607 0-4-3.333-5-5-5 0-2 0-6-6-6S6 6 6 8c-1.667 0-5 1-5 5 0 2.689 1.506 4.022 3 4.607M7.58 19.487l1.768 1.768a4 4 0 005.657 0l.354-.353" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M7.934 21.962l-.353-2.475 2.474.354-2.12 2.121zM16.298 16.902l-1.768-1.768a4 4 0 00-5.657 0l-.353.353" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M15.944 14.427l.354 2.475-2.475-.354 2.121-2.121z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>Connecting…
+        </div>
+        <div id="popup-connected" class="popup">
+          <svg role="img" aria-label="Cloud check icon" width="20px" height="20px" stroke-width="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="currentColor"><path d="M8 18l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M20 17.607c1.494-.585 3-1.918 3-4.607 0-4-3.333-5-5-5 0-2 0-6-6-6S6 6 6 8c-1.667 0-5 1-5 5 0 2.689 1.506 4.022 3 4.607" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>Connection is end-to-end encrypted
+        </div>
+        <div id="popup-disconnected" class="popup">
+          <svg role="img" aria-label="Cloud error icon" width="20px" height="20px" stroke-width="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="currentColor"><path d="M9 22l3-3m3-3l-3 3m0 0l-3-3m3 3l3 3M20 17.607c1.494-.585 3-1.918 3-4.607 0-4-3.333-5-5-5 0-2 0-6-6-6S6 6 6 8c-1.667 0-5 1-5 5 0 2.689 1.506 4.022 3 4.607" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>Not connected
+        </div>
+        <div id="popup-sending" class="popup">
+          <svg role="img" aria-label="Cloud sending icon" width="20px" height="20px" stroke-width="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="currentColor"><path d="M12 22v-9m0 0l3.5 3.5M12 13l-3.5 3.5M20 17.607c1.494-.585 3-1.918 3-4.607 0-4-3.333-5-5-5 0-2 0-6-6-6S6 6 6 8c-1.667 0-5 1-5 5 0 2.689 1.506 4.022 3 4.607" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>Connection is end-to-end encrypted
+        </div>
+        <div id="popup-failure" class="popup">
+          <svg role="img" aria-label="Warning icon" width="20px" height="20px" stroke-width="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="currentColor"><path d="M20.043 21H3.957c-1.538 0-2.5-1.664-1.734-2.997l8.043-13.988c.77-1.337 2.699-1.337 3.468 0l8.043 13.988C22.543 19.336 21.58 21 20.043 21zM12 9v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path><path d="M12 17.01l.01-.011" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>Unable to send. Please try again
+        </div>
+        <div class="main">
+          <textarea tabindex="0" id="editor" class="display" placeholder="Add a task to your inbox…"></textarea>
+        </div>
+        <div class="actions">
+          <div class="action primary">
+            <span tabindex="-1" id="send" class="circle-button" title="Send"><svg role="img" aria-label="Send icon" width="24px" height="24px" viewBox="0 0 24 24" stroke-width="1.5" fill="none" xmlns="http://www.w3.org/2000/svg" color="currentColor"><path d="M22 12L3 20l3.563-8L3 4l19 8zM6.5 12H22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      // ******** Shared helpers ********
+
+      function matchKeyboardEvent(event, modifierSpec, key) {
+        if (!("key" in event)) {
+          return false;
+        }
+        let testCmdCtrl = (platformApple && event.metaKey) || (!platformApple && event.ctrlKey);
+        if (!modifierSpec.includes("c")) {
+          testCmdCtrl = !testCmdCtrl;
+        }
+        let testShift = event.shiftKey;
+        if (!modifierSpec.includes("s")) {
+          testShift = !testShift;
+        }
+        return testCmdCtrl && testShift & event.key.toLowerCase() == key && !event.altKey;
+      }
+
+      function attr(name) {
+        return document.documentElement.getAttribute(`data-${name}`);
+      }
+
+      function delayForUX(f) {
+        return Promise.all([
+          f(),
+          new Promise(resolve => window.setTimeout(resolve, 1500))
+        ]);
+      }
+
+
+      // ******** Other helpers ********
+
+      function tryToSendLocal() {
+        const valueToSend = dom.editor.value.trim();
+        if (valueToSend == "") {
+          return;
+        }
+        dom.editor.value = "";
+        dom.editor.focus();
+        dom.send.classList.add("long-hover");
+        window.setTimeout(() => {
+          dom.send.classList.remove("enabled");
+          dom.send.classList.remove("long-hover");
+          dom.send.tabIndex = -1;
+        }, 300);
+        if (localStorage.getItem("value.inbox") === null) {
+          localStorage.setItem("value.inbox", "");
+        }
+        let valueInbox = localStorage.getItem("value.inbox").trimStart();
+        if (valueInbox != "") {
+          valueInbox = `\n\n${valueInbox}`;
+        }
+        valueInbox = `${valueToSend}${valueInbox}`;
+        localStorage.setItem("value.inbox", valueInbox);
+      }
+
+      async function encryptAndSend(plainMessage) {
+        const encryptedMessage = await openpgp.encrypt({
+          message: await openpgp.createMessage({
+            text: plainMessage
+          }),
+          encryptionKeys: pgpPublicKeyObj
+        });
+        let response;
+        try {
+          response = await fetch("open/post-add-message", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              user_id: userID,
+              message: encryptedMessage
+            })
+          });
+        }
+        catch (err) {
+          return false;
+        }
+        if (!response.ok) {
+          return false;
+        }
+        const result = await response.json();
+        return result.success;
+      }
+
+      async function tryToSendCloud() {
+        const valueToSend = dom.editor.value.trim();
+        if (valueToSend == "") {
+          return;
+        }
+        dom.editor.value = "";
+        dom.editor.focus();
+        dom.send.classList.add("long-hover");
+        window.setTimeout(() => {
+          dom.send.classList.remove("enabled");
+          dom.send.classList.remove("long-hover");
+          dom.send.tabIndex = -1;
+        }, 300);
+        if (dom.popups.connected.classList.contains("display")) {
+          dom.popups.connected.classList.remove("display");
+          dom.popups.sending.classList.add("display");
+        }
+        const onFailure = () => {
+          window.setTimeout(() => {
+            dom.popups.sending.classList.remove("display");
+            dom.popups.failure.classList.add("display");
+            let value = dom.editor.value.trimEnd();
+            if (value != "") {
+              value = `${value}\n\n`;
+            }
+            dom.editor.value = `${value}${valueToSend}`;
+            dom.send.classList.add("enabled");
+            dom.send.tabIndex = 0;
+          }, 600);
+        };
+        let success;
+        await delayForUX(async () => {
+          success = await encryptAndSend(valueToSend);
+        });
+        if (!success) {
+          onFailure();
+          return;
+        }
+        dom.popups.sending.classList.remove("display");
+        dom.popups.failure.classList.remove("display");
+        dom.popups.connected.classList.add("display");
+      }
+
+      function setSendLocal() {
+        document.body.addEventListener("keydown", event => {
+          if (matchKeyboardEvent(event, "c", "a")) {
+            dom.editor.focus();
+          }
+          else if (matchKeyboardEvent(event, "c", "enter")) {
+            event.preventDefault();
+            tryToSendLocal();
+          }
+        });
+        dom.send.addEventListener("click", () => {
+          tryToSendLocal();
+        });
+        dom.send.addEventListener("keydown", event => {
+          if (matchKeyboardEvent(event, "", "enter") || matchKeyboardEvent(event, "", " ")) {
+            event.preventDefault();
+            dom.send.click();
+          }
+        });
+        dom.editor.addEventListener("input", () => {
+          const value = dom.editor.value.trim();
+          if (value != "") {
+            dom.send.classList.add("enabled");
+            dom.send.classList.remove("short-hover");
+            dom.send.tabIndex = 0;
+          }
+          else {
+            dom.send.classList.remove("enabled");
+            dom.send.tabIndex = -1;
+          }
+        });
+      }
+
+      async function setSendCloud() {
+        dom.popups.connecting.classList.add("display");
+        await delayForUX(async () => {
+          openpgp = await import("./openpgp.min.mjs?sha1=10537e7469a1cffc78969c32fe52216896b36c64");
+          let response;
+          try {
+            response = await fetch(`open/get-user?user_id=${encodeURIComponent(userID)}`);
+          }
+          catch (err) {
+            return;
+          }
+          if (!response.ok) {
+            return;
+          }
+          const result = await response.json();
+          if (!result.success) {
+            return;
+          }
+          pgpPublicKeyObj = await openpgp.readKey({
+            armoredKey: result.user.pgp_public_key
+          });
+        });
+        dom.popups.connecting.classList.remove("display");
+        if (pgpPublicKeyObj === null) {
+          dom.popups.disconnected.classList.add("display");
+          dom.editor.placeholder = "";
+          return;
+        }
+        dom.popups.connected.classList.add("display");
+        document.body.addEventListener("keydown", event => {
+          if (matchKeyboardEvent(event, "c", "a")) {
+            dom.editor.focus();
+          }
+          else if (matchKeyboardEvent(event, "c", "enter")) {
+            event.preventDefault();
+            tryToSendCloud();
+          }
+        });
+        dom.send.addEventListener("click", () => {
+          tryToSendCloud();
+        });
+        dom.send.addEventListener("keydown", event => {
+          if (matchKeyboardEvent(event, "", "enter") || matchKeyboardEvent(event, "", " ")) {
+            event.preventDefault();
+            dom.send.click();
+          }
+        });
+        dom.editor.addEventListener("input", () => {
+          const value = dom.editor.value.trim();
+          if (value != "") {
+            dom.send.classList.add("enabled");
+            dom.send.classList.remove("short-hover");
+            dom.send.tabIndex = 0;
+          }
+          else {
+            dom.send.classList.remove("enabled");
+            dom.send.tabIndex = -1;
+          }
+        });
+      }
+
+      async function startApp() {
+        const matches = window.location.hash.match(/^#([0-9a-f-]{36})(\/([^\/]*))?$/);
+        if (attr("location") == "local" || matches === null) {
+          setSendLocal();
+        }
+        else {
+          userID = matches[1];
+          const placeholderEncoded = matches[3];
+          if (placeholderEncoded !== undefined) {
+            try {
+              dom.editor.placeholder = decodeURIComponent(placeholderEncoded);
+            }
+            catch (err) {}
+          }
+          setPlaceholder = (text = "Add a task to your inbox…") => {
+            window.history.replaceState(null, "", `#${userID}/${encodeURIComponent(text)}`);
+            dom.editor.placeholder = text;
+            return text;
+          };
+          setSendCloud();
+        }
+        dom.send.addEventListener("mouseenter", () => {
+          dom.send.classList.add("short-hover");
+        });
+        dom.send.addEventListener("mouseleave", () => {
+          dom.send.classList.remove("short-hover");
+        });
+        window.addEventListener("storage", () => {
+          document.documentElement.setAttribute("data-theme", localStorage.getItem("ui.theme"));
+        });
+      }
+
+
+      // ******** Initial setup ********
+
+      if (localStorage.getItem("ui.theme") === null) {
+        localStorage.setItem("ui.theme", "system");
+      }
+      document.documentElement.setAttribute("data-theme", localStorage.getItem("ui.theme"));
+      const dom = {
+        popups: {
+          connecting: document.getElementById("popup-connecting"),
+          connected: document.getElementById("popup-connected"),
+          disconnected: document.getElementById("popup-disconnected"),
+          sending: document.getElementById("popup-sending"),
+          failure: document.getElementById("popup-failure")
+        },
+        editor: document.getElementById("editor"),
+        send: document.getElementById("send")
+      };
+      let userID = null;
+      let pgpPublicKeyObj = null;
+      let openpgp;
+      let setPlaceholder;
+      const platformApple = (
+        navigator.platform.startsWith("Mac")
+        || navigator.platform == "iPad"
+        || navigator.platform == "iPhone"
+      );
+      startApp();
+    </script>
+  </body>
+</html>
