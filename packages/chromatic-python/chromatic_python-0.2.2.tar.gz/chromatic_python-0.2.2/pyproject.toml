@@ -1,0 +1,43 @@
+[build-system]
+requires =["setuptools", "setuptools_scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chromatic-python"
+dynamic = ["version", "dependencies"]
+requires-python = ">=3.12"
+authors = [{name = "crypt0lith"}]
+description = "ANSI art image processing and colored terminal text"
+readme = "README.md"
+license = {file = "LICENSE"}
+keywords = ["ansi", "ascii", "art", "font", "image", "terminal", "parser"]
+classifiers = [
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+
+[project.urls]
+Homepage = "https://github.com/crypt0lith/chromatic"
+
+[tool.setuptools_scm]
+write_to = "chromatic/_version.py"
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["chromatic*"]
+
+[tool.setuptools.package-data]
+chromatic = ["data/fonts/*", "data/images/*"]
+
+[tool.black]
+preview = true
+line-length = 100
+skip-magic-trailing-comma = true
+skip-string-normalization = true
+target-version = ["py313"]
