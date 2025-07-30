@@ -1,0 +1,44 @@
+fixtures:
+  - LiveSkipFixture
+
+defaults:
+    ssl: True
+
+tests:
+- name: google
+  url: /
+  status: 302 || 301
+
+- name: follow redirects
+  desc: Confirm redirects are followed when we ask
+  url: /
+  redirects: True
+  status: 200
+
+# Explicit hosts
+- name: google full url
+  url: https://google.com/
+  status: 302 || 301
+
+- name: google russia
+  desc: Test handling of non-utf-8 encoding
+  url: https://www.google.ru/
+
+- name: follow redirects full url
+  desc: Confirm redirects are followed when we ask
+  url: https://google.com
+  redirects: True
+  status: 200
+
+- name: google with HTTP/1.1
+  desc: Test that Google replies with HTTP/1.1
+  url: https://www.google.com/
+  response_headers:
+    http_protocol_version: HTTP/1.1
+
+- name: google with HTTP/2
+  desc: Test that Google replies with HTTP/2
+  url: https://www.google.com/
+  http_version: 2
+  response_headers:
+    http_protocol_version: HTTP/2

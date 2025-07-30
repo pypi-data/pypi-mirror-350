@@ -1,0 +1,53 @@
+name: tests
+on:
+- push
+- pull_request
+- workflow_dispatch
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                include:
+                - python: 3.x
+                  toxenv: pep8
+                - python: 3.9
+                  toxenv: py39
+                - python: "3.10"
+                  toxenv: py310
+                - python: "3.11"
+                  toxenv: py311
+                - python: "3.12"
+                  toxenv: py312
+                - python: "3.13"
+                  toxenv: py313
+                - python: pypy-3.10
+                  toxenv: pypy3
+                - python: 3.9
+                  toxenv: py39-pytest
+                - python: "3.10"
+                  toxenv: py310-pytest
+                - python: "3.11"
+                  toxenv: py311-pytest
+                - python: "3.12"
+                  toxenv: py312-pytest
+                - python: "3.13"
+                  toxenv: py313-pytest
+                - python: "3.13"
+                  toxenv: py313-failskip
+                - python: "3.13"
+                  toxenv: py313-limit
+                - python: "3.13"
+                  toxenv: py313-prefix
+        name: ${{ matrix.toxenv }} on Python ${{ matrix.python }}
+        steps:
+        - uses: actions/checkout@v2
+        - uses: actions/setup-python@v2
+          with:
+              python-version: ${{ matrix.python }}
+        - run: pip install tox
+        - run: tox
+          env:
+              TOXENV: ${{ matrix.toxenv }}
+              # Skip network using tests as they are unreliable
+              GABBI_SKIP_NETWORK: true
