@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход</title>
+    <link rel="stylesheet" href="../static/styles/main.css"/>
+    <link rel="stylesheet" href="../static/styles/auth.css"/>
+</head>
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    <a class="back" href="/"><= Назад</a>
+    <div class="root">
+        <form class="auth" method="POST" action="{{ url_for('routes.login') }}">
+            {{ form.csrf_token }} 
+            <h1>Вход</h1>
+            {{ form.username(placeholder="Логин") }}
+            {{ form.password(placeholder="Пароль") }}
+            {{ form.submit(class="login-button", value="Войти") }}
+            <a href="/registration">Или зарегистрироваться</a>
+        </form>
+    </div>
+</body>
+</html>

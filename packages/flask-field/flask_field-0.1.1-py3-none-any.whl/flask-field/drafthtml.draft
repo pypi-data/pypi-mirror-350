@@ -1,0 +1,291 @@
+.../admin_dashboard.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>admin panel</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>hello, {{ session['username'] }}!</h2>
+        <p>you are logged in as admin.</p>
+        <hr />
+        <div class="row justify-content-between align-items-center">
+            <div class="col-md-6">
+                <a href="{{ url_for('admin.list_users') }}" class="btn btn-primary">view users list</a>
+            </div>
+            <div class="col-md-6 d-flex justify-content-end">
+                <a href="{{ url_for('admin.add_user') }}" class="btn btn-success mr-2">add user</a>
+            </div>
+        </div>
+    </div>
+    <a href="{{ url_for('auth.handle_login') }}" class="btn btn-secondary">logout</a>
+</body>
+</html>
+
+
+
+.../login.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>login</h2>
+        <form method="post">
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+                {{ form.username.label(class="form-label") }}
+                {{ form.username(class="form-control") }}
+            </div>
+            <div class="mb-3">
+                {{ form.password.label(class="form-label") }}
+                {{ form.password(class="form-control") }}
+            </div>
+            <button type="submit" class="btn btn-primary">log in</button>
+        </form>
+    </div>
+</body>
+</html>
+
+
+.../user_dashboard.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>user panel</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>hello, {{ session['username'] }}!</h2>
+        <p>you are logged in as user.</p>
+    </div>
+    <a href="{{ url_for('auth.handle_change_password') }}" class="btn btn-primary">change password</a>
+    <a href="{{ url_for('auth.handle_login') }}" class="btn btn-secondary">logout</a>
+</body>
+</html>
+
+
+.../add_user.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>add user</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>add user</h2>
+        <form method="post">
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+                {{ form.username.label(class="form-label") }}
+                {{ form.username(class="form-control") }}
+                {% if form.username.errors %}
+                    <small class="text-danger">{% for error in form.username.errors %}{{ error }}{% endfor %}</small>
+                {% endif %}
+            </div>
+            <div class="mb-3">
+                {{ form.password.label(class="form-label") }}
+                {{ form.password(class="form-control") }}
+            </div>
+            <div class="mb-3">
+                {{ form.role.label(class="form-label") }}
+                {{ form.role(class="form-select") }}
+            </div>
+            <button type="submit" class="btn btn-primary">add user</button>
+        </form>
+    </div>
+    <a href="{{ url_for('admin.list_users') }}" class="btn btn-secondary">back</a>
+</body>
+</html>
+
+
+
+.../admin_user.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>manage users</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>users list</h2>
+        <a href="{{ url_for('admin.add_user') }}" class="btn btn-primary">add user</a>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>username</th>
+                    <th>role</th>
+                    <th>blocked?</th>
+                    <th>actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.role }}</td>
+                    <td>
+                        {% if user.is_blocked %}
+                            <span class="badge badge-danger">blocked</span>
+                        {% else %}
+                            <span class="badge badge-success">active</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('admin.edit_user', user_id=user.id) }}" class="btn btn-warning">edit</a>
+                        {% if user.is_blocked %}
+                            <a href="{{ url_for('admin.unblock_user', user_id=user.id) }}" class="btn btn-success">unblock</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <a href="{{ url_for('dashboard.show_dashboard') }}" class="btn btn-secondary">back to home</a>
+</body>
+</html>
+
+
+
+.../admin_user.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>manage users</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>users list</h2>
+        <a href="{{ url_for('admin.add_user') }}" class="btn btn-primary">add user</a>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>username</th>
+                    <th>role</th>
+                    <th>blocked?</th>
+                    <th>actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.role }}</td>
+                    <td>
+                        {% if user.is_blocked %}
+                            <span class="badge badge-danger">blocked</span>
+                        {% else %}
+                            <span class="badge badge-success">active</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('admin.edit_user', user_id=user.id) }}" class="btn btn-warning">edit</a>
+                        {% if user.is_blocked %}
+                            <a href="{{ url_for('admin.unblock_user', user_id=user.id) }}" class="btn btn-success">unblock</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <a href="{{ url_for('dashboard.show_dashboard') }}" class="btn btn-secondary">back to home</a>
+</body>
+</html>
+
+
+
+.../change_password.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>change password</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>change password</h2>
+        <form method="post">
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+                {{ form.current_password.label(class="form-label") }}
+                {{ form.current_password(class="form-control") }}
+            </div>
+            <div class="mb-3">
+                {{ form.new_password.label(class="form-label") }}
+                {{ form.new_password(class="form-control") }}
+            </div>
+            <div class="mb-3">
+                {{ form.confirm_password.label(class="form-label") }}
+                {{ form.confirm_password(class="form-control") }}
+            </div>
+            <button type="submit" class="btn btn-primary">change password</button>
+        </form>
+    </div>
+    <a href="{{ url_for('dashboard.show_dashboard') }}" class="btn btn-secondary">logout</a>
+</body>
+</html>
+
+
+.../edit_user.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>edit user</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>edit user “{{ user.username }}”</h2>
+        <form method="post">
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+                {{ form.username.label(class="form-label") }}
+                {{ form.username(class="form-control") }}
+                {% if form.username.errors %}
+                    <small class="text-danger">{% for error in form.username.errors %}{{ error }}{% endfor %}</small>
+                {% endif %}
+            </div>
+            <div class="mb-3">
+                {{ form.password.label(class="form-label") }}
+                {{ form.password(class="form-control") }}
+            </div>
+            <div class="mb-3">
+                {{ form.role.label(class="form-label") }}
+                {{ form.role(class="form-select") }}
+            </div>
+            <button type="submit" class="btn btn-primary">save changes</button>
+        </form>
+    </div>
+    <a href="{{ url_for('admin.list_users') }}" class="btn btn-secondary">back</a>
+</body>
+</html>
