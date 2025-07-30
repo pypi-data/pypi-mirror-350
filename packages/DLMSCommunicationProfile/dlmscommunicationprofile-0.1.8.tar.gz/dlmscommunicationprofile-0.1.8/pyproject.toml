@@ -1,0 +1,72 @@
+[build-system]
+requires = [
+    "setuptools",
+    "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project]
+name = "DLMSCommunicationProfile"
+version = "0.1.8"
+authors = [
+    {name="Serj Kotilevski", email="youserj@outlook.com"}
+]
+dependencies = [
+    "DLMS-SPODES >= 0.84, < 0.87",
+]
+description="dlms-spodes"
+readme = "README.md"
+requires-python = ">=3.12"
+keywords=["dlms", "greenbook"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.optional-dependencies]
+dev = [
+    "mypy>=1.5.0",
+    "ruff>=0.11",
+    "types-requests"
+]
+
+[tool.mypy]
+exclude = [
+    "build/*",
+]
+strict = true
+ignore_missing_imports = true
+disallow_any_generics = true
+explicit_package_bases = true
+
+[tool.ruff]
+src = ["src"]
+line-length = 150
+preview = true
+exclude = [
+    ".git",
+    ".mypy_cache",
+    ".tox",
+    ".venv",
+    "__pycache__",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+]
+include = [
+    "src/*/*.py",
+    "examples/*/*.py",
+    "test/test_*.py"
+]
+
+[tool.ruff.lint]
+    ignore = ["SIM108"]  # ternary
+    select = [
+        "E", "F", "W", "C", "Q", "ANN", "ARG", "DTZ", "FBT", "NPY", "PGH", "PIE", "SIM", "RET", "TYP", "TCH", "YTT",
+        # "TRY",
+    ]
+    #extend-select = ["D"]
