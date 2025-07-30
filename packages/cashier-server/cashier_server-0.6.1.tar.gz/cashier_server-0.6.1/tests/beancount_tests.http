@@ -1,0 +1,21 @@
+// Beancount queries test
+// # = %23, URL-encoded
+
+
+@server=http://localhost:3000
+
+###
+#GET {{server}}/?query=balances
+###
+# Accounts
+GET {{server}}/?query=SELECT account FROM %23accounts WHERE close IS NULL
+#GET {{server}}/?query=select distinct account order by account
+###
+# Payees
+GET {{server}}/?query=SELECT COALESCE(payee, narration) as payee FROM transactions WHERE date &gt;= 2023-02-01 ORDER BY payee
+###
+# Account Balances
+GET {{server}}/?query=SELECT account, sum(position) WHERE account ~ 'Assets:Fixed' ORDER BY account
+###
+# Running Balance
+GET {{server}}/?query=select date, account, position, balance WHERE account ~ 'Assets:'
