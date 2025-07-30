@@ -1,0 +1,15 @@
+import bhpy as bh
+
+spcm = bh.BHConnect()
+spcm.connect_spcm_instance(service_id=3)
+spcm.command("setparameter:colorrange,1200,2800")
+input()
+spcm.command("setparameter:colorrange,800,1200")
+input()
+spcm.command("setparameter:colorrange,1800,2000")
+input()
+spcm.command("setparameter:colorrange,200,900")
+input()
+spcm.command("setparameter:colorrange,100,910")
+input()
+spcm.command("setparameter:colorrange,400,410")
