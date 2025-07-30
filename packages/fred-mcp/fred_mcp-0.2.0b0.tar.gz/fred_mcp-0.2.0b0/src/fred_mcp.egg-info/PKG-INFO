@@ -1,0 +1,123 @@
+Metadata-Version: 2.4
+Name: fred-mcp
+Version: 0.2.0b0
+Summary: A fully-featured FRED MCP server.
+Author-email: Zachary Spar <zachspar@gmail.com>
+Project-URL: Homepage, https://github.com/zachspar/fred-mcp
+Project-URL: Bug Tracker, https://github.com/zachspar/fred-mcp/issues
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Financial and Insurance Industry
+Classifier: Intended Audience :: Science/Research
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3.14
+Classifier: Programming Language :: Python :: 3.15
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: fastmcp~=2.3.4
+Requires-Dist: fred-py-api~=1.2.0
+Dynamic: license-file
+
+# Federal Reserve Economic Data MCP Server
+
+> [!NOTE]
+> This open-source project is not affiliated with, sponsored by, or endorsed by the *Federal Reserve* or the *Federal Reserve Bank of St. Louis*. "FRED" is a registered trademark of the *Federal Reserve Bank of St. Louis*, used here for descriptive purposes only.
+
+A fully-featured Model Context Protocol (`MCP`) server for accessing Federal Reserve Economic Data ([FRED®](https://fred.stlouisfed.org/)) financial datasets.
+
+This MCP server uses [fred-py-api](https://github.com/zachspar/fred-py-api) under the hood.
+
+## Installation
+
+```bash
+pip install fred-mcp
+```
+
+## Integration
+
+Easily use this MCP Server in a desktop client of your choosing.
+
+### Recommended
+
+#### [Claude Desktop](https://claude.ai/download)
+```json
+{
+  "mcpServers": {
+    "FRED MCP Server": {
+      "command": "/path/to/fred-mcp",
+      "env": {
+        "FRED_API_KEY": "<your api key>"
+      }
+    }
+  }
+}
+```
+
+#### [5ire](https://5ire.app/)
+```json
+{
+  "name": "FRED MCP Server",
+  "description": "Get FRED data via MCP",
+  "command": "/path/to/fred-mcp",
+  "env": {
+    "FRED_API_KEY": "<your api key>"
+  },
+  "isActive": true,
+  "key": "FredMcpServer",
+  "type": "local"
+}
+```
+
+#### [`mcphost`](https://github.com/mark3labs/mcphost)
+```json
+{
+  "mcpServers": {
+    "fred": {
+      "command": "/path/to/fred-mcp",
+      "env": {
+        "FRED_API_KEY": "<your api key>"
+      }
+    }
+  }
+}
+```
+
+
+## Run Server
+
+### Command-Line
+
+```bash
+export FRED_API_KEY=your_api_key
+fred-mcp
+```
+
+### Docker
+
+> [!TIP]
+> You can also use the `docker` image to run this MCP server with any of the integration clients.
+>
+> ```json
+> {
+>   "command": "docker",
+>   "args": [
+>     "run",
+>     "-i",
+>     "--rm",
+>     "-e", "MCP_SERVER_TRANSPORT=stdio",
+>     "-e", "FRED_API_KEY=your_api_key",
+>     "ghcr.io/zachspar/fred-mcp/fred-mcp-server:latest"
+>   ]
+> }
+> ```
+
+```bash
+docker run -d -p 8000:8000 -e FRED_API_KEY=your_api_key --name fred-mcp-server ghcr.io/zachspar/fred-mcp/fred-mcp-server:latest
+```
