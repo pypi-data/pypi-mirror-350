@@ -1,0 +1,52 @@
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "coverage_threshold"
+version = "0.6.2"
+authors = [{ name = "Dean Way", email = "deanwaydev@gmail.com" }]
+description = "Tools for coverage threshold limits"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+dependencies = ["toml >= 0.10.2"]
+
+[project.scripts]
+coverage-threshold = "coverage_threshold.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/DeanWay/coverage-threshold"
+Issues = "https://github.com/DeanWay/coverage-threshold/issues"
+
+[tool.isort]
+profile = "black"
+src_paths = ["src", "tests"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+
+[tool.coverage-threshold]
+line_coverage_min = 0
+file_line_coverage_min = 100
+file_branch_coverage_min = 100
+
+[tool.coverage-threshold.modules."src/coverage_threshold/cli/"]
+file_line_coverage_min = 0
+file_branch_coverage_min = 0
+
+[tool.coverage-threshold.modules."src/coverage_threshold/__main__.py"]
+file_line_coverage_min = 0
+file_branch_coverage_min = 0
