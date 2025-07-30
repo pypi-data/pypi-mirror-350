@@ -1,0 +1,109 @@
+# ────────────────────────────────────────────────────────────────────────────────
+#  Orka graph: tests READ + WRITE memory paths in the same run
+# ────────────────────────────────────────────────────────────────────────────────
+orchestrator:
+  id: temporal_classification_memory_check
+  strategy: parallel
+  queue: orka:temporal_classification_mem
+  agents:
+    - memory_recall
+    - detect_change
+    - fork_temporal
+    - join_paths
+    - synthesize_timeline_answer
+    - memory_store
+
+agents:
+  # ── 1. READ from memory: pull any prior summaries about this subject ────────
+  - id: memory_recall
+    type: memory
+    config:
+      operation: read
+    namespace: classification_history
+    prompt: |
+      Retrieve any stored memories about how the subject "{{ input }}" was classified or understood in the past.
+      Return "NONE" if nothing matches.
+  # ── 2. Detect the pivot year ────────────────────────────────────────────────
+  - id: detect_change
+    type: openai-answer
+    prompt: |
+      Given the user query, identify if any important change on switch/classification/understood/definition or any kind
+      of adjective associable to the query in the history.
+      If so, return the **date** when this change occurred.
+      Format your output strictly as: DD/MM/YYYY.
+      ## QUERY: {{ input }}
+
+      ## Constraints:
+        Only return a numerical date in the format DD/MM/YYYY
+
+  # ── 3. Fork the timeline reasoning (before / after) ─────────────────────────
+  - id: fork_temporal
+    type: fork
+    targets:
+      - [generate_before_query, search_before]
+      - [generate_after_query, search_after]
+
+  - id: generate_before_query
+    type: openai-answer
+    prompt: |
+      Based on the user's question, the detected pivot change year, and any recalled memory, write a **search engine query**
+      to find how the subject was classified or understood **before that year**.
+      Use phrasing like: "how was [subject] classified before [year]?"
+      ## SUBJECT: {{ input }}
+      ## YEAR: {{ previous_outputs.detect_change }}
+      ## MEMORY: {{ previous_outputs.memory_recall }}
+
+      ## Constraints:
+        Only return the search sentence
+
+  - id: generate_after_query
+    type: openai-answer
+    prompt: |
+      Based on the user's question, the detected pivot change year, and any recalled memory, write a **search engine query**
+      to find how the subject was classified or understood **after that year**.
+      Use phrasing like: "how was [subject] classified after [year]?"
+      ## SUBJECT: {{ input }}
+      ## YEAR: {{ previous_outputs.detect_change }}
+      ## MEMORY: {{ previous_outputs.memory_recall }}
+
+      ## Constraints:
+        Only return the search sentence
+
+  - id: search_before
+    type: duckduckgo
+    prompt: "{{ previous_outputs.generate_before_query }}"
+
+  - id: search_after
+    type: duckduckgo
+    prompt: "{{ previous_outputs.generate_after_query }}"
+
+  # ── 4. Merge the forked branches ────────────────────────────────────────────
+  - id: join_paths
+    type: join
+    group: fork_temporal
+
+  # ── 5. Produce the final timeline summary, including prior memory context ───
+  - id: synthesize_timeline_answer
+    type: openai-answer
+    prompt: |
+      Based on the query, the year, any relevant past memories, and the extra data from both the before and after searches,
+      write a compelling summary explaining:
+      - What the subject was classified/understood/defined or any adjective associable to the query as **before** the change
+      - What it became **after** the change
+      - The context and significance of this shift
+      ## QUERY: {{ input }}
+      ## YEAR: {{ previous_outputs.detect_change }}
+      ## MEMORY: {{ previous_outputs.memory_recall }}
+      ## EXTRA DATA: {{ previous_outputs }}
+
+  # ── 6. WRITE the new knowledge back to memory for future runs ───────────────
+  - id: memory_store
+    type: memory
+    config:
+      operation: write
+    namespace: classification_history
+    key_template: "{{ input }}" # subject becomes the key
+    prompt: "{{ previous_outputs.synthesize_timeline_answer }}"
+    metadata:
+      year: "{{ previous_outputs.detect_change }}"
+      source: "timeline_summary"
