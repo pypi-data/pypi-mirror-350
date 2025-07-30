@@ -1,0 +1,77 @@
+Metadata-Version: 2.3
+Name: lockfale-connectors
+Version: 1.4.1
+Summary: Connectors for Kafka, MQTT, and PostgreSQL. These connectors are specifically for use in the Cyberpartner applications.
+License: MIT
+Author: Alex Persinger
+Author-email: nutcrunch@cackalackycon.org
+Requires-Python: >=3.12,<4.0
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Dist: jsonschema
+Requires-Dist: kafka-python
+Requires-Dist: paho-mqtt (>=2.1,<2.2)
+Requires-Dist: pandas (==2.2)
+Requires-Dist: psycopg[binary] (>=3.2,<3.3)
+Requires-Dist: pydantic
+Requires-Dist: pydantic-settings
+Description-Content-Type: text/markdown
+
+# Cyberpartner Connectors
+
+## Connectors Package
+
+This repository contains a collection of connectors for Kafka, MQTT, and PostgreSQL that can be used across any microservice
+in relation to Cyberpartner applications.
+
+There is specific enrichment and schema validation for Cyberpartner routing with Kafka.
+
+The MQTT and PGSQL connectors are fairly generic and can be used in any project, but the kafka wrapper is not.
+
+### Connectors Included
+
+- **Kafka**: Kafka producer and consumer connectors
+- **MQTT**: MQTT client, publisher, and subscriber connectors
+- **PostgreSQL**: PostgreSQL database connector
+
+### Installation from AWS CodeArtifact
+
+```bash
+# Configure poetry to use AWS CodeArtifact
+export CODEARTIFACT_AUTH_TOKEN=$(aws codeartifact get-authorization-token \
+  --domain YOUR_DOMAIN \
+  --domain-owner YOUR_ACCOUNT_ID \
+  --query authorizationToken \
+  --output text)
+
+export CODEARTIFACT_REPO_URL=$(aws codeartifact get-repository-endpoint \
+  --domain YOUR_DOMAIN \
+  --domain-owner YOUR_ACCOUNT_ID \
+  --repository YOUR_REPO \
+  --format pypi \
+  --query repositoryEndpoint \
+  --output text)
+
+# Configure Poetry
+poetry config repositories.codeartifact $CODEARTIFACT_REPO_URL
+poetry config http-basic.codeartifact aws $CODEARTIFACT_AUTH_TOKEN
+
+# Add the package to your project
+poetry add lockfaleconnectors
+```
+
+# Publish to PyPi
+```bash
+poetry build
+poetry config pypi-token.pypi <your-token-here>
+poetry publish --build
+
+
+```
+
+# TODO
+ - Update required / expected environment variables
+ - Use confluent-kafka
+ - Update Psycopg to v3.3
