@@ -1,0 +1,70 @@
+import re, gzip
+import vcfcli.clients.reader as reader
+import vcfcli.conf.read_config as config
+from vcfcli.tools import parse_vcf
+import vcfcli
+import vcfcli.conf.vcf_config
+
+
+class FASTAReader(reader.Reader):
+    """
+    Reader for reading data in FASTA format
+    """
+
+    def read_file(self, infile, file_reader=None, genome_version=None, columns=None):
+        """
+
+        :param infile:
+        :param file_reader:
+        :param genome_version:
+        :param columns:
+        :return:
+        """
+
+        if type(infile) is str:
+            file_extension = vcfcli.tools.get_file_type(infile)
+            print(file_extension)
+            if file_reader is not None:
+                if file_reader == 'gtf':
+                    infile = open(infile, 'r')
+                else:
+                    infile = open(infile, 'r')
+            else:
+                if file_extension == 'gz':
+                    infile = gzip.open(infile, 'rt')
+                else:
+                    infile = open(infile, 'r')
+
+        json_obj = vcfcli.BiomarkerFrame()
+        json_obj.header_lines = []
+        json_obj.data = {}
+        json_obj.info_lines = {}
+        json_obj.genome_version = genome_version
+        variant_count = 0
+        line_count = 0
+        json_obj.variants = {}
+        json_obj.format="fasta"
+
+        active_seq_id=""
+
+        for line in infile:
+            if line.startswith('>'):
+                seq_id = line.lstrip(">").rstrip("\n")
+                json_obj.data[seq_id] = {}
+                active_seq_id = seq_id
+                continue
+            else:
+                variant_count += 1
+                line_count += 1
+
+            if "sequence" not in json_obj.data[active_seq_id]:
+                json_obj.data[active_seq_id]["sequence"] = line.rstrip("\n")
+            else:
+                # Append amino acid sequence to existing sequence
+                json_obj.data[active_seq_id]["sequence"] += line.rstrip("\n")
+
+        infile.close()
+
+        return json_obj
+
+
