@@ -1,0 +1,99 @@
+<footer
+  class="py-12 px-4 sm:px-6 lg:px-8 bg-gray-50 text-gray-800 font-inter"
+  id="footer"
+  aria-label="Footer"
+>
+  <div class="max-w-5xl mx-auto text-center">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Brand -->
+      <div class="md:col-span-3 mb-8">
+        <a
+          href="{{ sections.footer.brand.href | default('#') }}"
+          class="text-3xl font-poppins font-bold text-emerald-500 mb-4 block"
+          >{{ sections.footer.brand.name }}</a
+        >
+        <p class="text-gray-600 text-sm max-w-md mx-auto">
+          {{ sections.footer.brand.description.text }}
+        </p>
+        {% if sections.footer.brand.socialLinks is defined %}
+        <div class="flex justify-center mt-4 space-x-4">
+          {% for social in sections.footer.brand.socialLinks.links %}
+          <a
+            href="{{ social.url }}"
+            class="w-12 h-12 flex items-center justify-center bg-emerald-100 rounded-full hover:bg-emerald-200 transition-transform transform hover:scale-110 hover:shadow-lg"
+            aria-label="{{ social.platform }}"
+          >
+            <i class="{{ social.icon }} text-xl text-emerald-600"></i>
+          </a>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Navigation Columns -->
+      {% for column in sections.footer.navigation %}
+      <div>
+        <h3 class="text-lg font-poppins font-semibold text-gray-800 mb-4">
+          {{ column.title }}
+        </h3>
+        <ul class="space-y-2">
+          {% for link in column.links %}
+          <li>
+            <a
+              href="{{ link.url }}"
+              class="text-gray-600 text-sm hover:text-emerald-500 transition-colors"
+              aria-label="{{ link.ariaLabel | default(link.label) }}"
+              >{{ link.label }}</a
+            >
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endfor %}
+
+      <!-- Subscribe -->
+      {% if sections.footer.subscribe is defined %}
+      <div class="md:col-span-3 mt-8">
+        <h3 class="text-lg font-poppins font-semibold text-gray-800 mb-4">
+          {{ sections.footer.subscribe.title }}
+        </h3>
+        <form class="flex justify-center gap-3 max-w-md mx-auto">
+          <input
+            type="email"
+            placeholder="{{ sections.footer.subscribe.input.placeholder }}"
+            class="px-4 py-2 rounded-lg border border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none text-gray-800 flex-1"
+          />
+          <button
+            type="submit"
+            class="px-6 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-transform transform hover:scale-105"
+          >
+            {{ sections.footer.subscribe.button.text }}
+          </button>
+        </form>
+        <p class="text-gray-600 text-sm mt-3 max-w-md mx-auto">
+          {{ sections.footer.subscribe.description.text }}
+        </p>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Bottom Footer -->
+    <div class="border-t border-gray-200 mt-10 pt-6">
+      <div class="flex flex-wrap justify-between items-center gap-4">
+        <p class="text-gray-600 text-sm">
+          {{ sections.footer.bottom.copyright }}
+        </p>
+        {% if sections.footer.paymentMethods is defined %}
+        <div class="flex items-center gap-3">
+          {% for payment in sections.footer.paymentMethods %}
+          <i
+            class="{{ payment.icon }} text-2xl text-gray-600"
+            aria-label="{{ payment.name }}"
+          ></i>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</footer>

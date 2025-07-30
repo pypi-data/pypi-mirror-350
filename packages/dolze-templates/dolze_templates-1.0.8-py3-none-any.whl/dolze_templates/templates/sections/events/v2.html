@@ -1,0 +1,43 @@
+<section id="events" class="bg-surface py-24">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    
+    <div class="text-center mb-16" data-aos="fade-up">
+      <h2 class="text-3xl lg:text-4xl font-serif font-bold text-gray-900">
+        {{ sections.events.title }}
+      </h2>
+    </div>
+
+    
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {% for event in sections.events.items %}
+      <div
+        class="bg-white border rounded-lg shadow-sm hover:shadow-md transition overflow-hidden"
+        data-aos="fade-up"
+        data-aos-delay="{{ loop.index * 100 }}"
+      >
+        {% if event.media %}
+        <img
+          src="{{ event.media.src }}"
+          alt="{{ event.media.alt }}"
+          class="w-full h-48 object-cover"
+        />
+        {% endif %}
+        <div class="p-6 space-y-3">
+          <h3 class="text-xl font-semibold text-gray-900">{{ event.title }}</h3>
+          <p class="text-sm text-muted">
+            {{ event.date }} • {{ event.location }}
+          </p>
+          <p class="text-sm text-gray-600">{{ event.description }}</p>
+          {% if event.url %}
+          <a
+            href="{{ event.url }}"
+            class="inline-block text-sm text-accent font-medium hover:underline"
+            >Learn more →</a
+          >
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>

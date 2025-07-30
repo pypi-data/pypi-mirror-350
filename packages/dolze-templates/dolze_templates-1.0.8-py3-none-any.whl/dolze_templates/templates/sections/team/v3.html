@@ -1,0 +1,43 @@
+
+<section id="team" class="bg-gray-50 py-24">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="text-center mb-16" data-aos="fade-up">
+      <h2 class="text-3xl font-bold text-gray-900">
+        {{ sections.team.title }}
+      </h2>
+    </div>
+
+    <div class="grid gap-12 sm:grid-cols-2 lg:grid-cols-3">
+      {% for member in sections.team.members %}
+      <div
+        class="bg-white p-6 rounded-xl shadow-md text-center"
+        data-aos="fade-up"
+        data-aos-delay="{{ loop.index * 100 }}"
+      >
+        <img
+          src="{{ member.photo }}"
+          alt="{{ member.name }}"
+          class="mx-auto w-24 h-24 object-cover rounded-full shadow mb-4"
+        />
+        <h3 class="text-lg font-semibold text-gray-900">{{ member.name }}</h3>
+        <p class="text-sm text-gray-500">{{ member.role }}</p>
+        <p class="text-sm text-gray-600 mt-2">{{ member.bio }}</p>
+
+        {% if member.socialLinks %}
+        <div class="mt-4 flex justify-center gap-4">
+          {% for link in member.socialLinks %}
+          <a
+            href="{{ link.url }}"
+            target="_blank"
+            class="text-gray-500 hover:text-{{ settings.theme.colors.primary }}"
+          >
+            <i class="ri-{{ link.platform }}-fill text-xl"></i>
+          </a>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>

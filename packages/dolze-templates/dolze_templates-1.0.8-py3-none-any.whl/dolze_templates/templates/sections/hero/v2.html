@@ -1,0 +1,44 @@
+<section
+  id="hero"
+  class="relative flex items-center justify-center min-h-screen overflow-hidden bg-gray-50"
+  style="
+    background-image: url('{{sections.hero.heroImage.src}}');
+    background-size: cover;
+    background-position: center;
+  "
+>
+  <!-- Dark overlay for contrast -->
+  <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+
+  <!-- Animated decorative blobs -->
+  <div
+    class="absolute top-10 left-10 w-32 h-32 bg-primary rounded-full opacity-30 animate-pulse"
+  ></div>
+  <div
+    class="absolute bottom-20 right-20 w-40 h-40 bg-secondary rounded-full opacity-20 animate-ping"
+  ></div>
+
+  <!-- Main content -->
+  <div class="relative text-center px-6 max-w-3xl">
+    <h1
+      class="text-4xl sm:text-6xl font-extrabold text-white leading-tight mb-6 motion-safe:animate-fadeInUp"
+    >
+      {{sections.hero.title}}
+    </h1>
+    <p
+      class="text-lg sm:text-2xl text-gray-200 mb-8 motion-safe:animate-fadeInUp delay-200"
+    >
+      {{sections.hero.description}}
+    </p>
+    <div class="flex flex-wrap justify-center gap-4">
+      {% for cta in sections.hero.ctaButtons %}
+      <a
+        href="{{cta.url}}"
+        class="relative px-6 py-3 bg-primary text-white rounded-lg shadow-lg transform hover:scale-105 transition duration-300 motion-safe:animate-fadeInUp delay-400"
+      >
+        {{cta.label}}
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>

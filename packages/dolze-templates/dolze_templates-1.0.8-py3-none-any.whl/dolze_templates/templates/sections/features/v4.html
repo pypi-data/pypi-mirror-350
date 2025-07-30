@@ -1,0 +1,76 @@
+<section
+  class="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-gradient-to-br from-gray-50 to-blue-50 font-inter"
+  aria-labelledby="features-heading"
+>
+  <!-- Header -->
+  <div class="max-w-2xl mb-12">
+    <h2
+      id="features-heading"
+      class="text-3xl sm:text-4xl font-poppins font-bold text-blue-600"
+    >
+      {{ sections.features.title }}
+    </h2>
+    {% if sections.features.subtitle %}
+    <p class="mt-4 text-lg text-gray-600">{{ sections.features.subtitle }}</p>
+    {% endif %}
+  </div>
+
+  <!-- Features Container -->
+  <div class="flex flex-wrap gap-8 relative">
+    {% for feature in sections.features.items %}
+    <article
+      class="bg-white rounded-2xl p-6 w-full max-w-sm relative z-10 shadow-lg transform {% if loop.index is odd %}-rotate-1{% else %}rotate-1 mt-12{% endif %} hover:rotate-0 hover:-translate-y-2 transition-all duration-300"
+      aria-labelledby="feature-{{ loop.index }}"
+    >
+      <div
+        class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4 transform hover:scale-110 transition-transform"
+      >
+        {% if feature.media.type == 'image' %}
+        <img
+          src="{{ feature.media.src }}"
+          alt="{{ feature.media.alt }}"
+          class="w-6 h-6 object-contain"
+        />
+        {% else %}
+        <div class="w-6 h-6 bg-gray-200 rounded"></div>
+        {% endif %}
+      </div>
+      <h3
+        id="feature-{{ loop.index }}"
+        class="text-xl font-poppins font-semibold text-gray-800 mb-3"
+      >
+        {{ feature.title }}
+      </h3>
+      <p class="text-gray-600 text-sm mb-4">{{ feature.subtitle }}</p>
+      {% if feature.cta %}
+      <a
+        href="{{ feature.cta.url }}"
+        class="inline-flex items-center gap-2 text-blue-500 text-sm font-medium bg-blue-50 px-4 py-2 rounded-full hover:bg-blue-100 hover:translate-x-1 transition-all"
+        {%
+        if
+        feature.cta.ariaLabel
+        %}aria-label="{{ feature.cta.ariaLabel }}"
+        {%
+        endif
+        %}
+      >
+        {{ feature.cta.label }}
+        <svg
+          class="w-4 h-4 transform group-hover:translate-x-1 transition-transform"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9 5l7 7-7 7"
+          />
+        </svg>
+      </a>
+      {% endif %}
+    </article>
+    {% endfor %}
+  </div>
+</section>

@@ -1,0 +1,101 @@
+<section
+  id="cta"
+  class="relative py-24 overflow-hidden bg-gray-100 font-inter"
+  aria-labelledby="cta-heading"
+>
+  <div class="absolute inset-0">
+    {% if sections.cta.background.overlay %}
+    <div
+      class="absolute inset-0 bg-gradient-to-r from-{{ settings.theme.colors.primary }}/40 to-{{ settings.theme.colors.accent }}/20"
+    ></div>
+    {% endif %} {% if sections.cta.background.media %}
+    <img
+      src="{{ sections.cta.background.media.src }}"
+      class="w-full h-full object-cover opacity-30"
+      alt="CTA Background"
+    />
+    {% endif %}
+  </div>
+  <div class="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <h2
+      id="cta-heading"
+      class="text-4xl sm:text-5xl font-bold text-gray-900 mb-6"
+    >
+      {{ sections.cta.title }}
+    </h2>
+    <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+      {{ sections.cta.description }}
+    </p>
+    <div class="flex justify-center gap-4 flex-wrap">
+      {% if sections.cta.ctaButtons %} {% for button in sections.cta.ctaButtons
+      %}
+      <button
+        class="bg-{{ settings.theme.colors.primary }} text-white px-6 py-3 rounded-md text-base font-medium hover:bg-{{ settings.theme.colors.primary }}/90 transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-{{ settings.theme.colors.primary }} focus:ring-offset-2"
+        href="#"
+      >
+        {{ button.text }}
+      </button>
+      {% endfor %} {% endif %}
+    </div>
+    {% if sections.cta.stats %}
+    <div class="mt-10 flex justify-center gap-8 flex-wrap">
+      {% for stat in sections.cta.stats %}
+      <div class="text-center">
+        <div class="text-3xl font-bold text-gray-900">{{ stat.value }}</div>
+        <div class="text-gray-600 text-sm">{{ stat.label }}</div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %} {% if sections.cta.featuredContent %}
+    <div class="mt-12 max-w-lg mx-auto relative">
+      {% if sections.cta.featuredContent.type == 'image' %}
+      <img
+        src="{{ sections.cta.featuredContent.media.src }}"
+        class="rounded-xl shadow-xl transform hover:scale-105 transition-transform duration-600 ease-out"
+        alt="{{ sections.cta.featuredContent.media.alt }}"
+      />
+      {% elif sections.cta.featuredContent.type == 'video' %}
+      <div class="relative aspect-video rounded-xl overflow-hidden shadow-xl">
+        <video
+          class="w-full h-full object-cover"
+          autoplay
+          loop
+          muted
+          playsinline
+        >
+          <source
+            src="{{ sections.cta.featuredContent.media.src }}"
+            type="video/mp4"
+          />
+          Your browser does not support the video tag.
+        </video>
+      </div>
+      {% endif %} {% if sections.cta.featuredContent.badge %}
+      <div
+        class="absolute -bottom-4 -right-4 bg-white p-3 rounded-md shadow-md transform hover:scale-110 transition-transform duration-300"
+      >
+        <div class="flex items-center gap-3">
+          {% if sections.cta.featuredContent.badge.icon %}
+          <div
+            class="w-8 h-8 bg-{{ settings.theme.colors.primary }}/10 rounded-full flex items-center justify-center"
+          >
+            <i
+              class="{{ sections.cta.featuredContent.badge.icon }} text-lg text-{{ settings.theme.colors.primary }}"
+            ></i>
+          </div>
+          {% endif %}
+          <div>
+            <div class="font-semibold text-gray-900 text-sm">
+              {{ sections.cta.featuredContent.badge.title }}
+            </div>
+            <div class="text-xs text-gray-600">
+              {{ sections.cta.featuredContent.badge.description }}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</section>

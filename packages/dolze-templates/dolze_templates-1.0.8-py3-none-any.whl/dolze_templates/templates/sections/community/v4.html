@@ -1,0 +1,58 @@
+<section id="cta-c" class="py-20 bg-white flex flex-col items-center">
+  <h2 class="text-2xl sm:text-3xl font-semibold text-gray-800 mb-3">
+    {{ sections.community.title }}
+  </h2>
+  <p class="text-center text-gray-600 mb-8 max-w-md">
+    {{ sections.community.subtitle }}
+  </p>
+
+  <form
+    id="subscribeFormC"
+    class="flex items-center w-full max-w-md border border-gray-300 rounded-full overflow-hidden"
+  >
+    <span class="px-4 text-gray-400">
+      <!-- simple mail icon -->
+      <svg
+        class="w-6 h-6"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8m0 8V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2h14a2 2 0 002-2z"
+        />
+      </svg>
+    </span>
+    <input
+      type="email"
+      placeholder="Email address"
+      class="flex-1 px-2 py-3 focus:outline-none"
+      required
+    />
+    <button
+      type="submit"
+      class="px-6 py-3 bg-secondary text-white font-medium hover:bg-secondary/90 transition"
+    >
+      {{ sections.community.cta.label }}
+    </button>
+  </form>
+  <p id="subscribeMsgC" class="hidden mt-4 text-green-600">
+    🎉 Welcome aboard!
+  </p>
+</section>
+
+<script>
+  document
+    .getElementById("subscribeFormC")
+    .addEventListener("submit", function (e) {
+      e.preventDefault();
+      const email = this.querySelector("input").value.trim();
+      if (/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) {
+        document.getElementById("subscribeMsgC").classList.remove("hidden");
+        this.reset();
+      }
+    });
+</script>

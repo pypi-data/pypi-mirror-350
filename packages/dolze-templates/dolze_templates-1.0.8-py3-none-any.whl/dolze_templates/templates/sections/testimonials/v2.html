@@ -1,0 +1,53 @@
+<section id="testimonials" class="py-24">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-5xl font-bold text-center mb-6">
+        {{sections.testimonials.title}}
+      </h2>
+      <p class="text-xl text-gray-600 text-center mb-16 max-w-3xl mx-auto">
+        {{sections.testimonials.subtitle}}
+      </p>
+    </div>
+    <div
+      class="columns-1 md:columns-2 lg:columns-3 gap-8 max-w-6xl mx-auto"
+      style="column-gap: 2rem"
+    >
+      {% for item in sections.testimonials.items %}
+      <div class="mb-8 break-inside-avoid px-4">
+        <div class="bg-primary/10 p-6 rounded-lg shadow-lg">
+          <div class="flex items-center mb-4">
+            <div
+              class="w-12 h-12 rounded-full bg-gray-200 mr-4 flex items-center justify-center relative overflow-hidden"
+            >
+              {% if item.avatar %}
+              <img
+                src="{{ item.avatar }}"
+                alt="{{ item.author }}"
+                class="w-full h-full object-cover"
+              />
+              {% else %}
+              <span class="text-lg font-semibold text-gray-600">
+                {{ item.author[0] }}{% if item.author.split(' ').length > 1 %}{{
+                item.author.split(' ')[1][0] }}{% endif %}
+              </span>
+              {% endif %}
+            </div>
+            <div>
+              <h4 class="font-semibold">{{item.author}}</h4>
+              <p class="text-sm text-gray-600">{{item.role}}</p>
+            </div>
+          </div>
+          <p class="text-gray-600 mb-4">{{item.quote}}</p>
+          <div class="flex text-secondary">
+            {% for i in range(0, item.rating) %}
+            <i class="ri-star-fill"></i>
+            {% endfor %} {% for i in range(item.rating, 5) %}
+            <i class="ri-star-line"></i>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>

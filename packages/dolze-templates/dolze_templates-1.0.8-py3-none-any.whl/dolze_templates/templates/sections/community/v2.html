@@ -1,0 +1,67 @@
+<section
+  id="community"
+  class="relative pt-32 pb-24 bg-gradient-to-r from-indigo-600 to-purple-600 overflow-hidden"
+>
+  <!-- Overlap card -->
+  <div
+    class="absolute inset-x-0 top-0 transform -translate-y-1/3 flex justify-center"
+  >
+    <div
+      class="bg-white rounded-3xl shadow-2xl p-8 sm:p-12 w-11/12 md:w-2/3 lg:w-1/2"
+    >
+      <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 text-center mb-4">
+        {{ sections.community.title }}
+      </h2>
+      <p class="text-gray-600 text-center mb-8">
+        {{ sections.community.subtitle }}
+      </p>
+      <form
+        id="subscribeFormA"
+        class="flex flex-col sm:flex-row gap-4 justify-center"
+      >
+        <input
+          type="email"
+          placeholder="Your email address"
+          class="flex-1 px-6 py-3 border border-gray-300 rounded-full focus:outline-none"
+          required
+        />
+        <button
+          type="submit"
+          class="px-8 py-3 bg-indigo-600 text-white font-semibold rounded-full hover:bg-indigo-700 transition"
+        >
+          {{ sections.community.cta.label }}
+        </button>
+      </form>
+      <p id="subscribeMsgA" class="hidden mt-4 text-center text-green-600">
+        ✅ Thanks for joining!
+      </p>
+    </div>
+  </div>
+
+  <!-- Bottom wave -->
+  <div
+    class="absolute bottom-0 left-0 w-full overflow-hidden leading-none rotate-180"
+  >
+    <svg
+      class="block w-full h-16"
+      xmlns="http://www.w3.org/2000/svg"
+      preserveAspectRatio="none"
+    >
+      <path d="M0,0 C50,100 150,0 300,100 L300,0 L0,0 Z" fill="#ffffff" />
+    </svg>
+  </div>
+</section>
+
+<script>
+  document
+    .getElementById("subscribeFormA")
+    .addEventListener("submit", function (e) {
+      e.preventDefault();
+      const email = this.querySelector('input[type="email"]').value.trim();
+      const valid = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email);
+      if (valid) {
+        document.getElementById("subscribeMsgA").classList.remove("hidden");
+        this.reset();
+      }
+    });
+</script>

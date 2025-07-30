@@ -1,0 +1,57 @@
+<section id="testimonials" class="py-24">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    {# — Section Heading — #}
+    <h2 class="text-3xl font-bold text-center mb-4">
+      {{ sections.testimonials.title }}
+    </h2>
+    {%- if sections.testimonials.subtitle %}
+    <p class="text-xl text-gray-600 text-center mb-16 max-w-3xl mx-auto">
+      {{ sections.testimonials.subtitle }}
+    </p>
+    {%- else %}
+    <div class="mb-16"></div>
+    {%- endif %} {# — Masonry-style columns container — #}
+    <div
+      class="columns-1 md:columns-2 lg:columns-3 gap-8 max-w-6xl mx-auto"
+      style="column-gap: 2rem"
+    >
+      {%- for t in sections.testimonials.items %}
+      <div class="mb-8 break-inside-avoid px-4">
+        <div class="bg-primary/10 p-6 rounded-lg shadow-lg">
+          <div class="flex items-center mb-4">
+            <div
+              class="w-12 h-12 rounded-full bg-gray-200 mr-4 overflow-hidden flex items-center justify-center"
+            >
+              {%- if t.avatar %}
+              <img
+                src="{{ t.avatar }}"
+                alt="{{ t.author }}"
+                class="w-full h-full object-cover"
+              />
+              {%- else %} {# Fallback to initials #} {% set parts =
+              t.author.split(' ') %}
+              <span class="text-lg font-semibold text-gray-600">
+                {{ parts[0][0] }}{{ parts[1][0] if parts|length > 1 else '' }}
+              </span>
+              {%- endif %}
+            </div>
+            <div>
+              <h4 class="font-semibold">{{ t.author }}</h4>
+              <p class="text-sm text-gray-600">{{ t.role }}</p>
+            </div>
+          </div>
+          <p class="text-gray-600 mb-4">“{{ t.quote }}”</p>
+          <div class="flex text-secondary">
+            {# Render filled stars #} {% for _ in range(t.rating) %}
+            <i class="ri-star-fill"></i>
+            {% endfor %} {# Render empty stars up to 5 #} {% for _ in range(5 -
+            t.rating) %}
+            <i class="ri-star-line"></i>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      {%- endfor %}
+    </div>
+  </div>
+</section>
