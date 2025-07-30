@@ -1,0 +1,44 @@
+[project]
+name = "msrashed100-devops-mcp"
+version = "1.0.3"
+description = "A Model Context Protocol (MCP) server that provides DevOps tools and resources for Kubernetes, AWS, Prometheus, and more"
+readme = "README.md"
+requires-python = ">=3.12"
+authors = [
+    {name = "DevOps MCP Team"}
+]
+keywords = ["mcp", "devops", "kubernetes", "aws", "prometheus", "vault", "redis", "mongodb", "postgresql", "github"]
+license = {text = "MIT"}
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "httpx>=0.28.1",
+    "mcp[cli]>=1.6.0",
+    "kubernetes>=29.0.0",
+    "hvac>=1.2.1",
+    "redis>=5.0.1",
+    "pymongo>=4.6.1",
+    "psycopg2-binary>=2.9.9",
+    "boto3>=1.34.0",
+    "PyGithub>=2.1.1",
+]
+
+[project.scripts]
+msrashed100-devops-mcp = "main:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]
+
+[project.urls]
+"Homepage" = "https://github.com/yourusername/devops-mcp-server"
+"Bug Tracker" = "https://github.com/yourusername/devops-mcp-server/issues"
