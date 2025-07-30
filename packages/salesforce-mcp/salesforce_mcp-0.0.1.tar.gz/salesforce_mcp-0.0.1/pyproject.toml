@@ -1,0 +1,29 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "salesforce-mcp"
+version = "0.0.1"
+description = "A Model Context Protocol (MCP) server implementation for Salesforce integration"
+readme = "README.md"
+requires-python = ">=3.10"
+keywords = ["mcp", "llm", "salesforce"]
+dependencies = [
+    "mcp",
+    "simple-salesforce",
+    "python-dotenv",
+]
+license = { text = "MIT" }
+authors = [
+    { name = "Salesforce MCP", email = "salesforce.mcp.2@gmail.com" },
+]
+
+[project.urls]
+Homepage = "https://github.com/salesforce-mcp/salesforce-mcp"
+
+[project.scripts]
+salesforce = "server:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["salesforce-mcp"]
