@@ -1,0 +1,40 @@
+[project]
+name = "athlon-flex-client"
+version = "1.0.3"
+description = "Unofficial Client for the API used by the Athlon Flex Lease showroom"
+authors = [
+    { name = "Aucke Bos", email = "hedge-cannon-aged@duck.com" }
+]
+dependencies = [
+    "pydantic>=2.9.2",
+    "requests>=2.32.3",
+    "aiohttp>=3.10.9",
+    "async-property>=0.2.2",
+    "nest-asyncio>=1.6.0",
+    "pkginfo>=1.11",
+]
+readme = "docs/README.md"
+requires-python = ">= 3.8"
+
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = [
+    "ruff>=0.6.8",
+    "python-dotenv>=1.0.1",
+    "mkdocs>=1.6.1",
+    "mkdocstrings[python]>=0.26.1",
+]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/athlon_flex_client"]
+
+[tool.ruff.lint]
+select = ["ALL"]
