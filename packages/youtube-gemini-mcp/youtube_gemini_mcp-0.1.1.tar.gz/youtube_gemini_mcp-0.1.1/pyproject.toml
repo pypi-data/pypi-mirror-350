@@ -1,0 +1,64 @@
+[tool.poetry]
+name = "youtube-gemini-mcp"
+version = "0.1.1"
+description = "Session-based conversational YouTube video analysis MCP server using Gemini 2.5 Pro"
+authors = ["Laza Bogdan <laza.bogdan@macro-net.ro>"]
+readme = "README.md"
+packages = [{include = "youtube_gemini_mcp", from = "src"}]
+repository = "https://github.com/aigentive/youtube-gemini-mcp"
+homepage = "https://github.com/aigentive/youtube-gemini-mcp"
+keywords = ["youtube", "gemini", "mcp", "video-analysis", "ai", "claude", "conversational"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+google-genai = ">=0.1.0"
+yt-dlp = ">=2024.12.0"
+mcp = {extras = ["cli"], version = "^1.0.0"}
+python-dotenv = "^1.0.0"
+pydantic = "^2.0.0"
+httpx = "^0.27.0"
+requests = "^2.32.3"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0.0"
+black = "^25.0.0"
+isort = "^6.0.0"
+mypy = "^1.0.0"
+pytest-asyncio = "^0.26.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+youtube-gemini-mcp = "youtube_gemini_mcp.server:main"
+
+[tool.black]
+line-length = 88
+
+[tool.isort]
+profile = "black"
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[[tool.mypy.overrides]]
+module = ["yt_dlp", "google.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "function"

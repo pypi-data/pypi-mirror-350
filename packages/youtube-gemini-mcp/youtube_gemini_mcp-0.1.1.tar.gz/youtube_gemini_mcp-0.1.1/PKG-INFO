@@ -1,0 +1,342 @@
+Metadata-Version: 2.3
+Name: youtube-gemini-mcp
+Version: 0.1.1
+Summary: Session-based conversational YouTube video analysis MCP server using Gemini 2.5 Pro
+Keywords: youtube,gemini,mcp,video-analysis,ai,claude,conversational
+Author: Laza Bogdan
+Author-email: laza.bogdan@macro-net.ro
+Requires-Python: >=3.10,<4.0
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Dist: google-genai (>=0.1.0)
+Requires-Dist: httpx (>=0.27.0,<0.28.0)
+Requires-Dist: mcp[cli] (>=1.0.0,<2.0.0)
+Requires-Dist: pydantic (>=2.0.0,<3.0.0)
+Requires-Dist: python-dotenv (>=1.0.0,<2.0.0)
+Requires-Dist: requests (>=2.32.3,<3.0.0)
+Requires-Dist: yt-dlp (>=2024.12.0)
+Project-URL: Homepage, https://github.com/aigentive/youtube-gemini-mcp
+Project-URL: Repository, https://github.com/aigentive/youtube-gemini-mcp
+Description-Content-Type: text/markdown
+
+![YouTube Gemini MCP Hero](https://raw.githubusercontent.com/aigentive/youtube-gemini-mcp/main/assets/hero-image.png)
+
+# YouTube Gemini MCP Server
+
+A Model Context Protocol (MCP) server that provides conversational YouTube video analysis capabilities using Gemini 2.5 Pro. Analyze videos through multi-turn conversations with advanced visual understanding.
+
+## 🎯 What Problems Does This Solve?
+
+### Traditional Video Analysis Pain Points
+❌ **Transcript-only limitations** - Missing visual context and scene understanding  
+❌ **No conversation memory** - Each analysis starts from scratch  
+❌ **Manual workflows** - Complex download/upload processes  
+
+### Our Solution  
+✅ **Full video analysis** - Visual, audio, and contextual understanding  
+✅ **Session memory** - Builds on previous analysis automatically  
+✅ **Integrated workflows** - YouTube URL to analysis in one step  
+
+## 🚀 Key Capabilities
+
+### 🔄 Session-Based Video Conversations
+Create persistent sessions for multi-turn video analysis:
+```python
+# Create session
+create_video_session(
+    description="Analyze machine learning lecture",
+    video_source="https://youtube.com/watch?v=abc123",
+    source_type="youtube_url"
+)
+
+# Continue conversation
+analyze_video_in_session(session_id="uuid", prompt="What are the key concepts?")
+analyze_video_in_session(session_id="uuid", prompt="Explain the neural networks part")
+```
+
+### 📹 Direct YouTube Processing
+No downloads required - process YouTube videos directly:
+```python
+analyze_youtube_video(
+    youtube_url="https://youtube.com/watch?v=abc123",
+    prompt="Summarize this video's main points"
+)
+```
+
+### 💾 Local Video Support
+Upload and analyze local video files (48-hour retention):
+```python
+analyze_local_video(
+    video_path="/path/to/video.mp4",
+    prompt="What happens in this video?"
+)
+```
+
+## 🛠️ Installation
+
+### Prerequisites
+- Python 3.10+
+- Google AI API key
+- Poetry (recommended) or pip
+
+### Setup
+```bash
+# Clone repository
+git clone https://github.com/aigentive/youtube-gemini-mcp
+cd youtube-gemini-mcp
+
+# Install with Poetry
+poetry install
+
+# Or with pip
+pip install -e .
+
+# Set environment variable
+export GOOGLE_API_KEY="your_google_api_key_here"
+```
+
+## 🔧 Claude Desktop Integration
+
+### Quick Setup
+
+1. **Get Google AI API Key**: Visit [Google AI Studio](https://ai.google.dev/) to get your free API key
+2. **Add to Claude Desktop**: Copy the configuration below to your Claude Desktop settings
+
+### Production Configuration
+
+Add to your Claude Desktop MCP configuration (`claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "youtube-gemini-mcp": {
+      "command": "youtube-gemini-mcp",
+      "env": {
+        "GOOGLE_API_KEY": "your_google_api_key_here"
+      }
+    }
+  }
+}
+```
+
+### Development Configuration
+
+For development work, use the Poetry configuration:
+
+```json
+{
+  "mcpServers": {
+    "youtube-gemini-mcp-dev": {
+      "command": "poetry",
+      "args": ["run", "python", "-m", "youtube_gemini_mcp.server"],
+      "cwd": "/absolute/path/to/youtube-gemini-mcp",
+      "env": {
+        "GOOGLE_API_KEY": "your_google_api_key_here",
+        "LOG_LEVEL": "DEBUG"
+      }
+    }
+  }
+}
+```
+
+### Configuration Templates
+
+We provide ready-to-use configuration files:
+- **Development**: `mcp-config.poetry.json` - For local development
+- **Production**: `mcp-config.private.json.example` - Copy and customize
+
+## 📚 Available Tools
+
+| Tool | Description |
+|------|-------------|
+| `create_video_session` | Create new conversational analysis session |
+| `analyze_video_in_session` | Analyze video within session context |
+| `analyze_youtube_video` | Single-shot YouTube video analysis |
+| `analyze_local_video` | Single-shot local video analysis |
+| `get_session_status` | Get session information and history |
+| `list_active_sessions` | List all active sessions |
+| `close_session` | Close session and cleanup resources |
+| `validate_youtube_url` | Validate and normalize YouTube URLs |
+| `get_usage_guide` | Comprehensive documentation |
+| `get_server_stats` | Server health and statistics |
+
+## 🎯 Use Cases
+
+### Educational Content Analysis
+Analyze lectures, tutorials, and educational videos with follow-up questions.
+
+### Content Research
+Research documentaries, interviews, and informational content systematically.
+
+### Video Summarization
+Extract key insights and create summaries from long-form content.
+
+### Training Material Development
+Analyze existing training videos to extract learning objectives and key points.
+
+## ⚡ Quick Examples
+
+### Analyze a YouTube Video
+```python
+# Direct analysis - perfect for quick insights
+analyze_youtube_video(
+    youtube_url="https://youtube.com/watch?v=dQw4w9WgXcQ",
+    prompt="What is this video about? Provide a comprehensive summary."
+)
+```
+
+### Session-Based Analysis
+```python
+# Create persistent session for multi-turn conversation
+session = create_video_session(
+    description="Learning about machine learning fundamentals",
+    video_source="https://youtube.com/watch?v=abc123",
+    session_name="ML Fundamentals Study"
+)
+
+# Build understanding through conversation
+analyze_video_in_session(
+    session_id=session["session_id"], 
+    prompt="What are the main topics covered in this lecture?"
+)
+
+analyze_video_in_session(
+    session_id=session["session_id"], 
+    prompt="Focus on the neural networks section - how are they explained?"
+)
+
+analyze_video_in_session(
+    session_id=session["session_id"], 
+    prompt="What practical examples or demonstrations are shown?"
+)
+
+analyze_video_in_session(
+    session_id=session["session_id"], 
+    prompt="Based on our discussion, what are the key takeaways for beginners?"
+)
+```
+
+### Local Video Analysis
+```python
+# Upload and analyze private content
+analyze_local_video(
+    video_path="/path/to/your/presentation.mp4",
+    prompt="Extract the key business metrics and recommendations from this quarterly review"
+)
+```
+
+### Advanced: Timestamp-Specific Analysis
+```python
+# Focus on specific video segments
+analyze_video_in_session(
+    session_id="your-session-id",
+    prompt="Analyze the demonstration shown in this segment",
+    timestamp_range="5:30-8:45"
+)
+```
+
+## 🔐 Configuration
+
+### Environment Variables
+
+**Required**:
+- `GOOGLE_API_KEY` - Get your free API key from [Google AI Studio](https://ai.google.dev/)
+
+**Optional Configuration**:
+```bash
+MCP_MAX_SESSIONS=50               # Maximum concurrent sessions
+MCP_SESSION_TIMEOUT=7200          # Session timeout in seconds (2 hours)
+GEMINI_MODEL_DEFAULT="gemini-2.5-pro-preview-05-06"  # Default Gemini model
+MAX_VIDEO_DURATION=7200           # Max video length in seconds
+AUTO_CLEANUP_FILES=true           # Auto-cleanup uploaded files
+LOG_LEVEL=INFO                    # Logging level (DEBUG, INFO, WARNING, ERROR)
+```
+
+### System Requirements
+- **Python**: 3.10+ (3.11+ recommended)
+- **Memory**: 4GB RAM minimum for video processing
+- **Storage**: 500MB for session data and temporary files
+- **Network**: High-speed internet for video processing
+
+### Limitations & Constraints
+
+#### YouTube Videos (Unlimited Sessions)
+- ✅ **No file size limits** - Direct URL processing
+- ✅ **Unlimited session duration** - No 48-hour restriction
+- ⚠️ **2-hour video limit** - Recommended maximum for optimal performance
+- ⚠️ **Public videos only** - Private/unlisted may not be accessible
+
+#### Local Videos (48-Hour Sessions)
+- ⚠️ **2GB file size limit** - Google Files API restriction
+- ⚠️ **48-hour auto-deletion** - Files automatically deleted after 48 hours
+- ⚠️ **20GB project limit** - Total storage quota per Google project
+- ❌ **No retention extension** - Cannot extend file lifespan beyond 48 hours
+
+#### Performance Guidelines
+- **Concurrent sessions**: Default maximum 50 active sessions
+- **Session timeout**: 2 hours of inactivity before cleanup
+- **Memory usage**: ~100MB per active session
+- **Response time**: 10-30 seconds for typical analysis requests
+
+## 🧪 Testing
+
+```bash
+# Run tests
+poetry run pytest
+
+# With coverage
+poetry run pytest --cov=youtube_gemini_mcp
+
+# Type checking
+poetry run mypy src/
+```
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🔗 Related Projects
+
+- [MCP Specification](https://github.com/modelcontextprotocol/specification)
+- [Claude Desktop](https://claude.ai/desktop)
+- [Google Gemini API](https://ai.google.dev/)
+
+## 📚 Documentation
+
+- **[LLM.md](LLM.md)** - Comprehensive usage guide for AI systems
+- **[DEVELOPMENT.md](DEVELOPMENT.md)** - Development setup and architecture
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - How to contribute to the project
+- **[PRD.md](PRD.md)** - Complete product requirements document
+
+## 🤝 Contributing
+
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+### Quick Start for Contributors
+1. Fork the repository
+2. Set up development environment: `poetry install`
+3. Run tests: `poetry run pytest`
+4. Make your changes and add tests
+5. Submit a pull request
+
+## 📞 Support & Community
+
+- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/aigentive/youtube-gemini-mcp/issues)
+- 💡 **Feature Requests**: [GitHub Issues](https://github.com/aigentive/youtube-gemini-mcp/issues)
+- 💬 **Discussions**: [GitHub Discussions](https://github.com/aigentive/youtube-gemini-mcp/discussions)
+- 📖 **Documentation**: Check our comprehensive docs above
+
+### Getting Help
+
+1. **Check Documentation**: Start with [LLM.md](LLM.md) for usage questions
+2. **Search Issues**: Look for existing solutions in GitHub Issues
+3. **Create Issue**: Provide clear details and reproduction steps
+4. **Community**: Join discussions for general questions and ideas
