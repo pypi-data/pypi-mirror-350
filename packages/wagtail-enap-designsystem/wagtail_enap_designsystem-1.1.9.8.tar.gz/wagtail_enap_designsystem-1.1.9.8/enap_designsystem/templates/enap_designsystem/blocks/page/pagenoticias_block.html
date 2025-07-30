@@ -1,0 +1,409 @@
+{% extends "coderedcms/blocks/base_block.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+{% block block_render %}
+{% load static %}
+
+<section class="news-section">
+    <div>
+        <h2 class="h2-title">Notícias</h2>
+    <h4 class="sub-title">Fique sabendo de tudo o que acontece na Enap</h4>
+    </div>
+
+    <div class="news-carousel-container">
+        <div class="news-carousel-items">
+            {% for page in pages %}
+            <div class="news-carousel-item">
+                <div class="news-carousel-item-content">
+                    <div class="news-carousel-image">
+                        {% if page.cover_image %}
+                        {% image page.cover_image fill-230x160 format-webp preserve-svg as card_img %}
+                        <a href="{% pageurl page %}" title="{{ page.title }}">
+                            <img class="img-fluid" src="{{ card_img.url }}" alt="{{ card_img.title }}">
+                        </a>
+                        {% endif %}
+                    </div>
+                    <div class="news-carousel-content">
+                        <h3 class="news-title card-title">
+                            <a class="news-title" href="{% pageurl page %}">{{ page.title }}</a>
+                        </h3>
+                        <p class="card-text">{{ page.body_preview }}</p>
+                        <h5><a href="{% pageurl page %}" class="btn btn-primary">Leia mais</a></h5>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="news-carousel-item">
+                <p>Nenhum conteúdo disponível.</p>
+            </div>
+            {% endfor %}
+        </div>
+        <button class="news-carousel-control news-carousel-control-prev"><img style="width: 40px; height: 40px;" src="{% static 'enap_designsystem/icons/iconleft.svg' %}" alt="Passar pro lado esquerdo"></button>
+        <button class="news-carousel-control news-carousel-control-next"><img style="width: 40px; height: 40px;" src="{% static 'enap_designsystem/icons/iconrig.svg' %}" alt="Passar pro lado direito"></button>
+    </div>
+    
+    <div class="text-center mt-4">
+        <a href="{% pageurl value.indexed_by %}" class="btn-todos">Ver todas as notícias</a>
+    </div>
+    
+</section>
+
+<style>
+    .btn-todos{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 40px;
+        text-decoration: none;
+        color: #007D7A;
+        border: 1px solid #007D7A;
+        padding: 8px 24px;
+        border-radius: 40px;
+        background-color: white;
+        font-weight: 600;
+    }
+    .btn-todos:hover{
+        color: #006969;
+        border: 1px solid #006969;
+    }
+
+    .btn-todos:active{
+        color: #025257;
+        border: 1px solid #025257;
+    }
+
+    .sub-title {
+        font-size: 20px;
+        font-weight: 400;
+        margin: 0;
+        color: #525155;
+    }
+
+    .h2-title {
+        margin: 0;
+        font-size: 40px;
+        font-weight: 600;
+    }
+
+    .news-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 40px;
+        max-width: 80rem;
+        margin: auto;
+        text-align: center;
+        padding: 60px 15px;
+    }
+
+    .news-carousel-container {
+        overflow-x: hidden;
+        position: relative;
+        width: 74.1rem;
+        margin: auto;
+        touch-action: pan-y;
+    }
+
+    .news-carousel-items {
+        width: 1142px;
+        margin: auto;
+        display: flex;
+        transition: transform 0.5s ease-in-out;
+        -webkit-overflow-scrolling: touch; /* Para melhor scroll em iOS */
+    }
+
+    .news-carousel-item {
+        flex-shrink: 0;
+        width: 750px;
+        margin-right: 20px;
+    }
+
+    .news-carousel-item-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 7px;
+    }
+
+    .news-carousel-image {
+        width: 35%;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .news-carousel-image img {
+        border-radius: 8px;
+        width: 100%;
+        height: auto;
+    }
+
+    .news-title {
+        font-size: 20px;
+        color: #025257;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .news-carousel-content {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 60%;
+        gap: 7px;
+    }
+
+    .card-text {
+        text-align: left;
+        margin: 0;
+    }
+
+    .news-carousel-control {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 30px;
+        color: #333;
+        cursor: pointer;
+        border: none;
+        background-color: transparent;
+        z-index: 2;
+    }
+
+    .news-carousel-control-prev {
+        left: 0px;
+    }
+
+    .news-carousel-control-next {
+        right: -3px;
+        padding: 0;
+    }
+
+    .btn-ver-todas {
+        border: 1px solid #007D7A;
+        color: #007D7A;
+        font-weight: 500;
+        font-size: 16px;
+        padding: 8px 24px;
+        border-radius: 32px;
+        display: inline-block;
+        text-decoration: none;
+    }
+
+    .btn {
+        border: none;
+        border-radius: 32px;
+        color: #007D7A;
+    }
+
+    /* Ajustes para mobile */
+    @media (max-width: 768px) {
+        .news-carousel-items {
+        width: 1142px;
+        overflow: hidden;
+        margin: 0;
+    }
+        .h2-title {
+            font-size: 32px;
+            text-align: left;
+        }
+        
+        .sub-title {
+            font-size: 20px;
+            text-align: left;
+            margin-top: 10px;
+        }
+        
+        .news-section {
+            padding: 40px 10px;
+        }
+        
+        .news-carousel-item {
+            width: 75vw; /* Reduzido para mostrar parte do próximo item */
+            padding-right: 0;
+        }
+        
+        .news-carousel-item-content {
+            flex-direction: column;
+        }
+        
+        .news-carousel-image {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        
+        .news-carousel-content {
+            width: 100%;
+        }
+        
+        .news-title {
+            font-size: 18px;
+            margin-top: 10px;
+        }
+        
+        .card-text {
+            font-size: 14px;
+            -webkit-line-clamp: 3;
+            display: -webkit-box;
+            overflow: hidden;
+        }
+        
+        .news-carousel-control {
+            width: 32px;
+            height: 32px;
+            display: none;
+        }
+        
+        .news-carousel-control img {
+            width: 100%;
+            height: auto;
+        }
+        
+        /* Indica visualmente que há mais conteúdo */
+        .news-carousel-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 30px;
+            height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,0.8));
+            pointer-events: none;
+            z-index: 1;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const newsCarouselContainer = document.querySelector('.news-carousel-container');
+    const newsCarouselItems = document.querySelector('.news-carousel-items');
+    const prevButton = document.querySelector('.news-carousel-control-prev');
+    const nextButton = document.querySelector('.news-carousel-control-next');
+    let newsCurrentIndex = 0;
+    let maxIndex = Math.max(0, newsCarouselItems.children.length - 1);
+    
+    // Variáveis para controle de touch
+    let touchStartX = 0;
+    let touchEndX = 0;
+    let isDragging = false;
+    let startTranslateX = 0;
+    let currentTranslateX = 0;
+    let slideWidth = 0;
+    let slideMargin = 20;
+    let isMobile = false;
+    
+    function updateSlideWidth() {
+        isMobile = window.innerWidth <= 768;
+        // Em mobile, usamos 75% da largura da viewport para mostrar parte do próximo item
+        slideWidth = isMobile ? window.innerWidth * 0.75 : 750;
+        maxIndex = Math.max(0, newsCarouselItems.children.length - 1);
+        
+        // Atualiza a largura dos itens
+        Array.from(newsCarouselItems.children).forEach(item => {
+            item.style.width = `${slideWidth}px`;
+        });
+        
+        // Reposiciona o carousel na posição atual
+        showNewsSlide(newsCurrentIndex);
+    }
+    
+    // Função para atualizar a visibilidade dos botões de navegação
+    function updateNavigationButtons() {
+        // No primeiro grupo (índice 0), mostrar apenas a seta da direita
+        if (newsCurrentIndex === 0) {
+            prevButton.style.display = 'none';
+            nextButton.style.display = 'block';
+        } 
+        // No último grupo, mostrar apenas a seta da esquerda
+        else if (newsCurrentIndex >= maxIndex) {
+            prevButton.style.display = 'block';
+            nextButton.style.display = 'none';
+        } 
+        // Em grupos intermediários, mostrar ambas as setas
+        else {
+            prevButton.style.display = 'block';
+            nextButton.style.display = 'block';
+        }
+    }
+    
+    function showNewsSlide(index) {
+        newsCurrentIndex = Math.min(Math.max(0, index), maxIndex);
+        const offset = newsCurrentIndex * (slideWidth + slideMargin);
+        newsCarouselItems.style.transform = `translateX(-${offset}px)`;
+        
+        // Atualizar a visibilidade dos botões de navegação
+        updateNavigationButtons();
+    }
+    
+    // Inicializar a visibilidade dos botões
+    updateNavigationButtons();
+    
+    // Para navegação por botões (desktop)
+    prevButton.addEventListener('click', () => {
+        newsCurrentIndex = Math.max(newsCurrentIndex - 1, 0);
+        showNewsSlide(newsCurrentIndex);
+    });
+    
+    nextButton.addEventListener('click', () => {
+        newsCurrentIndex = Math.min(newsCurrentIndex + 1, maxIndex);
+        showNewsSlide(newsCurrentIndex);
+    });
+    
+    // Funções para controle de touch em dispositivos móveis
+    function handleTouchStart(event) {
+        touchStartX = event.touches[0].clientX;
+        isDragging = true;
+        startTranslateX = -newsCurrentIndex * (slideWidth + slideMargin);
+        currentTranslateX = startTranslateX;
+        
+        newsCarouselItems.style.transition = 'none';
+    }
+    
+    function handleTouchMove(event) {
+        if (!isDragging) return;
+        touchEndX = event.touches[0].clientX;
+        const diffX = touchEndX - touchStartX;
+        
+        // Limitar o arrasto para não ultrapassar os limites
+        currentTranslateX = Math.min(0, Math.max(-(maxIndex * (slideWidth + slideMargin)), startTranslateX + diffX));
+        newsCarouselItems.style.transform = `translateX(${currentTranslateX}px)`;
+        
+        // Prevenir scroll da página durante o swipe horizontal
+        if (Math.abs(diffX) > 5) {
+            event.preventDefault();
+        }
+    }
+    
+    function handleTouchEnd() {
+        if (!isDragging) return;
+        isDragging = false;
+        newsCarouselItems.style.transition = 'transform 0.5s ease-in-out';
+        
+        const diffX = touchEndX - touchStartX;
+        const threshold = slideWidth * 0.2; // 20% da largura do slide como threshold
+        
+        if (Math.abs(diffX) > threshold) {
+            if (diffX > 0 && newsCurrentIndex > 0) {
+                // Swipe para direita (anterior)
+                newsCurrentIndex--;
+            } else if (diffX < 0 && newsCurrentIndex < maxIndex) {
+                // Swipe para esquerda (próximo)
+                newsCurrentIndex++;
+            }
+        }
+        
+        showNewsSlide(newsCurrentIndex);
+    }
+    
+    // Adiciona listeners para eventos de touch
+    newsCarouselContainer.addEventListener('touchstart', handleTouchStart, { passive: false });
+    newsCarouselContainer.addEventListener('touchmove', handleTouchMove, { passive: false });
+    newsCarouselContainer.addEventListener('touchend', handleTouchEnd);
+    
+    // Atualiza larguras e posições ao redimensionar a janela
+    window.addEventListener('resize', updateSlideWidth);
+    
+    // Inicialização
+    updateSlideWidth();
+});
+</script>
+{% endblock %}
