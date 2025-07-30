@@ -1,0 +1,110 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "makex"
+dynamic = ["version"]
+description = "Build tool"
+readme = { file = "README.md", content-type = "text/markdown" }
+license = { text = "MetaCompany Source License 2024-1" }
+# configuration error: `project` must not contain {'license-files'} properties
+# does not work per: https://peps.python.org/pep-0639/
+# license-files = ["LICENSE.md"]
+
+requires-python = ">=3.9"
+dependencies = [
+    # XXX: We may revert to this:
+    #"progressbar2>=4.3.2",
+    'toml>=0.10.2; python_version < "3.11"',
+]
+authors = [
+    { name = "Nate Skulic" },
+    { name = "MetaCompany" },
+]
+keywords = ["build", "make", "automation"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    #"License :: OSI Approved :: Apache Software License",
+    "Operating System :: Unix",
+    "Operating System :: POSIX :: Linux",
+    # "Operating System :: MacOS :: MacOS X",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Software Development :: Build Tools",
+    "Topic :: Utilities",
+]
+
+[project.urls]
+Homepage = "https://meta.company/go/makex"
+Documentation = "https://meta.company/go/makex"
+Repository = "https://hg.sr.ht/~metacompany/makex"
+History = "https://hg.sr.ht/~metacompany/makex/browse/HISTORY.md?rev=tip"
+
+[tool.setuptools.dynamic]
+version = { attr = "makex.version.VERSION" }
+
+[project.optional-dependencies]
+use-reflink = [
+    # XXX: We don't need this anymore but we can fall back if ours doesn't work.
+    #"reflink>=0.2.2",
+]
+use-xattr = [
+    # XXX: We don't need this anymore but we can fall back. This xattr package doesn't emit auditing events unlike the builtin.
+    #"xattr>=1.0.0",
+]
+development = [
+    "pyproject-requirements"
+]
+fix = [
+    "libcst",
+    "black",
+]
+build = [
+    "build",
+    "shtab",
+    "pex",
+    "nuitka",
+    "pytest",
+    "shtab",
+]
+test = [
+    "pytest",
+    "pytest-benchmark",
+    "pytest-cov ~=3.0.0",
+]
+documents = [
+    "sphinx",
+    "myst-parser",
+    "markdown-it-py[linkify,plugins]"
+]
+typechecking = [
+    "typing_extensions",
+    "mypy",
+]
+
+[project.scripts]
+makex = "makex.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["python"]
+namespaces = true
+
+[tool.setuptools.package-data]
+"makex.data.completions" = [
+    "*.bash",
+    "*.zsh",
+]
+
+[tool.pytest.ini_options]
+log_cli = true
+log_cli_level = "5"
+log_cli_format = "%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
+addopts = [
+    "--import-mode=importlib",
+]
+pythonpath = "."
+cache_dir = "~/.cache/pytest"
+
