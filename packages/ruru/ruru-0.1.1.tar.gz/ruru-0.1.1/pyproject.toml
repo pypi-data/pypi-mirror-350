@@ -1,0 +1,85 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ruru"
+version = "0.1.1"
+description = "A powerful CLI tool for managing and versioning prompts across projects"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+    {name = "Ekky Armandi", email = "me@ekkyarmandi.com"}
+]
+keywords = ["prompts", "rules", "ai", "llm", "context", "version-control", "prompt-management"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development",
+    "Topic :: Text Processing",
+    "Topic :: Utilities",
+]
+requires-python = ">=3.8.1"
+dependencies = [
+    "click>=8.0.0",
+    "httpx>=0.24.0",
+    "rich>=13.0.0",
+    "pyyaml>=6.0",
+    "python-decouple>=3.6",
+    "keyring>=24.0.0",
+    "tqdm>=4.64.0",
+    "pydantic>=2.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "pytest-mock>=3.10.0",
+    "pytest-click>=1.1.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+    "responses>=0.23.0",
+]
+
+[project.scripts]
+ruru = "ruru.main:cli"
+
+[tool.setuptools]
+packages = ["ruru"]
+
+[tool.setuptools.package-data]
+ruru = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "--cov=ruru --cov-report=term-missing --cov-report=html"
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true 
