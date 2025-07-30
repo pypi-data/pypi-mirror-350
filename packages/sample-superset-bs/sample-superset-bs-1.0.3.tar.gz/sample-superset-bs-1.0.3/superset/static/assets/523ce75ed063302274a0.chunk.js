@@ -1,0 +1,75 @@
+"use strict";(globalThis.webpackChunksuperset=globalThis.webpackChunksuperset||[]).push([[1440],{8960:(e,t,n)=>{var a=n(30327);t.createFirstEllipsis=function(e){return{type:a.ITEM_TYPES.ELLIPSIS,key:a.ITEM_KEYS.FIRST_ELLIPSIS,value:e,isActive:!1}},t.createSecondEllipsis=function(e){return{type:a.ITEM_TYPES.ELLIPSIS,key:a.ITEM_KEYS.SECOND_ELLIPSIS,value:e,isActive:!1}},t.createFirstPageLink=function(e){var t=e.currentPage;return{type:a.ITEM_TYPES.FIRST_PAGE_LINK,key:a.ITEM_KEYS.FIRST_PAGE_LINK,value:1,isActive:1===t}},t.createPreviousPageLink=function(e){var t=e.currentPage;return{type:a.ITEM_TYPES.PREVIOUS_PAGE_LINK,key:a.ITEM_KEYS.PREVIOUS_PAGE_LINK,value:Math.max(1,t-1),isActive:1===t}},t.createNextPageLink=function(e){var t=e.currentPage,n=e.totalPages;return{type:a.ITEM_TYPES.NEXT_PAGE_LINK,key:a.ITEM_KEYS.NEXT_PAGE_LINK,value:Math.min(n,t+1),isActive:t===n}},t.createLastPageLink=function(e){var t=e.currentPage,n=e.totalPages;return{type:a.ITEM_TYPES.LAST_PAGE_LINK,key:a.ITEM_KEYS.LAST_PAGE_LINK,value:n,isActive:t===n}},t.createPageFunctionFactory=function(e){var t=e.currentPage;return function(e){return{type:a.ITEM_TYPES.PAGE,key:e,value:e,isActive:e===t}}}},11447:(e,t,n)=>{var a=n(17991),r=n(8960);t.getPaginationModel=function(e){if(null==e)throw new Error("getPaginationModel(): options object should be a passed");var t=Number(e.totalPages);if(isNaN(t))throw new Error("getPaginationModel(): totalPages should be a number");if(t<0)throw new Error("getPaginationModel(): totalPages shouldn't be a negative number");var n=Number(e.currentPage);if(isNaN(n))throw new Error("getPaginationModel(): currentPage should be a number");if(n<0)throw new Error("getPaginationModel(): currentPage shouldn't be a negative number");if(n>t)throw new Error("getPaginationModel(): currentPage shouldn't be greater than totalPages");var i=null==e.boundaryPagesRange?1:Number(e.boundaryPagesRange);if(isNaN(i))throw new Error("getPaginationModel(): boundaryPagesRange should be a number");if(i<0)throw new Error("getPaginationModel(): boundaryPagesRange shouldn't be a negative number");var o=null==e.siblingPagesRange?1:Number(e.siblingPagesRange);if(isNaN(o))throw new Error("getPaginationModel(): siblingPagesRange should be a number");if(o<0)throw new Error("getPaginationModel(): siblingPagesRange shouldn't be a negative number");var l=Boolean(e.hidePreviousAndNextPageLinks),s=Boolean(e.hideFirstAndLastPageLinks),d=Boolean(e.hideEllipsis),c=d?0:1,u=[],g=r.createPageFunctionFactory(e);if(s||u.push(r.createFirstPageLink(e)),l||u.push(r.createPreviousPageLink(e)),1+2*c+2*o+2*i>=t){var h=a.createRange(1,t).map(g);u.push.apply(u,h)}else{var m=i,p=a.createRange(1,m).map(g),P=t+1-i,_=t,E=a.createRange(P,_).map(g),b=Math.min(Math.max(n-o,m+c+1),P-c-2*o-1),f=b+2*o,v=a.createRange(b,f).map(g);if(u.push.apply(u,p),!d){var S=b-1,y=(S===m+1?g:r.createFirstEllipsis)(S);u.push(y)}if(u.push.apply(u,v),!d){var A=f+1,I=(A===P-1?g:r.createSecondEllipsis)(A);u.push(I)}u.push.apply(u,E)}return l||u.push(r.createNextPageLink(e)),s||u.push(r.createLastPageLink(e)),u};var i=n(30327);t.ITEM_TYPES=i.ITEM_TYPES,t.ITEM_KEYS=i.ITEM_KEYS},17991:(e,t)=>{t.createRange=function(e,t){for(var n=[],a=e;a<=t;a++)n.push(a);return n}},18575:(e,t,n)=>{t.w$=t.uv=void 0;var a=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var a in n)Object.prototype.hasOwnProperty.call(n,a)&&(e[a]=n[a])}return e},r=l(n(96540)),i=l(n(5556)),o=n(11447);function l(e){return e&&e.__esModule?e:{default:e}}t.uv=function(e){var t=e.itemTypeToComponent,n=e.WrapperComponent,l=void 0===n?"div":n,s=function(e){var n=e.currentPage,i=e.totalPages,s=e.boundaryPagesRange,d=e.siblingPagesRange,c=e.hideEllipsis,u=e.hidePreviousAndNextPageLinks,g=e.hideFirstAndLastPageLinks,h=e.onChange,m=e.disabled,p=function(e,t){var n={};for(var a in e)t.indexOf(a)>=0||Object.prototype.hasOwnProperty.call(e,a)&&(n[a]=e[a]);return n}(e,["currentPage","totalPages","boundaryPagesRange","siblingPagesRange","hideEllipsis","hidePreviousAndNextPageLinks","hideFirstAndLastPageLinks","onChange","disabled"]),P=(0,o.getPaginationModel)({currentPage:n,totalPages:i,boundaryPagesRange:s,siblingPagesRange:d,hideEllipsis:c,hidePreviousAndNextPageLinks:u,hideFirstAndLastPageLinks:g}),_=function(e,t,n){return function(i){var o,l,s,d=e[i.type],c=(l=(o=i).value,s=o.isDisabled,function(){!s&&n&&t!==l&&n(l)});return r.default.createElement(d,a({onClick:c},i))}}(t,n,h);return r.default.createElement(l,p,P.map((function(e){return _(a({},e,{isDisabled:!!m}))})))};return s.propTypes={currentPage:i.default.number.isRequired,totalPages:i.default.number.isRequired,boundaryPagesRange:i.default.number,siblingPagesRange:i.default.number,hideEllipsis:i.default.bool,hidePreviousAndNextPageLinks:i.default.bool,hideFirstAndLastPageLinks:i.default.bool,onChange:i.default.func,disabled:i.default.bool},s},t.w$=o.ITEM_TYPES},30327:(e,t)=>{t.ITEM_TYPES={PAGE:"PAGE",ELLIPSIS:"ELLIPSIS",FIRST_PAGE_LINK:"FIRST_PAGE_LINK",PREVIOUS_PAGE_LINK:"PREVIOUS_PAGE_LINK",NEXT_PAGE_LINK:"NEXT_PAGE_LINK",LAST_PAGE_LINK:"LAST_PAGE_LINK"},t.ITEM_KEYS={FIRST_ELLIPSIS:-1,SECOND_ELLIPSIS:-2,FIRST_PAGE_LINK:-3,PREVIOUS_PAGE_LINK:-4,NEXT_PAGE_LINK:-5,LAST_PAGE_LINK:-6}},50684:(e,t,n)=>{n.r(t),n.d(t,{default:()=>F});var a=n(96540),r=n(61574),i=n(71519),o=n(96453),l=n(17437),s=n(78518),d=n(35742),c=n(51436),u=n(74353),g=n.n(u),h=n(58561),m=n.n(h),p=n(83691),P=n(63358),_=n(37020),E=n(43849),b=n(51713),f=n(5261),v=n(50500),S=n(30703),y=n(6094),A=n(7089),I=n(67073),L=n(85861),T=n(24976),Y=n(2445);const N=o.I4.div`
+  margin: ${({theme:e})=>2*e.gridUnit}px auto
+    ${({theme:e})=>4*e.gridUnit}px auto;
+`,w=(0,o.I4)(T.iN)`
+  border-radius: ${({theme:e})=>e.borderRadius}px;
+  border: 1px solid ${({theme:e})=>e.colors.secondary.light2};
+`,k=o.I4.div`
+  margin-bottom: ${({theme:e})=>5*e.gridUnit}px;
+
+  .control-label {
+    margin-bottom: ${({theme:e})=>2*e.gridUnit}px;
+  }
+
+  .required {
+    margin-left: ${({theme:e})=>e.gridUnit/2}px;
+    color: ${({theme:e})=>e.colors.error.base};
+  }
+
+  textarea {
+    flex: 1 1 auto;
+    height: ${({theme:e})=>17*e.gridUnit}px;
+    resize: none;
+    width: 100%;
+  }
+
+  textarea,
+  input[type='text'] {
+    padding: ${({theme:e})=>1.5*e.gridUnit}px
+      ${({theme:e})=>2*e.gridUnit}px;
+    border: 1px solid ${({theme:e})=>e.colors.grayscale.light2};
+    border-radius: ${({theme:e})=>e.gridUnit}px;
+  }
+
+  input[type='text'] {
+    width: 65%;
+  }
+`,x=(0,f.Ay)((({addDangerToast:e,addSuccessToast:t,annotationLayerId:n,annotation:r=null,onAnnotationAdd:i,onHide:d,show:c})=>{var u,g;const h=(0,o.DP)(),[m,p]=(0,a.useState)(!0),[P,_]=(0,a.useState)(null),E=null!==r,{state:{loading:b,resource:f},fetchResource:S,createResource:T,updateResource:x}=(0,v.fn)(`annotation_layer/${n}/annotation`,(0,s.t)("annotation"),e),M=()=>{_({short_descr:"",start_dttm:"",end_dttm:"",json_metadata:"",long_descr:""})},F=()=>{E?_(f):M(),d()},D=e=>{const{target:t}=e,n={...P,end_dttm:P?P.end_dttm:"",short_descr:P?P.short_descr:"",start_dttm:P?P.start_dttm:""};n[t.name]=t.value,_(n)};return(0,a.useEffect)((()=>{if(E&&(null==P||!P.id||r&&r.id!==P.id||c)){if(null!==(null==r?void 0:r.id)&&!b){const e=r.id||0;S(e)}}else E||P&&!P.id&&!c||M()}),[r]),(0,a.useEffect)((()=>{f&&_(f)}),[f]),(0,a.useEffect)((()=>{var e,t,n;null!=P&&null!=(e=P.short_descr)&&e.length&&null!=P&&null!=(t=P.start_dttm)&&t.length&&null!=P&&null!=(n=P.end_dttm)&&n.length?p(!1):p(!0)}),[P?P.short_descr:"",P?P.start_dttm:"",P?P.end_dttm:""]),(0,Y.FD)(L.Ay,{disablePrimaryButton:m,onHandledPrimaryAction:()=>{if(E){if(null!=P&&P.id){const e=P.id;delete P.id,delete P.created_by,delete P.changed_by,delete P.changed_on_delta_humanized,delete P.layer,x(e,P).then((e=>{e&&(i&&i(),F(),t((0,s.t)("The annotation has been updated")))}))}}else P&&T(P).then((e=>{e&&(i&&i(),F(),t((0,s.t)("The annotation has been saved")))}))},onHide:F,primaryButtonName:E?(0,s.t)("Save"):(0,s.t)("Add"),show:c,width:"55%",title:(0,Y.FD)("h4",{"data-test":"annotation-modal-title",children:[E?(0,Y.Y)(I.F.EditOutlined,{iconSize:"l",css:l.AH`
+                margin: auto ${2*h.gridUnit}px auto 0;
+              `}):(0,Y.Y)(I.F.PlusOutlined,{iconSize:"l",css:l.AH`
+                margin: auto ${2*h.gridUnit}px auto 0;
+              `}),E?(0,s.t)("Edit annotation"):(0,s.t)("Add annotation")]}),children:[(0,Y.Y)(N,{children:(0,Y.Y)("h4",{children:(0,s.t)("Basic information")})}),(0,Y.FD)(k,{children:[(0,Y.FD)("div",{className:"control-label",children:[(0,s.t)("Name"),(0,Y.Y)("span",{className:"required",children:"*"})]}),(0,Y.Y)("input",{name:"short_descr",onChange:D,type:"text",value:null==P?void 0:P.short_descr})]}),(0,Y.FD)(k,{children:[(0,Y.FD)("div",{className:"control-label",children:[(0,s.t)("date"),(0,Y.Y)("span",{className:"required",children:"*"})]}),(0,Y.Y)(y.c,{placeholder:[(0,s.t)("Start date"),(0,s.t)("End date")],format:"YYYY-MM-DD HH:mm",onCalendarChange:(e,t)=>{var n;if(null==e||!e[0]||null==e||!e[1]){var a;const e={...P,start_dttm:"",end_dttm:"",short_descr:null!=(a=null==P?void 0:P.short_descr)?a:""};return void _(e)}const r={...P,start_dttm:e[0].format("YYYY-MM-DD HH:mm"),end_dttm:e[1].format("YYYY-MM-DD HH:mm"),short_descr:null!=(n=null==P?void 0:P.short_descr)?n:""};_(r)},showTime:{format:"hh:mm a"},use12Hours:!0,value:null!=P&&null!=(u=P.start_dttm)&&u.length||null!=P&&null!=(g=P.end_dttm)&&g.length?[(0,A.XV)(P.start_dttm),(0,A.XV)(P.end_dttm)]:null})]}),(0,Y.Y)(N,{children:(0,Y.Y)("h4",{children:(0,s.t)("Additional information")})}),(0,Y.FD)(k,{children:[(0,Y.Y)("div",{className:"control-label",children:(0,s.t)("description")}),(0,Y.Y)("textarea",{name:"long_descr",value:P?P.long_descr:"",placeholder:(0,s.t)("Description (this can be seen in the list)"),onChange:D})]}),(0,Y.FD)(k,{children:[(0,Y.Y)("div",{className:"control-label",children:(0,s.t)("JSON metadata")}),(0,Y.Y)(w,{onChange:e=>{const t={...P,end_dttm:P?P.end_dttm:"",json_metadata:e,short_descr:P?P.short_descr:"",start_dttm:P?P.start_dttm:""};_(t)},value:null!=P&&P.json_metadata?P.json_metadata:"",width:"100%",height:"120px"})]})]})})),M=o.I4.div`
+  ${({theme:e})=>l.AH`
+    display: flex;
+    flex-direction: row;
+
+    a,
+    Link {
+      margin-left: ${4*e.gridUnit}px;
+      font-size: ${e.typography.sizes.s}px;
+      font-weight: ${e.typography.weights.normal};
+      text-decoration: underline;
+    }
+  `}
+`,F=(0,f.Ay)((function({addDangerToast:e,addSuccessToast:t}){const n=(0,o.DP)(),{annotationLayerId:u}=(0,r.g)(),{state:{loading:h,resourceCount:f,resourceCollection:y,bulkSelectEnabled:A},fetchData:L,refreshData:T,toggleBulkSelect:N}=(0,v.RU)(`annotation_layer/${u}/annotation`,(0,s.t)("annotation"),e,!1),[w,k]=(0,a.useState)(!1),[F,D]=(0,a.useState)(""),[R,C]=(0,a.useState)(null),[$,K]=(0,a.useState)(null),G=e=>{C(e),k(!0)},H=(0,a.useCallback)((async function(){try{const e=await d.A.get({endpoint:`/api/v1/annotation_layer/${u}`});D(e.json.result.name)}catch(t){await(0,c.h4)(t).then((({error:t})=>{e(t.error||t.statusText||t)}))}}),[u]);(0,a.useEffect)((()=>{H()}),[H]);const O=[{id:"short_descr",desc:!0}],U=(0,a.useMemo)((()=>[{accessor:"short_descr",Header:(0,s.t)("Name")},{accessor:"long_descr",Header:(0,s.t)("Description")},{Cell:({row:{original:{start_dttm:e}}})=>g()(new Date(e)).format("ll"),Header:(0,s.t)("Start"),accessor:"start_dttm"},{Cell:({row:{original:{end_dttm:e}}})=>g()(new Date(e)).format("ll"),Header:(0,s.t)("End"),accessor:"end_dttm"},{Cell:({row:{original:e}})=>{const t=[{label:"edit-action",tooltip:(0,s.t)("Edit annotation"),placement:"bottom",icon:"EditOutlined",onClick:()=>G(e)},{label:"delete-action",tooltip:(0,s.t)("Delete annotation"),placement:"bottom",icon:"DeleteOutlined",onClick:()=>K(e)}];return(0,Y.Y)(p.A,{actions:t})},Header:(0,s.t)("Actions"),id:"actions",disableSortBy:!0}]),[!0,!0]),B=[];B.push({name:(0,Y.FD)(Y.FK,{children:[(0,Y.Y)(I.F.PlusOutlined,{iconColor:n.colors.primary.light5,iconSize:"m",css:l.AH`
+            margin: auto ${2*n.gridUnit}px auto 0;
+            vertical-align: text-top;
+          `}),(0,s.t)("Annotation")]}),buttonStyle:"primary",onClick:()=>{G(null)}}),B.push({name:(0,s.t)("Bulk select"),onClick:N,buttonStyle:"secondary","data-test":"annotation-bulk-select"});let j=!0;try{(0,r.W6)()}catch(e){j=!1}const z={title:(0,s.t)("No annotation yet"),image:"filter-results.svg",buttonAction:()=>{G(null)},buttonText:(0,Y.FD)(Y.FK,{children:[(0,Y.Y)(I.F.PlusOutlined,{iconColor:n.colors.primary.light5,iconSize:"m",css:l.AH`
+            margin: auto ${2*n.gridUnit}px auto 0;
+            vertical-align: text-top;
+          `}),(0,s.t)("Annotation")]})};return(0,Y.FD)(Y.FK,{children:[(0,Y.Y)(b.A,{name:(0,Y.FD)(M,{children:[(0,Y.Y)("span",{children:(0,s.t)("Annotation Layer %s",F)}),(0,Y.Y)("span",{children:j?(0,Y.Y)(i.N_,{to:"/annotationlayer/list/",children:(0,s.t)("Back to all")}):(0,Y.Y)("a",{href:"/annotationlayer/list/",children:(0,s.t)("Back to all")})})]}),buttons:B}),(0,Y.Y)(x,{addDangerToast:e,addSuccessToast:t,annotation:R,show:w,onAnnotationAdd:()=>T(),annotationLayerId:u,onHide:()=>k(!1)}),$&&(0,Y.Y)(_.A,{description:(0,s.t)("Are you sure you want to delete %s?",null==$?void 0:$.short_descr),onConfirm:()=>{$&&(({id:n,short_descr:a})=>{d.A.delete({endpoint:`/api/v1/annotation_layer/${u}/annotation/${n}`}).then((()=>{T(),K(null),t((0,s.t)("Deleted: %s",a))}),(0,S.JF)((t=>e((0,s.t)("There was an issue deleting %s: %s",a,t)))))})($)},onHide:()=>K(null),open:!0,title:(0,s.t)("Delete Annotation?")}),(0,Y.Y)(P.A,{title:(0,s.t)("Please confirm"),description:(0,s.t)("Are you sure you want to delete the selected annotations?"),onConfirm:n=>{d.A.delete({endpoint:`/api/v1/annotation_layer/${u}/annotation/?q=${m().encode(n.map((({id:e})=>e)))}`}).then((({json:e={}})=>{T(),t(e.message)}),(0,S.JF)((t=>e((0,s.t)("There was an issue deleting the selected annotations: %s",t)))))},children:n=>{const a=[{key:"delete",name:(0,s.t)("Delete"),onSelect:n,type:"danger"}];return(0,Y.Y)(E.A,{className:"annotations-list-view",bulkActions:a,bulkSelectEnabled:A,columns:U,count:f,data:y,disableBulkSelect:N,emptyState:z,fetchData:L,addDangerToast:e,addSuccessToast:t,refreshData:T,initialSort:O,loading:h,pageSize:25})}})]})}))},83691:(e,t,n)=>{n.d(t,{A:()=>d});var a=n(96453),r=n(19129),i=n(67073),o=n(2445);const l=a.I4.span`
+  white-space: nowrap;
+  min-width: 100px;
+  svg,
+  i {
+    margin-right: 8px;
+
+    &:hover {
+      path {
+        fill: ${({theme:e})=>e.colors.primary.base};
+      }
+    }
+  }
+`,s=a.I4.span`
+  color: ${({theme:e})=>e.colors.grayscale.base};
+`;function d({actions:e}){return(0,o.Y)(l,{className:"actions",children:e.map(((e,t)=>{const n=i.F[e.icon];return e.tooltip?(0,o.Y)(r.m_,{id:`${e.label}-tooltip`,title:e.tooltip,placement:e.placement,children:(0,o.Y)(s,{role:"button",tabIndex:0,className:"action-button","data-test":e.label,onClick:e.onClick,children:(0,o.Y)(n,{iconSize:"l"})})},t):(0,o.Y)(s,{role:"button",tabIndex:0,className:"action-button",onClick:e.onClick,"data-test":e.label,children:(0,o.Y)(n,{})},t)}))})}}}]);
