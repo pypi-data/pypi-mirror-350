@@ -1,0 +1,80 @@
+Metadata-Version: 2.3
+Name: fasttrackpy
+Version: 0.5.4
+Summary: A python implementation of FastTrack
+License: MIT
+Author: JoFrhwld
+Author-email: JoFrhwld@gmail.com
+Requires-Python: >=3.10,<3.14
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Dist: aligned-textgrid (>=0.8,<0.9)
+Requires-Dist: click (>=8.1.7,<9.0.0)
+Requires-Dist: cloudpickle (>=3.0.0,<4.0.0)
+Requires-Dist: cloup (>=3.0.3,<4.0.0)
+Requires-Dist: filetype (>=1.2.0,<2.0.0)
+Requires-Dist: joblib (>=1.3.2,<2.0.0)
+Requires-Dist: matplotlib (>=3.8.2,<4.0.0)
+Requires-Dist: numba (>=0.61.0,<0.62.0)
+Requires-Dist: polars (>=1.23.0,<2.0.0)
+Requires-Dist: praat-parselmouth (>=0.4.3,<0.5.0)
+Requires-Dist: pytest (>=7.4.3,<8.0.0)
+Requires-Dist: pytest-cov (>=4.1.0,<5.0.0)
+Requires-Dist: pyyaml (>=6.0.1,<7.0.0)
+Requires-Dist: scipy (>=1.11.3,<2.0.0) ; python_version >= "3.10" and python_version < "3.14"
+Requires-Dist: tqdm (>=4.66.1,<5.0.0)
+Project-URL: Homepage, https://fasttrackiverse.github.io/fasttrackpy/
+Project-URL: Repository, https://github.com/FastTrackiverse/fasttrackpy
+Description-Content-Type: text/markdown
+
+# FastTrackPy
+[![PyPI](https://img.shields.io/pypi/v/fasttrackpy)](https://pypi.org/project/fasttrackpy/) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/fasttrackpy) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/fasttrackpy) [![Python CI](https://github.com/JoFrhwld/fasttrackpy/actions/workflows/test-and-run.yml/badge.svg)](https://github.com/JoFrhwld/fasttrackpy/actions/workflows/test-and-run.yml) [![codecov](https://codecov.io/gh/FastTrackiverse/fasttrackpy/graph/badge.svg?token=GOAWY4B5C8)](https://codecov.io/gh/FastTrackiverse/fasttrackpy) [![DOI](https://zenodo.org/badge/580169086.svg)](https://zenodo.org/badge/latestdoi/580169086)
+
+
+A python implementation of the FastTrack method
+
+## Installation
+
+```bash
+pip install fasttrackpy
+```
+
+This will make the command line executable `fasttrack` available, along with its subcommands:
+
+- `audio`
+- `audio-textgrid`
+- `corpus`
+
+## Getting help
+
+For any of the fasttrack subcommands, add the `--help` flag to
+print the help info. You can also visit [the docs](https://fasttrackiverse.github.io/fasttrackpy/usage/getting_started.html).
+
+## Usage
+
+For a single audio file containing a vowel-like sound:
+
+```bash
+fasttrack audio --file audio.wav \
+    --output formants.csv
+```
+
+For a paired audio file and textgrid with intervals defining
+target audio to process:
+
+```bash
+fasttrack audio-textgrid --audio audio.wav \
+    --textgrid audio.TextGrid \
+    --output formants.csv
+```
+
+For a corpus directory of paired audio files and textgrid
+
+```bash
+fasttrack corpus --corpus dir/ \
+    --output formants.csv
+```
