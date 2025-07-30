@@ -1,0 +1,45 @@
+# README
+
+## Installation
+
+`pip install digipigi`
+
+## How to use and characteristics
+
+The digipigi can be used via the module `digipigi`.
+
+The usage is very simple:
+```
+import digipigi
+help(digipigi.DigiPigi)
+dp=digipigi.DigiPigi(HOST='hostname')
+att=dp.setAttenuation(0)
+```
+This sets the digipot to attenuate the singal by a factor `att`.
+
+In order to give a feeling for the performance of the digipigi, we provide here a plot of the attenuation factor as calibrated for a DC input signal:
+
+![DC Calibration](dc.png)
+
+For three wiper positions we also show the time trace of attenuated square wave signal:
+
+![AC Calibration](ac.png)
+
+The odd square wave length is due to my inability to time the recording of the ad2 via its API properly. 
+
+## Installation of pip package:
+
+First `pip install build` and `pip install twine`. Then set the environment variables`
+```
+export TWINE_USERNAME="__token__"
+export TWINE_PASSWORD="API_KEY" 
+```
+Then build the package while you are in the driectory [resources/python/digipigi/](resources/python/digipigi)
+```
+python -m build
+```
+Then upload the package to your PyPi accounty by 
+```
+twine upload dist/* --non-interactive
+```
+
