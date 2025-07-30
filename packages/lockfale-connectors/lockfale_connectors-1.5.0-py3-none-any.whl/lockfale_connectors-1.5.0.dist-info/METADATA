@@ -1,0 +1,202 @@
+Metadata-Version: 2.3
+Name: lockfale-connectors
+Version: 1.5.0
+Summary: Connectors for Kafka, MQTT, and PostgreSQL. These connectors are specifically for use in the Cyberpartner applications.
+License: MIT
+Author: Alex Persinger
+Author-email: nutcrunch@cackalackycon.org
+Requires-Python: >=3.12,<4.0
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Dist: jsonschema
+Requires-Dist: kafka-python
+Requires-Dist: paho-mqtt (>=2.1,<2.2)
+Requires-Dist: pandas (==2.2)
+Requires-Dist: psycopg[binary] (>=3.2,<3.3)
+Requires-Dist: pydantic
+Requires-Dist: pydantic-settings
+Description-Content-Type: text/markdown
+
+# Cyberpartner Connectors
+
+## Connectors Package
+
+This repository contains a collection of connectors for Kafka, MQTT, and PostgreSQL that can be used across any microservice
+in relation to Cyberpartner applications.
+
+There is specific enrichment and schema validation for Cyberpartner routing with Kafka.
+
+The MQTT and PGSQL connectors are fairly generic and can be used in any project, but the kafka wrapper is not.
+
+### Connectors Included
+
+- **Kafka**: Kafka producer and consumer connectors
+- **MQTT**: MQTT client, publisher, and subscriber connectors
+- **PostgreSQL**: PostgreSQL database connector
+
+# AWS CodeArtifact
+
+## Project Usage
+```bash
+# Configure poetry to use AWS CodeArtifact
+export CODEARTIFACT_AUTH_TOKEN=$(aws codeartifact get-authorization-token \
+  --domain YOUR_DOMAIN \
+  --domain-owner YOUR_ACCOUNT_ID \
+  --query authorizationToken \
+  --output text)
+
+export CODEARTIFACT_REPO_URL=$(aws codeartifact get-repository-endpoint \
+  --domain YOUR_DOMAIN \
+  --domain-owner YOUR_ACCOUNT_ID \
+  --repository YOUR_REPO \
+  --format pypi \
+  --query repositoryEndpoint \
+  --output text)
+
+# Configure Poetry
+poetry config repositories.codeartifact $CODEARTIFACT_REPO_URL
+poetry config http-basic.codeartifact aws $CODEARTIFACT_AUTH_TOKEN
+
+# Add the package to your project
+poetry add lockfaleconnectors
+```
+
+# PyPi
+
+## Publish
+
+```bash
+poetry build
+poetry config pypi-token.pypi <your-token-here>
+poetry publish --build
+```
+
+## Project Usage
+```bash
+poetry add lockfaleconnectors
+```
+
+### Kafka
+```python
+from lockfale_connectors.lf_kafka.kafka_consumer import KafkaConsumer
+from lockfale_connectors.lf_kafka.kafka_producer import KafkaProducer
+
+if __name__ == "__main__":
+    consumer = KafkaConsumer("kafka:9092", ["list", "of", "topics"], "group-id")
+    producer_client = KafkaProducer(kafka_broker="kafka:9092")
+    
+    for message in consumer.consumer:
+        data = json.loads(message) if isinstance(message, str) else message
+        producer_client.send_message(source_topic="ingress-topic", destination_topic='dead-end-topic', message=data)
+```
+
+### MQTT - Generic Message Handlers
+
+Set username and password as env vars:
+```bash
+export MQTT_USERNAME=your-username
+export MQTT_PASSWORD=your-password
+```
+
+```python
+from lockfale_connectors.mqtt.mqtt_subscriber import MQTTSubscriber
+from lockfale_connectors.mqtt.mqtt_publisher import MQTTPublisher
+
+if __name__ == "__main__":
+    subscriber = MQTTSubscriber("subscriber-client-id")
+    subscriber.connect()
+    subscriber.start_listener()
+    
+    publisher = MQTTPublisher("publisher-client-id")
+    publisher.connect(keep_alive=20)
+    publisher.client.loop_start()
+    publisher.publish("topic", "message")
+```
+
+### MQTT - Specific Message Handlers
+```python
+from lockfale_connectors.mqtt.mqtt_subscriber import MQTTSubscriber
+from lockfale_connectors.mqtt.mqtt_publisher import MQTTPublisher
+
+def custom_on_connect(self, client, userdata, flags, reason_code, properties):
+    """Handles MQTT connection"""
+    if reason_code.is_failure:
+        logger.error(f"Failed to connect: {reason_code}")
+        return
+
+    subscription_list = [
+        ("your/custom/topic", 1),
+        ("your/custom/topic/wildcard/#", 1),
+        ("your/custom/topic/dual/+/wildcard/#", 1),
+    ]
+    logger.info(f"Subscribing to:")
+    logger.info(subscription_list)
+    client.subscribe(subscription_list)
+
+def custom_on_message(self, client, userdata, message: MQTTMessage):
+    """Handles incoming MQTT messages"""
+    if message.retain:
+        logger.info("Skipping retained message")
+        return
+
+    data = json.loads(message.payload.decode("utf-8"))
+    logger.info(f"{message.topic} | Received message: {data}")
+
+
+if __name__ == "__main__":
+    subscriber = MQTTSubscriber(
+        f"subscriber-translate-mqtt-kafka-{args.service}",
+        _on_connect=custom_on_connect,
+        _on_message=custom_on_message,
+    )
+    
+    subscriber.connect()
+    subscriber.start_listener()
+    
+    publisher = MQTTPublisher("publisher-client-id")
+    publisher.connect(keep_alive=20)
+    publisher.client.loop_start()
+    publisher.publish("topic", "message")
+```
+
+### PostgreSQL
+
+Required Env Vars:
+```bash
+export PG_DB_HOST=your-host
+export PG_DB_CKC_POOL_PORT=your-port
+export PG_DB_CKC_POOL=your-database
+export PG_DB_CONNECTION_LIMIT=your-connection-limit
+export PG_DB_USER=your-user
+export PG_DB_PASSWORD=your-password
+```
+
+```python
+from lockfale_connectors.postgres.pgsql import PostgreSQLConnector
+
+if __name__ == "__main__":
+    pgsql = PostgreSQLConnector()
+    
+    # select df
+    pgsql.select_dataframe("SELECT * FROM your_table")
+    
+    # select dict
+    pgsql.select_dict("SELECT * FROM your_table")
+
+    # insert
+    INSERT_QRY = """
+            INSERT INTO schema.your_table (name, is_active) 
+            VALUES (%(name)s, 1) RETURNING id
+        """
+    params = {
+        "name": "Alex",
+    }
+    record_id = pgsql.execute(query=INSERT_QRY, params=params)
+```
+
+# TODO
+ - Use confluent-kafka
+ - Update Psycopg to v3.3
+ - Change env vars to be more generic
