@@ -1,0 +1,102 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "qt-material-ui"
+version = "0.2.0"
+description = "Material 3 component library for Qt Widgets"
+requires-python = ">=3.10"
+dependencies = [
+    "QtPy==2.4.*",
+    "materialyoucolor==2.*",
+    "typing-extensions==4.*",
+]
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+classifiers = ["Development Status :: 4 - Beta"]
+keywords = ["qt", "material", "ui", "components", "widgets"]
+
+[project.optional-dependencies]
+dev = [
+    "PySide6",
+    "httpx",
+    "mypy",
+    "ruff",
+    "pytest",
+    "pytest-cov",
+    "pytest-asyncio",
+    "pytest-mock",
+    "pytest-qt",
+    "pyautogui",
+]
+
+[project.urls]
+Repository = "https://github.com/herobank110/qt-material-ui"
+Documentation = "https://qt-material-ui.readthedocs.io"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/material_ui"]
+
+[tool.pytest.ini_options]
+markers = ["record_gif: manual entry point for recording a gif"]
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.ruff]
+include = ["samples/**/*.py", "src/**/*.py", "tests/**/*.py"]
+line-length = 88
+indent-width = 4
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "ANN401", # Allow explicit Any.
+    "D100",   # Skip docstring for modules (classes are documented instead).
+    "D107",   # Skip docstring for __init__.
+    "TD002",  # Skip author in TODO.
+    "TD003",  # Skip issue link in TODO.
+]
+fixable = ["ALL"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.flake8-boolean-trap]
+extend-allowed-calls = ["material_ui._component.use_state"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+docstring-code-format = true
+
+[tool.coverage.run]
+# Omit these from coverage since they are just generated files with a
+# big list of constants. Some of these modules are used in the
+# appropriate unit tests for the core token functionality.
+omit = ["src/material_ui/tokens/md_*", "tests/*"]
+
+[tool.pyright]
+include = ["src", "tests"]
+typeCheckingMode = "strict"
+
+# Makes it so if you assign a mem var in a derived class it changes the
+# type defined in the base class.
+reportAttributeAccessIssue = false
+
+# Seems to be broken with variadic generic types with no arguments.
+reportMissingTypeArgument = false
+reportArgumentType = false
+reportUnknownMemberType = false
+
+# Bug with literals in match statement.
+reportMatchNotExhaustive = false
+
+executionEnvironments = [
+    # Allow tests to import private functions to test them.
+    { root = "tests", reportPrivateUsage = false, reportMissingTypeStubs = false },
+]
+
+[tool.mypy]
+files = ["src/**/*.py", "tests/**/*.py"]
