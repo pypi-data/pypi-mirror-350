@@ -1,0 +1,27 @@
+[project]
+name = "netmind-mcpserver-mcp"
+version = "0.1.0"
+description = "AThis is an MCP (Model Context Protocol) server specifically built to collect and serve ratings and reviews for other MCP servers deployed on the NetMind platform."
+authors = [
+    {name = "yanrujing", email = "rujing.yan@protagonist-ai.com"}
+]
+repository = "https://github.com/protagolabs/Netmind-review-MCP"
+license = { text = "MIT" }
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "mcp (>=1.6.0,<2.0.0)",
+    "httpx (>=0.28.1,<0.29.0)"
+]
+
+packages = [{ include = "src/netmind_review_mcp" }]
+
+
+[tool.poetry.scripts]
+netmind-mcpserver-mcp = "netmind_mcpserver_mcp:main"
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
