@@ -1,0 +1,60 @@
+
+[project]
+name = "xontrib-uvox"
+version = "0.1.1"
+license = "MIT"
+description = "Python virtual environment manager for xonsh."
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Topic :: System :: Shells",
+    "Topic :: System :: System Shells",
+    "Topic :: Terminals",
+]
+requires-python = ">=3.11"
+dependencies = ["xonsh>=0.12.5", "uv"]
+authors = [{ name = "Morgan Grobol", email = "morgan.grobol@tuta.com" }]
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+
+[project.urls]
+Homepage = "https://github.com/LoicGrobol/xontrib-uvox"
+Documentation = "https://github.com/LoicGrobol/xontrib-uvox/blob/main/README.md"
+Code = "https://github.com/LoicGrobol/xontrib-uvox"
+"Issue tracker" = "https://github.com/LoicGrobol/xontrib-uvox/issues"
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
+
+[project.entry-points."xonsh.xontribs"]
+uvox = "xontrib_uvox"
+
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["xontrib_uvox"]
+package-dir = { xontrib_uvox = "xontrib_uvox" }
+
+platforms = ["any"]
+include-package-data = false
+
+[tool.setuptools.package-data]
+xontrib = ["*.xsh"]
+
+[tool.ruff]
+line-length = 100
+select = ["A", "B", "C90", "E", "F", "N", "NPY", "PT", "PTH", "PYI", "S", "W"]
+
+[tool.ruff.per-file-ignores]
+"tests/**/*.py" = [
+    "S101", # asserts allowed in tests
+    "ARG",  # Unused function args -> fixtures nevertheless are functionally relevant
+]
+
+[tool.mypy]
+check_untyped_defs = true
+warn_unreachable = true
