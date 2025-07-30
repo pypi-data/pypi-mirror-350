@@ -1,0 +1,217 @@
+Metadata-Version: 2.4
+Name: mitre-attackctl
+Version: 0.1.0
+Summary: A fast, batteries-included CLI companion for MITRE ATT&CK® TTPs
+Author-email: Jonathan Haas <jonathan@haasonsaas.com>
+Maintainer-email: Jonathan Haas <jonathan@haasonsaas.com>
+License-Expression: MIT
+Project-URL: Homepage, https://github.com/haasonsaas/attackctl
+Project-URL: Repository, https://github.com/haasonsaas/attackctl
+Project-URL: Issues, https://github.com/haasonsaas/attackctl/issues
+Project-URL: Documentation, https://github.com/haasonsaas/attackctl#readme
+Project-URL: Changelog, https://github.com/haasonsaas/attackctl/blob/main/CHANGELOG.md
+Keywords: mitre,attack,ttps,cybersecurity,cli,threat-hunting,security,blue-team
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Information Technology
+Classifier: Intended Audience :: System Administrators
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Security
+Classifier: Topic :: System :: Systems Administration
+Classifier: Topic :: Utilities
+Classifier: Typing :: Typed
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: typer[all]>=0.9.0
+Requires-Dist: rich>=13.0.0
+Requires-Dist: rapidfuzz>=3.0.0
+Requires-Dist: requests>=2.31.0
+Requires-Dist: stix2>=3.0.0
+Requires-Dist: taxii2-client>=2.3.0
+Requires-Dist: pydantic>=2.0.0
+Requires-Dist: jinja2>=3.1.0
+Requires-Dist: pyyaml>=6.0.0
+Requires-Dist: click>=8.1.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0.0; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: ruff>=0.1.0; extra == "dev"
+Requires-Dist: mypy>=1.0.0; extra == "dev"
+Requires-Dist: pre-commit>=3.0.0; extra == "dev"
+Provides-Extra: ai
+Requires-Dist: openai>=1.0.0; extra == "ai"
+Dynamic: license-file
+
+# mitre-attackctl
+
+A fast, batteries-included CLI companion for MITRE ATT&CK® TTPs.
+
+## ✨ Features
+
+- **🔍 Instant, offline TTP lookup** - Search techniques using fuzzy matching
+- **📋 Rich technique details** - View comprehensive information in YAML, JSON, or Markdown
+- **🔄 Stay current** - Easy updates to latest ATT&CK framework data
+- **💾 Smart caching** - Local storage for offline access and performance
+- **🎨 Beautiful output** - Rich terminal UI with tables, colors, and formatting
+
+## 🚀 Quick Start
+
+### Installation
+
+```bash
+# Install from PyPI (recommended)
+pip install mitre-attackctl
+
+# Or install with pipx for isolated installation
+pipx install mitre-attackctl
+
+# Or install from source
+git clone https://github.com/haasonsaas/attackctl
+cd attackctl
+pip install -e .
+```
+
+### Basic Usage
+
+```bash
+# Search for techniques
+attackctl search "gcp persistence"
+attackctl search "powershell"
+attackctl search "T1059"
+
+# Show technique details
+attackctl show T1098.004
+attackctl show T1059.003 --format markdown
+
+# Update local data cache
+attackctl update
+
+# Get help
+attackctl --help
+attackctl search --help
+```
+
+## 📖 Commands
+
+### `search` - Find techniques
+
+Search for ATT&CK techniques using fuzzy string matching:
+
+```bash
+# Basic search
+attackctl search "credential access"
+
+# Limit results
+attackctl search "persistence" --limit 5
+
+# JSON output
+attackctl search "powershell" --format json
+
+# Update cache before searching
+attackctl search "docker" --update
+```
+
+### `show` - Technique details
+
+Display comprehensive information about a specific technique:
+
+```bash
+# Default YAML format
+attackctl show T1098.004
+
+# Markdown format
+attackctl show T1059.003 --format markdown
+
+# JSON format  
+attackctl show T1055 --format json
+```
+
+### `update` - Refresh data
+
+Update the local ATT&CK framework data cache:
+
+```bash
+# Update if cache is stale
+attackctl update
+
+# Force update regardless of cache age
+attackctl update --force
+```
+
+## 🏗️ Architecture
+
+### Tech Stack
+- **Language**: Python 3.12+ with Typer for CLI
+- **Search**: RapidFuzz for fuzzy string matching
+- **Data**: MITRE ATT&CK STIX bundles via JSON API
+- **Output**: Rich for beautiful terminal formatting
+- **Caching**: Local JSON cache in `~/.attackctl/cache/`
+
+### Data Sources
+- MITRE ATT&CK Enterprise Matrix
+- Cached locally for offline access
+- Auto-updates with version tracking
+
+## 🛣️ Roadmap
+
+### Planned Features
+- **🗺️ Detection mapping** - Map techniques to Sigma, Splunk, Sentinel rules
+- **📊 Coverage analysis** - Gap analysis for detection rules
+- **🧪 Test data generation** - Synthetic logs for rule validation
+- **📤 Report export** - Generate reports in multiple formats
+- **🔀 Version comparison** - Diff between ATT&CK versions
+- **🔍 Semantic search** - AI-powered technique discovery
+
+### Coming Soon
+- Sub-technique filtering
+- Tactic and platform filtering  
+- Custom rule mappings
+- Integration with detection platforms
+
+## 🤝 Contributing
+
+Contributions welcome! This project aims to solve real pain points in threat hunting and detection engineering.
+
+### Development Setup
+
+```bash
+git clone https://github.com/haasonsaas/attackctl
+cd attackctl
+pip install -e ".[dev]"
+pytest
+```
+
+### Project Structure
+```
+attackctl/
+├── src/attackctl/
+│   ├── cli.py          # Main CLI interface
+│   ├── data.py         # ATT&CK data fetching/caching  
+│   ├── models.py       # Pydantic data models
+│   ├── search.py       # Fuzzy search implementation
+│   └── display.py      # Output formatting
+├── tests/              # Test suite
+└── docs/               # Documentation
+```
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) for details.
+
+## 🙏 Acknowledgments
+
+- [MITRE ATT&CK®](https://attack.mitre.org/) framework and team
+- [Typer](https://typer.tiangolo.com/) for the excellent CLI framework
+- [Rich](https://rich.readthedocs.io/) for beautiful terminal output
+
+---
+
+MITRE ATT&CK® is a registered trademark of The MITRE Corporation.
