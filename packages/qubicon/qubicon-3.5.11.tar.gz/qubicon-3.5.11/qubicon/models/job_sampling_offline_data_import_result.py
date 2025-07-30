@@ -1,0 +1,83 @@
+from typing import TYPE_CHECKING, Any, Dict, List, Type, TypeVar, Union
+
+from attrs import define as _attrs_define
+from attrs import field as _attrs_field
+
+from ..models.abstract_job_result_job_type import AbstractJobResultJobType
+from qubicon.api.types import UNSET, Unset
+
+if TYPE_CHECKING:
+    from ..models.abstract_import_file_progress import AbstractImportFileProgress
+
+
+T = TypeVar("T", bound="JobSamplingOfflineDataImportResult")
+
+
+@_attrs_define
+class JobSamplingOfflineDataImportResult:
+    """
+    Attributes:
+        job_type (AbstractJobResultJobType): Job type
+        result (Union[Unset, AbstractImportFileProgress]):
+    """
+
+    job_type: AbstractJobResultJobType
+    result: Union[Unset, "AbstractImportFileProgress"] = UNSET
+    additional_properties: Dict[str, Any] = _attrs_field(init=False, factory=dict)
+
+    def to_dict(self) -> Dict[str, Any]:
+        job_type = self.job_type.value
+
+        result: Union[Unset, Dict[str, Any]] = UNSET
+        if not isinstance(self.result, Unset):
+            result = self.result.to_dict()
+
+        field_dict: Dict[str, Any] = {}
+        field_dict.update(self.additional_properties)
+        field_dict.update(
+            {
+                "jobType": job_type,
+            }
+        )
+        if result is not UNSET:
+            field_dict["result"] = result
+
+        return field_dict
+
+    @classmethod
+    def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
+        from ..models.abstract_import_file_progress import AbstractImportFileProgress
+
+        d = src_dict.copy()
+        job_type = AbstractJobResultJobType(d.pop("jobType"))
+
+        _result = d.pop("result", UNSET)
+        result: Union[Unset, AbstractImportFileProgress]
+        if isinstance(_result, Unset):
+            result = UNSET
+        else:
+            result = AbstractImportFileProgress.from_dict(_result)
+
+        job_sampling_offline_data_import_result = cls(
+            job_type=job_type,
+            result=result,
+        )
+
+        job_sampling_offline_data_import_result.additional_properties = d
+        return job_sampling_offline_data_import_result
+
+    @property
+    def additional_keys(self) -> List[str]:
+        return list(self.additional_properties.keys())
+
+    def __getitem__(self, key: str) -> Any:
+        return self.additional_properties[key]
+
+    def __setitem__(self, key: str, value: Any) -> None:
+        self.additional_properties[key] = value
+
+    def __delitem__(self, key: str) -> None:
+        del self.additional_properties[key]
+
+    def __contains__(self, key: str) -> bool:
+        return key in self.additional_properties

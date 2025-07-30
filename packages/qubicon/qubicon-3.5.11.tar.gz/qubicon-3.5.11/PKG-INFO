@@ -1,0 +1,334 @@
+Metadata-Version: 2.1
+Name: qubicon
+Version: 3.5.11
+Summary: Python SDK for interacting with the Qubicon platform through the library or CLI
+Home-page: 
+Author: Olivier Guillet
+Author-email: olivier.guillet@qubicon.io
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Requires-Dist: attrs==25.1.0
+Requires-Dist: httpx==0.28.1
+Requires-Dist: pandas==2.2.3
+Requires-Dist: rapidfuzz==3.9.6
+Requires-Dist: rich==13.9.4
+Requires-Dist: setuptools==68.2.2
+Requires-Dist: tabulate==0.9.0
+Requires-Dist: requests==2.32.3
+Requires-Dist: openpyxl==3.1.5
+
+# Qubicon SDK
+
+## Overview
+
+The **Qubicon SDK** is a Python client library designed for interacting with the Qubicon API. It provides methods for authentication, process management, model creation, data extraction, and more.
+
+This SDK wraps the **OpenAPI-generated client** and adds custom functionalities to streamline interactions with the Qubicon platform.
+
+## Usage Modes
+
+The Qubicon SDK can be used in two ways:
+
+1. **As a Python Library** – Import and use the SDK programmatically in your Python applications.
+2. **As an Interactive CLI** – Run an interactive command-line interface to execute commands without writing code.
+
+To start the interactive menu, run:
+
+```sh
+qubicon-client --interactive
+```
+
+All function outputs are returned in **JSON format**, making it easy to parse and integrate with other tools.
+
+## Features
+
+- **Authentication & Token Management**
+- **Process Management** (Create, List, Delete Processes & Groups)
+- **Model Management** (Create, Fetch, Export Computable Models)
+- **Physical Quantities Handling**
+- **Process Data Extraction & Export**
+- **File Upload & Advanced Model Management**
+- **Event Streaming**
+
+## Installation
+
+Install the SDK using pip:
+
+```sh
+pip install qubicon
+```
+
+Alternatively, install from a local package:
+
+```sh
+pip install /path/to/qubicon_package
+```
+
+## Quick Start
+
+### 1. **Initialize the SDK**
+
+```python
+from qubicon.core import QubiconCore, AuthenticatedClient
+
+# Define base URL (e.g., production or staging server)
+BASE_URL = "https://qubicon-hostname"
+
+# Create a client instance
+client = AuthenticatedClient(base_url=BASE_URL, token=None)
+
+# Initialize QubiconCore with the authenticated client
+qubicon = QubiconCore(client)
+```
+
+### 2. **Login to Qubicon**
+
+```python
+username = "your_username"
+password = "your_password"
+token = qubicon.login_user(username, password)
+print("Token:", token)
+```
+
+### 3. **List Processes**
+
+```python
+processes = qubicon.list_processes()
+print(processes)
+```
+
+### 4. **Create a Process**
+
+```python
+new_process = qubicon.create_process(
+    name="Test Process",
+    recipe_id=1822,
+    description="Automated process creation"
+)
+print(new_process)
+```
+
+### 5. **Delete a Process**
+
+```python
+response = qubicon.delete_process(process_id=1234)
+print(response)
+```
+
+---
+
+## API Reference
+
+### **Authentication**
+
+```python
+def login_user(username: str, password: str) -> Optional[str]
+```
+
+- Logs in a user and retrieves an authentication token.
+
+```python
+def refresh_token(refresh_token: str) -> Optional[str]
+```
+
+- Refreshes an expired authentication token.
+
+---
+
+### **Process Management**
+
+```python
+def list_processes()
+```
+
+- Lists all processes with optional filters.
+
+```python
+def create_process(name: str, recipe_id: int, description: str = "") -> Optional[Dict[str, Any]]
+```
+
+- Creates a new process using a specified recipe.
+
+```python
+def start_process(process_id: int) -> bool
+```
+
+- Start a process by ID.
+
+```python
+def delete_process(process_id: int) -> Optional[Dict[str, Any]]
+```
+
+- Deletes a specific process by ID.
+
+```python
+def delete_multiple_processes(process_ids: List[int]) -> Dict[int, Optional[Dict[str, Any]]]
+```
+
+- Deletes multiple processes in a batch operation.
+
+```python
+def create_process_group(name: str) -> Optional[Dict[str, Any]]
+```
+
+- Creates a new process group.
+
+```python
+def add_processes_to_group(group_id: int, process_ids: List[int]) -> Optional[Dict[str, Any]]
+```
+
+- Adds multiple processes to an existing group.
+
+---
+
+### **Computable Models**
+
+```python
+def list_computable_models()
+```
+
+- Lists all available computable models.
+
+```python
+def fetch_model_details(model_id: int)
+```
+
+- Fetches detailed information about a computable model.
+
+```python
+def create_computable_model(model_data: dict) -> Optional[Dict[str, Any]]
+```
+
+- Creates a new computable model with the given specifications.
+
+```python
+def export_model_to_json(model_id: int, filename: str)
+```
+
+- Exports a computable model into an importable JSON format.
+
+---
+
+### **Physical Quantities**
+
+```python
+def list_physical_quantities()
+```
+
+- Retrieves all available physical quantities.
+
+```python
+def create_physical_quantity(pq_dict: Dict[str, Any]) -> Optional[Dict[str, Any]]
+```
+
+- Creates a new physical quantity in the system.
+
+```python
+def check_existing_physical_quantity(pq_name: str) -> Optional[dict]
+```
+
+- Checks if a physical quantity already exists.
+
+---
+
+### **Process Data & Channels**
+
+```python
+def extract_channels(process_id: int)
+```
+
+- Extracts available channels for a given process.
+
+```python
+def extract_process_data(process_id: int, output_format: str = "csv", output_file: str = "process_data.csv")
+```
+
+- Extracts and exports process data in a file.
+
+```python
+def extract_offline_channels(process_id: int)
+```
+
+- Extracts available offline channels for a given process.
+
+```python
+def extract_offline_process_data(process_id: int, selected_channels: List[Dict[str, Any]], start_date: [int], end_date: [int])
+```
+
+- Extracts and exports offline process data for selected channels and a given period.
+
+```python
+def get_process_samplings(self, process_id: int) -> List[Dict[str, Any]]
+```
+
+- Fetch detailed sampling data for a given process ID.
+
+```python
+def discard_sampling_data(self, external_sampling_id: str, process_id: int) -> bool
+```
+
+- Discard a specific external sampling for a given process.
+
+```python
+def get_offline_equipment_data(equipment_id: int, process_id: int,)
+```
+
+- Get the list of offline data for an offline equipment and a process.
+
+```python
+def get_process_tag_values(process_id: int) -> List[Dict[str, Any]]
+```
+
+- Fetches process tag values and extracts TagDto with corresponding values.
+
+```python
+def set_tag_value(self, process_id: int, tag_value_id: int, new_value: Any) -> Optional[Dict[str, Any]]:
+```
+
+- Updates a tag value for a specific process and tag value ID.
+
+---
+
+### **File Upload & Advanced Models**
+
+```python
+def upload_file(file_path: str) -> Optional[Dict[str, Any]]
+```
+
+- Uploads an external file (e.g., ZIP archive) to Qubicon.
+
+```python
+def create_advanced_model(model_data: dict, file_path: str) -> Optional[Dict[str, Any]]
+```
+
+- Creates an advanced model that references an external file.
+
+---
+
+### **Sampling**
+
+```python
+def generate_and_upload_sampling_plan(process_group_id: int, number_of_samples: int, sample_prefix: str = "Day")
+```
+
+- Generates and uploads a sampling plan to the specified process group ID.
+
+```python
+def generate_and_upload_sampling_plan_single_process(process_id: int, number_of_samples: int, sample_prefix: str = "Day")
+```
+
+- Generates and uploads a sampling plan to the specified process ID.
+
+---
+
+### **Event Streaming**
+
+```python
+def stream_events(event_types: List[str], nonce: str)
+```
+
+- Streams real-time events from the API.
+
+---
