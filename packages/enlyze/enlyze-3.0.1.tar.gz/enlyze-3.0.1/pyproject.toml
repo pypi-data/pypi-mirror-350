@@ -1,0 +1,63 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = [
+  "setuptools",
+]
+
+[project]
+name = "enlyze"
+description = "Python SDK for interacting with the ENLYZE platform https://www.enlyze.com"
+readme = "README.rst"
+license = { text = "MIT" }
+authors = [ { name = "ENLYZE GmbH", email = "hello@enlyze.com" } ]
+requires-python = ">=3.10"
+classifiers = [
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+dynamic = [
+  "version",
+]
+dependencies = [
+  "httpx",
+  "pandas>=2",
+  "pydantic>=2",
+]
+optional-dependencies.docs = [
+  "sphinx",
+  "sphinx-rtd-theme",
+  "sphinx-tabs",
+  "sphinxcontrib-spelling",
+]
+optional-dependencies.lint = [
+  "bandit",
+  "black",
+  "flake8",
+  "isort",
+  "mypy",
+  "pyproject-fmt",
+  "tox-ini-fmt",
+]
+optional-dependencies.test = [
+  "coverage",
+  "hypothesis",
+  "pandas-stubs",
+  "pytest",
+  "pytest-cov",
+  "pytest-randomly",
+  "pytest-sugar",
+  "pytest-xdist",
+  "respx",
+]
+
+[tool.setuptools.dynamic]
+version = { attr = "enlyze._version.VERSION" }
+
+[tool.isort]
+profile = "black"
+
+[tool.mypy]
+exclude = "tests"
