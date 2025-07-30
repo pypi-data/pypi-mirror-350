@@ -1,0 +1,88 @@
+[project]
+name = "pyFF"
+version = "2.1.4"
+readme = "README.rst"
+description = "Federation Feeder"
+requires-python = ">=3.9"
+license = {file = "LICENSE"}
+
+authors = [
+  {name = "Leif Johansson", email = "leifj@sunet.se"},
+  {name = "Fredrik Thulin", email = "redrik@thulin.net"},
+  {name = "Enrique Pérez Arnaud"},
+  {name = "Mikael Frykholm", email = "mifr@sunet.se"},
+]
+maintainers = [
+  {name = "Mikael Frykholm", email = "mifr@sunet.se"}
+]
+dependencies = [
+    "accept-types>=0.4.1",
+    "apscheduler==3.6.3",
+    "cachetools>=5.5.2",
+    "eval-type-backport>=0.2.2 ; python_full_version == '3.9.*'",
+    "gunicorn>=23.0.0",
+    "httplib2>=0.7.7",
+    "lxml>=4.1.1",
+    "mako>=1.3.10",
+    "pyconfig>=3.2.3",
+    "pydantic>=2.8",
+    "pyramid>=2.0.2",
+    "pytz>=2025.2",
+    "pyxmlsecurity>=1.0.0",
+    "pyyaml>=3.10",
+    "redis>=5.3.0",
+    "redis-collections>=0.13.0",
+    "requests>=2.32.3",
+    "requests-cache>=1.2.1",
+    "requests-file>=2.1.0",
+    "setuptools>=78.1.1",
+    "simplejson>=2.6.2",
+    "str2bool>=1.1",
+    "urllib3==1.26.19",
+    "whoosh>=2.7.4",
+    "wsgi-intercept>=1.13.1",
+    "xmldiff>=2.7.0",
+    "zipp>=3.19.1",
+]
+[project.scripts]
+pyff = "pyff.md:main"
+pyffd = "pyff.mdq:main"
+samldiff = "pyff.tools:difftool"
+
+[tool.ruff]
+# Allow lines to be as long as 120.
+line-length = 120
+target-version = "py39"
+
+[tool.ruff.lint]
+#select = [
+##  "ANN",
+#  "ASYNC",
+#  "E",
+#  "ERA",
+#  "F",
+#  "FAST",
+#  "FLY",
+#  "FURB",
+#  "I",
+#  "PERF",
+#  "PGH",
+#  "PIE",
+#  "PL",
+#  "UP",
+#  "W",
+#]
+ignore = [
+"PLR0915",
+"PLR0912",
+]
+[tool.ruff.format]
+quote-style = "preserve"
+
+[tool.build_sphinx]
+source-dir = "docs/"
+build-dir = "docs/build"
+all_files = "1"
+
+[tool.upload_sphinx]
+upload-dir = "docs/build/html"
