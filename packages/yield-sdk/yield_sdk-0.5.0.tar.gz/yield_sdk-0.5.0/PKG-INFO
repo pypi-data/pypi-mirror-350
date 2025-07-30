@@ -1,0 +1,52 @@
+Metadata-Version: 2.4
+Name: yield-sdk
+Version: 0.5.0
+Summary: The official Yield SDK for Python
+Author: Yield
+License-Expression: Apache-2.0
+License-File: LICENSE
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Programming Language :: Python :: Implementation :: PyPy
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.10
+Requires-Dist: typing-extensions>=4.13.0
+Description-Content-Type: text/markdown
+
+# The official Yield SDK for Python
+
+## Installation
+
+```sh
+pip install yield-sdk
+```
+
+## Usage
+
+```python
+import yield_sdk
+import os
+
+# for security, never commit the actual key in your code
+client = yield_sdk.SyncClient(os.environ["YIELD_API_KEY"])
+
+# fetch an existing order
+order = client.order.fetch("ord_...")
+print(order.customer.registered_name)
+
+# or create a new one
+new_order = client.order.create(dict(
+    customer_id="org_...",
+    total_amount="PHP 1234.50",
+    note="Test order from the Python SDK!",
+))
+```

@@ -1,0 +1,70 @@
+[project]
+name = "yield-sdk"
+dynamic = ["version"]
+description = "The official Yield SDK for Python"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+keywords = []
+authors = [{ name = "Yield" }]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  # "Development Status :: 5 - Production/Stable",
+  # "Framework :: AsyncIO",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+  "typing-extensions>=4.13.0"
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "src/yield_sdk/version.py"
+
+# [tool.hatch.envs.old]
+# python = "3.10"
+# add urllib3? httpx?
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+  "mypy>=1.0.0",
+  "pyright[nodejs]>1.0.0",
+  "httpx>=0.28.0",
+  "urllib3>=2.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check-mypy = "mypy --install-types --strict --non-interactive {args:src/yield_sdk tests}"
+check-pyright = "pyright"
+
+[tool.mypy]
+python_version = "3.10"
+
+[tool.pyright]
+# See: https://github.com/microsoft/pyright/blob/main/docs/configuration.md
+include = ["src/yield_sdk", "tests"]
+pythonVersion = "3.10"
+typeCheckingMode = "strict"
+deprecateTypingAliases = true
+reportImplicitOverride = "error"
+reportImplicitStringConcatenation = "error"
+# reportImportCycles = "error"
+# reportMissingSuperCall = "error" # Too strict, see https://github.com/microsoft/pyright/issues/4893
+reportPropertyTypeMismatch = "error"
+reportShadowedImports = "error"
+reportUninitializedInstanceVariable = "error"
+reportUnnecessaryTypeIgnoreComment = "error"
+reportUnusedCallResult = "error"
