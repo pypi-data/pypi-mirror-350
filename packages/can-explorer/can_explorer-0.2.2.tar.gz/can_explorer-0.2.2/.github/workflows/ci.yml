@@ -1,0 +1,95 @@
+name: CI
+
+on:
+  - pull_request
+  - workflow_dispatch
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      with:
+        cache: 'pip'
+    - uses: pre-commit/action@v3.0.1
+
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+        python-version: ['3.10', '3.11', '3.12']
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - run: echo ${{ matrix.python-version }} >> .python-version
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
+
+    - name: Install dependencies
+      run: uv sync --extra dev
+
+    - name: Test linux
+      if: runner.os == 'Linux'
+      uses: nick-fields/retry@v3
+      with:
+        timeout_minutes: 10
+        max_attempts: 3
+        command: |
+          sudo apt-get install -y xvfb xserver-xephyr scrot gnome-screenshot
+          mkdir -p screenshots
+          xvfb-run -a uv run pytest -v
+
+    - name: Test windows
+      if: runner.os == 'Windows'
+      uses: nick-fields/retry@v3
+      with:
+        timeout_minutes: 10
+        max_attempts: 3
+        command: |
+          mkdir -p screenshots
+          uv run pytest -v
+
+    - name: Test mac [1]
+      if: runner.os == 'macOS'
+      uses: nick-fields/retry@v3
+      with:
+        timeout_minutes: 10
+        max_attempts: 3
+        # Xvfb not available until next job
+        command: |
+          brew install --cask xquartz
+          echo "/opt/X11/bin" >> $GITHUB_PATH
+
+    - name: Test mac [2]
+      if: runner.os == 'macOS'
+      uses: nick-fields/retry@v3
+      with:
+        timeout_minutes: 10
+        max_attempts: 3
+        command: |
+          mkdir -p screenshots
+          Xvfb :1 & 
+          export DISPLAY=":1"
+          uv run pytest -v
+
+    - name: Upload screenshots
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: screenshots-${{ matrix.os }}-${{ matrix.python-version }}
+        path: screenshots/*.png
+
+    # - name: Setup tmate session
+    #   # Enables ssh session during manually triggered ci runs
+    #   uses: mxschmitt/action-tmate@v3
+    #   if: ${{ failure() && github.event_name == 'workflow_dispatch' }}
+

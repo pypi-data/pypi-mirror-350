@@ -1,0 +1,55 @@
+[project]
+name = "can-explorer"
+version = "0.2.2"
+description = "Visualize CAN bus payloads in real time"
+authors = [
+    { name = "TJ", email = "tbruno25@gmail.com" }
+]
+dependencies = [
+    "pyserial>=3.5",
+    "python-can>=4.0.0",
+    "dearpygui>=1.9.0, <2.0.0",
+    "dearpygui-ext>=0.9.0, <2.0.0",
+]
+readme = "README.md"
+requires-python = ">= 3.10"
+keywords = ["can", "bus", "canbus", "can_bus", "dbc"]
+classifiers = [
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+[project.urls]
+repository = "https://github.com/tbruno25/can-explorer"
+
+[project.scripts]
+can-explorer = "can_explorer.__main__:__main__"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.2",
+    "pytest-dpg>=0.1.5",
+    "msvc-runtime ; platform_system == 'Windows'",
+    "pillow>=10.4.0",
+    "opencv-python>=4.10.0.84",
+]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/can_explorer"]
+
+[tool.ruff.lint]
+extend-select = ["A", "B", "I", "N", "W"]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
