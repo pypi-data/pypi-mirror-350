@@ -1,0 +1,38 @@
+[project]
+name = "cashier-server"
+version = "0.6.0"
+description = "Cashier synchronization server in Python"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "beancount>=3.1.0",
+    "beanquery>=0.2.0",
+    "fastapi>=0.115.12",
+    "loguru>=0.7.3",
+    "python-dotenv>=1.1.0",
+    "uvicorn>=0.34.2",
+]
+
+[project.scripts]
+cashier-server-py = "main:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+    "pytest-asyncio>=0.26.0",
+]
+
+[tool.pytest.ini_options]
+# pythonpath = [
+#   "."
+# ]
+asyncio_default_fixture_loop_scope = "function"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+# Include the package subfolder in the distribution package.
+#packages = ["pricedl"]
+only-include = ["main.py"]
