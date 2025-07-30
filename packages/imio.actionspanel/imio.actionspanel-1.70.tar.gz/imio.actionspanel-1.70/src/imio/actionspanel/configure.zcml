@@ -1,0 +1,46 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
+           xmlns:cmf="http://namespaces.zope.org/cmf"
+           xmlns:five="http://namespaces.zope.org/five"
+           xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+           xmlns:i18n="http://namespaces.zope.org/i18n"
+           i18n_domain="imio.actionspanel">
+
+  <include package=".browser" />
+  <include package="Products.GenericSetup" file="meta.zcml" />
+
+  <include package="imio.history" />
+  <include package="collective.fingerpointing" />
+
+  <include file="upgrades.zcml" />
+
+  <i18n:registerTranslations directory="locales" />
+
+  <!-- Marker interface definition = showed in zmi -->
+  <interface interface="imio.actionspanel.interfaces.IFolderContentsShowableMarker" />
+
+  <adapter for="OFS.interfaces.IItem"
+           factory=".adapters.ContentDeletableAdapter"
+           provides=".interfaces.IContentDeletable" />
+
+  <adapter for="OFS.interfaces.IItem"
+           factory=".adapters.DeletedChildrenHistoryAdapter"
+           name="deleted_children"
+           provides="imio.history.interfaces.IImioHistory" />
+
+  <!-- File System Directory Views registration -->
+  <cmf:registerDirectory name="actionspanel_plone"/>
+
+  <genericsetup:registerProfile
+      name="default"
+      title="imio.actionspanel"
+      directory="profiles/default"
+      description="Extension profile for imio.actionspanel."
+      provides="Products.GenericSetup.interfaces.EXTENSION" />
+
+  <!-- Enable this if using IContentDeletable adapters or this will
+       not be checked by Plone upon default deletion (manage_deleteObjects) -->
+  <!--subscriber for="OFS.interfaces.IItem
+                   OFS.interfaces.IObjectWillBeRemovedEvent"
+              handler="imio.actionspanel.events.onObjWillBeRemoved" /-->
+</configure>

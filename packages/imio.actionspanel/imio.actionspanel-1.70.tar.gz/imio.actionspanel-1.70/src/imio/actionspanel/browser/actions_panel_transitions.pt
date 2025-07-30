@@ -1,0 +1,45 @@
+<tal:defines define="useIcons view/useIcons;">
+<td tal:repeat="transition view/getTransitions"
+    class="noPadding" align="left">
+  <tal:transition tal:define="dummy view/saveHasActions;"
+                  condition="transition/may_trigger">
+
+    <a class="#"
+       href="@@triggertransition"
+       tal:attributes="href python: view.computeTriggerTransitionLink(transition);
+                       class python: transition['confirm'] and 'link-overlay-actionspanel transition-overlay' or 'prevent-default';
+                       onClick python: view.computeTriggerTransitionOnClick(transition);"
+       tal:define="icon_url transition/icon;">
+      <tal:comment replace="nothing">Icon</tal:comment>
+      <img tal:condition="python: useIcons and icon_url"
+           tal:attributes="src string:${icon_url};
+                           title transition/title;"/>
+      <tal:comment replace="nothing">Display a input button if useIcons is False.  Moreover, a <form> is necessary
+                                     around an <input /> for IE...</tal:comment>
+      <form tal:condition="python: not(useIcons and icon_url)">
+      <input type="submit"
+             tal:attributes="class string:apButton apButtonWF apButtonWF_${transition/id};
+                             value python: view.getTransitionTitle(transition);
+                             size python: int(len(transition['title'])/1.2);" />
+      </form>
+    </a>
+  </tal:transition>
+
+  <tal:comment replace="nothing">The user can't trigger this transition: we tell him why.</tal:comment>
+  <tal:notTriggerableTransition condition="not: transition/may_trigger">
+    <tal:defines define="icon_url transition/icon;
+                         transition_title python: view.getTransitionTitle(transition);">
+        <input type="button" disabled
+               tal:condition="python: not(useIcons and icon_url)"
+               class="apButton notTriggerableTransitionButton"
+               tal:attributes="value transition_title;
+                               title string:${transition_title} &#10132; ${transition/reason};"
+               i18n:attributes="value" />
+        <img class="notTriggerableTransitionImage"
+             tal:condition="python: useIcons and icon_url"
+             tal:attributes="src string:${icon_url};
+                             title string:${transition_title} &#10132; ${transition/reason};"/>
+    </tal:defines>
+  </tal:notTriggerableTransition>
+</td>
+</tal:defines>
