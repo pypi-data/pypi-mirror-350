@@ -1,0 +1,131 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "eventiq-exporter"
+dynamic = ["version"]
+description = "Prometheus metrics exporter for eventiq"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "Apache-2.0"
+keywords = ["eventiq", "prometheus", "exporter"]
+authors = [{ name = "RaRhAeu", email = "rarha_eu@protonmail.com" }]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Framework :: AsyncIO",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Libraries",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = ["prometheus-client", "eventiq>=1.0.0"]
+
+[project.urls]
+Documentation = "https://github.com/asynq-io/eventiq-exporter#readme"
+Issues = "https://github.com/asynq-io/eventiq-exporter/issues"
+Source = "https://github.com/asynq-io/eventiq-exporter"
+
+[tool.hatch.version]
+path = "eventiq_exporter/__about__.py"
+
+[tool.hatch.envs.default]
+dependencies = [
+    "pytest",
+    "pytest-asyncio",
+    "pytest-sugar",
+    "pytest-cov",
+    "ruff",
+    "mypy",
+    "bandit",
+]
+
+[tool.hatch.envs.default.scripts]
+test = "pytest {args:tests}"
+check = [
+    "ruff check ./eventiq_exporter",
+    "ruff format --check ./eventiq_exporter",
+    "mypy --install-types --non-interactive {args:eventiq_exporter tests}",
+    "bandit -r ./eventiq_exporter",
+]
+
+[tool.coverage.run]
+source_pkgs = ["eventiq_exporter"]
+branch = true
+parallel = true
+omit = ["eventiq_exporter/__about__.py"]
+
+[tool.coverage.paths]
+package = ["eventiq_exporter"]
+tests = ["tests"]
+
+[tool.coverage.report]
+exclude_lines = ["no cov", "if __name__ == .__main__.:", "if TYPE_CHECKING:"]
+
+[tool.pytest.ini_options]
+addopts = "--cov=./eventiq_exporter"
+testpaths = ["./tests"]
+asyncio_mode = "auto"
+filterwarnings = "ignore::DeprecationWarning"
+
+[tool.pyright]
+venvPath = ".venv"
+venv = "eventiq-exporter"
+
+[tool.mypy]
+python_version = "3.12"
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+follow_imports = "normal"
+ignore_missing_imports = true
+pretty = true
+show_column_numbers = true
+show_error_codes = true
+warn_no_return = false
+warn_unused_ignores = true
+
+[tool.ruff]
+target-version = "py39"
+
+line-length = 88
+indent-width = 4
+
+[tool.ruff.lint]
+select = ["ALL"]
+
+ignore = [
+    "A001",
+    "A002",
+    "ARG002",
+    "ARG004",
+    "ANN401",
+    "B008",    # do not perform function calls in argument defaults
+    "BLE001",
+    "COM812",
+    "D",
+    "E501",    # line too long
+    "FA100",
+    "FBT001",
+    "FBT002",
+    "FBT003",
+    "ISC001",
+    "N818",
+    "PLR0913",
+    "PLR2004",
+    "PTH123",
+    "S108",
+
+]
+
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101", "ANN001", "ANN201"]
+
+[tool.bandit]
+skips = ['B101']
