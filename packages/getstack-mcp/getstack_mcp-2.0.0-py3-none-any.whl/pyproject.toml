@@ -1,0 +1,48 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "getstack-mcp"
+version = "2.0.0"
+description = "MCP server for managing getstack templates from Supabase database"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+    {name = "Oleg Stefanov", email = "coderr.oleg@gmail.com"},
+]
+license = {text = "MIT"}
+keywords = ["mcp", "templates", "supabase", "claude"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    "mcp>=1.0.0",
+    "uvicorn>=0.15.0",
+    "requests>=2.31.0",
+    "gitpython>=3.1.40",
+    "supabase>=2.0.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "uvicorn>=0.32.1",
+]
+
+[project.scripts]
+getstack-mcp = "server:main"
+
+[project.urls]
+Homepage = "https://github.com/olegstefanov/get-stack"
+Repository = "https://github.com/olegstefanov/get-stack.git"
+Issues = "https://github.com/olegstefanov/get-stack/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]
