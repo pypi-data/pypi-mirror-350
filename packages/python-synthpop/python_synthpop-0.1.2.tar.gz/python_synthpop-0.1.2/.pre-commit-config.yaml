@@ -1,0 +1,60 @@
+repos:
+  #  1. Code Formatter: Black (Ensures uniform formatting)
+  - repo: https://github.com/psf/black
+    rev: stable
+    hooks:
+      - id: black
+
+  #  2. Code Formatter: isort (Sorts imports)
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.12.0
+    hooks:
+      - id: isort
+
+  #  3. Linter: Flake8 (Finds style & syntax issues)
+  - repo: https://github.com/pycqa/flake8
+    rev: 6.0.0
+    hooks:
+      - id: flake8
+
+  #  4. Security: Bandit (Finds security vulnerabilities)
+  - repo: https://github.com/PyCQA/bandit
+    rev: stable
+    hooks:
+      - id: bandit
+        args: ["-r", "."]
+
+  # 5. Security: detect-secrets (Prevents committing secrets)
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.3.0
+    hooks:
+      - id: detect-secrets-hook
+
+  #  6. Type Checker: mypy (Checks for type errors)
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.0
+    hooks:
+      - id: mypy
+
+  #  7. Tests: Pytest (Runs test cases before commit)
+  - repo: local
+    hooks:
+      - id: pytest
+        name: Run Pytest
+        entry: pytest
+        language: system
+        types: [python]
+
+  #  8. Dependency Check: pip-audit (Checks for vulnerable dependencies)
+  - repo: https://github.com/pypa/pip-audit
+    rev: v2.4.0
+    hooks:
+      - id: pip-audit
+
+  #  9. File Cleanup: Remove trailing whitespace
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+
+
