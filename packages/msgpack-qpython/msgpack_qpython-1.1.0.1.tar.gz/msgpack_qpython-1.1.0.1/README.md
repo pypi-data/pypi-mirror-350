@@ -1,0 +1,147 @@
+This project is a branch of <a target="_blank" rel="noopener" href="https://pypi.org/project/msgpack/">msgpack</a> on <a href="https://www.qpython.org">QPython</a>.
+
+## How to use
+
+### One-shot pack & unpack
+
+Use `packb` for packing and `unpackb` for unpacking.
+msgpack provides `dumps` and `loads` as an alias for compatibility with
+`json` and `pickle`.
+
+`pack` and `dump` packs to a file-like object.
+`unpack` and `load` unpacks from a file-like object.
+
+```pycon
+>>> import msgpack
+>>> msgpack.packb([1, 2, 3])
+'\x93\x01\x02\x03'
+>>> msgpack.unpackb(_)
+[1, 2, 3]
+```
+
+Read the docstring for options.
+
+
+### Streaming unpacking
+
+`Unpacker` is a "streaming unpacker". It unpacks multiple objects from one
+stream (or from bytes provided through its `feed` method).
+
+```py
+import msgpack
+from io import BytesIO
+
+buf = BytesIO()
+for i in range(100):
+   buf.write(msgpack.packb(i))
+
+buf.seek(0)
+
+unpacker = msgpack.Unpacker(buf)
+for unpacked in unpacker:
+    print(unpacked)
+```
+
+
+### Packing/unpacking of custom data type
+
+It is also possible to pack/unpack custom data types. Here is an example for
+`datetime.datetime`.
+
+```py
+import datetime
+import msgpack
+
+useful_dict = {
+    "id": 1,
+    "created": datetime.datetime.now(),
+}
+
+def decode_datetime(obj):
+    if '__datetime__' in obj:
+        obj = datetime.datetime.strptime(obj["as_str"], "%Y%m%dT%H:%M:%S.%f")
+    return obj
+
+def encode_datetime(obj):
+    if isinstance(obj, datetime.datetime):
+        return {'__datetime__': True, 'as_str': obj.strftime("%Y%m%dT%H:%M:%S.%f")}
+    return obj
+
+
+packed_dict = msgpack.packb(useful_dict, default=encode_datetime)
+this_dict_again = msgpack.unpackb(packed_dict, object_hook=decode_datetime)
+```
+
+`Unpacker`'s `object_hook` callback receives a dict; the
+`object_pairs_hook` callback may instead be used to receive a list of
+key-value pairs.
+
+NOTE: msgpack can encode datetime with tzinfo into standard ext type for now.
+See `datetime` option in `Packer` docstring.
+
+
+### Extended types
+
+It is also possible to pack/unpack custom data types using the **ext** type.
+
+```pycon
+>>> import msgpack
+>>> import array
+>>> def default(obj):
+...     if isinstance(obj, array.array) and obj.typecode == 'd':
+...         return msgpack.ExtType(42, obj.tostring())
+...     raise TypeError("Unknown type: %r" % (obj,))
+...
+>>> def ext_hook(code, data):
+...     if code == 42:
+...         a = array.array('d')
+...         a.fromstring(data)
+...         return a
+...     return ExtType(code, data)
+...
+>>> data = array.array('d', [1.2, 3.4])
+>>> packed = msgpack.packb(data, default=default)
+>>> unpacked = msgpack.unpackb(packed, ext_hook=ext_hook)
+>>> data == unpacked
+True
+```
+
+
+### Advanced unpacking control
+
+As an alternative to iteration, `Unpacker` objects provide `unpack`,
+`skip`, `read_array_header` and `read_map_header` methods. The former two
+read an entire message from the stream, respectively de-serialising and returning
+the result, or ignoring it. The latter two methods return the number of elements
+in the upcoming container, so that each element in an array, or key-value pair
+in a map, can be unpacked or skipped individually.
+
+
+## Notes
+
+### string and binary type in old msgpack spec
+
+Early versions of msgpack didn't distinguish string and binary types.
+The type for representing both string and binary types was named **raw**.
+
+You can pack into and unpack from this old spec using `use_bin_type=False`
+and `raw=True` options.
+
+```pycon
+>>> import msgpack
+>>> msgpack.unpackb(msgpack.packb([b'spam', 'eggs'], use_bin_type=False), raw=True)
+[b'spam', b'eggs']
+>>> msgpack.unpackb(msgpack.packb([b'spam', 'eggs'], use_bin_type=True), raw=False)
+[b'spam', 'eggs']
+```
+
+### ext type
+
+To use the **ext** type, pass `msgpack.ExtType` object to packer.
+
+```pycon
+>>> import msgpack
+>>> packed = msgpack.packb(msgpack.ExtType(42, b'xyzzy'))
+>>> msgpack.unpackb(packed)
+ExtType(code=42, data='xyzzy')
+```
