@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <record id="res_partner_marginalized_groups_form_view" model="ir.ui.view">
+    <field name="name">res.partner.marginalized.groups.form.view</field>
+    <field name="model">res.partner</field>
+    <field name="inherit_id" ref="somconnexio.res_partner_form_somconnexio"/>
+    <field name="arch" type="xml">
+      <field name="banned_action_tags" position="before">
+        <field name="is_in_CM_program" invisible="1"/>
+        <field name="is_CM_organization" invisible="1"/>
+        <field name="marginalized_group_agent_id" domain="[('is_supplier', '=', False),                          ('is_CM_organization', '=', True)]" attrs="{'invisible': ['|',                            ('is_in_CM_program', '=', False),                            ('is_CM_organization', '=', True)]                       }"/>
+      </field>
+    </field>
+  </record>
+  <record id="view_res_partner_filter_marginalized_groups" model="ir.ui.view">
+    <field name="name">res.partner.filter.marginalized.groups</field>
+    <field name="model">res.partner</field>
+    <field name="inherit_id" ref="somconnexio.view_res_partner_filter_somconnexio"/>
+    <field name="arch" type="xml">
+      <filter name="filter_no_contract_emails" position="after">
+        <filter string="Partners in CM program" name="partners_in_CM_program" domain="[('is_in_CM_program','=',True)]"/>
+      </filter>
+    </field>
+  </record>
+</odoo>

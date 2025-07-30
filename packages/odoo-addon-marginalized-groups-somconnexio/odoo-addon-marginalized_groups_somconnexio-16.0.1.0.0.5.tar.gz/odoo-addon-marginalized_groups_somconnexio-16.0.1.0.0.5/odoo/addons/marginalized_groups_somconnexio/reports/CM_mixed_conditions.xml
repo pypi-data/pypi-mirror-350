@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="report_CM_mixed_conditions" model="ir.actions.report">
+        <field name="name">Print Report CM mixed</field>
+        <field name="model">crm.lead</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">marginalized_groups_somconnexio.CM_mixed_conditions</field>
+        <field name="report_file">marginalized_groups_somconnexio.CM_mixed_conditions</field>
+        <field name="binding_model_id" ref="crm.model_crm_lead"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="base.paperformat_euro"/>
+    </record>
+
+    <template id="CM_mixed_conditions">
+        <t t-foreach="docs" t-as="lead">
+            <t t-call="web.html_container">
+                <t t-call="marginalized_groups_somconnexio.CM_mixed_conditions_lang"
+                    t-lang="lead.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <template id="CM_mixed_conditions_lang">
+        <meta charset="UTF-8" />
+        <div class="page">
+            <div class="oe_structure"/>
+                <div style="padding-left: 3em; padding-right: 2em;">
+                    <div class="logo" style="padding-bottom: 3em;">
+                       <t t-set="base_url" t-value="env['ir.config_parameter'].sudo().get_param('web.base.url')" />
+                       <img alt="logo_cat" t-if="lead.partner_id.lang == 'ca_ES'" t-att-src="base_url + '/somconnexio/static/img/logo_cat.png'" style="width:200;height:80;" />
+                       <img alt="logo_cast" t-if="lead.partner_id.lang == 'es_ES'" t-att-src="base_url + '/somconnexio/static/img/logo_cast.png'" style="width:200;height:80;" />
+                    </div>
+                    <div class="recipient" style="text-align: right; padding-bottom: 4em;">
+                        <p>C/de les Moreres 119</p>
+                        <p>08820 El Prat de Llobregat</p>
+                    </div>
+                    <div class="body" style="margin-top: 2em; margin-left: 2em;">
+                        <h3>Condicions Particulars</h3>
+                        <p>Aquest document és un afegit a les condicions generals, que regula els avantatges econòmics i les limitacions que tindran els serveis contractats.</p>
+
+                        <h4>Avantatges</h4>
+                        <p>Preu: import equivalent al 50% del PVP (Preu de Venta al Públic) del servei corresponent, indicat a l'apartat de tarifes de la web, del/s servei/s de mòbil, i import equivalent a 0€ del servei de fibra 300MB sense fix.</p>
+
+                        <h4>Limitacions</h4>
+                        <ul>
+                            <li><strong>Límit de consum mòbil:</strong> S'estableix el límit de consum a 5€ sense IVA per damunt de la tarifa contractada: en el cas de generar un consum fora de la tarifa contractada (trucades a números especials, trucades des de zona 2 i 3 de roaming, ús de dades en zona 2 o 3 de roaming, etc.), la línia mòbil quedarà bloquejada, impossibilitant-ne l'ús, tant per les trucades (sortints i entrants) com per les dades.</li>
+                            <li><strong>Limitació d'ús dels SMS:</strong> El servei d'enviament d'SMS està inhabilitat. El servei de recepció dels SMS, per altra banda, està habilitat.</li>
+                            <li><strong>Limitació d'ús del servei de telèfon fix:</strong> El servei de telèfon fix queda exclòs. El servei de fibra òptica consisteix en connexió internet a casa a través de tecnologia de fibra òptica amb velocitat simètrica de 300 MB.</li>
+                            <li><strong>Limitació de trucades internacionals</strong></li>
+                        </ul>
+
+                        <h4>Obligacions</h4>
+                        <p>L'incompliment de les condicions econòmiques acordades amb la cooperativa donaran lloc a la pèrdua dels avantatges econòmics acordats, i a la finalització de la prestació dels serveis, previ avís via correu electrònic.</p>
+
+                    </div>
+                    <div class="writer" style="text-align: right; padding-top: 2em">
+                        <p>L'equip de Som Connexió</p>
+                    </div>
+                </div>
+            <div class="oe_structure"/>
+        </div>
+    </template>
+</odoo>
