@@ -1,0 +1,359 @@
+import asyncio
+import json
+from dataclasses import dataclass
+from functools import partial
+from pathlib import Path
+from typing import (
+    AsyncGenerator,
+    Generator,
+    List,
+    Literal,
+    Union,
+    overload,
+)
+
+import dashscope
+from dashscope.api_entities.dashscope_response import (
+    GenerationResponse,
+    MultiModalConversationResponse,
+)
+from nonebot import logger
+
+from ._types import (
+    BasicModel,
+    ModelCompletions,
+    ModelConfig,
+    ModelRequest,
+    ModelStreamCompletions,
+)
+from .utils.tools import function_call_handler
+
+
+@dataclass
+class FunctionCallStream:
+    enable: bool = False
+    id: str = ""
+    function_name: str = ""
+    function_args: str = ""
+
+    def from_chunk(self, chunk: GenerationResponse | MultiModalConversationResponse):
+        tool_calls = chunk.output.choices[0].message.tool_calls
+        tool_call = tool_calls[0]
+
+        if tool_call.get("id", ""):
+            self.id = tool_call["id"]
+
+        if tool_call.get("function", {}).get("name", ""):
+            self.function_name = tool_call.get("function").get("name")
+
+        function_arg = tool_call.get("function", {}).get("arguments", "")
+
+        if function_arg and self.function_args != function_arg:
+            self.function_args += function_arg
+
+        self.enable = True
+
+
+class ThoughtStream:
+    def __init__(self):
+        self.is_insert_think_label: bool = False
+
+    def process_chunk(self, chunk: GenerationResponse | MultiModalConversationResponse) -> str:
+        choice = chunk.output.choices[0].message
+        answer_content = choice.content
+        reasoning_content = choice.get("reasoning_content", "")
+        reasoning_content = reasoning_content.replace("\n</think>", "") if reasoning_content else ""
+
+        # 处理模型可能输出的 reasoning（思考内容）
+        if reasoning_content:
+            if not self.is_insert_think_label:
+                self.is_insert_think_label = True
+                return f"<think>{reasoning_content}"
+            else:
+                return reasoning_content
+
+        if not answer_content:
+            answer_content = ""
+
+        if isinstance(answer_content, list):
+            answer_content = answer_content[0].get("text", "")
+
+        if self.is_insert_think_label:
+            self.is_insert_think_label = False
+            return f"</think>{answer_content}"
+
+        return answer_content
+
+
+class Dashscope(BasicModel):
+    def __init__(self, model_config: ModelConfig) -> None:
+        super().__init__(model_config)
+        self._require("api_key", "model_name")
+        self.api_key = self.config.api_key
+        self.model = self.config.model_name
+        self.max_tokens = self.config.max_tokens
+        self.temperature = self.config.temperature
+        self.top_p = self.config.top_p
+        self.repetition_penalty = self.config.repetition_penalty
+        self.enable_search = self.config.online_search
+        self.enable_thinking = self.config.enable_thinking
+        self.thinking_budget = self.config.thinking_budget
+
+        self._tools: List[dict] = []
+        self._last_call_total_tokens = 0
+
+        self.extra_headers = (
+            {"X-DashScope-DataInspection": '{"input":"cip","output":"cip"}'} if self.config.content_security else {}
+        )
+
+        self.stream = False
+
+    def __build_multi_messages(self, request: ModelRequest) -> dict:
+        """
+        构建多模态类型
+
+        此模型加载器支持的多模态类型: `audio` `image`
+        """
+        multi_contents: List[dict[str, str]] = []
+
+        for item in request.resources:
+            if item.type == "audio":
+                if not (item.path.startswith("http") or item.path.startswith("file:")):
+                    item.url = str(Path(item.path).resolve())
+
+                multi_contents.append({"audio": item.path})
+
+            elif item.type == "image":
+                if not (item.path.startswith("http") or item.path.startswith("file:")):
+                    item.url = str(Path(item.path).resolve())
+
+                multi_contents.append({"image": item.path})
+
+        user_content = [image_content for image_content in multi_contents]
+
+        if not request.prompt:
+            request.prompt = "请描述图像内容"
+        user_content.append({"text": request.prompt})
+
+        return {"role": "user", "content": user_content}
+
+    def _build_messages(self, request: ModelRequest) -> list:
+        messages = []
+
+        if request.system:
+            messages.append({"role": "system", "content": request.system})
+
+        for msg in request.history:
+            user_msg = (
+                self.__build_multi_messages(ModelRequest(msg.message, resources=msg.resources))
+                if all((self.config.multimodal, msg.resources))
+                else {"role": "user", "content": msg.message}
+            )
+            messages.append(user_msg)
+            messages.append({"role": "assistant", "content": msg.respond})
+
+        user_msg = (
+            {"role": "user", "content": request.prompt}
+            if not request.resources
+            else self.__build_multi_messages(ModelRequest(request.prompt, resources=request.resources))
+        )
+
+        messages.append(user_msg)
+
+        return messages
+
+    async def _GenerationResponse_handle(
+        self, messages: list, response: GenerationResponse | MultiModalConversationResponse
+    ) -> ModelCompletions:
+        completions = ModelCompletions()
+
+        if response.status_code != 200:
+            completions.succeed = False
+            logger.error(f"模型调用失败: {response.status_code}({response.code})")
+            logger.error(f"{response.message}")
+            completions.text = f"模型调用失败: {response.status_code}({response.code})"
+            return completions
+
+        self._total_tokens += int(response.usage.total_tokens)
+        completions.usage = self._total_tokens
+
+        if response.output.text:
+            completions.text = response.output.text
+            return completions
+
+        message_content = response.output.choices[0].message.content
+        if message_content:
+            completions.text = message_content if isinstance(message_content, str) else message_content[0].get("text")
+            return completions
+
+        return await self._tool_calls_handle_sync(messages, response)
+
+    async def _Generator_handle(
+        self,
+        messages: list,
+        response: Generator[GenerationResponse, None, None] | Generator[MultiModalConversationResponse, None, None],
+    ) -> AsyncGenerator[ModelStreamCompletions, None]:
+        func_stream = FunctionCallStream()
+        thought_stream = ThoughtStream()
+
+        for chunk in response:
+            logger.debug(chunk)
+            stream_completions = ModelStreamCompletions()
+
+            if chunk.status_code != 200:
+                logger.error(f"模型调用失败: {chunk.status_code}({chunk.code})")
+                logger.error(f"{chunk.message}")
+                stream_completions.chunk = f"模型调用失败: {chunk.status_code}({chunk.code})"
+                stream_completions.succeed = False
+
+                yield stream_completions
+                return
+
+            # 更新 token 消耗
+            current_call_total = chunk.usage.total_tokens
+            delta = current_call_total - self._last_call_total_tokens
+            if delta < 0:
+                delta = current_call_total
+            self._total_tokens += delta
+            self._last_call_total_tokens = current_call_total
+            stream_completions.usage = self._total_tokens
+
+            # 优先判断是否是工具调用（OpenAI-style function calling）
+            if chunk.output.choices and chunk.output.choices[0].message.get("tool_calls", []):
+                func_stream.from_chunk(chunk)
+                # 工具调用也可能在输出文本之后发生
+
+            # DashScope 的 text 模式（非标准接口）
+            if hasattr(chunk.output, "text") and chunk.output.text:
+                stream_completions.chunk = chunk.output.text
+                yield stream_completions
+                continue
+
+            if chunk.output.choices is None:
+                continue
+
+            stream_completions.chunk = thought_stream.process_chunk(chunk)
+            yield stream_completions
+
+        # 流式处理工具调用响应
+        if func_stream.enable:
+            self._last_call_total_tokens = 0
+            async for final_chunk in await self._tool_calls_handle_stream(messages, func_stream):
+                yield final_chunk
+
+    async def _tool_calls_handle_sync(
+        self, messages: List, response: GenerationResponse | MultiModalConversationResponse
+    ) -> ModelCompletions:
+        tool_call = response.output.choices[0].message.tool_calls[0]
+        tool_call_id = tool_call["id"]
+        function_name = tool_call["function"]["name"]
+        function_args = json.loads(tool_call["function"]["arguments"])
+
+        logger.info(f"function call 请求 {function_name}, 参数: {function_args}")
+        function_return = await function_call_handler(function_name, function_args)
+        logger.success(f"Function call 成功，返回: {function_return}")
+
+        messages.append(response.output.choices[0].message)
+        messages.append({"role": "tool", "content": function_return, "tool_call_id": tool_call_id})
+
+        return await self._ask(messages)  # type:ignore
+
+    async def _tool_calls_handle_stream(
+        self, messages: List, func_stream: FunctionCallStream
+    ) -> AsyncGenerator[ModelStreamCompletions, None]:
+        function_args = json.loads(func_stream.function_args)
+
+        logger.info(f"function call 请求 {func_stream.function_name}, 参数: {function_args}")
+        function_return = await function_call_handler(func_stream.function_name, function_args)  # type:ignore
+        logger.success(f"Function call 成功，返回: {function_return}")
+
+        messages.append(
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": func_stream.id,
+                        "function": {
+                            "arguments": func_stream.function_args,
+                            "name": func_stream.function_name,
+                        },
+                        "type": "function",
+                        "index": 0,
+                    }
+                ],
+            }
+        )
+        messages.append({"role": "tool", "content": function_return, "tool_call_id": func_stream.id})
+
+        return await self._ask(messages)  # type:ignore
+
+    async def _ask(self, messages: list) -> Union[ModelCompletions, AsyncGenerator[ModelStreamCompletions, None]]:
+        loop = asyncio.get_event_loop()
+
+        # 因为 Dashscope 对于多模态模型的接口不同，所以这里不能统一函数
+        if not self.config.multimodal:
+            response = await loop.run_in_executor(
+                None,
+                partial(
+                    dashscope.Generation.call,
+                    api_key=self.api_key,
+                    model=self.model,
+                    messages=messages,
+                    max_tokens=self.max_tokens,
+                    temperature=self.temperature,
+                    top_p=self.top_p,
+                    repetition_penalty=self.repetition_penalty,
+                    stream=self.stream,
+                    tools=self._tools,
+                    parallel_tool_calls=True,
+                    enable_search=self.enable_search,
+                    incremental_output=self.stream,  # 给他调成一样的：这个参数只支持流式调用时设置为True
+                    headers=self.extra_headers,
+                    enable_thinking=self.enable_thinking,
+                    thinking_budget=self.thinking_budget,
+                ),
+            )
+        else:
+            response = await loop.run_in_executor(
+                None,
+                partial(
+                    dashscope.MultiModalConversation.call,
+                    api_key=self.api_key,
+                    model=self.model,
+                    messages=messages,
+                    max_tokens=self.max_tokens,
+                    temperature=self.temperature,
+                    top_p=self.top_p,
+                    repetition_penalty=self.repetition_penalty,
+                    stream=self.stream,
+                    tools=self._tools,
+                    parallel_tool_calls=True,
+                    enable_search=self.enable_search,
+                    incremental_output=self.stream,
+                ),
+            )
+
+        if isinstance(response, GenerationResponse) or isinstance(response, MultiModalConversationResponse):
+            return await self._GenerationResponse_handle(messages, response)
+        return self._Generator_handle(messages, response)
+
+    @overload
+    async def ask(self, request: ModelRequest, *, stream: Literal[False] = False) -> ModelCompletions: ...
+
+    @overload
+    async def ask(
+        self, request: ModelRequest, *, stream: Literal[True] = True
+    ) -> AsyncGenerator[ModelStreamCompletions, None]: ...
+
+    async def ask(
+        self, request: ModelRequest, *, stream: bool = False
+    ) -> Union[ModelCompletions, AsyncGenerator[ModelStreamCompletions, None]]:
+        self._total_tokens = 0
+        self._last_call_total_tokens = 0
+        self.stream = stream if stream is not None else False
+
+        self._tools = request.tools if request.tools else []
+        messages = self._build_messages(request)
+
+        return await self._ask(messages)
