@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package vajra_proto;
+
+import "base_datatypes.proto";
+
+option optimize_for = LITE_RUNTIME;
+
+message PendingStepOutput {
+    SchedulerOutput scheduler_output = 1;
+    repeated SamplerOutput sampler_outputs = 2;
+}
+
+message StepInputs {
+    SchedulerOutput scheduler_output = 1;
+    repeated SequenceParams new_seq_params = 2;
+    repeated PendingStepOutput pending_step_outputs = 3;
+}
+
+message StepMicrobatchOutputs {
+    uint64 schedule_id = 1;
+}
+
+message StepOutputs {
+    uint64 schedule_id = 1;
+    repeated SamplerOutput sampler_outputs = 2;
+}
