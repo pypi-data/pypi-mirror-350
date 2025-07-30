@@ -1,0 +1,67 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "lumi_cua_sdk"
+dynamic = ["version"]
+description = 'This is the Python SDK for Computer Use Tool Server, allowing you to easily control the computer desktop environment from your applications.'
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+keywords = []
+authors = [
+  { name = "lvlv", email = "lvgj1998@gmail.com" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = [
+    "requests>=2.25.0",
+    "pydantic>=1.8.0",
+    "mcp>=1.7.1",
+    "openai>=1.72.0",
+    "jinja2>=3.1.6",
+    "langgraph>=0.4.1",
+    "langchain-core>=0.3.58",
+    "langchain-openai>=0.3.16",
+]
+
+[project.urls]
+Documentation = "https://github.com/lvlv/tool-server-client#readme"
+Issues = "https://github.com/lvlv/tool-server-client/issues"
+Source = "https://github.com/lvlv/tool-server-client"
+
+[tool.hatch.version]
+path = "src/lumi_cua_sdk/__about__.py"
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+  "mypy>=1.0.0",
+]
+
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/tool_server_client tests}"
+
+[tool.coverage.run]
+source_pkgs = ["lumi_cua_sdk", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/lumi_cua_sdk/__about__.py",
+]
+
+[tool.coverage.paths]
+lumi_cua_sdk = ["src/lumi_cua_sdk", "*/lumi-cua-sdk/src/lumi_cua_sdk"]
+tests = ["tests", "*/tool-server-client/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
