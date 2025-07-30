@@ -1,0 +1,138 @@
+Metadata-Version: 2.4
+Name: pyamlo
+Version: 0.1.dev26
+Summary: YAML configuration loader with advanced features.
+Author-email: Mart van Rijthoven <your@email.com>
+License: MIT License
+        
+        Copyright (c) 2025 Mart van Rijthoven
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+License-File: LICENSE
+Keywords: configuration,interpolation,loader,yaml
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.12
+Requires-Dist: pyyaml>=6.0
+Provides-Extra: dev
+Requires-Dist: black>=23.0.0; extra == 'dev'
+Requires-Dist: mypy>=1.0.0; extra == 'dev'
+Requires-Dist: pyyamlo[docs,test]; extra == 'dev'
+Requires-Dist: ruff>=0.1.0; extra == 'dev'
+Requires-Dist: types-pyyaml; extra == 'dev'
+Provides-Extra: docs
+Requires-Dist: mkdocs-git-committers-plugin; extra == 'docs'
+Requires-Dist: mkdocs-git-revision-date-localized-plugin>=1.2.0; extra == 'docs'
+Requires-Dist: mkdocs-material>=9.0.0; extra == 'docs'
+Requires-Dist: mkdocs>=1.5.0; extra == 'docs'
+Requires-Dist: mkdocstrings[python]>=0.20.0; extra == 'docs'
+Provides-Extra: test
+Requires-Dist: pytest; extra == 'test'
+Requires-Dist: pytest-cov; extra == 'test'
+Description-Content-Type: text/markdown
+
+# PYAMLO: YAML Configuration Loader
+
+[![PyPI](https://img.shields.io/pypi/v/pyamlo?color=0&label=pypi%20package)](https://pypi.org/project/pyamlo/)
+[![Tests](https://github.com/martvanrijthoven/pyamlo/actions/workflows/test.yml/badge.svg)](https://github.com/martvanrijthoven/pyamlo/actions/workflows/test.yml)
+[![License](https://img.shields.io/github/license/martvanrijthoven/pyamlo)](https://github.com/martvanrijthoven/pyamlo/blob/main/LICENSE)
+
+`PYAMLO` is a  YAML configuration loader for Python, designed for advanced configuration scenarios. It supports file inclusion, deep merging, environment variable injection, variable interpolation, and direct Python object instantiation from YAML and object instance referencing including their properties.
+
+## Features
+
+- **Includes:** Merge multiple YAML files using `_includes`.
+- **Merging:** Deep merge dictionaries, extend lists (`!extend`), and patch/replace dictionaries (`!patch`).
+- **Environment Variables:** Substitute values using `!env VAR_NAME` or `!env {var: NAME, default: ...}`.
+- **Variable Interpolation:** Reference other configuration values using `${path.to.value}` syntax.
+- **Object Instantiation:** Create Python objects directly from YAML using `!@module.path.ClassName` or `!@module.path.func`
+- **Instance Referencing:** Use `${instance}` to reference instantiated objects and their properties. Or `${instance.attr}` to reference attributes of instantiated objects.
+
+## Example
+
+```yaml
+_includes:
+  - examples/base.yml
+  - examples/override.yml
+
+testenv: !env MY_TEST_VAR
+
+app:
+  name: TestApp
+  version: "2.0"
+
+paths:
+  base: !@pathlib.Path /opt/${app.name}
+  data: !@pathlib.Path
+    - ${paths.base}
+    - data
+
+services:
+  main: !@pyamlo.SystemInfo
+  secondary: !@pyamlo.SystemInfo
+
+hostdefault: !@pyamlo.call "${services.main.as_dict}" 
+
+pipeline:
+  composite:
+    first: ${services.main.host}
+    second: ${services.secondary}
+
+logs:
+  - !@pathlib.Path /logs/${app.name}/main.log
+  - !@pathlib.Path /logs/${app.name}/${services.main.host}.log
+```
+
+## Installation
+
+```bash
+# Using uv (recommended)
+uv pip install .[test,docs]
+
+# Using pip
+pip install .[test,docs]
+```
+
+## Usage
+
+```python
+from pyamlo import load_config
+
+config = load_config("examples/test_config.yaml")
+print(config)
+```
+
+## Development
+
+- **Run tests:**  
+  `pytest`
+
+- **Build docs:**  
+  `mkdocs serve`
+
+- **Build package:**  
+  `hatch build`
+
+## License
+
+See [LICENSE](LICENSE).
