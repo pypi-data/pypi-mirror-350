@@ -1,0 +1,16 @@
+plugins: ["quark_plugin_pvc", "quark_plugin_devices_dwave"]
+
+first_layer: &first_layer ["pvc_graph_provider": { seams: 3 }, "pvc_graph_provider": { seams: 4 }]
+
+second_layer: &second_layer ["pvc_qubo_mapping": { lagrange_factor: 2.0 }]
+
+third_layer: &third_layer ["simulated_annealer": { num_reads: 10 }, "simulated_annealer": { num_reads: 100 }]
+
+pipeline1: &pipeline1 [*first_layer, *second_layer, *third_layer]
+
+classical_layer:
+  &classical_layer ["greedy_classical_pvc_solver", "reverse_greedy_classical_pvc_solver", "random_classical_pvc_solver"]
+
+pipeline2: &pipeline2 [*first_layer, *classical_layer]
+
+pipelines: [*pipeline1, *pipeline2]
