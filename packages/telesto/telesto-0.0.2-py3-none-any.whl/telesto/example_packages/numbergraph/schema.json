@@ -1,0 +1,114 @@
+{
+    "id": "numbergraph",
+    "metadata": {
+        "name": "Number Graph",
+        "version": "0.0.1",
+        "description": "a small example package for manipulating numbers",
+        "url": "https://codeberg.org/visual-topology/telesto"
+    },
+    "configuration": {
+        "clients": {
+            "default": {
+                "menu_label":"Open...",
+                "title": "Numbergraph Configuration",
+                "url": "html/numbergraph_configuration.html",
+                "window_width": 500,
+                "window_height": 300
+            }
+        }
+    },
+    "node_types": {
+        "number_input_node": {
+            "metadata": {
+                "name": "Number Input Node",
+                "description": "Define an integer value"
+            },
+            "output_ports": {
+                "data_out": {
+                    "link_type": "numbergraph:integer"
+                }
+            },
+            "display": {
+                "corners": 4,
+                "icon": "icons/number_input.svg"
+            },
+            "clients": {
+                "default": {
+                    "menu_label":"Open...",
+                    "title": "Input Value",
+                    "url": "html/number_input_node.html",
+                    "window_width": 500,
+                    "window_height": 300
+                }
+            }
+        },
+        "prime_factors_node": {
+            "metadata": {
+                "name": "Prime Factors Node",
+                "description": "Calculate the prime factors of each input number"
+            },
+            "input_ports": {
+                "data_in": {
+                    "link_type": "numbergraph:integer",
+                    "allow_multiple_connections": false
+                }
+            },
+            "output_ports": {
+                "data_out": {
+                    "link_type": "numbergraph:integerlist"
+                }
+            },
+            "display": {
+                "corners": 5,
+                "icon": "icons/prime_factors.svg"
+            }
+        },
+        "number_display_node": {
+            "metadata": {
+                "name": "Number Display Node",
+                "description": "Display all input numbers"
+            },
+            "input_ports": {
+                "data_in": {
+                    "link_type": "numbergraph:integerlist",
+                    "allow_multiple_connections": true
+                }
+            },
+            "output_ports": {
+            },
+            "display": {
+                "corners": 8,
+                "icon": "icons/number_display.svg"
+            },
+            "clients": {
+                "default": {
+                    "menu_label":"Open...",
+                    "title": "Display Values",
+                    "url": "html/number_display_node.html",
+                    "window_width": 500,
+                    "window_height": 300
+                }
+            }
+        }
+    },
+    "link_types": {
+        "integer": {
+            "metadata": {
+                "name": "Integer",
+                "description": "This type of link carries integer values"
+            },
+            "display": {
+                "colour": "red"
+            }
+        },
+        "integerlist": {
+            "metadata": {
+                "name": "IntegerList",
+                "description": "This type of link carries values that are lists of integers"
+            },
+            "display": {
+                "colour": "blue"
+            }
+        }
+    }
+}

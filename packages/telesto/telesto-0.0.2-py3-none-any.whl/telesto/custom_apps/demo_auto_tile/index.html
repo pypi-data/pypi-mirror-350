@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Telesto Demo Application</title>
+    <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+    <link href="static/skadi/lib/exo/exo.css" rel="stylesheet" type="text/css">
+    <link href="static/skadi/lib/exo/exo-icons.css" rel="stylesheet" type="text/css">
+    <script src="static/skadi/lib/exo/exo.js"></script>
+    <script src="static/skadi/lib/hyrrokkin/hyrrokkin-engine.js"></script>
+    <script src="static/skadi/skadi-application.js"></script>
+    <script src="common/topology_engine.js"></script>
+    <script src="common/topology_store.js"></script>
+    <script src="topology_application.js"></script>
+    <script>
+        window.addEventListener("load",(evt) => {
+            start_narvi(telesto.TopologyApplication);
+        });
+    </script>
+    <script src="narvi/narvi.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="static/skadi/skadi-application.css">
+    <link rel="icon" type="image/svg" href="static/icons/telesto.svg">
+</head>
+<body>
+    <div id="splash_screen" is="exo-modal" display="true"
+         bg-color="light-gray" border-color="dark-purple" style="width:50%; height:50%;">
+        <h1>
+            Telesto Topology Application
+        </h1>
+        <p>
+            <img src="static/icons/telesto.svg">
+            Loading...
+        </p>
+    </div>
+    <h3>Telesto Topology Application</h3>
+
+    <div id="container">
+    </div>
+
+    <script>
+        window.addEventListener("load", async (evt) => {
+            setTimeout(() => {
+                document.getElementById("splash_screen").setAttribute("display","false");
+            },2000);
+        });
+        function configure_application_page(app) {
+            let cell_width = 512;
+            let cell_height = 512;
+            app.auto_tile_nodes("container", cell_width, cell_height, true, true);
+            app.auto_tile_configurations("container", cell_width, cell_height, true, true);
+        }
+    </script>
+</body>
+</html>
