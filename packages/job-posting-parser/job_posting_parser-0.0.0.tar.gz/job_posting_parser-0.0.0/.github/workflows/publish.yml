@@ -1,0 +1,55 @@
+name: Test, Version & Publish
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: write
+
+jobs:
+  test-version-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: uv pip install --system build python-semantic-release
+
+      - name: Run tests
+        run: uv run pytest
+
+      - name: Semantic Release (version bump & tag)
+        id: semantic_release
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          semantic-release version
+          echo "tag_created=$(git tag --points-at HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Build package
+        if: steps.semantic_release.outputs.tag_created != ''
+        run: uv build
+
+      - name: Publish to PyPI
+        if: steps.semantic_release.outputs.tag_created != ''
+        env:
+          UV_PUBLISH_TOKEN: ${{ secrets.PYPI_TOKEN }}
+        run: uv publish
+
+      - name: Prune uv cache (CI best practice)
+        run: uv cache prune --ci
