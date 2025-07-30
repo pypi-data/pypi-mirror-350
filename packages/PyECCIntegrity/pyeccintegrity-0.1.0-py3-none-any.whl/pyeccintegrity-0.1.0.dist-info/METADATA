@@ -1,0 +1,169 @@
+Metadata-Version: 2.4
+Name: PyECCIntegrity
+Version: 0.1.0
+Summary: ECC-based Integrity Verification using ECDSA and SHA-256
+Home-page: https://github.com/mohdluqman/PyECCIntegrity
+Author: Mohammad Luqman, Salman Ali, Faisal Anwer
+Author-email: luqman.geeky@gmail.com, salmanali.amu@gmail.com, faisalanwer.cs@amu.ac.in
+License: MIT
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: cryptography
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# ECC Integrity Verification
+
+`ecc-integrity` is a lightweight Python package that ensures **message authenticity and integrity** using **Elliptic Curve Cryptography (ECC)** and **ECDSA (Elliptic Curve Digital Signature Algorithm)** with SHA-256. It is ideal for cryptographic use-cases in secure communications, IoT, digital documents, and authentication protocols.
+
+---
+
+## 🔒 Key Features
+
+- ECC Key Pair Generation (SECP256R1 curve)
+- Digital Signature Generation using ECDSA and SHA-256
+- PEM-format Public Key Export
+- Signature Verification by the Receiver
+- CLI Tool: `verify-integrity` for terminal-based demo
+- Lightweight, fast, and secure
+
+---
+
+## 📦 Requirements
+
+- Python >= 3.6
+- [cryptography](https://pypi.org/project/cryptography/)
+
+Install dependencies with:
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## ⚙️ Installation
+
+### 1. Clone and Install
+
+```bash
+git clone https://github.com/yourusername/ecc_integrity.git
+cd ecc_integrity
+pip install .
+```
+
+### 2. From PyPI (after uploading)
+
+```bash
+pip install ecc-integrity
+```
+
+---
+
+## 🚀 Example Usage
+
+### 🐍 In Python Script
+
+```python
+from ecc_integrity import ECCIntegrity
+
+# Sender side
+sender = ECCIntegrity()
+message = b"Secure Communication"
+signature = sender.sign_message(message)
+pub_key = sender.export_public_key()
+
+# Receiver side
+receiver = ECCIntegrity()  # Simulated receiver
+is_valid = receiver.verify_signature(message, signature, pub_key)
+
+if is_valid:
+    print("✅ Integrity Verified")
+else:
+    print("❌ Message has been tampered with")
+```
+
+---
+
+### 💻 CLI Demo
+
+```bash
+verify-integrity
+```
+
+This command:
+- Generates key pair
+- Signs a demo message
+- Exports the public key
+- Verifies integrity of both original and tampered message
+
+---
+
+## 🧪 Output Sample
+
+```bash
+Message: Confidential Data Integrity Check
+Signature (Base64): MEUCIQD0...
+Sender Public Key:
+-----BEGIN PUBLIC KEY-----
+MFkwEwYHKoZIzj0CAQYI...
+-----END PUBLIC KEY-----
+✅ Integrity Verified: The message is authentic.
+❌ Integrity Check Failed! Tampered message detected.
+```
+
+---
+
+## 📈 Applications
+
+- Secure messaging protocols
+- Software update validation
+- Blockchain and cryptocurrency
+- IoT communication
+- Digital document integrity
+
+---
+
+## 🔐 Security Notes
+
+- Uses **SECP256R1** for ECC, a widely accepted and NIST-approved curve.
+- Uses **SHA-256** hashing within **ECDSA**.
+- Public key is exportable in PEM format for easy sharing and verification.
+
+
+---
+
+## 🗃️ Future Enhancements
+
+- Add support for additional ECC curves
+- Include symmetric encryption with integrity
+- Provide integration demo with Flask or FastAPI
+- Include public key distribution examples (QR, files, web)
+
+---
+
+## 📜 License
+
+MIT License © 2025 Mohammad Luqman, Salman Ali
+
+---
+
+## ✨ Author
+
+- **Mohammad Luqman** – [GitHub Profile](https://github.com/mohdluqman)
+- **Salman Ali** – [GitHub Profile](https://github.com/salmanali)
+
+---
