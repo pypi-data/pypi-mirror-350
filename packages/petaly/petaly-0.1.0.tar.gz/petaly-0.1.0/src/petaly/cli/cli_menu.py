@@ -1,0 +1,271 @@
+# Copyright © 2024-2025 Pavel Rabaev
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import rich.prompt as prompt
+from rich.console import Console
+import logging
+
+from petaly.utils.file_handler import FileHandler
+from collections import Counter, OrderedDict
+
+logger = logging.getLogger(__name__)
+
+class OrderedCounter(Counter, OrderedDict):
+    'Counter that remembers the order elements are first seen'
+    def __repr__(self):
+        return '%s(%r)' % (self.__class__.__name__,
+                           OrderedDict(self))
+
+    def __reduce__(self):
+        return self.__class__, (OrderedDict(self),)
+
+class CliMenu():
+
+    def __init__(self, main_config):
+        self.use_pipeline_wizard = True
+        self.console = Console()
+        self.prompt = prompt
+        self.m_conf = main_config
+        self.f_handler = FileHandler()
+        self.break_line = '------------------------------------------------------------------'
+
+        self.pipeline_meta_config = self.f_handler.load_json(self.m_conf.pipeline_meta_config_fpath)
+
+        self.composed_pipeline_config_depreated = {
+                                            'pipeline':
+                                                 {'pipeline_attributes': {},
+                                                  'source_attributes': {},
+                                                  'target_attributes': {},
+                                                  'data_attributes': {
+                                                      'data_objects_spec_mode':{}
+                                                    }
+                                                  }
+                                            ,
+                                            
+                                              'data_objects_spec': []
+                                            
+                                        }
+        self.composed_pipeline_config = self.f_handler.load_json(self.m_conf.pipeline_skeleton_fpath)
+        
+    def force_assign_value(self, key, message):
+        while True:
+            self.console.print(message)
+            value = prompt.Prompt.ask(f"[bold green]{key}[/bold green]")
+            message = f"[red]{message}[/red]"
+            if value.strip() != '':
+
+                break
+        return value
+
+    def compose_pipeline(self, pipeline_name):
+
+
+        self.compose_pipeline_attributes(pipeline_name)
+        self.compose_endpoint_attributes('source_attributes')
+        self.compose_endpoint_attributes('target_attributes')
+        self.compose_data_attributes()
+
+    def compose_pipeline_attributes(self, pipeline_name):
+        """
+        """
+        self.use_pipeline_wizard = prompt.Confirm.ask("\nUse Pipeline wizard")
+
+        predefined_values = {'pipeline_name': pipeline_name}
+        pipeline_attributes = self.pipeline_meta_config.get("pipeline_attributes")
+        assigned_attributes = self.assign_attributes(pipeline_attributes, predefined_values=predefined_values)
+        self.composed_pipeline_config['pipeline']['pipeline_attributes'].update(assigned_attributes)
+
+    def compose_endpoint_attributes(self, endpoint_attributes_name):
+        self.console.print(f"\n[bold]{self.break_line}[/bold]")
+        self.console.print(f"Specify [bold]{endpoint_attributes_name}[/bold]\n")
+
+        endpoint_attributes_dict = {}
+        predefined_values = {}
+
+        # step 1. specify endpoint type
+        available_connectors = self.m_conf.get_available_connectors()
+        connector_type = prompt.Prompt.ask(f"Specify [bold yellow]{endpoint_attributes_name}[/bold yellow] connector type", choices=available_connectors)
+        predefined_values.update({'connector_type': connector_type})
+
+        assigned_endpoint_attributes = self.assign_attributes(endpoint_attributes_dict, predefined_values=predefined_values)
+        self.composed_pipeline_config['pipeline'][endpoint_attributes_name].update(assigned_endpoint_attributes)
+
+        # step 2. get connector category
+        connector_category = self.m_conf.get_connector_class_config(connector_type).get('connector_category')
+
+        # step 3. based on connector category define database or file parameters
+        connector_attributes = self.m_conf.get_connector_attributes(connector_type)
+
+        exclude_key_list = [None]
+        if connector_category in ('file','storage') and endpoint_attributes_name == 'source_attributes':
+            exclude_key_list = ['destination_dir','bucket_pipeline_prefix']
+
+        assigned_connector_attributes = self.assign_attributes(connector_attributes, exclude_key_list=exclude_key_list, predefined_values=None)
+        self.composed_pipeline_config['pipeline'][endpoint_attributes_name].update(assigned_connector_attributes)
+
+        # step 4. get and define platform type
+        platform_type_list = self.m_conf.get_supported_platforms(connector_type)
+
+        if len(platform_type_list) == 1:
+            platform_type = platform_type_list[0]
+        else:
+            platform_type = prompt.Prompt.ask(f"Specify [bold green]platform_type[/bold green]",
+                                              choices=platform_type_list)
+
+        # step 5. assign platform type and platform attributes
+        if platform_type != 'local':
+            predefined_values.update({'platform_type': platform_type})
+            platform_attributes = self.m_conf.get_platform_attributes(platform_id=platform_type)
+            assigned_platform_attributes = self.assign_attributes(platform_attributes, predefined_values=predefined_values, exclude_key_list=['connector_type'])
+            self.composed_pipeline_config['pipeline'][endpoint_attributes_name].update(assigned_platform_attributes)
+
+    def compose_data_attributes(self):
+
+        data_attributes = self.pipeline_meta_config.get('data_attributes')
+
+        self.console.print(f"\n[bold]{self.break_line}[/bold]")
+        self.console.print(f"[bold]Specify default object settings[/bold]")
+
+        object_default_settings = data_attributes.get('object_default_settings')
+        assigned_object_default_settings = self.assign_attributes(object_default_settings, predefined_values=None)
+        self.composed_pipeline_config['pipeline']['data_attributes'].update({"object_default_settings": assigned_object_default_settings})
+
+        self.console.print(f"\n[bold]{self.break_line}[/bold]")
+        self.console.print(f"[bold]Specify data object attributes[/bold]")
+
+        assigned_data_attributes = self.assign_attributes(data_attributes, predefined_values=None, exclude_key_list=[None])
+        self.composed_pipeline_config['pipeline']['data_attributes'].update(assigned_data_attributes)
+
+    def compose_object_spec(self, pipeline, object_name, use_pipeline_wizard):
+        self.use_pipeline_wizard = use_pipeline_wizard
+        data_objects_spec = self.pipeline_meta_config.get('data_objects_spec')
+        exclude_key_list = []
+        
+        # Get source connector type and category
+        source_connector_type = pipeline.source_attr.get('connector_type')
+        if not source_connector_type:
+            logger.warning("Source connector type is not specified in the pipeline")
+            return None
+            
+        connector_category = self.m_conf.get_connector_category(source_connector_type)
+        if not connector_category:
+            logger.warning(f"Could not determine connector category for source connector type: {source_connector_type}")
+            return None
+
+        # exclude params for file load (csv, etc..)
+        if connector_category == 'database':
+            exclude_key_list.append('object_source_dir')
+            exclude_key_list.append('file_names')
+
+        if object_name is None:
+            object_name = self.force_assign_value(key='object_name',
+                                                  message=data_objects_spec.get('object_name').get('key_comment'))
+
+        exclude_key_list.append('object_name')
+        predefined_values = {'object_name': object_name}
+
+        assigned_attributes = self.assign_attributes(data_objects_spec, predefined_values=predefined_values, exclude_key_list=exclude_key_list)
+        tmp_assigned_attributes = {}
+        tmp_assigned_attributes.update({'object_spec': assigned_attributes})
+
+        return tmp_assigned_attributes
+
+    def assign_attributes(self, spec_attributes, predefined_values=None, exclude_key_list=None) -> dict:
+        assigned_attributes = {}
+
+        if predefined_values is not None:
+            assigned_attributes.update(predefined_values)
+
+        # cleanup dict from exclude keys
+        if exclude_key_list is not None:
+            for key in exclude_key_list:
+                if self.f_handler.check_dict_key_exist(spec_attributes, key):
+                    spec_attributes.pop(key)
+
+        for key, value in spec_attributes.items():
+
+            in_use = False if value.get('in_use') is None else value.get('in_use')
+
+            if in_use:
+                # 1. handle predefined_values
+                if predefined_values is not None:
+                    if self.f_handler.check_dict_key_exist(predefined_values, key):
+                        assigned_value = predefined_values.get(key)
+                        assigned_attributes.update({key: assigned_value})
+                        continue
+
+                # 2. define default and preassigned_values
+                preassigned_values = value.get('preassigned_values')
+                default_value =  None if value.get('default_value') is None else value.get('default_value')
+                preassigned_values = None if preassigned_values[0] is None else preassigned_values
+                assigned_value = default_value
+
+                # 3. check dependency
+                if not self.include_based_on_dependency(assigned_attributes, value.get('dependency')):
+                    continue
+
+                # 4. compose key comment and default value
+                console_message = "\n"
+
+                console_message += f"{value.get('key_comment')}"
+                if default_value is not None:
+                    console_message += f"Default: [bold blue]{default_value}[/bold blue]"
+
+                self.console.print(console_message)
+
+                if key == 'database_password':
+                    if self.use_pipeline_wizard:
+                        assigned_value = prompt.Prompt.ask(f"[bold green]{key}[/bold green]", password=True)
+
+                elif value.get('key_type') == 'Integer':
+                    if self.use_pipeline_wizard:
+                        assigned_value = prompt.IntPrompt.ask(f"[bold green]{key}[/bold green]", default=default_value,
+                                                              show_default=False)
+
+                elif value.get('key_type') == 'Array':
+
+                    if self.use_pipeline_wizard:
+                        assigned_value = prompt.Prompt.ask(f"[bold green]{key}[/bold green]", default=default_value,
+                                                           show_default=False)
+
+                        if type(assigned_value) == str:
+                            assigned_value = [item.strip() for item in assigned_value.split(',')]
+
+                    if assigned_value is None:
+                        assigned_value = [None]
+                else:
+                    if self.use_pipeline_wizard:
+                        assigned_value = prompt.Prompt.ask(f"[bold green]{key}[/bold green]", choices=preassigned_values,
+                                                           default=default_value, show_default=False)
+
+                    if value.get('key_type') == 'Boolean':
+                        assigned_value = True if assigned_value == 'true' else False
+
+                assigned_attributes.update({key: assigned_value})
+
+        return assigned_attributes
+
+    def include_based_on_dependency(self, assigned_attributes, dependency_dict):
+
+        include = True
+        if dependency_dict is None or dependency_dict == {}:
+            return include
+
+        for key, value in dependency_dict.items():
+            if assigned_attributes.get(key) == value:
+                include = True
+            else:
+                return False
+
+        return include
