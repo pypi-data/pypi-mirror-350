@@ -1,0 +1,18 @@
+{% extends "counters/chart_base.html" %}{% load static %}
+
+{% block body %}
+    <div class="min-h-screen w-wull bg-gray-100 pb-10">
+        <div class="block w-full justify-center">
+            <img class="m-auto w-1/2" src="{% static "img.png" %}">
+        </div>
+        <div class="block">
+            <ul class="ml-20">
+                {% for org in organizations %}
+                    <li class="text-xl">
+                        <a href="{% url "charts:org-index" org.slug %}">{{ org }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock body %}

@@ -1,0 +1,171 @@
+<!DOCTYPE html>{% load static i18n pwa %}
+<html lang="en">
+<head>
+    <title>Bob</title>
+    <meta name="params" id="params" content="{{ params|js|btoa }}">
+    <meta name="key" id="key" content="{{ params.secret|btoa }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name=description content="Bob">
+    <link rel="stylesheet" media="all" type="text/css" href="{% static 'pwa/pwa.css' %}?a={{ asset.version }}">
+    <link rel="manifest" id="pwa-manifest" href="/pwa/{{ secret }}/manifest.json">
+    <!-- Add to homescreen for Chrome on Android -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="{{ PWA_APP_NAME }}">
+
+    <!-- Chrome for Android theme color -->
+    <meta name="theme-color" content="{{ PWA_APP_THEME_COLOR }}">
+
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="{{ PWA_APP_NAME }}">
+    <meta name="apple-mobile-web-app-status-bar-style" content="{{ PWA_APP_STATUS_BAR_COLOR }}">
+
+    {% if PWA_APP_ICONS_APPLE %}
+        {% for icon in PWA_APP_ICONS_APPLE %}
+            <link rel="apple-touch-icon" href="{{ icon.src }}" sizes="{{ icon.size }}">
+        {% endfor %}
+    {% else %}
+        {% for icon in PWA_APP_ICONS %}
+            <link rel="apple-touch-icon" href="{{ icon.src }}" sizes="{{ icon.size }}">
+        {% endfor %}
+    {% endif %}
+
+
+    {% for splash in PWA_APP_SPLASH_SCREEN %}
+        <link href="{{ splash.src }}" media="{{ splash.media }}" rel="apple-touch-startup-image"/>
+    {% endfor %}
+
+
+    <!-- Tile for Win8 -->
+    <meta name="msapplication-TileColor" content="{{ PWA_APP_BACKGROUND_COLOR }}">
+    {% with PWA_APP_ICONS|last as icon %}
+        <meta name="msapplication-TileImage" content="{{ icon.src }}">
+        <link rel="icon" sizes="{{ icon.size }}" href="{{ icon.src }}">
+    {% endwith %}
+    <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
+    <script type="text/javascript" src="{% static 'vendor/axios.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'sentry/sentry.js' %}"></script>
+    <script type="text/javascript" src="{% static 'pwa/ko-3.5.1.js' %}"></script>
+    <script src="{% url 'js_reverse' %}"></script>
+    <script type="text/javascript" src="{% static 'pwa/pwa.js' %}?v={{ asset.version }}"></script>
+</head>
+{% if request.user_agent.is_pc %}
+    <body class="background">
+    <div class="grid h-screen place-items-center text-white">
+        <div class="place-items-center">
+            <div class="text-center">{% trans "Open this link using a mobile" %}</div>
+            <img width="300" height="300" src="data:image/png;base64,{{ qrcode }}" alt="Red dot"/>
+{#            <div class="text-center my-5">{% trans "or" %}</div>#}
+{#            {% if person.emails %}#}
+{#                {% with person.emails.first as email %}#}
+{#                    <div class="text-center">{% trans "Send by email to" %} {{ email }}</div>#}
+{#                {% endwith %}#}
+{#            {% endif %}#}
+        </div>
+    </div>
+    </body>
+{% else %}
+    <body class="pwa background" data-bind="class:bodyBackground">
+    <div class="flex flex-col h-screen justify-between">
+        <header class="h-10 w-full" data-bind="click:closeBanner,">
+            <i data-bind="click:closeBanner,visible:notify().msg" class="float-right p-3">x</i>
+            <div data-bind="click:closeBanner,visible:notify,class: notify().level" class="p-5">
+                <div data-bind="click:closeBanner,text:notify().msg" class=""></div>
+            </div>
+        </header>
+        <main class="mb-auto h-20 ">
+            <div id="alarms" class=" w-full text-black text-sm p-1 pb-3"
+                 style="position:absolute;top:0;left:0;z-index: 1000;overflow-y:scroll;max-height: 200px;display:none;height:0"
+                 data-bind="foreach: alarms().slice(0).reverse(), visible:alarms">
+                <div data-bind="click:$root.closeMessage">
+                    <div class="text-sm" data-bind="text:$data"></div>
+                    <i data-bind="click:$root.closeMessage" class="fas fa-cancel-circled"></i>
+                </div>
+            </div>
+            <div class="content">
+                <div id="spinner" class="absolute z-50" style="display:none" data-bind="visible:loading">
+                    <div class="flex w-screen justify-center items-center">
+                        <svg class="animate-spin -ml-1 mr-3 h-20 w-20 m-auto"
+                             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10"
+                                    stroke="#00a8b5"
+                                    stroke-width="4"></circle>
+                            <path class="opacity-75" fill="#59add4"
+                                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <div id="landing" style="display:none;" data-bind="visible: isPageActive.bind($data, Steps.INSTALL)()">
+                    <div class="message-title">{% trans "Hi, please meet Bob!" %}</div>
+                    <div class="">{% trans "Bob will notify you in case anyone needs help." %}</div>
+                    <button data-bind="click:install, visible:canBeInstalled,disable:isPageActive.bind($data, Steps.INSTALLLING)()"
+                            class="button">Install
+                    </button>
+                </div>
+                <div data-bind="visible:isPageActive.bind($data, Steps.ALREADY_INSTALLED)()" style="display: none">
+                    {% trans "BOB ALREADY INSTALLED HERE" %}
+                </div>
+                <div data-bind="visible:isPageActive.bind($data, Steps.INSTALLLING)()" style="display: none">
+                    {% trans "INSTALLING" %}
+                </div>
+                <div data-bind="visible:isPageActive.bind($data, Steps.INSTALL_COMPLETE)()" style="display: none">
+                    {% trans "INSTALL SUCCESSFULLY YOU CAN LEAVE THIS PAGE" %}
+                </div>
+                <div data-bind="visible:isPageActive.bind($data, Steps.VERIFIED)()" style="display: none">
+                    {% trans "CODE USED" %}
+                </div>
+                <div id="registerForm" style="display:none;" class="px-3"
+                     data-bind="visible: isPageActive.bind($data, Steps.REGISTER)(), enable:canRegister">
+                    <div>{% trans "Before you can use Bob, you must register it." %}</div>
+                    <div>
+                        {% trans "Please insert the code you have received" %}
+                    </div>
+                    <div><input id="txtCode" type="number" max="999999" min="0" maxlength="5"
+                                placeholder="Insert code here"
+                                data-bind="value:code,textInput:code"
+                                class="text-black tracking-widest w-1/2 my-3 text-center text-2xl"></div>
+                    <div>
+                        <button data-bind="click:register,disabled="disabled"
+                                class="button">Register
+                        </button>
+                    </div>
+                </div>
+                <div style="display:none;height: 200px" data-bind="visible: isPageActive.bind($data, Steps.APP)()">
+                    <button data-bind="event: {click:help, touchstart: touchStartHandler, touchend: touchEndHandler},}, disable:invoked, visible:canSendHelp"
+                            class="help"><img width="200" height="224" data-bind="attr:{src: buttonImage}"
+                                              src="{% static "pwa/images/sos_button.svg" %}"></button>
+                </div>
+            </div>
+        </main>
+        <footer class="h-15 align-middle px-2">
+            <div class="flex">
+                <div class="flex-shrink">
+                    <img alt="messages"
+                         width="32" height="32" style="display: none" data-bind="visible:notificationStatus,click:checkNotification"
+                         src="{% static 'pwa/images/bell_ok.png' %}">
+                    <img alt="messages"
+                         width="32" height="32" data-bind="hidden:notificationStatus,click:checkNotification"
+                         src="{% static 'pwa/images/bell_ko.png' %}">
+                </div>
+                <div class="flex-grow text-center" data-bind="text:group"></div>
+                <div class="flex-shrink">
+                    <img alt="location"
+                         width="32" height="32" style="display: none"
+                         data-bind="visible:position,click:checkPosition"
+                         src="{% static 'pwa/images/location_ok.png' %}">
+                    <img alt="location"
+                         width="32" height="32" data-bind="hidden:position,click:checkPosition"
+                         src="{% static 'pwa/images/location_ko.png' %}">
+                </div>
+            </div>
+            <div class="flex text-xs h-5">
+                <div class="flex-grow text-center" data-bind="text:version"></div>
+                <div class="flex-grow text-center"><a target="_new" href="{{ host }}">sosbob.com</a></div>
+            </div>
+        </footer>
+        {% include "pwa/_log.html" %}
+    </div>
+    </body>
+{% endif %}
+</html>

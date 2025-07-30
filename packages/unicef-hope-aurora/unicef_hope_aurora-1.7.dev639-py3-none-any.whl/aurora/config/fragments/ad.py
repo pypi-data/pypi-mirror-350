@@ -1,0 +1,4 @@
+from .. import env
+
+AZURE_CLIENT_KEY = env("AZURE_CLIENT_KEY")
+AZURE_CLIENT_SECRET = env("AZURE_CLIENT_SECRET")
