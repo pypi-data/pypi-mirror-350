@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_impact_data_type_form" model="ir.ui.view">
+        <field name="name">impact.data.type.form</field>
+        <field name="model">impact.data.type</field>
+        <field name="arch" type="xml">
+            <form string="Impact Data Type">
+                <sheet>
+                    <field name="company_id" invisible="1"/>
+                    <group>
+                        <field name="name"/>
+                        <field name="type_uom_id" string="Unit of Measure"/>
+                    </group>
+                    <group>
+                        <field name="description"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_impact_data_type_tree" model="ir.ui.view">
+        <field name="name">impact.data.type.tree</field>
+        <field name="model">impact.data.type</field>
+        <field name="arch" type="xml">
+            <tree string="Impact Data Types">
+                <field name="name"/>
+                <field name="type_uom_id" string="Unit of Measure"/>
+                <field name="description"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_impact_data_type_search" model="ir.ui.view">
+        <field name="name">impact.data.type.search</field>
+        <field name="model">impact.data.type</field>
+        <field name="arch" type="xml">
+            <search string="Search Impact Data Types">
+                <field name="name"/>
+                <field name="type_uom_id" string="Unit of Measure"/>
+                <field name="description"/>
+            </search>
+        </field>
+    </record>
+    <record id="impact_data_type_action" model="ir.actions.act_window">
+        <field name="name">Impact Data Types</field>
+        <field name="res_model">impact.data.type</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_impact_data_type_search"/>
+        <field name="view_id" ref="view_impact_data_type_tree"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Click to create a new impact data type.
+            </p>
+        </field>
+    </record>
+</odoo>
