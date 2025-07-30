@@ -1,0 +1,115 @@
+Metadata-Version: 2.4
+Name: openhexa.toolbox
+Version: 2.6.5
+Summary: A set of tools to acquire & process data from various sources
+Author-email: Bluesquare <dev@bluesquarehub.com>
+Maintainer-email: Bluesquare <dev@bluesquarehub.com>
+License: MIT License
+        
+        Copyright (c) 2023 Bluesquare
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        
+Project-URL: Homepage, https://github.com/blsq/openhexa-toolbox
+Project-URL: Bug Tracker, https://github.com/blsq/openhexa-toolbox/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests
+Requires-Dist: python-dateutil
+Requires-Dist: pandas
+Requires-Dist: shapely
+Requires-Dist: geopandas
+Requires-Dist: fiona
+Requires-Dist: polars>=1.0
+Requires-Dist: diskcache
+Requires-Dist: pyjwt
+Requires-Dist: cdsapi>=0.7.3
+Requires-Dist: cads-api-client>=1.4.0
+Requires-Dist: rasterio
+Requires-Dist: cfgrib
+Requires-Dist: xarray
+Requires-Dist: epiweeks
+Requires-Dist: datapi>=0.3.0
+Requires-Dist: openhexa.sdk
+Requires-Dist: humanize
+Requires-Dist: rich
+Provides-Extra: dev
+Requires-Dist: ruff~=0.8.4; extra == "dev"
+Requires-Dist: pytest~=8.3.2; extra == "dev"
+Requires-Dist: build~=1.2.1; extra == "dev"
+Requires-Dist: pytest-cov~=6.0.0; extra == "dev"
+Requires-Dist: black~=24.10.0; extra == "dev"
+Requires-Dist: pre-commit; extra == "dev"
+Requires-Dist: responses; extra == "dev"
+Dynamic: license-file
+
+<div align="center">
+   <img alt="OpenHEXA Logo" src="https://raw.githubusercontent.com/BLSQ/openhexa-app/main/hexa/static/img/logo/logo_with_text_grey.svg" height="80">
+</div>
+<p align="center">
+    <em>Open-source Data integration platform</em>
+</p>
+<p align="center">
+   <a href="https://github.com/BLSQ/openhexa-app/actions/workflows/test.yml">
+      <img alt="Test Suite" src="https://github.com/BLSQ/openhexa-toolbox/actions/workflows/ci.yml/badge.svg">
+   </a>
+</p>
+
+OpenHEXA Toolbox
+================
+
+OpenHEXA is an open-source data integration platform developed by [Bluesquare](https://bluesquarehub.com).
+
+The Toolbox is an utility library to acquire and process data from various data sources. It is installed by default 
+on OpenHEXA, and can be used both in notebooks and in data pipelines.
+
+See the [Using the OpenHEXA Toolbox](https://github.com/BLSQ/openhexa/wiki/Using-the-OpenHEXA-Toolbox) section of the 
+wiki for usage instructions.
+
+## Installation
+
+```sh
+pip install openhexa.toolbox
+```
+
+## Modules
+
+[**openhexa.toolbox.dhis2**](docs/dhis2.md) - Acquire and process data from DHIS2 instances <br>
+[**openhexa.toolbox.iaso**](docs/iaso.md) - Acquire and process data from IASO instances <br>
+[**openhexa.toolbox.kobo**](docs/kobo.md) - Acquire and process submissions from KoboToolbox instances <br>
+[**openhexa.toolbox.hexa**](docs/hexa.md) - Interact with OpenHEXA API <br>
+[**openhexa.toolbox.ERA**](openhexa/toolbox/era5/README.md) - Acquire and process data from ERA5
+
+
+## Release
+ 
+This project uses [release-please](https://github.com/googleapis/release-please) to manage releases using conventional commits.
+
+To release a new version:
+
+1. You need to have a least a commit with a conventional commit message (`feat|fix`) since the last release.
+2. release-please will create a new release PR on GitHub.
+3. Once the PR is merged, release-please will create a new release on GitHub.
+4. A GitHub action will build the package on github release creation and upload it to PyPI and Anaconda.
+
+
