@@ -1,0 +1,52 @@
+Metadata-Version: 2.4
+Name: gripcd
+Version: 0.1.2
+Summary: Implementation of GRIP & FLAMES algorithms, for Fast & Global Point Cloud rigid registration.
+Author: PCR Research
+Project-URL: Repository, https://github.com/pcrresearch/grip.git
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: numpy
+Requires-Dist: tqdm
+Requires-Dist: jrmpc
+Requires-Dist: torch
+Requires-Dist: nvidia_ml_py3
+Requires-Dist: typing-extensions; python_version < "3.10"
+
+# GRIP
+Implementation of GRIP & FLAMES algorithms, for Fast & Global Point Cloud rigid registration.
+
+## Installation
+
+```
+pip install grip
+```
+
+
+## Basic Usage
+
+
+- **Pairwise**:
+
+```python
+from grip import PairwiseGRIP, icp
+
+estimator = PairwiseGRIP(icp)
+T_s2m_hat = estimator(sources, models)
+# or
+registered_sources, registered_models = estimator.register(sources, models)
+```
+
+
+- **Generative multiview**:
+
+```python
+from grip import GenerativeMultiviewsGRIP, ChamferJRMPC
+
+estimator = GenerativeMultiviewsGRIP(ChamferJRMPC())
+estimator(views)
+T_hat = estimator.T_hat
+```
