@@ -1,0 +1,46 @@
+digraph memory_graph {
+	node [shape=plaintext]
+	node11757064 [label=<
+<TABLE BORDER="1" CELLBORDER="1" CELLSPACING="5" CELLPADDING="0" BGCOLOR="green" PORT="table">
+    <TR><TD BORDER="1"> 100 </TD></TR>
+</TABLE>
+> xlabel=int]
+	node11760264 [label=<
+<TABLE BORDER="1" CELLBORDER="1" CELLSPACING="5" CELLPADDING="0" BGCOLOR="green" PORT="table">
+    <TR><TD BORDER="1"> 200 </TD></TR>
+</TABLE>
+> xlabel=int]
+	node127943895528560 [label=<
+<TABLE BORDER="1" CELLBORDER="1" CELLSPACING="5" CELLPADDING="0" BGCOLOR="green" PORT="table">
+    <TR><TD BORDER="1"> 300 </TD></TR>
+</TABLE>
+> xlabel=int]
+	node127943896126016 [label=<
+<TABLE BORDER="1" CELLBORDER="1" CELLSPACING="5" CELLPADDING="0" BGCOLOR="lightcoral" PORT="table">
+    <TR><TD BORDER="0"><font color="#505050">0</font></TD><TD BORDER="0"><font color="#505050">1</font></TD><TD BORDER="0"><font color="#505050">2</font></TD></TR>
+    <TR><TD BORDER="1" PORT="ref0"> </TD><TD BORDER="1" PORT="ref1"> </TD><TD BORDER="1" PORT="ref2"> </TD></TR>
+</TABLE>
+> xlabel=list]
+	node127943896126016:ref0 -> node11757064:table [style=solid]
+	node127943896126016:ref1 -> node11760264:table [style=solid]
+	node127943896126016:ref2 -> node127943895528560:table [style=solid]
+	node127943896124224 [label=<
+<TABLE BORDER="1" CELLBORDER="1" CELLSPACING="5" CELLPADDING="0" BGCOLOR="lightcoral" PORT="table">
+    <TR><TD BORDER="0"><font color="#505050">0</font></TD><TD BORDER="0"><font color="#505050">1</font></TD><TD BORDER="0"><font color="#505050">2</font></TD></TR>
+    <TR><TD BORDER="1" PORT="ref0"> </TD><TD BORDER="1" PORT="ref1"> </TD><TD BORDER="1" PORT="ref2"> </TD></TR>
+</TABLE>
+> xlabel=list]
+	node127943896124224:ref0 -> node11757064:table [style=solid]
+	node127943896124224:ref1 -> node11760264:table [style=solid]
+	node127943896124224:ref2 -> node127943895528560:table [style=solid]
+	node127943896440512 [label=<
+<TABLE BORDER="3" CELLBORDER="1" CELLSPACING="5" CELLPADDING="0" BGCOLOR="#60a5ff" PORT="table">
+    <TR><TD BORDER="1" STYLE="ROUNDED"> a </TD><TD BORDER="1" STYLE="ROUNDED"> b </TD></TR>
+    <TR><TD BORDER="1" PORT="ref0"> </TD><TD BORDER="1" PORT="ref1"> </TD></TR>
+</TABLE>
+> xlabel=dict]
+	node127943896440512:ref0 -> node127943896126016:table [style=solid]
+	node127943896440512:ref1 -> node127943896124224:table [style=solid]
+subgraph { rank=same; node127943896126016 -> node127943896124224[weight=10, style=invis]; }
+subgraph { rank=same; node11757064 -> node11760264 -> node127943895528560[weight=10, style=invis]; }
+}
