@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkhome_assistant_frontend=self.webpackChunkhome_assistant_frontend||[]).push([["40498"],{4274:function(e,t,a){a.r(t),a.d(t,{IframeViewStrategy:()=>i});a(1455);var s=a(73742),r=a(59048),n=a(7616);class i extends r.fl{static async generate(e){return{type:"panel",title:e.title,cards:[{type:"iframe",url:e.url}]}}}i=(0,s.__decorate)([(0,n.Mo)("iframe-view-strategy")],i)}}]);
+//# sourceMappingURL=40498.79c7276be3bca068.js.map
