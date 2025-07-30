@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "devenv-genie"
+version = "0.2.4" # Start with a version, increment as you update
+authors = [
+  { name="Hamdaan Baloch", email="hamdaanbaloch6@gmail.com" },
+]
+description = "AI-Powered Dev Environment Diagnoser & Fixer. Helps set up and troubleshoot local dev environments."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { file = "LICENSE" }
+keywords = ["developer tools", "devops", "ai", "environment setup", "cli", "diagnostics"]
+classifiers = [
+    "Development Status :: 4 - Beta", # Or 3 - Alpha
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Build Tools",
+    "Topic :: Utilities",
+]
+dependencies = [
+    "groq>=0.9.0", # Specify a minimum version if known, or just the package name
+    "python-dotenv>=0.20.0",
+    "click>=8.0.0",
+    "packaging>=21.0",
+     "appdirs>=1.4.0"
+    # Add any other direct dependencies here
+]
+
+[project.urls]
+"Homepage" = "https://github.com/yourusername/devenv-genie" # Replace with your actual GitHub repo URL
+"Bug Tracker" = "https://github.com/yourusername/devenv-genie/issues" # Replace
+
+[project.scripts]
+# This makes the 'genie' command available after installation
+# It points to the 'cli' function in your 'cli.py' module within the 'devenv_genie_pkg' package
+genie = "devenv_genie_pkg.cli:cli"
+
+[tool.setuptools.packages.find]
+where = ["src"]  # Tells setuptools to find packages in the 'src' directory
+
+[tool.setuptools.package-data]
+# This ensures tools_config.json is included in the built package
+"devenv_genie_pkg" = ["tools_config.json"]
