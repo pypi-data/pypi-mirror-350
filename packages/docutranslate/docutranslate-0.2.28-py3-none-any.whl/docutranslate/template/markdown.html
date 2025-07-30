@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+    {{pico}}
+    {{katexCss}}
+    {{katexJs}}
+    {{autoRender}}
+    <style>
+        html {
+            padding: 2vh 10vw;
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body>
+
+{{markdown}}
+</body>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},  // 块级公式
+                {left: '\\[', right: '\\]', display: true}, // 块级公式
+                {left: '$', right: '$', display: false},   // 行内公式
+                {left: '\\(', right: '\\)', display: false}  // 行内公式 (常用)
+            ],
+            // • rendering keys, e.g.:
+            throwOnError: false
+        });
+    });
+</script>
+{{mermaid}}
+
+<script>
+    mermaid.initialize({
+        securityLevel: 'loose',
+        startOnLoad: true
+    });
+    let observer = new MutationObserver(mutations => {
+        for (let mutation of mutations) {
+            mutation.target.style.visibility = "visible";
+        }
+    });
+    document.querySelectorAll("pre.mermaid-pre div.mermaid").forEach(item => {
+        observer.observe(item, {
+            attributes: true,
+            attributeFilter: ['data-processed']
+        });
+    });
+</script>
+
+</html>
