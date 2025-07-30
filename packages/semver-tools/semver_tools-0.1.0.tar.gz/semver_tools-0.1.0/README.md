@@ -1,0 +1,117 @@
+# Semver Tools
+
+A Python tool for managing semantic versioning in Git repositories. This tool automatically handles version bumping and Git tagging based on commit messages and branch names.
+
+## Features
+
+- Automatic version bumping based on commit messages
+- Git tag management
+- Support for major, minor, patch, and hotfix versions
+- Branch-aware versioning (develop, hotfix branches)
+- Version file generation
+
+## Installation
+
+1. Install from source:
+a. Clone the repository:
+```
+git clone https://github.com/your-repo/semver-tools.git
+cd semver-tools
+```
+
+b. Install the dependencies:
+```
+pip install -r requirements.txt
+```
+
+2. Install from PyPI:
+```
+pip install semver-tools
+```
+
+## Usage
+
+### Basic Usage
+
+1. Run the tool in your Git repository:
+
+```bash
+python -m semver_tools.main --repo-path /path/to/your/repo
+```
+
+If no path is specified, it uses the current directory.
+
+2. Run as cli tool:
+```bash
+semver-tools --repo-path /path/to/your/repo
+```
+
+### Version Bumping Rules
+
+The tool determines version bumps based on commit messages:
+
+- `[major]` in commit message: Bumps major version (1.0.0 → 2.0.0)
+- `[minor]` in commit message: Bumps minor version (1.0.0 → 1.1.0)
+- `[hotfix]` in commit message: Adds hotfix suffix (1.0.0 → 1.0.0+hotfix.1)
+- No special tag: Bumps patch version (1.0.0 → 1.0.1)
+
+### Branch Behavior
+
+- On `develop` or `dev` branches: Creates new version tags
+- On `hotfix` branches: Creates hotfix versions
+- On other branches: Only displays current version without creating tags
+
+### Version File
+
+The tool generates a `version.env` file in your repository with the current version:
+```
+VERSION=1.0.0
+```
+
+## Development
+
+### Running Tests
+
+```bash
+pytest tests/
+```
+
+### Project Structure
+
+```
+semver_tools/
+├── __init__.py
+├── git_utils.py      # Git repository operations
+├── main.py          # CLI entry point
+└── version_manager.py # Version management logic
+
+tests/
+├── __init__.py
+├── test_git_utils.py
+├── test_main.py
+└── test_version_manager.py
+```
+
+## Requirements
+
+- Python 3.6+
+- GitPython
+- semantic_version
+- pytest (for development)
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m '[minor] Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- [semantic_version](https://python-semanticversion.readthedocs.io/) for version parsing
+- [GitPython](https://gitpython.readthedocs.io/) for Git operations
