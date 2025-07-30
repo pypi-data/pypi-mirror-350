@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Action Message Type Test</title>
+    <style>
+        /* Basic CSS variables for testing */
+        :root {
+            --jp-layout-color1: #ffffff;
+            --jp-content-font-color1: #333333;
+            --jp-content-font-color2: #666666;
+            --jp-layout-color3: #f0f0f0;
+            --jp-content-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        /* Dark mode */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --jp-layout-color1: #1e1e1e;
+                --jp-content-font-color1: #ffffff;
+                --jp-content-font-color2: #cccccc;
+                --jp-layout-color3: #333333;
+            }
+        }
+
+        body {
+            font-family: var(--jp-content-font-family);
+            background-color: var(--jp-layout-color1);
+            color: var(--jp-content-font-color1);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .chat-container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .escobar-message {
+            padding: 8px;
+            border-radius: 8px;
+            max-width: 90%;
+        }
+
+        .escobar-message-user {
+            align-self: flex-end;
+            background-color: var(--jp-layout-color3);
+            color: var(--jp-content-font-color1);
+        }
+
+        .escobar-message-assistant {
+            align-self: flex-start;
+            background-color: transparent;
+            color: var(--jp-content-font-color1);
+        }
+
+        .escobar-message-action {
+            align-self: flex-start;
+            background-color: transparent;
+            color: var(--jp-content-font-color1);
+            font-style: italic;
+            margin-left: 20px;
+            padding-left: 16px;
+            border-left: 2px solid var(--jp-content-font-color2);
+            opacity: 0.9;
+        }
+
+        .escobar-message-content {
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .message-type-label {
+            font-size: 12px;
+            color: var(--jp-content-font-color2);
+            margin-bottom: 4px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Action Message Type Test</h1>
+
+    <div class="chat-container">
+        <div class="message-type-label">User Message:</div>
+        <div class="escobar-message escobar-message-user">
+            <div class="escobar-message-content">Hello! Can you help me create a new file?</div>
+        </div>
+
+        <div class="message-type-label">Assistant Message:</div>
+        <div class="escobar-message escobar-message-assistant">
+            <div class="escobar-message-content">Of course! I'll help you create a new file. Let me do that for you.
+            </div>
+        </div>
+
+        <div class="message-type-label">Action Message (NEW!):</div>
+        <div class="escobar-message escobar-message-action">
+            <div class="escobar-message-content">Creating file "example.txt" with content...</div>
+        </div>
+
+        <div class="message-type-label">Assistant Message:</div>
+        <div class="escobar-message escobar-message-assistant">
+            <div class="escobar-message-content">Perfect! I've successfully created the file "example.txt" for you. The
+                file is now ready to use.</div>
+        </div>
+
+        <div class="message-type-label">User Message:</div>
+        <div class="escobar-message escobar-message-user">
+            <div class="escobar-message-content">Great! Can you also run some code for me?</div>
+        </div>
+
+        <div class="message-type-label">Assistant Message:</div>
+        <div class="escobar-message escobar-message-assistant">
+            <div class="escobar-message-content">Absolutely! I'll execute the code for you now.</div>
+        </div>
+
+        <div class="message-type-label">Action Message (NEW!):</div>
+        <div class="escobar-message escobar-message-action">
+            <div class="escobar-message-content">Executing Python code in cell 1...</div>
+        </div>
+
+        <div class="message-type-label">Action Message (NEW!):</div>
+        <div class="escobar-message escobar-message-action">
+            <div class="escobar-message-content">Code execution completed successfully. Output: "Hello, World!"</div>
+        </div>
+
+        <div class="message-type-label">Assistant Message:</div>
+        <div class="escobar-message escobar-message-assistant">
+            <div class="escobar-message-content">The code has been executed successfully! As you can see, it printed
+                "Hello, World!" to the output.</div>
+        </div>
+    </div>
+
+    <script>
+        // Add a simple test to create messages dynamically
+        function addTestMessage() {
+            const container = document.querySelector('.chat-container');
+
+            // Add a label
+            const label = document.createElement('div');
+            label.className = 'message-type-label';
+            label.textContent = 'Dynamic Action Message:';
+            container.appendChild(label);
+
+            // Add an action message
+            const message = document.createElement('div');
+            message.className = 'escobar-message escobar-message-action';
+
+            const content = document.createElement('div');
+            content.className = 'escobar-message-content';
+            content.textContent = 'This action message was created dynamically at ' + new Date().toLocaleTimeString();
+
+            message.appendChild(content);
+            container.appendChild(message);
+        }
+
+        // Add a button to test dynamic message creation
+        const button = document.createElement('button');
+        button.textContent = 'Add Dynamic Action Message';
+        button.style.cssText = 'margin: 20px auto; display: block; padding: 10px 20px; font-size: 14px; cursor: pointer;';
+        button.onclick = addTestMessage;
+        document.body.appendChild(button);
+    </script>
+</body>
+
+</html>
