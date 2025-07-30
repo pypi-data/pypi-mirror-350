@@ -1,0 +1,76 @@
+[build-system]
+requires = [
+    "hatchling",
+]
+build-backend = "hatchling.build"
+
+[project]
+name = "impulcifer-py313"
+version = "1.3.0"
+authors = [
+  { name="원본 저자: Jaakko Pasanen", email="" },
+  { name="Python 3.13.2 호환 버전: 115dkk", email="" },
+]
+description = "HRIR 측정 및 헤드폰 바이노럴 헤드트래킹 HRTF 시스템"
+readme = "README.md"
+requires-python = ">=3.8,<=3.13.2"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    'matplotlib>=3.8.0',
+    'numpy>=1.26.0',
+    'scipy>=1.12.0',
+    'soundfile>=0.12.1',
+    'sounddevice>=0.4.6',
+    'nnresample>=0.2.4',
+    'tabulate>=0.9.0',
+    'autoeq-py313>=1.1.0',
+]
+
+[project.scripts]
+impulcifer = "impulcifer_cli:entry_point"
+impulcifer_gui = "gui:main_gui"
+
+[project.urls]
+"Homepage" = "https://github.com/jaakkopasanen/impulcifer"
+"Python 3.13.2 호환 버전" = "https://github.com/115dkk/Impulcifer-pip313"
+
+[tool.hatch.build]
+include = [
+    "*.py",
+    "data/sweep-seg-FR-stereo-6.15s-48000Hz-32bit-2.93Hz-24000Hz.wav",
+    "data/sweep-seg-FL-stereo-6.15s-48000Hz-32bit-2.93Hz-24000Hz.wav",
+    "data/sweep-seg-FL-mono-6.15s-48000Hz-32bit-2.93Hz-24000Hz.wav",
+    "data/sweep-seg-FL,FR-stereo-6.15s-48000Hz-32bit-2.93Hz-24000Hz.wav",
+    "data/sweep-6.15s-48000Hz-32bit-2.93Hz-24000Hz.wav",
+    "data/sweep-6.15s-48000Hz-32bit-2.93Hz-24000Hz.pkl",
+    "data/harman-in-room-headphone-target.csv",
+    "data/harman-in-room-loudspeaker-target-wo-bass.csv",
+    "data/harman-in-room-loudspeaker-target.csv",
+    "data/harman-in-room-headphone-target-wo-bass.csv",
+    "data/demo/README.md",
+    "data/demo/headphones.wav",
+    "data/demo/room-mic-calibration.txt",
+    "data/demo/room-responses.wav",
+    "data/demo/room-target.csv",
+    "data/demo/FC.wav",
+    "data/demo/FL,FR.wav",
+    "data/demo/BL,SL.wav",
+    "data/demo/SR,BR.wav",
+    "img/**/*",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md",
+    "pyproject.toml",
+]
+exclude = [
+    "research/**/*",
+    ".gitignore",
+]
+
+# data 폴더를 패키지 데이터로 포함
+[tool.hatch.build.targets.wheel.shared-data]
+"data" = "impulcifer_py313/data" 
