@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=61.0", "build", "setuptools_scm>=8.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+packages = ["whisptray"]
+zip-safe = false
+
+[tool.setuptools.package-data]
+
+[project]
+name = "whisptray"
+dynamic = ["version"]
+description = "A simple dictation program using Whisper, pynput, and pystray. After installing, run with 'whisptray'. A tray icon will appear in the system tray. Click it to toggle dictation. Double click to exit."
+readme = "README.md"
+requires-python = ">=3.8"
+authors = [
+  {name = "Brent Lewis", email = "coder0xff@gmail.com"},
+]
+dependencies = [
+    "numpy",
+    "openai-whisper",
+    "Pillow",
+    "PyAudio",
+    "PyGObject==3.50.1",
+    "pynput",
+    "pystray",
+    "SpeechRecognition",
+    "torch",
+]
+
+[tool.setuptools_scm]
+
+[project.scripts]
+whisptray = "whisptray:main"
+
+[project.urls]
+"Homepage" = "https://github.com/coder0xff/whisptray"
+"Bug Tracker" = "https://github.com/coder0xff/whisptray/issues"
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "build",
+    "flake8",
+    "isort",
+    "mypy",
+    "pylint",
+    "types-pynput",
+]
+
+[[tool.mypy.overrides]]
+module = [
+    "pystray",
+    "speech_recognition",
+    "whisper"
+]
+ignore_missing_imports = true
