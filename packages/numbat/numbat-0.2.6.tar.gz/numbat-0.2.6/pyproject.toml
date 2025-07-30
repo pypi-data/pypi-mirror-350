@@ -1,0 +1,92 @@
+# -*- coding: utf-8 -*-
+
+#  Copyright 2023-2025 Quarkslab
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+[build-system]
+requires = [
+  'setuptools'
+]
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = 'numbat'
+authors = [
+    {name = 'Eloïse Brocas', email = 'ebrocas@quarkslab.com'},
+    {name = 'Sami Babigeon', email = 'sbabigeon@quarkslab.com'},
+]
+readme = "README.md"
+description = 'Library to manipulate and create Sourcetrail databases'
+requires-python = ">=3.10"
+license = {text = "Apache License 2.0"}
+classifiers = [
+    'Development Status :: 4 - Beta',
+    'Programming Language :: Python :: 3',
+    'Operating System :: POSIX :: Linux',
+    'Operating System :: Microsoft :: Windows',
+    "Topic :: Software Development :: Libraries",
+]
+dynamic = ['version']
+
+[project.urls]
+Homepage = "https://github.com/quarkslab/numbat"
+Source = "https://github.com/quarkslab/numbat"
+Tracker = "https://github.com/quarkslab/numbat/issues"
+
+
+[project.optional-dependencies]
+doc = [
+    'black',
+    'mkdocs',
+    'mkdocs-autorefs',
+    'mkdocs-gen-files',
+    'mkdocs-glightbox',
+    'mkdocs-literate-nav',
+    'mkdocs-material',
+    'mkdocstrings-python',
+    'mkdocs-section-index'
+]
+
+linting = ['ruff']
+test = ['pytest']
+typechecking = ['mypy']
+
+[tool.setuptools.dynamic]
+version = {attr = "numbat.__version__"} 
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"*" = ["py.typed"]
+
+[tool.ruff]
+# Same as Black.
+line-length = 88
+indent-width = 4
+
+[tool.ruff.lint]
+select = ["D", "E", "F", "B", "Q", "I"]
+ignore = [
+  "D107", # missing docstring in __init__, we add docstrings to the class
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.ruff.format]
+line-ending = "auto"
+docstring-code-format = true
+
+
