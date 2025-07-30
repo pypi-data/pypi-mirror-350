@@ -1,0 +1,65 @@
+import { Shader } from "./shader";
+import { Mesh } from "./mesh";
+import { IExKnot, IKnot } from "./interfaces";
+/**
+ * This shader should only be used with the buildings layer
+ */
+export declare class ShaderOutline extends Shader {
+    protected _coords: number[];
+    protected _normals: number[];
+    protected _indices: number[];
+    protected _heights: number[][];
+    protected _minHeights: number[][];
+    protected _uv: number[];
+    protected _heightInSection: number[];
+    protected _sectionHeight: number[];
+    protected _width: number[];
+    protected _glCoords: WebGLBuffer | null;
+    protected _glNormals: WebGLBuffer | null;
+    protected _glFunction: WebGLBuffer | null;
+    protected _glIndices: WebGLBuffer | null;
+    protected _glColorOrTex: WebGLBuffer | null;
+    protected _glUV: WebGLBuffer | null;
+    protected _glWidth: WebGLBuffer | null;
+    protected _glHeightInSection: WebGLBuffer | null;
+    protected _glSectionHeight: WebGLBuffer | null;
+    protected _glFiltered: WebGLBuffer | null;
+    protected _coordsDirty: boolean;
+    protected _filteredDirty: boolean;
+    protected _coordsId: number;
+    protected _normalsId: number;
+    protected _functionId: number;
+    protected _colorOrTexId: number;
+    protected _uvId: number;
+    protected _widthId: number;
+    protected _heightInSectionId: number;
+    protected _sectionHeightId: number;
+    protected _filteredId: number;
+    protected _uModelViewMatrix: WebGLUniformLocation | null;
+    protected _uProjectionMatrix: WebGLUniformLocation | null;
+    protected _uWorldOrigin: WebGLUniformLocation | null;
+    protected _textureLocation: WebGLUniformLocation | null;
+    protected _texColorMap: WebGLTexture | null;
+    protected _colorOrTexValues: number[];
+    protected _cellIdsByCoordinates: number[][];
+    protected _pickedCoordinates: number[];
+    protected _auxCoords: number[];
+    protected _auxIndices: number[];
+    protected _auxNormals: number[];
+    protected _auxFunction: number[];
+    protected _auxColorOrTexValues: number[];
+    protected _filtered: number[];
+    constructor(glContext: WebGL2RenderingContext, grammarInterpreter: any);
+    updateShaderGeometry(mesh: Mesh, centroid: number[] | Float32Array | undefined, viewId: number): void;
+    updateShaderData(mesh: Mesh, knot: IKnot | IExKnot, currentTimestepFunction?: number): void;
+    updateShaderUniforms(data: any): void;
+    setFiltered(filtered: number[]): void;
+    createUniforms(glContext: WebGL2RenderingContext): void;
+    bindUniforms(glContext: WebGL2RenderingContext, camera: any): void;
+    createTextures(glContext: WebGL2RenderingContext): void;
+    bindTextures(glContext: WebGL2RenderingContext): void;
+    createVertexArrayObject(glContext: WebGL2RenderingContext): void;
+    bindVertexArrayObject(glContext: WebGL2RenderingContext, mesh: Mesh): void;
+    setHighlightElements(coordinates: number[], value: boolean): void;
+    renderPass(glContext: WebGL2RenderingContext, glPrimitive: number, camera: any, mesh: Mesh, zOrder: number): void;
+}
