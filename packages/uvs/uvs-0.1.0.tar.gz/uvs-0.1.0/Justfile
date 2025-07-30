@@ -1,0 +1,18 @@
+# List available commands
+default:
+    @just --list
+
+# Format code using ruff
+format:
+    uv run ruff format src/ tests/
+
+# Check and fix code using ruff
+check:
+    uv run ruff check --fix src/ tests/
+
+# Run both format and check
+lint: format check 
+
+# Test
+test:
+    uv run pytest -v
