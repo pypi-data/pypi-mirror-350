@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "lc-dir"
+version = "0.1.8"
+description = "Copy all non-git-ignored files from any subdirectory into llm-context for LLM consumption"
+authors = ["Aviad Rozenhek [aviar1@gmail.com](mailto:aviar1@gmail.com)"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/aviadr1/lc-dir"
+keywords = ["llm", "cli", "python", "context", "ai"]
+packages = [{ include = "lc_dir", from = "src" }]
+
+[tool.poetry.scripts]
+lc-dir = "lc_dir.cli:main"
+
+[tool.poetry.dependencies]
+# Core functionality is in stdlib; llm-context is required in the target project
+python = ">=3.10"
+llm-context = ">=0.3.2,<0.4.0"
+colorama = "^0.4.6"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.5"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
