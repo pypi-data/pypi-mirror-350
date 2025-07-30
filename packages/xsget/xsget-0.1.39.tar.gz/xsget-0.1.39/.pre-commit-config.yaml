@@ -1,0 +1,118 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-ast
+      - id: check-builtin-literals
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: check-toml
+      - id: check-yaml
+      - id: debug-statements
+      - id: detect-private-key
+      - id: end-of-file-fixer
+        exclude: "locales/.*$"
+      - id: mixed-line-ending
+      - id: trailing-whitespace
+
+  - repo: https://github.com/abravalheri/validate-pyproject
+    rev: v0.24.1
+    hooks:
+      - id: validate-pyproject
+        name: validate pyproject
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.4.1
+    hooks:
+      - id: codespell
+        args:
+          - --ignore-words-list=astroid
+
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v4.0.0-alpha.8
+    hooks:
+      - id: prettier
+        exclude: (Pipfile.lock)
+
+  - repo: https://github.com/pycqa/isort
+    rev: 6.0.1
+    hooks:
+      - id: isort
+        additional_dependencies:
+          - isort[pyproject]
+        args:
+          - --profile=black
+          - --line-length=79
+          - --py=312
+
+  - repo: https://github.com/psf/black
+    rev: 25.1.0
+    hooks:
+      - id: black
+        args:
+          - --line-length=79
+          - --target-version=py39
+          - --target-version=py310
+          - --target-version=py311
+          - --target-version=py312
+
+  - repo: https://github.com/asottile/blacken-docs
+    rev: 1.19.1
+    hooks:
+      - id: blacken-docs
+        additional_dependencies:
+          - black==22.8.0
+
+  - repo: https://github.com/PyCQA/autoflake
+    rev: v2.3.1
+    hooks:
+      - id: autoflake
+        args:
+          - --in-place
+          - --remove-unused-variables
+          - --remove-all-unused-imports
+        language: python
+        files: \.py$
+
+  - repo: https://github.com/PyCQA/flake8
+    rev: 7.2.0
+    hooks:
+      - id: flake8
+        exclude: docs/
+        additional_dependencies:
+          - flake8-docstrings
+          - flake8-print
+          - flake8-pytest-style
+          - flake8-simplify
+        args:
+          - --docstring-convention=google
+          - --show-source
+          - --max-line-length=79
+          - --per-file-ignores=xsget/*:D208,E203,T201 tests/*:D100,D103,D104,E501
+
+  - repo: local
+    hooks:
+      - id: pylint
+        name: pylint
+        entry: pylint
+        language: system
+        exclude: docs/
+        types:
+          - python
+        args:
+          - xsget
+          - tests
+          - --py-version=3.9
+          - --disable=R0801,W0612,W0622,R0903,W0718
+          - --unsafe-load-any-extension=y
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.15.0
+    hooks:
+      - id: mypy
+        exclude: docs/
+        additional_dependencies:
+          - types-aiofiles
