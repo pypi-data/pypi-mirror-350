@@ -1,0 +1,56 @@
+[project]
+authors = [{name = "Reik Stiebeling", email = "reik.stiebeling@nwon.de"}]
+dependencies = []
+description = "Some Django Wizardry"
+license = "MIT"
+name = "nwon_django_toolbox"
+readme = "README.md"
+requires-python = ">=3.10,<4.0"
+version = "0.6.28"
+
+[tool.poetry]
+include = ["README.md", "**/*.pyi"]
+
+[tool.poetry.dependencies]
+# Django
+django = ">=3.0"
+django-json-widget = "^1.1.1"
+django-polymorphic = "^3.1.0"
+django-rest-polymorphic = "^0.1.9"
+
+# Swagger Documentation
+drf-spectacular = ">=0.22.0"
+drf-yasg = ">=1.20.0"
+
+# Helper Libraries
+jsonschema-to-openapi = "^0.2.1" 
+pillow = ">=11.0.0" # Image processing
+pydantic = ">=2.1.0" 
+pyhumps = "^3.0.2" # converting camelCase/PascalCase/snake_case
+
+# Our very own helper package 😎
+nwon-baseline = "^0.2.15"
+pytest-factoryboy = "^2.7.0"
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.2.0" 
+rope = "^1.7.0" # refactoring
+ruff = "^0.9.1" 
+
+# Tests
+pytest = "^7.2.2"
+
+# Stubs for typing
+celery-types = "^0.15.0"
+django-stubs = "^1.16.0"
+djangorestframework-stubs = "^1.10.0"
+types-freezegun = "^1.1.10"
+types-pillow = "^9.5.0.4"
+types-requests = "^2.28.11"
+
+[project.scripts]
+publish = "scripts.publish:publish"
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.0.0"]
