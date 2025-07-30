@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  spicy-cli:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./src:/app/src
+      - ./examples:/app/examples
+      - ./tests:/app/tests
+      - ./pyproject.toml:/app/pyproject.toml
+      - ./README.md:/app/README.md
+      - ${HOME}/.local/share/spicy-cli:/root/.local/share/spicy-cli
+    command: ["--help"]
+    environment:
+      - PYTHONPATH=/app
+      - SPICY_DEBUG=true

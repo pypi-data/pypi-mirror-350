@@ -1,0 +1,155 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "spicy-cli"
+version = "0.1.0"
+description = "A Python CLI with multiple commands"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [
+    {name = "Mike", email = "darkflib@gmail.com"},
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "typer>=0.9.0",
+    "rich>=13.7.0",
+    "pydantic>=2.5.0",
+    "python-dotenv>=1.0.0",
+    "httpx>=0.26.0",
+]
+
+[project.urls]
+homepage = "https://spicycentral.org/"
+repository = "https://github.com/darkflib/spicy-cli"
+documentation = "https://darkflib.github.io/spicy-cli/"
+issue-tracker = "https://github.com/darkflib/spicy-cli/issues"
+source = "https://github.com/darkflib/spicy-cli"
+changelog = "https://dev.spicycentral.org/spicy-cli/changelog"
+pypi = "https://pypi.org/spicycentral/spicy-cli/"
+
+[project.optional-dependencies]
+dev = [
+    "black>=23.12.0",
+    "isort>=5.13.0",
+    "mypy>=1.8.0",
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "ruff>=0.1.8",
+    "pylint>=3.0.2",
+    "pre-commit>=3.6.0",
+    "types-setuptools>=69.0.0",
+    "safety>=2.3.0",
+    "bandit>=1.7.0",
+]
+
+[project.scripts]
+spicy = "spicy_cli.main:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/spicy_cli"]
+
+[tool.black]
+line-length = 120
+target-version = ["py311"]
+
+[tool.isort]
+profile = "black"
+line_length = 120
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_functions = "test_*"
+addopts = "--cov=spicy_cli --cov-report=term-missing"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "N", "B", "C4", "W", "T20", "RET"]
+ignore = ["E203", "B008"]
+fixable = ["ALL"]
+unfixable = []
+
+[tool.ruff.lint.isort]
+known-first-party = ["spicy_cli"]
+known-third-party = ["typer", "rich", "pydantic", "httpx", "dotenv"]
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.pylint.master]
+py-version = "3.11"
+ignore = "CVS,.git,.venv,venv,.env,env,.pytest_cache,__pycache__,dist,build"
+jobs = 4
+limit-inference-results = 100
+persistent = true
+
+[tool.pylint.messages_control]
+disable = [
+    "missing-docstring",
+    "invalid-name",
+    "too-few-public-methods",
+    "broad-except",
+    "line-too-long",
+    "fixme",
+    "redefined-outer-name",
+    "too-many-arguments",
+    "too-many-locals",
+    "too-many-instance-attributes",
+    "arguments-differ",
+    "missing-function-docstring",
+    "too-many-branches",
+    "consider-using-f-string",
+    "unused-argument",
+]
+
+[tool.pylint.format]
+max-line-length = 120
+indent-string = "    "
+indent-after-paren = 4
+
+[tool.pylint.basic]
+good-names = "i,j,k,ex,Run,_,id,df"
+
+[tool.pylint.design]
+max-args = 8
+max-locals = 15
+max-returns = 6
+max-branches = 12
+max-statements = 50
+max-parents = 7
+max-attributes = 12
+min-public-methods = 1
+max-public-methods = 20
+
+[dependency-groups]
+dev = [
+    "black>=25.1.0",
+    "isort>=6.0.1",
+    "mypy>=1.15.0",
+    "pre-commit>=4.2.0",
+    "pylint>=3.3.7",
+    "pytest>=8.3.5",
+    "ruff>=0.11.11",
+]
