@@ -1,0 +1,96 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "uxly-1shot-client"
+version = "1.0.25"
+description = "Python client for the 1Shot API"
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+authors = [
+    { name = "UXly", email = "support@uxly.com" }
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+dependencies = [
+    "requests>=2.31.0",
+    "httpx>=0.24.0",
+    "pydantic>=2.0.0",
+    "cryptography>=41.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/uxly/1shot-clients"
+Documentation = "https://github.com/uxly/1shot-clients/tree/main/clients/python"
+Repository = "https://github.com/uxly/1shot-clients.git"
+Issues = "https://github.com/uxly/1shot-clients/issues"
+
+[tool.hatch.envs.default]
+type = "virtual"
+path = "./hatch/virtual/default"
+
+[tool.hatch.build]
+include = [
+    "src/uxly_1shot_client",
+    "README.md",
+    "LICENSE",
+]
+exclude = [
+    "**/__pycache__",
+    "**/*.pyc",
+    "**/*.pyo",
+    "**/*.pyd",
+    ".git",
+    ".gitignore",
+    ".pytest_cache",
+    ".ruff_cache",
+    ".coverage",
+    "htmlcov",
+    "dist",
+    "build",
+    "*.egg-info",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/uxly_1shot_client"]
+only-include = [
+    "src/uxly_1shot_client",
+    "README.md",
+    "LICENSE",
+]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py38"
+select = ["E", "F", "B", "I", "N", "UP", "PL", "RUF"]
+ignore = []
+
+[tool.ruff.isort]
+known-first-party = ["uxly_1shot_client"]
+
+[tool.ruff.pydantic]
+enabled = true
+
+[tool.ruff.pydantic-v2]
+enabled = true
+
+[tool.ruff.flake8-quotes]
+docstring-quotes = "double"
+inline-quotes = "single"
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]
+"tests/*" = ["S101"] 
