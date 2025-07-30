@@ -1,0 +1,232 @@
+Metadata-Version: 2.4
+Name: tihan_sdv
+Version: 0.1.4
+Summary: Software Defined Vehicle in python
+Author: Arindam Chakraborty
+License: Apache License 2.0
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Natural Language :: English
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: matplotlib
+Requires-Dist: numpy
+Requires-Dist: cryptography
+Requires-Dist: pyopenssl
+Requires-Dist: pytest
+Requires-Dist: pycryptodome
+Requires-Dist: boto3
+Dynamic: author
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: license
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# TiHAN SDV
+
+**TiHAN SDV** (Software Defined Vehicle) is a modular Python framework for simulating, visualizing, and experimenting with autonomous vehicle technologies. This module helps in providing tools for secure file-transfer, compression, and advanced sensor visualization.
+
+---
+
+## 🚗 Features
+
+- **Encryption Module**: Certificate Authority (CA) management, file/message encryption & decryption using OpenSSL.
+- **Compression Module**: (Pluggable, see source for details.)
+- **Visualizer Module**:
+  - **Ultrasonic Sensor Visualization**: Real-time, animated display of multi-sensor data.
+  - **Parking Assist Visualization**: Camera-based parking overlay, trajectory lines, and car position rendering.
+- **Extensible**: Easily add new sensors, visualizations, or algorithms.
+- **Tested**: Includes automated tests for core modules.
+
+---
+
+## 📦 Installation
+
+1. **Clone the repository:**
+   ```sh
+   git clone https://github.com/yourusername/tihan_sdv.git
+   cd tihan_sdv
+   ```
+
+2. **Install dependencies:**
+
+    ```sh
+    pip install -r requirements.txt
+    ```
+
+3. **Install as a package:(Optional-- as the package is already pushed in pypi)**
+
+    ```sh
+    pip install .
+    ```
+---
+
+## 🚀 Quick Start
+
+Ultrasonic Visualizer Example
+
+```python
+from tihan.sdv.visualizer.ultrasonic import UltrasonicVisualizer
+import random
+
+visualizer = UltrasonicVisualizer(
+    distance_1=76, distance_2=25, distance_3=35,
+    distance_4=random.randint(10, 50), distance_5=random.randint(10, 50),
+    distance_6=random.randint(10, 50), distance_7=random.randint(10, 50),
+    distance_8=random.randint(10, 50), distance_9=random.randint(10, 50),
+    distance_10=random.randint(10, 50), distance_11=random.randint(10, 50),
+    distance_12=random.randint(10, 50)
+)
+
+# Update with new data
+new_data = {f'distance_{i+1}': random.randint(10, 100) for i in range(12)}
+visualizer.set_distances(new_data)
+```
+---
+
+## Parking Assist Visualizer
+Run the parking assist visualizer:
+
+**Note**: Requires a webcam and calibration data.
+
+
+## 🛡️ Securetransfer Module 
+Demonstrates secure file transfer using a hybrid approach that combines RSA and AES encryption algorithms. The goal is to provide a modular and extensible framework for encrypting files, managing certificates, and ensuring secure communication.
+### Securetransfer Module Structure
+The project is organized into the following directories and files:
+
+- **securetransfer/**: Contains the main source code for the project.
+  - **ca.py**: Implements the `CertificateAuthority` class for managing certificates.
+  - **aes_utils.py**: Provides utility functions for AES encryption and decryption.
+  - **rsa_utils.py**: Contains utility functions for RSA encryption and decryption.
+  - **file_transfer.py**: Manages the workflow for secure file transfer.
+  - **config.py**: Holds configuration settings and constants.
+
+### Securetransfer Usage
+- To generate certificates, use the `CertificateAuthority` class in `ca.py`.
+- For AES encryption and decryption, utilize the functions in `aes_utils.py`.
+- For RSA operations, refer to the functions in `rsa_utils.py`.
+- The `file_transfer.py` module integrates these utilities to facilitate secure file transfers.
+
+Securetransfer Example
+
+```python
+import os
+from tihan.sdv.securetransfer.ca import CertificateAuthority
+from tihan.sdv.securetransfer.aes_utils import generate_aes_key, encrypt_data, decrypt_data
+from tihan.sdv.securetransfer.rsa_utils import generate_private_key, generate_public_key, encrypt_message, decrypt_message
+from tihan.sdv.securetransfer.file_transfer import FileTransfer
+
+# 1. Certificate Authority generates RSA keys for sender and receiver
+ca = CertificateAuthority("DemoCA")
+sender_private_key_file = ca.generate_private_key()
+sender_public_key_file = ca.generate_public_key(sender_private_key_file)
+receiver_private_key_file = ca.generate_private_key()
+receiver_public_key_file = ca.generate_public_key(receiver_private_key_file)
+
+# Load keys as strings
+with open(receiver_public_key_file, "r") as f:
+    receiver_public_key = f.read()
+with open(receiver_private_key_file, "r") as f:
+    receiver_private_key = f.read()
+
+# 2. Sender generates AES key and encrypts a file with it
+aes_key = generate_aes_key()
+test_data = b"This is a top secret file for transfer."
+iv, encrypted_file_data = encrypt_data(test_data, aes_key)
+
+# Save the encrypted file (simulate sending)
+with open("encrypted_file.bin", "wb") as f:
+    f.write(iv + encrypted_file_data)
+
+# 3. Sender secures the AES key using receiver's public RSA key
+encrypted_aes_key = encrypt_message(aes_key, receiver_public_key)
+with open("encrypted_aes_key.bin", "wb") as f:
+    f.write(encrypted_aes_key)
+
+print("Encrypted file and AES key sent to receiver.")
+
+# 4. Receiver decrypts the AES key and then the file
+with open("encrypted_aes_key.bin", "rb") as f:
+    encrypted_aes_key_received = f.read()
+decrypted_aes_key = decrypt_message(encrypted_aes_key_received, receiver_private_key)
+
+with open("encrypted_file.bin", "rb") as f:
+    iv_and_data = f.read()
+    iv_received = iv_and_data[:16]
+    encrypted_file_data_received = iv_and_data[16:]
+
+decrypted_data = decrypt_data(iv_received, encrypted_file_data_received, decrypted_aes_key)
+print("Decrypted file contents (receiver side):", decrypted_data.decode())
+```
+
+---
+
+## 🧪 Running Tests
+
+```sh
+# Set PYTHONPATH to project root if needed
+set PYTHONPATH=.
+pytest
+
+```
+---
+## 📁Project Structure
+
+```sh
+
+tihan_sdv/
+│
+├── tihan/
+│   └── sdv/
+│       ├── securetransfer/
+│       │   └── [ca.py]
+│       │   └── [aes_utils.py]
+│       │   └── [rsa_utils.py]
+│       │   └── [file_transfering.py]
+│       │   └── [config.py]
+│       ├── visualizer/
+│       │   ├── [ultrasonic.py]
+│       │   └── [parking_assist.py]
+│       └── compression/
+│           └── ...
+├── tests/
+│   ├── [test_ca.py]
+│   ├── [test_aes_utils.py]
+│   ├── [test_rsa_utils.py]
+│   ├── [test_file_transfer.py]
+│   ├── [test_ultrasonic.py]
+│   └── [test_park_assist.py]
+├── [requirements.txt]
+├── [setup.py]
+└── [README.md]
+```
+
+
+
+## 🤝 Contributing
+Contributions are welcome! Please open issues or pull requests for improvements, bug fixes, or new features.
+
+
+## 📜 License
+This project is licensed under the MIT License.
+
+
+## 👤 Author
+**Arindam Chakraborty** 
+
+
+## 🌟 Acknowledgements
+- TiHAN Foundation, IIT Hyderabad
+
+
+
+
