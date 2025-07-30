@@ -1,0 +1,16 @@
+stages:
+  - deploy
+deploy:
+  stage: deploy
+  script:
+    - python3 -m venv .venv
+    - source .venv/bin/activate
+    - pip install build twine
+    - python -m build
+    - python3 -m twine upload --verbose --repository pypi dist/* -u __token__ -p $RCCN_3_PYPI
+  only:
+    - main
+  before_script:
+    - apt-get update
+    - apt-get install -y python3 python3-pip
+    - apt install -y python3.11-venv
