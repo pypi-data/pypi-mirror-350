@@ -1,0 +1,83 @@
+Metadata-Version: 2.3
+Name: ursina-proteins
+Version: 1.1.0
+Summary: A Python package for rendering protein structures of PDB format in 3D using Ursina
+License: MIT License
+         
+         Copyright (c) 2025 Harrison T
+         
+         Permission is hereby granted, free of charge, to any person obtaining a copy
+         of this software and associated documentation files (the "Software"), to deal
+         in the Software without restriction, including without limitation the rights
+         to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+         copies of the Software, and to permit persons to whom the Software is
+         furnished to do so, subject to the following conditions:
+         
+         The above copyright notice and this permission notice shall be included in all
+         copies or substantial portions of the Software.
+         
+         THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+         IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+         FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+         AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+         LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+         OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+         SOFTWARE.
+Author: HarrisonTCodes
+Requires-Python: >=3.12
+Classifier: License :: Other/Proprietary License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Dist: biopython (>=1.85,<2.0)
+Requires-Dist: scipy (>=1.15.2,<2.0.0)
+Requires-Dist: ursina (>=7.0.0,<8.0.0)
+Project-URL: Homepage, https://github.com/HarrisonTCodes/ursina-proteins
+Project-URL: Source, https://github.com/HarrisonTCodes/ursina-proteins
+Description-Content-Type: text/markdown
+
+# Ursina Proteins
+
+![Python Version from PEP 621 TOML](https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2FHarrisonTCodes%2Fursina-proteins%2Frefs%2Fheads%2Fmain%2Fpyproject.toml)
+[![Poetry](https://img.shields.io/endpoint?url=https://python-poetry.org/badge/v0.json)](https://python-poetry.org/)
+![Pre-Commit Check](https://github.com/HarrisonTCodes/ursina-proteins/actions/workflows/pre-commit.yaml/badge.svg)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://pre-commit.com/)
+[![black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+A Python package for rendering protein structures of PDB format in 3D using [Ursina](https://www.ursinaengine.org/), as featured in [Ursina's sample projects](https://www.ursinaengine.org/samples.html).
+
+![Example proteins](./assets/example.png)
+
+## Installation
+The package is published on [PyPI](https://pypi.org/project/ursina-proteins/), and can be installed with `pip install ursina-proteins`.
+You can also clone the repo down and install dependencies with [Poetry](https://python-poetry.org/).
+```bash
+# Clone the repo
+git clone https://github.com/HarrisonTCodes/ursina-proteins.git
+cd ursina_proteins
+
+# Install with poetry
+poetry install
+```
+
+## Usage
+You can use the library in an existing Ursina project by importing the `Protein` class and creating an instance from a PDB file. You can render any proteins in the PDB file format, and can find many available for download at the [RCSB Protein Data Bank](https://www.rcsb.org/).
+```python
+from ursina_proteins.protein import Protein
+
+Protein("/path/to/file.pdb")
+```
+You can also test the library out by running [demo.py](https://github.com/HarrisonTCodes/ursina-proteins/blob/main/src/demo.py). This script renders a simple scene with an example protein ([insulin](https://www.rcsb.org/structure/3I40)).
+```bash
+poetry run python src/demo.py
+```
+
+## Contributions
+Contributions are welcome. Please use [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) and enable pre-commit hooks.
+```bash
+# Enable pre-commit hooks
+poetry run pre-commit install
+```
+
