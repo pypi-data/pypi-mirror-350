@@ -1,0 +1,61 @@
+[project]
+name = "task-commit"
+dynamic = ["version"]
+
+description = "Tool for formatting commits following the Conventional Commits pattern and recognizing Git Flow branches"
+authors = [
+    { name = "Walefy Lima", email = "walefylima@gmail.com" },
+    { name = "Joilton Silva", email = "dev.joiltonrsilva@proton.me" },
+]
+license = { file = "LICENSE" }
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = ["inquirer (>=3.4.0,<4.0.0)", "prompt-toolkit (>=3.0.50,<4.0.0)"]
+
+[project.urls]
+"homepage" = "https://python-poetry.org/"
+"repository" = "https://github.com/WalefyHG/Task_Commit"
+"documentation" = "https://python-poetry.org/docs/"
+"Bug Tracker" = "https://github.com/WalefyHG/Task_Commit/issues"
+
+
+[tool.poetry]
+version = "0.1.18" # base version
+
+classifiers = [
+    "Topic :: Software Development :: Build Tools",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+include = [{ path = "task_commit/locales/**/*", format = ["sdist", "wheel"] }]
+
+
+[tool.poetry.scripts]
+task_commit = "task_commit.main:main"
+task_commit_init = "task_commit.init:setup_git_hook"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.9.7"
+pytest = "^8.3.4"
+pre-commit = "^4.1.0"
+bandit = "^1.8.3"
+
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.lint]
+preview = true
+extend-select = ["E501"]
+select = ['I', 'F', 'E', 'W', 'PL', 'PT']
+
+[tool.ruff.format]
+preview = true
+quote-style = 'single'
+
+[tool.bandit]
+exclude = []
+skips = ["B404", "B603", "B607"]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
