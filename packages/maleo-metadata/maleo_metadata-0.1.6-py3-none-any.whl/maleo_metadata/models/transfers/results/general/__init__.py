@@ -1,0 +1,17 @@
+from __future__ import annotations
+from .blood_type import MaleoMetadataBloodTypeGeneralResultsTransfers
+from .gender import MaleoMetadataGenderGeneralResultsTransfers
+from .medical_role import MaleoMetadataMedicalRoleGeneralResultsTransfers
+from .organization_type import MaleoMetadataOrganizationTypeGeneralResultsTransfers
+from .service import MaleoMetadataServiceGeneralResultsTransfers
+from .system_role import MaleoMetadataSystemRoleGeneralResultsTransfers
+from .user_type import MaleoMetadataUserTypeGeneralResultsTransfers
+
+class MaleoMetadataGeneralResultsTransfers:
+    BloodType = MaleoMetadataBloodTypeGeneralResultsTransfers
+    Gender = MaleoMetadataGenderGeneralResultsTransfers
+    MedicalRole = MaleoMetadataMedicalRoleGeneralResultsTransfers
+    OrganizationType = MaleoMetadataOrganizationTypeGeneralResultsTransfers
+    Service = MaleoMetadataServiceGeneralResultsTransfers
+    SystemRole = MaleoMetadataSystemRoleGeneralResultsTransfers
+    UserType = MaleoMetadataUserTypeGeneralResultsTransfers
