@@ -1,0 +1,46 @@
+---
+description: Technical specifications for frame matching and mapping models in video overlay synchronization
+globs: src/vidkompy/core/frame_fingerprint.py,src/vidkompy/core/temporal_alignment.py,src/vidkompy/core/multi_resolution_aligner.py
+alwaysApply: false
+---
+
+
+# frame-matching-models
+
+## Frame Fingerprinting System
+Importance: 95
+
+Multi-algorithm frame fingerprinting combines four perceptual hashing approaches:
+- pHash: Analyzes frequency domain patterns using DCT transform
+- AverageHash: Computes brightness distribution signatures 
+- ColorMomentHash: Captures color distribution statistics
+- MarrHildrethHash: Edge detection for structural features
+
+Weighted fingerprint fusion adapts to content characteristics based on hash reliability scoring.
+
+Location: src/vidkompy/core/frame_fingerprint.py
+
+## Temporal Alignment Engine  
+Importance: 90
+
+Dynamic Time Warping (DTW) implementation specialized for video frame sequences:
+- Monotonic path constraints preserve temporal ordering
+- Sakoe-Chiba band optimization prevents extreme warping
+- Foreground-first principle maintains source frame integrity
+- Background frame warping adapts to match foreground timing
+
+Location: src/vidkompy/core/temporal_alignment.py
+
+## Multi-Resolution Matcher
+Importance: 85
+
+Progressive frame matching system using resolution pyramids:
+- Starts at 1/16 resolution for initial alignment
+- Refines matches through increasing resolution levels
+- Uses confidence thresholds at each level
+- Dynamic keyframe density based on FPS differences
+- Sliding window refinement for local optimization
+
+Location: src/vidkompy/core/multi_resolution_aligner.py
+
+$END$

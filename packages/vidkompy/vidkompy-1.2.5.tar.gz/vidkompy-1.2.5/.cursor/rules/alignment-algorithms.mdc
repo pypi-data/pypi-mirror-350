@@ -1,0 +1,71 @@
+---
+description: Technical specification for video frame alignment and synchronization algorithms
+globs: src/vidkompy/core/alignment_*.py,src/vidkompy/core/temporal_*.py,src/vidkompy/core/spatial_*.py
+alwaysApply: false
+---
+
+
+# alignment-algorithms
+
+## Frame Fingerprinting Engine
+**Importance: 95**
+
+Location: src/vidkompy/core/frame_fingerprint.py
+
+Multi-algorithm perceptual hashing system combining:
+- Frequency domain analysis (pHash)
+- Brightness distribution (AverageHash) 
+- Color statistics (ColorMomentHash)
+- Edge/shape detection (MarrHildrethHash)
+
+Custom weighting system adjusts hash influence based on content reliability.
+
+## Dynamic Time Warping Alignment
+**Importance: 98**
+
+Location: src/vidkompy/core/dtw_aligner.py
+
+Video-specific DTW implementation with:
+- Foreground frame preservation guarantee
+- Monotonic path constraints
+- Sakoe-Chiba band optimization
+- Adaptive window sizing
+- Bidirectional refinement passes
+
+## Spatial Position Detection
+**Importance: 92**
+
+Location: src/vidkompy/core/spatial_alignment.py
+
+Template matching specialized for video overlay:
+- Border region analysis
+- Masked correlation scoring
+- Resolution mismatch handling
+- Automatic scale factor detection
+- Position confidence metrics
+
+## Multi-Resolution Alignment
+**Importance: 88**
+
+Location: src/vidkompy/core/multi_resolution_aligner.py
+
+Hierarchical refinement process:
+- Progressive resolution scaling
+- Confidence thresholding at each level
+- Frame sequence validation
+- Drift correction mechanisms
+- Quality-driven fallback paths
+
+## Frame Mapping Engine
+**Importance: 85**
+
+Location: src/vidkompy/core/temporal_alignment.py
+
+Frame sequence mapping with:
+- Keyframe anchoring strategy
+- Dynamic density calculation
+- FPS difference compensation
+- Monotonicity enforcement
+- Global alignment optimization
+
+$END$
