@@ -1,0 +1,185 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "xboing"
+description = "XBoing - A classic breakout-style game modernized with Python and Pygame"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "X Consortium License"}
+authors = [
+    {name = "Original: Justin C. Kibell"},
+    {name = "Python port: XBoing-py Team"}
+]
+dependencies = [
+    "pygame",
+    "injector>=0.21.0",
+    "typing_extensions",
+]
+dynamic = ["version"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Games/Entertainment :: Arcade",
+    "Intended Audience :: End Users/Desktop",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/jmf-pobox/xboing-python"
+"Bug Tracker" = "https://github.com/jmf-pobox/xboing-python/issues"
+
+[project.scripts]
+xboing = "xboing.main:game_main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/xboing"]
+include-package-data = true
+
+[tool.hatch.build]
+exclude = [
+    ".gitignore",
+    "tests/",
+    "docs/",
+]
+
+# Asset inclusion is handled automatically by include-package-data in wheel target
+
+[tool.hatch.version]
+path = "src/xboing/__version__.py"
+
+[tool.hatch.envs.default]
+dependencies = [
+    # Testing
+    "pytest",
+    "pytest-cov",
+    # Code quality
+    "mypy",
+    "ruff",
+    "black",
+    "pylint",
+    # Dev tools
+    "pillow"
+]
+path = ".venv"
+
+[tool.hatch.envs.default.scripts]
+test = "pytest tests/unit"
+cov = "pytest --cov-report=term-missing --cov=src {args:tests/}"
+game = "python -m xboing"
+# Code quality commands
+lint = "ruff check src/ tests/"
+fmt = [
+    "black src/ tests/",
+    "ruff check --fix src/ tests/"
+]
+lint-fix = [
+    "black src/ tests/",
+    "ruff check --fix src/ tests/"
+]
+typecheck = "mypy src/"
+# Combined quality check
+check = [
+    "format-check",
+    "lint",
+    "typecheck"
+]
+# Combined fixing command
+fix = [
+    "format",
+    "lint-fix"
+]
+count-lines = "python -c \"import pathlib; print(sum(1 for f in pathlib.Path('src').rglob('*.py') for _ in open(f)))\""
+pylint = "python -m pylint --rcfile=.pylintrc src"
+# Run the game with coverage and then show the report
+cov-game = [
+  "coverage run --source=src -m xboing",
+  "coverage report -m"
+]
+cov-game-html = [
+  "coverage run --source=src -m xboing",
+  "coverage html"
+]
+format-check = "black --check src/ tests/"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+
+# Black configuration
+[tool.black]
+# Aligned with pylint and ruff: 88 chars, Python 3.8
+line-length = 88
+target-version = ["py38"]
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+# Ruff configuration
+[tool.ruff]
+# Aligned with pylint and black: 88 chars, Python 3.8
+line-length = 88
+target-version = "py38"
+
+[tool.ruff.lint]
+select = [
+    "E", "F", "B", "I", "UP", "PL", "D", "N", "C4", "SIM", "A", "C90",
+]
+ignore = [
+    "E203", "E501", "D203", "D213",
+    "D100", "D101", "D102", "D103", "D107", "D205", "D212",
+    "PLR2004", "C408",
+    "PLR0913", "PLR0912", "PLR0915", "C901", "PLR0911", "D417"
+]
+per-file-ignores = { "__init__.py" = ["F401"] }
+
+[tool.ruff.lint.isort]
+known-first-party = ["src"]
+combine-as-imports = true
+force-sort-within-sections = true
+
+# MyPy configuration 
+[tool.mypy]
+# Maximum strictness, check tests as strictly as source
+python_version = "3.8"
+strict = true
+warn_unused_ignores = true
+warn_return_any = true
+# No test ignore override: tests are checked strictly
+
+[tool.hatch.envs.publish]
+dependencies = [
+    "build",
+    "twine",
+]
+
+[tool.hatch.envs.publish.scripts]
+build = "python -m build"
+upload = "twine upload dist/*"
+check = "twine check dist/*"
+test-publish = [
+    "python -m build",
+    "twine check dist/*",
+    "twine upload --repository testpypi dist/*"
+]
+
+[tool.hatch.fmt]
+targets = ["src", "tests"]
+formatter = "black"
+linter = "isort"
