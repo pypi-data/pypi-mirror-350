@@ -1,0 +1,131 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pixano-inference"
+description = "Deploy inference models served for Artificial Intelligence solutions including but not limited to Pixano."
+keywords = [
+  "computer vision",
+  "inference",
+  "natural language processing",
+  "nlp",
+  "machine learning",
+  "deep learning",
+  "pytorch",
+]
+authors = [
+  { name="Julien Denize", email="julien.denize@cea.fr" },
+]
+requires-python = ">=3.10,<3.14"
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Console",
+  "Environment :: GPU",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Education",
+  "Intended Audience :: Information Technology",
+  "Intended Audience :: Science/Research",
+  "Natural Language :: English",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Topic :: Scientific/Engineering :: Image Processing",
+  "Topic :: Scientific/Engineering :: Information Analysis",
+  "Topic :: Software Development :: Libraries",
+]
+dynamic = ["version"]
+dependencies = [
+  "click >= 8.0.0",
+  "fastapi >= 0.100.0",
+  "httpx",
+  "numpy < 2.0.0",
+  "pydantic >= 2.0.0, < 3.0.0",
+  "pydantic_settings",
+  "Pillow >= 9.0.0",
+  "polars < 2.0.0",
+  "pycocotools",
+  "python-dotenv~=1.0.1",
+  "requests",
+  "uvicorn >= 0.31.0",
+  "celery[redis]==5.5.0rc4",
+  "redis[hiredis]~=5.2.1"
+]
+readme = "README.md"
+
+[project.optional-dependencies]
+data = [
+  "pylance >= 0.18.0, < 0.21.0",
+]
+docs=[
+  "mike >= 2.1.0, < 3.0.0",
+  "mkdocs >= 1.6.0, < 2.0.0",
+  "mkdocs-material >= 9.5.0, < 10.0.0",
+  "mkdocstrings-python >= 1.7.0",
+  "mkdocs-gen-files >= 0.5.0",
+  "mkdocs-literate-nav >= 0.6.0",
+  "mkdocs-redirects >= 1.2.1",
+]
+torch=[
+  "torch >= 2.3.0, < 3.0.0",
+]
+transformers=[
+  "torch >= 2.3.0, < 3.0.0",
+  "transformers >= 4.0.0, < 5.0.0",
+]
+test=[
+  "pytest",
+  "pytest.asyncio",
+  "pytest-cov",
+  "pytest-coverage",
+  "pytest_httpx",
+  "pytest-mock",
+  "responses",
+]
+vllm=[
+  "vllm",
+]
+
+[project.scripts]
+pixano-inference = "pixano_inference.main:serve"
+
+[project.urls]
+"Bug Tracker" = "http://is154588.intra.cea.fr/pixano/pixano-inference/issues"
+"Download" = "http://is154588.intra.cea.fr/pixano/pixano-inference"
+"Homepage" = "http://is154588.intra.cea.fr/pixano/pixano-inference"
+"Source Code" = "http://is154588.intra.cea.fr/pixano/pixano-inference"
+
+[tool.ruff]
+line-length = 119
+
+[tool.ruff.lint]
+ignore=["C901"]
+select = ["C", "E", "F", "I", "W", "D"]
+ignore-init-module-imports = true
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["D", "C408", "C901", "F401"]
+"docs/*" = ["D", "F401"]
+
+[tool.ruff.lint.isort]
+lines-after-imports = 2
+known-first-party = ["pixano_inference"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.hatch.version]
+path = "src/pixano_inference/__version__.py"
+
+[tool.hatch.metadata]
+allow-direct-references = true
