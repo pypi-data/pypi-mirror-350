@@ -1,0 +1,14 @@
+# dopynion
+
+Dominion in Python
+
+## TODO
+
+- faire un context manager pour déclencher les hooks et éliminer le jouer qui pose problème ? On a un problème, on s'arrête au premier joueur qui plante, alors qu'on doit appeler les hooks de tous les joueurs. Du coup faire une méthode pour éliminer un joueur (mettre un booléen, le prendre en compte dans game)
+- logger dans les last games les résultats des hooks
+- gérer les exceptions dans les hooks et la désactivation des joueurs (y compris dans other_players)
+- dans le site, mettre l'ordre des joueurs en fonction du score dans les anciennes parties
+- checker les identifiants de partie renvoyés par les API
+- s'assurer que les stratégies random fonctionnent avec des parties en simultané
+- afficher les noms des équipes sur le leader board et le graphe
+- purger les anciens games automatiquement sur le serveur
