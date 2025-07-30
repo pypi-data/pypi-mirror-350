@@ -1,0 +1,17 @@
+# flake8: noqa
+
+# import apis into api package
+from restpki_ng_python_client.api.authentication_api import AuthenticationApi
+from restpki_ng_python_client.api.cades_signature_api import CadesSignatureApi
+from restpki_ng_python_client.api.document_keys_api import DocumentKeysApi
+from restpki_ng_python_client.api.documents_api import DocumentsApi
+from restpki_ng_python_client.api.pades_signature_api import PadesSignatureApi
+from restpki_ng_python_client.api.pades_visual_positioning_presets_api import PadesVisualPositioningPresetsApi
+from restpki_ng_python_client.api.pdf_api import PdfApi
+from restpki_ng_python_client.api.signature_api import SignatureApi
+from restpki_ng_python_client.api.signature_inspection_api import SignatureInspectionApi
+from restpki_ng_python_client.api.signature_sessions_api import SignatureSessionsApi
+from restpki_ng_python_client.api.timestamp_api import TimestampApi
+from restpki_ng_python_client.api.upload_api import UploadApi
+from restpki_ng_python_client.api.xml_signature_api import XmlSignatureApi
+

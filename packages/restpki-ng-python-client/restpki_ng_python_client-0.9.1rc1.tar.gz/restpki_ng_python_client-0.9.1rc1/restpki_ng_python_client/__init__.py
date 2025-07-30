@@ -1,0 +1,202 @@
+# coding: utf-8
+
+# flake8: noqa
+
+"""
+    Rest PKI Core API
+
+    <b><i>Para Português, <a href=\"https://docs.lacunasoftware.com/pt-br/articles/rest-pki/core/integration/get-started\">clique aqui</a></i></b>  <p>   <a href=\"https://docs.lacunasoftware.com/en-us/articles/rest-pki/core/\">Rest PKI Core</a> is an upcoming version of   <a href=\"https://docs.lacunasoftware.com/en-us/articles/rest-pki/\">Rest PKI</a> that will have extended compatibility with environments and databases.  </p>  <p>   In addition to Windows Server (which is already supported by Rest PKI), Rest PKI Core will also run on <b>Linux</b> (Debian- and RedHat-based distributions)   and on <b>Docker</b>. As for database servers, in addition to SQL Server, <b>PostgreSQL</b> will also be supported.  </p>  <p>   <b>Before getting started, see the integration overview on the <a href=\"https://docs.lacunasoftware.com/en-us/articles/rest-pki/core/integration/\">Integration Guide</a></b>  </p>  <p>   For questions regarding the usage of this API, please reach us at <a href=\"https://lacuna.help/\">lacuna.help</a>  </p>    <h2>Parameters</h2>  <p>   You will need the following parameters:  </p>  <ul>   <li><b>Endpoint</b>: address of the Rest PKI Core instance that will be used</li>   <li><b>API Key</b>: authorization key for using the API</li>  </ul>  <p>   The <span class=\"model\">endpoint</span> must be prefixed to all relative URLs mentioned here. As for the <span class=\"model\">API Key</span>, see how to use it below.  </p>    <h2>Authentication</h2>  <p>   The API key must be sent on the <span class=\"model\">X-Api-Key</span> header on each request:  </p>    <!-- unfortunately, class \"example microlight\" doesn't seem to work here -->  <pre style=\"font-size: 12px; padding: 10px; border-radius: 4px; background: #41444e; font-weight: 600; color: #fff;\">  X-Api-Key: yourapp|xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  </pre>    <h2>HTTP Codes</h2>    <p>   The APIs will return the following HTTP codes:  </p>    <table>   <thead>    <tr>     <th>Code</th>     <th>Description</th>    </tr>   </thead>   <tbody>    <tr>     <td><strong class=\"model-title\">200 (OK)</strong></td>     <td>Request processed successfully. The response is different for each API, please refer to the operation's documentation</td>    </tr>    <tr>     <td><strong class=\"model-title\">400 (Bad Request)</strong></td>     <td>Syntax error. For instance, when a required field was not provided</td>    </tr>    <tr>     <td><strong class=\"model-title\">401 (Unauthorized)</strong></td>     <td>API key not provided or invalid</td>    </tr>    <tr>     <td><strong class=\"model-title\">403 (Forbidden)</strong></td>     <td>API key is valid, but the application has insufficient permissions to complete the requested operation</td>    </tr>    <tr>     <td><strong class=\"model-title\">422 (Unprocessable Entity)</strong></td>     <td>API error. The response body is an <a href=\"#model-ErrorModelV2\" class=\"model\">ErrorModelV2</a>    </tr>    <tr>     <td><strong class=\"model-title\">500 (Internal Server Error)</strong></td>     <td>An unexpected error occurred. The <span class=\"model\">exceptionCode</span> contained on the response body may be of help for our support team during diagnostic.</td>    </tr>   </tbody>  </table>    <h3>Error Codes</h3>    <p>   Some of the error codes returned in the <span class=\"model\">code</span> field of an <a href=\"#model-ErrorModelV2\" class=\"model\">ErrorModelV2</a>   (body of responses with HTTP status code 422) are provided below*:  </p>    <table>   <thead>    <tr>     <th>Code</th>     <th>Description</th>    </tr>   </thead>   <tbody>    <tr>     <td class=\"model\">DocumentNotFound</td>     <td>A referenced document was not found (check the document ID)</td>    </tr>    <tr>     <td class=\"model\">SecurityContextNotFound</td>     <td>A referenced security context was not found (check the security context ID)</td>    </tr>    <tr>     <td class=\"model\">SignatureSessionNotFound</td>     <td>A referenced signature session was not found (check the signature session ID)</td>    </tr>    <tr>     <td class=\"model\">BadSignatureSessionOperation</td>     <td>The operation is invalid for the current signature session or document status. For instance, trying to await the session's completion if it is still <span class=\"model\">Pending</span> results in this error</td>    </tr>    <tr>     <td class=\"model\">BackgroundProcessing</td>     <td>The operation cannot be completed at this time because the resource is being processed in background</td>    </tr>    <tr>     <td class=\"model\">SignatureSessionTokenRequired</td>     <td>The signature session token was not passed on the <span class=\"model\">X-Signature-Session-Token</span> request header</td>    </tr>    <tr>     <td class=\"model\">BadSignatureSessionToken</td>     <td>An invalid signature session token was passed on the <span class=\"model\">X-Signature-Session-Token</span> request header. Check your application for possible corruption of the session token, which may contain characters <span class=\"code\">-</span> (hyphen) and <span class=\"code\">_</span> (underscore)</td>    </tr>    <tr>     <td class=\"model\">ExpiredSignatureSessionToken</td>     <td>An expired signature session token was passed on the <span class=\"model\">X-Signature-Session-Token</span> request header. Signature session tokens are normally valid for 4 hours.</td>    </tr>   </tbody>  </table>    <p style=\"font-size: 0.9em\">   *The codes shown above are the most common error codes. Nonetheless, this list is not comprehensive. New codes may be added anytime without previous warning.  </p>    <h2>Culture / Internationalization (i18n)</h2>  <p>The <span class=\"model\">Accept-Language</span> request header is observed by this API. The following cultures are supported:</p>  <ul>   <li><span class=\"code\">en-US</span> (or simply <span class=\"code\">en</span>)</li>   <li><span class=\"code\">pt-BR</span> (or simply <span class=\"code\">pt</span>)</li>  </ul>  <p><i>Notice: error messages are not affected by this header and therefore should not be displayed to users, being better suited for logging.</i></p>  
+
+    The version of the OpenAPI document: 2.2.2
+    Generated by OpenAPI Generator (https://openapi-generator.tech)
+
+    Do not edit the class manually.
+"""  # noqa: E501
+
+
+__version__ = "0.9.1-rc1"
+
+# import apis into sdk package
+from restpki_ng_python_client.api.authentication_api import AuthenticationApi
+from restpki_ng_python_client.api.cades_signature_api import CadesSignatureApi
+from restpki_ng_python_client.api.document_keys_api import DocumentKeysApi
+from restpki_ng_python_client.api.documents_api import DocumentsApi
+from restpki_ng_python_client.api.pades_signature_api import PadesSignatureApi
+from restpki_ng_python_client.api.pades_visual_positioning_presets_api import PadesVisualPositioningPresetsApi
+from restpki_ng_python_client.api.pdf_api import PdfApi
+from restpki_ng_python_client.api.signature_api import SignatureApi
+from restpki_ng_python_client.api.signature_inspection_api import SignatureInspectionApi
+from restpki_ng_python_client.api.signature_sessions_api import SignatureSessionsApi
+from restpki_ng_python_client.api.timestamp_api import TimestampApi
+from restpki_ng_python_client.api.upload_api import UploadApi
+from restpki_ng_python_client.api.xml_signature_api import XmlSignatureApi
+
+# import ApiClient
+from restpki_ng_python_client.api_response import ApiResponse
+from restpki_ng_python_client.api_client import ApiClient
+from restpki_ng_python_client.configuration import Configuration
+from restpki_ng_python_client.exceptions import OpenApiException
+from restpki_ng_python_client.exceptions import ApiTypeError
+from restpki_ng_python_client.exceptions import ApiValueError
+from restpki_ng_python_client.exceptions import ApiKeyError
+from restpki_ng_python_client.exceptions import ApiAttributeError
+from restpki_ng_python_client.exceptions import ApiException
+
+# import models into sdk package
+from restpki_ng_python_client.models.allocate_document_key_batch_request import AllocateDocumentKeyBatchRequest
+from restpki_ng_python_client.models.allocate_document_key_request import AllocateDocumentKeyRequest
+from restpki_ng_python_client.models.attribute_certificate_model import AttributeCertificateModel
+from restpki_ng_python_client.models.audit_package_options import AuditPackageOptions
+from restpki_ng_python_client.models.authentication_failures import AuthenticationFailures
+from restpki_ng_python_client.models.authentication_get_response import AuthenticationGetResponse
+from restpki_ng_python_client.models.authentication_post_request import AuthenticationPostRequest
+from restpki_ng_python_client.models.authentication_post_response import AuthenticationPostResponse
+from restpki_ng_python_client.models.authentications_post_request import AuthenticationsPostRequest
+from restpki_ng_python_client.models.authentications_post_response import AuthenticationsPostResponse
+from restpki_ng_python_client.models.authentications_post_signed_bytes_request import AuthenticationsPostSignedBytesRequest
+from restpki_ng_python_client.models.authentications_post_signed_bytes_response import AuthenticationsPostSignedBytesResponse
+from restpki_ng_python_client.models.auto_positioning_horizontal_directions import AutoPositioningHorizontalDirections
+from restpki_ng_python_client.models.auto_positioning_vertical_directions import AutoPositioningVerticalDirections
+from restpki_ng_python_client.models.blockchains import Blockchains
+from restpki_ng_python_client.models.cades_signature_model import CadesSignatureModel
+from restpki_ng_python_client.models.cades_signature_post_request_v1 import CadesSignaturePostRequestV1
+from restpki_ng_python_client.models.cades_signature_post_request_v2 import CadesSignaturePostRequestV2
+from restpki_ng_python_client.models.cades_signature_post_request_v3 import CadesSignaturePostRequestV3
+from restpki_ng_python_client.models.cades_signature_post_response import CadesSignaturePostResponse
+from restpki_ng_python_client.models.cades_signature_post_signed_bytes_request import CadesSignaturePostSignedBytesRequest
+from restpki_ng_python_client.models.cades_signature_post_signed_bytes_response import CadesSignaturePostSignedBytesResponse
+from restpki_ng_python_client.models.cades_signer_model import CadesSignerModel
+from restpki_ng_python_client.models.cades_timestamp_model import CadesTimestampModel
+from restpki_ng_python_client.models.certificate_model import CertificateModel
+from restpki_ng_python_client.models.certificate_reference_model import CertificateReferenceModel
+from restpki_ng_python_client.models.certificate_requirement import CertificateRequirement
+from restpki_ng_python_client.models.certificate_requirement_types import CertificateRequirementTypes
+from restpki_ng_python_client.models.certificate_summary import CertificateSummary
+from restpki_ng_python_client.models.certified_attribute_model import CertifiedAttributeModel
+from restpki_ng_python_client.models.certified_attribute_types import CertifiedAttributeTypes
+from restpki_ng_python_client.models.cms_content_types import CmsContentTypes
+from restpki_ng_python_client.models.cms_signature_options import CmsSignatureOptions
+from restpki_ng_python_client.models.color_model import ColorModel
+from restpki_ng_python_client.models.commitment_type_model import CommitmentTypeModel
+from restpki_ng_python_client.models.complete_authentication_request import CompleteAuthenticationRequest
+from restpki_ng_python_client.models.complete_authentication_response import CompleteAuthenticationResponse
+from restpki_ng_python_client.models.complete_signature_request import CompleteSignatureRequest
+from restpki_ng_python_client.models.complete_signature_request_v2 import CompleteSignatureRequestV2
+from restpki_ng_python_client.models.create_signature_session_request import CreateSignatureSessionRequest
+from restpki_ng_python_client.models.create_signature_session_response import CreateSignatureSessionResponse
+from restpki_ng_python_client.models.digest_algorithm_and_value_model import DigestAlgorithmAndValueModel
+from restpki_ng_python_client.models.digest_algorithms import DigestAlgorithms
+from restpki_ng_python_client.models.document_file_model import DocumentFileModel
+from restpki_ng_python_client.models.document_key_model import DocumentKeyModel
+from restpki_ng_python_client.models.document_key_query_response import DocumentKeyQueryResponse
+from restpki_ng_python_client.models.document_key_summary import DocumentKeySummary
+from restpki_ng_python_client.models.document_model import DocumentModel
+from restpki_ng_python_client.models.document_query_response import DocumentQueryResponse
+from restpki_ng_python_client.models.document_status import DocumentStatus
+from restpki_ng_python_client.models.document_summary import DocumentSummary
+from restpki_ng_python_client.models.error_model_v2 import ErrorModelV2
+from restpki_ng_python_client.models.file_model import FileModel
+from restpki_ng_python_client.models.file_reference_model import FileReferenceModel
+from restpki_ng_python_client.models.full_xml_signature_post_request import FullXmlSignaturePostRequest
+from restpki_ng_python_client.models.general_name_choices import GeneralNameChoices
+from restpki_ng_python_client.models.general_name_model import GeneralNameModel
+from restpki_ng_python_client.models.holder_types import HolderTypes
+from restpki_ng_python_client.models.inspect_signature_failures import InspectSignatureFailures
+from restpki_ng_python_client.models.inspect_signature_request import InspectSignatureRequest
+from restpki_ng_python_client.models.inspect_signature_response import InspectSignatureResponse
+from restpki_ng_python_client.models.multipart_upload_begin_response import MultipartUploadBeginResponse
+from restpki_ng_python_client.models.multipart_upload_end_request import MultipartUploadEndRequest
+from restpki_ng_python_client.models.name_model import NameModel
+from restpki_ng_python_client.models.namespace_model import NamespaceModel
+from restpki_ng_python_client.models.open_cades_signature_request_model import OpenCadesSignatureRequestModel
+from restpki_ng_python_client.models.open_signature_request_model import OpenSignatureRequestModel
+from restpki_ng_python_client.models.open_xml_signature_request_model import OpenXmlSignatureRequestModel
+from restpki_ng_python_client.models.other_name_model import OtherNameModel
+from restpki_ng_python_client.models.pades_certification_level import PadesCertificationLevel
+from restpki_ng_python_client.models.pades_horizontal_align import PadesHorizontalAlign
+from restpki_ng_python_client.models.pades_measurement_units import PadesMeasurementUnits
+from restpki_ng_python_client.models.pades_page_optimization_model import PadesPageOptimizationModel
+from restpki_ng_python_client.models.pades_signature_model import PadesSignatureModel
+from restpki_ng_python_client.models.pades_signature_post_request_v1 import PadesSignaturePostRequestV1
+from restpki_ng_python_client.models.pades_signature_post_request_v2 import PadesSignaturePostRequestV2
+from restpki_ng_python_client.models.pades_signature_post_response import PadesSignaturePostResponse
+from restpki_ng_python_client.models.pades_signature_post_signed_bytes_request import PadesSignaturePostSignedBytesRequest
+from restpki_ng_python_client.models.pades_signature_post_signed_bytes_response import PadesSignaturePostSignedBytesResponse
+from restpki_ng_python_client.models.pades_signer_model import PadesSignerModel
+from restpki_ng_python_client.models.pades_size_model import PadesSizeModel
+from restpki_ng_python_client.models.pades_text_horizontal_align import PadesTextHorizontalAlign
+from restpki_ng_python_client.models.pades_vertical_align import PadesVerticalAlign
+from restpki_ng_python_client.models.pades_visual_auto_positioning_model import PadesVisualAutoPositioningModel
+from restpki_ng_python_client.models.pades_visual_image_model import PadesVisualImageModel
+from restpki_ng_python_client.models.pades_visual_positioning_model import PadesVisualPositioningModel
+from restpki_ng_python_client.models.pades_visual_rectangle_model import PadesVisualRectangleModel
+from restpki_ng_python_client.models.pades_visual_representation_model import PadesVisualRepresentationModel
+from restpki_ng_python_client.models.pades_visual_text_model import PadesVisualTextModel
+from restpki_ng_python_client.models.page_orientations import PageOrientations
+from restpki_ng_python_client.models.paper_sizes import PaperSizes
+from restpki_ng_python_client.models.pdf_add_marks_request import PdfAddMarksRequest
+from restpki_ng_python_client.models.pdf_add_marks_response import PdfAddMarksResponse
+from restpki_ng_python_client.models.pdf_mark_element_model import PdfMarkElementModel
+from restpki_ng_python_client.models.pdf_mark_element_type import PdfMarkElementType
+from restpki_ng_python_client.models.pdf_mark_image_model import PdfMarkImageModel
+from restpki_ng_python_client.models.pdf_mark_model import PdfMarkModel
+from restpki_ng_python_client.models.pdf_mark_page_options import PdfMarkPageOptions
+from restpki_ng_python_client.models.pdf_signature_options import PdfSignatureOptions
+from restpki_ng_python_client.models.pdf_text_section_model import PdfTextSectionModel
+from restpki_ng_python_client.models.pdf_text_style import PdfTextStyle
+from restpki_ng_python_client.models.pki_brazil_certificate_model import PkiBrazilCertificateModel
+from restpki_ng_python_client.models.pki_brazil_certificate_types import PkiBrazilCertificateTypes
+from restpki_ng_python_client.models.pki_italy_certificate_model import PkiItalyCertificateModel
+from restpki_ng_python_client.models.pki_italy_certificate_types import PkiItalyCertificateTypes
+from restpki_ng_python_client.models.prepare_authentication_request import PrepareAuthenticationRequest
+from restpki_ng_python_client.models.prepare_authentication_response import PrepareAuthenticationResponse
+from restpki_ng_python_client.models.prepare_signature_failures import PrepareSignatureFailures
+from restpki_ng_python_client.models.prepare_signature_request import PrepareSignatureRequest
+from restpki_ng_python_client.models.prepare_signature_response import PrepareSignatureResponse
+from restpki_ng_python_client.models.resource_content_or_reference import ResourceContentOrReference
+from restpki_ng_python_client.models.role_attribute_model import RoleAttributeModel
+from restpki_ng_python_client.models.session_completion_status import SessionCompletionStatus
+from restpki_ng_python_client.models.signature_algorithm_and_value_model import SignatureAlgorithmAndValueModel
+from restpki_ng_python_client.models.signature_algorithm_identifier import SignatureAlgorithmIdentifier
+from restpki_ng_python_client.models.signature_algorithms import SignatureAlgorithms
+from restpki_ng_python_client.models.signature_b_stamp_model import SignatureBStampModel
+from restpki_ng_python_client.models.signature_policy_identifier_model import SignaturePolicyIdentifierModel
+from restpki_ng_python_client.models.signature_result_model import SignatureResultModel
+from restpki_ng_python_client.models.signature_session_document_data import SignatureSessionDocumentData
+from restpki_ng_python_client.models.signature_session_document_summary import SignatureSessionDocumentSummary
+from restpki_ng_python_client.models.signature_session_model import SignatureSessionModel
+from restpki_ng_python_client.models.signature_session_status import SignatureSessionStatus
+from restpki_ng_python_client.models.signature_types import SignatureTypes
+from restpki_ng_python_client.models.signer_b_stamp_model import SignerBStampModel
+from restpki_ng_python_client.models.signer_model import SignerModel
+from restpki_ng_python_client.models.signer_summary import SignerSummary
+from restpki_ng_python_client.models.stamp_pdf_request import StampPdfRequest
+from restpki_ng_python_client.models.stamp_pdf_response import StampPdfResponse
+from restpki_ng_python_client.models.timestamp_issue_response import TimestampIssueResponse
+from restpki_ng_python_client.models.validation_item_model import ValidationItemModel
+from restpki_ng_python_client.models.validation_item_types import ValidationItemTypes
+from restpki_ng_python_client.models.validation_results_model import ValidationResultsModel
+from restpki_ng_python_client.models.webhook_event_model import WebhookEventModel
+from restpki_ng_python_client.models.webhook_event_types import WebhookEventTypes
+from restpki_ng_python_client.models.xml_attribute_model import XmlAttributeModel
+from restpki_ng_python_client.models.xml_element_location_model import XmlElementLocationModel
+from restpki_ng_python_client.models.xml_element_model import XmlElementModel
+from restpki_ng_python_client.models.xml_element_signature_post_request import XmlElementSignaturePostRequest
+from restpki_ng_python_client.models.xml_id_attribute_model import XmlIdAttributeModel
+from restpki_ng_python_client.models.xml_id_resolution_table_model import XmlIdResolutionTableModel
+from restpki_ng_python_client.models.xml_insertion_options import XmlInsertionOptions
+from restpki_ng_python_client.models.xml_node_name_model import XmlNodeNameModel
+from restpki_ng_python_client.models.xml_signature_model import XmlSignatureModel
+from restpki_ng_python_client.models.xml_signature_options import XmlSignatureOptions
+from restpki_ng_python_client.models.xml_signature_post_response import XmlSignaturePostResponse
+from restpki_ng_python_client.models.xml_signature_post_signed_bytes_request import XmlSignaturePostSignedBytesRequest
+from restpki_ng_python_client.models.xml_signature_post_signed_bytes_response import XmlSignaturePostSignedBytesResponse
+from restpki_ng_python_client.models.xml_signature_response_model import XmlSignatureResponseModel
+from restpki_ng_python_client.models.xml_signature_types import XmlSignatureTypes
+from restpki_ng_python_client.models.xml_signed_entity_types import XmlSignedEntityTypes
+from restpki_ng_python_client.standard_signature_policies import StandardSignaturePolicies
+from restpki_ng_python_client.utils import Utils
+from restpki_ng_python_client.file_utils import FileUtils
+from restpki_ng_python_client.models.pdf_container_definition import PdfContainerDefinition
+from restpki_ng_python_client.models.pdf_helper import PdfHelper
+from restpki_ng_python_client.restpki_ng_client import RestPkiClient
