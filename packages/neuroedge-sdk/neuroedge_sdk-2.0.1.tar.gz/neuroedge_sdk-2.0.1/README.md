@@ -1,0 +1,2 @@
+# MLflow Logger
+This module enables logging of parameters, metrics, and artifacts to MLflow using the Tracking Log Model SDK. It also provides functionality to persist models to Amazon S3 based on specific message types.
