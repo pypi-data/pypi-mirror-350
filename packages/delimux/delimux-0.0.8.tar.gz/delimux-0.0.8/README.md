@@ -1,0 +1,70 @@
+# README
+
+[![PyPI](https://img.shields.io/pypi/v/delimux.svg)](https://pypi.org/project/delimux/)
+
+The `delimux` module provides a streamlined communication with the socket server running on the delimux Raspberry Pi. On the delimux Raspberry Pi, a [MUX36S08](https://www.ti.com/lit/gpn/mux36s08) analog multiplexer is connected via custom designed hat. It allows the user to route an incoming electrical signal in the range between 0V and 40V onto one of seven lines in a patch cable. The raw [communication protocol](#raw-protoco) is shown below. The `delimux` module wraps this into a set of convenience function. 
+
+## Installation
+
+`pip install delimux`
+
+## How to use
+
+The usage should be self-explanatory:
+```python
+import delimux
+mx=delimux.DeliMUX()
+help(mx)
+class DeliMUX(builtins.object)
+ |  DeliMUX(host='delimux-cmtqo', port=60606, verbose=False)
+ |  
+ |  Client for controlling a MUX36S08 device via socket protocol.
+ |  
+ |  Server is expected to run on delimux-cmtqo:60606
+ |  and respond to newline-terminated commands like SET, GET, ENABLE, etc.
+ |  
+ |  Methods defined here:
+ |  
+ |  __init__(self, host='delimux-cmtqo', port=60606, verbose=False)
+ |      Initialize self.  See help(type(self)) for accurate signature.
+ |  
+ |  disable(self)
+ |  
+ |  enable(self)
+ |  
+ |  getChannel(self) -> int
+ |  
+ |  getLine(self) -> int
+ |  
+ |  getState(self) -> list
+ |  
+ |  setChannel(self, n: int)
+ |      Sets the channel 
+ |      
+ |      Channel refers to the channel of the MUX36S08
+ |  
+ |  setLine(self, n: int)
+ |      Sets the line 
+ |      
+ |      Line refers to the patch-cable line, line 8 is GND
+ |  
+```
+
+## Raw protocol
+
+Via a direct socket connection the full protocol can be exploited:
+
+Commands are terminated with `\r\n` or `\n`.
+
+
+| Command     | Description                                       | Response Format             |
+| ----------- | ------------------------------------------------- | --------------------------- |
+| `SET <n>`   | Sets the MUX channel to `n` (0–7) and enables it  | `OK` or `ERROR <message>`   |
+| `GET`       | Returns full state as 3 address bits + enable bit | `STATE <A2> <A1> <A0> <EN>` |
+| `CHANNEL`   | Returns the currently selected channel number     | `CHANNEL <n>`               |
+| `ENABLE`    | Enables the MUX                                   | `OK`                        |
+| `DISABLE`   | Disables the MUX                                  | `OK`                        |
+| *(unknown)* | Any invalid or unsupported command                | `ERROR Unknown command`     |
+
+---
+
