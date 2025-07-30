@@ -1,0 +1,62 @@
+Metadata-Version: 2.4
+Name: daraja-gateway
+Version: 0.1.0
+Summary: A Python library for integrating with Safaricom Daraja API
+Author: vincent mwangi kienje
+Author-email: Vincent Mwangi Kienje <vynoroidtechnologies@gmail.com>
+License: MIT
+Project-URL: Homepage, https://github.com/yourusername/daraja-gateway
+Project-URL: Repository, https://github.com/yourusername/daraja-gateway
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: Flask
+Requires-Dist: requests
+Dynamic: author
+Dynamic: requires-python
+
+# Daraja Gateway
+
+This library provides integration with the Safaricom Daraja API using Flask.
+
+## Features
+- OAuth token management
+- C2B, B2C, B2B, STK Push
+- Webhook validation and confirmation
+
+## Installation
+```bash
+pip install .
+```
+
+## Environment Configuration
+Create a `.env` file in the root of your project:
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` with your credentials:
+
+```env
+CONSUMER_KEY=your_consumer_key
+CONSUMER_SECRET=your_consumer_secret
+BASE_URL=https://sandbox.safaricom.co.ke
+SHORT_CODE=600000
+PASSKEY=your_passkey
+INITIATOR_NAME=testapi
+SECURITY_CREDENTIAL=your_encoded_security_credential
+CALLBACK_URL=https://yourdomain.com/webhook/confirmation
+VALIDATION_URL=https://yourdomain.com/webhook/validation
+PARTY_B=600000
+```
+
+## Usage
+```python
+from daraja_gateway.client import DarajaClient
+client = DarajaClient()
+response = client.stk_push()
+print(response)
+```
