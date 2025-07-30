@@ -1,0 +1,86 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "midas-mosaik"
+dynamic = ["version"]
+description = "MultI-DomAin test Scenario for smart grid co-simulation."
+readme = "README.md"
+requires-python = ">=3.8"
+keywords = []
+authors = [
+    { name = "Stephan Balduin", email = "stephan.balduin@offis.de"}
+]
+dependencies = [
+    "appdirs",
+    "click",
+    "mosaik>=3.5.0",
+    "pandas",
+    "ruamel.yaml"
+]
+
+[project.optional-dependencies]
+base = [
+    "midas-store>=2.1.0a1",
+    "midas-powergrid>=2.1.0a1",
+    "midas-sndata>=2.0.0",
+    "midas-comdata>=2.0.0",
+    "midas-weather>=2.1.0a1",
+    "pysimmods>=0.20.5",
+]
+bh = [
+    "midas-store>=2.1.0a1",
+    "midas-powergrid>=2.1.0a1",
+    "midas-dlpdata>=2.0.0",
+    "midas-pwdata>=2.0.0",
+]
+
+
+full = [
+    "midas-mosaik[base]",
+    "midas-timesim>=2.0.0",
+    "midas-dlpdata>=2.0.0",
+    "midas-pwdata>=2.0.0",
+]
+
+arl = [
+    "midas-mosaik[full]",
+    "midas-palaestrai>=3.5.4",
+    "palaestrai-mosaik>=3.5.4",
+]
+
+dev = [
+    "build",
+    "twine",
+    "pytest",
+    "coverage",
+    "ruff",
+]
+
+[project.scripts]
+midasctl = "midas.api.midasctl:main"
+
+
+[project.urls]
+Documentation = "https://midas-mosaik.gitlab.io/midas"
+
+[tool.hatch.version]
+path = "src/midas/__init__.py"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/midas"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+ignore = ["F401"]
+
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.format]
+docstring-code-format = true
+skip-magic-trailing-comma = true
