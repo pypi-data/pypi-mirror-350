@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+
+<html>
+
+<style>
+    @page {
+        size: 120pt 60pt;
+        margin: 0;
+    }
+
+    div {
+        margin: 0;
+    }
+
+</style>
+
+<body id="body" style="padding: 0px; margin: 0px; width: 120pt; height:60pt; color:#1e1e1e; ">
+    <div id="content" style="font-size: 20pt;">        
+        TEXT
+</div>
+</body>
+
+<script>
+window.addEventListener("load",
+        (ev) => {
+
+            content = document.getElementById("content");
+            body = document.getElementById("body");
+
+            cheight = content.scrollHeight;
+            bheight = body.clientHeight;
+
+            console.log(cheight)
+            console.log(bheight)
+
+            cfsize = content.style.fontSize
+            console.log("cfsize")
+            console.log(cfsize)
+            fontsize = parseFloat(cfsize.substring(0, cfsize.length - 1))
+
+            console.log(fontsize)
+
+            while(cheight > bheight &&  fontsize > 0){
+                console.log("testing size")
+                console.log(fontsize)
+                content.style.fontSize = fontsize.toString() + "pt"
+                cheight = content.scrollHeight;
+                fontsize = fontsize - 0.5
+            }
+        } 
+    )
+
+
+</script>
+
+</html>

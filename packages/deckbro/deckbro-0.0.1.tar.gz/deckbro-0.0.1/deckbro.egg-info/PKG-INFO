@@ -1,0 +1,121 @@
+Metadata-Version: 2.4
+Name: deckbro
+Version: 0.0.1
+Summary: Generate playing cards deck from python config and SVG templates.
+Author-email: Félix Bertoni <felix.bertoni987@gmail.com>
+License-Expression: CECILL-2.1
+Project-URL: Homepage, https://gitlab.com/feloxyde/deckbro
+Keywords: deck,card,svg
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Classifier: Development Status :: 3 - Alpha
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: license-file
+
+## deckbro
+
+deckbro is a python library to generate cards deck using SVG templates. 
+
+*/!\ This software has not been toroughly tested. Please carefully check its outputs before sending them for expensive operations as quality printing.*
+
+**Key features :**
+- Use SVG files as templates 
+- Declarative semantics, for ease of use
+- Parametric and extendable model through Python
+- Generates SVG for cards, as well as pdf sheets grouping cards ready for double-sided printing
+- Any card and sheet format
+
+**Caveats :**
+- May not handle advanced SVG constructs. Should be improved over time.
+- Sheet layout not automated. Should be improved over time.
+- Still lacking some flexibility in design possibilities. Should be improved over time.
+- While it should be possible to make it work, at least partially, on any system, it is only designed and tested for Linux. No plan to improve it by myself unless a lot of people request it. MR are welcome, feel free to message me before working to confirm your design is fine.
+
+## Install 
+
+You can either install sources or download from PyPI.
+
+```pip install deckbro```
+
+In addition, depending on functionnalities you use, you will need to have :
+
+- Inkscape
+- pdfunite
+- Chromium
+- pdftocairo (usually provided along Poppler, itself provided alongside Inkscape)
+
+## Quick example 
+
+First, let's define a very simple svg template, named `template.svg` :
+
+```xml
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="48" viewBox="0 0 96 48" fill="none">
+<rect width="48" height="48" rx="0" fill="#efefef"/>
+<rect width="48" height="48" x="48" fill="#fefefe"/>
+  <text x="48" y="24" font-family="monospace" fill="#000000" text-anchor="middle" dominant-baseline="central">TITLE</text>
+</svg>
+```
+
+Then, we can define our deck using deckbro, in a `deck.py` file, not using any factorization mechanism to keep things simple:
+
+```py
+from deckbro.deck import Card, Deck
+from deckbro.svg import SVGFile, StrSub
+from deckbro.render import render
+
+# A face is simply composition of SVG nodes. 
+# Through using a function, we can build a parametric model
+def face(left_color : str, right_color: str, title : str) -> StrSub:
+
+    return StrSub( #StrSub allows to perform string substitution on a SVG given a parameter
+        SVGFile("template.svg"), #Take svg from a template.svg file
+        {
+            "#efefef" : left_color, #efefef will be replaced by left_color's value everywhere in the svg loaded from template
+            "#fefefe" : right_color,
+            "TITLE" : title
+        }
+    )
+
+# A card has an identifier (used for file generation)
+# and two faces
+# as well as an optional count if multiple copies are needed in the deck.
+Card("pink_green",
+    face("#e362a0", "#62e378", "Pink Green"),
+    face("#b8b8b8", "#bdbdbd", "PG Back")
+)
+
+#Cards are automatically added to the deck, not need to do it by hand.
+Card("blue_red",
+    face("#6293e3", "#e37562", "Blue Red"),
+    face("#b8b8b8", "#bdbdbd", "BR Back")
+)
+
+#Export deck to files
+render()
+```
+
+Run the script. It will (if everything goes right) create a `build` directory containing a PDF document grouping all cards front and backs, ready for double-sided printing, called [gen_sheets.pdf](examples/quick/expected/gen_sheets.pdf). And also : 
+
+- SVG file for each card
+- SVG file per-sheet
+- PDF file per-sheet
+
+See content of [examples/quick/expected](examples/quick/expected/) for details.
+
+## Quick doc
+
+A card face is a tree of SVGNode
+
+A `SVGNode` is an operation on an SVG tree, usually applying to the values from its children nodes.
+
+Currently provided nodes are :
+
+- `SVGFile` loading SVG from a file
+- `StrSub` replacing substrings in a SVG Element string
+- `Group` assembling multiple SVG Elements into one
+- `Transform` applying a transformation on an Element
+- `RFText` replacing a rectangle by a text, and making the text fit the rectangle's area by shrinking the font if necessary. 
+
+Please see code for documentation and other examples for more info.
