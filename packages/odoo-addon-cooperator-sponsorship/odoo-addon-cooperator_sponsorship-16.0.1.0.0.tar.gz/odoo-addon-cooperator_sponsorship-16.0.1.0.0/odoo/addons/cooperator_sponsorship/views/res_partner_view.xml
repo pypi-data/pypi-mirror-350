@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <record id="res_partner_form_sponsorship" model="ir.ui.view">
+    <field name="name">res.partner.form</field>
+    <field name="model">res.partner</field>
+    <field name="inherit_id" ref="account.view_partner_property_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//page[@name='accounting']" position="after">
+        <page string="Sponsees" name="sponsees" groups="cooperator.cooperator_group_user" attrs="{'invisible': [('member','!=',True),('coop_candidate','!=',True)]}">
+          <field name="sponsee_ids">
+            <tree string="Sponsees" create="false" delete="false" edit="false">
+              <field name="firstname"/>
+              <field name="lastname"/>
+              <field name="lang"/>
+              <field name="vat"/>
+              <field name="phone" class="o_force_ltr"/>
+              <field name="email"/>
+            </tree>
+          </field>
+        </page>
+      </xpath>
+    </field>
+  </record>
+  <record id="res_partner_form_cooperator" model="ir.ui.view">
+    <field name="name">res.partner.form.cooperator</field>
+    <field name="model">res.partner</field>
+    <field name="inherit_id" ref="cooperator.view_partner_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="/form/sheet/group[1]/group[@name='approvals']" position="before">
+        <group name="coop_sponsorship" groups="cooperator.cooperator_group_user" attrs="{'invisible': [('coop_sponsee','=',False)]}">
+          <field name="coop_sponsee"/>
+          <field name="sponsor_id"/>
+        </group>
+      </xpath>
+      <xpath expr="//field[@name='cooperator_register_number']" position="after">
+        <field name="sponsorship_hash" attrs="{'invisible': [('member', '=', False),('coop_candidate', '=', False)]}" />
+      </xpath>
+    </field>
+  </record>
+  <record id="view_res_partner_filter_coop" model="ir.ui.view">
+    <field name="name">res.partner.select.coop_sponsorship</field>
+    <field name="model">res.partner</field>
+    <field name="inherit_id" ref="cooperator.view_res_partner_filter"/>
+    <field name="arch" type="xml">
+      <filter name="cooperator_candidate" position="after">
+        <filter string="Cooperator Sponsees" name="sponsee" domain="[('coop_sponsee','=',1)]" help="Partners with a sponsor"/>
+      </filter>
+    </field>
+  </record>
+</odoo>

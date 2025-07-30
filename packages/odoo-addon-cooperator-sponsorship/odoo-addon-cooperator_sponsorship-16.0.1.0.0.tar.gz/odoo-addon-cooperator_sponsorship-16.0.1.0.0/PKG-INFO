@@ -1,0 +1,134 @@
+Metadata-Version: 1.2
+Name: odoo-addon-cooperator_sponsorship
+Version: 16.0.1.0.0
+Summary: Odoo Sponsorship module for cooperator addon.
+Home-page: https://coopdevs.org
+Author: Coopdevs Treball SCCL
+License: AGPL-3
+Description: ########################
+         Cooperator Sponsorship
+        ########################
+        
+        ..
+        
+        .. |badge1| image:: https://img.shields.io/badge/maturity-Beta-yellow.png
+           :alt: Beta
+           :target: https://odoo-community.org/page/development-status
+        
+        .. |badge2| image:: https://img.shields.io/badge/licence-AGPL--3-blue.png
+           :alt: License: AGPL-3
+           :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
+        
+        .. |badge3| image:: https://img.shields.io/badge/gitlab-coopdevs%2Fodoo--somconnexio-lightgray.png?logo=gitlab
+           :alt: coopdevs/som-connexio/odoo-somconnexio
+           :target: https://git.coopdevs.org/coopdevs/som-connexio/odoo-somconnexio
+        
+        .. |badge4| image:: https://img.shields.io/badge/weblate-Translate%20me-F47D42.png
+           :alt: Translate me on Weblate
+           :target: https://translation.odoo-community.org/projects/odoo-somconnexio-12-0/odoo-somconnexio-12-0-cooperator_sponsorship
+        
+        |badge1| |badge2| |badge3| |badge4|
+        
+        Integrate sponsored partners to the cooperative management.
+        
+        Sponsees do not need to aport capital share to become a cooperative
+        partner if a cooperative member sponsors them.
+        
+        **Table of contents**
+        
+        .. contents::
+           :local:
+        
+        ***************
+         Configuration
+        ***************
+        
+        On the company, set a default maximum sponsees number per partner.
+        
+        *******
+         Usage
+        *******
+        
+        Sponsorship relation
+        ====================
+        
+        Cooperative members can sponsor new partners, being linked by a one2many
+        relation, being the maximum number of sponsees customizable by company.
+        They also have a sponsorship_hash, a code to identify them as sponsors,
+        along with their vat number, through the API.
+        
+        A wizard allows every sponsee to aport capital share and become members
+        themselves
+        
+        Sponsorship API
+        ===============
+        
+        Variables to fill in these example curls:
+        
+        -  `API_KEY`: authorized key from the odoo server's API-KEY
+        -  `ODOO_URL`: target ODOO server's URL
+        
+        Check partner sponsorship data
+        ------------------------------
+        
+        .. code:: sh
+        
+           curl -X GET \
+            -H  "accept: application/json" \
+            -H  "api-key: $API_KEY" \
+            -H  "Content-Type: application/json" \
+            "$ODOO_URL/api/partner/sponsees?ref=1234"
+        
+        Where `ref` is the partner's ref code. The returned data includes:
+        
+        -  `sponsorship_code`: code hash
+        -  `sponsees_max`: Maximum number of sponsees per partner
+        -  `sponsees_number`: Number of partner's sponsees
+        -  `sponsees`: List of names and surnames of partner's sponsees
+        
+        Check if partner can sponsor
+        ----------------------------
+        
+        .. code:: sh
+        
+           curl -X GET \
+            -H  "accept: application/json" \
+            -H  "api-key: $API_KEY" \
+            -H  "Content-Type: application/json" \
+            "$ODOO_URL/api/partner/check_sponsor?vat=1234567A&sponsor_code=888B"
+        
+        Required input params:
+        
+        -  `vat`: partner's vat
+        -  `sponsor_code`: Maximum number of sponsees per partner
+        
+        Retured data:
+        
+        -  `result`: "allowed" or "not_allowed"
+        -  `message`: "ok" or explanation for now allowed result
+        
+        The usage is full integrated with the ORM of Odoo using listeners.
+        
+        More info about the listeners:
+        https://odoo-connector.com/api/api_components.html#listeners
+        
+        **************
+         Contributors
+        **************
+        
+        -  ``Som Connexió SCCL <https://somconnexio.coop/>``\_\_
+        
+           -  Gerard Funonsas gerard.funosas@somconnexio.coop
+        
+        -  ``Coopdevs Treball SCCL <https://coopdevs.coop/>``\_\_
+        
+           -  Daniel Palomar daniel.palomar@coopdevs.org
+           -  Cesar Lopez cesar.lopez@coopdevs.org
+           -  Carla Berenguer carla.berenguer@coopdevs.org
+        
+Platform: UNKNOWN
+Classifier: Programming Language :: Python
+Classifier: Framework :: Odoo
+Classifier: Framework :: Odoo :: 16.0
+Classifier: License :: OSI Approved :: GNU Affero General Public License v3
+Requires-Python: >=3.10
