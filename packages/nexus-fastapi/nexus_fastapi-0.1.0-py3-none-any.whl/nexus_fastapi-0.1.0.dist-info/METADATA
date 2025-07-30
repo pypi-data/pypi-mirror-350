@@ -1,0 +1,151 @@
+Metadata-Version: 2.4
+Name: nexus-fastapi
+Version: 0.1.0
+Summary: A FastAPI project generator and framework
+Project-URL: Homepage, https://github.com/meetvelani/nexus-fastapi
+Project-URL: Documentation, https://github.com/meetvelani/nexus-fastapi#readme
+Project-URL: Repository, https://github.com/meetvelani/nexus-fastapi.git
+Project-URL: Issues, https://github.com/meetvelani/nexus-fastapi/issues
+Author-email: Meetkumar velani <meetvelani2728@gmail.com>, Axay Patoliya <axaypatoliya2222@gmail.com>
+License-File: LICENSE
+Classifier: Development Status :: 3 - Alpha
+Classifier: Framework :: FastAPI
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.8
+Requires-Dist: alembic>=1.12.1
+Requires-Dist: bcrypt>=4.0.1
+Requires-Dist: black>=23.11.0
+Requires-Dist: email-validator>=2.1.0
+Requires-Dist: fastapi>=0.104.1
+Requires-Dist: flake8>=6.1.0
+Requires-Dist: httpx>=0.25.1
+Requires-Dist: isort>=5.12.0
+Requires-Dist: passlib>=1.7.4
+Requires-Dist: pydantic-settings>=2.1.0
+Requires-Dist: pydantic>=2.5.0
+Requires-Dist: pytest>=7.4.3
+Requires-Dist: python-dotenv>=1.0.0
+Requires-Dist: python-jose[cryptography]>=3.3.0
+Requires-Dist: python-multipart>=0.0.6
+Requires-Dist: sqlalchemy>=2.0.23
+Requires-Dist: uvicorn[standard]>=0.24.0
+Description-Content-Type: text/markdown
+
+# Nexus-FastAPI
+
+A powerful FastAPI project generator and framework that helps you create scalable and maintainable FastAPI applications.
+
+## Features
+
+- Automatic project scaffolding
+- Database integration with SQLAlchemy
+- Automatic table creation
+- CRUD operations generation
+- API documentation with Swagger UI
+- Environment configuration
+- Modular application structure
+
+## Installation
+
+```bash
+pip install nexus-fastapi
+```
+
+## Usage
+
+### Create a new project with default settings:
+
+```bash
+nexus-fastapi create_project my_api
+```
+
+### Create a project with custom configuration:
+
+```bash
+nexus-fastapi create_project my_api --config config.json
+```
+
+### Sample Configuration File (config.json):
+
+```json
+{
+  "project_name": "my_fastapi_app",
+  "description": "A sample FastAPI application",
+  "version": "1.0.0",
+  "apps": [
+    {
+      "name": "users",
+      "models": [
+        {
+          "name": "User",
+          "fields": [
+            {
+              "name": "email",
+              "type": "string",
+              "nullable": false
+            },
+            {
+              "name": "username",
+              "type": "string",
+              "nullable": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Running the Generated Project
+
+1. Navigate to your project directory:
+
+   ```bash
+   cd my_api
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. Run the application:
+
+   ```bash
+   uvicorn main:app --reload --host 0.0.0.0 --port 8000
+   ```
+
+4. Access the API documentation:
+   - Swagger UI: http://localhost:8000/docs
+   - ReDoc: http://localhost:8000/redoc
+
+## Project Structure
+
+```
+my_api/
+├── apps/
+│   └── users/
+│       ├── __init__.py
+│       ├── models.py
+│       ├── schemas.py
+│       ├── crud.py
+│       ├── service.py
+│       └── routes.py
+├── core/
+│   ├── config/
+│   │   └── settings.py
+│   └── database/
+│       └── base.py
+├── tests/
+├── .env
+├── main.py
+└── requirements.txt
+```
+
+## License
+
+MIT License
