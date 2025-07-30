@@ -1,0 +1,120 @@
+groups:
+- neurodata_type_def: LatentSpaceSeries
+  neurodata_type_inc: TimeSeries
+  doc: An extension of TimeSeries to include VAME latent space data.
+  quantity: '?'
+  datasets:
+  - name: data
+    dtype: float32
+    shape:
+    - null
+    - null
+    doc: Latent-space vectors over time.
+- neurodata_type_def: MotifSeries
+  neurodata_type_inc: TimeSeries
+  doc: An extension of TimeSeries to include VAME motif data.
+  quantity: '?'
+  attributes:
+  - name: algorithm
+    dtype: text
+    default_value: n/a
+    doc: The algorithm used for motif detection.
+    required: false
+  datasets:
+  - name: data
+    dtype: int32
+    shape:
+    - null
+    doc: Motif IDs over time.
+  links:
+  - name: latent_space_series
+    target_type: LatentSpaceSeries
+    doc: The latent space series associated with this motif series.
+    quantity: '?'
+- neurodata_type_def: CommunitySeries
+  neurodata_type_inc: TimeSeries
+  doc: An extension of TimeSeries to include VAME community data.
+  quantity: '?'
+  attributes:
+  - name: algorithm
+    dtype: text
+    default_value: n/a
+    doc: The algorithm used for community clustering.
+    required: false
+  datasets:
+  - name: data
+    dtype: int32
+    shape:
+    - null
+    doc: Community IDs over time.
+  links:
+  - name: motif_series
+    target_type: MotifSeries
+    doc: The motif series associated with this community series.
+    quantity: '?'
+- neurodata_type_def: VAMEProject
+  neurodata_type_inc: NWBDataInterface
+  doc: A group to hold VAME project data.
+  attributes:
+  - name: vame_config
+    dtype: text
+    doc: The VAME config, as a stringfied JSON.
+  groups:
+  - neurodata_type_def: LatentSpaceSeries
+    neurodata_type_inc: TimeSeries
+    doc: An extension of TimeSeries to include VAME latent space data.
+    quantity: '?'
+    datasets:
+    - name: data
+      dtype: float32
+      shape:
+      - null
+      - null
+      doc: Latent-space vectors over time.
+  - neurodata_type_def: MotifSeries
+    neurodata_type_inc: TimeSeries
+    doc: An extension of TimeSeries to include VAME motif data.
+    quantity: '?'
+    attributes:
+    - name: algorithm
+      dtype: text
+      default_value: n/a
+      doc: The algorithm used for motif detection.
+      required: false
+    datasets:
+    - name: data
+      dtype: int32
+      shape:
+      - null
+      doc: Motif IDs over time.
+    links:
+    - name: latent_space_series
+      target_type: LatentSpaceSeries
+      doc: The latent space series associated with this motif series.
+      quantity: '?'
+  - neurodata_type_def: CommunitySeries
+    neurodata_type_inc: TimeSeries
+    doc: An extension of TimeSeries to include VAME community data.
+    quantity: '?'
+    attributes:
+    - name: algorithm
+      dtype: text
+      default_value: n/a
+      doc: The algorithm used for community clustering.
+      required: false
+    datasets:
+    - name: data
+      dtype: int32
+      shape:
+      - null
+      doc: Community IDs over time.
+    links:
+    - name: motif_series
+      target_type: MotifSeries
+      doc: The motif series associated with this community series.
+      quantity: '?'
+  links:
+  - name: pose_estimation
+    target_type: PoseEstimation
+    doc: The pose estimation data used to generate the VAME data.
+    quantity: '?'
