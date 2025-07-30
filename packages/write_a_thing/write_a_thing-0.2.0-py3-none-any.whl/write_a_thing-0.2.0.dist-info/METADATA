@@ -1,0 +1,175 @@
+Metadata-Version: 2.4
+Name: write_a_thing
+Version: 0.2.0
+Summary: Use LLMs to help you write your things.
+Project-URL: Repository, https://github.com/alexandrainst/write_a_thing
+Project-URL: Issues, https://github.com/alexandrainst/write_a_thing/issues
+Author-email: Dan Saattrup Nielsen <dan.nielsen@alexandra.dk>
+Maintainer-email: Dan Saattrup Nielsen <dan.nielsen@alexandra.dk>
+License: MIT License
+        
+        Copyright (c) 2025 The Alexandra Institute
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy of this
+        software and associated documentation files (the "Software"), to deal in the Software
+        without restriction, including without limitation the rights to use, copy, modify,
+        merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+        permit persons to whom the Software is furnished to do so, subject to the following
+        conditions:
+        
+        The above copyright notice and this permission notice shall be included in all copies
+        or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+        INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+        PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+        HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+        CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+        THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+License-File: LICENSE
+Requires-Python: <4.0,>=3.11
+Requires-Dist: click>=8.2.1
+Requires-Dist: docling>=2.31.1
+Requires-Dist: litellm>=1.71.1
+Requires-Dist: pypandoc>=1.15
+Requires-Dist: smolagents>=1.16.1
+Description-Content-Type: text/markdown
+
+<a href="https://github.com/alexandrainst/write_a_thing">
+<img
+    src="https://filedn.com/lRBwPhPxgV74tO0rDoe8SpH/alexandra/alexandra-logo.jpeg"
+	width="239"
+	height="175"
+	align="right"
+/>
+</a>
+
+# Write A Thing
+
+Use LLMs to help you write your things.
+
+______________________________________________________________________
+[![Code Coverage](https://img.shields.io/badge/Coverage-0%25-red.svg)](https://github.com/alexandrainst/write_a_thing/tree/main/tests)
+[![Documentation](https://img.shields.io/badge/docs-passing-green)](https://alexandrainst.github.io/write_a_thing)
+[![License](https://img.shields.io/github/license/alexandrainst/write_a_thing)](https://github.com/alexandrainst/write_a_thing/blob/main/LICENSE)
+[![LastCommit](https://img.shields.io/github/last-commit/alexandrainst/write_a_thing)](https://github.com/alexandrainst/write_a_thing/commits/main)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg)](https://github.com/alexandrainst/write_a_thing/blob/main/CODE_OF_CONDUCT.md)
+
+Developer:
+
+- Dan Saattrup Nielsen (dan.nielsen@alexandra.dk)
+
+
+## Setup
+
+### Installation
+
+1. Run `make install`, which sets up a virtual environment and all Python dependencies therein.
+2. Run `source .venv/bin/activate` to activate the virtual environment.
+3. (Optional) Run `make install-pre-commit`, which installs pre-commit hooks for linting, formatting and type checking.
+
+
+### Adding and Removing Packages
+
+To install new PyPI packages, run:
+```
+uv add <package-name>
+```
+
+To remove them again, run:
+```
+uv remove <package-name>
+```
+
+To show all installed packages, run:
+```
+uv pip list
+```
+
+
+## All Built-in Commands
+
+The project includes the following convenience commands:
+
+- `make install`: Install the project and its dependencies in a virtual environment.
+- `make install-pre-commit`: Install pre-commit hooks for linting, formatting and type checking.
+- `make lint`: Lint the code using `ruff`.
+- `make format`: Format the code using `ruff`.
+- `make type-check`: Type check the code using `mypy`.
+- `make test`: Run tests using `pytest` and update the coverage badge in the readme.
+- `make docker`: Build a Docker image and run the Docker container.
+- `make docs`: View documentation locally in a browser.
+- `make publish-docs`: Publish documentation to GitHub Pages.
+- `make tree`: Show the project structure as a tree.
+
+
+## A Word on Modules and Scripts
+In the `src` directory there are two subdirectories, `write_a_thing`
+and `scripts`. This is a brief explanation of the differences between the two.
+
+### Modules
+All Python files in the `write_a_thing` directory are _modules_
+internal to the project package. Examples here could be a general data loading script,
+a definition of a model, or a training function. Think of modules as all the building
+blocks of a project.
+
+When a module is importing functions/classes from other modules we use the _relative
+import_ notation - here's an example:
+
+```
+from .other_module import some_function
+```
+
+### Scripts
+Python files in the `scripts` folder are scripts, which are short code snippets that
+are _external_ to the project package, and which is meant to actually run the code. As
+such, _only_ scripts will be called from the terminal. An analogy here is that the
+internal `numpy` code are all modules, but the Python code you write where you import
+some `numpy` functions and actually run them, that a script.
+
+When importing module functions/classes when you're in a script, you do it like you
+would normally import from any other package:
+
+```
+from write_a_thing import some_function
+```
+
+Note that this is also how we import functions/classes in tests, since each test Python
+file is also a Python script, rather than a module.
+
+
+## Features
+
+### Docker Setup
+
+A Dockerfile is included in the new repositories, which by default runs
+`src/scripts/main.py`. You can build the Docker image and run the Docker container by
+running `make docker`.
+
+### Automatic Documentation
+
+Run `make docs` to create the documentation in the `docs` folder, which is based on
+your docstrings in your code. You can publish this documentation to Github Pages by
+running `make publish-docs`. To add more manual documentation pages, simply add more
+Markdown files to the `docs` directory; this will automatically be included in the
+documentation.
+
+### Automatic Test Coverage Calculation
+
+Run `make test` to test your code, which also updates the "coverage badge" in the
+README, showing you how much of your code base that is currently being tested.
+
+### Continuous Integration
+
+Github CI pipelines are included in the repo, running all the tests in the `tests`
+directory, as well as building online documentation, if Github Pages has been enabled
+for the repository (can be enabled on Github in the repository settings).
+
+### Code Spaces
+
+Code Spaces is a new feature on Github, that allows you to develop on a project
+completely in the cloud, without having to do any local setup at all. This repo comes
+included with a configuration file for running code spaces on Github. When hosted on
+`alexandrainst/write_a_thing` then simply press the `<> Code` button
+and add a code space to get started, which will open a VSCode window directly in your
+browser.
