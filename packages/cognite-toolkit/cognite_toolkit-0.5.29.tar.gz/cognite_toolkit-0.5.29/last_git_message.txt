@@ -1,0 +1,33 @@
+[prep CDF-24745, CDF-24554, CDF-24555] 👷Prepare dump refactoring. (#1588)
+
+# Description
+
+No change to the code that impacts the user. This is a prep commit to
+reduce an upcoming refactoring of the dump method. The dump method takes
+assets/time series and write them from CDF to csv/parquet. Then, it
+needs to have the metadata keys of all assets/timeseries to know the
+column headers.
+
+This PR changes the metadata_key_counts to filter for data_set_id and
+rootId such that it can be used in the dump method that needs this
+filtering.
+
+By accident found a bug. Forgot to set the limit properly. 
+
+## Changelog
+
+- [x] Patch
+- [ ] Minor
+- [ ] Skip
+
+## cdf
+
+### Improved
+
+- [alpha] The command `cdf profile asset-centric` now checks the
+metadata of all assets, events, timeseries, sequences, and files, not
+just the first 1000.
+
+## templates
+
+No changes.
