@@ -1,0 +1,98 @@
+Metadata-Version: 2.1
+Name: ez-prompt
+Version: 0.1.3
+Summary: An easy-to-use library for creating and seinding prompts to LLMs.
+Author: Connor Skelland
+Author-email: 34070858+Connor56@users.noreply.github.com
+Requires-Python: >=3.11,<4.0
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Dist: jinja2 (>=3.1.6,<4.0.0)
+Requires-Dist: numpy (>=2.2.4,<3.0.0)
+Requires-Dist: openai (>=1.72.0,<2.0.0)
+Requires-Dist: pandas (>=2.2.3,<3.0.0)
+Requires-Dist: platformdirs (>=4.3.7,<5.0.0)
+Requires-Dist: pytest (>=8.3.5,<9.0.0)
+Requires-Dist: pytest-asyncio (>=0.26.0,<0.27.0)
+Requires-Dist: pytest-snapshot (>=0.9.0,<0.10.0)
+Requires-Dist: python-dotenv (>=1.1.0,<2.0.0)
+Requires-Dist: requests (>=2.32.3,<3.0.0)
+Requires-Dist: tiktoken (>=0.9.0,<0.10.0)
+Description-Content-Type: text/markdown
+
+# ezprompt
+
+An easy-to-use library for creating and sending prompts to various LLMs.
+
+## Features (Planned)
+
+- Simple prompt definition using Markdown and Jinja templating.
+- Automatic input validation against prompt templates.
+- Model selection from a wide range of providers.
+- Context length validation with suggestions for suitable models.
+- Cost estimation before sending prompts.
+- Up-to-date model information (context size, pricing).
+- Asynchronous support for concurrent prompt execution.
+
+## Installation
+
+```bash
+pip install ez-prompt
+```
+
+## Basic Usage
+
+See the supported models by running:
+
+```python
+from ez_prompt import list_models
+
+list_models()
+```
+
+Then, create a template, choose your model, provide an API key, format and send. Sending is asynchronous by default.
+
+```python
+import asyncio
+from ez_prompt import Prompt
+
+async def main():
+    # Define a prompt template (details TBD)
+    prompt_template = """
+    Translate the following text from {{ source_lang }} to {{ target_lang }}:
+
+    {{ text }}
+    """
+
+    # Initialize the prompt
+    my_prompt = Prompt(
+        template=prompt_template,
+        model="gpt-3.5-turbo",
+        api_key="your_api_key"
+    )
+
+    # Format the prompt with inputs
+    my_prompt.format(
+        inputs={"source_lang": "English", "target_lang": "French", "text": "Hello, world!"},
+    )
+
+    # Send the prompt
+    response = await my_prompt.send()
+    print(f"Model response: {response}")
+
+if __name__ == "__main__":
+    # Required environment variables (e.g., OPENAI_API_KEY)
+    # Set them according to the model provider you use.
+    asyncio.run(main())
+
+```
+
+## Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request.
+
+## License
+
+This project is licensed under the MIT License.
+
