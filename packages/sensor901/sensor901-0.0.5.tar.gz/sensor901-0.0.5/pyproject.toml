@@ -1,0 +1,42 @@
+[tool.poetry]
+name = "sensor901"
+version = "0.0.5"
+description = ""
+authors = ["Sheng Fan <fredtools999@gmail.com>"]
+license = "unlicense"
+readme = "README.md"
+packages = [{ include = "sensor901" }]
+
+[tool.poetry.group.dev.dependencies]
+coverage = { extras = ["toml"], version = "^7.6.11" }
+loguru = "^0.7.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[[tool.poetry.source]]
+name = "tsinghua"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+
+[tool.coverage.run]
+source = ["sensor901"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+exclude_also = [
+    # Don't complain about missing debug-only code:
+    "if self\\.debug",
+    # Don't complain if tests don't hit defensive assertion code:
+    "raise AssertionError",
+    "raise NotImplementedError",
+    # Don't complain if non-runnable code isn't run:
+    "if 0:",
+    "if __name__ == .__main__.:",
+    # Don't complain about abstract methods, they aren't run:
+    "@(abc\\.)?abstractmethod",
+]
