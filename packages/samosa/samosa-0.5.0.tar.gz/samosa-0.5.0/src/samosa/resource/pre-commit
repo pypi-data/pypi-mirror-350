@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Copyright (c) 2018, Aaron Bull Schaefer <aaron@elasticdog.com>
+# SPDX-License-Identifier: MIT
+
+current_branch=$(git symbolic-ref -q HEAD | sed -e 's|^refs/heads/||')
+
+if [[ $current_branch = 'main' ]]; then
+        echo 'Direct commits to the main branch are not allowed.'
+        exit 1
+fi
