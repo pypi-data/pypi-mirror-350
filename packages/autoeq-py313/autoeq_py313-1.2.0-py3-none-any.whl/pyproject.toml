@@ -1,0 +1,55 @@
+[build-system]
+requires = [
+    "hatchling",
+]
+build-backend = "hatchling.build"
+
+[project]
+name = "autoeq-py313"
+version = "1.2.0"
+authors = [
+  { name="Original author: Jaakko Pasanen", email="jaakko.o.pasanen@gmail.com" },
+  { name="Python 3.13.2 comfortable: 115dkk", email="qjrzbasd@naver.com" },
+]
+description = "Automatic headphone equalizer config generator - Python 3.13.2 comfortable"
+readme = "README.md"
+requires-python = ">=3.8,<=3.13.2"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    'Pillow>=10.1.0',
+    'matplotlib>=3.8.0',
+    'scipy>=1.12.0',
+    'numpy>=1.26.0',
+    'tabulate>=0.9.0',
+    'soundfile>=0.12.1',
+    'pyyaml>=6.0.1',
+    'tqdm>=4.66.1',
+]
+
+[project.scripts]
+autoeq = "autoeq_cli:entry_point"
+
+[project.urls]
+"Homepage" = "https://github.com/jaakkopasanen/AutoEq"
+"Python 3.13.2 comfortable" = "https://github.com/115dkk/AutoEq-pip313"
+
+[tool.hatch.build]
+include = [
+    "/autoeq",
+    "*.py",
+    "LICENCE",
+    "pyproject.toml",
+]
+exclude = [
+    "/.github",
+    "/targets",
+    "/measurements",
+    "/results",
+    "/tests",
+    ".gitignore",
+    "/autoeq/README.md"
+]
