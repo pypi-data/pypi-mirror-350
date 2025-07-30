@@ -1,0 +1,47 @@
+{% extends theme("mail/html_base.html") %}
+{% from "mail/content_diff.html" import content_diff %}
+{% from "mail/meta_diff.html" import meta_diff %}
+
+{% block title %}Wiki Notification{% endblock %}
+
+{% block content -%}
+    <p>
+        {{ notification_sentence }}
+    </p>
+    <h3 style="margin:0 1.3em 0.5em;">{{ _("Item link:") }}</h3>
+    <p>
+        <a href="{{ item_url }}" style="text-decoration:none; color:#3CA7DD;">{{ item_url }}
+        </a>
+    </p>
+    {% if diff_url -%}
+        <h3 style="margin:0 1.3em 0.5em;">{{ _("Diff link:") }}</h3>
+        <p>
+            <a href="{{ diff_url }}" style="text-decoration:none; color:#3CA7DD;">{{ diff_url }}
+            </a>
+        </p>
+    {%- endif %}
+    {% if comment -%}
+        <h3 style="margin:0 1.3em 0.5em;">{{ _("Comment") }}</h3>
+        <p>{{ comment }}</p>
+    {%- endif %}
+    {% if content_diff_ -%}
+        <h3 style="margin:1em 1.3em 0.5em;">{{ _("Content") }}</h3>
+        {{ content_diff(content_diff_) }}
+    {%- endif %}
+    {% if meta_diff_ -%}
+        <h3 style="margin:1em 1.3em 0.5em;">{{ _("Metadata") }}</h3>
+        {{ meta_diff(meta_diff_) }}
+    {%- endif %}
+    <div style="font-size:0.7em; margin-top:2em;">
+        <p>
+            {{ _("You received this message because you have subscribed to a wiki
+            item on {wiki_name} for change notifications.").format(wiki_name=wiki_name) }}</p>
+        <p>
+            <strong>
+                <a href="{{ unsubscribe_url }}" style="text-decoration:none; color:#3CA7DD;">
+                    {{ _("Unsubscribe from this item notifications") }}
+                </a>
+            </strong>
+        </p>
+    </div>
+{%- endblock %}

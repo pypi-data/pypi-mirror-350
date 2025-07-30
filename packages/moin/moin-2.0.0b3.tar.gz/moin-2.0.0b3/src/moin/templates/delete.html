@@ -1,0 +1,43 @@
+{#
+    This template is displayed after user clicks the delete link on Item Views or
+    the delete link on item history.
+    User may add a comment for change log.
+    The revision's meta data and rendered content is displayed for user review.
+#}
+
+{% import "forms.html" as forms %}
+{% extends theme("show.html") %}
+
+{% if alias_names %}
+    {% set title = _("Delete '{item_name}' with alias names {alias_names}").format(item_name=fqname|shorten_fqname, alias_names=alias_names) %}
+{% else %}
+    {% set title = _("Delete '{item_name}'").format(item_name=fqname|shorten_fqname) %}
+{% endif %}
+
+{% block content %}
+    <h1>{{ title }}</h1>
+    <div class="moin-form-delete">
+        {{ gen.form.open(form, method="post", action=url_for('frontend.delete_item', item_name=fqname)) }}
+            {{ forms.render_errors(form) }}
+            {% if subitem_names %}
+                <dl class="moin-delete-box">
+                    {{ forms.render(form['delete_subitems']) }}
+                </dl>
+                {{ forms.list_subitems(subitem_names, action) }}
+            {% endif %}
+            <dl class="moin-delete-comment">
+                {{ forms.render(form['comment']) }}
+            </dl>
+            {{ forms.render_submit(form) }}
+        {{ gen.form.close() }}
+    </div>
+
+    <h2> {{ _("Meta data of item to be deleted:") }} </h2>
+    {{ utils.meta_info(item.meta) }}
+    {% if data_rendered %}
+        <h2> {{ _("Content of item to be deleted:") }} </h2>
+        <div id="moin-content-data">
+            {{ data_rendered | safe }}
+        </div>
+    {% endif %}
+{% endblock %}

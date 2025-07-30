@@ -1,0 +1,245 @@
+MoinMoin 2 Version History
+==========================
+
+Please note: It is recommended that existing wiki's be upgraded to the
+latest moin 1.9.x release before converting to Moin 2. However, this may
+not be a necessary step as the 1.9.x file structure has not changed recently.
+
+Version 2.0.0b3 2025-05-24
+--------------------------
+This is an unstable beta release not suitable for a production wiki,
+test carefully and report new issues and feature requests on the issue tracker:
+https://github.com/moinwiki/moin/issues.
+
+After installing this release as a upgrade on an existing moin2 wiki be sure to::
+* copy or merge src/moin/config/wikiconfig.py into the root version of wikiconfig.py.
+* rebuild the Whoosh indexes
+  * moin index-destroy
+  * moin index-create
+  * moin index-build
+
+Fixes
+~~~~~
+* Fix duplicate namespace in discussion link (#1847)
+* updated docs for package releases
+* Add FullSearch macro migration for moin1.9 categories
+* markupsafe was pinned to <= 2.2.0, change to >= 3.0.2
+* Fix handling of namespace root items in +misc/sitemap
+* Fix download link for binary content (missing namespace)
+* Localize download link text
+* add "pre-commit run" to development.rst docs
+* Fix undefined name 'revs' in diff view
+* Fix dump-html: remove item id of links to binary data (#1742)
+* remove exists check from itemviews template to improve performance
+* User settings: support setting the theme name to 'system default' (#1532)
+* Document use of THEME_PATHS in moin wiki
+* Remove WIKINAME from schema and queries
+* Improve the check in get_open_wiki_files()
+* User settings: fix handling of flash messages (#1872)
+* ajaxsearch: add check whether content exists
+* bandit configuration: exclude ui tests
+* docs: improve logging configuration docs with MOINLOGGINGCONF and debug example
+* docs: convert logging section titles to headings for Read the Docs navigation
+* Make use of Referrer request header value (if available) when redirecting from subscribe (#1841)
+* Replace text "Highlight" with "Markup" (#1860)
+* Fix index out range error (list with validation errors might be empty)
+* Escape html content placed into <pre> section (avoid running again into the same error)
+* Fix IndexError in markdown converter (triggered by mismatching tags in html content)
+* Make getInterwikiHome() return a fqname
+* search query: add some more clickable options, fixes #60
+* sanitize Markup() input and ignore bandit B704
+* adapt wsgi bench script
+* Simplify packaging of moin by removing useless or misleading packaging instructions
+* Render item metadata as a table
+* Add table header to metadata view
+* Metadata view: remove the ugly quotes around some values
+* Metadata view: remove the colons in column 'Keys'
+* Execute wiki creation in it's own app context
+* wikiconfig.py: Add comment on deactivation of discussion feature
+* .gitignore: mark some files as not to be ignored
+* run black on src/moin/_tests/wikiconfig.py
+* Fix build of query in tagged_items() if namespace is 'all'
+* Refactoring of 3rd index code, rename index, add handling of missing indexes
+* Move code to determine xstatic module paths from wikiconfig.py to moin.utils
+* Persist view state (expanded/collapsed) of sidebar elements in browser local storage
+* Improve print layout for focus theme
+* pin xstatic packages to legacy versions
+* Set email_tracebacks to false in the wikiconfig.py used for test execution.
+* Catch AttributeError in EmailHandler.emit()
+* Add type hints
+* Replace ugly static moin png with prettier one from help-common
+* IriPath improvements: better argument type checking and add test case for argument of type str
+* Fix ConverterBase.absolute_path: return an instance of IriPath
+* Focus: fix itemview icons, remove globe-rotate-left-solid, add login icon
+* Replace magnifying-glass-solid with free version
+
+New features
+~~~~~~~~~~~~
+* added new theme 'focus'
+
+
+Version 2.0.0b2 2025-03-01
+--------------------------
+This is an unstable beta release not suitable for a production wiki,
+test carefully and report new issues and feature requests on the issue tracker:
+https://github.com/moinwiki/moin/issues.
+
+Fixes
+~~~~~
+* updated docs for Python 3.12 pkg_resources workaround
+* add docs and key control to SlideShow macro
+* removed spam links in contrib/intermap.txt
+* fixed bug when creating list of dirs returned by make_flat_index
+* ignore empty table attributes within moinwiki_in converter
+* fix "moin dump-html" to dump raw data for pdf, tar, and other items
+* fix "moin import19" to migrate links only if target namespace is specified
+* SlideShow macro uses url_for
+* improve footer layout
+* fix CSS for Show Wiki Configuration
+* moin import19 handles namespace attachments
+* restrict all admin views to superuser, partially backed off
+* remove ACL form help-en/TemplateSample
+* add request.path to clock total timer message
+* skip before_wiki and teardown_wiki for static content
+* ignore closing stroke tag if no opening tag found within moinwiki_in converter
+* change position and order of Submit buttons
+* remove "General meta" from modify view
+* set url_map.strict_slashes to False
+* creating items now uses current namespace ACL
+* stricter detection of embedded markup on markdown_in converter
+* fix convert_to_indexable for items in a namespace
+* fix delete/destroy from index view
+* fix several namespace bugs where wrong item names were used
+* bump Xstatic_Bootstrap to 4.5.3.1 fixing potential XSS attacks
+* add tag parameter to ItemList macro
+* wikiconfig.py configuration PERMANENT_SESSION_LIFETIME requres datetime import
+* eliminate traceback when destroying a deleted item
+* highlight search results: treat each word separately and ignore case
+* move 'user.may.write' call from template to views.py
+* fix traceback: add may permission in _do_modify_show_templates
+* deactivate exists checks for page trail and do not show non-existent items
+* performance: add aliases to trail and remove exists check
+* import19: Add procs and limitmb options to increase performance
+* import19: add exception handling for drop_and_recreate_index
+* add missing attribute 'may' to diff.html template
+* import19: add option latest-rev-only
+* _args_wiki parse: ignore keys with empty value
+* support different storage types for each namespace
+* import19: add missing parents
+* update intermap.txt removing dead links, spam; change to https when possible
+* performance: _get_acls: use meta data if available to avoid index query
+* fix traceback when viewing item with @itemid
+* update development docs with more info about "pre-commit install"
+* page_trail: add type checks
+* fix search result highlighting for itemlist macro
+* fix itemlist arguments in help-en/MoinWikiMacros
+* itemList: use _args_wiki parser
+* same messages for not found and access denied
+* itemList performance: mv regex handling to search_meta
+* update, cleanup translations, add few German translations
+* remove subprocess call from create_instance
+* remove smb_mount module and docs
+* add usedforsecurity False in hash functions
+* rework of the send_file exception handling
+* remove obsolete SubProcess.py
+* send_file: seek to the beginning of the file in any case
+* use new gravatar hash routine
+* remove obsolete profile.py
+* fix UnboundLocalError in import19
+* show blank page after passwort reset
+* remove sistersite feature.
+* do not show USERPROFILES ns within a list of selectable namespaces
+* add pre-commit for bandit security scan, add to github workflow
+* add CSP header and receiver
+* correct hit count display when ajax search options use whoosh filters
+* fix CSP warning, remove inline style on moin-options-for-javascript
+* rename and update README, add CONTRIBUTING.md
+
+New features
+~~~~~~~~~~~~
+* Add RandomQuote macro
+
+
+Version 2.0.0b1 2024-08-07
+----------------------------
+This is an unstable beta release not suitable for a production wiki,
+test carefully and report new issues and feature requests on the issue tracker:
+https://github.com/moinwiki/moin/issues.
+
+Fixes
+~~~~~
+* added config option to enable or disable contenttypes
+* mass source code changes using pyupgrade to upgrade syntax to 3.9
+* removed unused imports
+* create SECURITY.md
+* update .readthedocs.yaml to generate readthedocs content using Python 3.10
+* remove use of obsolete setuptools
+* change use of whoosh lru cache to lfu cache
+* update Flask and Werkzeug to >=3.0.0
+* upgrade feedgen (atom feed lib) to >= 1.0.0
+* removed parentid to fix welcome/users_home_meta
+* mass source code changes after integrating "black" code auto-formater
+* supress false "unused import" when importing flatland.Form
+* replace deprecated datetime.utc* calls
+* add language auto-detect to user personal settings
+* readthedocs now has access to docs/examples
+* fix maint-validate-metadata to skip userprofiles backend
+* Add REV_NUMBER in sort for history view replacing mtime
+* Fix CI workflow to test with all supported python versions, run py39 with Ubuntu 22.04
+* add support for SQLAlchemy >=2.0.0
+* macros with user editing errors should not fill log with tracebacks
+* cleanup redundant icon directories
+* add itemlinks validator replacing wikilinks validator where needed
+* itemlinks beginning with + were incorrectly given non-existent class (+meta/Home)
+* remove trailing /> from void elements to comply with W3C standard
+* add validity check if user changes name/alias/display-name in UserSettings>Personal
+* add test to prove icons from CSS URLs is a subset of files in icon dir
+* add RSS link to global history
+* fix search-options font and fix HTML validation errors
+* update and add German translations
+
+New features
+~~~~~~~~~~~~
+* add slideshow macro and view
+
+Version 2.0.0a1 2024-03-27
+-----------------------------
+This is an unstable alpha release not suitable for a production wiki,
+test carefully and report new issues and feature requests on the issue tracker:
+https://github.com/moinwiki/moin/issues.
+
+Fixes
+~~~~~
+* Major rewrite of MoinMoin 1.9.x
+
+New features
+~~~~~~~~~~~~
+* Python3.9+
+* Supports moinwiki, markdown, rst, and DocBook markup languages
+* HTML markup support by CKEditor, same version used in moin 1.9.x
+* MediaWiki markup support needs work
+* Editor help docs optional, can be loaded into a wiki namespace
+* New/revised themes: topside, topside-cms, modernized, basic
+* EmeraldTree
+* Flask
+* Flatland
+* FontAwesome
+* Jinja2
+* Jquery
+* Whoosh
+* Xstatic
+
+Missing features from 1.9.x
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+* SVG editor
+* LDAP may have missing dependencies depending upon OS flavor
+* WikiDicts have limited function, does not use Babel translations
+* language support limited to English, German, Portuguese (Brasil), Russian
+* some macros have not been converted
+* no contributed themes
+* no contributed macros
+
+Other changes
+~~~~~~~~~~~~~
+* GitHub used for issue tracking: https://github.com/moinwiki/moin/issues
+* See https://moin-20.readthedocs.io/en/latest/ for Sphinx formatted docs

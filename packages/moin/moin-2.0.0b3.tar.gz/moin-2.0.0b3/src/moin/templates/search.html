@@ -1,0 +1,90 @@
+{#
+    This template is displayed after a user initiates a search. Much of the content defined below is initially
+    hidden: the user must click the Search Options link to reveal the options.
+
+    The search results are formatted by the ajaxsearch.html template.
+    See {% include "ajaxsearch.html" %} near the bottom of this file.
+#}
+
+{% extends theme("layout.html") %}
+{% import "forms.html" as forms %}
+{% import "utils.html" as utils %}
+
+{%- set search_form = None %} {# layout will not show search form in header #}
+
+{%- block pagepath %}
+    {{ _("Search") }}
+    {{ super() }}
+{%- endblock %}
+
+{%- block content %}
+    <h1>{{ _("Search") }}</h1>
+    {%- if item_name %}
+        <h2>Search "{{ item_name }}" Subitems and Transclusions</h2>
+    {%- endif %}
+    {{ gen.form.open(medium_search_form, id='moin-long-searchform', method='get', action=url_for('frontend.search', item_name=item_name)) }}
+        <p>
+            {{ forms.render(medium_search_form['q']) }}
+        </p>
+        <div class="hint">{{ _("An Ajax transaction is submitted with each character keyed into the search box.
+            Transactions may be completed out of order if keying is rapid.") }}
+            <br><br>{{ _("For help on searching see:") }}
+            <a href="/+serve/docs/user/search.html">Local docs</a> or
+            <a href="https://moin-20.readthedocs.io/en/latest/user/search.html">Internet docs.</a>
+        </div>
+        <p class="moin-search-option-bar"><i class="fa fa-chevron-down"></i> {{ _("More Search Options") }}</p>
+        <div class="moin-searchoptions hidden">
+            <table class="moin-search-options-table">
+                <tr class="moin-searchopt-tab">
+                    <th>Revisions</th>
+                    <th>Sort By</th>
+                    <th>Content Types</th>
+                    <th>Namespace</th>
+                    <th>Trash</th>
+                </tr>
+                <tr>
+                    <td>
+                        <label><input type="radio" name="history" value="latest" checked="checked"> Latest</label><br>
+                        <label><input type="radio" name="history" value="all"> All</label><br>
+                    </td>
+                    <td>
+                        <label><input type="radio" name="modified_time" value="default" checked="checked"> Highest Score</label><br>
+                        <label><input type="radio" name="modified_time" value="old"> Oldest First</label><br>
+                        <label><input type="radio" name="modified_time" value="new"> Newest First</label><br>
+                        <label><input type="radio" name="modified_time" value="name"> Name</label><br>
+                    </td>
+                    <td>
+                        <label><input type="checkbox" name="itemtype" value="markup"> Markup Text</label><br>
+                        <label><input type="checkbox" name="itemtype" value="text"> Other Text</label><br>
+                        <label><input type="checkbox" name="itemtype" value="image"> Image</label><br>
+                        <label><input type="checkbox" name="itemtype" value="audio"> Audio</label><br>
+                        <label><input type="checkbox" name="itemtype" value="video"> Video</label><br>
+                        <label><input type="checkbox" name="itemtype" value="drawing"> Drawing</label><br>
+                        <label><input type="checkbox" name="itemtype" value="other"> Other</label><br>
+                        <label><input type="checkbox" name="itemtype" value="unknown"> Unknown</label><br>
+                        {# <label><input type="checkbox" name="itemtype" value="all" checked="checked"> All</label><br> #}
+                    </td>
+                    <td>
+                        {%- for namespace, root in theme_supp.get_namespaces() %}
+                            <label><input type="checkbox" name="namespace" value="{{ namespace }}"> {{ namespace }}</label><br>
+                        {%- endfor -%}
+                    </td>
+                    <td>
+                        <label><input type="radio" name="trash" value="exclude" checked="checked"> Exclude</label><br>
+                        <label><input type="radio" name="trash" value="include" > Include</label><br>
+                    </td>
+                </tr>
+            </table>
+            <div class="hint">{{ _("An Ajax transaction is submitted each time a radio or checkbox is clicked.") }}</div>
+        </div>
+            {{ forms.render_errors(medium_search_form) }}
+    {{ gen.form.close() }}
+    <div id="finalresults">
+        {%- include "ajaxsearch.html" %}
+    </div>
+{% endblock %}
+
+{% block body_scripts %}
+    <script src="{{ url_for('serve.files', name='jquery', filename='jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/search.js') }}"></script>
+{% endblock %}

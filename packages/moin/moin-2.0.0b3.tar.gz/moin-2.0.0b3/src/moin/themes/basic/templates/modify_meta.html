@@ -1,0 +1,15 @@
+{% import "forms.html" as forms %}
+
+{% macro basic_meta_editor(form) %}
+    {% for e in [
+        'name',
+        'summary',
+        'tags',
+        ] %}
+        <div class="form-group">
+            {{ gen.label(form[e]) }}
+            {{ gen.textarea(form[e], rows='1', class='form-control') }}
+        </div>
+    {% endfor %}
+    <div class="hint">{{ _("Tags and names may have embedded blanks, use commas to separate.") }}</div>
+{% endmacro %}
