@@ -1,0 +1,41 @@
+name: uv-test
+
+on:
+  push:
+    branches: [ "main" ]
+    paths-ignore:
+      - "README.md"
+  pull_request:
+    branches: [ "main" ]
+    paths-ignore:
+      - "README.md"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: ['3.13', '3.12', '3.9'] # one oldest, two newest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: astral-sh/setup-uv@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - run: uv sync --frozen
+    - run: uv build
+    - run: uv run tests/test.py
+      
+
+    - name: Upload wheels
+      uses: actions/upload-artifact@v4
+      with:
+        name: wheels-${{matrix.python-version}}
+        path: dist/*
