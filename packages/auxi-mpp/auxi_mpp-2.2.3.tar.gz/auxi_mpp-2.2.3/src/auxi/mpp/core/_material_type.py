@@ -1,0 +1,30 @@
+from enum import IntEnum
+
+
+class MaterialType(IntEnum):
+    UNKNOWN = 0
+    PURE_SUBSTANCE = 2**0
+    SINGLE_PHASE = 2**1
+    COMPOSITE = 2**2
+
+    # states of matter
+    STATE_SOLID = 2**5
+    STATE_LIQUID = 2**6
+    STATE_GAS = 2**7
+    STATE_PLASMA = 2**8
+
+    # chemical composition categories
+    CATEGORY_METAL = 2**10
+    CATEGORY_OXIDE = 2**11
+    CATEGORY_SULPHIDE = 2**12
+    CATEGORY_ORGANIC = 2**13
+
+    # single-phase mixtures
+    GAS = SINGLE_PHASE | STATE_GAS
+    ALLOY_LIQUID = SINGLE_PHASE | STATE_LIQUID | CATEGORY_METAL
+    MATTE_LIQUID = SINGLE_PHASE | STATE_LIQUID | CATEGORY_SULPHIDE
+    SLAG_LIQUID = SINGLE_PHASE | STATE_LIQUID | CATEGORY_OXIDE
+
+    # composite materials
+    REFRACTORY = COMPOSITE | STATE_SOLID | CATEGORY_OXIDE
+    CARBONACEOUS = COMPOSITE | STATE_SOLID | CATEGORY_ORGANIC | CATEGORY_OXIDE
