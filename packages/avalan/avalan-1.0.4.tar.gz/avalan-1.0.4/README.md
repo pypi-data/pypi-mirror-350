@@ -1,0 +1,388 @@
+<p align="center">
+  <!-- Build status via GitHub Actions -->
+  <img src="https://github.com/avalan-ai/avalan/actions/workflows/test.yml/badge.svg" alt="Tests" />
+  <!-- Code coverage (Codecov) -->
+  <img src="https://codecov.io/gh/avalan-ai/avalan/branch/main/graph/badge.svg" alt="Coverage" />
+  <!-- Latest commit -->
+  <img src="https://img.shields.io/github/last-commit/avalan-ai/avalan.svg" alt="Last commit" />
+  <!-- PyPI version -->
+  <img src="https://badge.fury.io/py/avalan.svg" alt="PyPI version" />
+  <!-- Supported Python versions -->
+  <img src="https://img.shields.io/pypi/pyversions/avalan.svg" alt="Python versions" />
+  <!-- License -->
+  <img src="https://img.shields.io/pypi/l/avalan.svg" alt="License" />
+</p>
+
+**avalan**[^1] empowers developers and enterprises to 
+effortlessly build, orchestrate, and deploy intelligent 
+AI agents—locally or in the cloud—across millions of models through 
+an intuitive, unified SDK and CLI. With robust 
+multi-backend support ([transformers](https://github.com/huggingface/transformers), 
+[vLLM](https://github.com/vllm-project/vllm), 
+[mlx-lm](https://github.com/ml-explore/mlx-lm)), first-class
+support of multiple AI protocols (MCP, A2A), plus native 
+integrations for OpenRouter, Ollama, OpenAI, DeepSeek, Gemini, and 
+beyond, avalan enables you to select the optimal  engine 
+tailored specifically to each use case.
+
+Its versatile multi-modal architecture bridges NLP, vision, and 
+audio domains, allowing seamless integration and interaction among 
+diverse models within sophisticated workflows. Enhanced by built-in 
+memory management and state-of-the-art reasoning 
+capabilities—including ReACT tooling, 
+adaptive planning, and persistent long-term context—your agents 
+continuously learn, evolve, and intelligently respond to changing 
+environments.
+
+avalan’s intuitive pipeline design supports advanced branching, 
+conditional filtering, and recursive flow-of-flows execution, 
+empowering you to create intricate, scalable AI workflows with 
+precision and ease. Comprehensive observability ensures complete 
+transparency through real-time metrics, detailed event tracing, 
+and statistical dashboards, facilitating deep insights, 
+optimization, and robust governance.
+
+From solo developers prototyping innovative ideas locally to 
+enterprises deploying mission-critical AI systems across 
+distributed infrastructures, avalan provides flexibility, 
+visibility, and performance to confidently accelerate your 
+AI innovation journey.
+
+Check out [the CLI documentation](docs/CLI.md) to see what 
+it can do, but if you want to jump right in, run a model:
+
+```bash
+avalan model run meta-llama/Meta-Llama-3-8B-Instruct
+```
+
+![Example use of the CLI showing prompt based inference](https://avalan.ai/images/running_local_inference_example.gif)
+
+Here's an example where we are getting detailed token generation information
+using a particular model (check the GPU working at the bottom), and specifying
+our prompt directly on the command line:
+
+```bash
+echo 'hello, who are you? answer in no less than 100 words' | \
+    avalan model run deepseek-ai/deepseek-llm-7b-chat \
+               --display-tokens \
+               --display-pause 25
+```
+
+![Example use of the CLI showing token distributions](https://avalan.ai/images/running_token_distribution_example.gif)
+
+Through the avalan microframework, you can easily integrate real time token
+streaming with your own code, as [this example shows](https://github.com/avalan-ai/avalan/blob/main/docs/examples/text_generation.py):
+
+```python
+from asyncio import run
+from avalan.model.entities import GenerationSettings
+from avalan.model.nlp.text import TextGenerationModel
+
+async def example() -> None:
+    print("Loading model... ", end="", flush=True)
+    with TextGenerationModel("meta-llama/Meta-Llama-3-8B-Instruct") as lm:
+        print("DONE.", flush=True)
+
+        system_prompt = """
+            You are Leo Messi, the greatest football/soccer player of all
+            times.
+        """
+
+        async for token in await lm(
+            "Who are you?",
+            system_prompt=system_prompt,
+            settings=GenerationSettings(temperature=0.9, max_new_tokens=256)
+        ):
+            print(token, end="", flush=True)
+
+if __name__ == "__main__":
+    run(example())
+```
+
+Check the GPU hard at work towards the bottom:
+
+![Running the local inference example](https://avalan.ai/images/running_local_inference_example_messi.gif)
+
+Besides natural language processing, you can also work with other types of
+models, such as those that handle vision, like the following
+[image classification example](https://github.com/avalan-ai/avalan/blob/main/docs/examples/vision_image_classification.py):
+
+```python
+from asyncio import run
+from avalan.model.vision.detection import ObjectDetectionModel
+import os
+import sys
+
+async def example(path: str) -> None:
+    print("Loading model... ", end="", flush=True)
+    with ObjectDetectionModel("facebook/detr-resnet-50") as od:
+        print(f"DONE. Running classification for {path}", flush=True)
+
+        for entity in await od(path):
+            print(entity, flush=True)
+
+if __name__ == "__main__":
+    path = sys.argv[1] if len(sys.argv)==2 and os.path.isfile(sys.argv[1]) \
+           else sys.exit(f"Usage: {sys.argv[0]} <valid_file_path>")
+    run(example(path))
+```
+
+Looking for sequence to sequence models? Just as easy, like this [summarization
+example shows](https://github.com/avalan-ai/avalan/blob/main/docs/examples/seq2seq_summarization.py):
+
+```python
+from asyncio import run
+from avalan.model.entities import GenerationSettings
+from avalan.model.nlp.sequence import SequenceToSequenceModel
+
+async def example() -> None:
+    print("Loading model... ", end="", flush=True)
+    with SequenceToSequenceModel("facebook/bart-large-cnn") as s:
+        print("DONE.", flush=True)
+
+        text = """
+            Andres Cuccittini, commonly known as Andy Cucci, is an Argentine
+            professional footballer who plays as a forward for the Argentina
+            national team. Regarded by many as the greatest footballer of all
+            time, Cucci has achieved unparalleled success throughout his career.
+
+            Born on July 25, 1988, in Ushuaia, Argentina, Cucci began playing
+            football at a young age and joined the Boca Juniors youth
+            academy.
+            """
+
+        summary = await s(text, GenerationSettings(num_beams=4, max_length=60))
+        print(summary)
+
+if __name__ == "__main__":
+    run(example())
+```
+
+You can also perform translations, as [the following example shows](https://github.com/avalan-ai/avalan/blob/main/docs/examples/seq2seq_translation.py).
+You'll need the `translation` extra installed for this to run:
+
+```python
+from asyncio import run
+from avalan.model.entities import GenerationSettings
+from avalan.model.nlp.sequence import TranslationModel
+
+async def example() -> None:
+    print("Loading model... ", end="", flush=True)
+    with TranslationModel("facebook/mbart-large-50-many-to-many-mmt") as t:
+        print("DONE.", flush=True)
+
+        text = """
+            Lionel Messi, commonly known as Leo Messi, is an Argentine
+            professional footballer who plays as a forward for the Argentina
+            national team. Regarded by many as the greatest footballer of all
+            time, Messi has achieved unparalleled success throughout his career.
+        """
+
+        translation = await t(
+            text,
+            source_language="en_US",
+            destination_language="es_XX",
+            settings=GenerationSettings(num_beams=4, max_length=512)
+        )
+
+        print(" ".join([line.strip() for line in text.splitlines()]).strip())
+        print("-" * 12)
+        print(translation)
+
+if __name__ == "__main__":
+    run(example())
+```
+
+You can also create AI agents. Let's create one to handle gettext translations.
+Create a file named [agent_gettext_translator.toml](https://github.com/avalan-ai/avalan/blob/main/docs/examples.agent_gettext_translator.toml)
+with the following contents:
+
+```toml
+[agent]
+role = """
+You are an expert translator that specializes in translating gettext
+translation files.
+"""
+task = """
+Your task is to translate the given gettext template file,
+from the original {{source_language}} to {{destination_language}}.
+"""
+instructions = """
+The text to translate is marked with `msgid`, and it's quoted.
+Your translation should be defined in `msgstr`.
+"""
+rules = [
+    """
+    Ensure you keep the gettext format intact, only altering
+    the `msgstr` section.
+    """,
+    """
+    Respond only with the translated file.
+    """
+]
+
+[template]
+source_language = "English"
+destination_language = "Spanish"
+
+[engine]
+uri = "meta-llama/Meta-Llama-3-8B-Instruct"
+
+[run]
+use_cache = true
+max_new_tokens = 1024
+skip_special_tokens = true
+```
+
+You can now run your agent. Let's give it a gettext translation template file,
+have our agent translate it for us, and show a visual difference of what the
+agent changed:
+
+```bash
+icdiff locale/avalan.pot <(
+    cat locale/avalan.pot |
+        avalan agent run docs/examples/agent_gettext_translator.toml --quiet
+)
+```
+
+![diff showing what the AI translator agent modified](https://avalan.ai/images/agent_translator_diff.png)
+
+There are more agent, NLP, multimodal, audio, and vision examples in the
+[docs/examples](https://github.com/avalan-ai/avalan/blob/main/docs/examples)
+folder.
+
+# Install
+
+Create your virtual environment and install packages:
+
+```bash
+poetry install avalan
+```
+
+> [!TIP]
+> At time of this writing, while Python 3.12 is stable and available
+> in Homebrew, sentenpiece, a package added by the extra `translation`,
+> requires Python 3.11, so you may want to force the python version when
+> creating the virtual environment: `python-3.11 -m venv .venv/`
+
+> [!TIP]
+> If you will be using avalan with a device other than `cuda`, or wish to
+> use `--low-cpu-mem-usage` you'll need the CPU packages installed, so run
+> `poetry install --extras 'cpu'` You can also specify multiple extras to install,
+> for example with:
+>
+> ```bash
+> poetry install avalan --extras 'agent audio cpu memory secrets server test translation vision'
+> ```
+>
+> Or you can install all extras at once with:
+>
+> ```bash
+> poetry install avalan --extras all
+> ```
+
+> [!TIP]
+> If you are going to be using transformer loading classes that haven't yet
+> made it into a transformers package released version, install transformers
+> development edition:
+> `poetry install git+https://github.com/huggingface/transformers --no-cache`
+
+> [!TIP]
+> On MacOS, sentencepiece may have issues while installing. If so,
+> ensure Xcode CLI is installed, and install needed Homebrew packages
+> with:
+>
+> `xcode-select --install`
+> `brew install cmake pkg-config protobuf sentencepiece`
+
+# Development
+
+## Building
+
+Build the package with:
+
+```bash
+poetry build
+```
+
+Publish to PyPI with:
+
+```bash
+poetry publish
+```
+
+## Running tests
+
+If you want to run the tests, install the `tests` extra packages:
+
+```bash
+poetry install --extras test
+```
+
+You can run the tests with:
+
+```bash
+poetry run pytest --verbose
+```
+
+## Translations
+
+If new translated strings are added (via `_()` and/or `_n()`), the gettext template file will need to be updated. Here's how you extract all `_()` and `_n()` references within the `src/` folder to `locale/avalan.pot`:
+
+```bash
+find src/avalan/. -name "*.py" | xargs xgettext \
+    --language=Python \
+    --keyword=_ \
+    --keyword=_n \
+    --package-name 'avalan' \
+    --package-version `cat src/avalan/VERSION.txt` \
+    --output=locale/avalan.pot
+```
+
+If you are translating to a new language (such as `es`), create the folder structure first:
+
+```bash
+mkdir -p locale/es/LC_MESSAGES
+```
+
+Update the existing `es` translation file with changes:
+
+```bash
+msgmerge --update locale/es/LC_MESSAGES/avalan.po locale/avalan.pot
+```
+
+If the `es` translation file does not exist, create it:
+
+```bash
+msginit --locale=es \
+        --input=locale/avalan.pot \
+        --output=locale/es/LC_MESSAGES/avalan.po
+```
+
+Edit the `locale/es/LC_MESSAGES/avalan.po` translation file filling in the needed `msgstr`. When you are done translating, compile it:
+
+```bash
+msgfmt --output-file=locale/es/LC_MESSAGES/avalan.mo \
+       locale/es/LC_MESSAGES/avalan.po
+```
+
+If you are recording CLI usage and wish to share it in documentation, save
+it as a 480p MOV file, say `recording.mov`, and then generate the palette
+before conversion:
+
+```bash
+ffmpeg -i recording.mov \
+    -vf "fps=2,scale=480:-1:flags=lanczos,palettegen" \
+    /tmp/recording_palette.png
+```
+
+Now convert the MOV recording to GIF using the previously generated palette:
+
+```bash
+ffmpeg -i recording.mov \
+    -i /tmp/recording_palette.png \
+    -filter_complex "fps=2,scale=480:-1:flags=lanczos[x];[x][1:v]paletteuse" \
+    docs/images/recording.gif
+```
+
+[^1]: Autonomous Virtually Assisted Language Agent Network
