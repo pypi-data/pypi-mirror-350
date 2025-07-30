@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package vajra_proto;
+
+option optimize_for = LITE_RUNTIME;
+
+message ModelConfig {
+    string model = 1;
+    bool trust_remote_code = 2;
+    optional string download_dir = 3;
+    string load_format = 4;
+    string dtype = 5;
+    uint64 seed = 6;
+    optional string revision = 7;
+    uint64 max_model_len = 8;
+    uint64 total_num_layers = 9;
+    uint64 total_num_q_heads = 10;
+    uint64 total_num_kv_heads = 11;
+    uint64 hidden_size = 12;
+}
+
+message SequenceScheduleMetadata {
+    uint64 schedule_id = 1;
+    string seq_id = 2;
+    uint64 num_q_tokens = 3;
+    map<uint64, uint64> kvp_group_block_counter = 4;
+    repeated uint64 kvp_group_ids = 5;
+    bool is_kvp_request = 6;
+}
+
+message SchedulerOutput {
+    uint64 schedule_id = 1;
+    repeated string ignored_seq_ids = 2;
+    repeated string preempted_seq_ids = 3;
+    repeated SequenceScheduleMetadata seq_schedule_metadata_list = 4;
+}
+
+message SamplerOutput {
+    uint64 schedule_id = 1;
+    string seq_id = 2;
+    repeated int32 output_tokens = 3;
+}
+
+message SamplingParams {
+    float temperature = 1;
+    float top_p = 2;
+    int32 top_k = 3;
+    bool ignore_eos = 4;
+    uint64 max_tokens = 5;
+}
+
+message SequenceParams {
+    string seq_id = 1;
+    string prompt = 2;
+    repeated int32 prompt_token_ids = 3;
+    uint64 block_size = 4;
+    uint64 eos_token_id = 5;
+    double arrival_time = 6;    
+    SamplingParams sampling_params = 7;
+}

@@ -1,0 +1,96 @@
+########################################################################################################################################################
+include(CMakeParseArguments)
+########################################################################################################################################################
+macro(find_python_from_executable EXECUTABLE SUPPORTED_VERSIONS)
+  file(REAL_PATH ${EXECUTABLE} EXECUTABLE)
+  set(Python_EXECUTABLE ${EXECUTABLE})
+  find_package(Python COMPONENTS Interpreter Development.Module)
+  if(NOT Python_FOUND)
+    message(FATAL_ERROR "Unable to find Python matching: ${EXECUTABLE}.")
+  endif()
+  set(_VER "${Python_VERSION_MAJOR}.${Python_VERSION_MINOR}")
+  
+  # Convert the parameter to a proper CMake list variable
+  set(_SUPPORTED_VERSIONS_LIST ${SUPPORTED_VERSIONS})
+  
+  if(NOT _VER IN_LIST _SUPPORTED_VERSIONS_LIST)
+    message(FATAL_ERROR "Python version (${_VER}) is not supported: ${SUPPORTED_VERSIONS}.")
+  endif()
+  message(STATUS "Found Python matching: ${EXECUTABLE}.")
+endmacro()
+########################################################################################################################################################
+function(run_python OUT EXPR ERR_MSG)
+  execute_process(
+    COMMAND "${Python_EXECUTABLE}" "-c" "${EXPR}"
+    OUTPUT_VARIABLE PYTHON_OUT
+    RESULT_VARIABLE PYTHON_ERROR_CODE
+    ERROR_VARIABLE PYTHON_STDERR
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
+  if(NOT PYTHON_ERROR_CODE EQUAL 0)
+    message(FATAL_ERROR "${ERR_MSG}: ${PYTHON_STDERR}")
+  endif()
+  set(${OUT} ${PYTHON_OUT} PARENT_SCOPE)
+endfunction()
+
+macro(append_cmake_prefix_path PKG EXPR)
+  run_python(_PREFIX_PATH "import ${PKG}; print(${EXPR})" "Failed to locate ${PKG} path")
+  list(APPEND CMAKE_PREFIX_PATH ${_PREFIX_PATH})
+endmacro()
+
+function(get_torch_gpu_compiler_flags OUT_GPU_FLAGS GPU_LANG)
+  if(${GPU_LANG} STREQUAL "CUDA")
+    run_python(GPU_FLAGS
+      "from torch.utils.cpp_extension import COMMON_NVCC_FLAGS; print(';'.join(COMMON_NVCC_FLAGS))"
+      "Failed to determine Torch NVCC compiler flags")
+    if(CUDA_VERSION VERSION_GREATER_EQUAL 11.8)
+      list(APPEND GPU_FLAGS "-DENABLE_FP8_E5M2")
+    endif()
+  endif()
+  set(${OUT_GPU_FLAGS} ${GPU_FLAGS} PARENT_SCOPE)
+endfunction()
+########################################################################################################################################################
+macro(override_gpu_arches GPU_ARCHES GPU_LANG GPU_SUPPORTED_ARCHS)
+  set(_GPU_SUPPORTED_ARCHS_LIST ${GPU_SUPPORTED_ARCHS})
+  message(STATUS "${GPU_LANG} supported arches: ${_GPU_SUPPORTED_ARCHS_LIST}")
+  if(${GPU_LANG} STREQUAL "CUDA")
+    string(REGEX MATCHALL "-gencode arch=[^ ]+" _CUDA_ARCH_FLAGS ${CMAKE_CUDA_FLAGS})
+    string(REGEX REPLACE "-gencode arch=[^ ]+ *" "" CMAKE_CUDA_FLAGS ${CMAKE_CUDA_FLAGS})
+    if(NOT _CUDA_ARCH_FLAGS)
+      message(FATAL_ERROR "No architecture flags found in CMAKE_CUDA_FLAGS.")
+    endif()
+    set(${GPU_ARCHES})
+    foreach(_ARCH ${_CUDA_ARCH_FLAGS})
+      string(REGEX MATCH "arch=compute_\([0-9]+a?\)" _COMPUTE ${_ARCH})
+      if(_COMPUTE)
+        set(_COMPUTE ${CMAKE_MATCH_1})
+      endif()
+      string(REGEX MATCH "code=sm_\([0-9]+a?\)" _SM ${_ARCH})
+      if(_SM)
+        set(_SM ${CMAKE_MATCH_1})
+      endif()
+      string(REGEX MATCH "code=compute_\([0-9]+a?\)" _CODE ${_ARCH})
+      if(_CODE)
+        set(_CODE ${CMAKE_MATCH_1})
+      endif()
+      if(NOT _COMPUTE)
+        message(FATAL_ERROR "Could not determine virtual architecture from: ${_ARCH}.")
+      endif()
+      if(_SM)
+        set(_VIRT "")
+        set(_CODE_ARCH ${_SM})
+      else()
+        set(_VIRT "-virtual")
+        set(_CODE_ARCH ${_CODE})
+      endif()
+      string(REGEX REPLACE "\([0-9]+\)\([0-9]\)" "\\1.\\2" _CODE_VER ${_CODE_ARCH})
+      if(_CODE_VER IN_LIST _GPU_SUPPORTED_ARCHS_LIST)
+        list(APPEND ${GPU_ARCHES} "${_CODE_ARCH}${_VIRT}")
+      else()
+        message(STATUS "Discarding unsupported CUDA arch ${_CODE_VER}.")
+      endif()
+    endforeach()
+  endif()
+  message(STATUS "${GPU_LANG} target arches: ${${GPU_ARCHES}}")
+endmacro()
+########################################################################################################################################################
