@@ -1,0 +1,194 @@
+# Author: Gregor Boehl [mail@gregorboehl.com]
+---
+
+name: 'hank2'
+description: 'A HANK model with two assets and portfolio choice'
+functions_file: 'hank2_functions.py'
+# NOTE: the file hank_with_comments.yaml contains a detailed explanation of the objects defined here
+
+definitions: |
+    from jax.numpy import log, maximum
+    from econpizza.utilities.grids import log_grid
+    from econpizza.utilities.dists import expect_transition
+    from econpizza.tools import percentile, jax_print
+    kappa_grid = log_grid(amax=1., n=4)[::-1]
+
+variables: [ C, mc, y, pi, pitilde, div, equity, n, z, w, k, q, Rr, R, Rn, Rstar, tax, g, Rb, Ra, wn, piwn, piwntilde, wealth, A, B, i, beta, price_markup, wage_markup, eps_i, MPK, cap_util, cap_util_costs, ucee, transfers, Top10A, Top10B, Top10C ]
+parameters: [ sigma_c, sigma_l, psi_p, psi_w, delta, Bgov, psi_a0, psi_a1, psi_a2, psi_i, zeta, phi_pi, phi_y, rho, rho_beta, rho_r, rho_g, rho_z, theta_w, alpha, theta, chi, omega_p, omega_w, psi_u, iota, rho_t, rho_w, rho_p, rho_i, h, elb ]
+shocks: [ e_beta, e_p, e_w, e_i, e_z, e_g, e_r, e_t ]
+
+distributions:
+  dist:
+    skills:
+      type: exogenous_rouwenhorst
+      rho: 0.966
+      sigma: 0.92
+      n: 3
+    b:
+      type: endogenous_log
+      min: 0.0
+      max: 50
+      n: 10
+    a:
+      type: endogenous_log
+      min: 0.0
+      max: 220
+      n: 20
+
+decisions:
+  inputs: [WaPrime,WbPrime]
+  calls: |
+    z_grid = income(skills_grid, tax, w, n, transfers)
+    Psi = marginal_cost_grid(a_grid, Ra-1, psi_a0, psi_a1, psi_a2)
+    WaPrimeExp = expect_transition(skills_transition, WaPrime)
+    WbPrimeExp = expect_transition(skills_transition, WbPrime)
+    Wa, Wb, a, b, c, uce = egm_step(WaPrimeExp, WbPrimeExp, a_grid, b_grid, z_grid, skills_grid, kappa_grid, beta, sigma_c, Rb-1, Ra-1, psi_a0, psi_a1, psi_a2, Psi)
+  outputs: [a,b,c,uce]
+
+aux_equations: |
+    # aggregation
+    aggr_a = jnp.sum(dist*a, axis=(0,1,2))
+    aggr_b = jnp.sum(dist*b, axis=(0,1,2))
+    aggr_c = jnp.sum(dist*c, axis=(0,1,2))
+    UCE = jnp.sum(dist*uce, axis=(0,1,2))
+
+    # calculate consumption and asset share of top-10%
+    top10a = 1 - percentile(a, dist, .9)
+    top10b = 1 - percentile(b, dist, .9)
+    top10c = 1 - percentile(c, dist, .9)
+
+    # misc definitions
+    assetshareLag = equityLag / ALag
+
+equations:
+    # definitions block
+    ~ Top10A = top10a
+    ~ Top10B = top10b
+    ~ Top10C = top10c
+
+    ~ ucee = UCE
+    ~ A = aggr_a
+    ~ B = aggr_b
+    ~ C = aggr_c
+    ~ wealth = A + B
+    ~ equity + Bgov = wealth
+
+    ## unions block
+    ~ piwn = wn/wnLag*pi # wage inflation
+    ~ w = max(iota*wLag/pi, wn) # dowards nominal wage rigidity
+    ~ psi_w*(piwn/piwntilde - 1)*piwn/piwntilde = wage_markup/(wage_markup-1)*chi*n**(1+sigma_l) + 1/(1-wage_markup)*(1 - tax)*w*n*UCE + psi_w*beta*(piwnPrime/piwntildePrime - 1)*piwnPrime/piwntildePrime # wage Phillips curve
+    ~ piwntilde = piwnSS**omega_w*piwnLag**(1-omega_w) # wage indexation
+
+    ## firms block
+    ~ psi_p*(pi/pitilde - 1)*pi/pitilde = 1/(1-price_markup) + price_markup/(price_markup-1)*mc + psi_p/RrPrime*(piPrime/pitildePrime - 1)*piPrime/pitildePrime*yPrime/y # price Phillips curve
+    ~ pitilde = piSS**omega_p*piLag**(1-omega_p) # price indexation
+    ~ y = (kLag*cap_util)**alpha*(z*n)**(1-alpha) # production function
+    ~ k = (1-delta)*kLag + eps_i*(1 - psi_i/2*(i/iLag - 1)**2)*i # law of motion for capital
+    ~ 1 = q*eps_i*(1 - psi_i/2*(i/iLag - 1)**2 - psi_i*(i/iLag - 1)*i/iLag) + eps_iPrime/RrPrime*qPrime*psi_i*(iPrime/i - 1)*(iPrime/i)**2 # investment Euler equation
+    ~ q*RrPrime = MPKPrime*cap_utilPrime + (1-delta)*qPrime - cap_util_costsPrime # return to capital
+    ~ mc = w * n / (1 - alpha) / y # real marginal costs
+    ~ MPK = alpha*mc*y/(cap_util*kLag) # marginal product of capital
+    ~ cap_util_costs = MPKSS*(cap_util - 1) + psi_u/(1-psi_u)/2*(cap_util - 1)**2 # capital utilisation costs
+    ~ (1-psi_u)*(MPK - MPKSS) = psi_u*(cap_util - 1) # cap_util utilisation
+
+    ## "finance" block
+    ~ Rb = Rr - zeta # real bond returns
+    ~ Ra = assetshareLag * (div + equity) / equityLag + (1 - assetshareLag) * Rr # real asset returns
+    ~ div = (1 - psi_p/2*(pi/pitilde - 1)**2)*y - w * n - i
+    ~ divPrime + equityPrime = equity * RrPrime
+
+    ## policy block
+    ~ Rn = (Rstar*((pi/piSS)**phi_pi)*((y/ySS)**phi_y))**(1-rho)*RnLag**rho # Taylor rule for the notional nominal interest rate
+    ~ R = max(elb,Rn) # ZLB
+    ~ Rr = RLag/pi # ex-post real rate
+    ~ tax = ((Rr-1) * Bgov + g + transfers) / w / n # government budget
+
+    # exogenous block
+    ~ log(beta) = (1-rho_beta)*log(betaSS) + rho_beta*log(betaLag) + e_beta # discount factor shock
+    ~ log(Rstar) = (1-rho_r)*log(RstarSS) + rho_r*log(RstarLag) + e_r # shock to the natural rate of interest
+    ~ log(eps_i) = rho_i*log(eps_iLag) + e_i # shock to marginal efficiency of investment
+    ~ log(price_markup) = (1-rho_p)*log(price_markupSS) + rho_p*log(price_markupLag) + e_p # price markup shock
+    ~ log(wage_markup) = (1-rho_w)*log(wage_markupSS) + rho_w*log(wage_markupLag) + e_w # wage markup shock
+    ~ log(z) = (1-rho_z)*log(zSS) + rho_z*log(zLag) + e_z # technology shock
+    ~ g = (gSS)**(1-rho_g)*gLag**rho_g*exp(e_g) # level of government spending
+    ~ transfers = transfersSS**(1-rho_t)*transfersLag**rho_t*exp(e_t) # exogenous transfers
+
+steady_state:
+    fixed_values:
+        # parameters:
+        sigma_c: 2. # intertemporal elasticity of substitution
+        sigma_l: 2.9 # inverse Frisch elasticity of labour supply
+        chi: .5 # utility weight of labor disutility
+        theta: 6. # elasticity of substitution final good
+        theta_w: 11. # elasticity of substitution wages
+        delta: 0.025 # depreciation rate
+        psi_p: 60. # parameter on the costs of price adjustment
+        psi_w: 96. # parameter on the costs of wage adjustment
+        psi_i: 5.6 # parameter on the costs of investment adjustment
+        psi_u: 0.8 # parameter on the capital utilisation costs
+        psi_a0: 0.25 # parameter on portfolio adjustment no.1
+        psi_a1: 15 # parameter on portfolio adjustment no.2
+        psi_a2: 2 # parameter on portfolio adjustment no.3
+        zeta: 0.005 # liquidity premium
+        phi_pi: 1.5 # Taylor rule coefficient on inflation
+        phi_y: 0.1 # Taylor rule coefficient on output
+        rho: 0.8 # persistence in (notional) nominal interest rate
+        omega_p: 0.44 # coefficient on steady state inflation in price indexation
+        omega_w: 0.66 # coefficient on steady state wage inflation in wage indexation
+        rho_beta: 0.8 # persistence of discount factor shock
+        rho_z: 0.9 # persistence of technology shocks
+        rho_p: 0.9 # persistence of price MU shock
+        rho_w: 0.9 # persistence of wage MU shock
+        rho_g: 0.9 # persistence of government spending shock
+        rho_i: 0.9 # persistence of MEI shock
+        rho_r: 0.9 # persistence of MP shock
+        rho_t: 0.8 # persistence of MP shock
+        Bgov: 2.8 # government bonds
+        alpha: 0.2
+        iota: 0. # degree of dowards nominal wage rigidity
+        elb: 0. # position of ELB
+
+        # steady state
+        beta: 0.98 # discount factor
+        z: 1. # technology
+        q: 1. # value of capital in consumption units
+        eps_i: 1. # investment technology shock
+        cap_util: 1. # capital utilization
+        cap_util_costs: 0. # capital utilization costs
+        g: 0.2 # government spending
+        wage_markup: theta_w/(theta_w-1)
+        price_markup: theta/(theta-1)
+        mc: 1/price_markup # marginal costs
+        pi: 1.02^.25 # steady state inflation
+        piwn: pi # wage inflation
+        pitilde: pi
+        piwntilde: pi
+        transfers: 1e-5 # government transfers
+
+    init_guesses:
+        # A, B & C are residuals, starting values are not important. n & y determine starting values for the rest
+        n: 1.13962345 # labor supply
+        y: 1.68118186 # output
+
+        # implicitely determined
+        w: mc*y*(1-alpha)/n # wages
+        k: (y*n**(alpha-1))**(1/alpha)
+        i: delta*k
+        MPK: alpha*mc*y/k
+        Rr: MPK + (1-delta)
+        tax: ((Rr-1) * Bgov + g + transfers) / w / n
+        ucee: wage_markup*chi*n**(1+sigma_l)/(1 - tax)/w/n # ALSO determined by hh
+        div: y - w*n - i
+        R: Rr*pi
+        Rn: R
+        Rstar: R
+        equity: div/(Rr - 1)
+        wealth: equity + Bgov
+        Ra: Rr
+        Rb: Rr - zeta # real bond returns
+        wn: w
+
+        # get rough idea on initial value functions
+        z_grid: income(skills_grid, tax, w, n, transfers)
+        WaPrime: egm_init_Wa(b_grid, a_grid, z_grid, sigma_c)
+        WbPrime: egm_init_Wb(b_grid, a_grid, z_grid, sigma_c)
