@@ -1,0 +1,75 @@
+[project]
+name = "better-timetagger-cli"
+version = "0.1.1"
+description = "A command line tool for TimeTagger. This is a more feature-rich and ergonomic fork of the original timetagger-cli, providing better user experience and additional features."
+authors = [
+    { name = "Paul Bütof", email = "paul@passionate-bytes.com" },
+    { name = "Almar Klein" },
+]
+maintainers = [
+    { name = "Paul Bütof", email = "paul@passionate-bytes.com" },
+]
+license-files = ["LICENSE"]
+readme = "README.md"
+keywords = ["timetagger", "cli", "command-line", "time-tracking", "productivity", "time", "tracking", "self-hosting", "self-hosted"]
+requires-python = ">=3.10"
+dependencies = [
+    "click>=8.2.0",
+    "dateparser>=1.2.1",
+    "requests>=2.32.3",
+    "rich>=14.0.0",
+    "toml>=0.10.2",
+]
+
+[project.urls]
+Repository = "https://github.com/PassionateBytes/better-timetagger-cli"
+Issues = "https://github.com/PassionateBytes/better-timetagger-cli/issues"
+
+[project.scripts]
+timetagger = "better_timetagger_cli.cli:cli"
+t = "better_timetagger_cli.cli:cli"
+
+[dependency-groups]
+dev = [
+    "mypy[reports]>=1.15.0",
+    "pytest>=8.3.5",
+    "pytest-cov>=6.1.1",
+    "pytest-reporter>=0.5.3",
+    "pytest-reporter-html1>=0.9.3",
+    "ruff>=0.11.10",
+    "types-dateparser>=1.2.0.20250516",
+    "types-requests>=2.32.0.20250515",
+    "types-toml>=0.10.8.20240310",
+]
+
+# ===[ Build System ]===
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/better_timetagger_cli"]
+
+# ===[ Ruff Config ]===
+[tool.ruff]
+line-length = 160
+
+[tool.ruff.lint]
+select = [
+    "E", # pycodestyle
+    "F", # pyflakes
+    "I", # isort
+    "UP", # pyupgrade
+    "Q", # quotes
+    "B", # bugbear
+    "N", # pep8-naming
+]
+ignore = ["E203", "E501"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+# ===[ PyTest Config ]===
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
