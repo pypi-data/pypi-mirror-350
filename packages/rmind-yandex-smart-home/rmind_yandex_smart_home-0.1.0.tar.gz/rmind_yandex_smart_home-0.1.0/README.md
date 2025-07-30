@@ -1,0 +1,1 @@
+# rmind.yandex.smart.home
