@@ -1,0 +1,8 @@
+from enum import Enum
+
+class JobConversationMessageType(str, Enum):
+    MESSAGE = 'MESSAGE'
+    STATUS_MESSAGE = 'STATUS_MESSAGE'
+    ACTION_MESSAGE = 'ACTION_MESSAGE'
+    OFFER_REQUEST_MESSAGE = 'OFFER_REQUEST_MESSAGE'
+    OFFER_MESSAGE = 'OFFER_MESSAGE'
