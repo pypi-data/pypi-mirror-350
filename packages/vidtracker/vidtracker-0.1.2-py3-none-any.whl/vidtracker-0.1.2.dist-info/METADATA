@@ -1,0 +1,163 @@
+Metadata-Version: 2.1
+Name: vidtracker
+Version: 0.1.2
+Summary: Video Object Tracking Toolkit
+Author-email: Keyne Oei <keynekassapa13@gmail.com>
+License: MIT License
+        
+        Copyright (c) 2025 Keyne Oei
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: contourpy >=1.1.1
+Requires-Dist: cycler >=0.12.1
+Requires-Dist: fonttools >=4.57.0
+Requires-Dist: importlib-resources >=6.4.5
+Requires-Dist: kiwisolver >=1.4.7
+Requires-Dist: loguru >=0.7.3
+Requires-Dist: matplotlib >=3.7.5
+Requires-Dist: numpy >=1.24.4
+Requires-Dist: opencv-python >=4.11.0.86
+Requires-Dist: packaging >=25.0
+Requires-Dist: pillow >=10.4.0
+Requires-Dist: pyparsing >=3.1.4
+Requires-Dist: python-box >=7.2.0
+Requires-Dist: python-dateutil >=2.9.0.post0
+Requires-Dist: six >=1.17.0
+Requires-Dist: zipp >=3.20.2
+Requires-Dist: scikit-learn
+
+# VidTracker
+
+[![CI](https://github.com/keynekassapa13/vidtracker/actions/workflows/test.yml/badge.svg)](https://github.com/keyneoei/vidtracker/actions/workflows/test.yml)
+![Python](https://img.shields.io/badge/python-3.8%2B-blue)
+![License](https://img.shields.io/github/license/keynekassapa13/vidtracker)
+
+**VidTracker** is a Python package for object tracking 
+
+---
+
+## Tracker
+
+| Tracker | Paper | Description |
+|--------|-------|-------------|
+| `DFSTracker` | *Distribution Fields for Tracking* (CVPR 2012) | Smooth histogram fields with spatial/feature domain convolution |
+| `MILTracker` | *Visual Tracking with Online Multiple Instance Learning* (CVPR 2009) | Online boosting with Haar features |
+| `LKTracker` | Based on Lucas-Kanade optical flow | Tracks feature points and estimates affine transforms |
+
+
+## Dataset
+
+You can download the original MILTrack dataset (e.g., `cliffbar`) from:  
+--> [https://bbabenko.github.io/miltrack.html](https://bbabenko.github.io/miltrack.html)
+
+Extract the dataset into `data/input/` to match the folder structure shown below.
+
+## Project Structure
+
+```lua
+.
+├── config.json
+├── data
+│   ├── input
+│   │   ├── cliffbar
+│   │   │   ├── cliffbar_frames.txt
+│   │   │   ├── cliffbar_gt.txt
+│   │   │   ├── cliffbar_MIL_TR*.txt
+│   │   │   ├── imgs/
+│   │   │       └── imgXXXXX.png
+│   │   ├── cliffbar.zip
+│   └── output/
+│   │   ├── cliffbar
+│   │   │   └── imgXXXXX.png
+├── tests/
+└── vidtracker/
+    ├── cli.py
+    ├── dfs.py
+    ├── lk.py
+    ├── mil.py
+    ├── util.py
+    └── video.py
+
+```
+---
+
+## Installation
+
+### From PyPI:
+
+```bash
+pip install vidtracker
+```
+
+### From GitHub:
+
+```bash
+pip install git+https://github.com/keyneoei/vidtracker.git
+````
+
+### Or locally:
+
+```bash
+git clone https://github.com/keyneoei/vidtracker.git
+cd vidtracker
+pip install .
+```
+
+## CLI Usage
+
+```bash
+python -m vidtracker.cli --input=data/input/cliffbar/imgs --output=data/output/cliffbar --tracker=DFS --show_frames
+```
+
+## Usage Example (Python)
+
+```python
+from vidtracker import DFSTracker, MILTracker, LKTracker
+
+tracker_type = "DFS"    # or "MIL", "LK"
+frame = ...             # read video frame
+init_bbox = ...         # init bbox
+cfg = ...               # configuration (box)
+
+if tracker_type == "DFS":
+    tracker = DFSTracker(frame, init_bbox, cfg)
+elif tracker_type == "MIL":
+    tracker = MILTracker(frame, init_bbox, cfg)
+elif tracker_type == "LK":
+    tracker = LKTracker(frame, init_bbox, cfg)
+
+# Process subsequent frames
+x, y, w, h, angle = tracker.process_frame(next_frame)
+```
+---
+
+## References
+
+* **DFS**: Sevilla-Lara, L., Learned-Miller, E. (2012). *Distribution Fields for Tracking*. CVPR.
+* **MIL**: Babenko, B., Yang, M.-H., & Belongie, S. (2009). *Visual Tracking with Online Multiple Instance Learning*. CVPR.
+* **LK**: Lucas, B., & Kanade, T. (1981). *An Iterative Image Registration Technique*. DARPA.
+
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
