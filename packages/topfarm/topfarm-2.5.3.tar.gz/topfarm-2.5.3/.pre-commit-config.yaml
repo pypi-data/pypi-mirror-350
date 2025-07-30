@@ -1,0 +1,18 @@
+repos:
+  - repo: local
+    hooks:
+      - id: pep8
+        name: check formatting
+        entry: autopep8 --recursive --ignore=E501,W504 --exclude="*Colonel*" --exit-code --in-place --aggressive topfarm
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+  - repo: https://github.com/kynan/nbstripout
+    rev: 0.8.1
+    hooks:
+      - id: nbstripout
+        args:
+          [
+            "--extra-keys=metadata.kernelspec metadata.language_info.version",
+          ]
+        files: ^docs/notebooks/.*\.ipynb$
