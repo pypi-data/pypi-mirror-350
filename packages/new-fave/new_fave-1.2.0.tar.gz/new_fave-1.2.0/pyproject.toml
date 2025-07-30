@@ -1,0 +1,76 @@
+[tool.poetry]
+name = "new-fave"
+version = "1.2.0"
+description = "New Vowel Extraction Suite"
+authors = ["JoFrhwld <jofrhwld@gmail.com>"]
+license = "GPLv3"
+readme = "README.md"
+packages = [{include = "new_fave", from="src"}]
+homepage = "https://forced-alignment-and-vowel-extraction.github.io/new-fave/"
+repository = "https://github.com/Forced-Alignment-and-Vowel-Extraction/new-fave"
+
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.13"
+fasttrackpy = "^0.5.3"
+numpy = "<=2.2"
+tqdm = "^4.66.2"
+fave-recode = "^0.3.0"
+click = "^8.1.7"
+cloup = "^3.0.5"
+fave-measurement-point = "^0.1.5"
+xlsx2csv = "^0.8.2"
+python-magic = {version = "^0.4.27", markers = "sys_platform != 'win32'"}
+python-magic-bin = {version = "^0.4.14", markers = "sys_platform == 'win32'"}
+scipy = "^1.13.1"
+cloudpickle = "^3.0.0"
+librosa = "^0.10.2.post1"
+toml = "^0.10.2"
+aligned-textgrid = "^0.8"
+polars = "^1.23.0"
+fastexcel = "^0.13.0"
+
+
+[tool.poetry.group.docs.dependencies]
+quartodoc = "^0.7.2"
+ipython = "^8.21.0"
+nbformat = "^5.9.2"
+jupyter = "^1.0.0"
+great-tables = "^0.13.0"
+
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.29.2"
+matplotlib = "^3.8.3"
+dill = "^0.3.8"
+hvplot = "^0.9.2"
+pyarrow = "^19.0.1"
+
+
+[tool.poetry.group.test.dependencies]
+pytest = "<8.0.0"
+pytest-cov = "<5.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
+    "--cov-config=tests/.coveragerc",
+    "--cov-report=xml",
+    "--cov",
+    "--log-cli-level=CRITICAL"
+]
+filterwarnings =[
+    "ignore::UserWarning",
+    "ignore::DeprecationWarning"
+]
+pythonpath = "src"
+testpaths = "tests"
+
+
+[tool.poetry.scripts]
+fave-extract = 'new_fave.extract:fave_extract'
