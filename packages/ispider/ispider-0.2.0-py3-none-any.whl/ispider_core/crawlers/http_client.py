@@ -1,0 +1,52 @@
+from datetime import datetime
+import asyncio
+import functools
+
+import httpx
+
+from ispider_core.engines import mod_httpx
+from ispider_core.engines import mod_curl
+
+from ispider_core import settings
+
+
+import httpx
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
+
+
+async def handle_httpx(reqsA, mod=0, headers={}):
+    timeout = httpx.Timeout(30, connect=settings.TIMEOUT)
+    limits = httpx.Limits(max_connections=100)
+
+    async with httpx.AsyncClient(timeout=timeout, limits=limits, follow_redirects=True, headers=headers) as client:
+        tasks = [
+            mod_httpx.fetch_with_httpx(reqA, client, mod)
+            for reqA in reqsA
+        ]
+        return await asyncio.gather(*tasks, return_exceptions=True)
+
+def handle_curl(reqsA, mod=0):
+    with ThreadPoolExecutor() as executor:
+        tasks = [
+            executor.submit(mod_curl.fetch_with_curl, reqA)
+            for reqA in reqsA
+        ]
+        return [t.result() for t in tasks]
+
+
+def fetch_all(reqsA, mod=0, headers={}):
+    httpx_reqs = [r for r in reqsA if r[5] == "httpx"]
+    curl_reqs = [r for r in reqsA if r[5] == "curl"]
+
+    results = []
+
+    if httpx_reqs:
+        httpx_results = asyncio.run(handle_httpx(httpx_reqs, mod, headers))
+        results.extend(httpx_results)
+
+    if curl_reqs:
+        curl_results = handle_curl(curl_reqs, mod)
+        results.extend(curl_results)
+
+    return results
