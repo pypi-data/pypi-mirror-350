@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=77.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "genlayer-test"
+version = "0.1.1"
+description = "GenLayer Testing Suite"
+authors = [
+    { name = "GenLayer" }
+]
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "pytest",
+    "genlayer-py==0.1.0",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Software Development :: Testing",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+[project.entry-points.pytest11]
+gltest = "gltest.plugin_hooks"
+
+[project.scripts]
+gltest = "gltest_cli.main:main"
