@@ -1,0 +1,46 @@
+[project]
+name = "brave-api-client"
+description = "Brave API client for Python"
+readme = "README.md"
+requires-python = ">=3.10,<4"
+dependencies = [
+    "httpx>=0.28.1",
+    "pydantic>=2.11.5",
+]
+dynamic = ["version"]
+classifiers = [
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Typing :: Typed",
+]
+
+packages = [
+    { include = "brave_api" },
+]
+
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.mypy]
+plugins = ["pydantic.mypy"]
+python_version = "3.10"
+strict = true
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.targets.wheel]
+packages = ["brave_api"]
+
+[dependency-groups]
+dev = [
+    "mkdocs>=1.6.1",
+    "pre-commit>=4.2.0",
+    "pytest>=8.3.5",
+    "pytest-asyncio>=0.26.0",
+    "pytest-cov>=6.1.1",
+]
