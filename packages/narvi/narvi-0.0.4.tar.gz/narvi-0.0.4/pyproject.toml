@@ -1,0 +1,43 @@
+[build-system]
+requires = [
+    "setuptools>=62",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "narvi"
+dynamic = [ "version" ]
+authors = [{ "name" = "Visual Topology", "email" = "dev@visualtopology.com" }]
+description = "A lightweight Python application server"
+dependencies = []
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: POSIX :: Linux",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+    "Development Status :: 3 - Alpha",
+]
+
+requires-python = ">=3.10"
+
+[project.urls]
+Homepage = "https://visualtopology.org/narvi"
+Documentation = "https://visualtopology.org/narvi"
+Repository = "https://codeberg.org/visual-topology/narvi"
+Issues = "https://codeberg.org/visual-topology/narvi/issues"
+Changelog = "https://codeberg.org/visual-topology/hyrrokkin/src/branch/main/CHANGELOG.md"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.optional-dependencies]
+tornado = ["tornado"]
+
+[tool.setuptools.package-data]
+narvi = ["*.js", "*.png", "*.html", "*.css", "*.svg"]
+
+[tool.setuptools.dynamic]
+version = {attr = "narvi.__version__"}
+

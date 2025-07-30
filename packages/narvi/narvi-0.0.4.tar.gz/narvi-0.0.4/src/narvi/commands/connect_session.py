@@ -1,0 +1,54 @@
+# MIT License
+#
+# Narvi - a simple python web application server
+#
+# Copyright (C) 2022-2025 Visual Topology Ltd
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+class ConnectSession:
+
+    def __init__(self, app_name, app_parameters, session_id, query_parameters, headers, send_fn):
+        self.app_name = app_name
+        self.app_parameters = app_parameters
+        self.session_id = session_id
+        self.query_parameters = query_parameters
+        self.headers = headers
+        self.send_fn = send_fn
+
+    def get_session_id(self):
+        return self.session_id
+
+    def get_app_parameters(self):
+        return self.app_parameters
+
+    def get_query_parameters(self):
+        return self.query_parameters
+
+    def get_headers(self):
+        return self.headers
+
+    def get_send_fn(self):
+        return self.send_fn
+
+    def set_send_fn(self, new_fn):
+        self.send_fn = new_fn
+
+    def __repr__(self):
+        return f"ConnectSession({self.session_id})"
