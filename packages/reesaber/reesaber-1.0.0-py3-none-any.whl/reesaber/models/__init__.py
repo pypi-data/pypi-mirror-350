@@ -1,0 +1,1 @@
+"""Model classes for ReeSaber configurations."""
