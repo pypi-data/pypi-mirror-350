@@ -1,0 +1,126 @@
+
+# BabaDB
+
+**BabaDB** — Encrypted Async File-Based Database for Pydantic Models
+
+---
+
+## Overview
+
+BabaDB is a lightweight asynchronous file-based database designed specifically for working with [Pydantic](https://pydantic.dev/) models. It stores data as encrypted lines in a file, providing simple async methods to add, get, update, and delete your models.
+
+---
+
+## Features
+
+- Asynchronous API using `async` / `await`
+- Works seamlessly with Pydantic models
+- Line-based encrypted file storage
+- Simple, minimalistic, easy to use
+- Configurable logging:
+  - `logging=None`: logs to terminal
+  - `logging=True`: logs to timestamped file in `baba_logs/`
+  - `logging=False`: disables logging
+
+---
+
+## Installation
+
+```bash
+pip install babadb
+````
+
+Or clone the repo and install manually.
+
+---
+
+## Basic Usage
+
+```python
+import asyncio
+from pydantic import BaseModel
+from baba import Baba, BabaSession
+
+class Product(BaseModel):
+    id: int
+    name: str
+    price: float
+
+async def main():
+    db = Baba('products.baba', logging=None)  # Logging to terminal
+    async with BabaSession(db.engine, model=Product) as session:
+        await session.add(Product(id=1, name="Apple", price=0.99))
+        await session.add(Product(id=2, name="Banana", price=0.79))
+
+        products = await session.get_all()
+        for p in products:
+            print(p)
+
+asyncio.run(main())
+```
+
+---
+
+## API Reference
+
+### `Baba(filename: str, logging: Optional[bool] = None)`
+
+* `filename`: database file name
+* `logging`: controls logging
+
+  * `None` - log to terminal
+  * `True` - log to file in `baba_logs/`
+  * `False` - disable logging
+
+Creates a database instance and internal engine and session.
+
+### `BabaSession(engine, model)`
+
+* `engine`: BabaEngine instance
+* `model`: Pydantic model class
+
+Provides async context manager with methods:
+
+* `add(model_instance)`: Add a new record
+* `get_all()`: Get all records as model instances
+* `get_by_id(id_value)`: Get one record by id
+* `update(id_value, new_model_instance)`: Update record by id
+* `delete(id_value)`: Delete record by id
+* `clear_cache()`: Clear internal session cache
+
+### `BabaEngine(filename: str, logging: Optional[bool])`
+
+Low-level engine with:
+
+* `write(data: str)`
+* `read_all() -> List[str]`
+* `clear()`
+
+Handles encrypted storage and logging.
+
+---
+
+## Logging
+
+* Default logs to terminal.
+* `logging=True` saves logs to `baba_logs/YYYY-MM-DD_HH-MM-SS.log`.
+* `logging=False` disables all logs.
+* Log format:
+
+  ```
+  [BABA LOG] (info): message
+  [BABA LOG] (error): message
+  ```
+
+---
+
+## Contributing
+
+Contributions are welcome! Feel free to open issues or submit pull requests.
+
+---
+
+## License
+
+MIT License © 2025 BabaDB Contributors
+
