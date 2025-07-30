@@ -1,0 +1,102 @@
+
+  <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+  <script src="https://unpkg.com/@popperjs/core@2"></script>
+  <script src="https://unpkg.com/cytoscape-popper@1"></script>
+  <style>
+    #cy { width:100%; height:700px; display:block; }
+    .cy-tooltip {
+      background: white;
+      padding: 6px 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      font-size: 0.9em;
+      pointer-events: none;
+      z-index: 10;
+    }
+  </style>
+
+  <div id="cy"></div>
+
+  <script>
+    const nodes = {{ view.context.nodes_json|tojson }};
+    const edges = {{ view.context.edges_json|tojson }};
+
+    const colorByStatus = {
+      "failed": "#e74c3c",
+      "success": "#27ae60",
+      default: "#3498db"
+    };
+
+    const cy = cytoscape({
+      container: document.getElementById('cy'),
+      elements: [
+        ...nodes.map(n => ({
+          data: {
+            id: n.id,
+            label: `${n.label}\n(${n.id})`,
+            info: n.info,
+            detail: n.detail_url
+          }
+        })),
+        ...edges.map(e => ({ data: { source: e.source, target: e.target } }))
+      ],
+      style: [
+        {
+          selector: 'node',
+          style: {
+            'content': 'data(label)',
+            'text-valign': 'bottom',
+            'text-halign': 'center',
+            'text-wrap': 'wrap',
+            'text-max-width': 80,
+            'background-color': ele => colorByStatus[ele.data('info').status] || colorByStatus.default,
+            'border-width': ele => ele.data('is_root') ? 4 : 1,
+            'border-color': '#333',
+            'color': '#000',
+            'text-outline-width': 0
+          }
+        },
+        {
+          selector: 'edge',
+          style: {
+            'width': 2,
+            'line-color': '#aaa',
+            'curve-style': 'bezier',
+            'target-arrow-shape': 'triangle',
+            'target-arrow-color': '#aaa'
+          }
+        }
+      ],
+      layout: { name: 'cose', animate: false }
+    });
+
+    cy.on('mouseover', 'node', evt => {
+      const node = evt.target;
+      const ref = node.popperRef();
+      const tip = document.createElement('div');
+      tip.className = 'cy-tooltip';
+      const info = node.data('info');
+      tip.innerHTML = `
+        <strong>${node.data('label').split('\n')[0]}</strong><br/>
+        ID: ${node.id()}<br/>
+        Parents: ${info.parents.join(', ') || 'None'}<br/>
+        Children: ${info.children.join(', ') || 'None'}
+      `;
+      document.body.appendChild(tip);
+      node.popper = Popper.createPopper(ref, tip, { placement: 'top' });
+    });
+
+    cy.on('mouseout', 'node', evt => {
+      const node = evt.target;
+      if (node.popper) {
+        node.popper.destroy();
+        node.popper = null;
+      }
+      document.querySelectorAll('.cy-tooltip').forEach(el => el.remove());
+    });
+
+    cy.on('tap', 'node', evt => {
+      window.open(evt.target.data('detail'), '_blank');
+    });
+  </script>
