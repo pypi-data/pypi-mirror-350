@@ -1,0 +1,227 @@
+
+##############################################################################
+
+Functions That Create Patches
+from zyxxy2.shape_functions import
+
+draw_a_triangle(tip_x, tip_y, width, height)
+draw_a_square(['left', 'right'], ['bottom', 'top'], side)
+draw_a_rectangle(['left', 'right'], ['bottom', 'top'], width, height)
+draw_a_rhombus(center_x, center_y, width, height)
+draw_a_circle(center_x, center_y, radius)
+draw_an_ellipse(center_x, center_y, width, height)
+draw_a_drop(tip_x, tip_y, width, height)
+draw_a_star(center_x, center_y, ends_qty, radius_1, radius_2)
+draw_a_regular_polygon(center_x, center_y, radius, vertices_qty)
+draw_a_crescent(center_x, center_y, width, depth_1, depth_2)
+draw_a_heart(tip_x, tip_y, angle_top_middle, tip_addon)
+draw_an_egg(tip_x, tip_y, power, height_widest_point, width, height)
+draw_a_sector(center_x, center_y, angle_start, angle_end, radius, radius_2)
+draw_an_elliptic_sector(center_x, center_y, angle_start, angle_end, height, width)
+draw_a_squiggle(center_x, center_y, angle_start, angle_end, speed_x, width, height)
+draw_a_polygon(diamond_x, diamond_y, contour)
+
+Admissible Style Arguments:
+  color, layer_nb, opacity, outline_color, outline_layer_nb, outline_linewidth, outline_joinstyle, outline_capstyle, diamond_color
+
+Admissible Movement Arguments:
+  turn, stretch, stretch_direction (optional)
+
+##############################################################################
+
+Functions That Create Lines
+from zyxxy2.shape_functions import
+
+draw_a_segment(start_x, start_y, length)
+draw_a_power_curve(start_x, start_y, end_1, end_2, power, nb_intermediate_points)
+draw_an_arc(center_x, center_y, angle_start, angle_end, radius)
+draw_a_smile(center_x, center_y, width, depth)
+draw_a_zigzag(start_x, start_y, width, height, angle_start, nb_segments)
+draw_a_wave(start_x, start_y, width, height, angle_start, nb_waves)
+draw_a_coil(start_x, start_y, angle_start, nb_turns, speed_x, speed_out)
+draw_a_squiggle_curve(center_x, center_y, angle_start, angle_end, speed_x, width, height)
+draw_a_broken_line(diamond_x, diamond_y, contour)
+
+Admissible Style Arguments:
+  color, layer_nb, linewidth, joinstyle, capstyle, diamond_color
+
+Admissible Movement Arguments:
+  turn, stretch, stretch_direction (optional)
+
+##############################################################################
+
+Another Function That Can Create A Shape
+from zyxxy2.shape_functions import
+
+clone_a_shape(init_shape)
+
+##############################################################################
+
+Layer-Related Functions
+from zyxxy2.layers import
+
+
+# adding new layers
+new_layer()
+new_layer_outline_behind()
+
+# handling shapes per layers
+shift_layers(shift, layer_nbs=[])
+turn_layers(turn, diamond, layer_nbs=[])
+stretch_layers(diamond, stretch, layer_nbs=[])
+make_layers_visible(layer_nbs=[])
+make_layers_invisible(layer_nbs=[])
+stretch_layers_with_direction(diamond, stretch_coeff, stretch_direction, layer_nbs=[])
+
+##############################################################################
+
+Default Shape Style-Related Functions
+from zyxxy2.shape_style import
+
+set_default_line_style(color, layer_nb, linewidth, joinstyle, capstyle, diamond_color)
+set_default_patch_style(color, layer_nb, opacity, outline_color, outline_layer_nb, outline_linewidth, outline_joinstyle, outline_capstyle, diamond_color)
+set_default_outline_style(color, layer_nb, linewidth, joinstyle, capstyle)
+
+
+#default value for the diamond_size_factor is 1.0
+set_default_diamond_size_factor(<just enter parameter value, no name is needed>)
+set_default_color_etc_settings(<just enter parameter value, no name is needed>)
+set_default_patch_color(<just enter parameter value, no name is needed>)
+set_default_line_color(<just enter parameter value, no name is needed>)
+set_default_diamond_color(<just enter parameter value, no name is needed>)
+set_default_linewidth(<just enter parameter value, no name is needed>)
+set_default_layer_nb(what, layer_nb)
+
+##############################################################################
+
+Utility Functions
+from zyxxy2.utils import
+
+
+## ALGEBRA HELPERS ## 
+is_an_integer(val)
+is_a_number(val)
+find_GCD(n, m)
+find_LCM(n, m)
+get_sign(n)
+is_the_same_point(p1, p2)
+equal_or_almost(a, b)
+conc_contours(a, b)
+is_the_same_contour(p1, p2, is_closed_override=None, start_1=0, start_2=0, opposite_directions=False)
+is_contour_V_symmetric(contour)
+remove_contour_points(contour, range_to_remove)
+link_contours()
+add_a_left_mirror(contour, mirror_x=0)
+
+## MOVEMENT HELPERS ## 
+get_rotation_matrix(turn)
+move_by_matrix(contour, diamond, matrix)
+turn(contour, turn, diamond=[0, 0])
+rotate_point(point, diamond, turn)
+stretch_something(what_to_stretch, diamond, stretch_coeff)
+
+## RANDOM NUMBERS HELPERS ## 
+# both limits, min and max, are included in possible outcomes
+random_integer_number(max, min=0.0)
+random_number(limit_1, limit_2=0.0)
+random_element(list_to_choose_from)
+fix_random_seed()
+random_point_on_axes(ax=None, x_min=None, x_max=None, y_min=None, y_max=None)
+
+## TRIGONOMETRY HELPERS ## 
+calc_Pythagoras(a, b)
+
+# angles are measured in hours
+sin(turn)
+cos(turn)
+tan(turn)
+asin(sin_value)
+acos(cos_value)
+atan(tan_value)
+
+##############################################################################
+
+Default Shape Style-Related Functions
+(no import required)
+
+<an instance of Shape>.get_shape(shape_nb)
+<an instance of Shape>.get_visible()
+<an instance of Shape>.get_xy()
+<an instance of Shape>.get_bbox()
+<an instance of Shape>.get_axes()
+<an instance of Shape>.get_layer_nb()
+<an instance of Shape>.get_shape_parameter(param_name)
+<an instance of Shape>.get_diamond_coords()
+<an instance of Shape>.set_visible(val)
+<an instance of Shape>.make_visible()
+<an instance of Shape>.make_invisible()
+<an instance of Shape>.set_color(color)
+<an instance of Shape>.set_style()
+<an instance of Shape>.get_color()
+<an instance of Shape>.update_contour(new_contour)
+<an instance of Shape>.set_shape_parameters()
+<an instance of Shape>.increment_shape_parameters()
+<an instance of Shape>.reset_given_shapename_and_arguments_and_move(shapename, kwargs_shape, kwargs_common)
+<an instance of Shape>.clip(clip_outline)
+<an instance of Shape>.shift(shift)
+<an instance of Shape>.shift_x(shift)
+<an instance of Shape>.shift_y(shift)
+<an instance of Shape>.shift_with_direction(shift, direction)
+<an instance of Shape>.shift_to(new_diamond_coords)
+<an instance of Shape>.shift_x_to(new_diamond_x)
+<an instance of Shape>.shift_y_to(new_diamond_y)
+<an instance of Shape>.shift_to_position(xy, position)
+<an instance of Shape>.turn(turn, diamond_override=None)
+<an instance of Shape>.turn_to(turn, diamond_override=None)
+<an instance of Shape>.flip_upside_down(diamond_override=None)
+<an instance of Shape>.stretch(stretch, diamond_override=None)
+<an instance of Shape>.stretch_with_direction(stretch_coeff, direction, diamond_override=None)
+<an instance of Shape>.stretch_x(stretch, diamond_override=None)
+<an instance of Shape>.stretch_y(stretch, diamond_override=None)
+
+##############################################################################
+
+color-Related Functions
+from zyxxy2.colors import
+
+find_color_code(color_name)
+colors_are_equal(color_1, color_2)
+get_color_mix(color_1, proportion_of_color_1, color_2)
+get_color_tone(color, proportion_of_color)
+get_color_tint(color, proportion_of_color)
+get_color_shade(color, proportion_of_color)
+create_gradient_colors(rgb_start, rgb_end, nb_steps=None)
+get_multi_gradient_color(colors, how_many=200, color_limits=None)
+
+##############################################################################
+
+Functions That Create Examples
+from zyxxy2.examples import
+
+
+## THE FLAGS ##
+example_japanese_flag()
+example_belgian_flag()
+example_cuban_flag()
+example_finnish_flag()
+example_japanese_naval_flag()
+example_british_flag()
+example_us_flag()
+
+## THE PENGUINS ##
+example_penguins()
+draw_a_gradient_chessboard(my_color=blue, size=10)
+
+## YELLOW CAT ##
+example_yellow_cat(cat_color=Yellow, background_color=SeaWave)
+example_yellow_cat_animation(cat_color=Yellow, background_color=SeaWave)
+nice_cat()
+
+## THE CROC ##
+example_croc(model=https://i.pinimg.com/564x/a5/b7/92/a5b792acaf4c776302be5bd79da8ddbd.jpg)
+example_animated_croc()
+draw_mandala_made_out_of_circles(big_radius=20, circles_qty=13, rgb_start=superGold, rgb_end=red, outline_linewidth=2, support_linewidth=0, min_flower_radius=0.01)
+emoji_fish(fish_color=darkturquoise, outline_color=black, eye_color=black)
+emoji_apple(stalk_depth=1, stalk_width=5, leaf_width=3, apple_color=greenyellow, leaf_color=green)
+emoji_bee(bee_yellow=yellow, wing_color=cyan)
+emoji_smiley()
