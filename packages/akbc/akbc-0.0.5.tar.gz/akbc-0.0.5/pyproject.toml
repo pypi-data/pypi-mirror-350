@@ -1,0 +1,33 @@
+[project]
+name = 'akbc'
+authors = [
+  { name = "Pride Leong", email = "lykling.lyk@gmail.com" }
+]
+description = "a simple keyboard controller for apollo"
+requires-python = ">3.6"
+dynamic = ["dependencies", "version", "readme"]
+
+[project.scripts]
+akbc = "akbc.__main__:main"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+version = {attr = "akbc.VERSION"}
+readme = {file = "README.md"}
+
+[tool.setuptools.packages]
+find = {}
+
+[tool.setuptools.package-dir]
+akbc = "akbc"
+
+[project.urls]
+"Homepage" = "https://github.com/lykling/apollo-keyboard-controller/tree/main"
+"Bug Tracker" = "https://github.com/lykling/apollo-keyboard-controller/issues"
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
