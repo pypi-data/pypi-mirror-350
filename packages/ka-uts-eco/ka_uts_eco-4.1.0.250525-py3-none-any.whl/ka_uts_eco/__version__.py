@@ -1,0 +1,10 @@
+__title__ = 'ka_uts_eco'
+__description__ = 'EcoVadis Excel Interface.'
+__url__ = 'https://kosakya.de'
+__version__ = '4.1.0.250525'
+__build__ = 0x024200
+__author__ = 'Bernd Stroehle'
+__author_email__ = 'bernd.stroehle@kosakya.de'
+__license__ = 'GPL-3.0-only WITH Classpath-Exception-2.0 OR BSD-3-Clause'
+__copyright__ = 'Copyright 2025 Bernd Stroehle'
+__cake__ = u'\u2728 \U0001f370 \u2728'
