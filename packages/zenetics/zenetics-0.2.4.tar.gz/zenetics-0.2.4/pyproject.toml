@@ -1,0 +1,55 @@
+[tool.poetry]
+name = "zenetics"
+version = "0.2.4"
+description = "Zenetics SDK"
+authors = ["Zenetics <contact@zenetics.io>"]
+readme = "README.md"
+packages = [{include = "zenetics", from = "src"}]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.14"
+requests = "==2.32.3"
+pydantic = "^2.10.6"
+typer = "^0.15.1"
+rich = "^13.7.0"
+httpx = ">=0.28.0"
+pydantic-settings = "^2.7.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+black = "^23.7.0"
+mypy = "^1.5.0"
+flake8 = "^6.1.0"
+pytest-cov = "^4.1.0"
+bumpversion = "^0.6.0"
+pytest-asyncio = "^0.23.5"
+pytest-mock = "^3.12.0"
+
+[tool.poetry.scripts]
+zenetics = "zenetics.cli.main:main"
+
+[tool.poetry.urls]
+Homepage = "https://github.com/zenetics/zenetics-sdk"
+Issues = "https://github.com/zenetics/zenetics-sdk/issues"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88 
+target-version = ['py38']
+include = '\.pyi?$'
+
+[tool.mypy]
+python_version = "3.10"
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = true
+strict_optional = true
+strict_equality = true
