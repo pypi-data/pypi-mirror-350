@@ -1,0 +1,64 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["sip_client*"]
+
+[project]
+name = "nx-sip-client"
+version = "1.0.1"
+description = "Python SIP client library with PJSUA2 and native UDP implementations"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "William Wu", email = "science.william@gmail.com"}
+]
+maintainers = [
+    {name = "William Wu", email = "science.william@gmail.com"}
+]
+keywords = [
+    "sip", 
+    "voip", 
+    "pjsua2", 
+    "udp", 
+    "telephony", 
+    "rtp", 
+    "audio", 
+    "communication"
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Communications :: Telephony",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Networking"
+]
+requires-python = ">=3.8"
+dependencies = []
+
+[project.optional-dependencies]
+audio = [
+    "pyaudio",
+    "sounddevice",
+    "soundfile"
+]
+pjsua2 = [
+    # PJSUA2 需要手動編譯，無法直接從 PyPI 安裝
+    # 請參考 docker/Dockerfile 或項目文檔進行安裝
+]
+
+[project.urls]
+Homepage = "https://github.com/nexuni/sip-client"
+Documentation = "https://github.com/nexuni/sip-client#readme"
+Repository = "https://github.com/nexuni/sip-client.git"
+"Bug Tracker" = "https://github.com/nexuni/sip-client/issues"
+Changelog = "https://github.com/nexuni/sip-client/releases"
