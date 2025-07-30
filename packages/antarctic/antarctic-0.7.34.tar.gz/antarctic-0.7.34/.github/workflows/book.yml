@@ -1,0 +1,58 @@
+name: "book"
+
+on:
+- push
+
+
+jobs:
+  pdoc:
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Build the virtual environment for ${{ github.repository }}"
+        uses: tschm/cradle/actions/environment@v0.1.68
+
+      - uses: tschm/cradle/actions/pdoc@v0.1.68
+        with:
+          source-folder: src/antarctic
+
+
+  test:
+    runs-on: "ubuntu-latest"
+    steps:
+      # uses MongoMock
+      #- name: Start MongoDB
+      #  uses: supercharge/mongodb-github-action@1.12.0
+      #  with:
+      #    mongodb-version: '5.0'
+      #    mongodb-db: test
+      #    mongodb-port: 27017
+
+      - name: "Build the virtual environment for ${{ github.repository }}"
+        uses: tschm/cradle/actions/environment@v0.1.68
+
+      - uses: tschm/cradle/actions/test@v0.1.68
+        with:
+          tests-folder: src/tests
+
+  jupyter:
+    runs-on: "ubuntu-latest"
+    permissions:
+      contents: read
+    steps:
+      - name: "Build the virtual environment for ${{ github.repository }}"
+        uses: tschm/cradle/actions/environment@v0.1.68
+
+      - uses: tschm/cradle/actions/jupyter@v0.1.68
+
+  book:
+    runs-on: "ubuntu-latest"
+    needs: [test, pdoc, jupyter]
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout [${{ github.repository }}]
+        uses: actions/checkout@v4
+
+      - uses: tschm/cradle/actions/book@v0.1.68
