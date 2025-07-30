@@ -1,0 +1,131 @@
+# Aiology
+This is an easy to use ai communication package which you can easily setting it up and start working with it !!
+
+To download ,and use this package : `pip install Aiology`
+
+This package includes two modules :
+
+
+## AI
+By using this module you can start a text base communication with *Gemini* ai
+
+
+## PDF
+By using this module you can extract pdf files text (it works for Persian pdf too !!)
+
+
+## Easy set up
+This part depends on your purpose ,for example :
+
+### Using PDF module :
+This module needs two parameters which is your pdf path , and use_for_telegram:
+
+> [!NOTE]
+>
+>`use_for_telegram` -> This argument isn't crucial , if you use this module for telegram bot you should set it as
+>
+>True ,otherwise it's False as default 
+
+```Python
+#import our PDF module
+from Aiology import PDF
+
+#specify your pdf location
+pdf_path = "YOUR_PDF_PATH"
+
+#set up
+pdf = PDF(pdf_path)
+```
+
+Then you can get your pdf content by using these two functions :
+*get_pdf_content*
+*get_pdf_page_content*
+
+`get_pdf_content` -> extract all pdf pages content
+`get_pdf_page_content` -> extract specific pdf page content
+
+```Python
+pdf.get_pdf_content() #will extract all pdf pages content
+pdf.get_pdf_page_content() #will extract specific pdf page content
+```
+
+### Using AI module :
+This module needs two parameters which is your *Gemini* api key , and use_for_telegram:
+
+> [!NOTE]
+>
+>`use_for_telegram` -> This argument isn't crucial , if you use this module for telegram bot you should set it as
+>
+>True ,otherwise it's False as default 
+
+```Python
+#import our AI module
+from Aiology import AI
+
+#specify your Gemini api key
+api_key = "YOUR_GEMINI_API_KEY"
+
+#set up
+ai = AI(api_key)
+```
+
+Then you can start communication by ai by these two functions :
+*ask_question*
+*ask_pdf_question*
+
+`ask_question` -> Ask anything you want from Gemini by your api token
+`ask_pdf_question` -> Ask about your pdf content from Gemini by your api token
+
+```Python
+#ask anything from ai
+result = ai.ask_question("YOUR_TEXT_HERE")
+
+#print ai answer
+print(result)
+```
+
+If you want to ask ai questions about your pdf file ,you should pass `PDF` which is represents your pdf data to `ask_pdf_question` :
+
+> NOTE :
+>
+> `ask_pdf_question` takes 3 arguments :
+>
+> text -> Your text
+>
+> pdf -> PDF object which represent your pdf data
+>
+> pdf_page -> You can define a specific pdf page for ai to answer to your questions
+
+```Python
+#import modules
+from Aiology import PDF , AI
+
+#variables
+pdf_path = "YOUR_PDF_PATH"
+api_key = "YOUR_GEMINI_API_KEY"
+
+#PDF set up
+pdf = PDF(pdf_path)
+
+#Ai set up
+ai = AI(api_key)
+
+#ask about your pdf content
+result = ai.ask_pdf_question("YOUR_TEXT",pdf,1)
+
+#print result
+print(result)
+```
+
+# What's new ?
+Fixed some bugs
+
+We add telegram bot usage option in PDf part
+
+# Conclusion
+This is a powerful ,but small ai package which provide you useful tools
+
+I hope this will be useful for you
+
+### Single Star
+### Seyed Moied Seyedi 
