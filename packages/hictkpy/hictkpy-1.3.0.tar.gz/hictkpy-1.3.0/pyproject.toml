@@ -1,0 +1,166 @@
+# Copyright (C) 2023 Roberto Rossini <roberros@uio.no>
+#
+# SPDX-License-Identifier: MIT
+
+[build-system]
+requires = [
+  "conan>=2.0.5",
+  "nanobind>=2", # This is required in order to run stubgen
+  "numpy>=2",
+  "scikit-build-core>=0.10",
+  "typing_extensions",
+]
+
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "hictkpy"
+dynamic = ["version"]
+description = "Python bindings for hictk: read and write .cool and .hic files directly from Python"
+license = "MIT"
+license-files = ["LICENSE", "external/licenses/*"]
+readme = "README.md"
+authors = [
+  {name = "Roberto Rossini", email = "roberros@uio.no"}
+]
+requires-python = ">=3.9"
+classifiers = [
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+
+dependencies = []
+
+optional-dependencies.numpy = [
+  "numpy",
+]
+
+optional-dependencies.pandas = [
+  "hictkpy[pyarrow]",
+  "pandas>=2.1.0,!=2.2.0",
+]
+
+optional-dependencies.pyarrow = [
+  "pyarrow>=16",
+]
+
+optional-dependencies.scipy = [
+  "scipy",
+]
+
+optional-dependencies.all = [
+  "hictkpy[numpy,pandas,pyarrow,scipy]",
+]
+
+optional-dependencies.test = [
+  "pytest>=8.0",
+]
+
+optional-dependencies.dev = [
+  "hictkpy[all,test]",
+  "black>=24.10",
+  "clang-format>=19.1",
+  "isort>=5.13",
+  "gersemi>=0.15",
+]
+
+[tool.scikit-build]
+minimum-version = "0.10"
+build-dir = "build/{wheel_tag}"
+metadata.version.provider = "scikit_build_core.metadata.setuptools_scm"
+sdist.include = ["src/_version.py"]
+wheel.expand-macos-universal-tags = true
+cmake.build-type = "Release"
+
+[tool.scikit-build.cmake.define]
+BUILD_SHARED_LIBS = { env="HICTKPY_BUILD_SHARED_LIBS", default="OFF" }
+CMAKE_OSX_DEPLOYMENT_TARGET = { env="HICTKPY_OSX_DEPLOYMENT_TARGET", default="10.15" }
+CMAKE_PROJECT_TOP_LEVEL_INCLUDES = { env="HICTKPY_PROJECT_TOP_LEVEL_INCLUDES", default="cmake/conan_provider.cmake" }
+CONAN_INSTALL_ARGS = { env="HICTKPY_CONAN_INSTALL_ARGS", default="--settings=compiler.cppstd=17;--build=missing;--update;--options=*/*:shared=False" }
+HICTKPY_BUILD_PORTABLE_WHEELS_WIN = { env="HICTKPY_BUILD_PORTABLE_WHEELS_WIN", default="OFF" }
+HICTK_BUILD_BENCHMARKS = "OFF"
+HICTK_BUILD_EXAMPLES = "OFF"
+HICTK_BUILD_TOOLS = "OFF"
+HICTK_ENABLE_FUZZY_TESTING = "OFF"
+HICTK_ENABLE_GIT_VERSION_TRACKING = "OFF"
+HICTK_ENABLE_TESTING = "OFF"
+HICTK_WITH_ARROW = "ON"
+HICTK_WITH_EIGEN = "ON"
+
+[tool.setuptools_scm]
+write_to = "src/_version.py"
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = ["-ra", "--showlocals", "--strict-markers", "--strict-config"]
+xfail_strict = true
+filterwarnings = [
+  "error",
+  "ignore:(ast.Str|Attribute s|ast.NameConstant|ast.Num) is deprecated:DeprecationWarning:_pytest",
+  "ignore:datetime\\.datetime\\.utcfromtimestamp\\(\\)*:DeprecationWarning",  # https://github.com/pytest-dev/pytest/issues/11528
+]
+python_files = [
+  "test/test*.py"
+]
+testpaths = [
+  "test/"
+]
+
+[tool.cibuildwheel]
+build-frontend = "build"
+manylinux-x86_64-image = "quay.io/pypa/manylinux_2_28_x86_64:2025.05.24-1"
+manylinux-i686-image = "quay.io/pypa/manylinux_2_28_i686:2025.05.24-1"
+manylinux-aarch64-image = "quay.io/pypa/manylinux_2_28_aarch64:2025.05.24-1"
+manylinux-ppc64le-image = "quay.io/pypa/manylinux_2_28_ppc64le:2025.05.24-1"
+manylinux-s390x-image = "quay.io/pypa/manylinux_2_28_s390x:2025.05.24-1"
+manylinux-pypy_x86_64-image = "quay.io/pypa/manylinux_2_28_x86_64:2025.05.24-1"
+manylinux-pypy_i686-image = "quay.io/pypa/manylinux_2_28_i686:2025.05.24-1"
+manylinux-pypy_aarch64-image = "quay.io/pypa/manylinux_2_28_aarch64:2025.05.24-1"
+
+skip = ["cp314*", "*musllinux*", "pp*"]
+test-command = "python -m pytest {project}/test"
+test-extras = ["test", "numpy", "pandas", "pyarrow", "scipy"]
+test-skip = ["cp314*", "*universal2", "pp*"]
+
+# Setuptools bug causes collision between pypy and cpython artifacts
+before-build = [
+  "rm -rf '{project}/build'",
+]
+
+[tool.cibuildwheel.linux]
+before-all = "dnf install -y clang"
+
+# We are using static linking, thus repairing wheels should not be necessary.
+# Exception being when building portable Linux wheels.
+# See https://github.com/scikit-build/scikit-build-core/pull/698#issuecomment-2082991257
+[tool.cibuildwheel.macos]
+repair-wheel-command = ""
+
+[tool.cibuildwheel.windows]
+repair-wheel-command = ""
+
+[tool.ruff]
+extend-select = [
+  "B", # flake8-bugbear
+  "B904",
+  "I", # isort
+  "PGH", # pygrep-hooks
+  "RUF", # Ruff-specific
+  "UP", # pyupgrade
+]
+extend-ignore = [
+  "E501", # Line too long
+]
+target-version = "py39"
+
+[tool.black]
+line-length = 120
+target-version = ["py39"]
+
+[tool.isort]
+profile = "black"
