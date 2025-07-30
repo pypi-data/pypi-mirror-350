@@ -1,0 +1,72 @@
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
+# Main for bkr
+_bkr()
+{
+    local cur prev words cword
+    _init_completion || return
+
+    local bkr_help
+    # Using a cache dir can greatly speed up the bash completions, but only use
+    # it if the user has created the directory.
+    local bkr_help_cache_dir=~/.cache/bkr/bash_completion/
+    if [[ -d ${bkr_help_cache_dir} ]]; then
+        local bkr_help_file=${bkr_help_cache_dir}/bkr.help.txt
+        if [[ ! -f ${bkr_help_file} ]]; then
+            \bkr --help 2>/dev/null > ${bkr_help_file}
+        fi
+        bkr_help=$( \cat ${bkr_help_file} )
+    else
+        # Only run 'bkr --help' once as the time it takes is perceptible
+        bkr_help=$( \bkr --help 2>/dev/null )
+    fi
+
+    # Commands offered as completions for bkr
+    local commands=( $( echo "${bkr_help}" | \grep "  " | \cut -d' ' -f3 | \cut -d'=' -f1 | \grep -v '^-' ) )
+    # General options available
+    local base_options=$( echo "${bkr_help}" | _parse_help -)
+
+    local i cmd
+    # Determine if we already have a command, for example 'job-submit' or 'distros-list'
+    for (( i=1; i < ${cword}; i++ )) ; do
+        if [[ "${commands[@]}" =~ " ${words[i]} " ]]; then
+            cmd=${words[i]}
+            break
+        fi
+    done
+
+    # If we don't have a command yet, provide them as completion choices
+    if [[ -z "${cmd}" ]]; then
+        COMPREPLY=( $( compgen -W ' ${commands[@]} ${base_options[@]}' -- "${cur}" ) )
+        return
+    fi
+
+    # We have a command, provide the options for that command
+    local extra_opts=""
+    local bkr_usage
+    # Use the cache dir if we have it
+    if [[ -d ${bkr_help_cache_dir} ]]; then
+        local bkr_help_file=${bkr_help_cache_dir}/bkr.help.${cmd}.txt
+        if [[ ! -f ${bkr_help_file} ]]; then
+            \bkr ${cmd} --help 2>/dev/null > ${bkr_help_file}
+        fi
+        bkr_usage=$( \cat ${bkr_help_file} )
+    else
+        bkr_usage=$( \bkr ${cmd} --help 2>/dev/null )
+    fi
+    # Determine if our command accepts files, such as the 'job-submit' command,
+    # if so then we will add the '-f' flag.
+    if echo "${bkr_usage}" | \grep -q "^Usage:.*<.*>"; then
+        extra_opts="-f"
+    fi
+
+    local options=$( echo "${bkr_usage}" | _parse_help -)
+    COMPREPLY=( $( compgen -W ' ${options[@]}' ${extra_opts} -- "${cur}" ) )
+
+    return 0
+} &&
+complete -F _bkr -o filenames bkr bkrmain.py
