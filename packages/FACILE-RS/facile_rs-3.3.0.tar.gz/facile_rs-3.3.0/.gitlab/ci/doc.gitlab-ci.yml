@@ -1,0 +1,13 @@
+build-doc:
+  stage: build
+  image: python:3.11
+  before_script:
+  - pip install -r docs/sphinxdocs/requirements.txt
+  # argparse extension of Sphinx needs the FACILE-RS dependencies to be installed.
+  - pip install .
+  script:
+  - cd docs/sphinxdocs
+  - make html
+  artifacts:
+    paths:
+    - docs/sphinxdocs/build/html
