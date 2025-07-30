@@ -1,0 +1,69 @@
+[build-system]
+requires = ["hatchling", "tomli"]
+build-backend = "hatchling.build"
+
+[project]
+name = "tadata-sdk"
+version = "0.1.0"
+description = "Tadata Python SDK"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+    {name = "Tadata Inc."},
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+keywords = ["openapi", "mcp", "llm", "modelcontextprotocol", "tadata"]
+dependencies = [
+    "pydantic>=2.0.0",
+    "pydantic-settings>=2.5.2",
+    "httpx>=0.24.0",
+    "tomli>=2.2.1",
+    "pyyaml>=6.0",
+]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.15.0",
+    "ruff>=0.9.10",
+    "types-setuptools>=75.8.2.20250305",
+    "pytest>=8.3.5",
+    "pytest-asyncio>=0.26.0",
+    "pytest-cov>=6.1.1",
+    "pre-commit>=4.2.0",
+    "types-pyyaml>=6.0.12.20250516",
+    "pip>=25.1.1",
+    "fastapi>=0.115.12",
+    "django>=5.2.1",
+    "drf-spectacular>=0.28.0",
+    "djangorestframework>=3.16.0",
+    "django-stubs>=5.2.0",
+    "djangorestframework-stubs>=3.16.0",
+    "build>=1.2.2.post1",
+    "twine>=6.1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/tadata-org/tadata-python-sdk"
+Documentation = "https://github.com/tadata-org/tadata-python-sdk#readme"
+"Bug Tracker" = "https://github.com/tadata-org/tadata-python-sdk/issues"
+"PyPI" = "https://pypi.org/project/tadata-python-sdk/"
+"Source Code" = "https://github.com/tadata-org/tadata-python-sdk"
+"Changelog" = "https://github.com/tadata-org/tadata-python-sdk/blob/main/CHANGELOG.md"
+
+[tool.hatch.build.targets.wheel]
+packages = ["tadata_sdk"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py313"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+python_files = "test_*.py"
