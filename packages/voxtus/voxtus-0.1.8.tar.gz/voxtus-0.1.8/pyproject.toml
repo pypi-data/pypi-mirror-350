@@ -1,0 +1,23 @@
+[project]
+name = "voxtus"
+version = "0.1.8"
+description = "Transcribe Internet videos and media files to text using faster-whisper"
+authors = [{ name = "Johan Thorén", email = "johan@thoren.xyz" }]
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "AGPL-3.0-or-later" }
+dependencies = ["faster-whisper==1.1.1", "yt-dlp==2025.5.22", "returns"]
+
+[project.optional-dependencies]
+test = ["pytest", "pytest-xdist"]
+
+[project.scripts]
+voxtus = "voxtus.__main__:main"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+python_files = "test_*.py"
+addopts = "-ra --tb=short -n auto"
