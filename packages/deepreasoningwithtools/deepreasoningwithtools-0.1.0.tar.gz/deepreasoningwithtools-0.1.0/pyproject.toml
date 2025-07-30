@@ -1,0 +1,44 @@
+[project]
+name = "deepreasoningwithtools"
+version = "0.1.0"
+description = "A package to inject python execution into the reasoning trace of LLMs."
+authors = [
+    {name = "Lukas",email = "lukas@nelsoftware.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "transformers (>=4.51.3,<5.0.0)",
+    "datasets (>=3.5.0,<4.0.0)",
+    "accelerate (>=1.6.0,<2.0.0)",
+    "pydantic (>=2.11.3,<3.0.0)",
+    "requests (>=2.32.3,<3.0.0)",
+    "yfinance (>=0.2.56,<0.3.0)",
+    "smolagents (>=1.14.0,<2.0.0)"
+]
+
+[project.optional-dependencies]
+vllm = [
+    "uvicorn (>=0.34.2,<0.35.0)",
+    "fastapi (>=0.115.12,<0.116.0)",
+    "bitsandbytes (>=0.45.5,<0.46.0)",
+    "torch (==2.6.0)",
+    "vllm (==0.8.3)",
+    "flashinfer-python",
+]
+
+litellm = [
+    "litellm (>=1.67.1,<2.0.0)",
+]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[project.scripts]
+deepreasoningwithtools = "deepreasoningwithtools.cli:cli_main"
+
+[[tool.poetry.source]]
+name = "flashinfer"
+url = "https://flashinfer.ai/whl/cu126/torch2.6"
+priority = "supplemental"
