@@ -1,0 +1,116 @@
+{% extends "simple_webpage.html.jinja" %}
+
+{% block head_extra %}
+  <style>
+    .textpress-logo {
+      font-family: "PT Serif", serif;
+      font-size: 1.3rem;
+      display: flex;
+      letter-spacing: 0.03em;
+    }
+    .logo-black {
+      color: #000000;
+    }
+    .logo-grey {
+      color: #A5A8A6;
+    }
+    .textpress-header {
+      font-family: var(--font-sans);
+      font-size: 1rem;
+      background-color: var(--color-bg-alt);
+      border-bottom: 1px solid var(--color-border-hint);
+      transition: color 0.2s ease-in-out;
+    }
+    .textpress-main-nav {
+      color: hsl(140, 2%, 65%);
+      letter-spacing: 0.03em;
+      font-size: var(--font-size-small);
+    }
+    .textpress-main-nav a {
+      color: var(--color-text-hint);
+    }
+    .textpress-main-nav a:hover {
+      text-decoration: none;
+      color: var(--color-primary-light);
+    }
+    /* Ensure logo link doesn't change color or get underlined on hover */
+    .textpress-logo:hover {
+      text-decoration: none;
+    }
+    .textpress-footer {
+      font-family: var(--font-sans);
+      color: var(--color-text-hint);
+      font-size: var(--font-size-small);
+    }
+    .boxed-text {
+      border: 1px solid hsl(140, 2%, 34%);
+      padding: 0.2rem 1.2rem;
+      border-radius: 4px;
+      margin: 2rem 0;
+    }
+    .centered-headers h1,
+    .centered-headers h2,
+    .centered-headers h3 {
+      text-align: center;
+    }
+    .get-started {
+      border: 1px solid hsl(140, 2%, 0%);
+      background-color: var(--color-bg-alt);
+    }
+    .justify p {
+      text-align: justify;
+      text-align-last: left;
+    }
+    .textpress-main-content pre,
+    .textpress-main-content code {
+      color: hsl(0, 18%, 39%);
+    }
+
+  </style>
+{% endblock head_extra %}
+
+{% block body_header %}
+  <header class="textpress-header">
+    <div class="max-w-3xl mx-auto flex justify-between items-baseline px-6 py-2">
+      <a href="https://texpr.com/" class="textpress-logo">
+        <div class="flex">
+          <span class="logo-black">T</span>
+          <span class="logo-black">E</span>
+          <span class="logo-black">X</span>
+          <span class="logo-grey">T</span>
+          <span class="logo-black">P</span>
+          <span class="logo-black">R</span>
+          <span class="logo-grey">E</span>
+          <span class="logo-grey">S</span>
+          <span class="logo-grey">S</span>
+        </div>
+      </a>
+      <nav class="textpress-main-nav flex items-center flex-grow ml-8">
+        <div class="ml-auto flex">
+          <a href="https://texpr.com/#get-started" class="mr-4">Try Textpress</a>
+          <a href="https://github.com/jlevy/texpr">GitHub</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+{% endblock body_header %}
+
+{% block main_content %}
+  <div class="textpress-main-content mt-6 {{ add_classes|safe }}">
+    {{ super() }}
+  </div>
+{% endblock main_content %}
+
+{% block body_footer %}
+  {# Align footer with body content #}
+  <footer class="textpress-footer container max-w-3xl mx-auto px-6 py-6 text-center">
+    <p>
+      Published on <a href="https://texpr.com/">Textpress</a>
+      <br/>
+      <a href="https://texpr.com/textpress/d/privacy.html">Privacy</a>
+      &nbsp;•&nbsp;
+      <a href="https://texpr.com/textpress/d/tos.html">Terms of Service</a>
+    </p>
+  </footer>
+{% endblock body_footer %}
+
