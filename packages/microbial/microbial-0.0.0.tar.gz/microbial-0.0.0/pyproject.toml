@@ -1,0 +1,38 @@
+[project]
+name = "microbial"
+version = "0.0.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "biopython>=1.85",
+    "matplotlib>=3.10.3",
+    "numpy>=2.2.6",
+    "pandas>=2.2.3",
+    "seaborn>=0.13.2",
+]
+
+[project.scripts]
+microbial = "microbial:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "black>=25.1.0",
+    "mypy>=1.15.0",
+    "rust>=1.3.1",
+    "starch",
+]
+optional = [
+    "ipykernel>=6.29.5",
+    "jupyter>=1.1.1",
+    "jupyterlab-myst>=2.4.2",
+    "mystmd>=1.3.28",
+    "sympy>=1.14.0",
+]
+
+[tool.uv.sources]
+starch = { path = "../starch" }
