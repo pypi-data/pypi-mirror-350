@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Review your completed tasks">
+    <title>Achievements - Frogtab</title>
+    <link rel="icon" href="favicons/icon-16.png" sizes="16x16" type="image/png">
+    <link rel="icon" href="favicons/icon-32.png" sizes="32x32" type="image/png">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicons/icon-180-apple.png">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="stylesheet" href="simple.min.css?sha1=cd9f38e059ac6aeb35d9a4ecae19703f43aa404d">
+    <link rel="stylesheet" href="simple-customizations.css?sha1=3f186823fec845a25ba4debacb10968ed8f3f30a">
+  </head>
+  <body>
+    <header>
+      <nav></nav>
+      <h1>Achievements</h1>
+      <p>
+        Review your completed tasks
+      </p>
+    </header>
+    <main id="main">
+      <div id="case-disabled" class="conditional display">
+        <p>
+          To track your completed tasks, first enable the Achievements feature.
+          <a tabindex="0" href="help#tracking-your-completed-tasks" title="Tracking your completed tasks">Learn more</a>
+        </p>
+      </div>
+      <div id="case-enabled-empty" class="conditional">
+        <p class="actions">
+          <a tabindex="0" id="actions-import" href="#" class="display">Import</a>
+          <a tabindex="0" id="actions-import" href="help#tracking-your-completed-tasks" target="_blank" title="Tracking your completed tasks" class="display">Help</a>
+        </p>
+        <p>
+          You haven't completed any tasks!
+        </p>
+      </div>
+      <div id="case-enabled" class="conditional">
+        <p class="actions">
+          <a tabindex="0" id="actions-edit" href="#">Edit</a>
+          <a tabindex="0" id="actions-done" href="#">Done</a>
+          <a tabindex="0" id="actions-import" href="help#tracking-your-completed-tasks" target="_blank" title="Tracking your completed tasks" class="display">Help</a>
+        </p>
+        <div tabindex="-1" id="select-editmode" class="notice">
+          <div class="display">
+            <p>
+              Click tasks to mark them as incomplete.
+              Frogtab will move incomplete tasks to:
+            </p>
+            <div>
+              <label>
+                <input tabindex="0" id="editmode-to-today" type="radio" name="editmodes" checked> Today
+              </label>
+              <label>
+                <input tabindex="0" id="editmode-to-inbox" type="radio" name="editmodes"> Inbox
+              </label>
+            </div>
+            <p class="before-compact">
+              To make other changes to your completed tasks:
+            </p>
+            <ol>
+              <li><a tabindex="0" id="actions-edit-export" href="#" download="Frogtab_achievements.txt">Export a todo.txt file</a>, then edit the todo.txt file</li>
+              <li><a tabindex="0" id="actions-edit-import" href="#">Import the todo.txt file</a></li>
+            </ol>
+          </div>
+        </div>
+        <div tabindex="-1" id="confirm-import" class="notice">
+          <div class="display">
+            <p>
+              Frogtab will import completed tasks when you
+              <a tabindex="0" id="finish-import" href="#" title="Import Completed Tasks">click here</a>.
+            </p>
+            <p>
+              Your existing completed tasks will be deleted.
+            </p>
+            <div>
+              <button tabindex="0" id="cancel-import">Don't Import Completed Tasks</button>
+            </div>
+          </div>
+        </div>
+        <div id="tasks" class="checklist"></div>
+      </div>
+      <input type="file" id="choose-todotxt-file" style="display: none" accept=".txt">
+    </main>
+    <script>
+      // ******** Shared helpers ********
+
+      class FrogtabDate {
+        constructor(date = null) {
+          if (date === null) {
+            date = FrogtabDate.stringFromObject(new Date()); // today as YYYY-MM-DD
+          }
+          else if (date instanceof Date) {
+            date = FrogtabDate.stringFromObject(date); // date as YYYY-MM-DD
+          }
+          if (typeof date == "string") {
+            const match = date.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+            if (match === null) {
+              this.object = new Date(date); // 00:00:00 in local timezone
+              this.string = FrogtabDate.stringFromObject(this.object);
+              return;
+            }
+            this.object = new Date(   // 00:00:00 in local timezone
+              parseInt(match[1]),     // year
+              parseInt(match[2]) - 1, // month index
+              parseInt(match[3])      // day
+            );
+            this.string = date;
+            return;
+          }
+          throw new TypeError("date type not supported");
+        }
+        addDays(n) {
+          this.object.setTime(this.object.getTime() + (n * 86400000));
+          this.string = FrogtabDate.stringFromObject(this.object);
+        }
+        getWeekdayIndex() {
+          return this.object.getDay();
+        }
+        getFormatted(format) {
+          return this.object.toLocaleDateString(undefined, format);
+        }
+        static stringFromObject(obj) {
+          const stringYYYY = obj.toLocaleDateString(undefined, {
+            year: "numeric"
+          });
+          const stringMM = obj.toLocaleDateString(undefined, {
+            month: "2-digit"
+          });
+          const stringDD = obj.toLocaleDateString(undefined, {
+            day: "2-digit"
+          });
+          return [stringYYYY, stringMM, stringDD].join("-");
+        }
+      }
+
+      function prepareLocalStorageDates() {
+        if (localStorage.getItem("date") === null) {
+          localStorage.setItem("date", (new FrogtabDate()).string);
+          return;
+        }
+        const date = new FrogtabDate(localStorage.getItem("date"));
+        if (localStorage.getItem("date") == date.string) {
+          return;
+        }
+        console.info("Migrating localStorage to yyyy-mm-dd dates…");
+        localStorage.setItem("date", date.string);
+        if (localStorage.getItem("achievements") === null) {
+          return;
+        }
+        const achievements = JSON.parse(localStorage.getItem("achievements"));
+        for (const day of achievements) {
+          day.date = (new FrogtabDate(day.date)).string;
+        }
+        localStorage.setItem("achievements", JSON.stringify(achievements));
+      }
+
+      function matchKeyboardEvent(event, modifierSpec, key) {
+        if (!("key" in event)) {
+          return false;
+        }
+        let testCmdCtrl = (platformApple && event.metaKey) || (!platformApple && event.ctrlKey);
+        if (!modifierSpec.includes("c")) {
+          testCmdCtrl = !testCmdCtrl;
+        }
+        let testShift = event.shiftKey;
+        if (!modifierSpec.includes("s")) {
+          testShift = !testShift;
+        }
+        return testCmdCtrl && testShift & event.key.toLowerCase() == key && !event.altKey;
+      }
+
+
+      // ******** Other helpers ********
+
+      function buildWeekdayNameByDate() {
+        const weekdayNameByDate = {};
+        const date = new FrogtabDate();
+        for (let i = 0; i < 7; i++) {
+          weekdayNameByDate[date.string] = weekdayNames[date.getWeekdayIndex()];
+          date.addDays(-1);
+        }
+        return weekdayNameByDate;
+      }
+
+      function formatDateForPage(date, weekdayNameByDate) {
+        if (date.string in weekdayNameByDate) {
+          const dayAndMonth = date.getFormatted({
+            day: "numeric",
+            month: "short"
+          });
+          return `${dayAndMonth} (${weekdayNameByDate[date.string]})`;
+        }
+        return date.getFormatted({
+          day: "numeric",
+          month: "short",
+          year: "numeric"
+        });
+      }
+
+      function createTodotxt() {
+        const data = [];
+        for (const day of achievementsParsed) {
+          for (const task of day.tasks) {
+            data.push(`x ${day.date} ${task}`);
+          }
+        }
+        return (new TextEncoder()).encode(data.join("\n"));
+      }
+
+      function parseTodotxt(todotxt) {
+        const tasksByTime = {};
+        const lines = todotxt.split("\n");
+        for (const line of lines) {
+          const match = line.match(/^\s*x\s+(\d{4}-\d{2}-\d{2})\s+(\d{4}-\d{2}-\d{2}\s+)?/);
+          if (match === null) {
+            continue;
+          }
+          const taskText = line.substring(match[0].length).trimEnd();
+          const taskDate = new FrogtabDate(match[1]);
+          const taskTimeStr = taskDate.object.getTime().toString();
+          if (taskTimeStr in tasksByTime) {
+            tasksByTime[taskTimeStr].push(taskText);
+          }
+          else {
+            tasksByTime[taskTimeStr] = [taskText];
+          }
+        }
+        const parsed = [];
+        const timeInts = Object.keys(tasksByTime).map(str => parseInt(str));
+        for (const timeInt of timeInts.sort().reverse()) {
+          parsed.push({
+            date: (new FrogtabDate(new Date(timeInt))).string,
+            tasks: tasksByTime[timeInt.toString()]
+          });
+        }
+        return parsed;
+      }
+
+      function moveTaskBack(indexDay, indexTask) {
+        const taskText = achievementsParsed[indexDay].tasks[indexTask];
+        if (dom.editmodes.toToday.checked) {
+          // Append task to bottom of Today
+          if (localStorage.getItem("value.today") === null) {
+            localStorage.setItem("value.today", "");
+          }
+          let valueToday = localStorage.getItem("value.today").trimEnd();
+          if (valueToday != "") {
+            valueToday = `${valueToday}\n\n`;
+          }
+          valueToday = `${valueToday}${taskText}`;
+          localStorage.setItem("value.today", valueToday);
+        }
+        else {
+          // Append task to top of Inbox
+          if (localStorage.getItem("value.inbox") === null) {
+            localStorage.setItem("value.inbox", "");
+          }
+          let valueInbox = localStorage.getItem("value.inbox").trimStart();
+          if (valueInbox != "") {
+            valueInbox = `\n\n${valueInbox}`;
+          }
+          valueInbox = `${taskText}${valueInbox}`;
+          localStorage.setItem("value.inbox", valueInbox);
+        }
+        achievementsParsed[indexDay].tasks.splice(indexTask, 1);
+        if (achievementsParsed[indexDay].tasks.length == 0) {
+          achievementsParsed.splice(indexDay, 1);
+        }
+        achievementsCached = JSON.stringify(achievementsParsed);
+        localStorage.setItem("achievements", achievementsCached);
+      }
+
+      function displayTasks() {
+        const weekdayNameByDate = buildWeekdayNameByDate();
+        for (let indexDay = 0; indexDay < achievementsParsed.length; indexDay++) {
+          const day = achievementsParsed[indexDay];
+          const domTaskListDate = document.createElement("p");
+          dom.tasks.appendChild(domTaskListDate);
+          domTaskListDate.className = "before-compact";
+          const domTaskListDateText = document.createElement("strong");
+          domTaskListDate.appendChild(domTaskListDateText);
+          domTaskListDateText.textContent = formatDateForPage(
+            new FrogtabDate(day.date),
+            weekdayNameByDate
+          );
+          const domTaskList = document.createElement("ul");
+          dom.tasks.appendChild(domTaskList);
+          domTaskList.className = "compact";
+          for (let indexTask = 0; indexTask < day.tasks.length; indexTask++) {
+            const domTaskListItem = document.createElement("li");
+            domTaskList.appendChild(domTaskListItem);
+            const domTaskText = document.createElement("span");
+            domTaskListItem.appendChild(domTaskText);
+            domTaskText.className = "task-text";
+            domTaskText.textContent = day.tasks[indexTask];
+            domTaskText.addEventListener("mouseenter", () => {
+              domTaskListItem.classList.add("inner-hover");
+            });
+            domTaskText.addEventListener("mouseleave", () => {
+              domTaskListItem.classList.remove("inner-hover");
+            });
+            domTaskText.addEventListener("click", () => {
+              if (editingState != "editing") {
+                return;
+              }
+              moveTaskBack(indexDay, indexTask);
+              setView();
+            });
+            domTaskText.addEventListener("keydown", event => {
+              if (matchKeyboardEvent(event, "", "enter")) {
+                domTaskText.click();
+              }
+            });
+          }
+        }
+      }
+
+      function setViewDisabled() {
+        dom.caseDisabled.classList.add("display");
+        dom.caseEnabledEmpty.classList.remove("display");
+        dom.caseEnabled.classList.remove("display");
+        editingState = "";
+      }
+
+      function setViewEnabledEmpty() {
+        dom.caseDisabled.classList.remove("display");
+        dom.caseEnabledEmpty.classList.add("display");
+        dom.caseEnabled.classList.remove("display");
+        editingState = "";
+      }
+
+      function setViewEnabled() {
+        dom.caseDisabled.classList.remove("display");
+        dom.caseEnabledEmpty.classList.remove("display");
+        dom.caseEnabled.classList.add("display");
+        dom.actions.edit.classList.add("display");
+        dom.actions.done.classList.remove("display");
+        dom.selectEditmode.classList.remove("display");
+        dom.confirmImport.classList.remove("display");
+        dom.tasks.classList.remove("editing");
+        dom.tasks.classList.remove("selectable");
+        for (const element of document.querySelectorAll(".task-text")) {
+          element.tabIndex = -1;
+        }
+        dom.tasks.innerHTML = "";
+        displayTasks();
+        if (editingState.startsWith("editing")) {
+          viewEnabledSetEditing();
+        }
+      }
+
+      function viewEnabledSetEditing() {
+        editingState = "editing";
+        dom.actions.edit.classList.remove("display");
+        dom.actions.done.classList.add("display");
+        dom.selectEditmode.classList.add("display");
+        dom.selectEditmode.focus();
+        dom.confirmImport.classList.remove("display");
+        dom.tasks.classList.add("editing");
+        dom.tasks.classList.add("selectable");
+        for (const element of document.querySelectorAll(".task-text")) {
+          element.tabIndex = 0;
+        }
+      }
+
+      function viewEnabledEditingSetImporting() {
+        editingState = "editing/importing";
+        dom.selectEditmode.classList.remove("display");
+        dom.confirmImport.classList.add("display");
+        dom.confirmImport.focus();
+        dom.tasks.classList.remove("selectable");
+        for (const element of document.querySelectorAll(".task-text")) {
+          element.tabIndex = -1;
+        }
+        editingState = "editing/importing"
+      }
+
+      function setView() {
+        if (achievementsCached === null) {
+          setViewDisabled();
+          return;
+        }
+        achievementsParsed = JSON.parse(achievementsCached);
+        if (achievementsParsed.length == 0) {
+          setViewEnabledEmpty();
+          return;
+        }
+        setViewEnabled();
+      }
+
+      function startApp() {
+        setView();
+        dom.actions.import.addEventListener("click", event => {
+          event.preventDefault();
+          dom.chooseTodotxtFile.click();
+        });
+        dom.actions.edit.addEventListener("click", event => {
+          event.preventDefault();
+          editingState = "editing";
+          setView();
+        });
+        dom.actions.done.addEventListener("click", event => {
+          event.preventDefault();
+          editingState = "";
+          setView();
+        });
+        dom.editExport.addEventListener("click", () => {
+          const todotxt = createTodotxt();
+          const blob = new Blob([todotxt], {
+            type: "text/plain; charset=utf-8"
+          });
+          dom.editExport.href = URL.createObjectURL(blob);
+        });
+        dom.editImport.addEventListener("click", event => {
+          event.preventDefault();
+          dom.chooseTodotxtFile.click();
+        });
+        dom.finishImport.addEventListener("click", event => {
+          event.preventDefault();
+          achievementsParsed = achievementsStaged;
+          achievementsCached = JSON.stringify(achievementsParsed);
+          localStorage.setItem("achievements", achievementsCached);
+          editingState = "";
+          setView();
+        });
+        dom.cancelImport.addEventListener("click", () => {
+          editingState = "editing";
+          setView();
+        });
+        dom.chooseTodotxtFile.addEventListener("change", () => {
+          const todotxtFile = dom.chooseTodotxtFile.files[0];
+          if (todotxtFile === undefined) {
+            return;
+          }
+          const todotxtFileReader = new FileReader();
+          todotxtFileReader.onload = event => {
+            if (editingState == "") {
+              achievementsParsed = parseTodotxt(todotxtFileReader.result);
+              achievementsCached = JSON.stringify(achievementsParsed);
+              localStorage.setItem("achievements", achievementsCached);
+              setView();
+            }
+            else {
+              achievementsStaged = parseTodotxt(todotxtFileReader.result);
+              editingState = "editing/importing";
+              setView();
+              viewEnabledEditingSetImporting();
+            }
+          };
+          todotxtFileReader.readAsText(todotxtFile);
+          dom.chooseTodotxtFile.value = "";
+        });
+        window.addEventListener("storage", () => {
+          document.documentElement.setAttribute("data-theme", localStorage.getItem("ui.theme"));
+          if (localStorage.getItem("achievements") !== achievementsCached) {
+            achievementsCached = localStorage.getItem("achievements");
+            setView();
+          }
+        });
+      }
+
+
+      // ******** Initial setup ********
+
+      prepareLocalStorageDates();
+      if (localStorage.getItem("ui.theme") === null) {
+        localStorage.setItem("ui.theme", "system");
+      }
+      document.documentElement.setAttribute("data-theme", localStorage.getItem("ui.theme"));
+      const dom = {
+        caseDisabled: document.getElementById("case-disabled"),
+        caseEnabledEmpty: document.getElementById("case-enabled-empty"),
+        caseEnabled: document.getElementById("case-enabled"),
+        enable: document.getElementById("enable"),
+        actions: {
+          import: document.getElementById("actions-import"),
+          edit: document.getElementById("actions-edit"),
+          done: document.getElementById("actions-done")
+        },
+        selectEditmode: document.getElementById("select-editmode"),
+        editmodes: {
+          toToday: document.getElementById("editmode-to-today"),
+          toInbox: document.getElementById("editmode-to-inbox")
+        },
+        editExport: document.getElementById("actions-edit-export"),
+        editImport: document.getElementById("actions-edit-import"),
+        confirmImport: document.getElementById("confirm-import"),
+        finishImport: document.getElementById("finish-import"),
+        cancelImport: document.getElementById("cancel-import"),
+        tasks: document.getElementById("tasks"),
+        chooseTodotxtFile: document.getElementById("choose-todotxt-file")
+      };
+      const weekdayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      let achievementsCached = localStorage.getItem("achievements");
+      let achievementsParsed;
+      let achievementsStaged;
+      let editingState = "";
+      const platformApple = (
+        navigator.platform.startsWith("Mac")
+        || navigator.platform == "iPad"
+        || navigator.platform == "iPhone"
+      );
+      startApp();
+    </script>
+  </body>
+</html>
