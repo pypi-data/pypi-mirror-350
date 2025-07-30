@@ -1,0 +1,1 @@
+print("Using AI에 어서오세요! 아직 API 키가 없다면 readme.md를 읽어주세요!")
