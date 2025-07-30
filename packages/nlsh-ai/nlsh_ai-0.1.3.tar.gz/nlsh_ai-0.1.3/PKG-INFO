@@ -1,0 +1,345 @@
+Metadata-Version: 2.3
+Name: nlsh-ai
+Version: 0.1.3
+Summary: Natural Language Shell - AI-augmented command line interface
+License: MIT
+Keywords: ai,shell,cli,llm,natural-language,command-line
+Author: Isaac Harrison Gutekunst
+Author-email: isaac@supercortex.io
+Requires-Python: >=3.9,<4.0
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: System :: Shells
+Classifier: Topic :: Terminals
+Provides-Extra: anthropic
+Requires-Dist: langchain-anthropic (==0.3.9) ; extra == "anthropic"
+Requires-Dist: langchain-core (==0.3.61)
+Requires-Dist: langchain-openai (==0.3.18)
+Requires-Dist: langgraph (==0.4.7)
+Requires-Dist: openai (==1.82.0)
+Requires-Dist: prompt-toolkit (==3.0.51)
+Requires-Dist: python-dotenv (==1.1.0)
+Requires-Dist: rich (==13.9.4)
+Requires-Dist: typer (==0.12.5)
+Project-URL: Documentation, https://github.com/igutekunst/nlsh
+Project-URL: Homepage, https://github.com/igutekunst/nlsh
+Project-URL: Repository, https://github.com/igutekunst/nlsh
+Description-Content-Type: text/markdown
+
+# nlsh - Natural Language Shell
+
+An AI-augmented command line shell that wraps your existing shell and adds natural language command generation via LLM.
+
+## Features
+
+- **Shell Compatibility**: Works with any shell (bash, zsh, fish, sh)
+- **Natural Language Commands**: Use `llm: <prompt>` to generate shell commands from natural language
+- **Rich Context**: LLM has access to current directory, file listings, shell info, and environment
+- **Command History**: Full SQLite-based history tracking of all commands and LLM interactions
+- **Safety First**: Always prompts for confirmation before executing AI-generated commands
+- **Rich Terminal Output**: Beautiful terminal interface powered by Rich
+- **Streaming Responses**: Real-time streaming with animated progress spinners for tool calls
+- **Tool-Enabled AI**: AI can execute shell commands, read files, and gather system information with confirmation
+
+## Installation
+
+### Prerequisites
+
+- Python 3.9 or higher
+- Anthropic API key (preferred) or OpenAI API key
+- `uv` package manager (recommended) or pip
+
+### Using uv (recommended)
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd nlsh
+
+# Install with uv
+uv pip install -e .
+
+# Or install dependencies directly
+uv pip install rich openai typer python-dotenv
+```
+
+### Using pip
+
+```bash
+pip install -e .
+```
+
+## Configuration
+
+1. Copy the example environment file:
+```bash
+cp .env.example .env
+```
+
+2. Add your LLM API key(s) to `.env`:
+
+### Anthropic Claude (Preferred)
+```bash
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+ANTHROPIC_MODEL=claude-3-5-sonnet-20241022  # Optional: default model
+```
+
+### OpenAI (Alternative/Fallback)
+```bash
+OPENAI_API_KEY=your_openai_api_key_here
+OPENAI_MODEL=gpt-4o-mini  # Optional: default model
+```
+
+**Note**: nlsh will prefer Anthropic if both keys are available. Anthropic's Claude models often provide better tool usage and reasoning for shell tasks.
+
+3. Install optional Anthropic support (if using Anthropic):
+```bash
+# With Poetry
+poetry install --extras anthropic
+
+# With pip
+pip install langchain-anthropic
+```
+
+## Usage
+
+### Starting nlsh
+
+```bash
+nlsh
+```
+
+This will start the natural language shell interface with streaming enabled by default.
+
+#### Command Line Options
+
+```bash
+nlsh --help                    # Show all available options
+nlsh --no-stream              # Disable streaming (faster but less interactive)
+nlsh --use-simple             # Use simple OpenAI interface instead of LangGraph
+nlsh --debug                  # Enable debug mode
+```
+
+### Commands
+
+#### Regular Shell Commands
+Just type commands normally - they'll be passed through to your default shell:
+
+```bash
+bitchin-shell $ ls -la
+bitchin-shell $ cd src
+bitchin-shell $ git status
+```
+
+#### Natural Language Commands
+Use the `llm:` prefix for AI-generated commands:
+
+```bash
+nlsh $ llm: find all python files larger than 1MB
+nlsh $ llm: show me git commits from last week
+nlsh $ llm: compress all jpg files in this directory
+nlsh $ llm: install the requests package
+```
+
+The AI will:
+1. **Proactively use tools** to understand your environment (directory contents, git status, system info, etc.)
+2. **Analyze your request** and current context (working directory, files, shell type)
+3. **Gather additional information** if needed (with animated progress indicators)
+4. **Generate appropriate shell commands** based on discovered information
+5. **Show you the commands and ask for confirmation**
+6. **Execute the commands if you approve**
+
+#### Exiting
+```bash
+bitchin-shell $ exit
+# or
+bitchin-shell $ quit
+```
+
+## How It Works
+
+### Streaming Interface
+nlsh features a modern streaming interface that shows:
+
+- **🔄 Animated spinners** for tool operations (file reading, directory listing, etc.)
+- **📁 Real-time tool call descriptions** ("Reading file: config.py", "Checking git status")
+- **💬 Streaming AI responses** as they're generated
+- **✅ Tool completion confirmations** with result previews
+
+### Tool-Enabled AI
+The AI has access to powerful tools and uses them proactively:
+
+- **📁 File Operations**: List, read, and find files
+- **⚡ Shell Commands**: Execute commands with mandatory confirmation
+- **📊 Git Integration**: Check status, view logs, and diffs
+- **💻 System Info**: Access environment and system details
+- **🌳 Directory Trees**: Navigate and understand project structure
+
+**Key Feature**: The AI automatically uses these tools when relevant - you don't need to explicitly ask it to "check files" or "use git status". It proactively gathers information to provide better responses and commands.
+
+### Context Awareness
+The LLM receives rich context about your environment:
+
+- **Current working directory** and file listings
+- **Shell information** (type, version, features)
+- **System information** (OS, architecture)
+- **Environment variables** (PATH, HOME, etc.)
+- **Recent command history**
+- **Session conversation history** for long-running interactions
+
+### Shell Detection
+nlsh automatically detects your shell from the `$SHELL` environment variable and adapts:
+
+- **bash/zsh**: Standard POSIX syntax
+- **fish**: Fish-specific syntax and features
+- **sh**: Basic POSIX compatibility mode
+
+### History Tracking
+All interactions are stored in SQLite database (`~/.nlsh/history.db`):
+
+- Shell commands and their output
+- LLM interactions (prompts, generated commands, execution results)
+- Context snapshots
+- Session information
+
+### Session History Awareness
+nlsh maintains awareness of your current session's history to enable natural, long-running conversations:
+
+- **Previous commands and their results** are included in the LLM context
+- **Past AI interactions** help the AI understand conversation flow
+- **Failed commands** are remembered to avoid repeating mistakes
+- **Successful patterns** can be referenced in follow-up requests
+
+This enables commands like:
+```bash
+nlsh $ llm: find all large log files
+# AI finds files and shows commands
+
+nlsh $ llm: now compress those files from the previous search
+# AI remembers the previous search results and can reference them
+```
+
+## Examples
+
+### File Operations
+```bash
+nlsh $ llm: find all Python files modified in the last 24 hours
+# Generates: find . -name "*.py" -mtime -1
+
+nlsh $ llm: backup all my config files to a tar archive
+# Generates: tar -czf config_backup_$(date +%Y%m%d).tar.gz ~/.bashrc ~/.vimrc ~/.gitconfig
+```
+
+### Development Tasks
+```bash
+nlsh $ llm: run the tests and show coverage
+# Generates: python -m pytest --cov=. --cov-report=term-missing
+
+nlsh $ llm: start a local web server on port 8080
+# Generates: python -m http.server 8080
+```
+
+### System Administration
+```bash
+nlsh $ llm: show me processes using more than 100MB of memory
+# Generates: ps aux | awk '$6 > 102400 {print $0}' | sort -k6 -nr
+
+nlsh $ llm: check disk usage and show largest directories
+# Generates: du -h --max-depth=1 | sort -hr
+```
+
+## Architecture
+
+```
+nlsh/
+├── src/nlsh/
+│   ├── cli.py          # Main CLI interface and REPL loop
+│   ├── shell.py        # Shell detection and command execution
+│   ├── llm.py          # OpenAI integration and command generation
+│   ├── context.py      # Environment and filesystem context gathering
+│   └── history.py      # SQLite-based history management
+├── pyproject.toml      # Python package configuration
+└── README.md
+```
+
+## Development
+
+### Running from Source
+
+```bash
+# Install in development mode
+uv pip install -e .
+
+# Run directly
+python -m nlsh.cli
+
+# Or run the installed command
+nlsh
+```
+
+### Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## Troubleshooting
+
+### Common Issues
+
+**"OPENAI_API_KEY environment variable is required"**
+- Make sure you've created a `.env` file with your OpenAI API key
+- Verify the key is correct and has sufficient credits
+
+**"Shell detection failed"**
+- nlsh falls back to `sh` if it can't detect your shell
+- You can manually set `SHELL` environment variable if needed
+
+**"Permission denied" errors**
+- Make sure nlsh has permission to create the history database in `~/.nlsh/`
+- Check file permissions in your working directory
+
+### Debug Mode
+
+Run with debug flag to see detailed error information:
+
+```bash
+nlsh --debug
+```
+
+## Roadmap
+
+### Phase 2 Features (Planned)
+- **Follow-up Commands**: "rerun that but with sudo", "do the same for .js files"  
+- **Trusted Commands**: Auto-execute safe commands without confirmation
+- **Plugin System**: Extensible AI tools and integrations
+- **Better Shell Integration**: Tab completion, command substitution
+
+### Phase 3 Features (Future)
+- **Full Shell Replacement**: Built-in shell features, not just wrapper
+- **Advanced Context**: Git repository awareness, project type detection
+- **Collaborative Sessions**: Shared session history and context
+- **Custom LLM Models**: Support for local/custom models
+
+## License
+
+[License information]
+
+## Credits
+
+Built with:
+- [Rich](https://github.com/Textualize/rich) for beautiful terminal output
+- [Typer](https://github.com/tiangolo/typer) for CLI framework
+- [OpenAI](https://openai.com/) for language model integration 
