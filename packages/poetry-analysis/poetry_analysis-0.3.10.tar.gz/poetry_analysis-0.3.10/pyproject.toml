@@ -1,0 +1,40 @@
+[project]
+name = "poetry-analysis"
+version = "0.3.10"
+description = "Tool to parse, annotate and analyse Norwegian poetry."
+authors = [
+    {name = "Ingerid Dale", email = "ingerid.dale@nb.no"},
+]
+dependencies = [
+    "nb-tokenizer",
+    "pandas",
+    "convert-pa"
+]
+requires-python = ">=3.11"
+readme = "README.md"
+license = {text = "CC BY 4.0"}
+
+[project.urls]
+Repository = "https://github.com/norn-uio/poetry-analysis.git"
+Issues = "https://github.com/norn-uio/poetry-analysis/issues"
+
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "ruff",
+    "ipykernel",
+    "pre-commit",
+]
+
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
+
+
+[tool.pytest.ini_options]
+addopts = "--doctest-modules --cov=src --cov-report=term-missing"
+
+[tool.pdm]
+distribution = true
