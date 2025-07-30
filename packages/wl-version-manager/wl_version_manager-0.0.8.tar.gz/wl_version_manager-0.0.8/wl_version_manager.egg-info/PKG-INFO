@@ -1,0 +1,110 @@
+Metadata-Version: 2.1
+Name: wl_version_manager
+Version: 0.0.8
+Summary: Simple semantic version management for Python projects
+Home-page: https://github.com/watkinslabs/version_manager
+Author: Chris Watkins
+Author-email: chris@watkinslabs.com
+License: BSD 3-Clause License
+Project-URL: Bug Tracker, https://github.com/watkinslabs/version_manager/issues
+Project-URL: Documentation, https://github.com/watkinslabs/version_manager
+Project-URL: Source Code, https://github.com/watkinslabs/version_manager
+Keywords: version,versioning,semantic,semver,build,packaging
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: Topic :: System :: Software Distribution
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# wl_version_manager
+
+A simple Python package for managing semantic versions in Python projects.
+
+## Features
+
+- Automatic version bumping (patch, minor, major)
+- Updates both VERSION file and setup.py
+- Command-line interface
+- Python API for programmatic use
+- Follows semantic versioning (major.minor.patch)
+
+## Installation
+
+```bash
+pip install wl_version_manager
+```
+
+## Usage
+
+### Command Line
+
+```bash
+# Initialize version file
+version_manager init
+
+# Show current version
+version_manager current
+
+# Bump versions
+version_manager patch   # 1.0.0 -> 1.0.1
+version_manager minor   # 1.0.1 -> 1.1.0
+version_manager major   # 1.1.0 -> 2.0.0
+
+# Set specific version
+version_manager set 1.2.3
+```
+
+### Python API
+
+```python
+from version_manager import VersionManager
+
+vm = VersionManager()
+
+# Read current version
+current = vm.read_version()
+
+# Bump versions
+new_version = vm.bump_patch()
+new_version = vm.bump_minor()
+new_version = vm.bump_major()
+
+# Set specific version
+vm.set_version("2.1.0")
+```
+
+### Integration with Makefile
+
+```makefile
+build:
+	version_manager patch
+	python setup.py sdist
+```
+
+## File Structure
+
+The tool expects:
+- `VERSION` file containing current version
+- `setup.py` with version= line to update
+
+## Options
+
+```bash
+version_manager --version-file custom_version.txt --setup-file custom_setup.py current
+```
+
+## License
+
+BSD 3-Clause License
