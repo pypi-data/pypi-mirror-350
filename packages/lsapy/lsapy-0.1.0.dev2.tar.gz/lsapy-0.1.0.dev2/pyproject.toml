@@ -1,0 +1,151 @@
+[build-system]
+requires = ["flit_core >=3.11,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "lsapy"
+authors = [
+  { name="Baptiste Hamon", email="baptiste.hamon@pg.canterbury.ac.nz" },
+]
+maintainers = [
+  { name="Baptiste Hamon", email="baptiste.hamon@pg.canterbury.ac.nz" },
+]
+readme = "README.rst"
+requires-python = ">=3.10"
+keywords = ["LSAPy", "Land Suitability Analysis", "Spatial Analysis", "GIS", "Geography"]
+license = {file = "LICENSE"}
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: GIS",
+]
+dynamic = ["description", "version"]
+dependencies = [
+  "geopandas >=0.14.0",
+  "numpy >=1.26.0",
+  "pandas >=2.2.0",
+  "regionmask >=0.13.0",
+  "scipy >=1.15.0",
+  "Shapely==2.0.0",
+  "xarray >=2024.10.0"
+]
+
+[project.optional-dependencies]
+dev = [
+  # dev tools
+  "bump-my-version >=1.1.4",
+  "flit >=3.11",
+  "ipykernel",
+  "ipython >=9.0.0",
+  "matplotlib >=3.9.0",
+  "pytest >=8.3.0",
+  "ruff >=0.10.0"
+]
+docs = [
+  # docs & examples 
+  "nbsphinx >=0.9.5",
+  "pybtex >=0.24.0",
+  "pydata-sphinx-theme >=0.16.0",
+  "sphinx >=8.2.0",
+  "sphinx-autodoc-typehints >=3.2.0",
+  "sphinx-copybutton",
+  "sphinx-mdinclude",
+  "sphinxcontrib-bibtex >=2.6.0"
+]
+all = ["lsapy[dev]", "lsapy[docs]"]
+
+[project.urls]
+Homepage = "https://github.com/baptistehamon/lsapy"
+Issues = "https://github.com/baptistehamon/lsapy/issues"
+
+[tool.bumpversion]
+current_version = "0.1.0-dev2"
+commit = true
+commit_args = "--signoff"
+tag = false
+allow_dirty = false
+parse = "(?P<major>\\d+)\\.(?P<minor>\\d+)\\.(?P<patch>\\d+)(\\-(?P<release>[a-z]+)((?P<build>\\d+)))?"
+serialize = [
+  "{major}.{minor}.{patch}-{release}{build}",
+  "{major}.{minor}.{patch}"
+]
+
+[[tool.bumpversion.files]]
+filename = "src/lsapy/__init__.py"
+search = "__version__ = \"{current_version}\""
+replace = "__version__ = \"{new_version}\""
+
+[tool.bumpversion.parts.build]
+independent = false
+
+[tool.bumpversion.parts.release]
+optional_value = "release"
+values = [
+  "dev",
+  "release"
+]
+
+[tool.flit.sdist]
+include = [
+  "LICENSE",
+  "README.rst",
+  "src/lsapy/*.py",
+]
+exclude = [
+  "**/__pycache__/**",
+  "**/*.py[co]",
+  ".*"
+]
+
+[tool.ruff]
+line-length = 120
+output-format = "grouped"
+
+[tool.ruff.format]
+docstring-code-format = true
+line-ending = "lf"
+
+[tool.ruff.lint]
+preview=true
+select = [ # default values
+  "B", # bugbear
+  "C90", # McCabe complexity
+  "D", # docstring
+  "E", # pycodestyle errors
+  "F", # pyflakes
+  "I", # imports
+  "N", # naming
+  "PL", # pylint
+  "S", # bandit
+  "UP", # pyupgrade
+  "W", # pycodestyle warnings
+]
+ignore = [
+  "D400", # end-in-period
+  "D401", # non-imperative-mood
+  "PLR6201", # literal-membership
+]
+
+[tool.ruff.lint.per-file-ignores]
+"src/lsapy/**/__init__.py" = ["F401", "F403"]
+
+[tool.ruff.lint.isort]
+case-sensitive = true
+known-first-party = ["lsapy"]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 20
+
+[tool.ruff.lint.pycodestyle]
+max-line-length = 120
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.ruff.lint.pylint]
+max-args = 15
+max-branches = 20
