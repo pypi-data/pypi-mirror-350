@@ -1,0 +1,128 @@
+[project]
+name = "clonf"
+description = "Declaratively connect cli and config definition using pydantic"
+authors = [
+    { name = "Jan Vollmer", email = "jan@vllmr.dev" },
+]
+dependencies = [
+    "pydantic>=2.11.4",
+    "typing-extensions>=4.13.2",
+]
+requires-python = ">=3.9"
+readme = "README.md"
+dynamic = []
+keywords = [
+    "cli",
+    "click",
+    "pydantic",
+    "pydantic-settings",
+    "declarative",
+    "config",
+]
+classifiers = [
+    "Framework :: Pydantic :: 2",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Typing :: Typed",
+]
+version = "0.1.5"
+
+[project.license]
+text = "MIT"
+
+[project.urls]
+Source = "https://github.com/jvllmr/clonf"
+
+[project.optional-dependencies]
+click = [
+    "click>=8.1.8",
+]
+settings = [
+    "pydantic-settings>=2.9.1",
+]
+all = [
+    "click>=8.1.8",
+    "pydantic-settings>=2.9.1",
+]
+
+[build-system]
+requires = [
+    "pdm-backend",
+]
+build-backend = "pdm.backend"
+
+[dependency-groups]
+test = [
+    "pytest>=8.3.5",
+    "pytest-cov>=6.1.1",
+]
+lint = [
+    "mypy>=1.15.0",
+    "ruff>=0.11.7",
+    "pre-commit>=4.2.0",
+]
+dev = [
+    "pydantic-settings>=2.9.1",
+]
+
+[tool.mypy]
+python_version = "3.9"
+files = "src/clonf"
+strict = true
+
+[tool.pyright]
+reportInvalidTypeForm = false
+typeCheckingMode = "off"
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
+]
+
+[tool.coverage.report]
+exclude_also = [
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "if t.TYPE_CHECKING:",
+]
+
+[tool.ruff]
+exclude = [
+    ".venv",
+]
+target-version = "py39"
+
+[tool.ruff.lint]
+ignore = [
+    "UP038",
+]
+select = [
+    "RUF",
+    "PERF",
+    "G",
+    "UP",
+    "T",
+    "ICN",
+]
+
+[tool.ruff.lint.flake8-import-conventions]
+banned-from = [
+    "typing",
+]
+
+[tool.ruff.lint.flake8-import-conventions.extend-aliases]
+typing = "t"
+
+[tool.pdm]
+distribution = true
+
+[tool.pdm.version]
+source = "scm"
+
+[tool.pdm.scripts]
+test = "pytest"
