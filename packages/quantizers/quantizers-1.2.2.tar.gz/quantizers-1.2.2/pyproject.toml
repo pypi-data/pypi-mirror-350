@@ -1,0 +1,97 @@
+[build-system]
+requires = ["setuptools>=67.8", "setuptools_scm>=8"]
+
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "quantizers"
+version = "1.2.2"
+authors = [{ name = "Chang Sun", email = "chsun@cern.ch" }]
+description = ""
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "GNU Lesser General Public License v3 (LGPLv3)" }
+keywords = ["quantization"]
+
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+  "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
+  "Development Status :: 5 - Production/Stable",
+]
+
+[project.urls]
+repository = "https://github.com/calad0i/quantizers"
+
+
+[tool.setuptools]
+packages = ["quantizers"]
+include-package-data = true
+package-dir = { "" = "src" }
+
+
+[tool.setuptools_scm]
+write_to = "src/quantizers/_version.py"
+
+[project.optional-dependencies]
+dependencies = ["numpy"]
+
+grad = ['keras>=3.10']
+test = [
+  'pytest',
+  'pytest-cov',
+  'pytest-xdist',
+  'pytest-env',
+  'keras>=3.0',
+  'cppyy',
+  'jax',
+]
+
+[tool.pytest.ini_options]
+filterwarnings = [
+  "ignore:WARNING\\W Pytorch converter is not enabled!:UserWarning",
+  "ignore:.\\[93mcover_factor<1.0 will likely to result in overflows:UserWarning",
+  "ignore:You are saving your model as an HDF5 file:UserWarning",
+  "ignore:Even though the `tf.config.experimental_run_functions_eagerly`:UserWarning",
+  "ignore:pkg_resources is deprecated as an API:DeprecationWarning",
+  "ignore:distutils Version classes are deprecated:DeprecationWarning",
+  "ignore:module 'sre_constants' is deprecated:DeprecationWarning",
+  "ignore:Deprecated call to `pkg_resources.declare_namespace:DeprecationWarning",
+]
+
+env = [
+  "KERAS_BACKEND=jax",
+  "JAX_PLATFORMS=cpu",
+  "CUDA_VISIBLE_DEVICES=-1",
+  "CLING_ENABLE_CUDA=0",
+]
+
+addopts = "--import-mode=importlib --cov=src/quantizers --cov-report=xml --cov-report=html"
+
+[tool.coverage.run]
+omit = ["*/_version.py"]
+
+[tool.coverage.report]
+exclude_lines = ['pragma: no cover', 'if TYPE_CHECKING:']
+
+[tool.ruff]
+include = ["src/**/*.py"]
+
+line-length = 130
+indent-width = 4
+
+target-version = "py310"
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "space"
+skip-magic-trailing-comma = false
+docstring-code-format = true
+docstring-code-line-length = 130
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "F401"]
+ignore = ["E501", "F403", "F405", "E741"]
+explicit-preview-rules = true
+fixable = ["ALL"]
+unfixable = []
