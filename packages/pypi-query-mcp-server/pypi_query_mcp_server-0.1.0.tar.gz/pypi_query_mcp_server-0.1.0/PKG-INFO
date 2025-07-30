@@ -1,0 +1,211 @@
+Metadata-Version: 2.3
+Name: pypi-query-mcp-server
+Version: 0.1.0
+Summary: A Model Context Protocol (MCP) server for querying PyPI package information, dependencies, and compatibility
+License: MIT
+Keywords: mcp,pypi,package,dependency,python
+Author: Hal
+Author-email: hal.long@outlook.com
+Requires-Python: >=3.10,<4.0
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: System :: Software Distribution
+Requires-Dist: click (>=8.1.0,<9.0.0)
+Requires-Dist: fastmcp (>=0.2.0,<0.3.0)
+Requires-Dist: httpx (>=0.27.0,<0.28.0)
+Requires-Dist: packaging (>=24.0,<25.0)
+Requires-Dist: pydantic (>=2.0.0,<3.0.0)
+Project-URL: Documentation, https://github.com/loonghao/pypi-query-mcp-server
+Project-URL: Homepage, https://github.com/loonghao/pypi-query-mcp-server
+Project-URL: Repository, https://github.com/loonghao/pypi-query-mcp-server
+Description-Content-Type: text/markdown
+
+# PyPI Query MCP Server
+
+[![PyPI version](https://img.shields.io/pypi/v/pypi-query-mcp-server.svg)](https://pypi.org/project/pypi-query-mcp-server/)
+
+A Model Context Protocol (MCP) server for querying PyPI package information, dependencies, and compatibility checking.
+
+## Features
+
+- 📦 Query PyPI package information (name, version, description, dependencies)
+- 🐍 Python version compatibility checking
+- 🔍 Dependency analysis and resolution
+- 🏢 Private PyPI repository support
+- ⚡ Fast async operations with caching
+- 🛠️ Easy integration with MCP clients
+
+## Installation
+
+### Using uvx (recommended)
+
+```bash
+# Run directly with uvx
+uvx pypi-query-mcp-server
+
+# Or install and run
+uvx --from pypi-query-mcp-server pypi-query-mcp
+```
+
+### Using pip
+
+```bash
+# Install from PyPI
+pip install pypi-query-mcp-server
+
+# Run the server
+python -m pypi_query_mcp.server
+```
+
+### From source
+
+```bash
+git clone https://github.com/loonghao/pypi-query-mcp-server.git
+cd pypi-query-mcp-server
+uv sync
+uv run pypi-query-mcp
+```
+
+## Configuration
+
+### Claude Desktop
+
+Add to your Claude Desktop configuration file:
+
+**MacOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+**Windows**: `%APPDATA%/Claude/claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "pypi-query": {
+      "command": "uvx",
+      "args": ["pypi-query-mcp-server"],
+      "env": {
+        "PYPI_INDEX_URL": "https://pypi.org/simple/",
+        "CACHE_TTL": "3600"
+      }
+    }
+  }
+}
+```
+
+### Cline
+
+Add to your Cline MCP settings (`cline_mcp_settings.json`):
+
+```json
+{
+  "mcpServers": {
+    "pypi-query": {
+      "command": "uvx",
+      "args": ["pypi-query-mcp-server"],
+      "env": {
+        "PYPI_INDEX_URL": "https://pypi.org/simple/",
+        "CACHE_TTL": "3600"
+      }
+    }
+  }
+}
+```
+
+### Cursor
+
+Add to your Cursor MCP configuration (`.cursor/mcp.json`):
+
+```json
+{
+  "mcpServers": {
+    "pypi-query": {
+      "command": "uvx",
+      "args": ["pypi-query-mcp-server"],
+      "env": {
+        "PYPI_INDEX_URL": "https://pypi.org/simple/",
+        "CACHE_TTL": "3600"
+      }
+    }
+  }
+}
+```
+
+### Windsurf
+
+Add to your Windsurf MCP configuration (`~/.codeium/windsurf/mcp_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "pypi-query": {
+      "command": "uvx",
+      "args": ["pypi-query-mcp-server"],
+      "env": {
+        "PYPI_INDEX_URL": "https://pypi.org/simple/",
+        "CACHE_TTL": "3600"
+      }
+    }
+  }
+}
+```
+
+### Environment Variables
+
+- `PYPI_INDEX_URL`: PyPI index URL (default: https://pypi.org/simple/)
+- `CACHE_TTL`: Cache time-to-live in seconds (default: 3600)
+- `PRIVATE_PYPI_URL`: Private PyPI repository URL (optional)
+- `PRIVATE_PYPI_USERNAME`: Private PyPI username (optional)
+- `PRIVATE_PYPI_PASSWORD`: Private PyPI password (optional)
+
+## Available MCP Tools
+
+The server provides the following MCP tools:
+
+1. **get_package_info** - Get comprehensive package information
+2. **get_package_versions** - List all available versions for a package
+3. **get_package_dependencies** - Analyze package dependencies
+4. **check_package_python_compatibility** - Check Python version compatibility
+5. **get_package_compatible_python_versions** - Get all compatible Python versions
+
+### Example Usage with MCP Client
+
+```python
+# Example: Check if Django is compatible with Python 3.9
+result = await mcp_client.call_tool("check_package_python_compatibility", {
+    "package_name": "django",
+    "target_python_version": "3.9"
+})
+
+# Example: Get package information
+info = await mcp_client.call_tool("get_package_info", {
+    "package_name": "requests"
+})
+```
+
+## Development Status
+
+🎉 **Core functionality implemented and ready for use!**
+
+Current implementation status:
+- ✅ Basic project structure
+- ✅ PyPI API client with caching
+- ✅ MCP tools implementation (package info, versions, dependencies)
+- ✅ Python version compatibility checking
+- ✅ CI/CD pipeline with multi-platform testing
+- ⏳ Private repository support (planned)
+- ⏳ Advanced dependency analysis (planned)
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
