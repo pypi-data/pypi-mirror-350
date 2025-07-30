@@ -1,0 +1,251 @@
+# jload
+
+A simple utility to load and save lists of dictionaries from/to JSON and JSONL files, with automatic format detection.
+
+## Installation
+
+```bash
+pip install jload
+```
+
+## Usage
+
+```python
+from jload import jload, jsave
+
+# File extension doesn't matter - format is auto-detected between json and jsonl
+data = jload('path/to/any_file')
+
+# List of dictionaries to save
+data = [{'name': 'Alice', 'age': 30}, {'name': 'Bob', 'age': 25}]
+
+# Save as JSONL
+jsave(data, 'output.jsonl', format='jsonl')
+
+# Auto-detect format based on file extension
+jsave(data, 'output.jsonl')  # Will be saved as JSONL
+jsave(data, 'output.json')   # Will be saved as JSON, with auto indent
+
+# Append a single entry using the append parameter
+entry = {'name': 'Charlie', 'age': 35}
+
+# Append to a JSON file (will be added to the array)
+jsave(entry, 'output.json', append=True)
+
+# Append to a JSONL file (will add a new line)
+jsave(entry, 'output.jsonl', append=True)
+```
+
+## Features
+
+- **Format Auto-detection**: 
+  - When loading: Automatically detects if a file contains JSON or JSONL (JSON Lines) format
+  - When saving: Determines format based on file extension (.jsonl/.ndjson for JSONL, anything else for JSON)
+- **Flexible Parsing**: 
+  - Handles JSON arrays of dictionaries
+  - Handles single JSON objects (returns as a list with one dictionary)
+  - Handles JSONL with one JSON object per line
+- **Error Handling**: Provides meaningful error messages for invalid files or formats
+- **Lightweight**: No dependencies beyond Python's standard library
+
+## Function Details
+
+### jload
+
+```python
+def jload(file_path: str) -> list[dict]:
+    """
+    Loads a list of dictionaries from a file, attempting to auto-detect
+    if it's a single JSON array/object or JSONL (JSON Lines).
+    The function prioritizes content analysis over file extension.
+
+    Args:
+        file_path (str): The path to the data file.
+
+    Returns:
+        list[dict]: A list of dictionaries loaded from the file.
+                    - If the file content is a JSON array of objects, it's returned as is.
+                    - If the file content is a single JSON object, it's returned as a list
+                      containing that single object.
+                    - If the file content appears to be JSONL, each line that is a valid
+                      JSON object is included in the returned list.
+                    - Returns an empty list if the file is empty.
+
+    Raises:
+        FileNotFoundError: If the specified file_path does not exist.
+        ValueError: If the file content cannot be interpreted as either
+                    a JSON array/object or JSONL format.
+    """
+```
+
+### jsave
+
+```python
+def jsave(data, file_path: str, format: str = 'auto', indent: int = 2, append: bool = False) -> None:
+    """
+    Saves data to a file in either JSON or JSONL format.
+
+    Args:
+        data: The data to save.
+            - For 'json' format: Can be any JSON-serializable data (dict, list, str, int, etc.)
+            - For 'jsonl' format: Must be a list of dictionaries if append=False
+                                 Must be a dictionary if append=True
+        file_path (str): The path where the file will be saved.
+        format (str, optional): The format to save in. Options:
+            - 'auto': Determine format based on file extension (.jsonl/.ndjson for JSONL, anything else for JSON)
+            - 'json': Save as a JSON document
+            - 'jsonl': Save as JSONL (one JSON object per line)
+            Defaults to 'auto'.
+        indent (int, optional): Number of spaces for indentation in JSON format.
+            Only applies to 'json' format, ignored for 'jsonl'. Defaults to 2.
+        append (bool, optional): If True, appends data to the existing file instead of overwriting.
+            - For 'json' format: data must be a dictionary, which will be appended to the existing JSON array
+            - For 'jsonl' format: data must be a dictionary, which will be appended as a new line
+            Defaults to False.
+
+    Raises:
+        ValueError: If data is not in the correct format for the specified file format,
+                    or if an invalid format is specified.
+        TypeError: If data is not JSON-serializable.
+        IOError: If there's an error writing to the file.
+    """
+```
+
+## Examples
+
+### Example 1: Loading a JSON array of objects
+
+**data.json**:
+```json
+[
+  {"name": "Alice", "age": 30},
+  {"name": "Bob", "age": 25}
+]
+```
+
+**Python code**:
+```python
+from jload import jload
+
+data = jload('data.json')
+print(data)
+# Output: [{'name': 'Alice', 'age': 30}, {'name': 'Bob', 'age': 25}]
+```
+
+### Example 2: Loading a single JSON object
+
+**data.json**:
+```json
+{"name": "Alice", "age": 30}
+```
+
+**Python code**:
+```python
+from jload import jload
+
+data = jload('data.json')
+print(data)
+# Output: [{'name': 'Alice', 'age': 30}]
+```
+
+### Example 3: Loading a JSONL file
+
+**data.jsonl**:
+```
+{"name": "Alice", "age": 30}
+{"name": "Bob", "age": 25}
+```
+
+**Python code**:
+```python
+from jload import jload
+
+data = jload('data.jsonl')
+print(data)
+# Output: [{'name': 'Alice', 'age': 30}, {'name': 'Bob', 'age': 25}]
+```
+
+### Example 4: Saving data as JSON
+
+```python
+from jload import jsave
+
+data = [{'name': 'Alice', 'age': 30}, {'name': 'Bob', 'age': 25}]
+jsave(data, 'output.json')
+```
+
+**output.json**:
+```json
+[
+  {
+    "name": "Alice",
+    "age": 30
+  },
+  {
+    "name": "Bob",
+    "age": 25
+  }
+]
+```
+
+### Example 5: Saving data as JSONL
+
+```python
+from jload import jsave
+
+data = [{'name': 'Alice', 'age': 30}, {'name': 'Bob', 'age': 25}]
+jsave(data, 'output.jsonl')
+```
+
+**output.jsonl**:
+```
+{"name":"Alice","age":30}
+{"name":"Bob","age":25}
+```
+
+### Example 6: Appending data to existing files
+
+```python
+from jload import jsave, jsave_append
+
+# First, create the initial files
+initial_data = [{'name': 'Alice', 'age': 30}]
+jsave(initial_data, 'people.json')  # Creates a JSON array file
+jsave(initial_data, 'people.jsonl')  # Creates a JSONL file
+
+# Now append a new entry to both files
+new_entry = {'name': 'Bob', 'age': 25}
+
+# Method 1: Using jsave with append=True
+jsave(new_entry, 'people.json', append=True)
+jsave(new_entry, 'people.jsonl', append=True)
+
+# Method 2: Using jsave_append directly
+another_entry = {'name': 'Charlie', 'age': 35}
+jsave_append(another_entry, 'people.json')
+jsave_append(another_entry, 'people.jsonl')
+
+# Result for people.json:
+# [
+#   {"name": "Alice", "age": 30},
+#   {"name": "Bob", "age": 25},
+#   {"name": "Charlie", "age": 35}
+# ]
+
+# Result for people.jsonl:
+# {"name":"Alice","age":30}
+# {"name":"Bob","age":25}
+# {"name":"Charlie","age":35}
+```
+
+## Requirements
+
+- Python 3.7+
+
+## License
+
+MIT License
+
+## Contributing
+
+Issues and pull requests are welcome at [https://github.com/Imbernoulli/jload/issues](https://github.com/Imbernoulli/jload/issues)
