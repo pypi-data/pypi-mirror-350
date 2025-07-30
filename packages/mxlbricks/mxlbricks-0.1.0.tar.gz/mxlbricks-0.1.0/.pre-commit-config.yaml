@@ -1,0 +1,39 @@
+repos:
+  # Lint & format
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.11.11
+    hooks:
+      - id: ruff
+        types_or: [python, pyi, jupyter]
+        args: [--fix]
+      - id: ruff-format
+        types_or: [python, pyi, jupyter]
+
+  # Sort pyproject toml
+  - repo: https://github.com/pappasam/toml-sort
+    rev: v0.24.2
+    hooks:
+      - id: toml-sort-fix
+        args: [--in-place]
+        language: python
+        types: [toml]
+
+  # Clean jupyter notebooks
+  - repo: local
+    hooks:
+      - id: jupyter-nb-clear-output
+        name: jupyter-nb-clear-output
+        files: \.ipynb$
+        stages: [pre-commit]
+        language: system
+        entry: jupyter nbconvert --ClearOutputPreprocessor.enabled=True --inplace
+
+  # Run Pyright
+  - repo: local
+    hooks:
+      - id: pyright
+        name: pyright
+        files: \.py$
+        stages: [pre-commit]
+        language: system
+        entry: uv run pyright
