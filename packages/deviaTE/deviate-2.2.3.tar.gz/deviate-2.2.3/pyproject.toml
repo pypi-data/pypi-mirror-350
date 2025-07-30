@@ -1,0 +1,62 @@
+[build-system]
+requires = ["hatchling>1.26.1"]
+build-backend = "hatchling.build"
+
+
+[tool.hatch.version]
+path = "deviaTE/__init__.py"
+
+
+[project]
+name = "deviaTE"
+description = "Python tool for the analysis and visualization of mobile genetic elements"
+dynamic = ["version"]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy~=2.2.2",
+    "pandas~=2.2",
+    "mappy~=2.28",
+    "requests~=2.32",
+    "gffutils~=0.13",
+    "plotnine~=0.14",
+    "rapidgzip~=0.14",
+]
+
+
+[project.urls]
+homepage = "https://github.com/W-L/deviaTE"
+
+
+[project.optional-dependencies]
+dev = [
+    "pytest~=8.3.4",
+    "pytest-cov~=6.0.0",
+]
+
+
+[project.scripts]
+deviaTE = "deviaTE.deviate:main"
+
+
+[tool.hatch.build.targets.sdist]
+include = ["/deviaTE",]
+exclude = [
+    "/data",
+    "/tests",
+    "/scripts",
+    "/.git",
+    "/simulations",
+    "/benchmark",
+]
+
+
+[tool.hatch.build.targets.wheel]
+packages = ["deviaTE"]
+
+
+[tool.pytest.ini_options]
+log_cli = true
+log_cli_level = "INFO"
+log_cli_format = "%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
