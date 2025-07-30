@@ -1,0 +1,81 @@
+#/bin/zsh
+#compdef hs
+
+function __hs_debug() {
+    local filepath="${ZSH_COMP_DEBUG_FILE}"
+    if [[ -n "${filepath}" ]]; then
+        echo "$@ " >> "${filepath}"
+    fi
+}
+
+function _hs() {
+
+    local word_count="${#words[@]}"
+    local word_current="${words[${#words[@]}]}"
+
+    __hs_debug "--------------------------------------"
+    __hs_debug "          words: ${words}"
+    __hs_debug "     word_count: ${word_count}"
+    __hs_debug "   word_current: ${word_current}"
+
+    if
+    local i=1 cmd=
+    for opt in words
+    do
+        case "${opt}" in
+            -*)
+                __hs_debug " for[${opt}]: option"
+                ;;
+            *)
+                cmd="${opt}"
+                __hs_debug " for[${i}]: ${opt} -- cmd break"
+                break
+            ;;
+        esac
+    done
+
+    while [[ "${i}" -lt "${word_count}" ]]
+    do
+        local opt="${words[$i]}"
+        case "${opt}" in
+            -*)
+                __hs_debug " for[${i}]: ${opt} -- option"
+                ;;
+            *)
+                cmd="${opt}"
+                __hs_debug " for[${i}]: ${opt} -- cmd break"
+                break
+                ;;
+        esac
+        (( i++ ))
+    done
+
+    __hs_debug "      cmd[${i}]: ${cmd:-none}"
+
+    if [[ "${i}" -eq "${word_count}" ]]
+    then
+        __hs_debug "  state: show root completion"
+        _describe '' ("cluster" "server" "client" "initdb" "config" "task")
+        return
+    fi
+
+    __hs_debug "  subcommand: ${cmd}"
+    return
+    case "${cmd}" in
+        initdb)  _hs_initdb  ;;
+        config)  _hs_config  ;;
+        task)    _hs_task    ;;
+        submit)  _hs_submit  ;;
+        server)  _hs_server  ;;
+        client)  _hs_client  ;;
+        cluster) _hs_cluster ;;
+        *)                   ;;
+    esac
+}
+
+
+compdef _hs hs
+# don't run the completion function when being source-ed or eval-ed
+#if [ "$funcstack[1]" = "_hs" ]; then
+#    _hs
+#fi
