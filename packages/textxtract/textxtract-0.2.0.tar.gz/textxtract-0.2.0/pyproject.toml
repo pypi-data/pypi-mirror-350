@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "textxtract"
+version = "0.2.0"
+description = "A robust, extensible Python package for synchronous and asynchronous text extraction from PDF, DOCX, DOC, TXT, ZIP, MD, RTF, HTML, and more."
+authors = [
+    { name="10xScale", email="contact@hire10x.ai" },
+    { name="Shudipto Trafder", email="shudipto.trafder@hire10x.ai"}
+]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = []
+
+[project.urls]
+Homepage = "https://10xscale-in.github.io/textxtract/"
+Documentation = "https://10xscale-in.github.io/textxtract/"
+Source = "https://github.com/10XScale-in/textxtract"
+
+[project.optional-dependencies]
+pdf = ["pymupdf"]
+docx = ["python-docx"]
+doc = ["antiword"]
+md = ["markdown"]
+rtf = ["pyrtf-ng"]
+html = ["beautifulsoup4", "lxml"]
+xml = ["lxml"]
+all = [
+    "pymupdf",
+    "python-docx",
+    "antiword",
+    "markdown",
+    "pyrtf-ng",
+    "beautifulsoup4",
+    "lxml"
+]
+dev = [
+    "pytest>=7.0",
+    "pytest-asyncio",
+    "mkdocs",
+    "mkdocs-material",
+    "mkdocstrings[python]"
+]
+
+[tool.setuptools.packages.find]
+where = ["textxtract"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q"
+testpaths = [
+    "tests"
+]
