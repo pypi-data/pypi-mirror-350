@@ -1,0 +1,41 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    i18n_domain="imio.zamqp.dms">
+
+  <includeDependencies package="." />
+
+  <utility component=".consumer.IncomingMailConsumerUtility"
+           name="dms.incomingmail"
+           provides="collective.zamqp.interfaces.IConsumer"/>
+
+  <subscriber for=".interfaces.IIncomingMail
+                   collective.zamqp.interfaces.IMessageArrivedEvent"
+              handler=".consumer.consume_incoming_mails"/>
+
+  <utility component=".consumer.OutgoingMailConsumerUtility"
+           name="dms.outgoingmail"
+           provides="collective.zamqp.interfaces.IConsumer"/>
+
+  <subscriber for=".interfaces.IOutgoingMail
+                   collective.zamqp.interfaces.IMessageArrivedEvent"
+              handler=".consumer.consume_outgoing_mails"/>
+
+  <utility component=".consumer.OutgoingGeneratedMailConsumerUtility"
+           name="dms.outgoinggeneratedmail"
+           provides="collective.zamqp.interfaces.IConsumer"/>
+
+  <subscriber for=".interfaces.IOutgoingGeneratedMail
+                   collective.zamqp.interfaces.IMessageArrivedEvent"
+              handler=".consumer.consume_outgoing_generated_mails"/>
+
+  <utility component=".consumer.IncomingEmailConsumerUtility"
+           name="dms.incomingemail"
+           provides="collective.zamqp.interfaces.IConsumer"/>
+
+  <subscriber for=".interfaces.IIncomingEmail
+                   collective.zamqp.interfaces.IMessageArrivedEvent"
+              handler=".consumer.consume_incoming_emails"/>
+
+</configure>
