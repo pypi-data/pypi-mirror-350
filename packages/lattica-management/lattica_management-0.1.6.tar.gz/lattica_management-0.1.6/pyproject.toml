@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "lattica-management"
+version = "0.1.6"
+description = "Lattica management client"
+authors = ["LatticaAI Inc. <hello@lattica.ai>"]
+homepage = "https://www.lattica.ai/"
+license = "Proprietary"
+readme = "README.md"
+packages = [{include = "lattica_management"}]
+
+# Package includes
+include = ["LICENSE.txt"]
+
+# Exclude internal demos from the wheel package
+exclude = ["lattica_management/internal_demos/**/*"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+lattica-common = "~0.5.5"
+pyyaml = "*"
+
+[tool.poetry.group.dev.dependencies]
+lattica-common = {path = "../lattica_common_src", develop = true}
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
