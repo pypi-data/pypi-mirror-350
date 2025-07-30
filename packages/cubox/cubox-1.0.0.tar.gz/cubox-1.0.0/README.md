@@ -1,0 +1,49 @@
+# cubox
+python get cubox article
+
+demo.py
+```python
+import os
+
+from cubox import CuboxApi, CuboxOutput
+
+
+def main():
+    """Cubox导出Markdown示例"""
+
+    # 初始化API客户端（替换为你的域名和API密钥）
+    domain = "cubox.pro"  # 替换为实际域名
+    api_key = "https://cubox.pro/c/api/save/xxxxxxxx"  # 替换为你的API密钥链接
+    api = CuboxApi(domain, api_key)
+
+    print("开始导出Cubox文章到Markdown...")
+
+    has_more = True
+    last_card_id = None
+    last_card_update_time = None
+    all_articles = []
+    while has_more:
+        # 可以自定义筛选条件，例如只获取特定标签或文件夹的文章
+        articles, has_more = api.get_articles(
+            last_card_id=last_card_id, last_card_update_time=last_card_update_time)
+        all_articles.extend(articles)
+        print(f"成功获取 {len(all_articles)} 篇文章, {has_more}")
+        last_card = articles[-1]
+        last_card_id = last_card.id
+        last_card_update_time = last_card.update_time
+
+    # 如果没有文章，则退出
+    if not all_articles:
+        print("没有找到任何文章，退出导出")
+        return
+
+    export_dir = f"cubox_export"
+    output = CuboxOutput(api, all_articles)
+    output.to_markdown(export_dir)
+
+    print(f"\n导出完成! 文件已保存到 {os.path.abspath(export_dir)} 目录")
+
+
+if __name__ == "__main__":
+    main()
+```
