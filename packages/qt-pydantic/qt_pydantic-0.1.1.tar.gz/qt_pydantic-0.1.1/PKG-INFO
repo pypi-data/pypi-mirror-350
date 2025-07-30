@@ -1,0 +1,71 @@
+Metadata-Version: 2.4
+Name: qt-pydantic
+Version: 0.1.1
+Summary: Pydantic BaseModel Annotations for Qt
+Author: Beat Reichenbach
+License: MIT
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: qtpy<3,>=2.0
+Requires-Dist: pydantic<3,>=2.0
+Provides-Extra: dev
+Requires-Dist: black>=24.0; extra == "dev"
+Requires-Dist: python-semantic-release>=9.0; extra == "dev"
+Requires-Dist: PySide6; extra == "dev"
+Requires-Dist: pytest>=8.0; extra == "dev"
+Provides-Extra: pyside2
+Requires-Dist: PySide2; extra == "pyside2"
+Provides-Extra: pyside6
+Requires-Dist: PySide6; extra == "pyside6"
+Dynamic: license-file
+
+# qt-pydantic
+
+The `qt-pydantic` package adds support for Qt types in Pydantic BaseModels.
+Using these annotations allows for easy serialization and deserialization of Qt types.
+
+
+## Installation
+
+Install using pip:
+```shell
+pip install qt-pydantic
+```
+
+## Usage
+
+```python
+from PySide6 import QtCore, QtGui
+from pydantic import BaseModel
+from qt_pydantic import QSize, QColor, QDate
+
+
+# Define a model with Qt types
+class Settings(BaseModel):
+    size: QSize
+    date: QDate
+    color: QColor
+
+
+# Parse json string into model
+json_data = '{"size": [720, 480], "date": "2021-01-01", "color": [255, 95, 135]}'
+settings = Settings.model_validate_json(json_data)
+
+# Model types are actual Qt types
+assert isinstance(settings.size, QtCore.QSize)
+assert isinstance(settings.date, QtCore.QDate)
+assert isinstance(settings.color, QtGui.QColor)
+
+# Turn model into json string
+data = settings.model_dump_json(indent=2)
+```
+
+## Contributing
+
+To contribute please refer to the [Contributing Guide](CONTRIBUTING.md).
+
+## License
+
+MIT License. Copyright 2024 - Beat Reichenbach.
+See the [License file](LICENSE) for details.
