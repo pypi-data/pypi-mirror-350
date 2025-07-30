@@ -1,0 +1,56 @@
+[project]
+name = "cz_nhm"
+version = "0.7.2"
+description = "Commitizen config for the NHM, London"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [
+    { name = "Natural History Museum", email = "data@nhm.ac.uk" }
+]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "commitizen>=4.7.2,<5.0.0"
+]
+
+[project.urls]
+repository = "https://github.com/NaturalHistoryMuseum/cz-nhm"
+changelog = "https://github.com/NaturalHistoryMuseum/cz-nhm/blob/main/CHANGELOG.md"
+
+[project.entry-points."commitizen.plugin"]
+cz_nhm = "cz_nhm:NHMCz"
+
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
+[tool]
+[tool.setuptools]
+py-modules = ["cz_nhm"]
+
+[tool.ruff.format]
+quote-style = "single"
+
+[tool.pylint]
+max-line-length = 88
+disable = ["C0114", "R0903"]
+
+[tool.docformatter]
+wrap-summaries = 88
+wrap-descriptions = 88
+pre-summary-newline = true
+make-summary-multi-line = true
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+version = "0.7.2"
+tag_format = "v$version"
+update_changelog_on_bump = true
+changelog_incremental = false
+version_files = [
+    "pyproject.toml:version"
+]
