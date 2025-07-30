@@ -1,0 +1,3 @@
+"""
+Exceptions of scfile package.
+"""
