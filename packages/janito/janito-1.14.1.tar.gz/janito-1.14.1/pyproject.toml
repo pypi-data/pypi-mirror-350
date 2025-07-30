@@ -1,0 +1,62 @@
+[project]
+name = "janito"
+
+version = "1.14.1"
+description = "Natural Language Programming Agent,"
+authors = [
+    { name = "João Pinto", email = "joao.pinto@gmail.com" }
+]
+requires-python = ">=3.10"
+dependencies = [
+    "beautifulsoup4",
+    "flask",
+    "jinja2",
+    "openai",
+    "pathspec",
+    "prompt_toolkit",
+    "requests",
+    "rich",
+    "lxml",
+    "PyYAML",
+    "quart",
+    "questionary"
+]
+license = "MIT"
+readme = "README.md"
+keywords = ["agent", "framework", "tools", "automation"]
+classifiers = [
+    "Programming Language :: Python :: 3.10",
+    "Operating System :: OS Independent"
+]
+
+[project.urls]
+homepage = "https://janito.dev"
+repository = "https://github.com/joaompinto/janito"
+
+[project.scripts]
+janito = "janito.__main__:main"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["janito*"]
+
+[tool.setuptools.package-data]
+"janito.agent.templates" = ["*.txt.j2", "*/*.txt.j2", "*/*/*.txt.j2"]
+"janito.termweb.static" = ["*.*"]
+
+[project.optional-dependencies]
+docs = [
+    "mkdocs>=1.5.3",
+    "mkdocs-material>=9.4.8"  # Uncomment if you want Material theme
+]
+
+[tool.ruff]
+# Ruff tool configuration
+
+[tool.ruff.lint]
+select = ["C901"]
+# Optional: Set the maximum allowed complexity (default is 10)
+# max-complexity = 10

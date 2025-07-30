@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/svg+xml" href="/static/termicon.svg">
+    <link rel="shortcut icon" type="image/x-icon" href="/static/favicon.ico">
+    <meta charset="UTF-8">
+    <title>Welcome to TermWeb &mdash; janito.dev</title>
+    <link rel="stylesheet" href="/static/termweb.css">
+    <style>
+    /* Additional enhancements */
+    .header {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 1.2em;
+        position: relative;
+        padding-top: 1.2em;
+        padding-bottom: 1.2em;
+    }
+    .header-logo {
+        width: 2.4em;
+        height: 2.4em;
+        margin-right: 0.5em;
+        vertical-align: middle;
+    }
+    .header-title {
+        font-size: 1.7em;
+        font-weight: bold;
+        letter-spacing: 0.04em;
+        color: #8be9fd;
+        text-shadow: 0 2px 8px #222a, 0 1px 0 #222a;
+    }
+    .header-subtitle {
+        font-size: 1.1em;
+        font-weight: 400;
+        opacity: 0.7;
+        margin-left: 0.5em;
+        color: #90caf9;
+    }
+    .toolbar {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 0.7em;
+        background: #23272b;
+        border-bottom: 1px solid #1a73e8;
+        padding: 0.7em 2em;
+        margin-bottom: 0.5em;
+        box-shadow: 0 2px 8px #0002;
+    }
+    .view-toggle {
+        background: #23272b;
+        color: #90caf9;
+        border: 1px solid #1a73e8;
+        border-radius: 0.5em;
+        padding: 0.5em 1.2em;
+        font-size: 1.1em;
+        cursor: pointer;
+        transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+        margin-left: 0.2em;
+    }
+    .view-toggle.active, .view-toggle:hover {
+        background: #1a73e8;
+        color: #fff;
+        box-shadow: 0 2px 8px #1976d255;
+    }
+    .main {
+        display: flex;
+        flex-direction: row;
+        gap: 2em;
+        padding: 2em;
+        min-height: 60vh;
+        background: transparent;
+    }
+    #explorer-main, #explorer-preview {
+        background: #22262b;
+        border-radius: 1.1em;
+        box-shadow: 0 4px 24px #0004;
+        border: 1px solid #1a73e8;
+        padding: 1.5em 1.2em;
+        min-height: 40vh;
+        overflow: auto;
+    }
+    #explorer-main {
+        margin-right: 0.5em;
+    }
+    #explorer-preview {
+        margin-left: 0.5em;
+    }
+    @media (max-width: 900px) {
+        .main {
+            flex-direction: column;
+            gap: 1em;
+            padding: 1em;
+        }
+        #explorer-main, #explorer-preview {
+            min-height: 20vh;
+            padding: 1em 0.7em;
+        }
+    }
+    </style>
+</head>
+<body>
+    <!-- Quick Open Modal (Ctrl+P) -->
+    <div id="quickopen-modal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:1000;background:rgba(0,0,0,0.35);align-items:center;justify-content:center;">
+        <div style="background:#222;padding:2em 2em 1em 2em;border-radius:1em;box-shadow:0 8px 32px #000a;min-width:340px;max-width:90vw;">
+            <input id="quickopen-input" type="text" placeholder="Type to search files..." style="width:100%;padding:0.7em 1em;font-size:1.1em;background:#111;color:#fff;border:1px solid #444;border-radius:0.5em;outline:none;" autocomplete="off" />
+            <ul id="quickopen-results" style="margin:1em 0 0 0;padding:0;list-style:none;max-height:260px;overflow-y:auto;"></ul>
+            <div style="text-align:right;margin-top:0.5em;"><small>Press Esc to close</small></div>
+        </div>
+    </div>
+
+    <div class="header">
+        <img src="/static/termicon.svg" alt="TermWeb Logo" class="header-logo">
+        <span class="header-title">TermWeb</span>
+        <span class="header-subtitle">AI-powered Project Explorer</span>
+        <button class="theme-switcher" id="theme-switcher">Switch to Light Theme</button>
+    </div>
+    <div class="toolbar" id="explorer-toolbar">
+        <button id="view-list" class="view-toggle active" title="List View">&#9776; List</button>
+        <button id="view-icons" class="view-toggle" title="Icon View">&#9632; Icons</button>
+    </div>
+    <div class="main">
+        <div id="explorer-main" style="flex:0 0 440px;min-width:0;"></div>
+        <div id="explorer-preview" class="preview-pane" style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;"></div>
+    </div>
+    <div class="footer">
+        <div class="subtitle">
+            Powered by <a href="https://janito.dev" target="_blank">janito.dev</a> &mdash; AI-powered coding agent
+        </div>
+        <ul>
+            <li>🌐 <a href="https://janito.dev" target="_blank">janito.dev</a></li>
+            <li>📚 <a href="https://docs.janito.dev" target="_blank">Documentation</a></li>
+            <li>💻 <a href="https://github.com/joaompinto/janito" target="_blank">GitHub</a></li>
+        </ul>
+        <span style="font-size:0.9em;opacity:0.7;">_generated by janito.dev_</span>
+    </div>
+    <script src="/static/termweb.js"></script>
+<script src="/static/termweb_quickopen.js"></script>
+    <script>
+    // Theme switcher logic
+    function setTheme(dark) {
+        if (dark) {
+            document.body.classList.add('dark-theme');
+            document.body.classList.remove('light-theme');
+            localStorage.setItem('theme', 'dark');
+            document.getElementById('theme-switcher').textContent = 'Switch to Light Theme';
+        } else {
+            document.body.classList.remove('dark-theme');
+            document.body.classList.add('light-theme');
+            localStorage.setItem('theme', 'light');
+            document.getElementById('theme-switcher').textContent = 'Switch to Dark Theme';
+        }
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initial theme
+        var theme = localStorage.getItem('theme') || 'dark';
+        setTheme(theme === 'dark');
+        document.getElementById('theme-switcher').onclick = function() {
+            setTheme(document.body.classList.contains('light-theme'));
+        };
+        renderExplorer('.')
+        setExplorerView(localStorage.getItem('explorerView') || 'list');
+        document.getElementById('view-list').onclick = function() {
+            setExplorerView('list');
+            renderExplorer('.')
+        };
+        document.getElementById('view-icons').onclick = function() {
+            setExplorerView('icons');
+            renderExplorer('.')
+        };
+    });
+    </script>
+</body>
+</html>
