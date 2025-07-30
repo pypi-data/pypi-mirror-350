@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <record id="view_mail_mass_mailing_form" model="ir.ui.view">
+    <field name="name">mail.activity.boards.view.tree</field>
+    <field name="model">mailing.mailing</field>
+    <field name="inherit_id" ref="mass_mailing.view_mail_mass_mailing_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//div[@name='mailing_model_id_container']" position="after">
+        <label for="lang" string="Language"/>
+        <div name="lang_container">
+          <div class="d-flex align-items-baseline flex-wrap">
+            <div class="me-5">
+              <field name="lang" attrs="{'readonly': [('state', 'in', ('sending', 'done'))]}"/>
+            </div>
+          </div>
+        </div>
+      </xpath>
+    </field>
+  </record>
+</odoo>
