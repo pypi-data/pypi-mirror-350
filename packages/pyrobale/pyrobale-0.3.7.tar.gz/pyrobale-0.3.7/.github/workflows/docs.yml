@@ -1,0 +1,38 @@
+name: Build and Deploy Docs
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install pdoc aiohttp
+
+      - name: Generate documentation
+        run: |
+          pdoc pyrobale --output-dir docs --docformat google
+
+      - name: Deploy to docs branch
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          deploy_key: ${{ secrets.DOCS_DEPLOY_KEY }}
+          external_repository: pyrobale/docs
+          publish_branch: docs
+          publish_dir: ./docs
+          commit_message: "Auto-generate docs from ${{ github.sha }}"
