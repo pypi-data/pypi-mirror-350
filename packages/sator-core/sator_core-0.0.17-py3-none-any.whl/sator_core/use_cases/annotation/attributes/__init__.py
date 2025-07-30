@@ -1,0 +1,3 @@
+from sator_core.use_cases.annotation.attributes.patch import PatchAttributesAnnotation
+from sator_core.use_cases.annotation.attributes.product import ProductAttributesAnnotation
+from sator_core.use_cases.annotation.attributes.vulnerability import VulnerabilityAttributesAnnotation
