@@ -1,0 +1,210 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "Toolio"
+dynamic = ["version"]
+description = "AI API implementation for Mac which supports tool-calling & other structured LLM response generation (e.g. conform to JSON schema)"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+keywords = []
+authors = [
+  { name = "Uche Ogbuji", email = "uche@oori.dev" },
+  # { name = "Osi Ogbuji", email = "osita@oori.dev" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: Implementation :: CPython",
+]
+dependencies = [
+  # MLX libraries are only installed on Apple Silicon Macs running macOS 13.5+ with Python 3.8+, as required
+  # For more on environment markers see: https://hatch.pypa.io/dev/config/dependency/#environment-markers
+  "mlx>=0.23.1; sys_platform == 'darwin' and platform_machine == 'arm64' and python_version >= '3.8'",
+  "mlx_lm>=0.21.4; sys_platform == 'darwin' and platform_machine == 'arm64' and python_version >= '3.8'",
+  # Rather than a marker such as platform_release >= '22.6.0' (corresponding to macOS 13.5 or later) we'll make this a runtime check
+
+  # This is the former logic, but in some scenarios, e.g. running within Docker, we can get platform_release markers such as Linux kernel version "6.10.14-linuxkit", which are not valid version strings according to Python's packaging.version
+  # "mlx>=0.23.1; sys_platform == 'darwin' and platform_machine == 'arm64' and python_version >= '3.8' and platform_release >= '22.6.0'",
+  # "mlx_lm>=0.21.4; sys_platform == 'darwin' and platform_machine == 'arm64' and python_version >= '3.8' and platform_release >= '22.6.0'",
+  "ogbujipt>=0.9.3",
+  "fastapi>=0.115.3",
+  "click",
+  "httpx>=0.27.2",
+  "uvicorn>=0.32.0",
+  # "amara3.iri"
+]
+
+[project.optional-dependencies]
+tools = [
+  # Extra requirements for the built-in slate of tools
+  "google-re2"
+]
+dev = [
+  # Extra requirements for project contributors & other developers
+  "build",
+  "pytest-asyncio",
+  "pytest-httpserver",
+  # "pytest-mock"
+]
+
+[project.urls]
+Documentation = "https://OoriData.github.io/Toolio/"
+Issues = "https://github.com/OoriData/Toolio/issues"
+Source = "https://github.com/OoriData/Toolio"
+
+[tool.hatch.version]
+path = "pylib/__about__.py"
+
+# Rewriting path in distribution
+[tool.hatch.build.sources]
+"pylib" = "toolio"
+# "resources" = "toolio/resources"
+
+# [tool.hatch.build.targets.wheel.force-include]
+# "resource" = "toolio/resource"
+
+[tool.hatch.build.targets.wheel]
+only-include = ["pylib", "resource"]
+
+[tool.hatch.build.targets.wheel.sources]
+"pylib" = "toolio"
+"resource" = "toolio/resource"
+
+[project.scripts]
+toolio_server = "toolio.cli.server:main"
+toolio_request = "toolio.cli.request:main"
+
+# Hatch environemnts are too fiddly. For example, from `hatch run test` I get 
+# ModuleNotFoundError: No module named 'toolio'
+# This may well have to do with my rewriting path in distribution,
+# But I'm not compromising on that, so I guess just install & use
+# e.g. pytest directly (tried dev-mode false, but no difference)
+[tool.hatch.envs.default]
+dependencies = [
+  "coverage[toml]>=6.5",
+  "pytest",
+  "pytest-mock",
+  "pytest-httpx",
+  "pytest-asyncio",
+]
+dev-mode = false
+[tool.hatch.envs.default.scripts]
+test = "pytest {args:test}"
+test-cov = "coverage run -m pytest {args:test}"
+cov-report = [
+  "- coverage combine",
+  "coverage report",
+]
+cov = [
+  "test-cov",
+  "cov-report",
+]
+
+[[tool.hatch.envs.all.matrix]]
+python = ["3.11", "3.12"]
+
+[tool.hatch.envs.lint]
+detached = true
+dependencies = [
+  "black>=23.1.0",
+  "mypy>=1.0.0",
+  "ruff>=0.0.243",
+]
+[tool.hatch.envs.lint.scripts]
+typing = "mypy --install-types --non-interactive {args:pylib/toolio test}"
+style = [
+  "ruff {args:.}",
+  "black --check --diff {args:.}",
+]
+fmt = [
+  "black {args:.}",
+  "ruff --fix {args:.}",
+  "style",
+]
+all = [
+  "style",
+  "typing",
+]
+
+[tool.black]
+target-version = ["py311"]
+line-length = 120
+skip-string-normalization = true
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+lint.select = ["E", "F"]
+lint.ignore = [
+  # Allow non-abstract empty methods in abstract base classes
+  "B027",
+  # Allow boolean positional values in function calls, like `dict.get(... True)`
+  "FBT003",
+  # Ignore checks for possible passwords
+  "S105", "S106", "S107",
+  # Ignore complexity
+  "C901", "PLR0911", "PLR0912", "PLR0913", "PLR0915",
+]
+lint.unfixable = [
+  # Don't touch unused imports
+  "F401",
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["toolio"]
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.ruff.lint.per-file-ignores]
+# Tests can use magic values, assertions, and relative imports
+"test/**/*" = ["PLR2004", "S101", "TID252"]
+
+[tool.coverage.run]
+source_pkgs = ["toolio", "test"]
+branch = true
+parallel = true
+omit = [
+  "pylib/__about__.py",
+]
+
+[tool.coverage.paths]
+toolio = ["pylib", "*/pylib"]
+test = ["test", "*/test"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
+
+[tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "session"
+addopts = "-v"
+# addopts = [
+#   "--cov=toolio",
+#   "--cov-report=term-missing",
+#   "--cov-report=xml",
+#   "--cov-report=html",
+#   "--cov-report=annotate",
+#   "--cov-branch",
+#   "--cov-fail-under=100",
+#   "--cov-context=test",
+#   "--cov-context=toolio",
+#   "--cov-context=pylib",
+#   "--cov-context=resource",
+#   "--cov-context=tests",
+#   "--cov-context=pytest",
+#   "--cov-context=pytest_httpserver",
+#   "--cov-context=pytest_mock",
+#   "--cov-context=pytest_asyncio",
+#   "--cov-context=pytest_httpx",
+#   "--cov-context=pytest_httpx_mock",
+#   "--cov-context=pytest_httpx_mock_async",
+#   "--cov-context=pytest_httpx_mock_sync"]
