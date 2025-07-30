@@ -1,0 +1,13 @@
+---
+A biblioteca `duanbima` é a sua ferramenta prática em Python para lidar com **cálculos de dias úteis**, especialmente pensada para cenários financeiros e bancários que seguem o calendário da ANBIMA.
+
+Chega de se preocupar com fins de semana e feriados! Com `duanbima`, você pode facilmente:
+
+* **Identificar dias úteis:** Descubra se uma data específica é um dia de trabalho válido.
+* **Navegar por dias úteis:** Avance ou retroceda um número exato de dias úteis a partir de uma data, ou encontre o próximo/anterior dia útil.
+* **Descobrir o último dia útil do mês:** Perfeito para fechamentos e vencimentos.
+* **Contar dias úteis em intervalos:** Saiba quantos dias de trabalho existem entre duas datas.
+* **Localizar dias úteis específicos:** Encontre o N-ésimo dia útil de qualquer mês.
+* **Calcular meses e anos com offset:** Facilite projeções e análises temporais.
+
+A biblioteca já vem com um arquivo de feriados padrão (`anbima_holidays.txt`) incluído, mas oferece a flexibilidade de configurar um arquivo de feriados externo, permitindo que você use sua própria lista personalizada quando necessário. Simplifique seus cálculos de datas e foque no que realmente importa!
