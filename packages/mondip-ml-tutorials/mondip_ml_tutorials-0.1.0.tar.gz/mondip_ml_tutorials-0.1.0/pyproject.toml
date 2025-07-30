@@ -1,0 +1,101 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mondip-ml-tutorials"
+version = "0.1.0"
+authors = [
+    {name = "Your Name", email = "your.email@example.com"},
+]
+description = "A comprehensive collection of machine learning tutorials using NumPy, Pandas, Matplotlib, and Scikit-learn"
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.7"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education", 
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Education",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9", 
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+]
+keywords = [
+    "machine learning",
+    "tutorials", 
+    "numpy",
+    "pandas",
+    "matplotlib", 
+    "scikit-learn",
+    "data science",
+    "education"
+]
+dependencies = [
+    "numpy>=1.19.0",
+    "pandas>=1.3.0", 
+    "matplotlib>=3.3.0",
+    "scikit-learn>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov>=2.0",
+    "black>=21.0", 
+    "flake8>=3.8",
+    "twine>=3.0",
+]
+docs = [
+    "sphinx>=4.0",
+    "sphinx-rtd-theme>=1.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/yourusername/mondip-ml-tutorials"
+"Documentation" = "https://github.com/yourusername/mondip-ml-tutorials/blob/main/README.md"
+"Bug Reports" = "https://github.com/yourusername/mondip-ml-tutorials/issues"
+"Source Code" = "https://github.com/yourusername/mondip-ml-tutorials"
+
+[project.scripts]
+mondip-ml-tutorials = "mondip_ml_tutorials.tutorials:mondip"
+
+[tool.setuptools]
+packages = ["mondip_ml_tutorials"]
+
+[tool.setuptools.package-data]
+mondip_ml_tutorials = ["*.txt", "*.md"]
+
+[tool.black]
+line-length = 88
+target-version = ['py37']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --cov=mondip_ml_tutorials --cov-report=term-missing"
