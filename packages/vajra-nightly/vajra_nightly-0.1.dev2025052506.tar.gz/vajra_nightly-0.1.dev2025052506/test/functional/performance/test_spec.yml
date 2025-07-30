@@ -1,0 +1,55 @@
+performance_tests:
+  llama_3_8b_small_scale:
+    model: "meta-llama/Meta-Llama-3-8B"
+    max_model_len: 4096
+    pp_size: 1
+    tp_size: 2
+    enable_spp: false
+    enable_ep: false
+    dataset: "sharegpt_8k_stats_llama2_tokenizer_filtered_v2"
+    request_pattern: "POISSON"
+    qps: 5
+
+  llama_3_8b_pp4:
+    model: "meta-llama/Meta-Llama-3-8B"
+    max_model_len: 4096
+    pp_size: 4
+    tp_size: 1
+    enable_spp: false
+    enable_ep: false
+    dataset: "sharegpt_8k_stats_llama2_tokenizer_filtered_v2"
+    request_pattern: "POISSON"
+    qps: 20
+
+  llama_3_8b_pp4_spp:
+    model: "meta-llama/Meta-Llama-3-8B"
+    max_model_len: 4096
+    pp_size: 4
+    tp_size: 1
+    enable_spp: true
+    enable_ep: false
+    dataset: "sharegpt_8k_stats_llama2_tokenizer_filtered_v2"
+    request_pattern: "POISSON"
+    qps: 20
+
+  mixtral_8x7b_tp4_fused:
+    model: "mistralai/Mixtral-8x7B-Instruct-v0.1"
+    max_model_len: 32768
+    pp_size: 1
+    tp_size: 4
+    enable_spp: false
+    enable_ep: false
+    dataset: "sharegpt_8k_stats_llama2_tokenizer_filtered_v2"
+    request_pattern: "POISSON"
+    qps: 3
+
+  mixtral_8x7b_tp4_ep:
+    model: "mistralai/Mixtral-8x7B-Instruct-v0.1"
+    max_model_len: 32768
+    pp_size: 1
+    tp_size: 4
+    enable_spp: false
+    enable_ep: true
+    dataset: "sharegpt_8k_stats_llama2_tokenizer_filtered_v2"
+    request_pattern: "POISSON"
+    qps: 3

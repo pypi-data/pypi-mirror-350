@@ -1,0 +1,63 @@
+[build-system]
+requires = [
+    "cmake>=3.26",
+    "ninja",
+    "packaging",
+    "setuptools>=61",
+    "setuptools-scm>=8.0",
+    "torch == 2.6",
+    "uvloop",
+    "wheel",
+    "flashinfer_python",
+    "vidur"
+]
+build-backend = "setuptools.build_meta"
+
+
+[tool.black]
+exclude = "vajra/datatypes/generated/worker_protocol_pb2.py"
+
+
+[tool.isort]
+profile = "black"
+known_first_party = "vajra"
+known_third_party = "wandb"
+extend_skip_glob="vajra/datatypes/generated/*"
+
+
+[tool.pytest.ini_options]
+addopts = [
+    "--strict-markers",
+    "-s",
+    "--junitxml=test_reports/pytest-results.xml",
+    "--cov=vajra",
+    "--cov-report=xml:test_reports/coverage.xml",
+    "--cov-report=html:test_reports/coverage_html"
+]
+testpaths = [
+    "test"
+]
+markers = [
+    "performance: Performance benchmarking tests. Part of the functional test suite.",
+    "correctness: Correctness tests. Part of the functional test suite.",
+    "unit: Python unit tests.",
+    "integration: Integration tests.",
+    "gpu: Test will run on GPUs and CUDA sync."
+]
+log_cli = true
+log_cli_level = "INFO"
+log_cli_format = "%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
+
+[tool.pyright]
+include = ["vajra", "test"]
+exclude = [
+    "**/__pycache__",
+    "vajra/core/scheduler/", # To be replaced with a C++ implementation
+    "vajra/datatypes/generated/worker_protocol_pb2.py",
+    "vajra/utils/proto_utils.py"
+]
+reportMissingImports = false
