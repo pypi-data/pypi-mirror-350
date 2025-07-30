@@ -1,0 +1,174 @@
+Metadata-Version: 2.4
+Name: lazy-b
+Version: 0.1.9
+Summary: Keep Slack/Teams active by simulating key presses at regular intervals
+Project-URL: Homepage, https://github.com/Lanznx/lazy-b
+Project-URL: Bug Tracker, https://github.com/Lanznx/lazy-b/issues
+Project-URL: Documentation, https://github.com/Lanznx/lazy-b#readme
+Project-URL: Source Code, https://github.com/Lanznx/lazy-b
+Author-email: Brandon Lu <brandonlu0924@gmail.com>
+License: MIT
+License-File: LICENSE
+Keywords: automation,away,inactive,keypress,simulate,slack,teams,utility
+Classifier: Development Status :: 3 - Alpha
+Classifier: Environment :: MacOS X
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: End Users/Desktop
+Classifier: Intended Audience :: Information Technology
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: MacOS :: MacOS X
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Topic :: Utilities
+Requires-Python: >=3.8
+Requires-Dist: pyautogui>=0.9.54
+Provides-Extra: dev
+Requires-Dist: black>=22.0.0; extra == 'dev'
+Requires-Dist: build>=0.8.0; extra == 'dev'
+Requires-Dist: mypy>=0.950; extra == 'dev'
+Requires-Dist: pytest-cov>=3.0.0; extra == 'dev'
+Requires-Dist: pytest>=7.0.0; extra == 'dev'
+Requires-Dist: ruff>=0.0.200; extra == 'dev'
+Requires-Dist: twine>=4.0.0; extra == 'dev'
+Provides-Extra: macos
+Requires-Dist: pyobjc-core>=7.0.0; extra == 'macos'
+Requires-Dist: pyobjc-framework-cocoa>=7.0.0; extra == 'macos'
+Description-Content-Type: text/markdown
+
+# lazy-b
+
+Keep Slack, Microsoft Teams, or other similar applications from showing you as "away" or "inactive" by simulating key presses at regular intervals.
+
+## Installation
+
+Install directly from PyPI using pip or uv:
+
+```bash
+# Using pip
+pip install lazy-b
+
+# Using uv
+uv pip install lazy-b
+```
+
+## Usage
+
+### Command Line
+
+Run `lazy-b` from the command line:
+
+```bash
+# Basic usage (will press Shift key every 1 second)
+lazy-b
+
+# Customize the interval (e.g., every 30 seconds)
+lazy-b --interval 30
+```
+
+#### Platform-specific behavior
+
+- **macOS**: By default, runs in background mode with no dock icon. You can close the terminal window after starting it, and it will continue to run.
+- **Windows/Linux**: The application runs in the terminal window. You need to keep the window open for the program to continue running.
+
+To stop lazy-b, you can:
+- Press Ctrl+C in the terminal window
+- On macOS, if running in background, find and kill the process:
+
+```bash
+# Find the process
+ps aux | grep lazy-b
+
+# Kill it using the PID
+kill <PID>
+```
+
+### Python API
+
+You can also use the Python API directly in your own scripts (works on all platforms):
+
+```python
+from lazy_b import LazyB
+import time
+
+# Create an instance with a custom interval (in seconds)
+lazy = LazyB(interval=5)  # Press Shift every 5 seconds
+
+# Define a callback function to handle status messages (optional)
+def status_callback(message):
+    print(f"Status: {message}")
+
+# Start the simulation
+lazy.start(callback=status_callback)
+
+try:
+    # Keep your script running
+    while True:
+        time.sleep(1)
+except KeyboardInterrupt:
+    # Stop on Ctrl+C
+    lazy.stop()
+```
+
+## Features
+
+- Prevents "away" or "inactive" status in messaging applications
+- Customizable interval between key presses (default: 1 second)
+- Simple command-line interface
+- Cross-platform: Works on macOS, Windows, and Linux
+- Background mode on macOS (no dock icon)
+- Python API for integration into your own scripts
+- Minimal resource usage
+
+## Development
+
+### Setup Development Environment
+
+```bash
+# Clone the repository
+git clone https://github.com/Lanznx/lazy-b.git
+cd lazy-b
+
+# Setup development environment
+make dev-setup
+
+# Install in development mode
+make install
+```
+
+### Releasing New Versions
+
+To release a new version:
+
+```bash
+# Update version, create commit and tag
+make release  # This will prompt for the new version
+
+# Push changes and tag to GitHub
+git push origin main
+git push origin v<version>  # e.g., git push origin v0.2.0
+```
+
+Pushing a tag will automatically trigger the release workflow, which will:
+1. Build the package
+2. Create a GitHub release
+3. Publish to PyPI
+
+## Requirements
+
+- Python 3.8 or higher
+- PyAutoGUI
+- PyObjC-Core (for macOS dock icon hiding, optional)
+
+## License
+
+MIT
+
+## Disclaimer
+
+This tool is meant for legitimate use cases like preventing timeouts during presentations or when you're actively reading but not typing. Please use responsibly and in accordance with your organization's policies.
