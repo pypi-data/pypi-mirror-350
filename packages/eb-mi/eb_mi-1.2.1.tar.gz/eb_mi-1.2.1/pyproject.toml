@@ -1,0 +1,61 @@
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core"]
+
+[tool.coverage.html]
+directory = "coverage_html"
+
+[tool.coverage.report]
+# Regexes for lines to exclude from consideration
+exclude_also = [
+  # Don't complain about abstract methods, they aren't run:
+  "@(abc\\.)?abstractmethod",
+  # Don't complain about missing debug-only code:
+  "def __repr__",
+  # Don't complain if non-runnable code isn't run:
+  "if 0:",
+  "if __name__ == .__main__.:",
+  "if self\\.debug",
+  # Don't complain if tests don't hit defensive assertion code:
+  "raise AssertionError",
+  "raise NotImplementedError"
+]
+ignore_errors = true
+omit = [
+  "__init__.py",
+  "test_*.py"
+]
+show_missing = true
+skip_covered = true
+skip_empty = true
+
+[tool.coverage.run]
+branch = true
+
+[tool.poetry]
+authors = ["Philipp Zettl <philipp@easybits.tech>"]
+description = ""
+name = "eb-mi"
+packages = [{include = "easybits_module_interface"}]
+readme = "README.md"
+version = "1.2.1"
+
+[tool.poetry.dependencies]
+aio-pika = "^9.4.0"
+python = ">=3.10,<4.0"
+
+[tool.poetry.group.dev.dependencies]
+insipid-sphinx-theme = "^0.4.1"
+myst-parser = "^4.0.0"
+parameterized = "^0.9.0"
+pre-commit = "^3.4.0"
+pytest = "^8.0.0"
+pytest-cov = "^5.0.0"
+sphinx = "^7.0.1"
+
+[tool.pytest.ini_options]
+addopts = "-rpPa -q --cov"
+minversion = "6.0"
+testpaths = [
+  "tests"
+]
