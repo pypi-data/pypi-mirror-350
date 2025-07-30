@@ -1,0 +1,88 @@
+# NGD - Natural Language Processing Programs
+
+This package contains a collection of Natural Language Processing (NLP) programs that demonstrate various NLP techniques and concepts.
+
+## Installation
+
+You can install the package using pip:
+
+```bash
+pip install -e .
+```
+
+## Available Programs
+
+The package includes 7 programs that cover different aspects of NLP:
+
+1. **Natural Language Processing Text Analysis**
+   - Tokenization (sentence and word)
+   - Stopword removal
+   - Stemming
+   - Lemmatization
+
+2. **Named Entity Recognition with NLTK**
+   - Tokenization
+   - Part-of-speech tagging
+   - Named entity chunking
+   - BIO tagging
+
+3. **TF-IDF Implementation**
+   - Term Frequency calculation
+   - Document Frequency calculation
+   - Inverse Document Frequency calculation
+   - TF-IDF scoring
+   - Using scikit-learn's TfidfVectorizer
+
+4. **N-grams Analysis**
+   - Unigram, bigram, and trigram generation
+   - Frequency analysis
+   - Text cleaning and preprocessing
+
+5. **Sentiment Analysis**
+   - Using NLTK's VADER sentiment analyzer
+   - Sentiment scoring
+   - Detailed sentiment analysis with pandas
+
+6. **Text Classification with Naive Bayes**
+   - Text preprocessing
+   - Feature extraction
+   - Model training and evaluation
+   - Prediction on new texts
+
+7. **Word Embeddings with Word2Vec**
+   - Word2Vec model training
+   - Word vector visualization
+   - Similar word finding
+   - Word analogies
+   - Word similarity calculation
+
+## Usage
+
+To view the code for any program, use the `print_program` function:
+
+```python
+from ngd import print_program
+
+# Print program 1
+print_program(1)
+
+# Print program 2
+print_program(2)
+
+# And so on...
+```
+
+## Requirements
+
+The package requires the following dependencies:
+- nltk
+- pandas
+- scikit-learn
+- requests
+- gensim
+- matplotlib
+- numpy
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details. 
