@@ -1,0 +1,462 @@
+# Evolvishub Ollama Adapter
+
+<div align="center">
+  <img src="src/evolvishub_ollama_adapter/assets/png/logo.png" alt="Evolvis AI Logo" width="200"/>
+</div>
+
+A professional Python adapter for Ollama, providing a clean and type-safe interface for interacting with Ollama models.
+
+## Features
+
+- 🚀 Asynchronous API client with retry support
+- 📝 Type-safe request/response models using Pydantic
+- 💬 Chat and text generation with streaming support
+- 🖼️ Image handling and encoding utilities
+- 🔢 Embedding generation and similarity search
+- 📊 Model management (create, copy, delete)
+- 🛠️ Comprehensive utility functions
+- 📚 Well-documented code with examples
+- ⚙️ Flexible configuration system
+
+## Installation
+
+```bash
+# Basic installation
+pip install evolvishub-ollama-adapter
+
+# With YAML configuration support
+pip install evolvishub-ollama-adapter[yaml]
+```
+
+## Configuration
+
+The adapter supports multiple configuration formats and provides a flexible way to manage settings.
+
+### Configuration Formats
+
+1. **INI Format** (Default):
+```ini
+[Ollama]
+base_url = http://localhost:11434
+timeout = 60
+max_retries = 3
+default_model = llama2
+
+[Models]
+llama2 = 7b
+mistral = 7b
+
+[ModelOptions]
+temperature = 0.7
+top_p = 0.9
+```
+
+2. **YAML Format** (Optional):
+```yaml
+ollama:
+  base_url: http://localhost:11434
+  timeout: 60
+  max_retries: 3
+  default_model: llama2
+
+models:
+  llama2: 7b
+  mistral: 7b
+
+model_options:
+  temperature: 0.7
+  top_p: 0.9
+```
+
+### Configuration Options
+
+#### Ollama API Settings
+- `base_url`: Ollama API base URL
+- `timeout`: Request timeout in seconds
+- `max_retries`: Maximum number of retry attempts
+- `default_model`: Default model to use
+
+#### Model Settings
+- Model versions and configurations
+- Default model options (temperature, top_p, etc.)
+- Context window size
+- Thread count
+
+#### Data Source Settings
+- Text chunk size and overlap
+- Markdown code extraction
+- PDF image extraction
+- Image processing options
+
+#### File Source Settings
+- File patterns for different types
+- Storage paths for temp, cache, and output
+- File encoding and size limits
+
+#### Logging Settings
+- Log level and format
+- Log file location and rotation
+
+### Using Configuration
+
+1. **Basic Usage**:
+```python
+from evolvishub_ollama_adapter.config import Config
+from evolvishub_ollama_adapter.ollama import OllamaClient
+
+# Use default configuration
+client = OllamaClient()
+
+# Use custom configuration
+config = Config("path/to/config.ini")
+client = OllamaClient(config)
+```
+
+2. **YAML Configuration**:
+```python
+from evolvishub_ollama_adapter.config import Config
+from evolvishub_ollama_adapter.ollama import OllamaClient
+
+# Use YAML configuration
+config = Config("path/to/config.yaml", config_type="yaml")
+client = OllamaClient(config)
+```
+
+3. **Environment Variable Override**:
+```bash
+export OLLAMA_CONFIG=/path/to/config.ini
+```
+
+4. **Programmatic Configuration**:
+```python
+from evolvishub_ollama_adapter.config import Config
+from evolvishub_ollama_adapter.ollama import OllamaClient
+
+# Create and modify configuration
+config = Config()
+config.set("Ollama", "base_url", "http://custom:11434")
+config.set("ModelOptions", "temperature", 0.8)
+
+# Use modified configuration
+client = OllamaClient(config)
+```
+
+### Configuration Methods
+
+The `Config` class provides several methods for accessing configuration values:
+
+```python
+config = Config()
+
+# Get values with type conversion
+timeout = config.getint("Ollama", "timeout")
+temperature = config.getfloat("ModelOptions", "temperature")
+extract_code = config.getboolean("DataSources", "markdown_extract_code")
+patterns = config.getlist("FileSources", "text_patterns")
+
+# Get model options
+options = config.get_model_options()
+
+# Get file patterns
+patterns = config.get_file_patterns()
+
+# Get storage paths
+paths = config.get_storage_paths()
+```
+
+## Quick Start
+
+### Basic Text Generation
+
+```python
+import asyncio
+from evolvishub_ollama_adapter.ollama import OllamaClient, GenerateRequest
+
+async def main():
+    # Initialize client
+    client = OllamaClient()
+    
+    # Create generation request
+    request = GenerateRequest(
+        model="llama2",
+        prompt="What is the capital of France?",
+        options={"temperature": 0.7}
+    )
+    
+    # Generate text
+    response = await client.generate(request)
+    print(response.response)
+
+asyncio.run(main())
+```
+
+### Streaming Text Generation
+
+```python
+import asyncio
+from evolvishub_ollama_adapter.ollama import OllamaClient, GenerateRequest
+
+async def main():
+    client = OllamaClient()
+    request = GenerateRequest(
+        model="llama2",
+        prompt="Write a short story about a robot.",
+        stream=True
+    )
+    
+    async for chunk in client.generate_stream(request):
+        print(chunk.response, end="", flush=True)
+
+asyncio.run(main())
+```
+
+### Chat with Images
+
+```python
+import asyncio
+from evolvishub_ollama_adapter.ollama import (
+    OllamaClient, ChatRequest, ChatMessage,
+    encode_image
+)
+
+async def main():
+    client = OllamaClient()
+    
+    # Encode image
+    image_data = encode_image("path/to/image.jpg")
+    
+    # Create chat request with image
+    request = ChatRequest(
+        model="llama2",
+        messages=[
+            ChatMessage(
+                role="user",
+                content="What's in this image?",
+                images=[image_data]
+            )
+        ]
+    )
+    
+    # Get chat response
+    response = await client.chat(request)
+    print(response.message.content)
+
+asyncio.run(main())
+```
+
+### Embeddings and Similarity Search
+
+```python
+import asyncio
+from evolvishub_ollama_adapter.ollama import (
+    OllamaClient, EmbeddingRequest,
+    cosine_similarity
+)
+
+async def main():
+    client = OllamaClient()
+    
+    # Create embeddings
+    texts = [
+        "The quick brown fox jumps over the lazy dog",
+        "A fast orange fox leaps over a sleepy canine",
+        "The weather is beautiful today"
+    ]
+    
+    embeddings = []
+    for text in texts:
+        request = EmbeddingRequest(model="llama2", prompt=text)
+        response = await client.create_embedding(request)
+        embeddings.append(response.embedding)
+    
+    # Calculate similarity
+    similarity = cosine_similarity(embeddings[0], embeddings[1])
+    print(f"Similarity between first two texts: {similarity:.2f}")
+
+asyncio.run(main())
+```
+
+### Model Management
+
+```python
+import asyncio
+from evolvishub_ollama_adapter.ollama import OllamaClient
+
+async def main():
+    client = OllamaClient()
+    
+    # List available models
+    models = await client.list_models()
+    print("Available models:", [model.name for model in models.models])
+    
+    # Get model info
+    info = await client.get_model_info("llama2")
+    print(f"Model size: {info.size / 1024 / 1024:.2f} MB")
+    
+    # Pull new model
+    await client.pull_model("mistral")
+    
+    # Copy model
+    await client.copy_model("mistral", "mistral-copy")
+    
+    # Delete model
+    await client.delete_model("mistral-copy")
+
+asyncio.run(main())
+```
+
+## Advanced Usage
+
+### Custom Configuration
+
+```python
+from evolvishub_ollama_adapter.config import Config
+from evolvishub_ollama_adapter.ollama import OllamaClient
+
+# Create custom configuration
+config = Config()
+config.set("Ollama", "base_url", "http://localhost:11434")
+config.set("Ollama", "timeout", "60")
+config.set("Ollama", "max_retries", "5")
+
+# Initialize client with custom config
+client = OllamaClient(config)
+```
+
+### Prompt Templates
+
+```python
+from evolvishub_ollama_adapter.ollama import format_prompt
+
+# Create template
+template = """
+You are a helpful AI assistant. Please help with the following task:
+
+Task: {task}
+Context: {context}
+
+Your response:
+"""
+
+# Format prompt
+prompt = format_prompt(
+    template,
+    task="Summarize this text",
+    context="The quick brown fox jumps over the lazy dog."
+)
+```
+
+### Image Processing
+
+```python
+from evolvishub_ollama_adapter.ollama import resize_image, encode_image
+
+# Resize image
+image = resize_image("large_image.jpg", max_size=1024)
+image.save("resized_image.jpg")
+
+# Encode image for API
+image_data = encode_image("resized_image.jpg")
+```
+
+## API Reference
+
+### Client
+
+- `OllamaClient`: Main client class for interacting with Ollama
+  - `generate()`: Generate text
+  - `generate_stream()`: Stream generated text
+  - `chat()`: Chat with model
+  - `chat_stream()`: Stream chat responses
+  - `create_embedding()`: Create embeddings
+  - `list_models()`: List available models
+  - `get_model_info()`: Get model information
+  - `pull_model()`: Pull model from registry
+  - `push_model()`: Push model to registry
+  - `delete_model()`: Delete model
+  - `create_model()`: Create model from Modelfile
+  - `copy_model()`: Copy model
+
+### Models
+
+- `GenerateRequest`: Text generation request
+- `GenerateResponse`: Text generation response
+- `EmbeddingRequest`: Embedding request
+- `EmbeddingResponse`: Embedding response
+- `ChatRequest`: Chat request
+- `ChatResponse`: Chat response
+- `ModelInfo`: Model information
+- `ModelList`: List of models
+
+### Utilities
+
+- `encode_image()`: Encode image to base64
+- `encode_image_async()`: Async image encoding
+- `decode_image()`: Decode base64 image
+- `resize_image()`: Resize image
+- `cosine_similarity()`: Calculate vector similarity
+- `format_prompt()`: Format prompt template
+- `parse_model_options()`: Parse model options
+- `format_chat_history()`: Format chat history
+- `parse_model_name()`: Parse model name
+
+## Contributing
+
+Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for a list of changes.
+
+## Acknowledgments
+
+- [Ollama](https://github.com/ollama/ollama) for the amazing AI model serving platform
+- [aiohttp](https://github.com/aio-libs/aiohttp) for async HTTP client/server
+- [pydantic](https://github.com/pydantic/pydantic) for data validation
+- [aiosqlite](https://github.com/omnilib/aiosqlite) for async SQLite support
+- [asyncpg](https://github.com/MagicStack/asyncpg) for async PostgreSQL support
+- [motor](https://github.com/mongodb/motor) for async MongoDB support
+- [PyYAML](https://github.com/yaml/pyyaml) for YAML support
+
+## About Evolvis AI
+
+Evolvis AI is a leading provider of artificial intelligence solutions, helping businesses unlock the potential of their data through innovative AI technologies. Our mission is to make artificial intelligence accessible to companies of all sizes, enabling them to compete effectively in today's data-driven environment.
+
+### Our Approach
+
+- **Co-creation**: We continuously collaborate with you in developing our solutions
+- **Open Source Priority**: We reduce costs and develop robust tools using open-source technologies
+- **Transparency**: We keep you informed about progress continuously
+- **Custom Solutions**: We analyze and understand your unique business processes to provide tailored solutions
+
+### Industries We Serve
+
+- Manufacturing
+- Healthcare
+- Logistics
+- Construction
+- Public Services
+- Transportation
+- Textile
+- Technology
+- Petrochemical
+- Mining
+- Metallurgy
+- Automotive
+- Food Industry
+- Government
+- Education
+- Culture
+
+Visit [Evolvis AI](https://evolvis.ai) to learn more about our solutions and how we can help transform your business.
+
+## Author
+
+**Alban Maxhuni, PhD**  
+Email: a.maxhuni@evolvis.ai
+
+Dr. Maxhuni is a leading expert in artificial intelligence and machine learning, with extensive experience in developing and implementing AI solutions for various industries. His work focuses on making AI accessible and practical for businesses of all sizes.

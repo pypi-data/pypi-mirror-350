@@ -1,0 +1,52 @@
+ollama:
+  base_url: http://localhost:11434
+  timeout: 30
+  max_retries: 2
+  default_model: llama2
+
+models:
+  llama2: 7b
+  mistral: 7b
+  codellama: 13b
+  vicuna: 13b
+
+model_options:
+  temperature: 0.7
+  top_p: 0.9
+  top_k: 40
+  repeat_penalty: 1.1
+  num_ctx: 2048
+  num_thread: 4
+
+data_sources:
+  text_chunk_size: 1000
+  text_chunk_overlap: 200
+  markdown_extract_code: true
+  pdf_extract_images: true
+  image_max_size: 1024
+  image_quality: 85
+
+file_sources:
+  text_patterns:
+    - "*.txt"
+    - "*.md"
+    - "*.rst"
+  code_patterns:
+    - "*.py"
+    - "*.js"
+    - "*.java"
+    - "*.cpp"
+  binary_patterns:
+    - "*.pdf"
+    - "*.jpg"
+    - "*.png"
+  temp_dir: /tmp/ollama
+  cache_dir: ~/.cache/ollama
+  output_dir: ./output
+
+logging:
+  level: INFO
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: ollama.log
+  max_size: 10485760
+  backup_count: 5 
