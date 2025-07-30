@@ -1,0 +1,62 @@
+Metadata-Version: 2.4
+Name: tap2shacl
+Version: 1.0.0b5
+Summary: DC TAP to SHACL converter.
+Author-email: Phil Barker <phil.barker@pjjk.co.uk>
+License-Expression: GPL-2.0-only
+Project-URL: Homepage, https://github.com/philbarker/TAP2SHACL/
+Keywords: RDF,metadata application profile,SHACL
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Information Technology
+Classifier: Natural Language :: English
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE.txt
+Requires-Dist: rdflib>=7.0.0
+Requires-Dist: pyyaml>=6.0.1
+Requires-Dist: click>=7.1.2
+Requires-Dist: pygetch>=0.1.0
+Requires-Dist: dctap==0.4.5
+Provides-Extra: dev
+Requires-Dist: pytest>=6.2; extra == "dev"
+Requires-Dist: black>=21.6b0; extra == "dev"
+Requires-Dist: pytest-black>=0.3.12; extra == "dev"
+Requires-Dist: pyinstaller>=5.4; extra == "dev"
+Dynamic: license-file
+
+Reads a Dublin Core [Tabular Application Profile](https://github.com/dcmi/dctap), with some extensions, and converts it to [SHACL](https://www.w3.org/TR/shacl/).
+
+WARNING: beta version, use at own risk.
+
+## Installation and use
+
+Always install in a virtual environment (venv).
+
+`pip install tap2shacl` or install from github. 
+
+```
+(venv) $ git clone https://github.com/philbarker/TAP2SHACL
+(venv) $ cd TAP2SHACL
+(venv) $ pip install -r requirements.txt
+(venv) $ ./tap2shacl.py --help
+```
+usage: `tap2shacl.py [-h] [-c «tap config file name»] [-ns «namespace csv file»]
+                    [-a «tap metadata csv file»] [-s «shapes csv file»]
+                    «tap csv file»`
+
+example: `path/to/tap2shacl.py tap.csv`
+
+## Contents
+tap2shacl includes several modules that deal with reading and processing the application profile:
+
+* **APClasses** Provides python data classes for metadata application profiles, with methods to populate them.
+* **TAP2AP** uses dctap-python to read a DC TAP (Dublin Core Tabular Application Profile), and some other config files, and converts it to a python application profile (APClasses).
+* **AP2SHACL** exports the python application profile as SHACL.
+
+## Dependencies
+Requires [dctap 0.4.5](https://pypi.org/project/dctap/)(alpha) ([github repo](https://github.com/dcmi/dctap-python)) which in turn introduces dependencies, notably ruamel.yaml 0.17.10.
+
+Other dependencies are either from the python standard library (e.g. [dataclasses](https://docs.python.org/3/library/dataclasses.html), [urllib](https://docs.python.org/3/library/urllib.html), [csv](https://docs.python.org/3/library/csv.html)) or mature external packages (e.g. [rdflib](https://rdflib.readthedocs.io/en/stable/index.html)).

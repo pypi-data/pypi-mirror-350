@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tap2shacl"
+version = "1.0.0b5"
+description = "DC TAP to SHACL converter."
+readme = "README.md"
+authors = [{name = "Phil Barker", email="phil.barker@pjjk.co.uk"}]
+classifiers = [
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Natural Language :: English",
+]
+license = "GPL-2.0-only"
+license-files = ["LICENSE.txt",]
+
+keywords = ["RDF", "metadata application profile", "SHACL"]
+dependencies = [
+    "rdflib >=7.0.0",
+    "pyyaml >=6.0.1",
+    "click >=7.1.2",
+    "pygetch >=0.1.0",
+    "dctap == 0.4.5"
+]
+requires-python = ">=3.9"
+
+[project.optional-dependencies]
+dev = [
+    "pytest >= 6.2",
+    "black >= 21.6b0",
+    "pytest-black >= 0.3.12",
+    "pyinstaller >= 5.4"
+]
+
+[project.urls]
+Homepage = "https://github.com/philbarker/TAP2SHACL/"
+
+[project.scripts]
+tap2shacl = "tap2shacl.__main__:main"
+
+[tool.pytest.ini_options]
+pythonpath = [
+  "src"
+]
+minversion = "6.0"
+testpaths = [
+    "tests",
+]
