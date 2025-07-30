@@ -1,0 +1,115 @@
+[build-system]
+requires = [
+  "hatchling",
+  "hatch-vcs>=0.4.0"
+]
+build-backend = "hatchling.build"
+
+[project]
+name = "pyamlo"
+dynamic = ["version"]
+description = "YAML configuration loader with advanced features."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { file = "LICENSE" }
+authors = [
+  { name = "Mart van Rijthoven", email = "your@email.com" }
+]
+keywords = ["yaml", "configuration", "loader", "interpolation"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+  "pyyaml>=6.0",
+]
+
+
+[tool.hatch]
+version.source = "vcs"
+build.hooks.vcs.version-file = "yamlo/__about__.py"
+
+[tool.hatch.version.raw-options]
+local_scheme = "no-local-version"
+
+[project.optional-dependencies]
+test = [
+  "pytest",
+  "pytest-cov",
+]
+docs = [
+  "mkdocs>=1.5.0",
+  "mkdocs-material>=9.0.0",
+  "mkdocstrings[python]>=0.20.0",
+  "mkdocs-git-revision-date-localized-plugin>=1.2.0",
+  "mkdocs-git-committers-plugin"
+]
+dev = [
+  "yamlo[test,docs]",
+  "black>=23.0.0",
+  "ruff>=0.1.0",
+  "mypy>=1.0.0",
+  "types-PyYAML"
+]
+
+[project.scripts]
+yamlo = "yamlo.__main__:main"
+
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "yamlo/",
+  "examples/",
+  "tests/",
+  "README.md",
+  "LICENSE",
+  "docs/",
+]
+
+
+[tool.hatch.build.targets.wheel]
+packages = ["yamlo"]
+
+
+[tool.hatch.envs.default]
+dependencies = [
+  "yamlo[dev]"
+]
+
+[tool.hatch.envs.test]
+dependencies = [
+  "yamlo[test]",
+  "click"
+]
+
+[[tool.hatch.envs.test.matrix]]
+python = ["3.12"]
+
+[tool.hatch.envs.test.scripts]
+run = "pytest {args:tests}"
+cov = "pytest --cov=yamlo --cov-report=term-missing --cov-report=html tests/ {args}"
+
+[tool.hatch.envs.docs]
+dependencies = [
+  "yamlo[docs]"
+]
+
+[tool.hatch.envs.docs.scripts]
+build = "mkdocs build --clean --strict"
+serve = "mkdocs serve --dev-addr localhost:8000"
+deploy = "mkdocs gh-deploy --force"
+
+[tool.hatch.envs.check]
+dependencies = [
+  "yamlo[dev]",
+]
+
+[tool.hatch.envs.check.scripts]
+formatting = "black yamlo"
+linting    = "ruff check yamlo"
+typing     = "mypy yamlo"
+
