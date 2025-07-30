@@ -1,0 +1,54 @@
+[global]
+  runner       = "linux"
+  detached     = "false"
+  timeout      = "1 minutes"
+  retries      = "0"
+  on_failure   = "stop pipeline"
+  on_input_err = "fail"
+
+
+[[jobs]]
+name       = "Step 1"
+script     = "./pipeforge/examples/scripts/get_purpose_in_life.py"
+
+  [jobs.input]
+  my_name = "Peter Woodstock"
+  my_path = "${PIPEFORGE__PATH}"
+
+  [jobs.output]
+  my_purpose_in_life = "?"
+
+
+[[jobs]]
+name       = "Step 2-A"
+script     = "./pipeforge/examples/scripts/repeat_purpose.py"
+
+  [jobs.input]
+  purpose_in_life = "@{Step 1::my_purpose_in_life}"
+  repeat          = "3"
+
+  [jobs.output]
+  satisfied = "?"
+
+
+[[jobs]]
+name       = "Step 2-B"
+script     = "./pipeforge/examples/scripts/repeat_purpose.py"
+
+  [jobs.input]
+  purpose_in_life = "@{Step 1::my_purpose_in_life}"
+  repeat          = "15"
+
+  [jobs.output]
+  satisfied = "?"
+
+
+[[jobs]]
+name       = "Step 3"
+script     = "./pipeforge/examples/scripts/print_summary.py"
+on_failure = "retrigger without : @{Step 2-A}"
+
+  [jobs.input]
+  satisfaction_1 = "@{Step 2-A::satisfied}"
+  satisfaction_2 = "@{Step 2-B::satisfied}"
+

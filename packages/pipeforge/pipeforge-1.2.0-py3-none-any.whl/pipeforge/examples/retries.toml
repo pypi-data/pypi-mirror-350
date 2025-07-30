@@ -1,0 +1,43 @@
+[[jobs]]
+name         = "Step 1"
+script       = "./pipeforge/examples/scripts/retry.py"
+runner       = "linux"
+detached     = "false"
+timeout      = "1 minute"
+retries      = "3"
+on_failure   = "stop pipeline"
+on_input_err = "fail"
+
+  [jobs.input]
+  when_to_succeed = "0"
+
+
+[[jobs]]
+name         = "Step 2"
+script       = "./pipeforge/examples/scripts/retry.py"
+runner       = "linux"
+detached     = "false"
+timeout      = "1 minute"
+retries      = "3"
+on_failure   = "stop pipeline"
+on_input_err = "fail"
+
+  [jobs.input]
+  fake_dependency = "@{Step 1}"
+  when_to_succeed = "2"
+
+
+[[jobs]]
+name         = "Step 3"
+script       = "./pipeforge/examples/scripts/retry.py"
+runner       = "linux"
+detached     = "false"
+timeout      = "1 minute"
+retries      = "3"
+on_failure   = "stop pipeline"
+on_input_err = "fail"
+
+  [jobs.input]
+  fake_dependency = "@{Step 2}"
+  when_to_succeed = "0"
+

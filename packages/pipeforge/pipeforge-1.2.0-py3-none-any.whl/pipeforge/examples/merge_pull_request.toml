@@ -1,0 +1,240 @@
+[config]
+verbose_level = "1"
+
+
+[[jobs]]
+name         = "Set globals"
+script       = "set_globals.py"
+runner       = "linux"
+detached     = "false"
+timeout      = "5 minutes"
+retries      = "0"
+on_failure   = "stop pipeline"
+on_input_err = "fail"
+
+  [jobs.input]
+  artifacts_folder_prefix = "/mnt/DISK001/project_alpha/artifacts/"
+  type                    = "gated checkin"
+
+  [jobs.output]
+  artifacts_folder = "?"
+
+
+[[jobs]]
+name         = "Take repositories snapshot"
+script       = "snapshot.py"
+runner       = "linux"
+detached     = "false"
+timeout      = "10 minutes"
+retries      = "0"
+on_failure   = "stop pipeline"
+on_input_err = "fail"
+
+  [jobs.input]
+  artifacts_folder = "@{Set globals::artifacts_folder}/manifest_snapshots/"
+  target_branch    = "${PIPEFORGE__TARGET_BRANCH}"
+  feature_branch   = "${PIPEFORGE__FEATURE_BRANCH}"
+  rebase           = "true"
+
+  [jobs.output]
+  snapshot_fw   = "?"
+  snapshot_host = "?"
+
+
+[[jobs]]
+name         = "Build FW"
+script       = "fw_build.py"
+runner       = "linux"
+detached     = "false"
+timeout      = "20 minutes"
+retries      = "0"
+on_failure   = "stop pipeline"
+on_input_err = "fail"
+
+  [jobs.input]
+  artifacts_folder = "@{Set globals::artifacts_folder}/build/fw/"
+  snapshot         = "@{Take repositories snapshot::snapshot_fw}"
+  build_type       = "fw build"
+
+  [jobs.output]
+  fw_binaries_folder = "?"
+
+
+[[jobs]]
+name         = "Static analysis of FW"
+script       = "fw_build.py"
+runner       = "linux"
+detached     = "false"
+timeout      = "20 minutes"
+retries      = "0"
+on_failure   = "stop pipeline"
+on_input_err = "fail"
+
+  [jobs.input]
+  artifacts_folder = "@{Set globals::artifacts_folder}/static_analysis/fw/"
+  snapshot         = "@{Take repositories snapshot::snapshot_fw}"
+  build_type       = "static analysis"
+
+  [jobs.output]
+  static_analysis_report_folder = "?"
+
+
+[[jobs]]
+name         = "Build tools"
+script       = "tools_build.py"
+runner       = "windows"
+detached     = "false"
+timeout      = "10 minutes"
+retries      = "0"
+on_failure   = "stop pipeline"
+on_input_err = "fail"
+
+  [jobs.input]
+  artifacts_folder = "@{Set globals::artifacts_folder}/build/tools/"
+  snapshot         = "@{Take repositories snapshot::snapshot_host}"
+
+  [jobs.output]
+  tools_binaries_folder = "?"
+
+
+[[jobs]]
+name         = "Update FW reference in platform manifests"
+script       = "update_fw_references.py"
+runner       = "linux"
+detached     = "false"
+timeout      = "10 minutes"
+retries      = "0"
+on_failure   = "stop pipeline"
+on_input_err = "fail"
+
+  [jobs.input]
+  fw_binaries_folder = "@{Build FW::fw_binaries_folder}"
+  snapshot_fw        = "@{Take repositories snapshot::snapshot_fw}"
+  snapshot_host      = "@{Take repositories snapshot::snapshot_host}"
+
+  [jobs.output]
+  snapshot_fw    = "?"
+  snapshot_host  = "?"
+  snapshot_intel = "?"
+  snapshot_amd   = "?"
+
+
+[[jobs]]
+name         = "Build Intel platform"
+script       = "build_intel.py"
+runner       = "linux"
+detached     = "false"
+timeout      = "90 minutes"
+retries      = "0"
+on_failure   = "stop pipeline"
+on_input_err = "fail"
+
+  [jobs.input]
+  artifacts_folder = "@{Set globals::artifacts_folder}/build/intel/"
+  snapshot_intel   = "@{Update FW reference in platform manifests::snapshot_intel}"
+  target           = "Intel X99-01"
+
+  [jobs.output]
+  intel_binaries_folder = "?"
+
+
+[[jobs]]
+name         = "Build AMD platform"
+script       = "build_amd.py"
+runner       = "linux"
+detached     = "false"
+timeout      = "90 minutes"
+retries      = "0"
+on_failure   = "stop pipeline"
+on_input_err = "fail"
+
+  [jobs.input]
+  artifacts_folder = "@{Set globals::artifacts_folder}/build/amd/"
+  snapshot_intel   = "@{Update FW reference in platform manifests::snapshot_amd}"
+  target_1         = "AMD z100-A"
+  target_2         = "AMD bootloader 2023.1"
+  target_unified   = "AMD zen plus akv"
+
+  [jobs.output]
+  amd_binaries_folder = "?"
+
+
+[[jobs]]
+name         = "Test AMD platform functionality"
+script       = "run_utaf_tests.py"
+runner       = "UTAF && PROD && CGR && GCI && FUNC"
+detached     = "false"
+timeout      = "2 hours"
+retries      = "1"
+on_failure   = "stop pipeline"
+on_input_err = "fail"
+
+  [jobs.input]
+  artifacts_folder = "@{Set globals::artifacts_folder}/test_results/amd/"
+  binaries_folder  = "@{Build AMD platform::amd_binaries_folder}"
+  custom_tag       = "WLAN_PY3_GCI_BRANCH"
+  runtest_filename = "ci_test/run_test_CGR_FUNC_CI.yaml"
+
+  [jobs.output]
+  test_report_file = "?"
+
+
+[[jobs]]
+name         = "Test Intel platform functionality"
+script       = "run_utaf_tests.py"
+runner       = "UTAF && PROD && LGM && GCI && FUNC"
+detached     = "false"
+timeout      = "2 hours"
+retries      = "1"
+on_failure   = "stop pipeline"
+on_input_err = "fail"
+
+  [jobs.input]
+  artifacts_folder = "@{Set globals::artifacts_folder}/test_results/intel"
+  binaries_folder  = "@{Build Intel platform::intel_binaries_folder}"
+  custom_tag       = "WLAN_PY3_GCI_BRANCH"
+  runtest_filename = "ci_test/run_test_LGM_FUNC_CI.yaml"
+
+  [jobs.output]
+  test_report_file = "?"
+
+
+[[jobs]]
+name         = "Merge feature branch"
+script       = "merge_feature_branch.py"
+runner       = "linux"
+detached     = "false"
+timeout      = "10 minutes"
+retries      = "0"
+on_failure   = "restart pipeline"
+on_input_err = "fail"
+
+  [jobs.input]
+  dryrun_mode     = "true"
+  tests_results   = """static_analysis_report=@{Static analysis of FW::static_analysis_report_folder},\
+                       amd_functionality=@{Test AMD platform functionality::test_report_file},\
+                       intel_functionality=@{Test Intel platform functionality::test_report_file}"""
+  snapshot_fw     = "@{Update FW reference in platform manifests::snapshot_fw}"
+  snapshot_host   = "@{Update FW reference in platform manifests::snapshot_host}"
+  target_branch   = "${PIPEFORGE__TARGET_BRANCH}"
+
+  [jobs.output]
+  merge_completed = "?"
+
+
+[[jobs]]
+name         = "Send email with test results"
+script       = "send_email_report.py"
+runner       = "linux"
+detached     = "false"
+timeout      = "5 minutes"
+retries      = "0"
+on_failure   = "continue"
+on_input_err = "fail"
+
+  [jobs.input]
+  merge_completed = "@{Merge feature branch::merge_completed}"
+  tests_results   = """static_analysis_report=@{Static analysis of FW::static_analysis_report_folder},\
+                       amd_functionality=@{Test AMD platform functionality::test_report_file},\
+                       intel_functionality=@{Test Intel platform functionality::test_report_file}"""
+
