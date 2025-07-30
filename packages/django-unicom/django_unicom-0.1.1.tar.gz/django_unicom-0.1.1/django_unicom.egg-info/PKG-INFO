@@ -1,0 +1,135 @@
+Metadata-Version: 2.4
+Name: django-unicom
+Version: 0.1.1
+Summary: Unified communication layer for Django (Telegram, WhatsApp, Email)
+Home-page: https://github.com/meena-erian/unicom
+Author: Meena (Menas) Erian
+Author-email: hi@menas.pro
+Classifier: Framework :: Django
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Description-Content-Type: text/markdown
+Requires-Dist: Django>=3.2
+Requires-Dist: requests<3.0,>=2.31.0
+Requires-Dist: IMAPClient>=3.0.1
+Requires-Dist: dnspython<3.0,>=2.7.0
+Requires-Dist: Pillow>=10.4.0
+Provides-Extra: dev
+Requires-Dist: pytest<9.0,>=8.3.5; extra == "dev"
+Requires-Dist: pytest-django<5.0,>=4.11.1; extra == "dev"
+Requires-Dist: charset-normalizer<4.0,>=3.1.0; extra == "dev"
+Requires-Dist: python-dotenv<2.0,>=1.0; extra == "dev"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: summary
+
+# Django Unicom
+
+**Unified communication layer for Django** — easily integrate Telegram bots, WhatsApp, and Email with a consistent API across all platforms.
+
+---
+
+## 🚀 Quick Start
+
+1. **Install the package:**
+   ```bash
+   pip install django-unicom
+   ```
+
+2. **Add `unicom` to your Django settings:**
+
+   ```python
+   INSTALLED_APPS = [
+       ...
+       'unicom',
+   ]
+   ```
+
+3. **Include `unicom` URLs in your project’s `urls.py`:**
+
+   > This is required so that webhook URLs can be constructed correctly.
+
+   ```python
+   from django.urls import path, include
+
+   urlpatterns = [
+       ...
+       path('unicom/', include('unicom.urls')),
+   ]
+   ```
+
+4. **Define your public origin:**
+   In your Django `settings.py`:
+
+   ```python
+   DJANGO_PUBLIC_ORIGIN = "https://yourdomain.com"
+   ```
+
+   Or via environment variable:
+
+   ```env
+   DJANGO_PUBLIC_ORIGIN=https://yourdomain.com
+   ```
+
+That’s it! Unicom can now register and manage public-facing webhooks (e.g., for Telegram bots) based on your defined base URL.
+
+---
+
+## 🧑‍💻 Contributing
+
+We ❤️ contributors!
+
+### Requirements:
+
+* Docker & Docker Compose installed
+
+### Getting Started:
+
+1. Clone the repo:
+
+   ```bash
+   git clone https://github.com/meena-erian/unicom.git
+   cd unicom
+   ```
+
+2. Create a `db.env` file in the root:
+
+   ```env
+   POSTGRES_DB=unicom_test
+   POSTGRES_USER=unicom
+   POSTGRES_PASSWORD=unicom
+   DJANGO_PUBLIC_ORIGIN=https://yourdomain.com
+   ```
+
+3. Start the dev environment:
+
+   ```bash
+   docker-compose up --build
+   ```
+
+4. Run tests:
+
+   ```bash
+   docker-compose exec app pytest
+   ```
+
+   or just
+
+   ```bash
+   pytest
+   ```
+   Note: To run ```test_telegram_live``` tests you need to create ```telegram_credentials.py``` in the tests folder and define in it ```TELEGRAM_API_TOKEN``` and ```TELEGRAM_SECRET_TOKEN``` and to run ```test_email_live``` you need to create ```email_credentials.py``` in the tests folder and define in it ```EMAIL_CONFIG``` dict with the properties ```EMAIL_ADDRESS```: str, ```EMAIL_PASSWORD```: str, and ```IMAP```: dict, and ```SMTP```: dict, each of ```IMAP``` and ```SMTP``` contains ```host```:str ,```port```:int, ```use_ssl```:bool, ```protocol```: (```IMAP``` | ```SMTP```)  
+
+No need to modify `settings.py` — everything is pre-wired to read from `db.env`.
+
+---
+
+## 📄 License
+
+MIT License © Meena (Menas) Erian
