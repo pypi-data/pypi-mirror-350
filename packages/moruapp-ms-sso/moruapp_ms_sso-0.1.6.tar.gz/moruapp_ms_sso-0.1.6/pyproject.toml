@@ -1,0 +1,47 @@
+[project]
+name             = "moruapp-ms-sso"
+version          = "0.1.6"
+description      = "FastAPI extension: Microsoft SSO via fastapi-sso"
+readme           = "README.md"
+license          = { text = "MIT" }
+authors          = [{ name="MoruApp", email="you@example.com" }]
+
+# ← ここを追加
+requires-python  = ">=3.8"
+
+dependencies     = [
+  "fastapi>=0.95",
+  "uvicorn",
+  "fastapi-sso",
+  "python-dotenv",
+  "pydantic-settings",
+  "PyJWT",
+]
+
+classifiers      = [
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.8",
+  "Framework :: FastAPI",
+]
+
+[project.urls]
+Homepage   = "https://github.com/you/moruapp-ms-sso"
+Repository = "https://github.com/you/moruapp-ms-sso.git"
+
+[build-system]
+requires = ["setuptools>=61", "wheel", "Cython"]
+build-backend = "setuptools.build_meta"
+
+[tool.hatch.build]
+exclude = [
+  ".env",
+  ".env.sample",
+  "**/*.env",
+  "all_code.txt",
+  "combine.py",
+  "frontend.md",
+  "map.txt",
+  "memo.md",
+  "example/*",
+]
