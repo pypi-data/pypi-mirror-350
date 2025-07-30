@@ -1,0 +1,106 @@
+Metadata-Version: 2.4
+Name: textxtract
+Version: 0.1.0
+Summary: A robust, extensible Python package for synchronous and asynchronous text extraction from PDF, DOCX, DOC, TXT, ZIP, MD, RTF, HTML, and more.
+Author-email: 10XScale <opensource@10xscale.ai>, Shudipto Trafder <shudipto.trafder@hire10x.ai>
+Project-URL: Homepage, https://github.com/10XScale-in/textxtract
+Project-URL: Documentation, https://10xscale-in.github.io/textxtract/
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.21.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0.0; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: isort>=5.12.0; extra == "dev"
+Requires-Dist: mypy>=1.0.0; extra == "dev"
+Requires-Dist: mkdocs>=1.5.3; extra == "dev"
+Requires-Dist: mkdocs-material>=9.5.18; extra == "dev"
+Requires-Dist: mkdocstrings[python]>=0.24.0; extra == "dev"
+Requires-Dist: mkdocs-gen-files>=0.5.0; extra == "dev"
+Requires-Dist: mkdocs-literate-nav>=0.6.0; extra == "dev"
+Requires-Dist: pymdown-extensions>=10.7; extra == "dev"
+Provides-Extra: pdf
+Requires-Dist: pymupdf; extra == "pdf"
+Provides-Extra: docx
+Requires-Dist: python-docx; extra == "docx"
+Provides-Extra: doc
+Requires-Dist: antiword; extra == "doc"
+Provides-Extra: md
+Requires-Dist: markdown; extra == "md"
+Provides-Extra: rtf
+Requires-Dist: striprtf; extra == "rtf"
+Provides-Extra: html
+Requires-Dist: beautifulsoup4; extra == "html"
+Requires-Dist: lxml; extra == "html"
+Provides-Extra: xml
+Requires-Dist: lxml; extra == "xml"
+Provides-Extra: all
+Requires-Dist: pymupdf; extra == "all"
+Requires-Dist: python-docx; extra == "all"
+Requires-Dist: antiword; extra == "all"
+Requires-Dist: markdown; extra == "all"
+Requires-Dist: striprtf; extra == "all"
+Requires-Dist: beautifulsoup4; extra == "all"
+Requires-Dist: lxml; extra == "all"
+Dynamic: license-file
+
+# TextXtract
+
+A robust, extensible Python package for synchronous and asynchronous text extraction from PDF, DOCX, DOC, TXT, ZIP, Markdown, RTF, HTML, CSV, JSON, XML, and more.
+
+## Features
+
+- Synchronous and asynchronous extraction APIs
+- Modular file type handlers (PDF, DOCX, DOC, TXT, ZIP, Markdown, RTF, HTML, CSV, JSON, XML, and more.)
+- Abstract base classes for extensibility
+- Custom exception handling and logging
+- Configurable encoding, logging, and timeouts
+- Easy to add new file type handlers
+- Comprehensive unit tests with pytest
+
+## Installation
+
+```bash
+pip install .
+```
+
+## Usage Example
+
+```python
+from textxtract.sync.extractor import SyncTextExtractor
+from textxtract.aio.extractor import AsyncTextExtractor
+
+# Synchronous extraction
+extractor = SyncTextExtractor()
+text = extractor.extract(file_bytes, filename)
+
+# Asynchronous extraction
+import asyncio
+async_extractor = AsyncTextExtractor()
+text = asyncio.run(async_extractor.extract_async(file_bytes, filename))
+```
+
+## API Reference
+
+See [`ARCHITECTURE_PLAN.md`](ARCHITECTURE_PLAN.md) for detailed architecture and module layout.
+
+## Running Tests
+
+```bash
+pytest
+```
+
+## Contributing
+
+1. Fork the repository.
+2. Create a new branch.
+3. Add your feature or fix.
+4. Write tests.
+5. Submit a pull request.
+
+## License
+
+MIT License
+
