@@ -1,0 +1,112 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = "sh3dkit"
+license = "LGPL-3.0-or-later"
+dynamic = ["version"]
+requires-python = ">= 3.11"
+description = "Sweet home 3D file tools, currently providing SVG converter."
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    "click",
+    "sh3d.py",
+    "svg.py",
+    "skia-python"
+]
+
+[project.optional-dependencies]
+dev = [
+    "tox"
+]
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[[project.authors]]
+name = "Adam Schubert"
+email = "adam.schubert@sg1-game.net"
+
+[project.urls]
+Homepage = "https://github.com/Salamek/sh3dkit"
+
+[tool.setuptools.dynamic]
+version = {attr = "sh3dkit.__version__"}
+
+[tool.setuptools.packages.find]
+where = ["."]
+exclude = ["tests*"]
+
+[project.scripts]
+sh3d2svg = "sh3dkit.sh2d2svg:main"
+
+
+[tool.pylint.'MESSAGES CONTROL']
+disable = [
+    "locally-disabled",
+    "missing-docstring",
+    "protected-access",
+    "too-many-instance-attributes",
+    "duplicate-code",
+    "invalid-name",
+    "too-few-public-methods",
+    "too-many-public-methods",
+    "too-many-lines",
+    "consider-using-f-string"
+]
+
+[tool.pylint.'MASTER']
+ignore = [".tox", "build", "docs", "venv", "get-pip.py"]
+ignore-signatures = true
+py-version = "3.11"
+reports = false
+extension-pkg-allow-list = "skia"
+
+[tool.pylint.'BASIC']
+max-locals = 40
+max-public-methods = 20  # Optional: adjust if needed
+
+[tool.pylint.'FORMAT']
+max-line-length = 170
+
+[tool.pylint.'DESIGN']
+max-args = 15
+max-positional-arguments = 15
+max-nested-blocks = 10
+max-branches = 30
+max-statements = 100
+
+[tool.pylint.typecheck]
+signature-mutators=['click.decorators.option',
+                    'click.decorators.argument',
+                    'click.decorators.version_option',
+                    'click.decorators.help_option',
+                    'click.decorators.pass_context',
+                    'click.decorators.confirmation_option'
+]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+show_error_codes = true
+follow_imports = "silent"
+ignore_missing_imports = true
+allow_any_generics = true
+warn_return_any = false
+warn_unreachable = true
+disallow_subclassing_any = false
+disallow_untyped_decorators = false
+exclude = ["\\.venv/.*", "\\.tox/.*"]
