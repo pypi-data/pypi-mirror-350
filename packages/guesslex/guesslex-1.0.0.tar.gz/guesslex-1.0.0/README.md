@@ -1,0 +1,166 @@
+# Guesslex
+
+[![PyPI version](https://badge.fury.io/py/guesslex.svg)](https://badge.fury.io/py/guesslex)
+[![Python Support](https://img.shields.io/pypi/pyversions/guesslex.svg)](https://pypi.org/project/guesslex/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+A machine learning-based programming language detection library that identifies programming languages in code snippets with high accuracy. Supports 25+ programming languages with confidence scoring and detailed analysis.
+
+## Features
+
+- **High Accuracy**: 96.9% accuracy on test datasets
+- **25+ Languages**: Supports Python, JavaScript, TypeScript, Java, C/C++, Go, Rust, and more
+- **Confidence Scoring**: Provides confidence levels and detailed analysis
+- **Multiple Interfaces**: Both command-line tool and Python API
+- **Enhanced Pattern Matching**: Uses ensemble models with language-specific patterns
+- **Robust Detection**: Handles mixed-language files and provides context-aware results
+
+## Installation
+
+```bash
+pip install guesslex
+```
+
+## Quick Start
+
+### Python API
+
+```python
+from guesslex import detect_language_simple, detect_languages
+
+# Simple detection
+code = """
+def hello_world():
+    print("Hello, World!")
+    return True
+"""
+
+language = detect_language_simple(code)
+print(language)  # Output: python
+
+# Detailed detection with confidence scores
+result = detect_languages(code)
+print(result['detected_languages'])  # ['python']
+print(result['confidence_summary'])  # Detailed confidence information
+```
+
+### Command Line Interface
+
+```bash
+# Analyze a file
+guesslex -i script.py
+
+# Pipe code directly
+cat script.py | guesslex --json
+
+# Verbose output with detailed analysis
+guesslex -i script.py --verbose
+```
+
+## API Reference
+
+### `detect_language_simple(text: str) -> str`
+
+Returns the most likely programming language for the given code snippet.
+
+**Parameters:**
+- `text`: The code snippet to analyze
+
+**Returns:**
+- String representing the detected language
+
+### `detect_languages(text: str) -> Dict`
+
+Performs comprehensive language detection with confidence scoring.
+
+**Parameters:**
+- `text`: The code snippet to analyze
+
+**Returns:**
+- Dictionary containing:
+  - `detected_languages`: List of detected languages
+  - `confidence_summary`: Detailed confidence information per language
+  - `all_languages`: Combined results including fenced code blocks
+  - `analysis`: Analysis metadata
+
+## Supported Languages
+
+Python, Java, JavaScript, TypeScript, C, C++, C#, Go, Rust, PHP, Ruby, Scala, Swift, Kotlin, Haskell, R, Lua, Perl, SQL, HTML, CSS, Shell, MATLAB, Dart, Elixir, Plain Text
+
+## Command Line Options
+
+```
+guesslex [OPTIONS]
+
+Options:
+  -i, --input FILE        Input file (default: stdin)
+  -o, --out FILE         Write JSON results to file
+  -m, --model FILE       Custom model file path
+  --json                 Output clean JSON format
+  --verbose              Show detailed analysis
+  --confidence-threshold FLOAT  Confidence threshold (default: 0.70)
+  --plain-threshold FLOAT       Plain text threshold (default: 0.50)
+  -h, --help             Show help message
+```
+
+## Examples
+
+### Multi-language File Detection
+
+```python
+from guesslex import detect_languages
+
+mixed_code = """
+# Python function
+def calculate_sum(a, b):
+    return a + b
+
+/* C function */
+int add(int x, int y) {
+    return x + y;
+}
+
+// JavaScript function
+function multiply(a, b) {
+    return a * b;
+}
+"""
+
+result = detect_languages(mixed_code)
+print("Detected languages:", result['detected_languages'])
+# Output: ['python', 'c', 'javascript']
+```
+
+## Development
+
+To set up for development:
+
+```bash
+git clone https://github.com/yourusername/guesslex
+cd guesslex
+pip install -e .[dev]
+
+# Run tests
+pytest
+
+# Format code
+black guesslex/
+
+# Type checking
+mypy guesslex/
+```
+
+## Model Performance
+
+- **Overall Accuracy**: 96.9%
+- **Training Data**: 100,000+ code samples across 25+ languages
+- **Model Type**: Ensemble of TF-IDF, n-gram analysis, and pattern matching
+- **Validation**: Stratified k-fold cross-validation
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit pull requests, report bugs, or suggest features.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
