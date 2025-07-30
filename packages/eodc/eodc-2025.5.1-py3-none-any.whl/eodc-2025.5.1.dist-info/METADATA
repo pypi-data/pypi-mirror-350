@@ -1,0 +1,94 @@
+Metadata-Version: 2.1
+Name: eodc
+Version: 2025.5.1
+Summary: Python SDK for interacting with EODC services.
+Home-page: https://github.com/eodcgmbh/eodc-sdk
+Author: Lukas Weidenholzer
+Author-email: lukas.weidenholzer@eodc.eu
+Maintainer: EODC Staff
+Maintainer-email: support@eodc.eu
+Requires-Python: >=3.9,<3.12
+Classifier: Development Status :: 1 - Planning
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3 :: Only
+Requires-Dist: OWSLib (>=0.29.3,<0.30.0)
+Requires-Dist: azure-identity (>=1.15.0,<2.0.0)
+Requires-Dist: azure-storage-blob (>=12.18.3,<13.0.0)
+Requires-Dist: boto3 (==1.34.145)
+Requires-Dist: dash (>=2.15.0,<3.0.0)
+Requires-Dist: dash-bootstrap-components (>=1.5.0,<2.0.0)
+Requires-Dist: dash-extensions (>=1.0.11,<2.0.0)
+Requires-Dist: dash_daq (>=0.5.0,<0.6.0)
+Requires-Dist: dash_leaflet (>=1.0.15,<2.0.0)
+Requires-Dist: dask-gateway (>=2023.1.1)
+Requires-Dist: geopandas (>=0.14.3,<0.15.0)
+Requires-Dist: hera (>=5.14.0,<5.15.1)
+Requires-Dist: httpx (>=0.27.0,<0.28.0)
+Requires-Dist: jsbeautifier (>=1.14.11,<2.0.0)
+Requires-Dist: minio (>=7.1.16,<8.0.0)
+Requires-Dist: nbformat (>4.2.0)
+Requires-Dist: openeo-pg-parser-networkx (>=2025.5.1,<2026.0.0)
+Requires-Dist: openeo[localprocessing] (>=0.13.0,<1)
+Requires-Dist: plotly (>=5.18.0,<6.0.0)
+Requires-Dist: pydantic (>=2.0.1,<3.0.0)
+Requires-Dist: pydantic-settings (>=2.3.4,<3.0.0)
+Requires-Dist: pyjwt[crypto] (>=2.8.0,<3.0.0)
+Requires-Dist: pyproj (>=3.6.0,<4.0.0)
+Requires-Dist: pystac (>=1.7.3,<2.0.0)
+Requires-Dist: requests (>=2.28.2,<3.0.0)
+Project-URL: Repository, https://github.com/eodcgmbh/eodc-sdk
+Description-Content-Type: text/markdown
+
+# EODC SDK
+![PyPI - Status](https://img.shields.io/pypi/status/eodc)
+![PyPI](https://img.shields.io/pypi/v/eodc)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/eodc)
+
+Python SDK for interacting with EODC services.
+
+## Installation
+Install the SDK with pip:
+
+```
+pip install eodc
+```
+
+## Usage
+### Dask Clusters
+
+```
+from eodc import settings
+from eodc.dask import EODCCluster
+
+settings.DASK_URL = "<EODC dask gateway endpoint>"
+
+cluster = EODCCluster()
+```
+
+### Function-as-a-Service (FaaS)
+TODO
+
+
+### Workspaces
+
+A workspace is a an abstraction of a object storage container/bucket. It is used to store and retrieve data.
+
+Workspaces are integrated with EODC products and services, such as the openEO EODC backend.
+
+There is 2 basic types of workspaces which we distinguish between, EODC Workspaces and External Workspaces.
+
+- External Workspaces: These are object-storage buckets/containers which the users has provisioned from a third-party or is hosting themselves. They can be registered at EODC services and used in much the same way as EODC Workspaces, just that the user retains full control over them.
+
+- EODC (internal) Workspaces: These are object-storage buckets which the user has provisioned from specifically EODC. Below the abstraction of workspaces they are S3 Ceph buckets which the user has write/read/delete privileges on. EODC still owns these buckets, and they are basically leased storage space for the user to use with EODC services.
+
+Workspace Adapters, the code for which can be found in the workspace module in this repository, are an easy for for interacting with workspaces, both external and internal.
+
+They generalize across different object-storage providers/standards and are used across EODCs products for managing and linking workspaces to functionality.
+
+The exact capabilities are outlined in the code.
+
