@@ -1,0 +1,6 @@
+WHEN_FORM_IS_SUBMITTED = "when_form_is_submitted"
+ON_RECORD_CREATION = "on_record_creation"
+ON_RECORD_UPDATION = "on_record_updation"
+AT_SCHEDULED_TIME = "at_scheduled_time"
+WHEN_WEBHOOK_RECEIVED = "when_webhook_received"
+ON_RECORD_DELETION = "on_record_deletion"
