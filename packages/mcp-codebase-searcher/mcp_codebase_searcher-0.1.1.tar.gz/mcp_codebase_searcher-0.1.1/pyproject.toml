@@ -1,0 +1,56 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mcp_codebase_searcher"
+version = "0.1.1"
+authors = [
+  { name="Sakilmostak", email="skmahim71@gmail.com" },
+]
+description = "A Python tool to scan codebases, search for text/regex patterns, and elaborate on findings using Google Gemini."
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Build Tools",
+    "Topic :: Text Processing :: Indexing",
+    "Topic :: Utilities",
+]
+
+# Dependencies will be added in the next step
+dependencies = [
+    "python-dotenv",
+    "google-generativeai",
+]
+
+# py-modules IS REMOVED FROM HERE
+
+[project.scripts]
+# Entry points will be defined in a later subtask
+mcp-searcher = "mcp_searcher:main"
+
+[project.urls]
+"Homepage" = "https://github.com/sakilmostak/mcp-codebase-searcher" # Placeholder
+"Bug Tracker" = "https://github.com/sakilmostak/mcp-codebase-searcher/issues" # Placeholder
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+py-modules = [
+    "mcp_searcher",
+    "config",
+    "file_scanner",
+    "mcp_elaborate",
+    "mcp_search",
+    "output_generator",
+    "report_elaborator"
+]
+# Using py-modules explicitly, so find is not strictly needed but can be kept for safety/explicitness
+[tool.setuptools.packages.find]
+where = ["src"]
+exclude = ["tests", "tests.*"] 
