@@ -1,0 +1,76 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cotarag"
+version = "0.10.1"
+description = "Cognitive Thought and Retrieval Augmented Generation - An advanced AI agent framework combining CoTAEngine and AcceleRAG"
+authors = [
+    { name = "Kernel-Dirichlet", email = "elliottdev93@gmail.com" }
+]
+readme = "README.md"
+requires-python = ">=3.12"
+license = "AGPL-3.0"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+dependencies = [
+    "openai>=1.0.0",
+    "anthropic>=0.8.0",
+    "arxiv>=2.0.0",
+    "requests>=2.31.0",
+    "torch>=2.1.0",
+    "torchvision>=0.16.0",
+    "transformers>=4.36.0",
+    "scikit-learn>=1.3.0",
+    "Pillow>=10.0.0",
+    "matplotlib>=3.9.4",
+    "PyPDF2>=3.0.1",
+    "numpy>=1.24.0",
+    "typing-extensions>=4.5.0",
+    "tqdm>=4.65.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "isort>=5.0.0",
+    "mypy>=1.0.0",
+    "ruff>=0.1.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/Kernel-Dirichlet/CoTARAG"
+Documentation = "https://github.com/Kernel-Dirichlet/CoTARAG#readme"
+Repository = "https://github.com/Kernel-Dirichlet/CoTARAG"
+Issues = "https://github.com/Kernel-Dirichlet/CoTARAG/issues"
+
+[tool.setuptools]
+packages = [
+    "cotarag",
+    "cotarag.cota_engine",
+    "cotarag.accelerag",
+    "cotarag.accelerag.embedders",
+    "cotarag.accelerag.indexers",
+    "cotarag.accelerag.retrievers",
+    "cotarag.accelerag.query_engines",
+    "cotarag.accelerag.scorers",
+    "cotarag.accelerag.cachers",
+    "cotarag.accelerag.managers"
+]
+
+[tool.setuptools.package-data]
+cotarag = [
+    "py.typed",
+    "accelerag/*.py",
+    "accelerag/*/*.py",
+    "accelerag/*/*/*.py",
+    "cota_engine/*.py"
+]
