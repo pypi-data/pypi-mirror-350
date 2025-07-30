@@ -1,0 +1,70 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "heroku-langchain-aisdk"
+version = "0.1.0"
+description = "Heroku MIA SDK for Python - AI inference client for Heroku's managed inference API"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Heroku", email = "support@heroku.com"}
+]
+maintainers = [
+    {name = "Heroku", email = "support@heroku.com"}
+]
+keywords = ["heroku", "ai", "inference", "langchain", "llm"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "langchain-core>=0.1.0",
+    "httpx>=0.24.0",
+    "pydantic>=2.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/heroku/heroku-langchain-aisdk"
+Documentation = "https://github.com/heroku/heroku-langchain-aisdk#readme"
+Repository = "https://github.com/heroku/heroku-langchain-aisdk"
+"Bug Tracker" = "https://github.com/heroku/heroku-langchain-aisdk/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["heroku_mia_sdk*"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true 
