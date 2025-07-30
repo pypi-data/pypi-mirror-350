@@ -1,0 +1,53 @@
+Create new import specifications based on your text file format. The result files need to have a header row which is used to identify the relevant data columns. Please leave irrelevant fields empty (some are specific for DOASIS format, e.g. geom - a string containing information about solar zenith angle etc.). Hashs (#) can be used for commenting. If you create a new 
+type, please make a copy of the following empty mask and fill the relevant
+fields.
+
+NEWTYPE (empty mask)
+type: # the name of this import type within the code environment
+access_type: # specify data access type (choose from col_index or header_str)
+has_header_line: # boolean specifying whether result files include a header
+file_type: # file type of your result files
+delim: #file column delimiter
+time_str_formats: # if several, separate by commas (,)
+start: # column index or header string to identify spectrum start time column
+stop: # column index or header string to identify spectrum stop time column
+texp: # column index or header string to identify spectrum exposure time column
+num_scans: # column index or header string to identify column with info about added spectra
+azim: # column index or header string to identify column with azimuth angles
+elev: # column index or header string to identify column with elevation angles
+lat: # column index or header string to identify column with latitudes of instrument
+lon: # column index or header string to identify column with longitudes of instrument
+geom: # column index or header string to identify column with solar position info
+chi2: # column index or header string to identify column with fit chi2
+delta: # column index or header string to identify column with fit delta
+rms: # column index or header string to identify column with fit RMS
+fit_low: # column index or header string to identify column with lower fit boundary
+fit_high: # column index or header string to identify column with upper fit boundary
+species_pre_string: #pre string in header for fit results 
+fit_err_add_col: #number specifying relative column for species fit error (use 0 if no error is supposed to be included)
+ENDTYPE
+
+NEWTYPE
+type:doasis
+access_type:header_str
+has_header_line: 1
+file_type:dat
+delim:\t
+time_str_formats:%d/%m/%Y %I:%M:%S %p,%Y-%m-%d %H:%M:%S,%m/%d/%Y %H:%M:%S, %m/%d/%Y %I:%M:%S %p
+start:StartDateAndTime
+stop:StopDateAndTime
+texp:ExposureTime
+num_scans:NumScans
+azim:Azimuth
+elev:Elevation
+lat:Latitude
+lon:Longitude
+geom:ScanGeometry
+chi2:Chi Square
+delta:Delta
+rms:RMS
+fit_low:FitLow
+fit_high:FitHigh
+species_pre_string: Fit Coefficient (
+fit_err_add_col: 1 
+ENDTYPE

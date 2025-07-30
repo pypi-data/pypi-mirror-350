@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools_scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pydoas"
+dynamic = ["version"]
+authors = [
+    { name = "Jonas Gliss", email = "jonasgliss@gmail.com" },
+]
+description = "A Python toolbox for post-analysis of DOAS (Differential Optical Absorption Spectroscopy) results"
+readme = "README.rst"
+requires-python = ">=3.9"
+license = {text = "BSD-3-Clause"}
+
+dependencies = [
+    "numpy",
+    "pandas",
+    "matplotlib"   
+]
+
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Education",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+
+[project.urls]
+Homepage = "https://github.com/jgliss/pydoas"
+Documentation = "https://pydoas.readthedocs.io"
+
+[tool.setuptools]
+packages = ["pydoas", "pydoas.data"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+pydoas = [
+    "data/import_info.txt",
+    "data/*/*.csv",
+    "data/*/*.dat"
+    ]
+
+[tool.setuptools_scm]
+write_to = "pydoas/_version.py"
+
