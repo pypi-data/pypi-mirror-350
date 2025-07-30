@@ -1,0 +1,191 @@
+# Local Markdown Long Document Agent (Pydantic AI + MCP stdio with Google Gemini)
+
+This project demonstrates an agent that interacts with local, structured long Markdown documents. A long document is conceived as a collection of chapters, where the document itself is a directory. Each chapter is a Markdown (.md) file within that directory. Currently, chapters are ordered alphanumerically by their filenames (e.g., `01-introduction.md`, `02-main_content.md`). An optional `_manifest.json` file within the document's directory is reserved for future explicit chapter ordering and metadata.
+
+It uses:
+- A **tool server** (`doc_tool_server.py`) built with the `mcp` library (`FastMCP`) to expose document and chapter operations. These include listing documents, creating documents, managing chapters (create, delete, read content, list), reading full documents, modifying paragraphs, appending paragraphs, replacing text within chapters or entire documents, getting statistics, and finding text. Tools are exposed via `stdio` transport. The server manages documents in a root directory specified by the `LONG_DOCUMENT_ROOT_DIR` environment variable, which defaults to `long_documents_storage/`. Pydantic models are used extensively in the server for defining tool inputs/outputs and internal data structures.
+- An **agent** (`agent.py`) built with `pydantic-ai`. This agent uses Pydantic AI's `MCPServerStdio` client to start and communicate with the `doc_tool_server.py` subprocess. It leverages a Google Gemini LLM (e.g., `gemini-2.5-flash-preview-04-17`) via `pydantic-ai`'s native `GeminiModel` to understand user queries and utilize the discovered MCP tools for long document management. The agent also defines Pydantic models (mirroring those in `doc_tool_server.py` for consistency) to structure its final output, such as `FinalAgentResponse` which can contain `LongDocumentInfo`, `ChapterContent`, `OperationStatus`, `StatisticsReport`, or `ParagraphDetail` in its `details` field.
+
+## Project Structure (Root Directory)
+
+```
+.
+├── doc_tool_server.py        # MCP tool server (FastMCP) for long document operations
+├── agent.py                  # Pydantic AI agent using MCPServerStdio
+├── requirements.txt          # Python dependencies
+├── long_documents_storage/   # Default root directory for long documents (auto-created)
+│   └── my_first_document/    # Example: A long document (directory)
+│       ├── 01-introduction.md  # Example: Chapter 1 (alphanumeric ordering)
+│       ├── 02-main_content.md  # Example: Chapter 2
+│       ├── _manifest.json      # Optional: For future explicit chapter ordering
+│       └── ...                 # More chapters
+│   └── another_document/     # Example: Another long document
+│       ├── chapter_a.md
+│       └── _manifest.json
+├── README.md                 # This readme file
+├── test_doc_tool_server.py   # Pytest tests for the document tool server
+├── test_agent.py             # Pytest tests for the agent logic
+├── conftest.py               # Pytest configuration for asyncio
+├── pytest.ini                # Pytest settings
+└── .env                      # For API keys and other environment variables (you need to create this)
+```
+
+## Setup
+
+1.  **Project Files & Directory:**
+    *   Ensure `doc_tool_server.py`, `agent.py`, `requirements.txt`, `test_doc_tool_server.py`, `test_agent.py`, `conftest.py`, and `pytest.ini` are in your project root.
+    *   The root document directory (defaulting to `long_documents_storage/` or as specified by `LONG_DOCUMENT_ROOT_DIR`) will be automatically created by `doc_tool_server.py` (via `agent.py` starting it) on its first run if it doesn't exist.
+
+2.  **Python Virtual Environment (Recommended):**
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # On Windows use `venv\\Scripts\\activate`
+    ```
+
+3.  **Install Dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+    This will install `pydantic-ai`, `mcp[cli]`, `python-dotenv`, `google-generativeai`, and `pytest` with related plugins.
+
+4.  **Set Environment Variables (via `.env` file - Recommended):**
+    Create a `.env` file in the project root:
+    ```env
+    # Optional: For explicit Google API authentication if ADC is not configured
+    GOOGLE_API_KEY='your_actual_google_api_key'
+
+    # Optional: Specify a particular Gemini model (defaults to gemini-2.5-flash-preview-04-17 in agent.py)
+    # GEMINI_MODEL_NAME='gemini-1.5-pro-latest'
+
+    # Optional: Specify the root directory for storing your long documents
+    # Defaults to 'long_documents_storage/' if not set
+    # LONG_DOCUMENT_ROOT_DIR='my_markdown_library/'
+    ```
+    Replace `your_actual_google_api_key` with your API key if needed. The `agent.py` script defaults to `gemini-2.5-flash-preview-04-17` if `GEMINI_MODEL_NAME` is not set.
+
+## Running the Application
+
+You only need to run the `agent.py` script. It will automatically start the `doc_tool_server.py` as a subprocess.
+
+**Run the Agent:**
+
+In your terminal (ensure virtual env is active and `.env` file is configured if needed):
+```bash
+python agent.py
+```
+*   The `agent.py` script will configure and start `doc_tool_server.py` in the background.
+*   The Pydantic AI agent will initialize, using a Google Gemini LLM and connecting to the tool server (`LongDocumentManagementTools`).
+*   Tools from `doc_tool_server.py` will be discoverable by the Pydantic AI agent.
+*   You'll be prompted for queries.
+
+## Interacting with the Agent
+
+The agent manages long documents and their chapters. Chapters are Markdown files within a document directory, ordered alphanumerically by filename. You can ask the agent to:
+
+*   **Document Management:**
+    *   List available long documents: `List all long documents`
+    *   Create a new long document: `Create a new document named my_epic_novel`
+    *   Delete a long document: `Delete the document named old_notes` (Note: This is a destructive operation)
+*   **Chapter Management:**
+    *   Create a new chapter: `Create a chapter named '01-Introduction.md' in document 'my_epic_novel' with initial content "# Introduction\\nThis is the start."`
+    *   List chapters in a document: `List chapters in my_epic_novel`
+    *   Read content of a specific chapter: `Read chapter '01-Introduction.md' from 'my_epic_novel'`
+    *   Write/Overwrite content of a specific chapter: `Write to chapter '01-Introduction.md' in 'my_epic_novel' the new content: "# Revised Intro\\nThis is better."`
+    *   Delete a chapter from a document: `Delete chapter 'obsolete-notes.md' from document 'my_epic_novel'`
+    *   Append a paragraph to a chapter: `Append a paragraph with content "This is an addendum." to chapter '01-Introduction.md' in document 'my_epic_novel'`
+    *   Modify a paragraph (replace, insert_before, insert_after, delete): `In document 'my_epic_novel', chapter '01-Introduction.md', replace paragraph 0 with "New first paragraph."`
+*   **Full Document Operations:**
+    *   Read an entire document (concatenates all chapters in order): `Read the full document my_epic_novel`
+    *   Replace text throughout all chapters of a document: `In document 'my_epic_novel', replace all occurrences of "old_term" with "new_term"`
+*   **Analysis & Retrieval:**
+    *   Get statistics for a document (total chapters, words, paragraphs): `Get statistics for document my_epic_novel`
+    *   Get statistics for a specific chapter: `Get stats for chapter '01-Introduction.md' in 'my_epic_novel'`
+    *   Find text occurrences within a specific chapter: `Find "secret keyword" in chapter '01-Introduction.md' of document 'my_epic_novel'`
+    *   Find text occurrences throughout an entire document: `Find all instances of "important_concept" in the document 'my_epic_novel'`
+    *   Read a specific paragraph from a chapter: `Read paragraph 0 from chapter '01-Introduction.md' in document 'my_epic_novel'`
+
+**Example Interactions:**
+
+```
+User Query: List all long documents available.
+Agent Response (summary): Currently, there are no long documents. You can create one!
+Details: []
+```
+```
+User Query: Create a new document called 'Climate Change Report'
+Agent Response (summary): Successfully created the new long document named 'Climate Change Report'.
+Details: OperationStatus(success=True, message="Document 'Climate Change Report' created successfully.", details={'document_name': 'Climate Change Report'})
+```
+```
+User Query: Create a chapter named '01-Summary.md' in document 'Climate Change Report' with content "# Summary\\nGlobal temperatures are rising."
+Agent Response (summary): Chapter '01-Summary.md' created successfully in document 'Climate Change Report'.
+Details: OperationStatus(success=True, message="Chapter '01-Summary.md' created successfully in document 'Climate Change Report'.", details={'document_name': 'Climate Change Report', 'chapter_name': '01-Summary.md'})
+```
+```
+User Query: Read the full document 'Climate Change Report'
+Agent Response (summary): Retrieved the full content of document 'Climate Change Report'.
+Details: FullLongDocumentContent(document_name='Climate Change Report', chapters=[ChapterContent(document_name='Climate Change Report', chapter_name='01-Summary.md', content='# Summary\\nGlobal temperatures are rising.', word_count=5, paragraph_count=1, last_modified='...')], total_word_count=5, total_paragraph_count=1)
+```
+```
+User Query: What are the statistics for the document 'Climate Change Report'?
+Agent Response (summary): Retrieved statistics for document 'Climate Change Report'.
+Details: StatisticsReport(scope='document: Climate Change Report', word_count=5, paragraph_count=1, chapter_count=1)
+```
+```
+User Query: Find "rising" in chapter '01-Summary.md' of document 'Climate Change Report'
+Agent Response (summary): Found 1 paragraph containing "rising" in chapter '01-Summary.md' of document 'Climate Change Report'.
+Details: [ParagraphDetail(document_name='Climate Change Report', chapter_name='01-Summary.md', paragraph_index_in_chapter=0, content='# Summary\\nGlobal temperatures are rising.', word_count=5)]
+```
+
+The Pydantic AI agent will process your query, decide which tool to use (e.g., `create_long_document`, `create_chapter`, `read_full_long_document`, `get_document_statistics`) from `doc_tool_server.py`, execute it, and then formulate a structured response based on the `FinalAgentResponse` model, whose `details` field will contain the direct output from the tool (e.g. `OperationStatus`, `FullLongDocumentContent`, `List[ChapterMetadata]`, `StatisticsReport`, `List[ParagraphDetail]`).
+
+To stop the agent: Type `exit` at the prompt. This will also terminate the `doc_tool_server.py` subprocess.
+
+## How it Works
+
+*   **`doc_tool_server.py` (`mcp.server.fastmcp.FastMCP`):**
+    *   Defines a `FastMCP` server named `LongDocumentManagementTools`.
+    *   Exposes Python functions as tools using `@mcp_server.tool()`. Tool descriptions are in their docstrings.
+    *   These tools interact with a hierarchical file system: a root directory (`LONG_DOCUMENT_ROOT_DIR`, e.g., `./long_documents_storage/`) contains subdirectories, where each subdirectory is a "long document".
+    *   Inside each document directory, individual Markdown `.md` files represent "chapters". Chapters are currently ordered alphanumerically by filename. An optional `_manifest.json` file is reserved for future explicit ordering or extended metadata.
+    *   Pydantic models are used extensively for tool argument and return type hints (e.g. `LongDocumentInfo`, `ChapterContent`, `OperationStatus`, `StatisticsReport`, `ParagraphDetail`), enabling schema generation and structured data exchange.
+    *   Configured to run with `stdio` transport when executed.
+
+*   **`agent.py` (`pydantic-ai`):**
+    *   **Configuration:** Loads environment variables from `.env` (e.g., `GOOGLE_API_KEY`, `GEMINI_MODEL_NAME`, `LONG_DOCUMENT_ROOT_DIR`).
+    *   **Pydantic AI LLM:** Initializes a `GeminiModel` (defaulting to `gemini-2.5-flash-preview-04-17`).
+    *   **MCPServerStdio Setup:** An `MCPServerStdio` instance is configured to run `doc_tool_server.py`.
+    *   **Pydantic AI Agent:** An `Agent` from `pydantic_ai` is initialized with:
+        *   The LLM instance.
+        *   The `mcp_servers` parameter with the `MCPServerStdio` instance. Pydantic AI starts the server, discovers its tools (from `LongDocumentManagementTools`), and executes them.
+        *   A detailed system prompt that instructs the LLM on its role, the document/chapter structure, and how to use the discovered tools.
+        *   An `output_type` (Pydantic model `FinalAgentResponse`) to enforce a structured output from the agent. The `details` field of this response will contain the direct Pydantic model output from the tool server.
+    *   **Interaction Loop & MCP Lifecycle:** The `async with agent.run_mcp_servers():` context manager handles the startup and shutdown of `doc_tool_server.py`.
+    *   Inside the loop, `await agent.run(user_query)` makes the Pydantic AI agent manage reasoning, tool invocation, and response generation.
+
+This architecture allows the Pydantic AI agent to intelligently manage complex, structured local documents by leveraging the specialized tools provided by the `doc_tool_server.py` over MCP via stdio.
+
+## MCP Tools Reference
+
+Below are the tools exposed by `doc_tool_server.py` (MCP server). Each tool is available to the agent and can be invoked for document and chapter management, content editing, and analysis.
+
+| Tool Name | Parameters | Description |
+|-----------|------------|-------------|
+| **list_long_documents** |  | Lists all available long documents (directories). Returns metadata for each document, including chapter info. |
+| **list_chapters** | `document_name: str` | Lists all chapters in a given document, ordered by filename. Returns metadata for each chapter. |
+| **read_chapter_content** | `document_name: str`, `chapter_name: str` | Reads the content and metadata of a specific chapter. |
+| **read_paragraph_content** | `document_name: str`, `chapter_name: str`, `paragraph_index_in_chapter: int` | Reads a specific paragraph from a chapter. Returns paragraph details. |
+| **read_full_long_document** | `document_name: str` | Reads the entire content of a document, concatenating all chapters in order. |
+| **create_long_document** | `document_name: str` | Creates a new long document (directory). |
+| **delete_long_document** | `document_name: str` | Deletes a long document and all its chapters. Irreversible. |
+| **create_chapter** | `document_name: str`, `chapter_name: str`, `initial_content: str = ""` | Creates a new chapter file in a document, optionally with initial content. |
+| **delete_chapter** | `document_name: str`, `chapter_name: str` | Deletes a chapter from a document. |
+| **write_chapter_content** | `document_name: str`, `chapter_name: str`, `new_content: str` | Overwrites the entire content of a chapter. Creates the chapter if it does not exist. |
+| **modify_paragraph_content** | `document_name: str`, `chapter_name: str`, `paragraph_index: int`, `new_paragraph_content: str`, `mode: str` | Modifies a paragraph in a chapter. `mode` can be `replace`, `insert_before`, `insert_after`, or `delete`. |
+| **append_paragraph_to_chapter** | `document_name: str`, `chapter_name: str`, `paragraph_content: str` | Appends a new paragraph to the end of a chapter. |
+| **replace_text_in_chapter** | `document_name: str`, `chapter_name: str`, `text_to_find: str`, `replacement_text: str` | Replaces all occurrences of a string with another string in a specific chapter. Case-sensitive. |
+| **replace_text_in_document** | `document_name: str`, `text_to_find: str`, `replacement_text: str` | Replaces all occurrences of a string with another string throughout all chapters of a document. Case-sensitive. |
+| **get_chapter_statistics** | `document_name: str`, `chapter_name: str` | Retrieves statistics (word count, paragraph count) for a specific chapter. |
+| **get_document_statistics** | `document_name: str` | Retrieves aggregated statistics (word, paragraph, chapter count) for a document. |
+| **find_text_in_chapter** | `document_name: str`, `chapter_name: str`, `query: str`, `case_sensitive: bool = False` | Finds paragraphs containing the query string in a specific chapter. Returns matching paragraphs. |
+| **find_text_in_document** | `document_name: str`, `query: str`, `case_sensitive: bool = False` | Finds paragraphs containing the query string across all chapters of a document. Returns matching paragraphs. |
