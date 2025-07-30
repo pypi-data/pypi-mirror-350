@@ -1,0 +1,118 @@
+Metadata-Version: 2.4
+Name: llm-connectors
+Version: 0.1.0
+Summary: A library of connectors for popular AI platforms
+Project-URL: Homepage, https://github.com/shehan-jay/llm-connectors-py
+Project-URL: Documentation, https://github.com/shehan-jay/llm-connectors-py#readme
+Project-URL: Repository, https://github.com/shehan-jay/llm-connectors-py.git
+Project-URL: Issues, https://github.com/shehan-jay/llm-connectors-py/issues
+Author-email: Shehan Jayalath <shehanjayalath@gmail.com>
+License-Expression: MIT
+License-File: LICENSE
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.8
+Requires-Dist: google-generativeai>=0.3.0
+Requires-Dist: openai>=1.0.0
+Requires-Dist: python-dotenv>=1.0.0
+Requires-Dist: requests>=2.31.0
+Provides-Extra: dev
+Requires-Dist: black>=23.12.1; extra == 'dev'
+Requires-Dist: flake8>=7.0.0; extra == 'dev'
+Requires-Dist: isort>=5.13.2; extra == 'dev'
+Requires-Dist: mypy>=1.7.1; extra == 'dev'
+Requires-Dist: pytest-asyncio>=0.23.2; extra == 'dev'
+Requires-Dist: pytest-cov>=4.1.0; extra == 'dev'
+Requires-Dist: pytest-mock>=3.12.0; extra == 'dev'
+Requires-Dist: pytest>=7.4.3; extra == 'dev'
+Description-Content-Type: text/markdown
+
+# LLM Connectors
+
+A Python library providing connectors for popular AI platforms including ChatGPT, Copilot, Gemini, and DeepSeek.
+
+## Installation
+
+```bash
+pip install llm-connectors
+```
+
+## Usage
+
+### ChatGPT
+
+```python
+from llm_connectors import ChatGPTConnector
+
+# Initialize the connector
+chatgpt = ChatGPTConnector(api_key="your-openai-api-key")
+
+# Chat example
+messages = [
+    {"role": "user", "content": "Hello, how are you?"}
+]
+response = await chatgpt.chat(messages)
+print(response["content"])
+
+# Text generation example
+text = await chatgpt.generate_text("Write a poem about AI")
+print(text)
+
+# Get embeddings
+embeddings = await chatgpt.get_embeddings("Hello, world!")
+print(embeddings)
+```
+
+### Gemini
+
+```python
+from llm_connectors import GeminiConnector
+
+# Initialize the connector
+gemini = GeminiConnector(api_key="your-google-api-key")
+
+# Chat example
+messages = [
+    {"role": "user", "content": "Hello, how are you?"}
+]
+response = await gemini.chat(messages)
+print(response["content"])
+
+# Text generation example
+text = await gemini.generate_text("Write a poem about AI")
+print(text)
+
+# Get embeddings
+embeddings = await gemini.get_embeddings("Hello, world!")
+print(embeddings)
+```
+
+### Copilot and DeepSeek
+
+Note: These connectors are currently placeholders and will be implemented when their respective APIs become available.
+
+## Features
+
+- Unified interface for multiple AI platforms
+- Async support for better performance
+- Consistent API across different providers
+- Support for chat, text generation, and embeddings
+- Type hints for better IDE support
+
+## Requirements
+
+- Python 3.8+
+- OpenAI API key (for ChatGPT)
+- Google API key (for Gemini)
+- Microsoft API key (for Copilot, when available)
+- DeepSeek API key (when available)
+
+## License
+
+MIT License
