@@ -1,0 +1,1 @@
+(self.webpackChunkjupyterlab_blockly_polyglot_extension=self.webpackChunkjupyterlab_blockly_polyglot_extension||[]).push([[477],{477:()=>{}}]);
