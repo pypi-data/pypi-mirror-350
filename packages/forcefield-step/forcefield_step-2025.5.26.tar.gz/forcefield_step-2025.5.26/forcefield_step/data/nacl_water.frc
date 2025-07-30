@@ -1,0 +1,276 @@
+!BIOSYM forcefield 1
+
+#version        nacl_water.frc        1.0     13-May-2020
+
+#define nacl_water
+
+
+! Version  Ref    Function                         Label
+!--------- ---    ------------------------------   ----------
+2020.05.13   1    atom_types                       nacl_water
+2020.05.13   1    equivalence                      nacl_water
+2020.05.13   1    charges                          nacl_water
+2020.05.13   1    bond_increments                  nacl_water
+2020.05.13   1    quadratic_bond                   nacl_water
+2020.05.13   1    quadratic_angle                  nacl_water
+2020.05.13   1    nonbond(12-6)                    nacl spc
+2020.05.13   1    templates                        nacl_water
+
+
+#atom_types nacl_water
+
+! Verson   Ref  Type     Mass      Element     Bonds      Comment
+!--------- ---  -----  ----------  -------   ----------   ---------------------------
+2020.05.13   2  cl-     35.4515      Cl          0        Chlorine anion
+2020.05.13   2  h_spc    1.0080      H           1        Hydrogen in SPC water model
+2020.05.13   2  h_spc/e  1.0080      H           1        Hydrogen in SPC/E water model
+2020.05.13   2  h_tip3p  1.0080      H           1        Hydrogen in TIP3P water model
+2020.05.13   2  k+      39.0983      K           0        Potassium cation
+2020.05.13   2  na+     22.9898      Na          0        Sodium cation
+2020.05.13   2  o_spc   15.9994      O           2        Oxygen in SPC water model
+2020.05.13   2  o_spc/e 15.9994      O           2        Oxygen in SPC/E water model
+2020.05.13   2  o_tip3p 15.9994      O           2        Oxygen in TIP3P water model
+       
+
+#equivalence nacl_water
+
+!                      Equivalences
+!       ------------------------------------------
+! Version  Ref  Type     NonB     Bond     Angle    Torsion  OOP
+!--------- ---  -------  -------  -------  -------  -------  -------
+2020.05.13   1  cl-      cl-      cl-      cl-      cl-      cl-
+2020.05.13   1  h_spc    h_spc    h_spc    h_spc    h_spc    h_spc
+2020.05.13   1  h_spc/e  h_spc    h_spc    h_spc    h_spc    h_spc
+2020.05.13   1  h_tip3p  h_tip3p  h_tip3p  h_tip3p  h_tip3p  h_tip3p
+2020.05.13   1  k+       k+       k+       k+       k+       k+ 
+2020.05.13   1  na+      na+      na+      na+      na+      na+
+2020.05.13   1  o_spc    o_spc    o_spc    o_spc    o_spc    o_spc
+2020.05.13   1  o_spc/e  o_spc    o_spc    o_spc    o_spc    o_spc
+2020.05.13   1  o_tip3p  o_tip3p  o_tip3p  o_tip3p  o_tip3p  o_tip3p
+
+
+#charges nacl_water
+
+! Version  Ref    I         Q
+!--------- ---  -------  -------
+2020.05.13   1  cl-       -1.0
+2020.05.13   1  k+         1.0
+2020.05.13   1  na+        1.0
+
+
+#bond_increments nacl_water
+
+! Version  Ref    I      J        DeltaIJ   DeltaJI
+!--------- ---  ------- -------   -------   -------
+2020.05.13   1  cl-     cl-        0.0       0.0
+2020.05.13   1  h_spc   o_spc      0.41     -0.41
+2020.05.13   1  h_spc/e o_spc/e    0.4238   -0.4238
+2020.05.13   1  h_tip3p o_tip3p    0.417    -0.417
+2020.05.13   1  k+      k+         0.0       0.0
+2020.05.13   1  na+     na+        0.0       0.0
+
+
+#quadratic_bond nacl_water
+
+> E = K2 * (R - R0)^2
+
+! Version  Ref     I       J       R0         K2
+!--------- ---  ------- -------  -------    --------
+2020.05.13   4   h_spc  o_spc    1.0        100.0
+
+
+#quadratic_angle nacl_water
+
+> E = K2 * (Theta - Theta0)^2
+
+! Version Ref      I       J       K       Theta0       K2
+!--------- ---  ------- ------- -------   --------   --------
+2020.05.13   4  h_spc   o_spc   h_spc     109.47     50.0
+
+
+#nonbond(12-6) spc
+
+> E = (A/r)^12 - (B/r)^6
+>
+> where    r(ij) is the distance between atoms i and j
+
+@type A/r-B/r
+@units A (kJ/mol)**(1/12)*nm
+@units B (kJ/mol)**(1/6)*nm
+@combination geometric
+
+!   Ver    Ref    I            A              B
+!--------- ---  -------   -------------  -----------
+2020.05.13   3  o_spc       0.3428         0.37122
+2020.05.13   3  h_spc       0.0            0.0
+
+#nonbond(12-6) nacl
+
+>   E = eps * [(rmin/r)^12 - (rmin/r)^6]
+>
+> where    r is the distance between atoms i and j
+
+@type rmin-eps
+@units rmin angstrom
+@units eps kcal/mol
+@combination geometric
+
+!   Ver    Ref    I           Rmin        Epsilon
+!--------- ---  -------   -------------  -----------
+2020.05.13   4  na+         2.7275         0.0469
+2020.05.13   4  k+          3.5275         0.0870
+2020.05.13   5  cl-         4.5400         0.1500
+
+
+
+#templates nacl_water
+{
+    "cl-": {
+        "2020.05.13": {
+            "smarts": [
+                "[Cl:1]"
+            ],
+            "description": "Chloride anion",
+            "overrides": []
+        }
+    },
+    "h_spc/e": {
+        "2020.05.13": {
+            "smarts": [
+                "[H:1][O][H:2]"
+            ],
+            "description": "H in SPC/E water model",
+            "overrides": []
+        }
+    },
+    "o_spc/e": {
+        "2020.05.13": {
+            "smarts": [
+                "[H][O:1][H]"
+            ],
+            "description": "O in SPC/E water model",
+            "overrides": []
+        }
+    },
+    "k+": {
+        "2020.05.13": {
+            "smarts": [
+                "[K:1]"
+            ],
+            "description": "Potassium cation",
+            "overrides": []
+        }
+    },
+    "na+": {
+        "2020.05.13": {
+            "smarts": [
+                "[Na:1]"
+            ],
+            "description": "Sodium cation",
+            "overrides": []
+        }
+    }
+}
+
+
+#reference 1
+@Author Paul Saxe
+@Date 13-May-2020
+Created the initial version of nacl_water.frc, with the sections, etc.
+
+#reference 2
+@Author Paul Saxe
+@Date 13-May-2020
+CIAAW. Atomic weights of the elements 2019. Available online at www.ciaaw.org.
+(https://www.ciaaw.org/atomic-weights.htm)
+
+The weights are the average of the upper and lower bounds, with no more than
+four decimal places.
+
+#reference 3
+@Author Paul Saxe
+@Date 13-May-2020
+
+H. J. C. Berendsen, J. R. Grigera, and T. P. Straatsma,
+"The missing term in effective pair potentials",
+The Journal of Physical Chemistry 1987 91 (24), 6269-6271
+DOI: 10.1021/j100308a038
+
+TY  - JOUR
+T1  - The missing term in effective pair potentials
+AU  - Berendsen, H. J. C.
+AU  - Grigera, J. R.
+AU  - Straatsma, T. P.
+Y1  - 1987/11/01
+PY  - 1987
+DA  - 1987/11/01
+N1  - doi: 10.1021/j100308a038
+DO  - 10.1021/j100308a038
+T2  - The Journal of Physical Chemistry
+JF  - The Journal of Physical Chemistry
+JO  - J. Phys. Chem.
+SP  - 6269
+EP  - 6271
+VL  - 91
+IS  - 24
+PB  - American Chemical Society
+SN  - 0022-3654
+M3  - doi: 10.1021/j100308a038
+UR  - https://doi.org/10.1021/j100308a038
+ER  - 
+
+#reference 4
+@Author Paul Saxe
+@Date 13-May-2020
+
+Dmitrii Beglov and Benoît Roux, "Finite representation of an infinite
+bulk system: Solvent boundary potential for computer simulations",
+The Journal of Chemical Physics 100:12, 9050-9063
+
+
+TY  - JOUR
+T1  - Finite representation of an infinite bulk system: Solvent boundary potential for computer simulations
+AU  - Beglov,Dmitrii 
+AU  - Roux,Benoît 
+Y1  - 1994/06/15
+PY  - 1994
+DA  - 1994/06/15
+N1  - doi: 10.1063/1.466711
+DO  - 10.1063/1.466711
+T2  - The Journal of Chemical Physics
+JF  - The Journal of Chemical Physics
+JO  - J. Chem. Phys.
+SP  - 9050
+EP  - 9063
+VL  - 100
+IS  - 12
+PB  - American Institute of Physics
+SN  - 0021-9606
+M3  - doi: 10.1063/1.466711
+UR  - https://doi.org/10.1063/1.466711
+Y2  - 2020/05/14
+ER  - 
+
+#reference 5
+@Author Paul Saxe
+@Date 13-May-2020
+
+"Valence selectivity of the gramicidin channel: A molecular dynamics free
+energy perturbation study", Roux B. (1996) Biophysical Journal, 71(6), pp. 3177-3185.
+
+TY  - JOUR
+DO  - 10.1016/s0006-3495(96)79511-5
+UR  - http://dx.doi.org/10.1016/s0006-3495(96)79511-5
+TI  - Valence selectivity of the gramicidin channel: a molecular dynamics free energy perturbation study
+T2  - Biophysical Journal
+AU  - Roux, B.
+PY  - 1996
+DA  - 1996/12
+PB  - Elsevier BV
+SP  - 3177-3185
+IS  - 6
+VL  - 71
+SN  - 0006-3495
+ER  -
+
+#end
