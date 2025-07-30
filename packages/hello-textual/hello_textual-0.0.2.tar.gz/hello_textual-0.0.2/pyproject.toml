@@ -1,0 +1,65 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "hello-textual"
+dynamic = ["version"]
+description = ''
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+keywords = []
+authors = [
+  { name = "U.N. Owen", email = "vbd1988@yandex.ru" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = ["textual==3.2.0"]
+
+[project.urls]
+Documentation = "https://github.com/U.N. Owen/hello-textual#readme"
+Issues = "https://github.com/U.N. Owen/hello-textual/issues"
+Source = "https://github.com/U.N. Owen/hello-textual"
+
+[tool.hatch.version]
+path = "src/hello_textual/__about__.py"
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+  "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/hello_textual tests}"
+
+[tool.coverage.run]
+source_pkgs = ["hello_textual", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/hello_textual/__about__.py",
+]
+
+[tool.coverage.paths]
+hello_textual = ["src/hello_textual", "*/hello-textual/src/hello_textual"]
+tests = ["tests", "*/hello-textual/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
+
+
+[project.scripts]
+hello_app = "hello_textual.entry_points:hello_app"
