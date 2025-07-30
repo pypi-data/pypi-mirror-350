@@ -1,0 +1,345 @@
+Metadata-Version: 2.4
+Name: scrapesome
+Version: 0.0.7
+Summary: A Powerful Web Scraper with dynamic rendering support.
+Home-page: https://github.com/scrapesome/scrapesome
+Author: Vishnu Vardhan Reddy
+Author-email: Vishnu Vardhan Reddy <gvvr2024@gmail.com>
+License: MIT License
+        
+        Copyright (c) 2025 ScrapeSome
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        
+Project-URL: Homepage, https://scrapesome.onrender.com
+Project-URL: Documentation, https://scrapesome.onrender.com/documentation
+Project-URL: Repository, https://github.com/scrapesome/scrapesome
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: python-dotenv<2.0,>=0.5.0
+Requires-Dist: playwright<2.0,>=1.40.0
+Requires-Dist: beautifulsoup4<5.0,>=4.5.0
+Requires-Dist: httpx<1.0,>=0.20.0
+Requires-Dist: requests<3.0,>=2.18.0
+Requires-Dist: markdownify<2.0,>=1.0.0
+Dynamic: author
+Dynamic: home-page
+Dynamic: license-file
+
+# ScrapeSome
+
+![Scrapesome Logo](https://raw.githubusercontent.com/scrapesome/scrapesome/refs/heads/main/docs/assets/images/favicon.png)
+
+**ScrapeSome** is a lightweight, flexible web scraping library with both **synchronous** and **asynchronous** support. It includes intelligent fallbacks, JavaScript page rendering, response formatting (HTML → Text/JSON/Markdown), and retry mechanisms. Ideal for developers who need robust scraping utilities with minimal setup.
+
+---
+
+## Table of Contents
+
+- [🚀 Features](#-features)
+- [📦 Installation](#-installation)
+- [Playwright Setup](#playwright-setup)
+  - [Windows](#windows)
+  - [Linux (Ubuntu/Debian)](#linux-ubuntudebian)
+  - [macOS](#macos)
+- [⚡ Quick Start](#-quick-start)
+- [🧰 Advanced Usage](#-advanced-usage)
+- [🧪 Testing](#-testing)
+- [⚙️ Environment Configuration](#️-environment-configuration)
+- [📄 Output Formats](#-output-formats)
+- [📁 Project Structure](#-project-structure)
+- [🔒 License](#-license)
+- [🤝 Contributions](#-contributions)
+
+## 🚀 Features
+
+- 🔁 Sync + Async scraping support
+- 🔄 Automatic retries and intelligent fallbacks
+- 🧪 Playwright rendering fallback for JS-heavy pages
+- 📝 Format responses as raw HTML, plain **text**, **Markdown**, or structured **JSON**
+- ⚙️ Configurable: timeouts, redirects, user agents, and logging
+- 🧪 Test coverage with `pytest` and `pytest-asyncio`
+
+---
+
+## 📦 Installation
+
+```bash
+pip install scrapesome
+```
+
+
+## Playwright Setup
+
+ScrapeSome uses Playwright for JavaScript rendering fallback. To enable this, you need to install Playwright and its dependencies.
+
+### 1. Install Playwright Python package if not installed
+
+```bash
+pip install playwright
+```
+
+### 2. Install Playwright browsers
+
+```bash
+playwright install
+```
+### 3. Install system dependencies
+Playwright requires some system libraries to run browsers, which vary by operating system.
+
+For Windows
+Playwright installs everything you need automatically with playwright install, so no additional setup is usually required.
+
+For Linux (Ubuntu/Debian)
+Run the following command to install required system libraries:
+
+```bash
+playwright install-deps
+```
+If you don't have playwright CLI available, you can install dependencies manually:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y libwoff1 libopus0 libwebp6 libharfbuzz-icu0 libwebpmux3 \
+                        libenchant-2-2 libhyphen0 libegl1 libglx0 libgudev-1.0-0 \
+                        libevdev2 libgles2 libx264-160
+```
+Note: Package names may vary depending on your distribution and version.
+
+For macOS
+You can install required libraries using Homebrew:
+
+```bash
+brew install harfbuzz enchant
+```
+
+After this setup, you should be able to use ScrapeSome with full Playwright rendering support!
+
+## ⚡ Quick Start
+Synchronous Example
+
+```python
+from scrapesome import sync_scraper
+html = sync_scraper("https://example.com")
+html
+```
+
+
+Asynchronous Example
+
+```python
+import asyncio
+from scrapesome import async_scraper
+html = asyncio.run(async_scraper("https://example.com"))
+html
+```
+
+## 🧰 Advanced Usage
+
+Force Rendering (Playwright)
+
+```python
+from scrapesome import sync_scraper
+content = sync_scraper("https://example.com", force_playwright=True)
+content
+```
+
+Custom User Agents
+
+```python
+from scrapesome import sync_scraper
+content = sync_scraper("https://example.com", user_agents=["MyCustomAgent/1.0"])
+content
+```
+
+Control Redirects
+
+```python
+from scrapesome import sync_scraper
+content = sync_scraper("https://example.com", allow_redirects=False)
+content
+```
+
+similarly **async_scraper** can also be used.
+
+## 🧪 Testing
+Run tests with:
+
+```bash
+pytest --cov=scrapesome tests/
+```
+Target coverage: 75–100%
+
+## ⚙️ Environment Configuration
+ScrapeSome reads from environment variables if a .env file is present.
+
+Example .env
+
+```env
+LOG_LEVEL=INFO
+OUTPUT_FORMAT=text
+FETCH_PLAYWRIGHT_TIMEOUT=10
+FETCH_PAGE_TIMEOUT=10
+USER_AGENTS=["Mozilla/5.0 (Windows NT 10.0; Win64; x64)......."]
+```
+
+| Key                      | Description                                          |
+|--------------------------|------------------------------------------------------|
+| FETCH_PLAYWRIGHT_TIMEOUT | Timeout for Playwright-rendered pages (in seconds)  |
+| FETCH_PAGE_TIMEOUT       | Timeout for standard page fetch (in seconds)        |
+| LOG_LEVEL                | Logging verbosity (DEBUG, INFO, WARNING, etc.)      |
+| OUTPUT_FORMAT            | Default output format (text, markdown, json, html)  |
+| USER_AGENTS              | Default user agents ("Mozilla/5.0 (Windows NT 10.0; Win64; x64).......")  |
+
+## 📄 Output Formats
+
+JSON Example
+
+Get `json` version
+
+```python
+from scrapesome import sync_scraper
+content = sync_scraper("https://example.com", output_format_type="json")
+content
+```
+
+Output
+
+```json
+{
+  "title": "Example Domain",
+  "description": "This domain is for use in illustrative examples.",
+  "url": "https://example.com"
+}
+```
+
+## Markdown
+
+Convert HTML to Markdown with:
+
+```python
+from scrapesome import sync_scraper
+content = sync_scraper("https://adenuniversity.us", output_format_type="markdown")
+content
+```
+Output
+
+```text
+# Online Global Masters that boost your global career
+
+**ADEN University** offers students access to professionals who operate in the world of business and administration, who share their knowledge and acumen collaboratively with their students in all **academic programs** offered at ADEN.
+
+[About Us](about-aden-university)
+
+
+Watch testimonial video 
+
+
+##### Watch testimonial video
+
+×
+
+[
+
+](https://res.cloudinary.com/cruminott/video/upload/vc_auto,w_auto,q_auto,f_auto/adenu/aden-university-3.mp4)
+
+
+
+## ADEN University offers the following academic programs
+
+[![EXECUTIVE MBA. Master of Business Administration](https://adenuniversity.us/files/2016/06/ADENU_miniatura_Emba_900-1-820x400.jpg "EXECUTIVE MBA. Master of Business Administration")](https://adenuniversity.us/academics/executive-mba/  "EXECUTIVE MBA. Master of Business Administration")
+
+##### [EXECUTIVE MBA. Master of Business Administration](https://adenuniversity.us/academics/executive-mba/ "EXECUTIVE MBA. Master of Business Administration")
+
+The ADEN University Executive MBA is designed to strengthen business leaders to manage...
+
+* **37** credits
+* **15** months
+* **Spanish Only**
+
+[Visit EMBA Course](https://adenuniversity.us/academics/executive-mba/ "EXECUTIVE MBA. Master of Business Administration")
+
+[![GLOBAL MBA. Master of Business Administration](https://adenuniversity.us/files/2016/06/ADENU_miniatura_MBAgl1_900-820x400.jpg "GLOBAL MBA. Master of Business Administration")](https://adenuniversity.us/academics/global-mba/  "GLOBAL MBA. Master of Business Administration")
+
+##### [GLOBAL MBA. Master of Business Administration](https://adenuniversity.us/academics/global-mba/ "GLOBAL MBA. Master of Business Administration")
+
+The Global MBA is designed to prepare business leaders to manage companies in an...
+
+* **36** credits
+* **14** months
+* **Spanish and English**
+```
+
+similarly **async_scraper** can also be used.
+
+## 📁 Project Structure
+
+```text
+scrapesome/
+├── .gitignore
+├── pytest.ini
+├── .github/
+│   ├── workflows/
+│       └── deploy.yml
+├── __init__.py
+├── config.py
+├── exceptions.py
+├── formatter/
+│   ├── __init__.py
+│   └── output_formatter.py
+├── logging.py
+├── scraper/
+│   ├── __init__.py
+│   ├── async_scraper.py
+│   ├── sync_scraper.py
+│   └── rendering.py
+├── docs/
+│   ├── index.md
+│   ├── getting_started.md
+│   ├── usage.md
+│   ├── config.md
+│   ├── examples.md
+│   ├── about.md
+│   └── licence.md
+├── tests/
+│   ├── __init__.py
+│   ├── test_sync_scraper.py
+│   ├── test_async_scraper.py
+│   └── test_config.py
+├── setup.py
+├── requirements.txt
+├── pyproject.toml
+├── LICENSE
+└── README.md
+```
+
+## 🔒 License
+MIT License © 2025
+
+## 🤝 Contributions
+
+Contributions are welcome! Whether it's bug reports, feature suggestions, or pull requests — your help is appreciated.
+
+To get started:
+
+```bash
+git clone https://github.com/scrapesome/scrapesome.git
+cd scrapesome
+```
