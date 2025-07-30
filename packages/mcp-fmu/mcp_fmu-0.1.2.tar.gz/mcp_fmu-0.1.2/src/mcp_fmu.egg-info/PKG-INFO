@@ -1,0 +1,65 @@
+Metadata-Version: 2.4
+Name: mcp-fmu
+Version: 0.1.2
+Summary: mcp server for fmu simulation
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: fastmcp>=2.3.4
+Requires-Dist: fmpy>=0.3.23
+Requires-Dist: pandas>=2.2.3
+
+
+
+## mcp-fmu
+
+MCP server for fmu.
+
+### Prerequisites
+
+* Install `uv` from https://docs.astral.sh/uv/getting-started/installation/
+
+### Use with VS Code
+
+Follow detailed instructions here: https://code.visualstudio.com/docs/copilot/chat/mcp-servers#_enable-mcp-support-in-vs-code for MCP server setup in VS Code.
+
+Option1: Install from commandline:
+```
+code --add-mcp "{\"name\":\"mcp-fmu\",\"command\":\"uvx\",\"args\":[\"mcp-fmu\"]}"
+```
+
+Option 2: Manual installation:
+
+Follow the instructions here for adding MCP server to VS Code: https://code.visualstudio.com/docs/copilot/chat/mcp-servers#_add-an-mcp-server
+
+Use the following MCP server configuration for `mcp-fmu` server:
+
+```json
+{
+  "mcp": {
+    "servers": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": ["mcp-fmu"],
+    }
+  }
+}
+```
+
+### Use with Claude Desktop
+
+Follow detailed instructions here: https://modelcontextprotocol.io/quickstart/user for Claude Desktop MCP server setup.
+
+MCP server configuration for `mcp-fmu`:
+
+```json
+{
+  "mcpServers": {
+    "mcp-fmu": {
+      "command": "uvx",
+      "args": ["mcp-fmu"],
+    }
+  }
+}
+```
+
+*NOTE: Claude Desktop sometimes would fail due to not being able to finx `uvx`, use the absolute path of `uvx` instead*
