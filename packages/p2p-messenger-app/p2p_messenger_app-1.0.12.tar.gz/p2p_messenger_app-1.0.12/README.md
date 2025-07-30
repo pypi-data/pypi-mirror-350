@@ -1,0 +1,93 @@
+# P2P Messenger
+
+Una aplicación de mensajería P2P descentralizada que funciona directamente entre dispositivos sin necesidad de servidores centrales.
+
+## Características
+
+- Mensajería directa entre dispositivos
+- Transferencia de archivos
+- Sistema de amigos
+- Encriptación de mensajes
+- Interfaz de línea de comandos simple
+- No requiere servidores centrales
+
+## Requisitos
+
+- Python 3.6 o superior
+- pip (gestor de paquetes de Python)
+
+## Instalación
+
+### Método 1: Instalación directa desde GitHub
+
+```bash
+pip install git+https://github.com/tu-usuario/p2p_messenger.git
+```
+
+### Método 2: Instalación manual
+
+1. Clona el repositorio:
+```bash
+git clone https://github.com/tu-usuario/p2p_messenger.git
+cd p2p_messenger
+```
+
+2. Instala las dependencias:
+```bash
+pip install -r requirements.txt
+```
+
+### Método 3: Instalación desde PyPI (cuando esté disponible)
+
+```bash
+pip install p2p_messenger
+```
+
+## Uso
+
+### Iniciar la aplicación
+
+Hay dos formas de iniciar la aplicación:
+
+1. Usando el comando `p2p_messenger`:
+```bash
+p2p_messenger
+```
+
+2. O usando Python:
+```bash
+python3 -m p2p_messenger
+```
+
+### Configuración inicial
+
+1. Al iniciar por primera vez, la aplicación te pedirá:
+   - Tu número de teléfono (formato: +34612345678)
+   - Tu nombre
+
+2. La aplicación mostrará:
+   - Tu número de teléfono
+   - Tu IP local
+   - El puerto en el que está escuchando
+
+### Comandos disponibles
+
+- `send <teléfono> <mensaje>` - Enviar mensaje
+- `sendfile <teléfono> <ruta_archivo>` - Enviar archivo
+- `add <teléfono> <nombre>` - Añadir contacto
+- `contacts` - Ver lista de contactos
+- `friend <teléfono>` - Enviar solicitud de amistad
+- `accept <teléfono>` - Aceptar solicitud de amistad
+- `reject <teléfono>` - Rechazar solicitud de amistad
+- `friends` - Ver lista de amigos en línea
+- `exit` - Salir
+
+## Notas importantes
+
+- Asegúrate de que el puerto que uses no esté bloqueado por tu firewall
+- Los mensajes se envían directamente entre dispositivos, sin pasar por servidores
+- La aplicación usa tu número de teléfono como identificador único
+
+## Licencia
+
+MIT License 
