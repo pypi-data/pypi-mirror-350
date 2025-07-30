@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools", "JayDeBeApi"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sesql"
+dynamic = ["version"]
+description = "CLI to enhance versioning for Python projects"
+readme = "ReadMe.md"
+requires-python = ">=3.10"
+license = {file = "License.md"}
+authors = [
+    { name = "Cybernetic Innovations", email = "github@cyberneticinnovations.com" }
+]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+]
+dependencies = [
+    "JayDeBeApi~=1.2.3",
+    "pyodbc~=5.2.0"
+]
+
+[tool.setuptools]
+packages = ["seSql", "seSql.dbc"]
+
+#[tool.setuptools.packages.find]
+#where = ["seCore"]
+#
+[tool.setuptools.package-data]
+seSql = ["dbc/jars/*.jar"]
+
+[tool.setuptools.dynamic]
+version = {attr = "seSql.__version__"}
