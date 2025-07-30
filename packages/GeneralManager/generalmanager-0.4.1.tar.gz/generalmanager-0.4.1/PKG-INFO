@@ -1,0 +1,207 @@
+Metadata-Version: 2.4
+Name: GeneralManager
+Version: 0.4.1
+Summary: Kurzbeschreibung deines Pakets
+Author-email: Tim Kleindick <tkleindick@yahoo.de>
+License: Non-Commercial MIT License
+        
+        Copyright (c) 2025 Tim Kleindick
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the “Software”), to deal
+        in the Software **solely for non-commercial purposes**, including without
+        limitation the rights to use, copy, modify, merge, publish, distribute,
+        sublicense, and/or sell copies of the Software **for non-commercial use only**,
+        and to permit persons to whom the Software is furnished to do so, subject to
+        the following conditions:
+        
+        1. Non-Commercial Use Only  
+           The Software may **not** be used for commercial purposes. “Commercial” means
+           any activity intended for or directed toward commercial advantage or
+           monetary compensation.
+        
+        2. Copyright Notice & License Text  
+           The above copyright notice and this permission notice shall be included in
+           all copies or substantial portions of the Software.
+        
+        3. Disclaimer of Warranty  
+           THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+           IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+           FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. IN NO EVENT SHALL
+           THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER
+           LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+           OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+           SOFTWARE.
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: asgiref>=3.8.1
+Requires-Dist: Django>=5.2
+Requires-Dist: django-simple-history>=3.8.0
+Requires-Dist: exrex>=0.12.0
+Requires-Dist: factory_boy>=3.3.3
+Requires-Dist: Faker>=37.1.0
+Requires-Dist: flexcache>=0.3
+Requires-Dist: flexparser>=0.4
+Requires-Dist: gitdb>=4.0.12
+Requires-Dist: GitPython>=3.1.41
+Requires-Dist: graphene>=3.4.3
+Requires-Dist: graphene-django>=3.2.3
+Requires-Dist: graphql-core>=3.2.6
+Requires-Dist: graphql-relay>=3.2.0
+Requires-Dist: numpy>=2.2.5
+Requires-Dist: Pint>=0.24.4
+Requires-Dist: platformdirs>=4.3.7
+Requires-Dist: promise>=2.3
+Requires-Dist: python-dateutil>=2.9.0.post0
+Requires-Dist: setuptools>=75.6.0
+Requires-Dist: six>=1.17.0
+Requires-Dist: smmap>=5.0.2
+Requires-Dist: sqlparse>=0.5.3
+Requires-Dist: text-unidecode>=1.3
+Requires-Dist: typing_extensions>=4.13.2
+Requires-Dist: tzdata>=2025.2
+Dynamic: license-file
+
+# GeneralManager
+
+## Überblick
+
+Das GeneralManager-Modul ist ein leistungsstarkes und flexibles Framework, das speziell für die Verwaltung und Verarbeitung von Daten entwickelt wurde. Es bietet eine modulare Struktur, die es Entwicklern ermöglicht, komplexe Geschäftslogiken effizient zu implementieren und zu verwalten. Das Modul ist vollständig in Python geschrieben und nutzt Django als Backend-Framework.
+
+## Hauptfunktionen
+
+### 1. **Datenmanagement**
+- **Flexibilität**: Unterstützt die Verwaltung aller Arten von Daten, nicht nur Projekte und Derivate.
+- **Datenbank-Integration**: Nahtlose Integration mit dem Django ORM für Datenbankoperationen.
+- **Externe Schnittstellen**: Unterstützung für Schnittstellen zu anderen Programmen, wie z. B. Excel-Interfaces.
+
+### 2. **Datenmodellierung**
+- **Django-Modelle**: Die Datenstruktur basiert auf Django-Modellen, die durch benutzerdefinierte Felder wie `MeasurementField` erweitert werden.
+- **Regeln und Validierungen**: Definieren Sie Regeln für Datenvalidierungen, z. B. dass das Startdatum eines Projekts vor dem Enddatum liegen muss.
+
+### 3. **GraphQL-Integration**
+- Automatische Generierung von GraphQL-Schnittstellen für alle Modelle.
+- Unterstützung für benutzerdefinierte Abfragen und Mutationen.
+
+### 4. **Berechtigungssystem**
+- **ManagerBasedPermission**: Ein flexibles Berechtigungssystem, das auf Benutzerrollen und Attributen basiert.
+- Unterstützung für CRUD-Berechtigungen auf Attributebene.
+
+### 5. **Interfaces**
+- **CalculationInterface**: Ermöglicht die Implementierung von Berechnungslogiken.
+- **DatabaseInterface**: Bietet eine standardisierte Schnittstelle für Datenbankoperationen.
+- **ReadOnlyInterface**: Für schreibgeschützte Datenzugriffe.
+
+### 6. **Datenverteilung und Berechnung**
+- **Volumenverteilung**: Automatische Berechnung und Verteilung von Volumen über mehrere Jahre.
+- **Kommerzielle Berechnungen**: Berechnung von Gesamtvolumen, Versandkosten und Einnahmen für Projekte.
+
+## Anwendung
+
+### Installation
+
+Installieren Sie das Modul über `pip`:
+
+```bash
+pip install GeneralManager
+```
+
+### Beispielcode
+
+Hier ist ein Beispiel, wie Sie einen GeneralManager erstellen und Testdaten (in diesem Fall 10 Projekte) generieren können:
+
+```python
+from general_manager import GeneralManager
+from general_manager.interface.database import DatabaseInterface
+from general_manager.measurement import MeasurementField, Measurement
+from general_manager.permission import ManagerBasedPermission
+
+class Project(GeneralManager):
+    name: str
+    start_date: Optional[date]
+    end_date: Optional[date]
+    total_capex: Optional[Measurement]
+    derivative_list: DatabaseBucket[Derivative]
+
+    class Interface(DatabaseInterface):
+        name = CharField(max_length=50)
+        number = CharField(max_length=7, validators=[RegexValidator(r"^AP\d{4,5}$")])
+        description = TextField(null=True, blank=True)
+        start_date = DateField(null=True, blank=True)
+        end_date = DateField(null=True, blank=True)
+        total_capex = MeasurementField(base_unit="EUR", null=True, blank=True)
+
+        class Meta:
+            constraints = [
+                constraints.UniqueConstraint(
+                    fields=["name", "number"], name="unique_booking"
+                )
+            ]
+
+            rules = [
+                Rule["Project"](
+                    lambda x: cast(date, x.start_date) < cast(date, x.end_date)
+                ),
+                Rule["Project"](lambda x: cast(Measurement, x.total_capex) >= "0 EUR"),
+            ]
+
+        class Factory:
+            name = LazyProjectName()
+            end_date = LazyDeltaDate(365 * 6, "start_date")
+            total_capex = LazyMeasurement(75_000, 1_000_000, "EUR")
+
+    class Permission(ManagerBasedPermission):
+        __read__ = ["ends_with:name:X-771", "public"]
+        __create__ = ["admin", "isMatchingKeyAccount"]
+        __update__ = ["admin", "isMatchingKeyAccount", "isProjectTeamMember"]
+        __delete__ = ["admin", "isMatchingKeyAccount", "isProjectTeamMember"]
+
+        total_capex = {"update": ["isSalesResponsible", "isProjectManager"]}
+
+Project.Factory.createBatch(10)
+```
+
+### GraphQL-Integration
+
+Das Modul generiert automatisch GraphQL-Schnittstellen für alle Modelle. Sie können Abfragen und Mutationen über die GraphQL-URL ausführen, die in den Django-Einstellungen definiert ist.
+
+Beispiel für eine GraphQL-Abfrage:
+
+```graphql
+query {
+  projectList {
+    name
+    startDate
+    endDate
+    totalCapex {
+      value
+      unit
+    }
+  }
+}
+```
+
+## Vorteile
+
+- **Modularität**: Einfach erweiterbar und anpassbar.
+- **Flexibilität**: Unterstützt komplexe Geschäftslogiken und Berechnungen.
+- **Integration**: Nahtlose Integration mit Django und GraphQL.
+- **Berechtigungen**: Fein abgestimmte Berechtigungen für Benutzer und Attribute.
+- **Datenvalidierung**: Automatische Validierung von Daten durch Regeln und Constraints.
+- **Caching**: Automatische Cache-Generierung mit @cached Decorator, um die Leistung zu verbessern.
+
+## Anforderungen
+
+- Python >= 3.12
+- Django >= 5.2
+- Zusätzliche Abhängigkeiten (siehe `requirements.txt`):
+  - `graphene`
+  - `numpy`
+  - `Pint`
+  - `factory_boy`
+  - uvm.
+
+## Lizenz
+
+Dieses Projekt steht unter der **Non-Commercial MIT License**. Es darf nur für nicht-kommerzielle Zwecke verwendet werden. Weitere Details finden Sie in der [LICENSE](./LICENSE).
