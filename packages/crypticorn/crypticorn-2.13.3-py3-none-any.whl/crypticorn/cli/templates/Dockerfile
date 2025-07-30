@@ -1,0 +1,33 @@
+FROM python:3.11.5
+
+# This line is used to allow the cache to be busted (only busts in CI)
+ARG CACHEBUST=1
+COPY ./requirements.txt /code/requirements.txt
+
+WORKDIR /code
+# set API_ENV in .env
+# API_ENV=local
+# add to compose file
+# build:
+#     context: .
+#     dockerfile: src/api/Dockerfile
+#     args:
+#       - API_ENV=${API_ENV}
+# environment:
+#     - API_ENV=${API_ENV}
+#
+# and to the workflow:
+# env:
+#     API_ENV: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
+ARG API_ENV
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+RUN if [ "$API_ENV" != "prod" ]; then \
+    pip install --pre crypticorn; \
+    fi
+
+
+COPY ./src /code/src
+
+CMD ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "3000"]
