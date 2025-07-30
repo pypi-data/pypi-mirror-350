@@ -1,0 +1,37 @@
+site_name: Agents SDK Models
+site_description: OpenAI Agents SDKを拡張するモデルアダプター＆ワークフロー集
+site_author: kitfactory
+repo_url: https://github.com/kitfactory/agents-sdk-models
+repo_name: kitfactory/agents-sdk-models
+site_url: https://kitfactory.github.io/agents-sdk-models/
+
+theme:
+  name: material
+  language: ja
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          setup_commands:
+            - "import sys; sys.path.insert(0, 'src')"
+
+nav:
+  - はじめに: index.md
+  - APIリファレンス: api_reference.md
+  - チュートリアル:
+      - クイックスタート: tutorials/quickstart.md
+      - 応用例: tutorials/advanced.md
+
+markdown_extensions:
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed
+  - admonition
+  - codehilite
+  - toc:
+      permalink: true 
