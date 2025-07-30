@@ -1,0 +1,173 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "profiplots"
+description = "Package for helping data scientists create beautiful profinit-styled plots."
+dependencies = [
+  "matplotlib",
+  "seaborn>=0.13.0",
+]
+readme = "README.md"
+version = "3.0.2"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Education",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX",
+    "Programming Language :: Python :: 3"
+]
+
+[project.optional-dependencies]
+plotnine = ["plotnine", "colour-science"]
+ci = ["pip-tools", "black", "pytest", "plotnine", "ruff", "pre-commit", "jupyter", "tabulate", "quartodoc", "twine", "colour-science"]
+docs = ["jupyter", "tabulate", "plotnine", "quartodoc", "colour-science"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.black]
+line_length = 120
+
+[tool.ruff]
+# Enable the pycodestyle (`E`) and Pyflakes (`F`) rules by default.
+# Unlike Flake8, Ruff doesn't enable pycodestyle warnings (`W`) or
+# McCabe complexity (`C901`) by default.
+select = [
+  # pyflakes
+  "F",
+  # pycodestyle
+  "E", "W",
+  # isort
+  "I",
+  # pydocstyle 
+  # "D",
+  # pyupgrade 
+  # "UP",
+  # flake8-2020
+  "YTT",
+  # flake8-annotations
+  # "ANN",
+  # flake8-bandit: exec-builtin
+  "S102",
+  # flake8-bugbear
+  "B",
+  # flake8-comprehensions
+  "C4",
+  # flake8-debugger
+  "T10",
+  # flake8-future-annotations
+  "FA",
+  # implicit string concatenation
+  "ISC",
+  # flake8-logging-format
+  "G",
+  # flake8-pie
+  "PIE",
+  # flake8-pyi
+  "PYI",
+  # flake8-pytest-style
+  "PT",
+  # flake8-quotes
+  "Q",
+  # flake8-return
+  "RET",
+  # flake8-simplify
+  "SIM",
+  # flake8-tidy-imports
+  "TID",
+  # flake8-type-checking
+  "TCH",
+  # flake8-gettext
+  "INT",
+  # eradicate (commented-out code)
+  "ERA",
+  # pygrep-hooks
+  "PGH",
+  # pylint
+  "PL",
+  # NumPy-specific rules
+  "NPY",
+  # Perflint
+  "PERF",
+  # Ruff-specific rules
+  "RUF",
+]
+
+ignore = [
+  ### Intentionally disabled
+  # space before : (needed for how black formats slicing)
+  "E203",
+  # module level import not at top of file
+  "E402",
+  # do not assign a lambda expression, use a def
+  "E731",
+  # Line too long ({width} > {limit} characters)
+  "E501",
+  # controversial
+  "B006",
+  # controversial
+  "B008",
+  # zip() without an explicit strict= parameter
+  "B905",
+  # Too many arguments to function call
+  "PLR0913",
+  # Too many returns
+  "PLR0911",
+  # Too many branches
+  "PLR0912",
+  # Too many statements
+  "PLR0915",
+  # Redefined loop name
+  "PLW2901",
+  # Global statements are discouraged
+  "PLW0603",
+  ]
+
+# Allow autofix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+]
+per-file-ignores = {}
+
+# Same as Black.
+line-length = 120
+
+# Assume Python 3.10.
+target-version = "py310"
+
+[tool.ruff.extend-per-file-ignores]
+# exclude Magic value used in comparison in tests
+"tests/*" = ["PLR2004"]
+
+[tool.ruff.pydocstyle]
+# set docstring format to google
+convention = "google"

@@ -1,0 +1,69 @@
+Metadata-Version: 2.4
+Name: profiplots
+Version: 3.0.2
+Summary: Package for helping data scientists create beautiful profinit-styled plots.
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Topic :: Scientific/Engineering :: Visualization
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: Intended Audience :: Education
+Classifier: Operating System :: MacOS :: MacOS X
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Operating System :: POSIX
+Classifier: Programming Language :: Python :: 3
+Description-Content-Type: text/markdown
+Requires-Dist: matplotlib
+Requires-Dist: seaborn>=0.13.0
+Provides-Extra: plotnine
+Requires-Dist: plotnine; extra == "plotnine"
+Requires-Dist: colour-science; extra == "plotnine"
+Provides-Extra: ci
+Requires-Dist: pip-tools; extra == "ci"
+Requires-Dist: black; extra == "ci"
+Requires-Dist: pytest; extra == "ci"
+Requires-Dist: plotnine; extra == "ci"
+Requires-Dist: ruff; extra == "ci"
+Requires-Dist: pre-commit; extra == "ci"
+Requires-Dist: jupyter; extra == "ci"
+Requires-Dist: tabulate; extra == "ci"
+Requires-Dist: quartodoc; extra == "ci"
+Requires-Dist: twine; extra == "ci"
+Requires-Dist: colour-science; extra == "ci"
+Provides-Extra: docs
+Requires-Dist: jupyter; extra == "docs"
+Requires-Dist: tabulate; extra == "docs"
+Requires-Dist: plotnine; extra == "docs"
+Requires-Dist: quartodoc; extra == "docs"
+Requires-Dist: colour-science; extra == "docs"
+
+# profiplots
+
+Make Matplotlib and Seaborn plots with Profinit theme!
+
+- Documentation: https://datascience.profinitservices.cz/sablony/profiplots/.
+
+## Installation
+
+```sh
+python -m pip install profiplots
+```
+
+## Usage
+
+```python
+import profiplots as pf
+import seaborn as sns
+import seaborn.objects as so
+
+# set theme
+pf.set_theme()
+
+# create a basic plot
+dataset = sns.load_dataset("titanic")
+(
+    so.Plot(data=dataset, x="survived", y="sex")
+    .add(so.Bar(alpha=1), so.Agg(), legend=False)
+    .label(title="Female passengers survived much more frequently", x="Survival Rate", y="Sex")
+    .save("my_first_plot.png")
+)
+```
