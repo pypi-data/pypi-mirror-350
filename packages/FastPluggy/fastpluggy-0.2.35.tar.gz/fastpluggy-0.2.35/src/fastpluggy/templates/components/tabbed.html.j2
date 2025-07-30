@@ -1,0 +1,29 @@
+{% macro render_tabbed_view(view) %}
+    {% from "components/common.html.j2" import render_component %}
+
+    <div class="card mb-3">
+        <div class="card-tabs">
+            <!-- Tab Navigation -->
+            <ul class="nav nav-tabs">
+                {% for tab in view.tabs %}
+                    <li class="nav-item">
+                        <h3><a href="#{{ tab.id }}"
+                           class="nav-link {% if loop.first %}active{% endif %}"
+                           data-bs-toggle="tab">
+                            {{ tab.title }}
+                        </a></h3>
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+                {% for tab in view.tabs %}
+                    <div id="{{ tab.id }}" class="card tab-pane mb-0 {% if loop.first %}active show{% endif %}">
+                          {{ render_component(tab, request) }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endmacro %}
