@@ -1,0 +1,72 @@
+[build-system]
+requires = ["setuptools>=61.2", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyazul"
+version = "2.0.0"
+description = "An Azul Webservices light wrapper for Python."
+authors = [{ name = "INDEXA Inc.", email = "info@indexa.do" }]
+license = { text = "MIT License" }
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+dependencies = [
+  "httpx[http2]>=0.28.1",
+  "pydantic>=2.11.5",
+  "pydantic-settings>=2.9.1",
+  "python-dotenv>=1.1.0",
+]
+requires-python = ">=3.12"
+readme = "README.md"
+
+[project.urls]
+Homepage = "https://github.com/indexa-git/pyazul/"
+
+[tool.setuptools.packages.find]
+include = ["pyazul", "pyazul.*"]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.3.5",
+  "pytest-dotenv>=0.5.2",
+  "pytest-cov>=6.1.1",
+  "pytest-asyncio>=1.0.0",
+  "python-multipart>=0.0.9",
+  "jinja2>=3.1.6",
+  "fastapi>=0.115.12",
+  "flake8>=7.2.0",
+  "flake8-docstrings>=1.7.0",
+  "pydocstyle[toml]>=6.3.0",
+  "interrogate>=1.7.0",
+  "black>=25.1.0",
+  "isort>=6.0.1",
+  "uvicorn>=0.34.2",
+]
+
+[tool.pytest.ini_options]
+addopts = "-v --import-mode=importlib"
+asyncio_mode = "auto"
+testpaths = ["tests"]
+asyncio_default_fixture_loop_scope = "function"
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+[tool.black]
+line-length = 88
+target-version = ["py312"]
+
+[tool.pydocstyle]
+convention = "google"
+inherit = false
+match = "(?!test_).*.py"
+add_ignore = "D100,D104,D107"
+
+[tool.interrogate]
+fail-under = 70
+verbose = 0
+generate-badge = "docs/interrogate_badge.svg"
+badge-format = "svg"
