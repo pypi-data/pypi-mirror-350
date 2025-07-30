@@ -1,0 +1,111 @@
+Metadata-Version: 2.4
+Name: gameyamlspiderandgenerator
+Version: 2.1.2
+Summary: A useful tool for generating FurryGameIndex yaml files
+Author: kaesinol
+License: MIT
+Project-URL: Homepage, https://github.com/FurryGamesIndex/GameYamlSpiderAndGenerator/
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Operating System :: OS Independent
+Classifier: Operating System :: MacOS
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Operating System :: POSIX
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Utilities
+Classifier: Topic :: Text Processing
+Classifier: Natural Language :: English
+Classifier: Typing :: Typed
+Requires-Python: <4.0,>=3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: langcodes>=3.3.0
+Requires-Dist: language-data<2.0,>=1.1
+Requires-Dist: html2text>=2020.1.1
+Requires-Dist: urllib3>=2.0
+Requires-Dist: beautifulsoup4>=4.0
+Requires-Dist: pillow>=10.0
+Requires-Dist: ruamel-base>=1.0.0
+Requires-Dist: loguru>=0.7.0
+Requires-Dist: pyyaml>=6.0
+Requires-Dist: pysocks>=1.7.1
+Requires-Dist: lxml>=4.9.2
+Requires-Dist: py3langid>=0.2.2
+Requires-Dist: epicstore-api<1.0,>=0.1.7
+Requires-Dist: deepdiff>=7.0.1
+Requires-Dist: FGI-YAML-Formattor<1.0,>=0.1.0
+Requires-Dist: yamlgenerator-hook-search<2.0,>=1.0.1
+Requires-Dist: yamlgenerator-hook-validate<2.0,>=1.0.0a1
+Requires-Dist: curl-cffi>=0.7.3
+Requires-Dist: jq>=1.8.0
+Provides-Extra: openai
+Requires-Dist: yamlgenerator-hook-openai<2.0,>=1.0.0b; extra == "openai"
+Dynamic: license-file
+
+![](https://github.com/FurryGamesIndex/GameYamlSpiderAndGenerator/actions/workflows/Test%20Default%20Hooks.yml/badge.svg)
+![](https://github.com/FurryGamesIndex/GameYamlSpiderAndGenerator/actions/workflows/Test%20Main%20Program.yml/badge.svg)
+<details>
+  <summary><h2>🕯️ In memory of nullqwertyuiop</h2></summary>
+
+We are deeply saddened by the loss of our dear friend, [nullqwertyuiop](https://github.com/nullqwertyuiop) , who passed away on December 30, 2024. His kindness, generosity, and contributions to this project will never be forgotten. His commitment to excellence and selflessness made a lasting impact, and we are forever grateful for his support and friendship.
+Rest in peace, nullqwertyuiop.
+
+</details>
+
+# Quick Start
+
+## Install
+
+```sh
+pip install gameyamlspiderandgenerator
+pip install gameyamlspiderandgenerator[openai] # install extra hook
+python3
+```
+
+## Create a new configuration file
+
+- config.yaml
+
+```yaml
+hook:
+  - search
+  - validate
+proxy: { }
+# if you don't want to set proxy, please fill in {}
+# http: socks5://127.0.0.1:7891
+# https: socks5://127.0.0.1:7891
+git_proxy: null
+hook_configs:
+  search:
+    google-play: # api key from https://serpapi.com/ 
+    apple:  # api key from https://serpapi.com/ 
+
+```
+
+## Try to make yaml data file
+
+```bash
+ python -m gameyamlspiderandgenerator -f /home/user/desktop/config.yaml  https://store.steampowered.com/app/290340/Armello/ -o 1.zip
+ # or omit some options
+ python -m gameyamlspiderandgenerator https://store.steampowered.com/app/290340/Armello/
+
+```
+
+*or use the library in your script*
+
+```python3
+from gameyamlspiderandgenerator import produce_yaml
+from gameyamlspiderandgenerator.util.config import config
+from gameyamlspiderandgenerator.util.plugin_manager import pkg
+
+config.load("/home/user/desktop/config.yaml")
+pkg.init()
+print(produce_yaml("https://store.steampowered.com/app/1470120/Atopes/"))
+```
+
+### More: see [API Reference](https://github.com/FurryGamesIndex/GameYamlSpiderAndGenerator/wiki/Api-Reference)
