@@ -1,0 +1,199 @@
+[project]
+name = "pamiq-io"
+version = "0.6.0"
+description = "Versatile I/O library for Python, providing easy access to audio, video, and input device capabilities."
+readme = "README.md"
+authors = [
+    { name = "Geson-anko", email = "59220704+Geson-anko@users.noreply.github.com" }
+]
+requires-python = ">=3.12"
+dependencies = []
+
+keywords = [
+  "AI",
+  "ML",
+  "Machine Learning",
+  "OBS",
+  "obs-studio",
+  "inputtino",
+  "automation",
+  "video",
+  "audio",
+  "mouse",
+  "keyboard",
+  "osc",
+  "Agent",
+  "IO"
+]
+
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: POSIX :: Linux",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: MacOS",
+  "Natural Language :: English",
+  "Natural Language :: Japanese",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+]
+
+[project.urls]
+Repository = "https://github.com/MLShukai/pamiq-io"
+Issues = "https://github.com/MLShukai/pamiq-io/issues"
+
+
+[tool.uv.sources]
+inputtino-python = { git = "https://github.com/games-on-whales/inputtino.git", subdirectory = "bindings/python" }
+
+[project.scripts]
+pamiq-io-show-opencv-available-input-devices = "pamiq_io.video.input.opencv:show_video_devices"
+pamiq-io-show-soundcard-available-input-devices = "pamiq_io.audio.input.soundcard:show_all_input_devices"
+pamiq-io-show-soundcard-available-output-devices = "pamiq_io.audio.output.soundcard:show_all_output_devices"
+
+[project.optional-dependencies]
+demo = [
+    "pillow>=11.1.0",
+    "soundfile>=0.13.1",
+]
+inputtino = [
+    "inputtino-python>=0.1.0;sys_platform=='linux'",
+]
+opencv = [
+    "opencv-python>=4.11.0.86",
+]
+osc = [
+    "python-osc>=1.9.3",
+]
+soundcard = [
+    "soundcard>=0.4.4",
+]
+windows = [
+    "pydirectinput>=1.0.4;sys_platform=='win32'",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.2.0",
+    "pyright>=1.1.398",
+    "pytest>=8.3.5",
+    "pytest-cov>=6.1.1",
+    "pytest-mock>=3.14.0",
+]
+
+
+[tool.pytest.ini_options]
+addopts = [
+  "--color=yes",
+  "--durations=0",
+  "--strict-markers",
+  "--doctest-modules",
+]
+filterwarnings = [
+  "ignore::DeprecationWarning",
+  "ignore::UserWarning",
+]
+log_cli = true
+log_level = "INFO"
+
+minversion = "6.0"
+testpaths = "tests/"
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.pyright]
+pythonVersion = "3.12"
+exclude = [
+  "**/node_modules",
+  "**/__pycache__",
+  "**/.venv",
+  "tests/"
+]
+strict = ["./src/"]
+reportMissingTypeStubs = false
+reportImplicitOverride = true
+reportPrivateUsage = "warning"
+
+[tool.ruff]
+
+# Same as Black.
+line-length = 88
+indent-width = 4
+
+# Assume Python 3.12
+target-version = "py312"
+
+include = ["*.py"]
+
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".git",
+    ".ipynb_checkpoints",
+    ".pytest_cache",
+    ".ruff_cache",
+    ".venv",
+    ".vscode",
+    "build",
+    "dist",
+    "node_modules",
+    ".venv",
+]
+
+# Linter ignore codes
+[tool.ruff.lint]
+
+select = [
+  "E",
+  "F",
+  "W",
+  "I",
+]
+
+ignore = [
+  "E203", # Whitespace before ':' (E203)
+  "E402", # Module level import not at top of file.
+  "E501", # Line too long (82 &gt; 79 characters) (E501)
+  "F811", # Redefinition of unused name from line n (F811)
+  "E741", # Do not define classes named 'I', 'O', or 'l' (E742)
+  "E266", # too many leading '#' for block comment (E266)
+  "F401", # Module imported but unused,
+]
+
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = "double"
+
+# Like Black, indent with spaces, rather than tabs.
+indent-style = "space"
+
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+
+# Like Black, automatically detect the appropriate line ending.
+line-ending = "auto"
+
+[tool.coverage.run]
+omit = ["tests/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise NotImplementedError",
+    "if __name__ == __main__:",
+    "pass",
+    "raise ImportError",
+    "..."
+]
