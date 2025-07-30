@@ -1,0 +1,46 @@
+[project]
+name = "alr-spec"
+version = "0.0.3"
+description = "Experimental CLI helper for ALR"
+authors = [{ name = "Maxim Slipenko", email = "maks1ms@alt-gnome.ru" }]
+requires-python = "~=3.12"
+readme = "README.md"
+dependencies = [
+    "tree-sitter>=0.24.0,<0.25",
+    "tree-sitter-bash>=0.23.3,<0.24",
+    "requests>=2.32.3,<3",
+    "typer>=0.15.1,<0.16",
+    "gitpython>=3.1.44,<4",
+]
+
+[project.scripts]
+alr-spec = "alr_spec:main"
+
+[dependency-groups]
+dev = [
+    "black>=24.10.0,<25",
+    "isort>=5.13.2,<6",
+    "pre-commit>=4.0.1,<5",
+    "flake8>=7.1.1,<8",
+    "bandit>=1.8.0,<2",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.black]
+line-length = 79
+
+[tool.isort]
+profile = "black"
+line_length = 79
+multi_line_output = 3
+skip_gitignore = true
+
+[tool.bandit]
+skips = [
+    "B404",
+    "B602",
+    "B603"
+]

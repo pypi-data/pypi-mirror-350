@@ -1,0 +1,36 @@
+name: Create release
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout this repository
+        uses: actions/checkout@v4
+
+      - name: Setup uv
+        uses: actions/setup-uv@v5
+        with:
+          enable-cache: true
+          version: "0.7.8"
+
+      - name: Build
+        run: |
+          uv build
+
+      - name: Create release
+        uses: actions/forgejo-release@v2.6.0
+        with:
+          direction: upload
+          release-dir: dist
+          release-notes-assistant: true
+
+      - name: Publish to pypi.org
+        env:
+          UV_PUBLISH_TOKEN: ${{ secrets.PYPI_TOKEN }}
+        run: |
+          uv publish
