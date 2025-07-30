@@ -1,0 +1,41 @@
+from setuptools import setup, find_packages
+import PegParser as package
+
+setup(
+    name='PegParser',
+    version=package.__version__,
+    py_modules=['PegParser'],
+    packages=find_packages(include=[]),
+    install_requires=[],
+    scripts=[],
+    author="Maurice Lambert",
+    author_email="mauricelambert434@gmail.com",
+    maintainer="Maurice Lambert",
+    maintainer_email="mauricelambert434@gmail.com",
+    description='This package implements a PEG (Parsing Expression Grammar) to parse syntax, i add rules to parse URL, HTTP request and response easily with security and some format like hexadecimal, base32, base64, base85, CSV, JSON (strict and permissive), system file path...',
+    long_description=open('README.md').read(),
+    long_description_content_type="text/markdown",
+    url="https://github.com/mauricelambert/PegParser",
+    project_urls={
+        "Github": "https://github.com/mauricelambert/PegParser",
+        "Documentation": "https://mauricelambert.github.io/info/python/code/PegParser.html",
+    },
+    include_package_data=True,
+    classifiers=[
+        'Operating System :: POSIX',
+        "Natural Language :: English",
+        "Topic :: System :: Networking",
+        "Topic :: Internet :: WWW/HTTP",
+        "Programming Language :: Python",
+        "Intended Audience :: Developers",
+        'Operating System :: MacOS :: MacOS X',
+        "Programming Language :: Python :: 3.8",
+        'Operating System :: Microsoft :: Windows',
+        "Development Status :: 5 - Production/Stable",
+        "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    ],
+    keywords=['PEG', 'URL', 'HTTP', 'Parser', 'base64', 'hexadecimal', 'base32', 'base85', 'CSV', 'JSON'],
+    platforms=['Windows', 'Linux', "MacOS"],
+    license="GPL-3.0 License",
+    python_requires='>=3.8',
+)
