@@ -1,0 +1,1 @@
+# FestivalFinder class implementation placeholder
