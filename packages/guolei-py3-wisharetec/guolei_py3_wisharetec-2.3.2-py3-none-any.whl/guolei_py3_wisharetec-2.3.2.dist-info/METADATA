@@ -1,0 +1,57 @@
+Metadata-Version: 2.4
+Name: guolei-py3-wisharetec
+Version: 2.3.2
+Summary: 慧享(绿城)科技 API
+Home-page: https://github.com/guolei19850528/guolei_py3_wisharetec
+Author: guolei
+Author-email: 174000902@qq.com
+License: MIT
+Requires-Python: >=3.0
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: guolei-py3-requests
+Requires-Dist: requests
+Requires-Dist: diskcache
+Requires-Dist: redis
+Requires-Dist: addict
+Requires-Dist: retrying
+Requires-Dist: jsonschema
+Dynamic: author
+Dynamic: author-email
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# guolei-py3-wisharetec
+
+### a python3 library for wisharetec
+
+# Example
+
+```python
+import diskcache
+from guolei_py3_wisharetec.library.scaasp.admin.api import (
+    Api as ScaaspAdminApi, UrlSetting as ScaaspAdminApiUrlSetting
+)
+
+scaasp_admin_api = ScaaspAdminApi(
+    base_url="<BASE URL>",
+    username="<USERNAME>",
+    password="<PASSWORD>",
+    cache_instance=diskcache.Cache()
+)
+
+community_by_paginator = scaasp_admin_api.login().get(
+    path=ScaaspAdminApiUrlSetting.QUERY_COMMUNITY_BY_PAGINATOR,
+    params={
+        "curPage": 1,
+        "pageSize": 20
+    }
+)
+
+```
