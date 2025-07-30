@@ -1,0 +1,198 @@
+Metadata-Version: 2.4
+Name: cloneit
+Version: 0.1.0
+Summary: A lightweight Python package inspired by RPGLE LIKE keyword for cloning field templates
+Author-email: Neeraj <neeraj@example.com>
+License-Expression: MIT
+Project-URL: Homepage, https://github.com/neeraj/cloneit
+Project-URL: Repository, https://github.com/neeraj/cloneit
+Project-URL: Documentation, https://github.com/neeraj/cloneit#readme
+Project-URL: Bug Reports, https://github.com/neeraj/cloneit/issues
+Keywords: field,template,clone,rpgle,like,data,model,schema,django,pydantic,marshmallow,validation,boilerplate
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Software Development :: Code Generators
+Classifier: Topic :: Database
+Classifier: Topic :: Internet :: WWW/HTTP :: Dynamic Content
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0; extra == "dev"
+Requires-Dist: pytest-cov>=2.0; extra == "dev"
+Requires-Dist: black>=21.0; extra == "dev"
+Requires-Dist: flake8>=3.8; extra == "dev"
+Requires-Dist: mypy>=0.800; extra == "dev"
+Requires-Dist: twine>=3.0; extra == "dev"
+Dynamic: license-file
+
+# cloneit
+
+A lightweight Python package inspired by the RPGLE LIKE keyword, designed to simplify and standardize field definitions by allowing developers to clone reusable field templates across projects.
+
+## Features
+
+- 🔄 **Field Template Registration**: Register field templates with reusable attributes
+- 📋 **Field Cloning**: Create new fields by cloning existing templates  
+- ⚙️ **Field Overrides**: Modify attributes while cloning (e.g., default, required)
+- ✅ **Validation Support**: Ensure required template exists; raise exceptions otherwise
+- 🔌 **Easy Integration**: Can be used in any Python data class, model, or schema
+- 📦 **Framework Agnostic**: Works with Django, Pydantic, Marshmallow, and more
+
+## Installation
+
+```bash
+pip install cloneit
+```
+
+## Quick Start
+
+```python
+from cloneit import FieldTemplate, Field
+
+# Register field templates
+FieldTemplate.register('email', {
+    'type': str,
+    'required': True,
+    'max_length': 255,
+    'validation': 'email'
+})
+
+FieldTemplate.register('name', {
+    'type': str,
+    'required': True,
+    'max_length': 100,
+    'min_length': 2
+})
+
+# Clone fields with LIKE-style syntax
+user_email = Field.like('email')
+admin_email = Field.like('email', required=False, default='admin@company.com')
+first_name = Field.like('name')
+last_name = Field.like('name', max_length=150)
+```
+
+## Usage Examples
+
+### With Pydantic Models
+
+```python
+from pydantic import BaseModel
+from cloneit import FieldTemplate, Field
+
+# Register common field templates
+FieldTemplate.register('id_field', {
+    'type': int,
+    'required': True,
+    'gt': 0
+})
+
+FieldTemplate.register('timestamp', {
+    'type': datetime,
+    'required': True,
+    'default_factory': datetime.now
+})
+
+class User(BaseModel):
+    id: int = Field.like('id_field')
+    email: str = Field.like('email')
+    name: str = Field.like('name')
+    created_at: datetime = Field.like('timestamp')
+```
+
+### With Django Models
+
+```python
+from django.db import models
+from cloneit import FieldTemplate, Field
+
+# Register Django-specific templates
+FieldTemplate.register('django_email', {
+    'field_class': models.EmailField,
+    'max_length': 255,
+    'unique': True
+})
+
+FieldTemplate.register('django_name', {
+    'field_class': models.CharField,
+    'max_length': 100,
+    'blank': False
+})
+
+class User(models.Model):
+    email = Field.like('django_email')
+    first_name = Field.like('django_name')
+    last_name = Field.like('django_name', max_length=150)
+```
+
+### With Marshmallow Schemas
+
+```python
+from marshmallow import Schema, fields
+from cloneit import FieldTemplate, Field
+
+# Register Marshmallow field templates
+FieldTemplate.register('marshmallow_email', {
+    'field_class': fields.Email,
+    'required': True,
+    'validate': lambda x: '@' in x
+})
+
+class UserSchema(Schema):
+    email = Field.like('marshmallow_email')
+    name = Field.like('marshmallow_name')
+```
+
+## API Reference
+
+### FieldTemplate
+
+#### `FieldTemplate.register(name: str, attributes: dict)`
+Register a field template with the given name and attributes.
+
+#### `FieldTemplate.get(name: str) -> dict`
+Get a registered field template by name.
+
+#### `FieldTemplate.exists(name: str) -> bool`
+Check if a field template exists.
+
+#### `FieldTemplate.list() -> list`
+List all registered field template names.
+
+### Field
+
+#### `Field.like(template_name: str, **overrides) -> Any`
+Clone a field template with optional attribute overrides.
+
+## Error Handling
+
+```python
+from cloneit import FieldTemplate, Field, TemplateNotFoundError
+
+try:
+    field = Field.like('nonexistent_template')
+except TemplateNotFoundError as e:
+    print(f"Template not found: {e}")
+```
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Inspired By
+
+This package is inspired by the RPGLE LIKE keyword, providing a familiar tool for developers transitioning from AS/400 or RPGLE to Python.
