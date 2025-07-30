@@ -1,0 +1,63 @@
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "uvinstaller"
+version = "0.3.2"
+description = "基于UV和PyInstaller的Python项目自动打包工具"
+authors = [
+    {name = "uvinstaller", email = "your-email@example.com"}
+]
+maintainers = [
+    {name = "uvinstaller", email = "your-email@example.com"}
+]
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+
+# 动态版本管理（可选）
+# dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/uvinstaller"
+Documentation = "https://github.com/yourusername/uvinstaller#readme"
+Repository = "https://github.com/yourusername/uvinstaller"
+Issues = "https://github.com/yourusername/uvinstaller/issues"
+Changelog = "https://github.com/yourusername/uvinstaller/blob/main/CHANGELOG.md"
+
+[project.scripts]
+uvi = "uvinstaller.cli.main:main"
+
+# UV构建配置
+[tool.uv]
+dev-dependencies = [
+    "build>=0.10.0",
+    "twine>=4.0.0",
+]
+
+# 用于兼容的配置
+[tool.hatch.version]
+path = "uvinstaller/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["uvinstaller"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/uvinstaller",
+    "/README.md",
+    "/CHANGELOG.md",
+    "/LICENSE",
+] 
