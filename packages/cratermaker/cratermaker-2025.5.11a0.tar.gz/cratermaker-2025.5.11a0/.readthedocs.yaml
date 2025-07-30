@@ -1,0 +1,28 @@
+# .readthedocs.yaml
+# Read the Docs configuration file
+# See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
+
+# Required
+version: 2
+
+# Build documentation with Sphinx
+sphinx:
+  configuration: docs/conf.py
+  fail_on_warning: false  
+
+build:
+  os: ubuntu-22.04
+  tools:
+    python: "mambaforge-22.9"  
+    rust: "latest"
+  apt_packages:
+    - pandoc
+  jobs:
+    post_create_environment: 
+      - git fetch --prune --unshallow
+      - git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+      - python buildscripts/set_version.py
+      - pip install .
+
+conda:
+  environment: environments/cratermaker-docs.yml
