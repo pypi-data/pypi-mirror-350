@@ -1,0 +1,52 @@
+TurkcePython, çocuklar ve İngilizce bilmeyen yeni başlayanlar için tasarlanmış, Python dili için Türkçe çeviri paketidir.
+
+Bu paket sayesinde, İngilizce anahtar kelimeleri bilmeye gerek kalmadan tamamen Türkçe komutlarla Python programlama yapılabilir.
+
+Kodunuzu aşağıdaki Türkçe anahtar kelimeleri kullanarak yazın ve `.py` uzantısıyla kaydedin.  
+Çalıştırmak için terminal veya komut istemcisine şu komutu yazın:
+
+turkcepython dosya_adi.py
+
+Tüm çeviriler, anlam kolaylığı ve eğitsel açıklık önceliğiyle yapılmıştır.  
+Amaç, Python’un İngilizce anahtar kelimelerini Türkçedeki en sezgisel ve anlaşılır karşılıklarla sunmaktır.
+
+
+| Türkçe Komut     | Python Karşılığı |
+|------------------|------------------|
+| eğer             | if               |
+| değilse          | else             |
+| eğerdeğil        | elif             |
+| döngü            | while            |
+| sınırlıdöngü     | for              |
+| aralık           | range            |
+| döndür           | return           |
+| devam            | continue         |
+| dur              | break            |
+| içinde           | in               |
+| doğru            | True             |
+| yanlış           | False            |
+| hiçbir           | None             |
+| tanımla          | def              |
+| sınıf            | class            |
+| kendi            | self             |
+| geç              | pass             |
+| yazdır           | print            |
+| girdi            | input            |
+| tamsayi          | int              |
+| ondalik          | float            |
+| metin            | str              |
+| liste            | list             |
+| sozluk           | dict             |
+| uzunluk          | len              |
+| toplam           | sum              |
+| dene             | try              |
+| hata             | except           |
+| sonunda          | finally          |
+| hataver          | raise            |
+| içeaktar         | import           |
+| dan              | from             |
+| olarak           | as               |
+
+
+TurkcePython, Türkçe konuşan çocuklar ve öğrenciler için bir öğrenme aracıdır.  
+Amacı, Python'un öğrenilmesini kolaylaştırmak ve kodlamayı ana dilde daha erişilebilir hale getirmektir.
