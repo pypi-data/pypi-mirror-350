@@ -1,0 +1,51 @@
+# scDrake's scGPT Extension
+
+This code is fork from [scGPT](https://github.com/bowang-lab/scGPT), which is a single-cell GPT model for gene expression data [^1]. This extension adds embedding calculation support for the [scDrake framework](https://github.com/bioinfocz/scdrake)[^2], which is a framework for building and deploying single-cell data analysis.
+This extension is designed to work with the scDrake framework and trying to provide a set of tools for building and deploying single-cell models.
+
+## Installation
+
+## Dependencies
+
+- Python >= 3.8
+- PyTorch >= 2.3.0
+- ScanPY >= 1.9.8
+
+## install
+
+```{bash}
+$ python -m pip install torch scanpy scdrakex
+```
+
+## install for development
+
+```{bash}
+$ python -m pip install -e .
+```
+
+## Pretrained scGPT Model
+
+available at [scGPT](https://github.com/bowang-lab/scGPT?tab=readme-ov-file#pretrained-scgpt-model-zoo)
+
+## Usage
+
+```python
+from scdrakex.task.r_cell_emb import r_embed_data
+
+# count_matrix: a sparse matrix of shape (n_cells, n_genes)
+# genes: a list of gene symbols
+# model_dir: the path to the Pretrained scGPT Model directory
+# output: ndarray of shape (n_cells, n_embedding)
+
+embeding = r_embed_data(
+    count_matrix = count_matrix,
+    genes = genes,
+    model_dir = "scGPT_human",
+)
+```
+
+## References
+
+[^1]: [Cui, H., Wang, C., Maan, H. et al. scGPT: toward building a foundation model for single-cell multi-omics using generative AI. Nat Methods 21, 1470–1480 (2024).](https://www.nature.com/articles/s41592-024-02201-0)
+
+[^2]: [Kubovčiak, J., Kolář, M., & Novotný, J. (2023). Scdrake: a reproducible and scalable pipeline for scRNA-seq data analysis. Bioinformatics Advances, 3(1). https://doi.org/10.1093/bioadv/vbad089](https://academic.oup.com/bioinformaticsadvances/article/3/1/vbad089/7220500)
