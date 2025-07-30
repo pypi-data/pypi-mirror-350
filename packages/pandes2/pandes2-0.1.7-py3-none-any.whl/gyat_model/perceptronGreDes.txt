@@ -1,0 +1,113 @@
+import numpy as np
+
+
+
+def compute_error_for_line_given_points(b, m, points):
+    """
+    Calculate mean squared error for a line defined by slope (m) and intercept (b).
+
+    Args:
+        b (float): y-intercept
+        m (float): slope
+        points (numpy.array): Array of [x, y] coordinates
+
+    Returns:
+        float: Mean squared error
+    """
+    totalError = 0
+    for i in range(len(points)):
+        x = points[i, 0]
+        y = points[i, 1]
+        totalError += (y - (m * x + b)) ** 2
+    return totalError / float(len(points))
+
+
+
+
+def step_gradient(b_current, m_current, points, learningRate):
+    """
+    Calculate one step of gradient descent.
+
+    Args:
+        b_current (float): Current y-intercept
+        m_current (float): Current slope
+        points (numpy.array): Array of [x, y] coordinates
+        learningRate (float): Step size for gradient descent
+
+    Returns:
+        tuple: Updated b and m values
+    """
+    b_gradient = 0
+    m_gradient = 0
+    N = float(len(points))
+
+    for i in range(len(points)):
+        x = points[i, 0]
+        y = points[i, 1]
+        b_gradient += -(2/N) * (y - ((m_current * x) + b_current))
+        m_gradient += -(2/N) * x * (y - ((m_current * x) + b_current))
+
+    new_b = b_current - (learningRate * b_gradient)
+    new_m = m_current - (learningRate * m_gradient)
+    return [new_b, new_m]
+
+
+
+def gradient_descent_runner(points, starting_b, starting_m, learning_rate, num_iterations):
+    """
+    Run the gradient descent algorithm.
+
+    Args:
+        points (numpy.array): Array of [x, y] coordinates
+        starting_b (float): Initial y-intercept
+        starting_m (float): Initial slope
+        learning_rate (float): Step size for gradient descent
+        num_iterations (int): Number of iterations to run
+
+    Returns:
+        tuple: Final b and m values
+    """
+    b = starting_b
+    m = starting_m
+
+    # Print initial error
+    print(f"Starting gradient descent at b = {b}, m = {m}, "
+          f"error = {compute_error_for_line_given_points(b, m, points)}")
+
+    for i in range(num_iterations):
+        b, m = step_gradient(b, m, points, learning_rate)
+
+    return [b, m]
+
+
+
+def run():
+    """
+    Main function to run linear regression using gradient descent.
+    """
+    try:
+        # Load data
+        points = np.genfromtxt("data.csv", delimiter=",")
+
+        # Hyperparameters
+        learning_rate = 0.0001
+        initial_b = 0  # Initial y-intercept guess
+        initial_m = 0  # Initial slope guess
+        num_iterations = 1000
+
+        print("Running...")
+        [b, m] = gradient_descent_runner(points, initial_b, initial_m, 
+                                         learning_rate, num_iterations)
+
+        print(f"After {num_iterations} iterations b = {b}, "
+              f"m = {m}, error = {compute_error_for_line_given_points(b, m, points)}")
+
+    except FileNotFoundError:
+        print("Error: Could not find data.csv file.")
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+
+
+
+if __name__ == '__main__':
+    run()

@@ -1,0 +1,78 @@
+display_board(Board) :-
+nl,
+display_row(Board,1),
+display_row(Board,2),
+display_row(Board,3),
+nl.
+display_row(Board,Row) :-
+write(''),display_cell(Board,Row,1),
+write(''),display_cell(Board,Row,2),
+write(''),display_cell(Board,Row,3),
+nl,
+(Row =< 3, write('--|--|--'),nl;true).
+display_cell(Board,Row,Col) :-
+member(cell(Row, Col,Player),Board),
+write(Player),
+!.
+display_cell(_,_,_):-
+ write('').
+win(Player,Board,Row,Col) :-
+    ( member(cell(Row,1,Player),Board),
+      member(cell(Row,2,Player),Board),
+      member(cell(Row,3,Player),Board);
+ 
+      member(cell(1,Col,Player),Board),
+      member(cell(2,Col,Player),Board),
+      member(cell(3,Col,Player),Board);
+ 
+      member(cell(1,1,Player),Board),
+      member(cell(2,2,Player),Board),
+      member(cell(3,3,Player),Board);
+ 
+      member(cell(1,3,Player),Board),
+      member(cell(2,2,Player),Board),
+      member(cell(3,1,Player),Board)
+    ).
+game_over(Board,Row,Col) :-
+    (
+        win('X',Board,Row,Col);
+        win('O',Board,Row,Col);
+        length(Board,9)
+     ).
+make_move(Player,Row,Col,Board,NewBoard) :-
+    \+ member(cell(Row,Col,_),Board),
+    append(Board,[cell(Row,Col,Player)],NewBoard).
+play :-
+   play('X',[]).
+ 
+play(Player,Board) :-
+    display_board(Board),
+    (game_over(Board,Row,Col)->(win('X',Board,Row,Col)->write('X wins!\n');
+       (win('O',Board,Row,Col)->write('O wins!\n');
+        write('Its a draw!\n')
+    )
+    );
+    (Player='X'->
+          write('Player Xs turn \n');
+          write('Player Os turn \n')
+ 
+    ),
+    write('Enter your move(row and column):'),
+    read(Row),read(Col),
+    (
+      (Row>=1,Row=<3,Col>=1,Col=<3)->
+          (
+            make_move(Player,Row,Col,Board,NewBoard)->
+            (
+               switch_player(Player,NextPlayer),
+               play(NextPlayer,NewBoard)
+            );
+            write('Invalid move.Try again \n'),
+            play(Player,Board)
+          );
+          write('Invalid input.Row and Column must be between 1 and 3.\n'),
+          play(Player,Board)
+      )
+    ).
+switch_player('X','O').
+switch_player('O','X').

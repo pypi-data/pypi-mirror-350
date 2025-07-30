@@ -1,0 +1,99 @@
+# AdaBoost Classification
+import pandas as pd
+
+df = pd.read_csv("pimaindiansdiabetes.csv")
+df
+
+
+df.shape
+
+
+
+X = df.iloc[:,0:8]
+y = df.iloc[:,8]
+
+
+
+from sklearn import model_selection
+from sklearn.ensemble import AdaBoostClassifier
+kfold = model_selection.KFold(n_splits=10, random_state=42)
+num_trees = 30
+model = AdaBoostClassifier(n_estimators=num_trees, random_state=42)
+results = model_selection.cross_val_score(model, X, y, cv=kfold)
+print(results.mean())
+
+
+
+
+
+
+
+# Stochastic Gradient Boosting
+import pandas as pd
+
+
+df = pd.read_csv("pimaindiansdiabetes.csv")
+df
+
+
+X = df.iloc[:,0:8]
+y = df.iloc[:,8]
+
+
+from sklearn import model_selection
+from sklearn.ensemble import GradientBoostingClassifier
+kfold = model_selection.KFold(n_splits=10, random_state=42)
+num_trees = 30
+model = GradientBoostingClassifier(n_estimators=num_trees, random_state=42)
+results = model_selection.cross_val_score(model, X, y, cv=kfold)
+print(results.mean())
+
+
+
+
+
+#-----------------------3.	Voting Ensemble Algorithm---------------------------------------
+a.	Given the pimaindiansdiabetes.csv dataset, do the following:
+b.	Load the dataset and display the same.
+
+
+import pandas as pd
+
+df = pd.read_csv("pimaindiansdiabetes.csv")
+df
+
+
+c.	Create logistic regression, decision tree and SVC models. Apply Voting ensemble algorithm to the above 3 models.
+
+from sklearn import model_selection
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.svm import SVC
+from sklearn.ensemble import VotingClassifier
+
+# create the sub models
+estimators = []
+logmodel = LogisticRegression()
+estimators.append(('logistic', logmodel))
+
+DTmodel = DecisionTreeClassifier()
+estimators.append(('cart', DTmodel))
+
+SVCmodel = SVC()
+estimators.append(('svm', SVCmodel))
+
+# create the ensemble model
+ensemble = VotingClassifier(estimators)
+ensemble
+
+
+import warnings
+warnings.filterwarnings("ignore")
+
+kfold = model_selection.KFold(n_splits=10,)
+results = model_selection.cross_val_score(ensemble, X, y, cV=kfold)
+print(results.mean())
+
+
+
+

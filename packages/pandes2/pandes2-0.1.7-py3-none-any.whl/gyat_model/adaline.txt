@@ -1,0 +1,58 @@
+import numpy as np
+
+class Adaline:
+    def __init__(self, input_size, learning_rate=0.1, epochs=100):
+        self.weights = np.zeros(input_size)
+        self.bias = 0
+        self.learning_rate = learning_rate
+        self.epochs = epochs
+
+    def activation(self, x):
+        # Linear activation (identity function)
+        return x
+
+    def predict(self, X):
+        # Compute the linear output
+        return self.activation(np.dot(X, self.weights) + self.bias)
+
+    def train(self, X, y):
+        # Train the model using Adaline's learning rule (Least Mean Squares)
+        for epoch in range(self.epochs):
+            for i in range(len(X)):
+                # Calculate the prediction
+                prediction = self.predict(X[i])
+
+                # Compute the error
+                error = y[i] - prediction
+
+                # Update the weights and bias
+                self.weights += self.learning_rate * error * X[i]
+                self.bias += self.learning_rate * error
+
+    def evaluate(self, X):
+        # Make predictions for the input X
+        return np.where(self.predict(X) >= 0.5, 1, 0)  # Convert to binary output
+
+
+
+
+
+
+
+
+# AND operation input and output
+X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])  # Input pairs
+y = np.array([0, 0, 0, 1])  # AND outputs
+
+# Initialize Adaline model with 2 input features (for A and B), learning rate, and epochs
+adaline = Adaline(input_size=2, learning_rate=0.1, epochs=100)
+
+# Train the Adaline model
+adaline.train(X, y)
+
+# Evaluate the trained model on the same inputs (X)
+predictions = adaline.evaluate(X)
+
+print("Predictions on the AND operation:")
+for i, prediction in enumerate(predictions):
+    print(f"Input: {X[i]} => Predicted: {prediction} => Actual: {y[i]}")
