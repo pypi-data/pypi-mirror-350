@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "search-ai-core"
+version = "0.1.4"
+description = "Google Search & News tool with advanced filters and LLM-friendly output formats!"
+readme = { file = "README.md", content-type = "text/markdown" }
+requires-python = ">=3.10"
+license = { text = "MIT" }
+urls = { "Homepage" = "https://github.com/jpjacobpadilla/SearchAI" }
+authors = [
+    { name = "Jacob Padilla", email = "searchai@jacobpadilla.com" }
+]
+keywords = [
+    "python", "search", "markdown", "search-engine",
+    "data", "google", "ai", "web-crawler", "googlesearch",
+    "googlenews", "llm"
+]
+dependencies = [
+    "html2text>=2025.4.15",
+    "httpx[socks]>=0.28.1",
+    "lxml>=5.4.0",
+    "nest-asyncio>=1.6.0",
+    "playwright>=1.52.0",
+    "publicsuffix2>=2.20191221",
+    "pydantic>=2.11.5",
+    "tenacity>=9.1.2",
+]
+
+[dependency-groups]
+dev = [
+    "notebook>=7.4.2",
+    "pytest>=8.3.5",
+    "pytest-asyncio>=1.0.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["search_ai"]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["I", "TID"]
+
+[tool.ruff.format]
+quote-style = "single"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
