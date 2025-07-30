@@ -1,0 +1,29 @@
+FROM quay.io/fedora/python-312@sha256:8d65b75d6685a6e59d63287d66dfd5df0c2878b72fbec4ea7a1ef18850697ec6
+
+ENV \
+    SUMMARY="stadt-bonn-oparl" \
+    DESCRIPTION="stadt-bonn-oparl" \
+    LOGFIRE_SEND_TO_LOGFIRE=0 \ 
+    ANTHROPIC_API_KEY=""
+
+LABEL \
+    summary="$SUMMARY" \
+    description="$DESCRIPTION" \
+    io.k8s.description="$DESCRIPTION" \
+    io.k8s.display-name="$SUMMARY" \
+    io.openshift.tags="machdenstaat,stadt-bonn-oparl" \
+    name="stadt-bonn-oparl" \
+    maintainer="codeberg.org/machdenstaat" \
+    license="AGPL-3.0-or-later"
+
+USER 0
+ADD . /tmp/src
+RUN /usr/bin/fix-permissions /tmp/src
+
+USER 1001
+
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
+    source $HOME/.local/bin/env && \
+    /opt/app-root/src/.local/bin/uvx --from stadt-bonn-oparl oparl --version
+
+ENTRYPOINT ["/opt/app-root/src/.local/bin/uvx", "--from", "stadt-bonn-oparl", "oparl"]

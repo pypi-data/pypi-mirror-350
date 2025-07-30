@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  creationTimestamp: null
+  name: convert-paper
+spec:
+  template:
+    metadata:
+      creationTimestamp: null
+    spec:
+      containers:
+        - image: codeberg.org/machdenstaat/stadt-bonn-oparl
+          name: convert-paper
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "1"
+            requests:
+              memory: "256Mi"
+              cpu: "500m"
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -euo pipefail
+              echo "Converting paper documents to PDF..."
+              # Add your conversion logic here, e.g., using a tool like pdftoppm or similar
+              echo "Conversion completed."
+      restartPolicy: Never
