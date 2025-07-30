@@ -1,0 +1,158 @@
+<table>
+    <tr>
+        <td>License</td>
+        <td><img src='https://img.shields.io/pypi/l/pybrowsers.svg?style=for-the-badge' alt="License"></td>
+        <td>Version</td>
+        <td><img src='https://img.shields.io/pypi/v/pybrowsers.svg?logo=pypi&style=for-the-badge' alt="Version"></td>
+    </tr>
+    <tr>
+        <td>Github Actions</td>
+        <td><img src='https://img.shields.io/github/actions/workflow/status/roniemartinez/browsers/python.yml?branch=master&label=actions&logo=github%20actions&style=for-the-badge' alt="Github Actions"></td>
+        <td>Coverage</td>
+        <td><img src='https://img.shields.io/codecov/c/github/roniemartinez/browsers/master?label=codecov&logo=codecov&style=for-the-badge' alt="CodeCov"></td>
+    </tr>
+    <tr>
+        <td>Supported versions</td>
+        <td><img src='https://img.shields.io/pypi/pyversions/pybrowsers.svg?logo=python&style=for-the-badge' alt="Python Versions"></td>
+        <td>Wheel</td>
+        <td><img src='https://img.shields.io/pypi/wheel/pybrowsers.svg?style=for-the-badge' alt="Wheel"></td>
+    </tr>
+    <tr>
+        <td>Status</td>
+        <td><img src='https://img.shields.io/pypi/status/pybrowsers.svg?style=for-the-badge' alt="Status"></td>
+        <td>Downloads</td>
+        <td><img src='https://img.shields.io/pypi/dm/pybrowsers.svg?style=for-the-badge' alt="Downloads"></td>
+    </tr>
+    <tr>
+        <td>All Contributors</td>
+        <td><a href="#contributors-"><img src='https://img.shields.io/github/all-contributors/roniemartinez/browsers?style=for-the-badge' alt="All Contributors"></a></td>
+    </tr>
+</table>
+
+# browsers
+
+Python library for detecting and launching browsers
+
+
+## Why?
+
+I recently wrote a snippet for detecting installed browsers in an OSX machine in 
+https://github.com/mitmproxy/mitmproxy/issues/5247#issuecomment-1095337723 based on https://github.com/httptoolkit/browser-launcher
+and I thought this could be useful to other devs since I cannot find an equivalent library of `httptoolkit/browser-launcher` in Python
+and the known `webbrowser` standard library does not support arguments.
+
+## Installation
+
+```bash
+pip install pybrowsers
+```
+
+## Features
+
+- Detect browser on OSX
+- Detect browser on Linux
+- Detect browser on Windows
+- Launch browser with arguments
+- Launch and get browser by version with wildcard support
+
+## Usage
+
+### Import
+
+```python
+import browsers
+```
+
+### List all installed browsers
+
+```python
+import browsers
+
+print(list(browsers.browsers()))
+# [{'browser_type': 'chrome', 'path': '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', 'display_name': 'Google Chrome', 'version': '100.0.4896.127'}, {'browser_type': 'firefox', 'path': '/Applications/Firefox.app/Contents/MacOS/firefox', 'display_name': 'Firefox', 'version': '99.0.1'}, {'browser_type': 'safari', 'path': '/Applications/Safari.app/Contents/MacOS/Safari', 'display_name': 'Safari', 'version': '15.4'}, {'browser_type': 'opera', 'path': '/Applications/Opera.app/Contents/MacOS/Opera', 'display_name': 'Opera', 'version': '85.0.4341.60'}, {'browser_type': 'msedge', 'path': '/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge', 'display_name': 'Microsoft Edge', 'version': '100.1185.22042050'}]
+```
+
+### Get browser information
+
+```python
+import browsers
+
+print(browsers.get("chrome"))
+# {'browser_type': 'chrome', 'path': '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', 'display_name': 'Google Chrome', 'version': '100.0.4896.127'}
+```
+
+### Launch browser
+
+```python
+import browsers
+
+browsers.launch("chrome")
+```
+
+### Launch browser with URL
+
+```python
+import browsers
+
+browsers.launch("chrome", url="https://github.com/roniemartinez/browsers")
+```
+
+### Launch browser with arguments
+
+```python
+import browsers
+
+browsers.launch("chrome", args=["--incognito"])
+```
+
+### Specifying version
+
+The `get()` and `launch()` functions support specifying version in case multiple versions are installed.
+Wildcard pattern is also supported.
+
+```python
+import browsers
+
+print(browsers.get("chrome", version="100.0.4896.127"))  # complete version
+# {'browser_type': 'chrome', 'path': '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', 'display_name': 'Google Chrome', 'version': '100.0.4896.127'}
+
+print(browsers.get("chrome", version="100.*"))  # wildcard
+# {'browser_type': 'chrome', 'path': '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', 'display_name': 'Google Chrome', 'version': '100.0.4896.127'}
+
+browsers.launch("chrome", version="100.0.4896.127")  # complete version
+browsers.launch("chrome", version="100.*")  # wildcard
+```
+
+## References
+
+- [httptoolkit/browser-launcher](https://github.com/httptoolkit/browser-launcher)
+- [Desktop Entry Specification](https://specifications.freedesktop.org/desktop-entry-spec/latest/)
+- [Github: webbrowser.open incomplete on Windows](https://github.com/python/cpython/issues/52479#issuecomment-1093496412)
+- [StackOverflow: Finding the version of an application from Python?](https://stackoverflow.com/questions/2270345/finding-the-version-of-an-application-from-python/2270367)
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://ron.sh/"><img src="https://avatars.githubusercontent.com/u/2573537?v=4?s=100" width="100px;" alt="Ronie Martinez"/><br /><sub><b>Ronie Martinez</b></sub></a><br /><a href="https://github.com/roniemartinez/browsers/commits?author=roniemartinez" title="Code">💻</a> <a href="#ideas-roniemartinez" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/roniemartinez/browsers/commits?author=roniemartinez" title="Documentation">📖</a> <a href="#maintenance-roniemartinez" title="Maintenance">🚧</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://t.me/automation_remarks_ua"><img src="https://avatars.githubusercontent.com/u/4622856?v=4?s=100" width="100px;" alt="Sergey Pirogov"/><br /><sub><b>Sergey Pirogov</b></sub></a><br /><a href="https://github.com/roniemartinez/browsers/issues?q=author%3ASergeyPirogov" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/vanderboon"><img src="https://avatars.githubusercontent.com/u/90931?v=4?s=100" width="100px;" alt="vanderboon"/><br /><sub><b>vanderboon</b></sub></a><br /><a href="https://github.com/roniemartinez/browsers/commits?author=vanderboon" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://stanislaw.github.io/"><img src="https://avatars.githubusercontent.com/u/452547?v=4?s=100" width="100px;" alt="Stanislav Pankevich"/><br /><sub><b>Stanislav Pankevich</b></sub></a><br /><a href="https://github.com/roniemartinez/browsers/issues?q=author%3Astanislaw" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/arossert"><img src="https://avatars.githubusercontent.com/u/7085494?v=4?s=100" width="100px;" alt="Amir Rossert"/><br /><sub><b>Amir Rossert</b></sub></a><br /><a href="https://github.com/roniemartinez/browsers/commits?author=arossert" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://www.eaglepointfunding.com/"><img src="https://avatars.githubusercontent.com/u/96525640?v=4?s=100" width="100px;" alt="Deep-Tech Showcase and Eaglepoint Funding"/><br /><sub><b>Deep-Tech Showcase and Eaglepoint Funding</b></sub></a><br /><a href="https://github.com/roniemartinez/browsers/issues?q=author%3ADTS-And-Eaglepoint-Funding" title="Bug reports">🐛</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
