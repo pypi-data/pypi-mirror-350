@@ -1,0 +1,59 @@
+services:
+  db:
+    image: postgres:${POSTGRES_VERSION:-16}
+    environment:
+      POSTGRES_USER: pgquser
+      POSTGRES_DB: pgqdb
+      POSTGRES_PASSWORD: pgqpw
+      PGDATA: /var/lib/pg/data
+    ports:
+      - "5432:5432"
+    tmpfs:
+      - /var/lib/pg/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pgquser -d pgqdb || exit 1"]
+      interval: 250ms
+      retries: 10
+    restart: "no"
+
+  populate:
+    environment:
+      PGUSER: pgquser
+      PGDATABASE: pgqdb
+      PGPASSWORD: pgqpw
+      PGHOST: db
+    depends_on:
+      db:
+        condition: service_healthy
+    build: .
+    working_dir: /app
+    command: /bin/sh -c "uv run --frozen pgq install || exit 0"
+    restart: "no"
+
+  test:
+    environment:
+      PGUSER: pgquser
+      PGDATABASE: pgqdb
+      PGPASSWORD: pgqpw
+      PGHOST: db
+    depends_on:
+      populate:
+        condition: service_completed_successfully
+    build: .
+    working_dir: /app
+    command: uv -n run --frozen pytest
+    restart: "no"
+
+  benchmark:
+    environment:
+      PGUSER: pgquser
+      PGDATABASE: pgqdb
+      PGPASSWORD: pgqpw
+      PGHOST: db
+    depends_on:
+      populate:
+        condition: service_completed_successfully
+    build: .
+    working_dir: /app
+    command: uv -n run --frozen tools/benchmark.py
+    restart: "no"
