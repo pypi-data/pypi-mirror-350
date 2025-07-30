@@ -1,0 +1,748 @@
+Metadata-Version: 2.4
+Name: consul-registration
+Version: 0.1.0
+Summary: A modern annotation-based library for registering FastAPI services with Consul service discovery
+Project-URL: Homepage, https://github.com/perceptic/consul-registration-python
+Project-URL: Documentation, https://github.com/perceptic/consul-registration-python/blob/main/README.md
+Project-URL: Repository, https://github.com/perceptic/consul-registration-python
+Project-URL: Issues, https://github.com/perceptic/consul-registration-python/issues
+Author-email: Perceptic Technologies Ltd <martin@perceptic.ai>
+License: Proprietary
+Keywords: consul,fastapi,microservices,registration,service-discovery
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: Other/Proprietary License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.10
+Requires-Dist: aiohttp>=3.8.0
+Requires-Dist: fastapi>=0.100.0
+Requires-Dist: pydantic-settings>=2.0.0
+Requires-Dist: pydantic>=2.0.0
+Requires-Dist: python-consul2>=0.1.5
+Provides-Extra: dev
+Requires-Dist: black>=23.0.0; extra == 'dev'
+Requires-Dist: httpx>=0.24.0; extra == 'dev'
+Requires-Dist: mypy>=1.0.0; extra == 'dev'
+Requires-Dist: pre-commit>=3.5.0; extra == 'dev'
+Requires-Dist: pytest-asyncio>=0.21.0; extra == 'dev'
+Requires-Dist: pytest>=7.0.0; extra == 'dev'
+Requires-Dist: ruff>=0.1.0; extra == 'dev'
+Requires-Dist: testcontainers>=3.7.0; extra == 'dev'
+Requires-Dist: uvicorn>=0.20.0; extra == 'dev'
+Provides-Extra: test
+Requires-Dist: httpx>=0.24.0; extra == 'test'
+Requires-Dist: pytest-asyncio>=0.21.0; extra == 'test'
+Requires-Dist: pytest>=7.0.0; extra == 'test'
+Requires-Dist: testcontainers>=3.7.0; extra == 'test'
+Provides-Extra: testing
+Requires-Dist: httpx>=0.24.0; extra == 'testing'
+Requires-Dist: pytest-asyncio>=0.21.0; extra == 'testing'
+Requires-Dist: pytest>=7.0.0; extra == 'testing'
+Requires-Dist: testcontainers>=3.7.0; extra == 'testing'
+Requires-Dist: uvicorn>=0.20.0; extra == 'testing'
+Description-Content-Type: text/markdown
+
+# Consul Registration Library for FastAPI
+
+A modern, decorator-based library for registering FastAPI services with Consul service discovery. This library provides a Pythonic, annotation-driven approach to automatically register workers, indexers, and general services with Consul.
+
+## 🚀 Features
+
+- **Decorator-Based Registration**: Simple decorators like `@register_worker`, `@register_indexer`, `@register_service`
+- **Automatic Route Discovery**: Extracts base routes from FastAPI routers
+- **Flexible Health Configuration**: Support for separate access and health check networking
+- **Zero Configuration**: Sensible defaults with optional customization
+- **FastAPI Native Integration**: Uses FastAPI's lifespan events for registration
+- **Type Safety**: Full type hints and Pydantic models
+- **Async Support**: Built on async Consul client for optimal performance
+- **Testing Support**: Comprehensive testing utilities with testcontainers
+
+## 📦 Installation
+
+```bash
+pip install consul-registration
+```
+
+## 🚀 Quick Start
+
+### 1. Basic Usage
+
+```python
+from fastapi import FastAPI, APIRouter
+from consul_registration import register_worker, register_service, create_consul_lifespan
+
+# Create your FastAPI app with Consul registration
+app = FastAPI(lifespan=create_consul_lifespan)
+
+# Register a worker service
+worker_router = APIRouter(prefix="/api/workers/v1")
+
+@register_worker("pdf-processor")
+class PDFWorker:
+    router = worker_router
+    
+    @router.post("/process")
+    async def process_pdf(file_path: str):
+        return {"status": "processing", "file": file_path}
+
+# Register a general service
+api_router = APIRouter(prefix="/api/v1")
+
+@register_service("user-service")
+class UserService:
+    router = api_router
+    
+    @router.get("/users")
+    async def get_users():
+        return {"users": ["alice", "bob"]}
+
+# Don't forget to include the routers!
+app.include_router(worker_router)
+app.include_router(api_router)
+
+# Add health endpoint (required for Consul health checks)
+@app.get("/health")
+async def health():
+    return {"status": "healthy"}
+```
+
+### 2. Configuration
+
+Set environment variables for basic configuration:
+
+```bash
+# Basic configuration
+export CONSUL_HOST=localhost
+export CONSUL_PORT=8500
+export ACCESS_HOST=my-service.local
+export ACCESS_PORT=8000
+export ENABLE_REGISTRATION=true
+```
+
+Or use a `.env` file:
+
+```env
+# Consul connection
+CONSUL_HOST=consul.local
+CONSUL_PORT=8500
+
+# How other services reach this service
+ACCESS_HOST=my-service.public.local
+ACCESS_PORT=443
+
+# Optional: Separate health check network
+HEALTH_HOST=my-service.internal.local
+HEALTH_PORT=8000
+
+# Enable registration
+ENABLE_REGISTRATION=true
+```
+
+### 3. Advanced Configuration
+
+For complex networking scenarios with separate health check endpoints:
+
+```python
+from consul_registration import DiscoveryConfig, create_consul_lifespan
+
+# Create custom configuration
+config = DiscoveryConfig(
+    consul__host="consul.internal",
+    consul__port=8500,
+    access__host="api.example.com",
+    access__port=443,
+    health__host="internal.example.com",
+    health__port=8080,
+    enable_registration=True
+)
+
+# Use with FastAPI
+app = FastAPI(lifespan=lambda app: create_consul_lifespan(app, config))
+```
+
+## 📋 Decorator Reference
+
+### `@register_worker`
+
+Registers a worker service that processes background tasks.
+
+```python
+@register_worker(
+    name="pdf-processor",              # Required: Unique service name
+    base_route="/api/workers/v1",      # Optional: Override route extraction
+    health_endpoint="/health",         # Optional: Health check path
+    enabled=True,                      # Optional: Enable/disable registration
+)
+class WorkerService:
+    pass
+```
+
+### `@register_indexer`
+
+Registers an indexer service that manages searchable content.
+
+```python
+@register_indexer(
+    name="search-indexer",
+    base_route="/api/indexers/v1",
+    health_endpoint="/health",
+)
+class SearchIndexer:
+    pass
+```
+
+### `@register_service`
+
+Registers a general service (APIs, web services, etc.).
+
+```python
+@register_service(
+    name="user-service",
+    base_route="/api/v1",
+)
+class UserAPI:
+    pass
+```
+
+## 🔧 Configuration Options
+
+### Environment Variables
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `CONSUL_HOST` | Consul server hostname | `localhost` | No |
+| `CONSUL_PORT` | Consul server port | `8500` | No |
+| `ACCESS_HOST` | Public hostname for this service | - | Yes |
+| `ACCESS_PORT` | Public port for this service | - | Yes |
+| `HEALTH_HOST` | Health check hostname | Uses `ACCESS_HOST` | No |
+| `HEALTH_PORT` | Health check port | Uses `ACCESS_PORT` | No |
+| `ENABLE_REGISTRATION` | Enable Consul registration | `false` | No |
+
+### Service Registration Details
+
+Each registered service includes:
+
+- **Service ID**: Unique identifier (`{name}-{uuid}`)
+- **Tags**: Service type (`WORKER`, `INDEXER`, `SERVICE`)
+- **Base Route**: Extracted from router or explicitly provided
+- **Health Check**: HTTP check with configurable interval
+  - Check Interval: 15 seconds
+  - Timeout: 10 seconds
+  - Deregister after: 1 minute of failures
+
+## 🏗️ Common Patterns
+
+### Pattern 1: Router-Based Services
+
+```python
+from fastapi import APIRouter
+from consul_registration import register_service
+
+# Create a router
+user_router = APIRouter(prefix="/api/users/v1")
+
+# Decorate router endpoints
+@register_service("user-service")
+@user_router.get("/")
+async def list_users():
+    return {"users": []}
+
+@user_router.post("/")
+async def create_user(name: str):
+    return {"user": {"name": name}}
+
+# Include in app
+app.include_router(user_router)
+```
+
+### Pattern 2: Class-Based Services
+
+```python
+from fastapi import APIRouter
+from consul_registration import register_worker
+
+@register_worker("data-processor")
+class DataProcessor:
+    def __init__(self):
+        self.router = APIRouter(prefix="/api/workers/v1")
+        self._setup_routes()
+    
+    def _setup_routes(self):
+        @self.router.post("/process")
+        async def process(data: dict):
+            return {"processed": True}
+
+# Create instance and include router
+processor = DataProcessor()
+app.include_router(processor.router)
+```
+
+### Pattern 3: Multiple Services in One App
+
+```python
+from consul_registration import register_worker, register_indexer, register_service
+
+# Worker for background tasks
+@register_worker("pdf-worker", base_route="/api/workers/pdf/v1")
+class PDFWorker:
+    router = APIRouter()
+
+# Indexer for search functionality  
+@register_indexer("document-indexer", base_route="/api/indexers/v1")
+class DocumentIndexer:
+    router = APIRouter()
+
+# General API service
+@register_service("api-gateway", base_route="/api/v1")
+class APIGateway:
+    router = APIRouter()
+
+# Include all routers
+for service in [PDFWorker(), DocumentIndexer(), APIGateway()]:
+    app.include_router(service.router)
+```
+
+## 🧪 Testing
+
+### Running Tests
+
+```bash
+# Run all tests (requires Docker)
+make test
+
+# Run only unit tests (no Docker required)
+make test-unit
+
+# Run integration tests with Docker Consul
+make test-integration
+
+# Run CI integration tests (requires Consul on localhost:8500)
+make test-ci
+
+# Run formatting, linting, type checking, and all tests
+make all
+```
+
+### Unit Tests
+
+```python
+import pytest
+from fastapi import FastAPI
+from consul_registration import register_service, get_service_registry
+
+def test_service_registration():
+    # Clear any existing registrations
+    get_service_registry().clear()
+    
+    @register_service("test-service", base_route="/api/test/v1")
+    class TestService:
+        pass
+    
+    # Verify registration
+    services = get_service_registry().get_all_services()
+    assert len(services) == 1
+    assert services[0].name == "test-service"
+    assert services[0].base_route == "/api/test/v1"
+```
+
+### Integration Tests
+
+```python
+import pytest
+from testcontainers.consul import ConsulContainer
+from fastapi.testclient import TestClient
+
+@pytest.mark.asyncio
+async def test_consul_integration():
+    # Start Consul container
+    with ConsulContainer() as consul:
+        consul_url = consul.get_consul_url()
+        
+        # Configure your app
+        config = DiscoveryConfig(
+            consul__host=consul.get_container_host_ip(),
+            consul__port=consul.get_exposed_port(8500),
+            access__host="localhost",
+            access__port=8000,
+            enable_registration=True
+        )
+        
+        # Create app with test config
+        app = FastAPI(lifespan=lambda app: create_consul_lifespan(app, config))
+        
+        # Test your app
+        with TestClient(app) as client:
+            # Verify service is registered
+            response = client.get("/health")
+            assert response.status_code == 200
+```
+
+### Testing Library for Consumers
+
+This library provides a comprehensive testing framework to help you verify your Consul registrations are working correctly. Install it with:
+
+```bash
+pip install consul-registration[testing]
+```
+
+#### Base Test Class
+
+The `ConsulRegistrationTestBase` class provides a declarative way to test your service registrations:
+
+```python
+from consul_registration.testing import ConsulRegistrationTestBase, ExpectedService
+from fastapi import FastAPI
+
+class TestMyAppRegistration(ConsulRegistrationTestBase):
+    """Test that my application correctly registers with Consul."""
+    
+    def get_expected_services(self) -> list[ExpectedService]:
+        """Define the services you expect to be registered."""
+        return [
+            ExpectedService.worker(
+                name="pdf-processor",
+                port=8000,
+                version="1.0.0"
+            ),
+            ExpectedService.api_service(
+                name="user-api",
+                port=8000,
+                tags={"api", "v1", "users"},
+            ),
+        ]
+    
+    def create_app(self) -> FastAPI:
+        """Create your FastAPI application."""
+        from my_app import app  # Import your app
+        return app
+```
+
+The base class automatically tests:
+- ✅ All expected services are registered in Consul
+- ✅ Services have correct tags
+- ✅ Health checks are passing
+- ✅ Services are properly deregistered on shutdown
+
+#### ExpectedService Models
+
+Use factory methods for common service types:
+
+```python
+# Worker service
+ExpectedService.worker(
+    name="data-processor",
+    port=8000,
+    version="2.0.0"
+)
+
+# Indexer service
+ExpectedService.indexer(
+    name="search-indexer",
+    port=8000
+)
+
+# API service
+ExpectedService.api_service(
+    name="auth-service",
+    port=8000,
+    tags={"api", "v1", "auth", "security"}
+)
+
+# Custom service with all options
+ExpectedService(
+    name="custom-service",
+    port=9000,
+    host="custom.local",
+    tags={"custom", "special"},
+    health_check_passing=True,
+    health_check_timeout=60.0
+)
+```
+
+#### Test Container Support
+
+The testing library includes a custom `ConsulTestContainer` for integration tests:
+
+```python
+from consul_registration.testing import ConsulTestContainer
+
+async def test_with_consul():
+    async with ConsulTestContainer() as consul:
+        # Get connection details
+        consul_host = consul.get_consul_host()
+        consul_port = consul.get_consul_port()
+        
+        # Wait for service registration
+        await consul.wait_for_service_registration("my-service")
+        
+        # Check service health
+        health = await consul.get_service_health("my-service")
+        assert health == "passing"
+```
+
+#### Complete Example
+
+See the [example/tests](example/tests) directory for a complete example of using the testing library. The example demonstrates:
+- Testing multiple service types (worker, indexer, API)
+- Verifying tags
+- Ensuring disabled services aren't registered
+- Integration with pytest fixtures
+
+To run the example tests:
+
+```bash
+cd example
+pip install -e ../[testing]
+pytest tests -v
+```
+
+## 🔍 Service Discovery
+
+Query your registered services via Consul:
+
+```bash
+# List all services
+curl http://localhost:8500/v1/catalog/services
+
+# Get service details
+curl http://localhost:8500/v1/catalog/service/pdf-processor
+
+# Filter by tags
+curl http://localhost:8500/v1/catalog/services?tag=WORKER
+curl http://localhost:8500/v1/catalog/services?tag=INDEXER
+curl http://localhost:8500/v1/catalog/services?tag=SERVICE
+```
+
+## 🚨 Troubleshooting
+
+### Services Not Registering
+
+1. Check `ENABLE_REGISTRATION=true` is set
+2. Verify Consul is accessible at configured host/port
+3. Ensure `ACCESS_HOST` and `ACCESS_PORT` are configured
+4. Check logs for registration errors
+
+### Health Checks Failing
+
+1. Verify `/health` endpoint exists and returns 200
+2. Check health endpoint is accessible at configured host/port
+3. Ensure health check URL is correct in Consul UI
+
+### Route Extraction Issues
+
+If automatic route extraction fails:
+
+```python
+# Explicitly provide base_route
+@register_service("my-service", base_route="/api/v1")
+class MyService:
+    pass
+```
+
+## 📚 Comparison with Java Library
+
+This Python library provides equivalent functionality to the Java `consul-registration-lib`:
+
+| Feature | Java | Python |
+|---------|------|--------|
+| Decorators/Annotations | `@RegisterWorker` | `@register_worker` |
+| Service Types | ✅ Worker, Indexer, Service | ✅ Worker, Indexer, Service |
+| Route Inference | ✅ From `@Path` | ✅ From APIRouter |
+| Health Checks | ✅ Configurable | ✅ Configurable |
+| Async Support | ✅ Vert.x | ✅ asyncio |
+| Configuration | ✅ SmallRye Config | ✅ Pydantic Settings |
+| Testing | ✅ Testcontainers | ✅ Testcontainers |
+
+## 🛠️ Development Setup
+
+### Prerequisites
+
+- Python 3.8 or higher
+- Docker (for running integration tests)
+- Make (optional, for using Makefile commands)
+
+### Setting Up Your Development Environment
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/perceptic/consul-registration-python.git
+   cd consul-registration-python
+   ```
+
+2. **Create a virtual environment:**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+
+3. **Install the package in development mode:**
+   ```bash
+   pip install -e ".[dev,test]"
+   ```
+
+### Running Tests
+
+1. **Run unit tests (no external dependencies required):**
+   ```bash
+   make test-unit
+   # Or directly: pytest tests/ -v -k "not integration"
+   ```
+
+2. **Run integration tests (requires Docker):**
+   ```bash
+   make test-integration
+   # Or directly: ./scripts/run_integration_tests.sh
+   ```
+
+3. **Run all tests:**
+   ```bash
+   make test
+   ```
+
+### Code Quality
+
+1. **Format code with Black:**
+   ```bash
+   make format
+   # Or directly: black src/ tests/ examples/
+   ```
+
+2. **Run linting with Ruff:**
+   ```bash
+   make lint
+   # Or directly: ruff check src/ tests/ examples/
+   ```
+
+3. **Type checking with mypy:**
+   ```bash
+   make type-check
+   # Or directly: mypy src/ --ignore-missing-imports
+   ```
+
+4. **Run all quality checks and tests:**
+   ```bash
+   make all
+   ```
+
+### Testing Your Changes
+
+1. **Test with the example application:**
+   ```bash
+   cd examples
+   # Start Consul
+   docker run -d -p 8500:8500 --name consul-dev hashicorp/consul:latest
+   
+   # Set environment variables
+   export ENABLE_REGISTRATION=true
+   export ACCESS_HOST=localhost
+   export ACCESS_PORT=8000
+   
+   # Run the example
+   python example_app.py
+   
+   # Check Consul UI at http://localhost:8500/ui
+   ```
+
+2. **Manual integration testing:**
+   ```bash
+   # Use the debug script to test registration
+   python -c "
+   import asyncio
+   from consul_registration import register_service, DiscoveryConfig
+   from consul_registration.service import ConsulRegistrationService
+   
+   @register_service('test-dev-service')
+   class TestService: pass
+   
+   config = DiscoveryConfig(
+       ENABLE_REGISTRATION=True,
+       ACCESS__HOST='localhost',
+       ACCESS__PORT=8000
+   )
+   
+   async def test():
+       service = ConsulRegistrationService(config)
+       await service.register_services()
+       print('Service registered! Check http://localhost:8500/ui')
+       await asyncio.sleep(60)  # Keep registered for 60 seconds
+       await service.deregister_services()
+   
+   asyncio.run(test())
+   "
+   ```
+
+### Project Structure
+
+```
+consul-registration-python/
+├── src/consul_registration/   # Main package source
+│   ├── __init__.py
+│   ├── config.py             # Configuration classes
+│   ├── decorators.py         # Service registration decorators
+│   ├── discovery.py          # Service registry
+│   ├── models.py             # Data models
+│   └── service.py            # Consul registration service
+├── tests/                    # Test suite
+│   ├── test_*.py            # Unit tests
+│   └── test_integration*.py  # Integration tests
+├── examples/                 # Example applications
+├── scripts/                  # Helper scripts
+└── Makefile                 # Development commands
+```
+
+### Making Changes
+
+1. Create a new branch for your changes
+2. Make your changes and add tests
+3. Ensure all tests pass (`make test`)
+4. Format and lint your code (`make format lint`)
+5. Commit your changes with a clear message
+
+### Publishing to PyPI
+
+This package is automatically published to PyPI when a tag is pushed. The version is automatically extracted from the git tag.
+
+To publish a new version:
+
+```bash
+# Create and push a tag (with or without 'v' prefix)
+git tag v0.1.1  # or just 0.1.1
+git push origin v0.1.1
+```
+
+The GitHub Actions workflow will:
+1. Extract the version from the tag (removing 'v' prefix if present)
+2. Update the VERSION file with the tag version
+3. Build the package
+4. Publish to PyPI
+
+**Note:** Publishing requires the `PYPI_TOKEN` secret to be configured in the GitHub repository settings.
+
+### Debugging Tips
+
+- Enable debug logging:
+  ```python
+  import logging
+  logging.basicConfig(level=logging.DEBUG)
+  ```
+
+- Check Consul API directly:
+  ```bash
+  # List all services
+  curl http://localhost:8500/v1/catalog/services
+  
+  # Get service details
+  curl http://localhost:8500/v1/catalog/service/your-service-name
+  ```
+
+- View Consul logs:
+  ```bash
+  docker logs consul-dev
+  ```
+
+## 📄 License
+
+This software is proprietary and confidential. Copyright (c) 2025 Perceptic Technologies Ltd. All rights reserved.
