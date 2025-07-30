@@ -1,0 +1,28 @@
+Metadata-Version: 2.4
+Name: django-orm-to-excel
+Version: 2.1.1
+Summary: Turning Django ORM objects to Excel
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+
+# django-orm-to-excel
+
+A small library for turning Django ORM objects (such as records or QuerySet) into an Excel spreadsheet.
+
+### Example:
+
+```python
+from django_orm_to_excel import save_to_excel
+
+# querysets
+profiles = Profile.objects.all()
+
+with open("queryset_dump.xlsx", "w") as file:
+    save_to_excel(file, profiles, fields=["name", "age"])
+
+# records
+profile = profiles.first()
+
+with open("record_dump.xlsx", "w") as file:
+    save_to_excel(file, profile, fields=["name", "age"])
+```
