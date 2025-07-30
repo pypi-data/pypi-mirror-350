@@ -1,0 +1,100 @@
+Metadata-Version: 2.4
+Name: topftp
+Version: 2024.9.13
+Summary: a package on top of ftplib to use FTP easily
+Author-email: Lix Xu <xuzenglin@gmail.com>
+License: BSD 3-Clause License
+        
+        Copyright (c) 2023, Lix Xu
+        
+        Redistribution and use in source and binary forms, with or without
+        modification, are permitted provided that the following conditions are met:
+        
+        1. Redistributions of source code must retain the above copyright notice, this
+           list of conditions and the following disclaimer.
+        
+        2. Redistributions in binary form must reproduce the above copyright notice,
+           this list of conditions and the following disclaimer in the documentation
+           and/or other materials provided with the distribution.
+        
+        3. Neither the name of the copyright holder nor the names of its
+           contributors may be used to endorse or promote products derived from
+           this software without specific prior written permission.
+        
+        THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+        AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+        IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+        DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+        FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+        DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+        SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+        CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+        OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+        OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+        
+Project-URL: Homepage, https://github.com/lixxu/topftp
+Project-URL: Bug Tracker, https://github.com/lixxu/topftp/issues
+Keywords: ftp
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE.txt
+Dynamic: license-file
+
+# topftp
+
+a package on top of ftplib to use FTP easily
+
+## installation
+
+```bash
+pip install topftp
+```
+
+## usage
+
+```python
+from topftp.ftp import FTP
+
+host = "127.0.0.1"
+user ="username"
+password = "password"
+port = 21
+timeout = 5
+
+ftp = FTP(host, user, password, port=port, timeout=timeout)
+# set verbose to True to print exceptions
+# set silent to True to not raise exceptions
+# ftp.silent = True
+# ftp.verbose = True
+
+ftp.connect()
+
+# list files in current directory
+files, folders = ftp.listdir()
+
+# download file
+ftp.download("/file.txt", "local_file.txt")
+
+# download file content to list
+lines = ftp.download_to_list("/file.txt")
+
+# upload file
+ftp.upload("local_file.txt", "/remote_file.txt")
+
+# upload from string
+ftp.upload_from_string("Hello, topftp!", "/remote_file.txt")
+
+# delete file
+ftp.delete("/remote_file.txt")
+
+# for missing methods on ftplib.FTP, you can use them directly
+# ftp.some_method(*args, **kwargs)
+# is same to
+# ftp.ftp.some_method(*args, **kwargs)
+
+# close connection
+ftp.close()
+```
