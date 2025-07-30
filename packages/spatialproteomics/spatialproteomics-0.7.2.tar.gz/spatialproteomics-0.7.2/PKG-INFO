@@ -1,0 +1,75 @@
+Metadata-Version: 2.1
+Name: spatialproteomics
+Version: 0.7.2
+Summary: spatialproteomics provides tools for the analysis of highly multiplexed immunofluorescence data
+Author: Matthias Meyer-Bender
+Requires-Python: >=3.10,<3.13
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Provides-Extra: all
+Provides-Extra: anndata
+Provides-Extra: cellpose
+Provides-Extra: dev
+Provides-Extra: docs
+Provides-Extra: spatialdata
+Provides-Extra: stardist
+Requires-Dist: IPython (>=8.0.0,<9.0.0) ; extra == "docs"
+Requires-Dist: Sphinx (>=7.0.0,<8.0.0) ; extra == "docs"
+Requires-Dist: cellpose (>=3.1.0) ; extra == "cellpose" or extra == "all"
+Requires-Dist: cffi (>=1.15.0,<2.0.0)
+Requires-Dist: matplotlib (>=3.8.0,<4.0.0)
+Requires-Dist: nbsphinx (==0.8.9) ; extra == "docs"
+Requires-Dist: numpy (>=1.23)
+Requires-Dist: opencv-python (>=4.11.0,<5.0.0)
+Requires-Dist: pytest (>=7.1.2,<8.0.0) ; extra == "dev"
+Requires-Dist: pyyaml (>=6.0,<7.0)
+Requires-Dist: scikit-image (>=0.25)
+Requires-Dist: scikit-learn (>=1.4.2,<2.0.0)
+Requires-Dist: spatialdata (>=0.4.0,<0.5.0) ; extra == "spatialdata" or extra == "all"
+Requires-Dist: sphinx-book-theme (>=0.0.39,<0.0.40) ; extra == "docs"
+Requires-Dist: sphinx-multiversion (>=0.2.4,<0.3.0) ; extra == "docs"
+Requires-Dist: sphinxcontrib-napoleon (==0.7) ; extra == "docs"
+Requires-Dist: stardist (>=0.9.1,<0.10.0) ; extra == "stardist" or extra == "all"
+Requires-Dist: tqdm (>=4.64.0)
+Requires-Dist: xarray (>=2024.0.0,<2025.0.0)
+Requires-Dist: zarr (<3.0.0)
+Description-Content-Type: text/markdown
+
+# spatialproteomics
+
+[![PyPI version](https://badge.fury.io/py/spatialproteomics.svg)](https://badge.fury.io/py/spatialproteomics)
+
+`Spatialproteomics` is an interoperable toolbox for analyzing highly multiplexed fluorescence image data. This analysis involves a sequence of steps, including segmentation, image processing, marker quantification, cell type classification, and neighborhood analysis. 
+
+<p align="center" width="100%">
+    <img src="docs/_static/img/figure_1.png" alt="Spatialproteomics orchestrates analysis workflows for highly multiplexed fluorescence images." style="width:70%;">
+</p>
+
+## Principles
+
+Multiplexed imaging data comprises at least 3 dimensions (i.e. `channels`, `x`, and `y`) and has often additional data such as segmentation masks or cell type annotations associated with it. In `spatialproteomics`, we use `xarray` to create a data structure that keeps all of these data dimension in sync. This data structure can then be used to apply all sorts of operations to the data. Users can segment cells, perform different image processing steps, quantify protein expression, predict cell types, and plot their data in various ways. By providing researchers with those tools, `spatialproteomics` can be used to quickly explore highly multiplexed spatial proteomics data directly within jupyter notebooks.
+
+<p align="center" width="100%">
+    <img src="docs/_static/img/supplementary_figure_1.png" alt="The spatialproteomics data structure enables synchronized subsetting across shared dimensions." style="width:70%;">
+</p>
+
+## Getting Started
+
+Please refer to the [documentation](https://sagar87.github.io/spatialproteomics) for details on the API and tutorials.
+
+## Installation
+
+To install `spatialproteomics`, first create a python environment and install the package using 
+
+```
+pip install spatialproteomics
+```
+
+## Citation
+Spatialproteomics - an interoperable toolbox for analyzing highly multiplexed fluorescence image data
+
+Matthias Fabian Meyer-Bender, Harald Sager Voehringer, Christina Schniederjohann, Sarah Patricia Koziel, Erin Kim Chung, Ekaterina Popova, Alexander Brobeil, Lisa-Maria Held, Aamir Munir, Scverse Community, Sascha Dietrich, Peter-Martin Bruch, Wolfgang Huber
+
+bioRxiv 2025.04.29.651202; doi: https://doi.org/10.1101/2025.04.29.651202
+
