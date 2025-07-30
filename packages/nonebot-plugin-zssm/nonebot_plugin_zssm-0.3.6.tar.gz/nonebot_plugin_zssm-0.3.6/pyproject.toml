@@ -1,0 +1,125 @@
+[project]
+name = "nonebot-plugin-zssm"
+version = "0.3.6"
+description = "这是什么？问一下！用 ai 来解释群友发送的「未知」内容"
+authors = [
+    { name = "djkcyl", email = "cyl@cyllive.cn" },
+]
+dependencies = [
+    "nonebot2[fastapi,websockets]",
+    "nonebot-plugin-alconna>=0.57.2",
+    "httpx>=0.28.1",
+    "playwright>=1.51.0",
+    "pillow>=11.1.0",
+    "pymupdf>=1.25.5",
+]
+requires-python = ">=3.12"
+readme = "README.md"
+
+[project.license]
+text = "MIT"
+
+[dependency-groups]
+dev = [
+    "nonebot-adapter-satori>=0.13.4",
+]
+
+[build-system]
+requires = [
+    "pdm-backend",
+]
+build-backend = "pdm.backend"
+
+[tool.ruff]
+line-length = 135
+
+[tool.ruff.lint]
+select = [
+    "F",
+    "E",
+    "W",
+    "I",
+    "N",
+    "UP",
+    "YTT",
+    "ASYNC",
+    "S",
+    "BLE",
+    "FBT",
+    "B",
+    "A",
+    "COM",
+    "C4",
+    "DTZ",
+    "T10",
+    "FA",
+    "ISC",
+    "ICN",
+    "PIE",
+    "T20",
+    "PYI",
+    "Q",
+    "RSE",
+    "RET",
+    "SLOT",
+    "SIM",
+    "TID",
+    "TC",
+    "ARG",
+    "PTH",
+    "PD",
+    "PGH",
+    "PL",
+    "TRY",
+    "FLY",
+    "FAST",
+    "PERF",
+    "FURB",
+    "RUF",
+]
+ignore = [
+    "E501",
+    "UP035",
+    "TRY003",
+    "TRY301",
+    "BLE001",
+    "PGH003",
+    "PLC0414",
+    "N818",
+    "RET502",
+    "RET503",
+    "PLC0105",
+    "PLR0913",
+    "SIM108",
+    "RUF009",
+    "UP038",
+    "RUF003",
+    "SLOT000",
+    "PLR0911",
+    "PLR0912",
+    "PLR0915",
+    "PYI041",
+    "PLW2901",
+    "S101",
+    "PLR2004",
+    "TRY004",
+    "COM812",
+    "TID252",
+    "ISC001",
+    "RUF001",
+]
+
+[tool.ruff.lint.flake8-quotes]
+inline-quotes = "double"
+multiline-quotes = "double"
+
+[tool.ruff.lint.flake8-annotations]
+mypy-init-return = true
+
+[tool.ruff.lint.flake8-builtins]
+builtins-ignorelist = [
+    "id",
+]
+
+[tool.pdm]
+distribution = true
