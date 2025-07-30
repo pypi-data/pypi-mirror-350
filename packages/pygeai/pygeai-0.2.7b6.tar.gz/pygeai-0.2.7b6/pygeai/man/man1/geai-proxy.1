@@ -1,0 +1,155 @@
+.TH GEAI-PROXY 1 "2024-06-01" "pygeai" "GEAI Proxy Manual"
+.SH NAME
+geai-proxy \- proxy service for managing Model Context Protocol (MCP) servers with GEAI
+.SH SYNOPSIS
+.B geai-proxy
+[\fIOPTIONS\fR] \fICONFIG_FILE\fR
+.SH DESCRIPTION
+The GEAI Proxy is a Python-based tool that acts as an intermediary between the GEAI API and various tool servers. It manages the registration, execution, and result handling of tool operations through a proxy service.
+.PP
+To install:
+.nf
+pip install pygeai
+.fi
+.SH CONFIGURATION
+The GEAI Proxy requires two distinct types of configuration:
+
+.SS 1. MCP Servers Configuration
+This section declares the Model Context Protocol (MCP) servers that this proxy will link with GEAI. The configuration follows the Claude Desktop standard format and supports multiple servers in one file.
+.TP
+.B Configuration File Format
+The configuration file should be in JSON format with the following structure:
+.nf
+{
+  "mcpServers": {
+    "serverName1": {
+      "command": "command-to-launch-server",
+      "args": ["arg1", "arg2", ...]
+    },
+    "serverName2": {
+      "command": "command-to-launch-server",
+      "args": ["arg1", "arg2", ...]
+    }
+  }
+}
+.fi
+.TP
+.B Example: Puppeteer Server
+.nf
+{
+  "mcpServers": {
+    "puppeteer": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-puppeteer"]
+    }
+  }
+}
+.fi
+.TP
+.B Example: Filesystem Server
+.nf
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "~/mcp-shared-folder"]
+    }
+  }
+}
+.fi
+.TP
+.B Example: HTTP+SSE Server
+.nf
+{
+  "mcpServers": {
+    "markitdown": {
+      "uri": "http://localhost:5000/sse"
+    }
+  }
+}
+.fi
+.TP
+.B Example: Multiple Servers Combined
+.nf
+{
+  "mcpServers": {
+    "puppeteer": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-puppeteer"]
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "~/mcp-shared-folder"]
+    },
+    "markitdown": {
+      "uri": "http://localhost:5000/sse"
+    },
+    "custom-server": {
+      "command": "python",
+      "args": ["path/to/your/custom_mcp_server.py"]
+    }
+  }
+}
+.fi
+
+.SS 2. Proxy Authentication Configuration
+This section establishes the connection between the proxy and GEAI and manages user aliases.
+.TP
+.B Automatic Configuration (First Run)
+.nf
+geai-proxy sample-mcp-config.json --alias myalias
+.fi
+.TP
+.B Manual Configuration (Reconfiguration)
+.nf
+geai-proxy --configure --alias myalias
+.fi
+
+During interactive setup, the CLI will prompt you for each required setting:
+.nf
+# Configuring GEAI proxy settings...
+Generated new proxy ID: 37bae96b-bc99-4110-bb61-b912b28f9e32
+-> Insert proxy ID (UUID) (Current: 37bae96b-bc99-4110-bb61-b912b28f9e32, Leave empty to keep):
+-> Insert proxy API key:
+-> Insert proxy base URL:
+-> Insert proxy name:
+-> Insert proxy description:
+.fi
+
+.SH USAGE
+To start the proxy server with a specific configuration and alias:
+.nf
+geai-proxy sample-mcp-config.json --alias myalias
+.fi
+.PP
+Command Line Arguments:
+.TP
+.B config_file
+Path to the MCP servers configuration file (JSON format).
+.TP
+.B --alias ALIAS
+Alias for the proxy settings.
+.TP
+.B --configure
+Reconfigure proxy authentication settings.
+.SH FILES
+.I pygeai/proxy/sample-mcp-config.json
+Sample configuration file for MCP servers.
+.SH SEE ALSO
+.BR pygeai (1)
+.SH THIRD-PARTY COMPONENTS
+This software includes code from the \fBa2a-python\fR project developed by Google LLC, which is licensed under the Apache License, Version 2.0.
+
+Only the vendored component located in \fIpygeai/vendor/a2a/\fR is subject to the Apache License. The rest of this software is licensed under the MIT License.
+
+For full license details, see:
+.IP \[bu] 
+https://github.com/google/a2a-python
+.IP \[bu] 
+pygeai/vendor/a2a/LICENSE
+
+.SH AUTHOR
+Written by the GEAI development team.
+.SH COPYRIGHT
+Copyright \(co 2025 GEAI development team.
+This is free software; see the source for copying conditions. There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
