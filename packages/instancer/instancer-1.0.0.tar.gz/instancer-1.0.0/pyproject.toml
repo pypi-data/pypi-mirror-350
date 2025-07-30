@@ -1,0 +1,99 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "instancer"
+version = "1.0.0"
+description = "一个用于程序实例控制和管理的Python包"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Instancer Team", email = "instancer@example.com"}
+]
+maintainers = [
+    {name = "Instancer Team", email = "instancer@example.com"}
+]
+keywords = ["instance", "control", "management", "process", "monitoring"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Monitoring",
+    "Topic :: System :: Systems Administration",
+]
+requires-python = ">=3.7"
+dependencies = [
+    "requests>=2.25.0",
+    "flask>=2.0.0",
+    "flask-sqlalchemy>=2.5.0",
+    "psutil>=5.8.0",
+    "click>=8.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov>=2.0",
+    "black>=21.0",
+    "flake8>=3.8",
+    "build>=0.8.0",
+    "twine>=4.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/instancer-team/instancer"
+Documentation = "https://github.com/instancer-team/instancer#readme"
+Repository = "https://github.com/instancer-team/instancer.git"
+"Bug Tracker" = "https://github.com/instancer-team/instancer/issues"
+
+[project.scripts]
+instancer-server = "instancer.server:main"
+
+[tool.setuptools]
+packages = ["instancer"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+instancer = ["templates/*.html", "static/*"]
+
+[tool.black]
+line-length = 88
+target-version = ['py37']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--cov=instancer",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-report=xml",
+]

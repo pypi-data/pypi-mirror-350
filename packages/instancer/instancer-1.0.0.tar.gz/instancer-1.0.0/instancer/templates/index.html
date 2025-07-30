@@ -1,0 +1,308 @@
+{% extends "base.html" %}
+
+{% block title %}Instancer 控制台{% endblock %}
+
+{% block page_title %}Instancer 控制台{% endblock %}
+{% block page_subtitle %}程序实例管理{% endblock %}
+
+{% block content %}
+<!-- 添加程序表单 -->
+<div class="mb-4">
+    <div class="program-card">
+        <div class="program-header">
+            <h5 class="mb-0 fw-bold">
+                <i class="bi bi-plus-circle"></i> 添加新程序
+            </h5>
+        </div>
+        <div class="p-3">
+            <form id="add-program-form" class="row g-3 align-items-center">
+                <div class="col-md-8">
+                    <input type="text" class="form-control" id="program_id" placeholder="输入程序ID" required
+                        pattern="[a-zA-Z0-9_-]+" style="border-radius: 8px; font-size: 1.1rem;">
+                </div>
+                <div class="col-md-2">
+                    <input type="number" class="form-control" id="max_instances" placeholder="最大实例" value="1" min="0"
+                        max="100" style="border-radius: 8px; font-size: 1.1rem;">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-success-modern w-100"
+                        style="border-radius: 8px; font-size: 1.1rem;">
+                        <i class="bi bi-plus"></i> 添加
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- 程序和实例列表 -->
+{% if programs %}
+<div class="program-card">
+    <div class="program-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 fw-bold">
+                <i class="bi bi-list-ul"></i> 程序管理
+                <span class="badge bg-light text-dark ms-2" id="total-programs">{{ programs|length }}</span>
+            </h5>
+            <button onclick="cleanupInstances()" class="btn btn-warning-modern btn-sm">
+                <i class="bi bi-trash"></i> 清理过期
+            </button>
+        </div>
+    </div>
+    <div class="p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr style="font-size: 1.1rem;">
+                        <th style="border-top: none;">程序ID</th>
+                        <th style="border-top: none;">状态</th>
+                        <th style="border-top: none;">运行实例</th>
+                        <th style="border-top: none;">最大实例</th>
+                        <th style="border-top: none;">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for program in programs %}
+                    <tr data-program="{{ program.program_id }}" style="font-size: 1.1rem;">
+                        <td>
+                            <strong style="font-size: 1.2rem;">{{ program.program_id }}</strong>
+                        </td>
+                        <td>
+                            <label class="toggle-switch">
+                                <input type="checkbox" {{ 'checked' if program.enabled }}
+                                    onchange="toggleProgram('{{ program.program_id }}', this.checked)">
+                                <span class="slider"></span>
+                            </label>
+                        </td>
+                        <td>
+                            <div id="instances-list-{{ program.program_id }}" style="font-size: 1.1rem;">
+                                <span class="text-muted">加载中...</span>
+                            </div>
+                        </td>
+                        <td>
+                            <input type="number" class="form-control"
+                                style="width: 80px; border-radius: 6px; font-size: 1.1rem;"
+                                value="{{ program.max_instances }}" min="0" max="100"
+                                onchange="updateMaxInstances('{{ program.program_id }}', this.value)">
+                        </td>
+                        <td>
+                            <button class="btn btn-outline-danger" onclick="deleteProgram('{{ program.program_id }}')"
+                                style="border-radius: 6px; font-size: 1rem;">
+                                <i class="bi bi-trash"></i> 删除
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<!-- 空状态 -->
+<div class="program-card">
+    <div class="p-5 text-center">
+        <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
+        <h4 class="mt-3">暂无程序配置</h4>
+        <p class="text-muted">使用上方表单添加您的第一个程序</p>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // 添加程序
+    document.getElementById('add-program-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const programId = document.getElementById('program_id').value;
+        const maxInstances = document.getElementById('max_instances').value;
+
+        const formData = new FormData();
+        formData.append('program_id', programId);
+        formData.append('name', programId); // 使用程序ID作为名称
+        formData.append('max_instances', maxInstances);
+        formData.append('description', ''); // 空描述
+
+        fetch('/programs/add', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                if (response.ok) {
+                    showToast('程序添加成功', 'success');
+                    // 清空表单
+                    document.getElementById('add-program-form').reset();
+                    document.getElementById('max_instances').value = '1';
+                    // 刷新页面
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    showToast('添加失败', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('网络错误', 'error');
+            });
+    });
+
+    // 切换程序启用状态
+    function toggleProgram(programId, enabled) {
+        fetch(`/programs/${programId}/toggle`, {
+            method: 'POST'
+        })
+            .then(response => {
+                if (response.ok) {
+                    showToast(enabled ? '程序已启用' : '程序已禁用', 'success');
+                    refreshInstances();
+                } else {
+                    showToast('操作失败', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('网络错误', 'error');
+            });
+    }
+
+    // 更新最大实例数
+    function updateMaxInstances(programId, maxInstances) {
+        const formData = new FormData();
+        formData.append('max_instances', maxInstances);
+
+        fetch(`/programs/${programId}/update_instances`, {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                if (response.ok) {
+                    showToast('最大实例数已更新', 'success');
+                } else {
+                    showToast('更新失败', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('网络错误', 'error');
+            });
+    }
+
+    // 删除程序
+    function deleteProgram(programId) {
+        if (!confirm(`确定要删除程序 ${programId} 吗？此操作不可撤销。`)) {
+            return;
+        }
+
+        fetch(`/programs/${programId}/delete`, {
+            method: 'POST'
+        })
+            .then(response => {
+                if (response.ok) {
+                    showToast('程序已删除', 'success');
+                    // 移除表格行
+                    document.querySelector(`tr[data-program="${programId}"]`).remove();
+                    // 更新计数
+                    const totalElement = document.getElementById('total-programs');
+                    if (totalElement) {
+                        totalElement.textContent = parseInt(totalElement.textContent) - 1;
+                    }
+                } else {
+                    showToast('删除失败', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('网络错误', 'error');
+            });
+    }
+
+    // 清理过期实例
+    function cleanupInstances() {
+        fetch('/api/instances/cleanup', {
+            method: 'POST'
+        })
+            .then(response => response.json())
+            .then(data => {
+                showToast(data.message, 'success');
+                refreshInstances();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('清理失败', 'error');
+            });
+    }
+
+    // 刷新实例数据
+    function refreshInstances() {
+        fetch('/api/instances')
+            .then(response => response.json())
+            .then(instances => {
+                updateInstancesDisplay(instances);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    // 更新实例显示
+    function updateInstancesDisplay(instances) {
+        // 按程序ID分组实例
+        const instancesByProgram = {};
+        instances.forEach(instance => {
+            if (!instancesByProgram[instance.program_id]) {
+                instancesByProgram[instance.program_id] = [];
+            }
+            instancesByProgram[instance.program_id].push(instance);
+        });
+
+        // 更新每个程序的实例显示
+        document.querySelectorAll('[data-program]').forEach(row => {
+            const programId = row.getAttribute('data-program');
+            const instancesContainer = document.getElementById(`instances-list-${programId}`);
+            const currentInstancesElement = document.getElementById(`current-instances-${programId}`);
+
+            const programInstances = instancesByProgram[programId] || [];
+            const runningInstances = programInstances.filter(i => i.status === 'running');
+
+            // 更新运行中实例数量
+            if (currentInstancesElement) {
+                currentInstancesElement.textContent = runningInstances.length;
+            }
+
+            // 更新实例列表 - 只显示运行中的实例数量
+            if (instancesContainer) {
+                const runningCount = runningInstances.length;
+                if (runningCount === 0) {
+                    instancesContainer.innerHTML = '<span class="text-muted">0</span>';
+                } else {
+                    instancesContainer.innerHTML = `<span class="badge bg-success" style="font-size: 1rem;">${runningCount}</span>`;
+                }
+            }
+        });
+    }
+
+    // 显示提示消息
+    function showToast(message, type) {
+        const toast = document.createElement('div');
+        toast.className = `alert alert-${type === 'error' ? 'danger' : 'success'} position-fixed`;
+        toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999; border-radius: 8px;';
+        toast.textContent = message;
+
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            toast.remove();
+        }, 3000);
+    }
+
+    // 页面加载时初始化
+    document.addEventListener('DOMContentLoaded', function () {
+        refreshInstances();
+
+        // 每5秒自动刷新
+        setInterval(refreshInstances, 5000);
+    });
+</script>
+{% endblock %}
