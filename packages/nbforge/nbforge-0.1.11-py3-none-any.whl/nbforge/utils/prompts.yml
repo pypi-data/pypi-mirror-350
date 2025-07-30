@@ -1,0 +1,270 @@
+nb_to_module: |
+  ### Jupyter Notebook Conversion to Python Module  
+
+  #### Input Data:  
+  - **Code Blocks:** {code_blocks}  
+  - **Markdown Blocks:** {markdown_blocks}  
+
+   #### Instructions:  
+  Your task is to convert a Jupyter Notebook into a well-structured Python module. Follow these steps:  
+
+  1. **File & Content Generation:**
+     - Provide a list of files along with their content.
+     - Use meaningful file names based on the code’s purpose.
+     - Organize the code into Python modules with appropriate class and function structures.
+     - Each module should define a class encapsulating related functionality, with methods handling specific tasks.
+
+  2. **Markdown Handling:**
+     - If a markdown block relates to a specific code block, include it as a comment in the corresponding Python file.
+     - If the markdown is generic (e.g., documentation or high-level overview), place it in a `README.md` file in the main directory.
+
+  3. **Requirements File:**
+     - Generate a `requirements.txt` file containing all the necessary dependencies used in the notebook.
+
+  4. **Setup file**
+     - Generate a `SETUP.md` file that includes:
+       - Steps to create a virtual environment.
+       - Commands to install dependencies from `requirements.txt`.
+       - Instructions on how to run the generated Python module.
+     - Add commands pertaining to platform: {platform}
+
+  5. **Output Format:**
+     - Return the response as a **valid JSON array** (no preamble or explanations).
+     - Each JSON object must have two keys:
+       - `"fileName"`: Name of the file (e.g., `"module.py"`, `"README.md"`, `"requirements.txt"`, `"setup.md"`).
+       - `"fileContent"`: The corresponding file content as a string.
+     - Ensure that all double quotes (") inside the fileContent field are properly escaped (\\\") to maintain valid JSON formatting. Use \n for newlines instead of raw line breaks
+
+  ### Examples:
+
+  #### Example 1:
+  **Input Notebook Data:**
+  ```json
+  {{
+    "code_blocks": [
+      "import numpy as np\n\ndef add(a, b):\n    return np.add(a, b)",
+      "import math\n\ndef square_root(x):\n    return math.sqrt(x)"
+    ],
+    "markdown_blocks": [
+      "### Addition Function\nThis function adds two numbers using NumPy.",
+      "### Square Root Function\nThis function calculates the square root using the math module."
+    ],
+    "platform": "Linux"
+  }}
+  ```
+
+  **Output:**
+  ```json
+  [
+  {{
+    "fileName": "math_utils.py",
+    "fileContent": "# Addition Function - This function adds two numbers using NumPy.\n\nimport numpy as np\n\ndef add(a, b):\n    return np.add(a, b)\n"
+  }},
+  {{
+    "fileName": "calc_utils.py",
+    "fileContent": "# Square Root Function - This function calculates the square root using the math module.\n\nimport math\n\ndef square_root(x):\n    return math.sqrt(x)\n"
+  }},
+  {{
+    "fileName": "main.py",
+    "fileContent": "from math_utils import add\nfrom calc_utils import square_root\n\nif __name__ == \"__main__\":\n    print(\"Addition Result:\", add(3, 5))\n    print(\"Square Root Result:\", square_root(16))\n"
+  }},
+  {{
+    "fileName": "README.md",
+    "fileContent": "# Project Overview\n\nThis project contains utility functions for numerical operations, including addition and square root calculations."
+  }},
+  {{
+    "fileName": "requirements.txt",
+    "fileContent": "numpy"
+  }},
+  {{
+    "fileName": "SETUP.md",
+    "fileContent": "## Setup Instructions\n\n### Virtual Environment Setup (Linux)\n```bash\npython3 -m venv venv\nsource venv/bin/activate\npip install -r requirements.txt\n```\n\n### Running the Module\n```bash\npython main.py\n```"
+  }}
+  ]
+
+  ```
+
+nb_to_module_with_streamlit: |
+  ### Jupyter Notebook Conversion to Python Module including a Streamlit App
+
+  #### Input Data:  
+  - **Code Blocks:** {code_blocks}  
+  - **Markdown Blocks:** {markdown_blocks}  
+  - **Streamlit Description:** {streamlit_desc_block}
+
+  #### Instructions:  
+  Your task is to convert a Jupyter Notebook into a well-structured Python module and generate a Streamlit app based on the provided description. Follow these steps:  
+
+  1. **File & Content Generation:**
+     - Provide a list of files along with their content.
+     - Use meaningful file names based on the code’s purpose.
+     - Organize the code into Python modules with appropriate class and function structures.
+     - Each module should define a class encapsulating related functionality, with methods handling specific tasks.
+
+  2. **Markdown Handling:**
+     - If a markdown block relates to a specific code block, include it as a comment in the corresponding Python file.
+     - If the markdown is generic (e.g., documentation or high-level overview), place it in a `README.md` file in the main directory.
+
+  3. **Streamlit App Generation:**
+     - Create a Streamlit app based on the `streamlit_desc_block`.
+     - The app should use appropriate Streamlit components to present the functionality described in the notebook.
+     - Structure the Streamlit app in a separate file, typically `app.py`.
+     - Include an entry point (`if __name__ == "__main__"`) to run the app.
+
+  4. **Requirements File:**
+     - Generate a `requirements.txt` file containing all the necessary dependencies used in the notebook and Streamlit app.
+
+  5. **Setup file**
+     - Generate a `SETUP.md` file that includes:
+       - Steps to create a virtual environment.
+       - Commands to install dependencies from `requirements.txt`.
+       - Instructions on how to run the generated Python module and Streamlit app.
+     - Add commands pertaining to platform: {platform}
+
+  6. **Output Format:**
+     - Return the response as a **valid JSON array** (no preamble or explanations).
+     - Each JSON object must have two keys:
+       - `"fileName"`: Name of the file (e.g., `"module.py"`, `"README.md"`, `"requirements.txt"`, `"setup.md"`, `"app.py"`).
+       - `"fileContent"`: The corresponding file content as a string.
+     - Ensure that all double quotes (") inside the fileContent field are properly escaped (\\\") to maintain valid JSON formatting. Use \n for newlines instead of raw line breaks.
+
+  ### Examples:
+
+  #### Example 1:
+  **Input Notebook Data:**
+  ```json
+  {{
+    "code_blocks": [
+      "import numpy as np\n\ndef add(a, b):\n    return np.add(a, b)",
+      "import math\n\ndef square_root(x):\n    return math.sqrt(x)"
+    ],
+    "markdown_blocks": [
+      "### Addition Function\nThis function adds two numbers using NumPy.",
+      "### Square Root Function\nThis function calculates the square root using the math module."
+    ],
+    "platform": "Linux"
+  }}
+
+  **Output** 
+  ```json
+  [
+  {{
+    "fileName": "math_utils.py",
+    "fileContent": "# Addition Function - This function adds two numbers using NumPy.\n\nimport numpy as np\n\ndef add(a, b):\n    return np.add(a, b)\n"
+  }},
+  {{
+    "fileName": "calc_utils.py",
+    "fileContent": "# Square Root Function - This function calculates the square root using the math module.\n\nimport math\n\ndef square_root(x):\n    return math.sqrt(x)\n"
+  }},
+  {{
+    "fileName": "app.py",
+    "fileContent": "import streamlit as st\nfrom math_utils import add\nfrom calc_utils import square_root\n\nst.title(\"Math Utility App\")\n\nst.header(\"Addition\")\na = st.number_input(\"Enter first number\", value=0.0)\nb = st.number_input(\"Enter second number\", value=0.0)\nif st.button(\"Add\"):\n    st.write(f\"Result: {{add(a, b)}}\")\n\nst.header(\"Square Root\")\nx = st.number_input(\"Enter a number\", value=0.0)\nif st.button(\"Calculate Square Root\"):\n    st.write(f\"Result: {{square_root(x)}}\")\n"
+  }},
+  {{
+    "fileName": "README.md",
+    "fileContent": "# Project Overview\n\nThis project contains utility functions for numerical operations, including addition and square root calculations. A Streamlit app provides a user interface for interacting with these functions."
+  }},
+  {{
+    "fileName": "requirements.txt",
+    "fileContent": "numpy\nstreamlit"
+  }},
+  {{
+    "fileName": "SETUP.md",
+    "fileContent": "## Setup Instructions\n\n### Virtual Environment Setup (Linux)\n```bash\npython3 -m venv venv\nsource venv/bin/activate\npip install -r requirements.txt\n```\n\n### Running the Streamlit App\n```bash\nstreamlit run app.py\n```"
+  }}
+   ]
+  ```
+
+nb_to_module_with_fastapi: |
+  ### Jupyter Notebook Conversion to Python Module including a FastAPI App
+
+  #### Input Data:
+  - **Code Blocks:** {code_blocks}
+  - **Markdown Blocks:** {markdown_blocks}
+  - **FastAPI Description:** {fastAPI_desc_block}
+
+  #### Instructions:
+  Your task is to convert a Jupyter Notebook into a well-structured Python module and generate a FastAPI app based on the provided endpoint description. Follow these steps:
+
+  1. **File & Content Generation:**
+     - Provide a list of files along with their content.
+     - Use meaningful file names based on the code’s purpose.
+     - Organize the code into Python modules with appropriate class and function structures.
+     - Each module should define a class encapsulating related functionality, with methods handling specific tasks.
+
+  2. **Markdown Handling:**
+     - If a markdown block relates to a specific code block, include it as a comment in the corresponding Python file. Place each line as comment with '#' at beginning .
+     - If the markdown is generic (e.g., documentation or high-level overview), place it in a `README.md` file in the main directory.
+
+  3. **FastAPI App Generation:**
+     - Create a FastAPI app based on the `fastapi_desc_block`.
+     - Identify endpoints, HTTP methods, expected request body (if any), and response format.
+     - Use appropriate Pydantic models for request and response bodies if needed.
+     - Structure the FastAPI app in a separate file, typically `main.py`.
+     - Include an entry point (`if __name__ == "__main__"`) to run the app using `uvicorn`.
+     - Generate the fast api file first then according to the endpoints generate the other files.
+     - Ex : if there is endpoint that takes input and produces output , then generate the python modules that take this data from API request and work it.
+     
+  4. **Requirements File:**
+     - Generate a `requirements.txt` file containing all the necessary dependencies used in the notebook and FastAPI app.
+
+  5. **Setup File:**
+     - Generate a `SETUP.md` file that includes:
+       - Steps to create a virtual environment.
+       - Commands to install dependencies from `requirements.txt`.
+       - Instructions on how to run the generated Python module and FastAPI app.
+     - Add commands pertaining to platform: {platform}
+
+  6. **Output Format:**
+     - Return the response as a **valid JSON array** (no preamble or explanations).
+     - Each JSON object must have two keys:
+       - `"fileName"`: Name of the file (e.g., `"module.py"`, `"README.md"`, `"requirements.txt"`, `"setup.md"`, `"main.py"`).
+       - `"fileContent"`: The corresponding file content as a string.
+     - Ensure that all double quotes (") inside the fileContent field are properly escaped (\\\") to maintain valid JSON formatting. Use \n for newlines instead of raw line breaks.
+
+  ### Examples:
+
+  #### Example 1:
+  **Input Notebook Data:**
+  ```json
+  {{
+    "code_blocks": [
+      "import numpy as np\n\ndef add(a, b):\n    return np.add(a, b)",
+      "import math\n\ndef square_root(x):\n    return math.sqrt(x)"
+    ],
+    "markdown_blocks": [
+      "### Addition Function\nThis function adds two numbers using NumPy.",
+      "### Square Root Function\nThis function calculates the square root using the math module."
+    ],
+    "fastapi_desc_block": "Create a GET endpoint at /add that takes query parameters a and b and returns their sum. Also, create another GET endpoint at /sqrt that takes query param x and returns its square root.",
+    "platform": "Linux"
+  }}
+
+  **Output**
+  [
+  {{
+    "fileName": "math_utils.py",
+    "fileContent": "# Addition Function - This function adds two numbers using NumPy.\n\nimport numpy as np\n\ndef add(a, b):\n    return np.add(a, b)\n"
+  }},
+  {{
+    "fileName": "calc_utils.py",
+    "fileContent": "# Square Root Function - This function calculates the square root using the math module.\n\nimport math\n\ndef square_root(x):\n    return math.sqrt(x)\n"
+  }},
+  {{
+    "fileName": "main.py",
+    "fileContent": "from fastapi import FastAPI, Query\nfrom math_utils import add\nfrom calc_utils import square_root\n\napp = FastAPI()\n\n@app.get(\"/add\")\ndef add_endpoint(a: float = Query(...), b: float = Query(...)):\n    return {{\"result\": add(a, b)}}\n\n@app.get(\"/sqrt\")\ndef sqrt_endpoint(x: float = Query(...)):\n    return {{\"result\": square_root(x)}}\n\nif __name__ == \\\"__main__\\\":\n    import uvicorn\n    uvicorn.run(app, host=\\\"0.0.0.0\\\", port=8000)\n"
+  }},
+  {{
+    "fileName": "README.md",
+    "fileContent": "# Project Overview\n\nThis project contains utility functions for numerical operations, including addition and square root calculations. A FastAPI app exposes these functions as HTTP endpoints."
+  }},
+  {{
+    "fileName": "requirements.txt",
+    "fileContent": "numpy\nfastapi\nuvicorn"
+  }}, 
+  {{
+    "fileName": "SETUP.md",
+    "fileContent": "## Setup Instructions\n\n### Virtual Environment Setup (Linux)\n```bash\npython3 -m venv venv\nsource venv/bin/activate\npip install -r requirements.txt\n```\n\n### Running the FastAPI App\n```bash\nuvicorn main:app --reload\n```"
+  }}
+  ]
+  ```
