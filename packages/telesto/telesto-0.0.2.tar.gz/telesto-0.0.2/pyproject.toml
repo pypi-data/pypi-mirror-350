@@ -1,0 +1,46 @@
+[build-system]
+requires = [
+    "setuptools>=62",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "telesto"
+dynamic = [ "version" ]
+authors = [{ "name" = "Visual Topology", "email" = "dev@visualtopology.com" }]
+description = "Telesto - a visual graph editor - based on Skadi, Narvi and Hyrrokkin"
+dependencies = [ "narvi[tornado]", "hyrrokkin"]
+readme = "README.md"
+license = "AGPL-3.0-or-later"
+license-files = ["LICENSE"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: JavaScript",
+    "Operating System :: POSIX :: Linux",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+    "Development Status :: 3 - Alpha",
+]
+
+requires-python = ">=3.11"
+
+[project.urls]
+Homepage = "https://visualtopology.org/telesto"
+Documentation = "https://visualtopology.org/telesto"
+Repository = "https://codeberg.org/visual-topology/telesto"
+Issues = "https://codeberg.org/visual-topology/telesto/issues"
+Changelog = "https://codeberg.org/visual-topology/telesto/src/branch/main/CHANGELOG.md"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.optional-dependencies]
+
+[project.scripts]
+telesto = "telesto.cli.main:main"
+
+[tool.setuptools.package-data]
+telesto = ["**/*.js", "**/*.png", "**/*.html", "**/*.svg", "**/*.json"]
+
+[tool.setuptools.dynamic]
+version = {attr = "telesto.__version__"}
+

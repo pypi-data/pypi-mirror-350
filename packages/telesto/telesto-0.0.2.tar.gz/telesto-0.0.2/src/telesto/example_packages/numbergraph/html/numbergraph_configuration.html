@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <script src="../../../static/skadi/skadi-page.js" type="text/javascript"></script>
+    <script>
+        window.addEventListener("load", () => {
+            let value_count = document.getElementById("value_count");
+            let clear_cache = document.getElementById("clear_cache");
+            skadi.page.set_message_handler((msg) => {
+                value_count.innerText = String(msg);
+            });
+            clear_cache.addEventListener("click", (evt) => {
+                skadi.page.send_message("clear_cache");
+            })
+        });
+    </script>
+</head>
+<body>
+<h1>Numbergraph configuration</h1>
+    <div>
+        Prime factors Cache: <span id="value_count">?</span> value(s)
+    </div>
+    <div>
+        <input type="button" id="clear_cache" value="Clear Cache">
+    </div>
+</body>
+</html>
