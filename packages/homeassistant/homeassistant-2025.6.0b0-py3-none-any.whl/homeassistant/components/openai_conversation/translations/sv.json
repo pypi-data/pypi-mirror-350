@@ -1,0 +1,114 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "Det gick inte att ansluta",
+            "invalid_auth": "Ogiltig autentisering",
+            "unknown": "Ov\u00e4ntat fel"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API-nyckel"
+                }
+            }
+        }
+    },
+    "exceptions": {
+        "invalid_config_entry": {
+            "message": "Ogiltig konfigurationspost har angetts. Fick {config_entry}"
+        }
+    },
+    "options": {
+        "error": {
+            "model_not_supported": "Denna modell st\u00f6ds inte, v\u00e4lj en annan modell",
+            "web_search_not_supported": "Webbs\u00f6kning st\u00f6ds inte av denna modell"
+        },
+        "step": {
+            "init": {
+                "data": {
+                    "chat_model": "Modell",
+                    "llm_hass_api": "Styr Home Assistant",
+                    "max_tokens": "Maximalt antal tokens som ska returneras i svaret",
+                    "prompt": "Instruktioner",
+                    "reasoning_effort": "Resonemang anstr\u00e4ngning",
+                    "recommended": "Rekommenderade modellinst\u00e4llningar",
+                    "search_context_size": "Storlek p\u00e5 s\u00f6kkontext",
+                    "temperature": "Temperatur",
+                    "top_p": "Top-P",
+                    "user_location": "Inkludera hemplats",
+                    "web_search": "Aktivera webbs\u00f6kning"
+                },
+                "data_description": {
+                    "prompt": "Instruera hur LLM:en ska svara. Detta kan vara en mall.",
+                    "reasoning_effort": "Hur m\u00e5nga resonemangstoken modellen ska generera innan ett svar p\u00e5 prompten skapas (f\u00f6r vissa resonemangsmodeller)",
+                    "search_context_size": "V\u00e4gledning p\u00e5 h\u00f6g niv\u00e5 f\u00f6r hur mycket utrymme i kontextf\u00f6nstret som ska anv\u00e4ndas f\u00f6r s\u00f6kningen",
+                    "user_location": "F\u00f6rfina s\u00f6kresultat baserat p\u00e5 geografi",
+                    "web_search": "Till\u00e5t modellen att s\u00f6ka p\u00e5 webben efter den senaste informationen innan du genererar ett svar"
+                }
+            }
+        }
+    },
+    "selector": {
+        "reasoning_effort": {
+            "options": {
+                "high": "H\u00f6g",
+                "low": "L\u00e5g",
+                "medium": "Medel"
+            }
+        },
+        "search_context_size": {
+            "options": {
+                "high": "H\u00f6g",
+                "low": "L\u00e5g",
+                "medium": "Medel"
+            }
+        }
+    },
+    "services": {
+        "generate_content": {
+            "description": "Skickar en konversationsfr\u00e5ga till ChatGPT inklusive eventuella bifogade bild- eller PDF-filer",
+            "fields": {
+                "config_entry": {
+                    "description": "Den konfigurationspost som ska anv\u00e4ndas f\u00f6r den h\u00e4r \u00e5tg\u00e4rden",
+                    "name": "Konfigurationspost"
+                },
+                "filenames": {
+                    "description": "Lista \u00f6ver filer att ladda upp",
+                    "name": "Filer"
+                },
+                "prompt": {
+                    "description": "Prompten som ska skickas",
+                    "name": "Prompt"
+                }
+            },
+            "name": "Skapa inneh\u00e5ll"
+        },
+        "generate_image": {
+            "description": "F\u00f6rvandlar ett prompt till en bild",
+            "fields": {
+                "config_entry": {
+                    "description": "Den konfigurationspost som ska anv\u00e4ndas f\u00f6r den h\u00e4r \u00e5tg\u00e4rden",
+                    "name": "Konfigurationspost"
+                },
+                "prompt": {
+                    "description": "Texten som ska omvandlas till bild",
+                    "example": "Ett foto p\u00e5 en hund",
+                    "name": "Prompt"
+                },
+                "quality": {
+                    "description": "Kvaliteten p\u00e5 den bild som kommer att genereras",
+                    "name": "Kvalitet"
+                },
+                "size": {
+                    "description": "Storleken p\u00e5 bilden som ska genereras",
+                    "name": "Storlek"
+                },
+                "style": {
+                    "description": "Stilen f\u00f6r den genererade bilden",
+                    "name": "Stil"
+                }
+            },
+            "name": "Generera bild"
+        }
+    }
+}
