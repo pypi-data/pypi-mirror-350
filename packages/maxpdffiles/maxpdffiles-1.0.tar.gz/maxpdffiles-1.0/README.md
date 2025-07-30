@@ -1,0 +1,1 @@
+Test project for converting Pdf files to text or to image
