@@ -1,0 +1,188 @@
+#--------------------------------------------------------------------------------------------------#
+######################################### Package Config ###########################################
+#__________________________________________________________________________________________________#
+[project]
+name = "damply"
+version = "0.11.0"
+description = "Data Management Plan made simple."
+license = "MIT"
+readme = "README.md"
+keywords = ["damply", "pixi", "python", "package"]
+authors = [{ name = "Jermiah Joseph", email = "jermiahjoseph98@gmail.com" }]
+maintainers = [{ name = "Jermiah Joseph", email = "jermiahjoseph98@gmail.com" }]
+requires-python = ">= 3.11"
+dependencies = [
+    "rich",
+    "rich-click",
+    "pydantic",
+    "dataclasses-json",
+    "matplotlib",
+    "plotly",
+    "pandas",
+    "pygetent",
+    "pybytesize>=0.8.1,<0.9",
+    "loguru>=0.7.3,<0.8",
+]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+[project.urls]
+homepage = "https://github.com/bhklab/damply"
+repository = "https://github.com/bhklab/damply"
+documentation = "https://bhklab.github.io/damply/"
+changelog = "https://github.com/bhklab/damply/blob/main/docs/CHANGELOG.md"
+issues = "https://github.com/bhklab/damply/issues"
+
+[project.scripts]
+dmp = "damply.cli.main:cli"
+damplyplot = "damply.plot:main"
+
+#--------------------------------------------------------------------------------------------------#
+############################################## PIXI ################################################
+#__________________________________________________________________________________________________#
+[tool.pixi.system-requirements]
+linux = "3.10.0"
+
+[tool.pixi.project]
+version = "0.3.0"
+channels = ["conda-forge"]
+platforms = ["osx-arm64", "linux-64", "win-64", "osx-64"]
+
+# platforms = ["osx-arm64"]
+[tool.pixi.dependencies]
+
+[tool.pixi.pypi-dependencies]
+damply = { path = ".", editable = true }
+
+[tool.pixi.environments]
+dev = { features = ["test", "style", "docs"], solve-group = "default" }
+publish = { features = ["build", "release"], solve-group = "default" }
+py311 = ["py311", "test"]
+py312 = ["py312", "test"]
+py313 = ["py313", "test"]
+
+############################################## python ###############################################
+[tool.pixi.feature.py311.dependencies]
+python = "3.11.*"
+
+[tool.pixi.feature.py312.dependencies]
+python = "3.12.*"
+
+[tool.pixi.feature.py313.dependencies]
+python = "3.13.*"
+
+############################################## TEST ################################################
+[tool.pixi.feature.test.dependencies]
+pytest = "*"
+pytest-cov = "*"
+pytest-xdist = "*"
+ipykernel = ">=6.29.3,<6.30"
+
+[tool.pixi.feature.test.tasks.test]
+cmd = [
+    "pytest",
+    "--numprocesses=auto",
+    "-s",
+    "--verbose",
+    "--cov=damply",
+    "--cov-report=xml:coverage-report/coverage.xml",
+    "--cov-config=config/coverage.toml",
+]
+inputs = ["src", "tests", "config/coverage.toml"]
+outputs = ["coverage-report/coverage.xml"]
+
+[tool.pixi.feature.test.tasks.coverage]
+cmd = "coverage report --rcfile=config/coverage.toml"
+inputs = ["coverage-report/coverage.xml", "config/coverage.toml"]
+depends-on = ["test"]
+
+[tool.pixi.feature.test.tasks.validate]
+cmd = "pre-commit run --all-files"
+inputs = ["src/*", "tests/*", "config/*"]
+
+############################################## STYLE ###############################################
+# See config/ruff.toml for the configuration
+[tool.pixi.feature.style.dependencies]
+ruff = ">=0.11.10,<0.12"
+pre-commit = ">=4.2.0,<5"
+
+[tool.pixi.feature.style.tasks.lint]
+cmd = "ruff check src"
+inputs = ["src", "config/ruff.toml"]
+
+[tool.pixi.feature.style.tasks.format]
+cmd = "ruff format src"
+inputs = ["src", "config/ruff.toml"]
+
+############################################## DOCS ################################################
+# Available tasks: doc-build, doc-serve, doc-deploy
+# See config/mkdocs.yaml for the configuration
+[tool.pixi.feature.docs.dependencies]
+mkdocs = "*"
+pymdown-extensions = ">=10.15,<11"
+pygments = ">=2.19.1,<3"
+mkdocs-material = ">=9.6.14,<10"
+
+[tool.pixi.feature.docs.tasks.doc-build]
+cmd = "mkdocs build -f config/mkdocs.yaml"
+inputs = ["docs", "config/mkdocs.yaml"]
+outputs = ["site"]
+
+[tool.pixi.feature.docs.tasks.doc-serve]
+cmd = "mkdocs serve -f config/mkdocs.yaml"
+inputs = ["docs", "config/mkdocs.yaml"]
+
+[tool.pixi.feature.docs.tasks.doc-deploy]
+cmd = "mkdocs gh-deploy -f config/mkdocs.yaml --force"
+inputs = ["docs", "config/mkdocs.yaml"]
+
+#################################### RELEASE & BUILD ###############################################
+[tool.pixi.feature.release.dependencies]
+python-semantic-release = ">=8.5.1"
+
+[tool.pixi.feature.release.tasks]
+# Semver task will only work on the main or dev/develop branch (see releaserc.toml:branches)
+semver = 'echo "Next Version is: $(semantic-release -c config/releaserc.toml version --print)"'
+release = "semantic-release -c config/releaserc.toml version"
+
+[tool.pixi.feature.build.dependencies]
+hatch = "*"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+
+[tool.pixi.feature.build.tasks]
+# Builds the package
+build = { cmd = ["hatch", "build", "--clean"], inputs = [
+    "src",
+    "config/hatch.toml",
+    "pyproject.toml",
+], outputs = ["dist/*"], env = { HATCH_CONFIG = "config/hatch.toml" } }
+# Publishes the package to the main PYPI repository, depends on the build task
+publish-pypi = { cmd = [
+    "hatch",
+    "publish",
+    "--yes",
+    "--repo",
+    "main",
+], inputs = ["dist/*"], depends-on = [
+    "build",
+], env = { HATCH_CONFIG = "config/hatch.toml" } }
+# Publishes the package to the TEST-PYPI repository, depends on the build task
+publish-test = { cmd = [
+    "hatch",
+    "publish",
+    "--yes",
+    "--repo",
+    "test",
+], inputs = ["dist/*"], depends-on = [
+    "build",
+], env = { HATCH_CONFIG = "config/hatch.toml" } }
