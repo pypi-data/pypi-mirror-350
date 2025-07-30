@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "xarray-grass"
+dynamic = ["version"]
+description = "An xarray backend for GRASS raster data."
+authors = [
+    { name = "Laurent Courty", email = "lrntct@gmail.com" }
+]
+readme = "README.md"
+license ="GPL-2.0-or-later"
+requires-python = ">=3.11"
+dependencies = [
+    "grass-session>=0.5",
+    "numpy>=2.2.5",
+    "xarray>=2025.4.0",
+]
+
+[project.urls]
+# Homepage = ""
+# Documentation = ""
+Repository = "https://github.com/lrntct/xarray-grass"
+Issues = "https://github.com/lrntct/xarray-grass/issues"
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.2.0",
+    "pytest>=8.3.5",
+    "pytest-random-order>=1.1.1",
+    "requests>=2.32.3",
+    "ruff>=0.11.8",
+]
+
+[project.entry-points."xarray.backends"]
+xarray_grass = "xarray_grass.xarray_grass:GrassBackendEntrypoint"
+
+[tool.pytest.ini_options]
+pythonpath = ["src", "."]
+addopts = ["--import-mode=importlib"]
+
+[tool.setuptools.dynamic]
+version = {attr = "xarray_grass.__version__"}
