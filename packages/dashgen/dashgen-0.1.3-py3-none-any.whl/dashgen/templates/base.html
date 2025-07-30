@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ title }}</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+  {{ theme_css }}
+  </style>
+</head>
+<body>
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <h1>{{ title }}</h1>
+    {% if logo_b64 %}
+    <img src="data:image/png;base64,{{ logo_b64 }}" style="height: 60px;">
+    {% endif %}
+  </div>
+  <div>
+    {{ components | safe }}
+  </div>
+
+<script>
+  // Marca como "pronto" quando todos os canvas estiverem com altura visível
+  window.chartsDone = false;
+
+  window.addEventListener("load", () => {
+    const checkCharts = () => {
+      const canvases = document.querySelectorAll("canvas");
+      return Array.from(canvases).every(c => c.offsetHeight > 0);
+    };
+
+    const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+    const waitForCharts = async () => {
+      for (let i = 0; i < 20; i++) { // tenta por até 2s
+        if (checkCharts()) {
+          window.chartsDone = true;
+          break;
+        }
+        await wait(100);
+      }
+    };
+
+    waitForCharts();
+  });
+</script>
+
+</body>
+</html>
