@@ -1,0 +1,186 @@
+    <----------------------------------------RandomForest -------------------------------------------------->
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+%matplotlib inline
+from sklearn import preprocessing
+
+
+
+
+df = pd.read_csv("playgolf.csv")
+df.head(15)
+
+
+df.info()
+
+
+df.describe()
+
+
+
+categorical_col = []
+for column in df.columns:    
+        categorical_col.append(column)
+        print(f"{column} : {df[column].unique()}")
+        print("====================================")
+
+
+
+df.PlayGolf.value_counts()
+
+categorical_col.remove('PlayGolf')
+
+categorical_col
+
+
+
+from sklearn.preprocessing import LabelEncoder
+
+label = LabelEncoder()
+for column in categorical_col:
+    df[column] = label.fit_transform(df[column])
+
+
+
+df
+
+
+
+from sklearn.model_selection import train_test_split
+X = df.drop('PlayGolf', axis=1)
+y = df.PlayGolf
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+X
+
+y
+
+
+
+from sklearn.ensemble import RandomForestClassifier
+RandomForestmodel = RandomForestClassifier(n_estimators=10)
+RandomForestmodel.fit(X_train, y_train)
+
+
+from sklearn.ensemble import BaggingClassifier
+from sklearn.metrics import accuracy_score
+
+
+#Number of RandomForest models in the ensemble
+n_estimators = 10
+
+
+
+bagging_classifier = BaggingClassifier(base_estimator=RandomForestmodel, 
+                                        n_estimators=n_estimators)
+
+
+
+# Train the bagging classifier
+bagging_classifier.fit(X_train, y_train)
+# Make predictions on the test set
+y_pred = bagging_classifier.predict(X_test)
+
+
+from sklearn.metrics import classification_report
+print(f"CLASSIFICATION REPORT:\n")
+print(classification_report(y_test, y_pred))
+
+
+
+print(f"Accuracy Score: {accuracy_score(y_test, y_pred) * 100:.2f}%")
+print("_______________________________________________")
+
+
+
+
+<-------------------------------ensemble bagging voting method -------------------------------------------------->
+
+
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import confusion_matrix,classification_report
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import BaggingClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.svm import SVC
+from sklearn.naive_bayes import GaussianNB, BernoulliNB
+from sklearn.linear_model import LogisticRegression
+
+
+def CreateDataFrame(N):
+    columns = ['a','b','c','y']
+    df = pd.DataFrame(columns=columns)
+    for i in range(N):
+        a = np.random.randint(10)
+        b = np.random.randint(20)
+        c = np.random.randint(5)  
+        y = "normal"
+        if((a+b+c)>25):
+            y="high"
+        elif((a+b+c)<12):
+            y= "low"
+        df.loc[i]= [a, b, c, y]
+    return df
+
+
+df = CreateDataFrame(200)
+df.head(200)
+
+
+X = df[["a","b","c"]]
+Y = df[["y"]]
+
+
+le=LabelEncoder()
+y=le.fit_transform(Y)
+
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)
+
+
+dtcmodel = DecisionTreeClassifier(criterion="entropy")
+dtcmodel.fit(X_train,y_train)
+ytest_pred=dtcmodel.predict(X_test)
+print(dtcmodel.score(X_test, y_test))
+print(confusion_matrix(y_test, ytest_pred)) 
+
+
+#Applying bagging
+
+lrmodel = LogisticRegression();
+bnbmodel = BernoulliNB()
+gnbmodel = GaussianNB()
+svcmodel = SVC()
+base_methods=[dtcmodel,lrmodel, bnbmodel, gnbmodel,svcmodel]
+#base_methods=[dtcmodel,lrmodel,svcmodel]
+for bm  in base_methods:
+    print("Method: ", bm)
+    bag_model=BaggingClassifier(base_estimator=bm, n_estimators=100, bootstrap=True)
+    bag_model=bag_model.fit(X_train,y_train)
+    ytest_pred=bag_model.predict(X_test)
+    print(bag_model.score(X_test, y_test))
+    print(confusion_matrix(y_test, ytest_pred)) 
+
+
+
+
+
+# create the sub models
+#import Voting Classifier
+
+from sklearn.ensemble import VotingClassifier
+voting_clf = VotingClassifier(estimators=[('DecisionTree',dtcmodel),('Logistic',lrmodel),('Bernoulli',bnbmodel), 
+                                          ('Gaussian',gnbmodel),('SVC', svcmodel)
+                                         ])
+
+#fit and predict using training and testing dataset respectively
+voting_clf.fit(X_train, y_train)
+predictions = voting_clf.predict(X_test)
+#Evaluation matrics
+print(confusion_matrix(y_test,predictions))
+print(classification_report(y_test,predictions))

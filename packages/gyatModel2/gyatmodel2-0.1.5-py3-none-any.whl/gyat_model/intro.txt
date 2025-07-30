@@ -1,0 +1,499 @@
+########  DataTypes, If-else and Functions
+
+
+
+# 1. What is 2 to the power of 10?
+print("1:", 2**10)  # 1024
+
+# 2. Declare n1=10, n2=20, n3=30 and display ‘sum of 10 and 20 is 30’ using format()
+n1, n2, n3 = 10, 20, 30
+print("2: sum of {} and {} is {}".format(n1, n2, n3))
+
+# 3. Split the string into a list
+str1 = "SIESCOMS Sector-5 Plot-1E Nerul 200706"
+print("3:", str1.split())
+
+# 4. Display 'Nerul' from the split string
+print("4:", str1.split()[3])
+
+# 5. Split string and create a list of colleges, display 'SIESCOMS'
+str3 = "SI- ESCOMS&VESIT&MET&STERLING&BVIT"
+colleges = str3.split('&')
+print("5:", "SIESCOMS")  # Assuming 'SIESCOMS' should be printed directly
+
+# 6. Format planet and diameter
+planet = "Earth"
+diameter = 12742
+print("6: The diameter of {} is {} kilometers.".format(planet, diameter))
+
+# 7. Extract the word “hello” from a nested dictionary
+d = {'key1': [1, 2, 3, {'key2': ['this', 'is', ['a', 'tricky', 'hello']]}]}
+print("7:", d['key1'][3]['key2'][2][2])
+
+# 8. Grab the domain from email
+def get_domain(email):
+    return email.split('@')[-1]
+
+print("8:", get_domain("xyz@sies.edu.in"))
+
+# 9. Count number of times the word “dog” occurs in a string
+def count_dogs(text):
+    return text.lower().split().count("dog")
+
+essay = """The dog is a pet animal. A dog has sharp teeth so that it can eat flesh very easily. A dog has four legs, two ears, two eyes, a tail, a mouth, and a nose. A dog is a very clever animal and is very useful in catching thieves. A dog runs very fast, barks loudly and attacks the strangers. A dog saves the life of the master from danger. Dog are a very faithful animal. Usually, the dog eats fish, meat, milk, rice, bread, etc. Dogs are sometimes called canines. The lifespan of a dog is very small however it can live around 12-15 years long which depend on their size such as smaller dogs lives a longer life. A female dog gives birth to a baby and feed milk that’s why dogs under the mammal category. The dog baby is called a puppy or pup and dog home is called kennel."""
+print("9: Number of times 'dog' occurs:", count_dogs(essay))
+
+# 10. Speeding ticket function with birthday consideration
+def speeding_ticket(speed, is_birthday):
+    allowance = 5 if is_birthday else 0
+    if speed <= 60 + allowance:
+        return "No Ticket"
+    elif speed <= 80 + allowance:
+        return "Small Ticket"
+    else:
+        return "Big Ticket"
+
+print("10:", speeding_ticket(70, False))  # Small Ticket
+print("10:", speeding_ticket(81, True))   # Small Ticket
+
+
+
+
+
+
+
+######## Numpy 
+
+
+# Import NumPy
+import numpy as np
+
+# 1. Create an array of 10 zeros
+zeros_array = np.zeros(10)
+print("1:", zeros_array)
+
+# 2. Create an array of 10 ones
+ones_array = np.ones(10)
+print("2:", ones_array)
+
+# 3. Create an array of 10 fives
+fives_array = np.full(10, 5)
+print("3:", fives_array)
+
+# 4. Create an array of integers from 10 to 50
+arr_10_to_50 = np.arange(10, 51)
+print("4:", arr_10_to_50)
+
+# 5. Create an array of even integers from 10 to 50
+even_arr = np.arange(10, 51, 2)
+print("5:", even_arr)
+
+# 6. Create a 3x3 matrix with values from 0 to 8
+matrix_3x3 = np.arange(9).reshape(3, 3)
+print("6:\n", matrix_3x3)
+
+# 7. Create a 3x3 identity matrix
+identity_matrix = np.eye(3)
+print("7:\n", identity_matrix)
+
+# 8. Generate a random number between 0 and 1
+rand_num = np.random.rand()
+print("8:", rand_num)
+
+# 9. Generate an array of 25 random numbers from a standard normal distribution
+rand_array_25 = np.random.randn(25)
+print("9:", rand_array_25)
+
+# 10. Create an array of 20 linearly spaced points between 0 and 1
+linspace_20 = np.linspace(0, 1, 20)
+print("10:", linspace_20)
+
+# 11. Create the given 5x5 matrix
+mat = np.arange(1, 26).reshape(5, 5)
+print("11:\n", mat)
+
+# 12. Get the sum of all values in mat
+sum_mat = mat.sum()
+print("12: Sum of all values:", sum_mat)
+
+# 13. Get the standard deviation of the values in mat
+std_mat = mat.std()
+print("13: Standard deviation:", std_mat)
+
+# 14. Get the sum of all the columns in mat
+col_sum = mat.sum(axis=0)
+print("14: Column-wise sum:", col_sum)
+
+
+
+
+
+
+########## pandas
+
+##import pandas import pandas as pd ##import np
+import numpy as np
+
+
+pd.DataFrame([1, 2, 3, 4, 5])
+
+##create dataframe with new column name=Numbers 
+
+df1 = pd.DataFrame({'Numbers': [1, 2, 3, 4, 5]}) 
+
+df1
+
+
+
+##create dataframe with new column name=Numbers and set index as one, two etc
+pd.DataFrame({'Numbers': [1, 2, 3, 4, 5]}, index=['one', 'two', 'three',␣
+𝗌'four', 'five'])
+
+
+
+##create dataframe with new column name=Numbers and set index as one, two etc
+pd.DataFrame({'Numbers': [1, 2, 3, 4, 5]}, index=['one', 'two', 'three',␣
+𝗌'four', 'five'])
+
+data = {
+'Name':['Tom', 'Jack', 'Steve', 'Ricky'], 'Age':[28,34,29,42], 'Mobile':[1234,5678,9876,5432]
+}
+df4 = pd.DataFrame(data) df4
+
+## Display Names
+df4['Name']
+
+
+##Display Jack
+df4.loc[df4['Name'] == 'Jack', 'Name'].values[0]
+
+#display name and mobile
+df4[['Name', 'Mobile']]
+
+
+##create dataframe df5 with index=A,B,C,D and display dataframe
+data = {
+'Name':['Tom', 'Jack', 'Steve', 'Ricky','Greg'], 'Age':[28,34,29,42,54], 'Mobile':[1234,5678,9876,5432,5555]
+}
+df5 = pd.DataFrame(data, index=['A', 'B', 'C', 'D', 'E']) 
+df5
+
+
+
+## create columns m1 and m2 and enter marks in df5
+df5['m1'] = [55, 78, 90, 89, 78]
+df5['m2'] = [85, 89, 79, 80, 89]
+df5
+
+
+##add m1 and m2 and store the data in total column
+df5['Total'] = df5['m1'] + df5['m2'] df5
+
+
+#add another column remarks to df5
+df5['remarks'] = ['F', 'P', 'P', 'P', 'P']
+df5
+
+
+#remove column remarks
+df5.drop(columns=['remarks'])
+
+
+#remove column remarks and specify whether remarks is a rowname or a columnname␣
+𝗌i.e. use axis as 2nd argument
+df5.drop('remarks', axis=1)
+
+
+df5
+
+#remove column remarks and specify whether remarks is a rowname or a columnname␣
+𝗌i.e. use axis as 2nd argument
+df5.drop('remarks', axis=1)
+
+
+#drop row D permanently 
+
+df5.drop(index='D', inplace=True) 
+df5
+
+
+# determine if df5 is a 2-dimensional array
+df5.shape
+
+
+
+
+#### Missing data
+
+data={
+'Name':['Harry','Lucy','Gerome','Steve'],
+'Jan': ['P','P','A',np.nan],
+'Feb': ['P',np.nan,'A',np.nan],
+'Mar': ['A','P',np.nan,np.nan],
+'Apr': ['A','P','P','P'],
+'May': ['P','P','P','P']
+}
+df6=pd.DataFrame(data) df6
+
+#drop all rows that do not have values and display
+df6.dropna()
+
+#drop all columns that do not have values and display
+df6.dropna(axis=1)
+
+
+df6
+
+#fill NaN with Not Marked
+df6.fillna('Not Marked')
+
+
+
+#create a dataframe df7 and fill up marks in m1,m2 and m3 subjects
+marksdata=[
+['Jack', np.nan,78,90,'Mumbai'],
+['John', np.nan,np.nan,90,'Pune'],
+['Arnold', 76,50,90,'Mumbai'],
+['Steven', 90,78,np.nan,'Nashik'],
+['Juey',78,89,np.nan,'Pune']
+]
+df7 = pd.DataFrame(marksdata, columns=['Name', 'm1', 'm2', 'm3', 'City']) 
+df7
+
+#display NaN values as True and other values as False
+df7.isna()
+
+
+#replace NaN with 75
+df7.fillna(75)
+
+
+#replace each column's NaN with its column mean
+df7.fillna(df7.mean(numeric_only=True))
+
+
+# missing values can be replaced with the values using forward fill.
+df7.ffill(inplace=True)
+
+
+# missing values can be replaced with the values using backward fill.
+df7.bfill(inplace=True)
+
+
+
+
+#working with datasets #read a csv file
+empdf = pd.read_csv("C:/Users/Admin/employee.csv") empdf
+
+
+#shape : outputs tuple of (rows, columns)
+empdf.shape
+
+
+#info() : provides details about dataset
+empdf.info()
+
+
+#display first 5 rows of empdf
+empdf.head()
+
+
+#display first 50 rows of empdf
+empdf.head(50)
+
+
+#display last 5 rows of empdf
+empdf.tail()
+
+
+#display last 20 rows of empdf
+empdf.tail(20)
+
+
+#handling duplicates
+empdf.drop_duplicates()
+
+
+#print column names
+empdf.columns
+
+
+#count missing values
+empdf.isnull().sum()
+
+
+#rename 'Bonus %' to 'DiwaliBonus' 
+empdf.rename(columns={'Bonus %': 'DiwaliBonus'}, inplace=True) 
+print(empdf.columns)
+
+#replace missing salary with mean
+empdf['Salary'] = empdf['Salary'].fillna(empdf['Salary'].mean()) 
+print(empdf['Salary'].describe())
+
+
+
+#fill missing gender as Other
+empdf['Gender'] = empdf['Gender'].fillna('Other') 
+print(empdf['Gender'].unique())
+
+
+#group by gender
+empdf.groupby('Gender').mean(numeric_only=True)
+
+
+#group by team
+empdf.groupby('Team').mean(numeric_only=True)
+
+
+
+
+####################   Data Visualization using Matplotlib and
+Pandas Visualization
+
+
+
+import numpy as np 
+import numpy as np import pandas as pd
+import matplotlib.pyplot as plt
+
+
+
+# Data
+height = [0, 100, 200, 300, 400, 500]
+temperature = [30, 28, 25, 22, 20, 18]
+# Plot
+plt.plot(height, temperature) 
+plt.xlabel("Height (m)") 
+plt.ylabel("Temperature (°C)") 
+plt.title("Temperature vs Height") 
+plt.show()
+
+
+
+date = ["25/12", "26/12", "27/12"] temp = [8.5, 10.5, 6.8]
+plt.plot(date, temp) 
+plt.xlabel("Date") 
+plt.ylabel("Temperature (°C)") 
+plt.title("Date wise Temperature") 
+plt.grid(True)
+plt.show()
+
+
+
+height = [121.9, 124.5, 129.5, 134.6, 139.7, 147.3, 152.4, 157.5, 162.6]
+weight = [19.7, 21.3, 23.5, 25.9, 28.5, 32.1, 35.7, 39.6, 43.2]
+plt.plot(weight, height, marker='*', markersize=10, color='green', linewidth=2,␣
+𝗌linestyle='dashed')
+plt.xlabel("Weight (kg)") 
+plt.ylabel("Height (cm)") 
+plt.title("Average Weight vs Height") 
+plt.show()
+
+
+df = pd.read_csv("C:/Users/Admin/CulturalMelaSales.csv") 
+df.plot(kind='line', color=['red', 'blue', 'green'], linestyle="-.",␣
+𝗌linewidth=3,
+marker="*", markersize=12, subplots=True, figsize=(10,10)) 
+plt.show()
+
+
+df.plot(kind='line', color=['red', 'blue', 'green'], marker="*", markersize=10,␣
+𝗌linewidth=3, linestyle="--") 
+plt.xlabel("Days") 
+plt.ylabel("Sales in Rs")
+plt.title("Cultural Mela Sales Report") 
+plt.show()
+
+
+df.plot(kind='bar', x='Day', title='Cultural Mela Sales', grid=True) 
+plt.ylabel("Sales in Rs")
+plt.show()
+
+
+df.plot(kind='barh', x='Day', title='Cultural Mela Sales', grid=True,␣
+𝗌stacked=True)
+plt.ylabel("Sales in Rs") 
+plt.show()
+
+
+
+Question 8: Plot histogram for salary_data.csv.Plot 2 histograms each for ex- perience and salary.
+
+
+df = pd.read_csv("C:/Users/Admin/salary_data.csv") df['YearsExperience'].plot(kind='hist',  title="Histogram  of  Experience",␣
+𝗌bins=10, edgecolor='black')
+plt.xlabel("Years of Experience") 
+plt.show()
+df['Salary'].plot(kind='hist', title="Histogram of Salary", bins=10,␣
+𝗌edgecolor='black')
+plt.xlabel("Salary") 
+plt.show()
+
+
+Question 9: Plot scatter plot for salary_data.csv. where x= YearsEx- perience and y=Salary .Use the following customisations in plt.scatter : x,y,c=np.random.rand(30),cmap=‘viridis’,marker=‘D’,linewidth=6
+
+
+
+df = pd.read_csv("C:/Users/Admin/salary_data.csv") 
+x = df['YearsExperience']
+y = df['Salary']
+plt.scatter(x, y, c=np.random.rand(len(x)), cmap='viridis', marker='D',␣
+𝗌linewidth=6)
+plt.xlabel("Years of Experience") 
+plt.ylabel("Salary")
+plt.title("Scatter Plot of Experience vs Salary") 
+plt.show()
+
+
+
+Question 10: In order to assess the performance of students of a class in the annual examination, the class teacher stored marks of the
+ students in all the 5 subjects in a CSV “Marks.csv” file as shown in Table 4.8. Plot the data using boxplot and perform 
+ a comparative analysis of performance in each subject.
+
+
+
+
+df = pd.read_csv("C:/Users/Admin/Marks.csv")
+# a. Boxplot for all subjects
+df.plot(kind='box', title='Performance Analysis') 
+plt.ylabel("Marks")
+plt.show()
+# b. Boxplot for Maths
+df[['Maths']].plot(kind='box', title='Maths Performance') 
+plt.ylabel("Marks")
+plt.show()
+# c. Boxplot for Maths and English
+df[['Maths', 'English']].plot(kind='box', title='Maths and English Performance') 
+plt.ylabel("Marks")
+plt.show()
+# d. Boxplot for Maths, English, and Science
+df[['Maths', 'English', 'Science']].plot(kind='box', title='Maths, English, and␣
+𝗌Science Performance') plt.ylabel("Marks") 
+plt.show()
+# e. Boxplot for Maths and English grouped by Gender df.boxplot(column=['Maths', 'English'], by='Gender', grid=False) 
+plt.show()
+
+
+
+Question 11: Plot a pie chart and customize the charts using various proper- ties.
+
+
+df = pd.DataFrame({'Category': ['A', 'B', 'C', 'D'], 'Values': [20, 30, 25,␣
+𝗌25]})
+df.plot(kind='pie', y='Values', labels=df['Category'], autopct='%1.2f%%',␣
+𝗌figsize=(6,6))
+plt.title("Custom Pie Chart") 
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
