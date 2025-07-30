@@ -1,0 +1,73 @@
+[project]
+name = "staticmap3"
+version = "0.1.0"
+description = "Fork of staticmap, a small, python-based library for creating map images with lines and markers."
+authors = [
+    {name = "Christoph Lingg", email = "christoph@komoot.de"}
+]
+maintainers = [
+    {name = "SamR1"}
+]
+license = {text = "Apache Software License"}
+readme = "README.md"
+keywords = ["static", "map", "image", "osm"]
+classifiers = [
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+
+requires-python = ">=3.9"
+
+dependencies = [
+    "cachecontrol>=0.14.3",
+    "pillow>=11.2.1",
+    "requests>=2.32.3"
+]
+
+[project.optional-dependencies]
+filecache = ["filelock >= 3.8.0"]
+dev = [
+    "mypy>=1.15.0",
+    "ruff>=0.11.10",
+    "types-requests"
+]
+
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.lint]
+select = [
+    # pycodestyle
+    "E",
+    # Pyflakes
+    "F",
+    # isort
+    "I",
+    # flake8-builtins
+    "A",
+    # flake8-type-checking
+    "TC",
+    # flake8-datetimez
+    "DTZ",
+    # flake8-print
+    "T20",
+    # flake8-bugbear
+    "B",
+    # flake8-bandit
+    "S",
+    # Ruff-specific rules
+    "RUF",
+]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
