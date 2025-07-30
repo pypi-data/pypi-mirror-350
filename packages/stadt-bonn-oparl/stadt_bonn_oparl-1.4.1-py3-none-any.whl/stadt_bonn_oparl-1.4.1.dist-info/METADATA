@@ -1,0 +1,85 @@
+Metadata-Version: 2.4
+Name: stadt-bonn-oparl
+Version: 1.4.1
+Summary: Work with OParl Papers (and it's related types).
+Project-URL: Changelog, https://codeberg.org/machdenstaat/stadt-bonn-oparl/src/branch/main/CHANGELOG.md
+Project-URL: Homepage, https://machdenstaat.de/
+Project-URL: Issues, https://codeberg.org/machdenstaat/stadt-bonn-oparl/issues
+Project-URL: Repository, https://codeberg.org/machdenstaat/stadt-bonn-oparl.git
+Author-email: Christoph Görn <goern@machdenstaat.de>
+License-Expression: GPL-3.0-or-later
+License-File: LICENSE
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Python: >=3.12
+Requires-Dist: beautifulsoup4>=4.13.4
+Requires-Dist: chromadb>=1.0.9
+Requires-Dist: cyclopts>=3.16.1
+Requires-Dist: docling>=2.32.0
+Requires-Dist: fastmcp>=2.4.0
+Requires-Dist: feedparser>=6.0.11
+Requires-Dist: logfire[requests,system-metrics]>=3.16.0
+Requires-Dist: loguru>=0.7.3
+Requires-Dist: pydantic-ai-slim[anthropic,mcp]>=0.2.4
+Requires-Dist: python-dotenv>=1.1.0
+Requires-Dist: requests>=2.32.3
+Description-Content-Type: text/markdown
+
+# Stadt Bonn Ratsinfo
+
+Dieses Projekt enthält Tools zur Verarbeitung von Ratsinformationen der Stadt Bonn.
+
+## Beschreibung
+
+...
+
+## Installation
+
+### Install `uv`
+
+The first thing to do is make sure `uv` is installed, as `uv` is used in this project.
+
+For installation instructions, see the [`uv` installation docs](https://docs.astral.sh/uv/getting-started/installation/).
+
+If you already have an older version of `uv` installed, you might need to update it with `uv self update`.
+
+```bash
+uv install
+```
+
+## Nutzung
+
+`uv run oparl download paper --data-path data/ --max-pages 1`
+
+und `uv run oparl convert paper --data-path data/ --all`
+
+```bash
+uv run oparl classify \
+ --data-path data/2025-05-19_253130-02_Bürgerantrag_Stopp_des_Bauvorhabens_Nr._7213-2_Schloßallee/2025-05-16_253130-02_Buergerantrag_Stopp_SAO.md
+```
+
+### MCP Server starten
+
+```bash
+uv run fastmcp run src/stadt_bonn/oparl/mcp/server.py --transport sse
+```
+
+### Topic Scout testen
+
+`uv run scripts/test_topic_scout.py`
+
+## Datenexploration
+
+Im Notebook [explore analysis](./notebooks/explore_analysis.ipynb) finden Sie eine erste Analyse der Daten. Hier werden
+verschiedene Aspekte der Daten untersucht, um ein besseres Verständnis für die Struktur und den Inhalt der
+Ratsinformationen zu gewinnen.
+
+## Rechtliches
+
+Die Daten stammen von der Stadt Bonn und unterliegen den jeweiligen Lizenzbedingungen. Bitte beachten Sie die Lizenzbedingungen, bevor Sie die Daten verwenden oder weitergeben. Die Dateien in diesem Repository unterliegen der GPL-3.0-Lizenz. Weitere Informationen finden Sie in der Datei `LICENSE`.
