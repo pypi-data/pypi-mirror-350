@@ -1,0 +1,270 @@
+Metadata-Version: 2.1
+Name: agentdev
+Version: 0.5.0
+Summary: AgentDev provides basic components that used on Bailian.platform with unified API
+Home-page: https://code.alibaba-inc.com/dashscope/bailiansdk
+Author: Bailian Team
+Author-email: zhangzhicheng.zzc@alibaba-inc.com
+License: Apache License 2.0
+Keywords: python,Agent,AIGC,LLM,Components
+Description-Content-Type: text/markdown
+Requires-Dist: aliyun-trace
+Requires-Dist: anyio
+Requires-Dist: asgiref~=3.8.1
+Requires-Dist: dashscope
+Requires-Dist: fastapi
+Requires-Dist: instructor~=1.7.9
+Requires-Dist: jinja2~=3.1.6
+Requires-Dist: json5
+Requires-Dist: jsonref~=1.1.0
+Requires-Dist: mcp
+Requires-Dist: nacos-sdk-python==1.0.0
+Requires-Dist: openai
+Requires-Dist: opentelemetry-api
+Requires-Dist: opentelemetry-exporter-otlp
+Requires-Dist: opentelemetry-sdk
+Requires-Dist: pydantic~=2.10.6
+Requires-Dist: pytest
+Requires-Dist: pytest-mock
+Requires-Dist: requests
+Requires-Dist: setuptools
+Requires-Dist: starlette
+Requires-Dist: typing_extensions
+Requires-Dist: uvicorn
+
+# AgentDev
+
+<p align="center">
+    <br>
+    <img src="assets/banner.png"/>
+    <br>
+<p>
+<p align="center">
+<a href="https://bailian.console.aliyun.com"> Aliyun Bailian Website</a>
+
+## Overview
+
+AgentDev is a component-based framework for building AI-powered applications. Key features include:
+
+- Modular component architecture
+- Integration with Dashscope services
+- LangGraph compatibility
+- Model Context Protocol (MCP) support
+- Enterprise level tracing and metrics
+- Extensible error handling system
+
+
+## Design Principles
+
+1. Components have single responsibility
+2. Low replacement cost with high reusability component
+3. Quick testing and deployment for individual components
+4. Clear dependency relationships through well-defined input/output parameters
+5. Compatibility with other open-source solutions
+6. Extensible base classes supporting logging and tracing
+
+## Key Components
+
+1. Bailian Search component: Enterprise level web search based on bailian official search ability.
+2. Bailian RAG component: Enterprise level RAG which retrieve relevant information from Bailian maintain by user.
+3. Bailian Intention component: Enterprise level Intention Center which classify user's intention with different label.
+4. Aliyun Tracing component:  Enterprise level tracing that manage user tracing data by aliyun
+5. OpenAI and Bailian compatible LLM message schemas
+6. OpenAI compatible LLM component
+7. FastAPI server for SSE protoc
+8. Other key components as base capabilities to support Bailian Chat Services
+
+## Installation
+
+```bash
+pip install agentdev
+```
+
+## Quick Start
+
+### Basic llm service
+
+Create a python file named `main.py` with the following code.
+Notice that the `DashscopeChatRequest` is the original Dashscope chat request format,
+if you want to use openai compatible request, you can use `OpenAIChatRequest` or `BailianChatRequest` instead.
+
+```python
+from agentdev.models.llm import BaseLLM
+from agentdev.schemas.llm_schemas import DashscopeChatRequest
+from agentdev.server.fastapi_server import FastApiServer
+
+
+async def general_arun(request: DashscopeChatRequest):
+    """Test arun method"""
+    llm = BaseLLM()
+    try:
+        async for chunk in await llm.arun(model=request.model, messages=request.input.messages,
+                                          parameters=request.parameters):
+            yield chunk
+    except Exception as e:
+        import traceback
+        print(f'error {e} with traceback {traceback.format_exc()}')
+
+
+server = FastApiServer(
+    func=general_arun,
+    endpoint_path='/api/v1/chat/completions',
+    request_model=DashscopeChatRequest,
+)
+
+if __name__ == '__main__':
+    server.run()
+
+```
+Then run the python file with your `DASHSCOPE_API_KEY`
+
+```shell
+export DASHSCOPE_API_KEY=your_api_key
+python main.py
+```
+
+
+then a local llm service will run on your local machine at http://127.0.0.1:8000/api/v1/chat/completions
+
+query the service with curl
+
+```shell
+curl --location 'http://127.0.0.1:8000/api/v1/chat/completions' \
+--header 'Content-Type: application/json' \
+--data '{
+    "model": "qwen-max",
+    "input":{
+        "messages":[{"role": "user", "content":"今天天气如何"}]
+    },
+    "parameters": {
+    }
+}'
+
+```
+the response should be like this
+```shell
+
+data:{"id":"chatcmpl-2b0cb0d9-82fa-9c2c-8364-c100111d84a3","choices":[{"delta":{"content":"","role":"assistant"},"index":0}],"created":1742953771,"model":"qwen-max","object":"chat.completion.chunk"}
+
+data:{"id":"chatcmpl-2b0cb0d9-82fa-9c2c-8364-c100111d84a3","choices":[{"delta":{"content":"我"},"index":0}],"created":1742953771,"model":"qwen-max","object":"chat.completion.chunk"}
+
+data:{"id":"chatcmpl-2b0cb0d9-82fa-9c2c-8364-c100111d84a3","choices":[{"delta":{"content":"目前"},"index":0}],"created":1742953771,"model":"qwen-max","object":"chat.completion.chunk"}
+
+data:{"id":"chatcmpl-2b0cb0d9-82fa-9c2c-8364-c100111d84a3","choices":[{"delta":{"content":"无法直接获取实时天气"},"index":0}],"created":1742953771,"model":"qwen-max","object":"chat.completion.chunk"}
+
+data:{"id":"chatcmpl-2b0cb0d9-82fa-9c2c-8364-c100111d84a3","choices":[{"delta":{"content":"信息。您可以通过查询网络"},"index":0}],"created":1742953771,"model":"qwen-max","object":"chat.completion.chunk"}
+
+data:{"id":"chatcmpl-2b0cb0d9-82fa-9c2c-8364-c100111d84a3","choices":[{"delta":{"content":"、使用天气应用查看"},"index":0}],"created":1742953771,"model":"qwen-max","object":"chat.completion.chunk"}
+
+data:{"id":"chatcmpl-2b0cb0d9-82fa-9c2c-8364-c100111d84a3","choices":[{"delta":{"content":"，或者告诉我您"},"index":0}],"created":1742953771,"model":"qwen-max","object":"chat.completion.chunk"}
+
+data:{"id":"chatcmpl-2b0cb0d9-82fa-9c2c-8364-c100111d84a3","choices":[{"delta":{"content":"所在的城市和地区，我可以提供"},"index":0}],"created":1742953771,"model":"qwen-max","object":"chat.completion.chunk"}
+
+data:{"id":"chatcmpl-2b0cb0d9-82fa-9c2c-8364-c100111d84a3","choices":[{"delta":{"content":"一些一般性的天气信息和"},"index":0}],"created":1742953771,"model":"qwen-max","object":"chat.completion.chunk"}
+
+data:{"id":"chatcmpl-2b0cb0d9-82fa-9c2c-8364-c100111d84a3","choices":[{"delta":{"content":"建议。如果需要准确"},"index":0}],"created":1742953771,"model":"qwen-max","object":"chat.completion.chunk"}
+
+data:{"id":"chatcmpl-2b0cb0d9-82fa-9c2c-8364-c100111d84a3","choices":[{"delta":{"content":"的天气情况，请参考"},"index":0}],"created":1742953771,"model":"qwen-max","object":"chat.completion.chunk"}
+
+data:{"id":"chatcmpl-2b0cb0d9-82fa-9c2c-8364-c100111d84a3","choices":[{"delta":{"content":"当地的气象预报。"},"index":0}],"created":1742953771,"model":"qwen-max","object":"chat.completion.chunk"}
+
+data:{"id":"chatcmpl-2b0cb0d9-82fa-9c2c-8364-c100111d84a3","choices":[{"delta":{"content":""},"finish_reason":"stop","index":0}],"created":1742953771,"model":"qwen-max","object":"chat.completion.chunk"}
+```
+
+
+### Basic component create
+
+```python
+import asyncio
+
+from agentdev.base.component import Component
+from pydantic import BaseModel, Field
+from typing import Any
+
+# define the input format
+class SearchInput(BaseModel):
+    """
+    Search Input.
+    """
+    query: str = Field(..., title='Query')
+    context: dict
+
+
+# define the output format
+class SearchOutput(BaseModel):
+    """
+    Search Output.
+    """
+    results: list[str]
+    context: dict
+
+
+# define the component runtime method
+class SearchComponent(Component[SearchInput, SearchOutput]):
+    """
+    Search Component.
+    """
+
+    async def arun(self, args: SearchInput, **kwargs: Any) -> SearchOutput:
+        """
+        Run asynchronously.
+        """
+        if not isinstance(args, SearchInput):
+            raise TypeError(
+                'Argument must be an instance of SearchInput or its subclass')
+
+        await asyncio.sleep(1)  # 模拟异步操作
+        return SearchOutput(results=['result1', 'result2'],
+                            context=args.context)
+
+
+# instantiate the component
+search_component = SearchComponent(
+    name='Search Component',
+    description='Search Component For Example',
+    config={})
+search_input = SearchInput(query='query', context={})
+
+
+# run
+async def main():
+    search_output = await search_component.arun(search_input)
+    print(search_output)
+    print(search_component.function_schema)
+
+
+asyncio.run(main())
+
+```
+
+
+
+## Requirements
+
+1. Quick deployment similar to assistant serving
+2. Standardized output like Marvin
+3. Agent evaluation capabilities
+
+## Solutions Implemented
+
+1. Single-responsibility component interfaces with clear input/output definitions
+2. Extensible base classes with optional logging/tracing
+3. Mixins for integrating with open-source ecosystems
+
+## Development
+
+### Testing
+
+Run tests using pytest:
+
+```bash
+pytest test/
+```
+
+### Contributing
+
+Please follow these guidelines:
+
+- Write unit tests for new components
+- Maintain consistent documentation
+- Follow existing code style and patterns
