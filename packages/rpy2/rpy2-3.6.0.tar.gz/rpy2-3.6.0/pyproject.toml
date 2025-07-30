@@ -1,0 +1,65 @@
+[build-system]
+requires = [
+    "setuptools >= 61",
+    "wheel",
+    "cffi>=1.15.0",
+    "packaging;platform_system=='Windows'",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rpy2"
+version = "3.6.0"
+description = "Python interface to the R language (embedded R)"
+readme = "README.md"
+requires-python = ">=3.8"
+license = "GPL-2.0-or-later"
+license-files = ["LICENSE"]
+authors = [{ name = "Laurent Gautier", email = "lgautier@gmail.com" }]
+classifiers = [
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+]
+dependencies = [
+    "rpy2-rinterface>=3.6.0",
+    "rpy2-robjects>=3.6.0",
+    "packaging;platform_system=='Windows'",
+    "backports.zoneinfo;python_version<'3.9'"
+]
+
+[project.optional-dependencies]
+doc = ['pygraphviz',
+       'sphinx']
+test_minimal = ["pytest>=8", "coverage", "pytest-cov"]
+test = ["rpy2-rinterface[test]",
+        "rpy2-robjects[test]"]
+numpy = ["rpy2-rinterface[numpy]",
+         "rpy2-robjects[numpy]"]
+pandas = ["rpy2-rinterface[numpy]",
+          "rpy2-robjects[numpy]"]
+types = ["mypy", "types-tzlocal"]
+all = ["rpy2-rinterface[all]",
+       "rpy2-robjects[all]"]
+
+[project.urls]
+Homepage = "https://rpy2.github.io"
+Documentation = "https://rpy2.github.io/doc.html"
+Source = "https://github.com/rpy2/rpy2"
+Tracker = "https://github.com/rpy2/rpy2/issue"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["rpy2.*"]
+namespaces = true
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = ["rpy2/tests"]
