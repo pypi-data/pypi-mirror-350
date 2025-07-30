@@ -1,0 +1,5 @@
+#!/bin/bash
+#
+# This will run any command in an application container.
+# If no command is given, it runs the application from docker-compose.yml.
+docker compose run --rm $([ $# -eq 0 ] && echo --service-ports) backend $@

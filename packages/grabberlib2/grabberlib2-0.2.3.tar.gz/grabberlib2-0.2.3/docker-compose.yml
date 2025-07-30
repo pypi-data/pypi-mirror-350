@@ -1,0 +1,36 @@
+services:
+  backend:
+    build:
+      dockerfile: Dockerfile
+      target: development
+    volumes:
+      - ./:/usr/src/app
+      - ./_local/.cache/uv:/root/.cache/uv:rw  # uv local cache
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      GRABBER_DB_HOST: grabber_database
+      GRABBER_DB_PORT: 5432
+      GRABBER_DB_USER: "postgres"
+      GRABBER_DB_PASS: "grabber_db"
+      GRABBER_DB_BASE: "grabber"
+
+  db:
+    image: postgres:13.8-bullseye
+    container_name: db
+    hostname: grabber_database
+    ports:
+      - 5432:5432
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: "grabber_db"
+      POSTGRES_USER: "postgres"
+      POSTGRES_DB: "grabber"
+    volumes:
+    - ./_local/data:/var/lib/postgresql/data:rw
+    healthcheck:
+      test: pg_isready -U postgres
+      interval: 2s
+      timeout: 3s
+      retries: 40
