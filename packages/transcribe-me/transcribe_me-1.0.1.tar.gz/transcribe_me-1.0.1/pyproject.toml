@@ -1,0 +1,73 @@
+[build-system]
+requires = ["setuptools>=80.8.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project.scripts]
+transcribe-me = "transcribe_me.main:main"
+
+[project]
+name = "transcribe-me"
+version = "1.0.1"
+authors = [{ name = "echoHello", email = "bash@echohello.dev" }]
+description = "A CLI tool to transcribe audio files using OpenAI API"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.12"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+]
+dependencies = [
+  "pydub",
+  "tqdm",
+  "pyyaml",
+  "colorama",
+  "halo",
+  "yamale",
+  "tenacity>=0.20.0",
+]
+
+[project.optional-dependencies]
+# Provider-specific dependencies
+openai = ["openai>=1.0.0"]
+assemblyai = ["assemblyai>=0.16.0"]
+all = ["openai>=1.0.0", "assemblyai>=0.16.0"]
+test = [
+  "pytest>=7.0.0",
+  "pytest-cov>=4.0.0",
+  "pytest-mock>=3.10.0",
+  "pytest-xdist>=3.0.0",
+  "coverage[toml]>=6.0.0",
+]
+
+dev = [
+  "transcribe-me[test]",
+  "black>=23.0.0",
+  "isort>=5.0.0",
+  "mypy>=1.0.0",
+  "flake8>=6.0.0",
+  "pre-commit>=3.0.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/echohello-dev/transcribe-me"
+"Bug Tracker" = "https://github.com/echohello-dev/transcribe-me/issues"
+
+[tool.setuptools]
+packages = ["transcribe_me", "transcribe_me.config", "transcribe_me.audio"]
+
+[tool.setuptools.package-data]
+"transcribe_me.config" = ["*.yaml"]
+
+[tool.flake8]
+ignore = ["E226", "E302", "E41"]
+max-line-length = 160
+exclude = ["tests/*"]
+max-complexity = 10
+
+[tool.autopep8]
+max_line_length = 120
+ignore = ["E226", "E302", "E41"]
+in-place = true
+recursive = true
+aggressive = 3
