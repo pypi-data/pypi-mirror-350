@@ -1,0 +1,79 @@
+Metadata-Version: 2.4
+Name: vodo
+Version: 0.3.0
+Summary: A Typer CLI to interact with a Vikunja instance
+Author-email: Mark Pitblado <mark@pitbaldo.me>
+License: Copyright 2025 Mark Pitblado <mark@pitblado.me>
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+        
+Project-URL: Homepage, https://codeberg.org/mark-pitblado/vodo
+Project-URL: Repository, https://codeberg.org/mark-pitblado/vodo
+Project-URL: Issues, https://codeberg.org/mark-pitblado/vodo/issues
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: typer>=0.15.2
+Requires-Dist: httpx
+Requires-Dist: pydantic
+Requires-Dist: tomli
+Requires-Dist: tomli-w
+Requires-Dist: pytest
+Dynamic: license-file
+
+# Vodo
+
+This is a simple command line interface for [vikunja](https://vikunja.io). It is recommended that you use a terminal that has support for nerd fonts and that you have a nerd font installed. I will work on a config option to remove all of the fancy display bells and whistles and just use text for everything, but this is not available at the moment.
+
+![a screenshot of what the tool looks like](https://cdn.markpitblado.me/vodo-screenshot.png)
+
+## Installation
+
+`vodo` is available via [pypi](https://pypi.org)
+
+```shell
+pip install vodo
+```
+
+Or, if you are using [uv](https://docs.astral.sh/uv/)
+
+```shell
+uv tool install vodo
+```
+
+## Usage
+
+The easiest way to see the available options is through the `--help` option. The high-level commands are listed below
+
+| Command | Description                                                                   |
+| ------- | ----------------------------------------------------------------------------- |
+| tasks   | View all tasks. Use the `--done` option to show completed tasks               |
+| view    | View a task by passing the task id as the argument                            |
+| add     | Add a task using the title as an argument. Add other elements through options |
+| edit    | Edit a task view the task id. Interactive.                                    |
+| done    | Mark a task as complete via the task id.                                      |
+
+## Configuration
+
+The application expects there to be configuration variables available at `~/.config/vikunja/config.toml`. I will be adding options to add additional paths in the feature. The file should look like this.
+
+```toml
+api_url = "https://vikunja.example.com" # required
+token = "your_api_token" # required
+due_soon_days = 3 # optional
+```
+
+`due_soon_days` represents the number of days away a due date should be before being highlighted red.
+
+## Contributing
+
+Pull requests and issues are welcome. This repository uses the following:
+
+- uv for package mangement
+- ruff for python formatting and linting
+- mdformat for markdown formatting
+- pre-commit for hooks
