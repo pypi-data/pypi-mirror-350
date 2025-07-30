@@ -1,0 +1,44 @@
+# .github/workflows/deploy_teshq.yaml
+
+name: Publish TESH Query to PyPI
+
+on:
+  push:
+    tags:
+      - 'v*'  # Triggers this workflow only on version tags like v1.2.3, v2.0.0, etc.
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write  # Required for PyPI Trusted Publishing
+      contents: read
+
+    environment:
+      name: pypi  # Optional: Define this environment in your GitHub repository settings for added security
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Ensures tags are available for setuptools-scm to determine the version
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11.10' # You can adjust this to your preferred Python version
+
+      - name: Install dependencies for build & pre-commit
+        run: |
+          python -m pip install --upgrade pip
+          pip install build pre-commit setuptools_scm
+
+      - name: Run pre-commit
+        run: pre-commit run --all-files
+
+      - name: Build package
+        run: python -m build
+
+      - name: Publish to PyPI
+        # This action uses the PyPI_API_TOKEN from the configured environment secrets
+        uses: pypa/gh-action-pypi-publish@release/v1
