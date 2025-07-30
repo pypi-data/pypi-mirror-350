@@ -1,0 +1,100 @@
+[tool.poetry]
+name = "andebox"
+version = "0.95.0"
+description = "Ansible Developers Box"
+authors = ["Alexei Znamensky <russoz@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/russoz-ansible/andebox"
+repository = "https://github.com/russoz-ansible/andebox"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Framework :: Ansible",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: System Administrators",
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Testing",
+    "Topic :: Utilities"
+]
+keywords = [ "ansible", "tox", "vagrant" ]
+packages = [
+    { include = "andeboxlib" }
+]
+
+[tool.poetry.scripts]
+andebox = "andeboxlib.cli:run"
+
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/russoz-ansible/andebox/issues"
+"Source Code" = "https://github.com/russoz-ansible/andebox"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+ansible-core = [
+    { version = "^2.17.4", python = ">=3.12" },
+    { version = "^2.15.0", python = ">=3.11,<3.12" },
+]
+pyyaml = ">=5.4"
+python-vagrant = "^1.0.0"
+fabric = "^3.1.0"
+looseversion = "^1.2.0"
+tox = "^4.5.2"
+ruamel-yaml = "^0.18.6"
+argcomplete = "^3.5.3"
+pytest-diff = "^0.1.14"
+
+[tool.poetry.group.dev.dependencies]
+pytest = ">=7.3.1,<9.0.0"
+pytest-mock = "^3.10.0"
+virtualenv-pyenv = "*"
+pylint = ">=2.17.4,<4.0.0"
+flake8 = ">=6,<8"
+gitpython = ">=3.1.44"
+pre-commit = "^4.2.0"
+python-semantic-release = "^9.21.1"
+commitizen = "^4.8.0"
+
+[tool.poetry.group.docs.dependencies]
+sphinx = "^8.2.3"
+furo = "^2024.8.6"
+myst-parser = "^4.0.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.semantic_release]
+version_variables = [
+    "andeboxlib/cli.py:__version__",
+    "docs/conf.py:release"
+]
+version_toml = [
+    "pyproject.toml:tool.poetry.version",
+    ".cz.toml:tool.commitizen.version"
+]
+branch = "main"
+changelog_file = "CHANGELOG.md"
+build_command = "poetry build"
+dist_path = "dist/"
+upload_to_pypi = true
+upload_to_release = true
+commit_parser = "conventional"
+major_on_zero = true
+tag_format = "v{version}"
+parse_version_from_tag = true
+version_pattern = "v(?P<version>\\d+\\.\\d+\\.\\d+)"
+
+[tool.semantic_release.publish]
+upload_to_vcs_release = true
+
+[tool.semantic_release.remote]
+type = "github"
+repository = "russoz-ansible/andebox"
