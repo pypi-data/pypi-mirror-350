@@ -1,0 +1,178 @@
+Feature selection
+
+import pandas as pd
+
+import numpy as np
+
+from sklearn. feature_selection import SelectKBest
+from sklearn.feature selection import chi2
+
+data =pd.read_csv('Mobile_Data.csv')
+data.head(5)
+
+
+#AlL columns except price range
+X=data.iloc[:,0:20]
+
+#only price range column
+y=data.iloc[:,-1]
+
+
+
+4.	Apply Chi-Square Test filter method to extract top 10 best features. 
+Display the features and their scores after the feature selection method is applied. Write down which features are selected.
+
+solution : 
+
+#apply selectKBest to extract top 10 best features
+bestfeatures=SelectKBest(score_func=chi2,k=10)
+model = bestfeatures.fit(X,y)
+
+dfscores = pd. DataFrame(model.scores_)
+dfcolumns = pd.DataFrame(X.columns)
+
+X = pd.concat([d for d in [dfcolumns, dfscores]], axis=1)
+X
+
+
+Feature Scaling -Normalization and Standardization
+
+
+solution :
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+cols = ['loan_amount', 'interest_rate','installment' ]
+data = pd.read_csv('Loan_Data.csv', usecols = cols)
+
+
+
+
+4.	Apply Standardization. Calculate mean and standard deviation. Interpret the results
+
+
+#Applying Standardization
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+std_data_scaled = scaler.fit_transform(data)
+std data scaled
+
+
+print(std_data_scaled.mean(axis=0))
+print(std_data_scaled.std(axis=0))
+
+
+5.	Apply Normalization. Calculate mean and standard deviation. Interpret the results.
+
+
+Solution:
+#Applying Normalization
+from sklearn.preprocessing import MinMaxScaler
+scaler = MinMaxScaler()
+norm_data_scaled = scaler.fit_transform(data)
+
+norm_data_scaled
+
+print(norm_data_scaled.mean(axis=0))
+print(norm_data_scaled.std(axis=0))0
+
+
+6.	Interpret the results of Standardization and Normalization.
+
+
+# importing the libraries
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+#importing the dataset
+dataset = pd.read_csv('Wine.csv')
+X =dataset.iloc[:,0:13].values
+X
+
+
+y = dataset.iloc[:, 13].values
+y
+
+#splitting the dataset into the training set and Test set
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 42)
+
+#feature Scaling
+from sklearn.preprocessing import StandardScaler
+sc = StandardScaler()
+X_train = sc.fit_transform(X_train)
+X test = sc.transform(X_test)
+
+#Applying LDA
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
+lda = LDA(n_components = 2)
+X train = lda.fit_transform(X_train, y_train)
+X test = lda.transform(X_test)
+
+# Fitting Logistic Regression to the Training Set
+from sklearn.linear_model import LogisticRegression
+classifier = LogisticRegression(random_state = 0)
+classifier.fit(X_train, y_train)
+
+3.	Display confusion matrix and accuracy score and interpret the results.
+solution:
+
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import confusion_matrix
+
+#Predicting the Test set results
+y_pred = classifier.predict(X_test)
+
+#making the Confusion Matrix
+cm = confusion_matrix(y_test, y_pred)
+print(cm)
+print('Accuracy'+" "+ str(accuracy_score(y_test, y_pred)))
+
+
+Principal Component Analysis 
+1.	Given the dataset Wine.csv, perform  Principal Component Analysis(PCA).
+    # importing the libraries
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+#importing the dataset
+dataset = pd.read_csv('Wine.csv')
+X =dataset.iloc[:,0:13].values
+X
+
+
+
+2.	Use logistic regression to predict the results on X_test. .
+
+solution 
+#Applying PCA
+from sklearn.decomposition import PCA
+pca = PCA(n_components = 2)
+X_train = pca.fit_transform(X_train)
+X_test = pca.transform(X_test)
+
+# Fitting Logistic Regression to the Training Set
+from sklearn.linear_model import LogisticRegression
+classifier = LogisticRegression(random_state = 0)
+classifier.fit(X_train, y_train)
+
+3.	Display confusion matrix and accuracy score and interpret the results.
+
+solution:
+
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import confusion_matrix
+
+#Predicting the Test set results
+y_pred = classifier.predict(X_test)
+
+#making the Confusion Matrix
+cm = confusion_matrix(y_test, y_pred)
+print(cm)
+print('Accuracy'+" "+ str(accuracy_score(y_test, y_pred)))
+
+

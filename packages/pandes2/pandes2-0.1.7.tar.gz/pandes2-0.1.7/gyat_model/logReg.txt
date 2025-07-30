@@ -1,0 +1,85 @@
+
+___
+# Logistic Regression with Python
+
+
+To predict a classification- survival or deceased.
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+%matplotlib inline
+
+
+
+## Loading the data
+
+Let's start by reading in the titanic_train.csv file into a pandas dataframe.
+train = pd.read_csv('titanic.csv')
+train.head()
+
+
+
+## Missing Data
+percent_missing =train.isnull().sum() * 100 / len(train)
+result= pd.DataFrame({'cols': train.columns,'percent_missing': percent_missing})
+result.sort_values('percent_missing',inplace=True)
+result
+No Missing Data
+x=train[train['Survived']==0]
+notsurvived =x.count()
+y=train[train['Survived']==1]
+survived =y.count()
+pdsurvived=pd.DataFrame({"Not Survived":notsurvived,"Survived":survived},index=["Not Survived", "Survived"])
+pdsurvived
+train.head()
+train.dropna(inplace=True)
+
+
+
+
+## Converting Categorical Features 
+
+We'll need to convert categorical features to dummy variables using pandas! Otherwise our machine learning algorithm won't be able to directly take in those features as inputs.
+train.info()
+train.drop(['Sex','Name','Ticket'],axis=1,inplace=True)
+train.head()
+Great! Our data is ready for our model!
+
+
+
+
+# Building a Logistic Regression model
+
+Let's start by splitting our data into a training set and test set (there is another test.csv file that you can play around with in case you want to use all this data for training).
+
+
+
+## Train Test Split
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(train.drop('Survived',axis=1), 
+                                                    train['Survived'], test_size=0.30, 
+                                                    random_state=101)
+
+
+
+## Training and Predicting
+from sklearn.linear_model import LogisticRegression
+logmodel = LogisticRegression()
+logmodel.fit(X_train,y_train)
+predictions = logmodel.predict(X_test)
+predictions
+Let's move on to evaluate our model!
+
+
+## Evaluation
+from sklearn import metrics
+confusion_matrix = metrics.confusion_matrix(y_test, predictions)
+
+cm_display = metrics.ConfusionMatrixDisplay(confusion_matrix = confusion_matrix, display_labels = [0, 1])
+
+cm_display.plot()
+plt.show()
+We can check precision,recall,f1-score using classification report!
+from sklearn.metrics import classification_report
+print(classification_report(y_test,predictions))

@@ -1,0 +1,125 @@
+# BANK CUSTOMERS RETIREMENT PREDICTIONS USING SUPPORT VECTOR MACHINES
+
+# STEP #1: PROBLEM STATEMENT
+
+
+You work as a data scientist at a major bank in NYC and you have been tasked to develop a model that can predict whether a customer is able to retire or not based on his/her features. Features are his/her age and net 401K savings (retirement savings in the U.S.). You though that Support Vector Machines can be a great candidate to solve the problem. 
+# STEP #2: IMPORTING DATA
+
+
+
+
+# import libraries 
+import pandas as pd # Import Pandas for data manipulation using dataframes
+import numpy as np # Import Numpy for data statistical analysis 
+import matplotlib.pyplot as plt # Import matplotlib for data visualisation
+import seaborn as sns # Statistical data visualization
+
+
+
+bank_df = pd.read_csv('Bank_Customer_retirement.csv')
+
+
+
+bank_df.shape
+
+bank_df.head()
+
+sns.pairplot(bank_df, hue = 'Retire', vars = ['Age', 'Savings'] )
+As the retirment age nears, the savings also increase.
+
+
+
+
+# STEP #4: MODEL TRAINING 
+bank_df = bank_df.drop(['Customer ID'],axis=1)
+
+
+
+# Let's drop the target label coloumns
+X = bank_df.drop(['Retire'],axis=1)
+X
+
+
+#Applying Standardization
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler() 
+X_data_scaled = scaler.fit_transform(X)
+X_data_scaled
+
+
+
+y = bank_df['Retire']
+y
+
+
+
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X_data_scaled, y, test_size = 0.20, random_state=101)
+
+
+X_train.shape
+
+
+X_test.shape
+
+
+y_train.shape
+
+
+y_test.shape
+
+
+
+
+#8.	Create a SVM model named “svmmodel” and kernel = “linear” with the training data.
+from sklearn.svm import SVC 
+from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import accuracy_score
+
+
+svmmodel1 = SVC(kernel='linear')
+svmmodel1.fit(X_train, y_train).
+
+
+
+
+#9.	Use the svmmodel to make predictions on X_test and store the prediction values in y_pred.
+y_pred = svmmodel1.predict(X_test)
+accuracy_score(y_test, y_pred)
+
+
+cm = confusion_matrix(y_test, y_pred)
+sns.heatmap(cm, annot=True)
+
+
+print(classification_report(y_test, y_pred))
+
+svmmodel2 = SVC(kernel="poly")
+svmmodel2.fit(X_train, y_train)
+
+
+y_pred = svmmodel2.predict(X_test)
+accuracy_score(y_test, y_pred)
+
+
+cm = confusion_matrix(y_test, y_pred)
+sns.heatmap(cm, annot=True)
+
+
+print(classification_report(y_test, y_pred))
+
+svmmodel3=SVC(kernel="rbf")
+svmmodel3.fit(X_train,y_train)
+
+
+y_pred = svmmodel3.predict(X_test)
+accuracy_score(y_test, y_pred)
+
+
+cm = confusion_matrix(y_test, y_pred)
+sns.heatmap(cm, annot=True)
+
+
+print(classification_report(y_test, y_pred))
+

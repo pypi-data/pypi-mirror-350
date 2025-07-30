@@ -1,0 +1,30 @@
+% Start and goal states
+start(1/2/3/4/8/0/7/6/5).
+goal(1/2/3/4/5/6/7/8/0).
+
+% Move definitions
+move(1/2/3/4/8/0/7/6/5, down, 1/2/3/4/8/5/7/6/0, 1).
+move(1/2/3/4/8/5/7/6/0, left, 1/2/3/4/8/5/7/0/6, 1).
+move(1/2/3/4/8/5/7/0/6, up, 1/2/3/4/0/5/7/8/6, 1).
+move(1/2/3/4/0/5/7/8/6, right, 1/2/3/4/5/0/7/8/6, 1).
+move(1/2/3/4/5/0/7/8/6, down, 1/2/3/4/5/6/7/8/0, 1).
+
+% Perform sequence of moves and track cost
+solve :-
+    start(S0),
+    move(S0, M1, S1, C1),
+    write('Move: '), write(M1), write(' -> '), write(S1), write(', Cost: '), write(C1), nl,
+    move(S1, M2, S2, C2),
+    C12 is C1 + C2,
+    write('Move: '), write(M2), write(' -> '), write(S2), write(', Cost: '), write(C12), nl,
+    move(S2, M3, S3, C3),
+    C123 is C12 + C3,
+    write('Move: '), write(M3), write(' -> '), write(S3), write(', Cost: '), write(C123), nl,
+    move(S3, M4, S4, C4),
+    C1234 is C123 + C4,
+    write('Move: '), write(M4), write(' -> '), write(S4), write(', Cost: '), write(C1234), nl,
+    move(S4, M5, S5, C5),
+    TotalCost is C1234 + C5,
+    write('Move: '), write(M5), write(' -> '), write(S5), write(', Cost: '), write(TotalCost), nl,
+    goal(S5),
+    write('Goal reached! Total Cost = '), write(TotalCost), nl.

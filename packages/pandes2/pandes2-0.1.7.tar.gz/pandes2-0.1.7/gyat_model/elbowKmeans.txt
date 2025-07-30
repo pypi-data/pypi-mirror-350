@@ -1,0 +1,76 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+sns.set()
+from sklearn.cluster import KMeans
+
+
+
+data = pd.read_csv("India StatesUTs.csv")
+
+
+data
+
+
+#display the no of rows and columns
+data.shape
+
+
+x = data.iloc[:,1:3]
+x
+
+
+
+kmeansmodel = KMeans(n_clusters=5)
+
+
+kmeansmodel.fit(x)
+
+
+identified_clusters = kmeansmodel.fit_predict(x)
+identified_clusters
+
+
+data_with_clusters = data.copy()
+data_with_clusters['Cluster'] = identified_clusters
+data_with_clusters
+
+
+plt.scatter(data_with_clusters['Longitude'],
+           data_with_clusters['Latitude'],
+           c=data_with_clusters['Cluster'],
+           cmap = 'brg',s = 200)
+plt.xlim(50,100)
+plt.ylim(0,50)
+plt.show()
+
+
+
+
+
+
+wcss = []
+
+for i in range(1,7):
+    kmeans = KMeans(i)
+    kmeans.fit(x)
+    wcss_iter = kmeans.inertia_
+    wcss.append(wcss_iter)
+
+
+
+
+wcss
+
+
+
+
+
+# the elbow method 
+number_cluster = range(1,7)
+plt.plot(number_cluster,wcss)
+plt.title('The Elbow Method')
+plt.xlabel('Number of Clusters')
+plt.ylabel('within-cluster Sum of Squares')
+
