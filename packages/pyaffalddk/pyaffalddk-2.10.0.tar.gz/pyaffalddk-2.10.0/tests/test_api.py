@@ -1,0 +1,100 @@
+import pytest
+from freezegun import freeze_time
+from aiohttp import ClientSession
+from pyaffalddk import GarbageCollection, NAME_LIST, api, const
+from .data import const_tests
+from pathlib import Path
+import pickle
+import json
+from ical.calendar_stream import IcsCalendarStream
+
+
+datadir = Path(__file__).parent/'data'
+
+
+# always sort and overwrite the supported_items.json when running pytest
+for key, vals in const.SUPPORTED_ITEMS.items():
+    const.SUPPORTED_ITEMS[key] = sorted(list(set(vals)), key=str.lower)
+with open(datadir.parents[1] / 'pyaffalddk/supported_items.json', 'w', encoding="utf-8") as fh:
+    json.dump(const.SUPPORTED_ITEMS, fh, indent=4, ensure_ascii=False)
+
+
+@pytest.mark.asyncio
+@freeze_time("2025-05-09")
+async def test_smoketest(capsys, monkeypatch, update=False):
+    with capsys.disabled():
+        async with ClientSession() as session:
+            smokedata = pickle.load((datadir / 'smoketest_garbage_data.p').open('rb'))
+            smokecompare_file = datadir / 'smoketest_fractions.json'
+            with smokecompare_file.open('r') as fh:
+                smokecompare = json.load(fh)
+
+            for name, val in smokedata.items():
+                city = val['city']
+                gc = GarbageCollection(city, session=session, fail=True)
+
+                async def get_data(*args, **kwargs):
+                    return val['data']
+                monkeypatch.setattr(gc._api, "get_garbage_data", get_data)
+                pickups = await gc.get_pickup_data(1111)
+                keys = list(pickups.keys())
+
+                assert set(keys[:-1]).issubset(NAME_LIST)
+                assert keys[-1] == 'next_pickup'
+
+                data = {key: pickups[key].description for key in keys[:-1]}
+                if name not in smokecompare or update:
+                    smokecompare[name] = data
+                    print(f'adding "{name}" to the smoketest compare data')
+                    with smokecompare_file.open('w', encoding="utf-8") as fh:
+                        json.dump(smokecompare, fh, indent=2, ensure_ascii=False)
+                if smokecompare[name] != data:
+                    print(name, city)
+                    print(data)
+                    print(smokecompare[name])
+                assert smokecompare[name] == data
+
+
+def test_type_from_material_cleaning(capsys, monkeypatch):
+    with capsys.disabled():
+        for category, vals in const_tests.MATERIAL_LIST.items():
+            for val in vals:
+                cat = api.get_garbage_type(val, 'test', '1111', fail=False)
+                if cat != category:
+                    print(val, api.clean_fraction_string(val))
+                assert cat == category
+
+        for val in const_tests.NON_MATERIAL_LIST:
+            cat = api.get_garbage_type(val, 'test', '1111', fail=False)
+            assert cat == 'not-supported'
+
+
+def test_type_cleaning(capsys, monkeypatch):
+    with capsys.disabled():
+        for category, vals in const_tests.SUPPORTED_ITEMS.items():
+            for val in vals:
+                cat = api.get_garbage_type(val, 'test', '1111', fail=False)
+                if cat != category:
+                    print(val, api.clean_fraction_string(val))
+                assert cat == category
+
+
+def test_ics(capsys):
+    with capsys.disabled():
+        odense_ics_data = (datadir/'odense_ics.data').read_text()
+        ics = IcsCalendarStream.calendar_from_ics(odense_ics_data)
+        data = odense_ics_data.replace("END:VTIMEZONE", """BEGIN:STANDARD
+DTSTART:19701025T030000
+RRULE:FREQ=YEARLY;BYDAY=-1SU;BYMONTH=10
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+END:STANDARD
+BEGIN:DAYLIGHT
+DTSTART:19700329T020000
+RRULE:FREQ=YEARLY;BYDAY=-1SU;BYMONTH=3
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+END:DAYLIGHT
+END:VTIMEZONE""")
+        ics2 = IcsCalendarStream.calendar_from_ics(data)
+        assert ics.events == ics2.events
