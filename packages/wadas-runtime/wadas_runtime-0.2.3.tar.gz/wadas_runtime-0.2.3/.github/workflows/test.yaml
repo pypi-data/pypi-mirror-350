@@ -1,0 +1,25 @@
+name: Test
+permissions: read-all
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+    - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+    - name: Install libssl
+      run: sudo apt-get install libssl-dev
+    - name: Install library
+      run: pip install -v .[dev]
+    - name: Run tests
+      run: cd tests && pytest -v

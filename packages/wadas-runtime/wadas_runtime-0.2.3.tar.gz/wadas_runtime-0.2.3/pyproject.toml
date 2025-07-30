@@ -1,0 +1,52 @@
+[build-system]
+requires = ["scikit-build-core>=0.10", "pybind11"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "wadas_runtime"
+dynamic = ["version"]
+description = "Wadas Inference Runtime"
+readme = "README.md"
+authors = [{ name = "Alessandro Palla", email = "alessandro.palla@intel.com" }]
+requires-python = ">=3.10"
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+keywords = ['intel core ultra', 'wadas', 'inference', 'runtime', 'openvino']
+dependencies = [
+    'openvino==2025.1',
+    'hwid',
+    'requests'
+]
+
+[project.urls]
+Homepage = "https://github.com/stefanodellosa-personal/wadas-runtime"
+
+[project.optional-dependencies]
+dev = ["pytest", "cryptography", "build", "cibuildwheel", "twine"]
+
+[tool.scikit-build]
+wheel.expand-macos-universal-tags = true
+minimum-version = "build-system.requires"
+metadata.version.provider = "scikit_build_core.metadata.setuptools_scm"
+sdist.include = ["wadas_runtime/_version.py"]
+
+[tool.cibuildwheel]
+build = "cp*"
+archs = ["AMD64"]
+test-requires = "pytest cryptography"
+test-command = "pytest {project}/tests"
+
+[tool.cibuildwheel.linux]
+skip = "*-musllinux*"
+before-all = "yum install -y openssl-devel"
+test-command = "echo 'installed'"
+
+[tool.setuptools_scm]
+write_to = "wadas_runtime/_version.py"
