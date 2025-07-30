@@ -1,0 +1,89 @@
+[build-system]
+requires = [
+    "hatchling >= 1.27.0",
+    "packaging >= 25.0",
+    "setuptools >= 80.8.0",
+    "wheel >= 0.45.1",
+]
+build-backend = "hatchling.build"
+
+[project]
+name = "CSVtoTableNameless"
+version = "v3.0.0.2"
+description = "Simple commandline utility to convert CSV files to searchable and sortable HTML table."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+
+authors = [
+    {name = "NanashiTheNameless"},
+    {name = "NanashiTheNameless", email = "NanashiTheNameless@NamelessNanashi.dev"},
+]
+
+maintainers = [
+    {name = "NanashiTheNameless"},
+    {name = "NanashiTheNameless", email = "NanashiTheNameless@NamelessNanashi.dev"},
+]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14"
+]
+
+requires-python = ">=3.10"
+
+dependencies = [
+    "colorama >= 0.4.6",
+    "jinja2 >= 3.1.6",
+    "six >= 1.17",
+    "unicodecsv >= 0.14.1",
+]
+
+[project.scripts]
+csvtotable = "csvtotable.cli:main"
+
+[project.urls]
+Download = "https://github.com/NanashiTheNameless/csvtotable/releases/latest"
+Homepage = "https://github.com/NanashiTheNameless/csvtotable"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/csvtotable",
+]
+
+exclude = [
+    "samples",
+    "samples/*",
+    "sample",
+    "sample/*",
+    ".github",
+    ".github/*",
+    "_config.yml",
+    ".gitignore"
+]
+
+[tool.hatch.build.targets.wheel]
+packages = [
+    "/csvtotable",
+]
+
+exclude = [
+    "samples",
+    "samples/*",
+    "sample",
+    "sample/*",
+    ".github",
+    ".github/*",
+    "_config.yml",
+    ".gitignore"
+]

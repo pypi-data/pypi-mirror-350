@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>{{ caption }}</title>
+</head>
+<body>
+	<style>
+		body, html {
+			background: #000;
+			margin: 0;
+			font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+		}
+
+		table.dataTable {
+			width: 100%;
+			margin: 0 auto;
+			clear: both;
+			border-collapse: separate;
+			border-spacing: 0;
+			background: #000;
+		}
+
+		table.dataTable thead th,
+		table.dataTable tfoot th {
+			font-weight: bold;
+		}
+
+		table.dataTable thead th,
+		table.dataTable thead td {
+			padding: 10px 18px;
+			border-bottom: 1px solid #111;
+		}
+
+		table.dataTable thead th:active,
+		table.dataTable thead td:active {
+			outline: none;
+		}
+
+		table.dataTable tfoot th,
+		table.dataTable tfoot td {
+			padding: 10px 18px 6px 18px;
+			border-top: 1px solid #111;
+		}
+
+		table.dataTable tbody th,
+		table.dataTable tbody td {
+			padding: 8px 10px;
+			font-size: 18px;
+		}
+
+		#table_wrapper {
+			margin: 20px 40px;
+		}
+
+		table tr th,
+		table tr td {
+			text-align: left;
+			white-space: nowrap;
+			background: #000;
+		}
+
+		#table_wrapper .dataTables_length,
+		#table_wrapper .dataTables_filter {
+			margin-bottom: 20px;
+			font-size: 10px;
+			text-transform: uppercase;
+			float: right;
+			margin-left: 20px;
+			color: #fff;
+		}
+
+		#table_wrapper .dataTables_length label,
+		#table_wrapper .dataTables_filter label,
+		#table_wrapper .dataTables_paginate a,
+		#table_wrapper .dataTables_info {
+			color: #fff !important;
+		}
+
+		#table_wrapper .dataTables_filter input {
+			margin: 0 3px;
+		}
+
+		#table_wrapper .dataTables_paginate a,
+		#table_wrapper .dataTables_info {
+			font-size: 10px;
+			text-transform: uppercase;
+		}
+
+		#table_wrapper .dataTables_paginate {
+			float: right;
+		}
+
+		#table_wrapper .dataTables_paginate,
+		#table_wrapper .dataTables_info {
+			display: inline-block;
+			margin-top: 10px;
+		}
+
+		#table_wrapper .dataTables_paginate a {
+			padding: 3px 6px;
+			margin: 0 5px;
+			cursor: pointer;
+		}
+
+		#table_wrapper .dataTables_paginate a.current {
+			color: #fff !important;
+			background: #039;
+		}
+
+		#table_wrapper table {
+			font-size: 12px;
+			background: #000;
+			border-collapse: collapse;
+			text-align: left;
+			width: 100%;
+		}
+
+		#table_wrapper table caption {
+			font-size: 20px;
+			color: #039;
+			text-align: left;
+			margin-bottom: 10px;
+		}
+
+		#table_wrapper table th {
+			font-size: 14px;
+			font-weight: normal;
+			color: #fff;
+			padding: 10px 8px;
+			border-bottom: 2px solid #6678b1;
+			position: relative;
+		}
+
+		#table_wrapper .dataTables_scrollHead th.sorting,
+		#table_wrapper .dataTables_scrollHead th.sorting_asc,
+		#table_wrapper .dataTables_scrollHead th.sorting_desc {
+			position: relative;
+			cursor: pointer;
+		}
+
+		#table_wrapper .dataTables_scrollHead th.sorting:before,
+		#table_wrapper .dataTables_scrollHead th.sorting_asc:before,
+		#table_wrapper .dataTables_scrollHead th.sorting:after,
+		#table_wrapper .dataTables_scrollHead th.sorting_desc:after {
+			border: 4px solid transparent;
+			position: absolute;
+			display: block;
+			content: "";
+			height: 0;
+			right: 8px;
+			top: 50%;
+			width: 0;
+			opacity: 0.4;
+		}
+
+		#table_wrapper .dataTables_scrollHead th.sorting:before,
+		#table_wrapper .dataTables_scrollHead th.sorting_asc:before {
+			border-bottom-color: #fff;
+			margin-top: -9px;
+		}
+
+		#table_wrapper .dataTables_scrollHead th.sorting:after,
+		#table_wrapper .dataTables_scrollHead th.sorting_desc:after {
+			border-top-color: #fff;
+			margin-top: 1px;
+		}
+
+		#table_wrapper table td {
+			border-bottom: 1px solid #ccc;
+			color: #fff;
+			padding: 6px 8px;
+		}
+
+		#table_wrapper table tbody tr:hover td {
+			color: #fff;
+		}
+
+		.dt-buttons {
+			display: inline-block;
+		}
+
+		.dt-button {
+			color: #fff;
+			background: #039;
+			margin-right: 10px;
+			padding: 6px 12px;
+			cursor: pointer;
+			-webkit-transition: all 60ms ease-in-out;
+			transition: all 60ms ease-in-out;
+			text-align: center;
+			white-space: nowrap;
+			text-decoration: none !important;
+			text-transform: none;
+			text-transform: capitalize;
+			border: 0 none;
+			border-radius: 2px;
+			font-size: 11px;
+			line-height: 1.3;
+			text-transform: uppercase;
+		}
+
+		.dt-button-info {
+			padding: 50px;
+			color: #fff;
+			text-align: center;
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: #000;
+		}
+
+		.dt-button-info h2 {
+			display: none;
+		}
+	</style>
+	<link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.min.css" integrity="sha512-JbyOZyqfBvhWNzVXZy2zUX9Hhp8+JGL15feGcRq1JnS1ZIxEdECKSqT+eLuZ8BvvzGHkxrBdu+EuJLdHk+kQ8g==" crossorigin="anonymous" referrerpolicy="no-referrer">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdn.datatables.net/1.13.11/js/jquery.dataTables.min.js" integrity="sha512-ME09OuJ7vAiiGniL5afkFsLIAovIAVKJ54KdAAjGJc/1bO1xQHOHKd4iXRBNy08Q7G6O9ZJnNrDlDTZyJHkmXw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdn.datatables.net/colreorder/2.0.4/js/dataTables.colReorder.min.js" integrity="sha512-wadfG4RtXVt4NvaySelD2iEvlE4keAk0f6Fh1ErL8WRKO5rbYUT92ihDz9ywE4LJmFU+TcG0h3oUbqKNMmRqaA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdn.datatables.net/responsive/3.0.3/js/dataTables.responsive.min.js" integrity="sha512-u1mnIiTAgT7jqcY7ceLMMYw3zIuqVV2yzCoSh8DRAS1810rigtE9m7NU7kitlKkwidKyVw+sgDUgq9jcR0OzsQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdn.datatables.net/rowgroup/1.5.1/js/dataTables.rowGroup.min.js" integrity="sha512-pNSK+y1e8LeDFmcSC7jlJb4p2Pbfw1Oqkv1HPfVDanDPO5B+i7rcYhYAXi6DfqEGDFwOCZTqYsVkBn1UwEYF2g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdn.datatables.net/rowreorder/1.5.0/js/dataTables.rowReorder.min.js" integrity="sha512-6J+21ReiTrC4g+crR1BEBBo6UBh4We27kdlePXIAXh9X3Mtvx1oyuzFvg+YSHpCls/bzzKHHcLTHwJFqgzam5Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdn.datatables.net/searchbuilder/1.8.1/js/dataTables.searchBuilder.min.js" integrity="sha512-Y7joBQYsg43OcCX81j4BOBXHeLPANF6OlmU+wrFrczDrqo9vlQCv1ts1hZ2j2U+fj6xXXWzZeWWlRH2PYGOySg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdn.datatables.net/searchpanes/2.3.3/js/dataTables.searchPanes.min.js" integrity="sha512-093zb9o6WzT+iN4YPprDHN/WE6025cIKjHyVq5jcRz2QKWd/q0c3ROAaRMBFfGbZ9G8oen4ccAX2AmffMptWRg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdn.datatables.net/staterestore/1.4.1/js/dataTables.stateRestore.min.js" integrity="sha512-3Pp7oWySsFEj5onz+KptsGBkBUHzQylxnjsMK1GgiIuwISwuY93y97Ckzkq+/MkO/vSlvKX9TP5SODBPVMR+Bg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	{%- if enable_export %}
+	<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js" integrity="sha512-ch0uyn56lCAshiK9KuwjUOGvAZ6w9CgFAGxU1Eo0KPphiNIEb7LEXnFFY4g6OH9mPYPDG7u5YAU2gMz3SXZ92w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js" integrity="sha512-kpueMe3NSqueH05VXweXpFEKvCKV4HkFu/IY3XRNYrOuJd6Aucmr7++JDBNXNP/WvKvEFV0f8O2Vy73siwiZ9Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js" integrity="sha512-8ZglfBJS5iJoRtzAJHcGquQk6e99kCUENFwbTijONUtnZkE3THiq3Nr6OMfz71tmu4Gx6jw0CG5SduBQyg57vg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.colVis.min.js" integrity="sha512-uNnGMlzP0D6PEy6m0iF6UHsZ+xlOkO2wc+kMN7LMLWVym6fCQzD8tntcoS0VnaMcpRQhPhrnrMY9jMkxAkCzkQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" integrity="sha512-XMVd28F1oH/O71fzwBnV7HucLxVwtxf26XV8P4wPk26EDxuGZ91N8bsOttmnomcCD3CS5ZMRL50H0GgOHvegtg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.12/pdfmake.min.js" integrity="sha512-axXaF5grZBaYl7qiM6OMHgsgVXdSLxqq0w7F4CQxuFyrcPmn0JfnqsOtYHUun80g6mRRdvJDrTCyL8LQqBOt/Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.12/vfs_fonts.min.js" integrity="sha512-EFlschXPq/G5zunGPRSYqazR1CMKj0cQc8v6eMrQwybxgIbhsfoO5NAMQX3xFDQIbFlViv53o7Hy+yCWw6iZxA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	{%- endif %}
+	{%- if virtual_scroll %}
+	<script src="https://cdn.datatables.net/scroller/2.4.3/js/dataTables.scroller.min.js" integrity="sha512-bfSzsN8iShTe3z3/mi8xNYAbFXHp43w5Fr20nnlZ3VSeoRzqHPmVjBOinP4zNWK0k5ZfQtYMdBPGVS6U9Dp0Cw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	{%- endif %}
+	<table id="table">
+		{%- if caption %}
+		<caption>{{ caption }}</caption>
+		{%- endif %}
+	</table>
+	<script>
+		$(document).ready(function() {
+			$("#table").DataTable({{ datatable_options | safe }});
+		});
+	</script>
+</body>
+</html>
