@@ -1,0 +1,40 @@
+name: test
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version:
+          - "3.11"
+          - "3.12"
+          - "3.13"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+      - name: Install the project dependencies
+        run: uv sync --only-dev
+      - name: Run the tests
+        run: uv run pytest tests --cov=dfttoolkit --cov-report xml
+      - name: Coveralls
+        if: matrix.python-version == '3.13'
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          compare-ref: ${{ github.event.repository.default_branch }}
