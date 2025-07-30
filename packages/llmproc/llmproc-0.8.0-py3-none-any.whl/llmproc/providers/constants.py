@@ -1,0 +1,26 @@
+"""Constants for LLMProc providers."""
+
+# Provider identifiers
+PROVIDER_OPENAI = "openai"
+PROVIDER_ANTHROPIC = "anthropic"
+PROVIDER_ANTHROPIC_VERTEX = "anthropic_vertex"
+PROVIDER_GEMINI = "gemini"
+PROVIDER_GEMINI_VERTEX = "gemini_vertex"
+
+# Set of all supported providers
+SUPPORTED_PROVIDERS = {
+    PROVIDER_OPENAI,
+    PROVIDER_ANTHROPIC,
+    PROVIDER_ANTHROPIC_VERTEX,
+    PROVIDER_GEMINI,
+    PROVIDER_GEMINI_VERTEX,
+}
+
+# Set of Anthropic providers (both direct API and Vertex AI)
+ANTHROPIC_PROVIDERS = {PROVIDER_ANTHROPIC, PROVIDER_ANTHROPIC_VERTEX}
+
+# Set of Gemini providers
+GEMINI_PROVIDERS = {PROVIDER_GEMINI, PROVIDER_GEMINI_VERTEX}
+
+# Set of Vertex AI providers
+VERTEX_PROVIDERS = {PROVIDER_ANTHROPIC_VERTEX, PROVIDER_GEMINI_VERTEX}
