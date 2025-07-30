@@ -1,0 +1,66 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tno.quantum.problems.n_minus_1"
+description = "N-1 quantum based solver "
+readme = "README.md"
+authors = [{ name = "TNO Quantum Code Lab", email = "tnoquantum@tno.nl" }]
+maintainers = [{ name = "TNO Quantum Code Lab", email = "tnoquantum@tno.nl" }]
+keywords = [
+    "TNO",
+    "Quantum",
+    "N-1 problem",
+    "QUBO",
+    "Quantum Annealing",
+    "Gate based",
+]
+license = { text = "Apache License, Version 2.0" }
+classifiers = [
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Science/Research",
+    "Typing :: Typed",
+]
+dynamic = ["version"]
+requires-python = ">=3.9"
+dependencies = [
+    "numpy",
+    "networkx",
+    "matplotlib",
+    "scipy",
+    "pandas",
+    "tno.quantum.optimization.qubo[dwave]~=1.0",
+    "qiskit>=1.0.1",
+    "qiskit_aer>=0.13.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/TNO-Quantum/"
+Documentation = "https://github.com/TNO-Quantum/documentation"
+Source = "https://github.com/TNO-Quantum/problems.n_minus_one"
+
+[project.optional-dependencies]
+tests = ["pytest>=8.1.1", "pytest-cov>=4.1.0", "tomlkit"]
+
+[tool.setuptools]
+platforms = ["any"]
+
+[tool.setuptools.dynamic]
+version = { attr = "tno.quantum.problems.n_minus_1.__version__" }
+
+[tool.setuptools.package-data]
+"*" = ["py.typed"]
+"tno.quantum.problems.n_minus_1.quantum_annealing.datasets._data" = [
+    "small_dataset.gml.gz",
+    "medium_dataset.gml.gz",
+]
