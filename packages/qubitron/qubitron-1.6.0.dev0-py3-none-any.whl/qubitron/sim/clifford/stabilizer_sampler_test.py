@@ -1,0 +1,39 @@
+# Copyright 2020 The Qubitron Developers
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+from __future__ import annotations
+
+import numpy as np
+
+import qubitron
+
+
+def test_produces_samples() -> None:
+    a, b = qubitron.LineQubit.range(2)
+    c = qubitron.Circuit(qubitron.H(a), qubitron.CNOT(a, b), qubitron.measure(a, key='a'), qubitron.measure(b, key='b'))
+
+    result = qubitron.StabilizerSampler().sample(c, repetitions=100)
+    assert 5 < sum(result['a']) < 95
+    assert np.all(result['a'] ^ result['b'] == 0)
+
+
+def test_reset() -> None:
+    q = qubitron.LineQubit(0)
+    sampler = qubitron.StabilizerSampler()
+    c = qubitron.Circuit(qubitron.X(q), qubitron.reset(q), qubitron.measure(q))
+    assert sampler.sample(c)['q(0)'][0] == 0
+    c = qubitron.Circuit(qubitron.H(q), qubitron.reset(q), qubitron.measure(q))
+    assert sampler.sample(c)['q(0)'][0] == 0
+    c = qubitron.Circuit(qubitron.reset(q), qubitron.measure(q))
+    assert sampler.sample(c)['q(0)'][0] == 0
