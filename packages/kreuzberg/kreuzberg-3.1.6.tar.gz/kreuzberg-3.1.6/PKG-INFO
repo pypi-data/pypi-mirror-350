@@ -1,0 +1,173 @@
+Metadata-Version: 2.4
+Name: kreuzberg
+Version: 3.1.6
+Summary: A text extraction library supporting PDFs, images, office documents and more
+Author-email: Na'aman Hirschfeld <nhirschfed@gmail.com>
+License: MIT
+Project-URL: homepage, https://github.com/Goldziher/kreuzberg
+Keywords: document-processing,image-to-text,ocr,pandoc,pdf-extraction,rag,table-extraction,tesseract,text-extraction,text-processing
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Text Processing :: General
+Classifier: Topic :: Utilities
+Classifier: Typing :: Typed
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: anyio>=4.9.0
+Requires-Dist: charset-normalizer>=3.4.2
+Requires-Dist: exceptiongroup>=1.2.2; python_version < "3.11"
+Requires-Dist: html-to-markdown>=1.3.2
+Requires-Dist: playa-pdf==0.4.3
+Requires-Dist: pypdfium2==4.30.0
+Requires-Dist: python-calamine>=0.3.2
+Requires-Dist: python-pptx>=1.0.2
+Requires-Dist: typing-extensions>=4.13.2; python_version < "3.12"
+Provides-Extra: all
+Requires-Dist: easyocr>=1.7.2; extra == "all"
+Requires-Dist: gmft>=0.4.1; extra == "all"
+Requires-Dist: paddleocr>=2.10.0; extra == "all"
+Requires-Dist: paddlepaddle>=3.0.0; extra == "all"
+Requires-Dist: semantic-text-splitter>=0.26.0; extra == "all"
+Requires-Dist: setuptools>=80.4.0; extra == "all"
+Provides-Extra: chunking
+Requires-Dist: semantic-text-splitter>=0.26.0; extra == "chunking"
+Provides-Extra: easyocr
+Requires-Dist: easyocr>=1.7.2; extra == "easyocr"
+Provides-Extra: gmft
+Requires-Dist: gmft>=0.4.1; extra == "gmft"
+Provides-Extra: paddleocr
+Requires-Dist: paddleocr>=2.10.0; extra == "paddleocr"
+Requires-Dist: paddlepaddle>=3.0.0; extra == "paddleocr"
+Requires-Dist: setuptools>=80.4.0; extra == "paddleocr"
+Dynamic: license-file
+
+# Kreuzberg
+
+[![PyPI version](https://badge.fury.io/py/kreuzberg.svg)](https://badge.fury.io/py/kreuzberg)
+[![Documentation](https://img.shields.io/badge/docs-GitHub_Pages-blue)](https://goldziher.github.io/kreuzberg/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+Kreuzberg is a Python library for text extraction from documents. It provides a unified interface for extracting text from PDFs, images, office documents, and more, with both async and sync APIs.
+
+## Why Kreuzberg?
+
+- **Simple and Hassle-Free**: Clean API that just works, without complex configuration
+- **Local Processing**: No external API calls or cloud dependencies required
+- **Resource Efficient**: Lightweight processing without GPU requirements
+- **Format Support**: Comprehensive support for documents, images, and text formats
+- **Multiple OCR Engines**: Support for Tesseract, EasyOCR, and PaddleOCR
+- **Metadata Extraction**: Get document metadata alongside text content
+- **Table Extraction**: Extract tables from documents using the excellent GMFT library
+- **Modern Python**: Built with async/await, type hints, and a functional-first approach
+- **Permissive OSS**: MIT licensed with permissively licensed dependencies
+
+## Quick Start
+
+```bash
+pip install kreuzberg
+```
+
+Install pandoc:
+
+```bash
+# Ubuntu/Debian
+sudo apt-get install tesseract-ocr pandoc
+
+# macOS
+brew install tesseract pandoc
+
+# Windows
+choco install -y tesseract pandoc
+```
+
+The tesseract OCR engine is the default OCR engine. You can decide not to use it - and then either use one of the two alternative OCR engines, or have no OCR at all.
+
+### Alternative OCR engines
+
+```bash
+# Install with EasyOCR support
+pip install "kreuzberg[easyocr]"
+
+# Install with PaddleOCR support
+pip install "kreuzberg[paddleocr]"
+```
+
+## Quick Example
+
+```python
+import asyncio
+from kreuzberg import extract_file
+
+async def main():
+    # Extract text from a PDF
+    result = await extract_file("document.pdf")
+    print(result.content)
+
+    # Extract text from an image
+    result = await extract_file("scan.jpg")
+    print(result.content)
+
+    # Extract text from a Word document
+    result = await extract_file("report.docx")
+    print(result.content)
+
+asyncio.run(main())
+```
+
+## Documentation
+
+For comprehensive documentation, visit our [GitHub Pages](https://goldziher.github.io/kreuzberg/):
+
+- [Getting Started](https://goldziher.github.io/kreuzberg/getting-started/) - Installation and basic usage
+- [User Guide](https://goldziher.github.io/kreuzberg/user-guide/) - In-depth usage information
+- [API Reference](https://goldziher.github.io/kreuzberg/api-reference/) - Detailed API documentation
+- [Examples](https://goldziher.github.io/kreuzberg/examples/) - Code examples for common use cases
+- [OCR Configuration](https://goldziher.github.io/kreuzberg/user-guide/ocr-configuration/) - Configure OCR engines
+- [OCR Backends](https://goldziher.github.io/kreuzberg/user-guide/ocr-backends/) - Choose the right OCR engine
+
+## Supported Formats
+
+Kreuzberg supports a wide range of document formats:
+
+- **Documents**: PDF, DOCX, RTF, TXT, EPUB, etc.
+- **Images**: JPG, PNG, TIFF, BMP, GIF, etc.
+- **Spreadsheets**: XLSX, XLS, CSV, etc.
+- **Presentations**: PPTX, PPT, etc.
+- **Web Content**: HTML, XML, etc.
+
+## OCR Engines
+
+Kreuzberg supports multiple OCR engines:
+
+- **Tesseract** (Default): Lightweight, fast startup, requires system installation
+- **EasyOCR**: Good for many languages, pure Python, but downloads models on first use
+- **PaddleOCR**: Excellent for Asian languages, pure Python, but downloads models on first use
+
+For comparison and selection guidance, see the [OCR Backends](https://goldziher.github.io/kreuzberg/user-guide/ocr-backends/) documentation.
+
+## Contribution
+
+This library is open to contribution. Feel free to open issues or submit PRs. It's better to discuss issues before submitting PRs to avoid disappointment.
+
+### Local Development
+
+- Clone the repo
+- Install the system dependencies
+- Install the full dependencies with `uv sync`
+- Install the pre-commit hooks with: `pre-commit install && pre-commit install --hook-type commit-msg`
+- Make your changes and submit a PR
+
+## License
+
+This library is released under the MIT license.
