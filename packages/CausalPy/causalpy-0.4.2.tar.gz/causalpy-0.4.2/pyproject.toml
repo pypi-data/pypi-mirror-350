@@ -1,0 +1,132 @@
+[build-system]
+# Minimum requirements for the build system to execute.
+build-backend = "setuptools.build_meta"
+requires = ["setuptools>=61.0"]
+
+# This is configuration specific to the `setuptools` build backend.
+# If you are using a different build backend, you will need to change this.
+[tool.setuptools.packages.find]
+exclude = ["causalpy.test*", "docs*"]
+
+[tool.setuptools.package-data]
+"causalpy.data" = ["*.csv"]
+
+[project]
+name = "CausalPy"
+version = "0.4.2"
+description = "Causal inference for quasi-experiments in Python"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [{ name = "Ben Vincent", email = "ben.vincent@pymc-labs.com" }]
+requires-python = ">=3.10"
+
+# This field lists other packages that your project depends on to run.
+# Any package you put here will be installed by pip when your project is
+# installed, so they must be valid existing projects.
+#
+# For an analysis of this field vs pip's requirements files see:
+# https://packaging.python.org/discussions/install-requires-vs-requirements/
+dependencies = [
+    "arviz>=0.14.0",
+    "graphviz",
+    "ipython!=8.7.0",
+    "matplotlib>=3.5.3",
+    "numpy",
+    "pandas",
+    "patsy",
+    "pymc>=5.15.1",
+    "scikit-learn>=1",
+    "scipy",
+    "seaborn>=0.11.2",
+    "statsmodels",
+    "xarray>=v2022.11.0",
+]
+
+# List additional groups of dependencies here (e.g. development dependencies). Users
+# will be able to install these using the "extras" syntax, for example:
+#
+#   $ pip install causalpy[dev]
+#
+# Similar to `dependencies` above, these must be valid existing projects.
+[project.optional-dependencies]
+dev = ["pathlib", "pre-commit", "twine", "interrogate", "codespell", "nbformat", "nbconvert"]
+docs = [
+    "ipykernel",
+    "daft",
+    "linkify-it-py",
+    "myst-nb<=1.0.0",
+    "pathlib",
+    "pylint",
+    "sphinx",
+    "sphinx-autodoc-typehints",
+    "sphinx_autodoc_defaultargs",
+    "labs-sphinx-theme",
+    "sphinx-copybutton",
+    "sphinx-rtd-theme",
+    "statsmodels",
+    "sphinxcontrib-bibtex",
+    "sphinx-notfound-page",
+    "ipywidgets",
+    "sphinx-design",
+]
+lint = ["interrogate", "pre-commit", "ruff"]
+test = ["pytest", "pytest-cov", "codespell", "nbformat", "nbconvert"]
+
+[metadata]
+description-file = 'README.md'
+license_files = 'LICENSE'
+
+[project.urls]
+Homepage = "https://github.com/pymc-labs/CausalPy"
+"Bug Reports" = "https://github.com/pymc-labs/CausalPy/issues"
+"Source" = "https://github.com/pymc-labs/CausalPy"
+
+[tool.pytest.ini_options]
+addopts = [
+    "-vv",
+    "--strict-markers",
+    "--strict-config",
+    "--cov=causalpy",
+    "--cov-report=term-missing",
+    "--doctest-modules",
+]
+testpaths = "causalpy/tests"
+markers = [
+    "integration: mark as an integration test.",
+    "slow: mark test as slow.",
+]
+
+[tool.interrogate]
+ignore-init-method = true
+ignore-init-module = true
+ignore-magic = false
+ignore-semiprivate = false
+ignore-private = false
+ignore-property-decorators = false
+ignore-module = false
+ignore-nested-functions = false
+ignore-nested-classes = true
+ignore-setters = false
+fail-under = 85
+exclude = ["setup.py", "docs", "build", "dist"]
+ignore-regex = ["^get$", "^mock_.*", ".*BaseClass.*"]
+# possible values: 0 (minimal output), 1 (-v), 2 (-vv)
+verbose = 1
+quiet = false
+whitelist-regex = []
+color = true
+omit-covered-files = false
+generate-badge = "docs/source/_static/"
+badge-format = "svg"
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.ruff.lint]
+extend-select = [
+    "I", # isort
+]
+
+[tool.codespell]
+ignore-words = "./docs/source/.codespell/codespell-whitelist.txt"
+skip = "*.ipynb,*.csv,pyproject.toml,docs/source/.codespell/codespell-whitelist.txt"
