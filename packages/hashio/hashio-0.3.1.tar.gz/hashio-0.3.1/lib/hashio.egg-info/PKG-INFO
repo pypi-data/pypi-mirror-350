@@ -1,0 +1,147 @@
+Metadata-Version: 2.1
+Name: hashio
+Version: 0.3.1
+Summary: Custom file and directory checksum tool
+Home-page: http://github.com/rsgalloway/hashio
+Author: Ryan Galloway
+Author-email: ryan@rsgalloway.com
+License: BSD 3-Clause License
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: lxml==5.3.0
+Requires-Dist: tqdm==4.67.1
+Requires-Dist: xxhash==3.5.0
+
+hashio
+======
+
+Custom file and directory checksum and verification tool.
+
+## Features
+
+- multiple hash algos: c4, crc32, md5, sha256, sha512, xxh64
+- recursively runs checksums on files in directory trees
+- ignores predefined file name patterns
+- caches results for better performance
+
+## Installation
+
+The easiest way to install:
+
+```bash
+$ pip install -U hashio
+```
+
+## Usage
+
+Checksum one or more files or directories using one or more hash algorithms
+(default is xxh64):
+
+```bash
+$ hashio <PATH> [--algo <ALGO>]
+```
+
+Recursively checksum and gather metadata all the files in a dir tree, and output
+results to a hash.json file:
+
+```bash
+$ hashio <DIR>
+```
+
+#### Quick usage with uvx
+
+You can run `hashio` instantly using uvx:
+
+```bash
+$ uvx hashio <DIR>
+```
+
+This downloads and runs `hashio` in a temporary, isolated environment — no
+installs, no virtualenvs, no cleanup needed. Perfect for quick hash verification
+tasks on large directories.
+
+#### Ignorable files
+
+Note that files matching patterns defined in `config.IGNORABLE` will be skipped,
+unless using the `--force` option:
+
+```bash
+$ hashio .git
+path is ignorable: .git
+$ hashio .git --force
+hashing files: 442file [00:00, 1101.47file/s]
+```
+
+Verify paths in previously generated hash file by comparing stored mtimes (if
+available) or regenerated hash values if mtimes are missing or different:
+
+```bash
+$ hashio --verify hash.json
+```
+
+#### Portability
+
+To make a portable hash file, use `--start` to make the paths relative:
+
+```bash
+$ hashio <DIR> --start <START> -o hash.json
+```
+
+To verify the data in the hash file, run hashio from the parent dir of the data,
+or set `--start` to the parent dir:
+
+```bash
+$ hashio --verify hash.json
+```
+
+## Environment
+
+The following environment variables are supported, and default settings are in
+the config.py module. 
+
+| Variable      | Description |
+|---------------|-------------|
+| $BUF_SIZE     | chunk size in bytes when reading files |
+| $HASHIO_ALGO  | default hashing algorithm to use |
+| $HASHIO_FILE  | default hash file location |
+| $LOG_LEVEL    | logging level to use (DEBUG, INFO, etc) |
+| $MAX_PROCS    | max number hash processes to spawn |
+
+Optionally, modify the `hashio.env` file if using [envstack](https://github.com/rsgalloway/envstack),
+or create a new env file:
+
+```bash
+$ cp hashio.env debug.env
+$ vi debug.env  # make edits
+$ ./debug.env -- hashio
+```
+
+## Python API
+
+Generate a `hash.json` file for a given path (Default is the current working
+directory):
+
+```python
+from hashio.worker import HashWorker
+worker = HashWorker(path, outfile="hash.json")
+worker.run()
+```
+
+Verify pre-generated checksums stored in a `hash.json` file:
+
+```python
+from hashio.encoder import verify_checksums
+for algo, value, miss in verify_checksums("hash.json"):
+    print("{0} {1}".format(algo, miss))
+```
