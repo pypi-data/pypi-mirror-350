@@ -1,0 +1,38 @@
+name: Run Notebooks
+
+# Test on all pushes, except when the push is literally just a tag (because we
+# tag automatically via CI, and therefore there's no extra code in that push).
+# Also, only test on pull requests into master/dev.
+on:
+  push:
+    tags-ignore:
+      - 'v*'
+  pull_request:
+    branches:
+      - 'main'
+
+jobs:
+  notebooks:
+    name: Running Docs Notebooks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+        with:
+          fetch-depth: 1
+      - uses: mpi4py/setup-mpi@v1
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install
+        run: |
+          echo $(which pip)
+          pip install .[test] papermill jupyter ipykernel
+
+      - name: Install ipykernel
+        run: python -m ipykernel install --user --name matvis --display-name "matvis"
+
+      - name: Run Notebooks
+        run: |
+          papermill -k matvis docs/tutorials/matvis_tutorial.ipynb tmp.ipynb
