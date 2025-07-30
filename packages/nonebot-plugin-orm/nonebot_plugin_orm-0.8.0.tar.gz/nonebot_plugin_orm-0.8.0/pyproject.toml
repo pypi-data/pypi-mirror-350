@@ -1,0 +1,107 @@
+[project]
+name = "nonebot-plugin-orm"
+version = "0.8.0"
+description = "SQLAlchemy ORM support for nonebot"
+authors = [
+    { name = "yanyongyu", email = "yyy@nonebot.dev" },
+    { name = "ProgramRipper", email = "programripper@foxmail.com" },
+]
+dependencies = [
+    "alembic~=1.16",
+    "click~=8.1",
+    "importlib-metadata>=4.6; python_version < \"3.10\"",
+    "importlib-resources>=5.12; python_version < \"3.12\"",
+    "nonebot-plugin-localstore~=0.7",
+    "nonebot2~=2.4",
+    "sqlalchemy~=2.0",
+    "typing-extensions~=4.13",
+]
+requires-python = ">=3.9,<4.0"
+readme = "README.md"
+keywords = [
+    "nonebot",
+    "orm",
+    "sqlalchemy",
+]
+
+[project.license]
+text = "MIT"
+
+[project.urls]
+homepage = "https://github.com/nonebot/plugin-orm"
+repository = "https://github.com/nonebot/plugin-orm"
+documentation = "https://github.com/nonebot/plugin-orm"
+
+[project.optional-dependencies]
+default = [
+    "sqlalchemy[aiosqlite]",
+]
+mysql = [
+    "sqlalchemy[aiomysql]",
+]
+asyncmy = [
+    "sqlalchemy[asyncmy]",
+]
+aiomysql = [
+    "sqlalchemy[aiomysql]",
+]
+postgresql = [
+    "sqlalchemy[postgresql-psycopgbinary]",
+]
+psycopg = [
+    "sqlalchemy[postgresql-psycopgbinary]",
+]
+asyncpg = [
+    "sqlalchemy[postgresql-asyncpg]",
+]
+sqlite = [
+    "sqlalchemy[aiosqlite]",
+]
+aiosqlite = [
+    "sqlalchemy[aiosqlite]",
+]
+
+[project.entry-points.nb_scripts]
+orm = "nonebot_plugin_orm.__main__:main"
+
+[build-system]
+requires = [
+    "pdm-backend",
+]
+build-backend = "pdm.backend"
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "black~=24.2",
+    "importlib-metadata~=7.0",
+    "importlib-resources~=6.1",
+    "isort~=5.13",
+    "nonemoji~=0.1",
+    "pre-commit~=3.5",
+    "pycln~=2.4",
+    "sqlalchemy[aiosqlite]",
+    "typing-extensions~=4.9",
+]
+
+[tool.black]
+line-length = 88
+include = "\\.pyi?$"
+extend-exclude = ""
+
+[tool.isort]
+profile = "black"
+line_length = 88
+length_sort = true
+skip_gitignore = true
+force_sort_within_sections = true
+extra_standard_library = [
+    "importlib_metadata",
+    "importlib_resources",
+    "typing_extensions",
+]
+
+[tool.pycln]
+path = "."
+
+[tool.pyright]
+pythonVersion = "3.9"
