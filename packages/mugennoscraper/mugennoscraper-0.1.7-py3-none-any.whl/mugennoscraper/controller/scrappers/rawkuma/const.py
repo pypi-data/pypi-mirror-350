@@ -1,0 +1,5 @@
+URL = "https://rawkuma.net/"
+URL_SEARCH = "https://rawkuma.net/?s="
+URL_SEARCH_DEEP = "https://rawkuma.net/page/{page}/?s={query}"
+URL_AZ = "https://rawkuma.net/az-lists/?show="
+URL_AZ_DEEP = "https://rawkuma.net/az-lists/page/{page}/?show={letter}"
