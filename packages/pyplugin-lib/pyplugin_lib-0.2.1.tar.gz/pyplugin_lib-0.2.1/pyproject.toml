@@ -1,0 +1,66 @@
+[tool.poetry]
+name = "pyplugin-lib"
+version = "0.2.1"
+description = "Pythonic inversion of control targeting ports and adapters application development style"
+authors = ["kuta.0 <igor.kantorski@gmail.com>"]
+license = "BSD-3-Clause"
+readme = "README.md"
+classifiers = [
+    "Development Status :: 1 - Planning",
+    "Operating System :: OS Independent",    "Topic :: Software Development :: Libraries",
+    "Typing :: Typed",
+]
+keywords = ["plugins", "adapters", "ioc", "di", "dependency", "injection"]
+
+package-mode = true
+
+homepage = "https://github.com/igoras1993/plug-in"
+repository = "https://github.com/igoras1993/plug-in"
+documentation = "https://github.com/igoras1993/plug-in"
+
+packages = [{include = "plug_in", from="src"}]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.4.2"
+pyright = "^1.1.373"
+flake8 = "^7.1.0"
+pre-commit = "^3.7.1"
+conventional-pre-commit = "^3.3.0"
+git-cliff = "^2.6.1"
+
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.3.2"
+pytest-asyncio = "^0.23.8"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pyright]
+include = ["src"]
+exclude = ["**/node_modules",
+    "**/__pycache__",
+    "src/experimental",
+    "src/typestubs"
+]
+ignore = ["src/oldstuff"]
+# defineConstant = { DEBUG = true }
+# stubPath = "src/stubs"
+
+reportMissingImports = true
+reportMissingTypeStubs = false
+
+pythonVersion = "3.12"
+pythonPlatform = "Linux"
+useLibraryCodeForTypes = true
+
+[tool.pytest.ini_options]
+log_cli = true
+log_cli_level = "INFO"
+log_cli_format = "%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
