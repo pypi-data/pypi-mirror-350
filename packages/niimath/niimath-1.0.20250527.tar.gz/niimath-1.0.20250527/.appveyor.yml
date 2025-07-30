@@ -1,0 +1,109 @@
+environment:
+  matrix:
+    - job_name: win
+      appveyor_build_worker_image: Visual Studio 2022
+
+    - job_name: linux
+      appveyor_build_worker_image: Ubuntu2004
+
+    - job_name: mac
+      appveyor_build_worker_image: macos-monterey
+
+    - job_name: test
+      appveyor_build_worker_image: Ubuntu2004
+
+matrix:
+  fast_finish: true
+
+version: build-{build}
+
+configuration: Release
+
+platform: x64
+
+clone_depth: 1
+
+init:
+  - ps: >-
+      $env:DATE = $(Get-Date -Format d-MMM-yyyy)
+
+      $githash = $env:APPVEYOR_REPO_COMMIT.Substring(0, 7)
+
+      $gittag = if ($env:APPVEYOR_REPO_TAG -eq $True) {"_$($env:APPVEYOR_REPO_TAG_NAME)"} else {""}
+
+      Update-AppveyorBuild -Version "$($env:DATE)_g${githash}${gittag}"
+
+      $env:RELEASE_VERSION = $(Get-Date -Format d-MMMM-yyyy)
+
+for:
+  -
+    matrix:
+      only:
+        - job_name: win
+
+    build_script:
+      - cmake -Wno-dev -B build
+      - cmake --build build --config %configuration%
+
+    after_build:
+      - 7z a niimath_win.zip .\build\bin\* >$null
+      - appveyor PushArtifact niimath_win.zip
+
+  -
+    matrix:
+      only:
+        - job_name: linux
+
+    build_script:
+      - export CC=gcc-9 CXX=g++-9
+      - cmake -Wno-dev -B build
+      - cmake --build build
+
+    after_build:
+      - 7z a niimath_lnx.zip ./build/bin/* &>/dev/null
+      - appveyor PushArtifact niimath_lnx.zip
+
+  -
+    matrix:
+      only:
+        - job_name: mac
+
+    build_script:
+      - cmake -Wno-dev -DCMAKE_OSX_ARCHITECTURES=x86_64 -DOPENMP_XCODE=OFF -B build/x86_64
+      - cmake --build build/x86_64
+      - cmake -Wno-dev -DCMAKE_OSX_ARCHITECTURES=arm64 -DOPENMP_XCODE=OFF -B build/arm64
+      - cmake --build build/arm64
+
+    after_build:
+      - lipo -create -output build/niimath build/x86_64/bin/niimath build/arm64/bin/niimath
+      - zip -j niimath_macos.zip ./build/niimath &>/dev/null
+      - appveyor PushArtifact niimath_macos.zip
+
+  -
+    matrix:
+      only:
+        - job_name: test
+
+    build_script:
+      - export CC=gcc-9 CXX=g++-9
+      - cmake -Wno-dev -B build
+      - cmake --build build
+
+    after_build:
+      - export builddir=$APPVEYOR_BUILD_FOLDER/build
+      - export exe=$builddir/bin/niimath tstexe=$builddir/bin/niimath basedir=$builddir/niimath_tests
+      - git clone https://github.com/rordenlab/niimath_tests.git $basedir
+      - cd $basedir; ./canonical_test.sh
+
+deploy:
+  - provider: GitHub
+    tag: $(APPVEYOR_REPO_TAG_NAME)
+    release: version $(RELEASE_VERSION) ($(APPVEYOR_REPO_TAG_NAME))
+    description: ""
+    auth_token:
+      secure: AkRtDExPl2IzRW9oEojYwx593B1S9GERT8H0XgelH7fPwVspj9GAIfMYaFImjJ3M
+    artifact: /niimath_.*\.zip/
+    draft: false
+    prerelease: false
+    on:
+      APPVEYOR_REPO_TAG: true
