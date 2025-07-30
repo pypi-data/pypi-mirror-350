@@ -1,0 +1,89 @@
+Metadata-Version: 2.4
+Name: django-mailomat
+Version: 0.2.0
+Summary: Django email backend for Mailomat API
+Project-URL: Homepage, https://github.com/liip-amboss/django-mailomat
+Project-URL: Repository, https://github.com/liip-amboss/django-mailomat.git
+Author-email: Liip AG <info@liip.ch>
+License-Expression: MIT
+License-File: LICENSE
+Keywords: django,email,mailomat
+Classifier: Development Status :: 4 - Beta
+Classifier: Framework :: Django
+Classifier: Framework :: Django :: 3.2
+Classifier: Framework :: Django :: 4.0
+Classifier: Framework :: Django :: 4.1
+Classifier: Framework :: Django :: 4.2
+Classifier: Framework :: Django :: 5.0
+Classifier: Framework :: Django :: 5.1
+Classifier: Framework :: Django :: 5.2
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Python: >=3.9
+Requires-Dist: django>=3.2
+Requires-Dist: requests>=2.31.0
+Description-Content-Type: text/markdown
+
+# Django Mailomat
+
+A Django email backend for sending emails through the Mailomat API.
+
+## Installation
+
+```bash
+pip install django-mailomat
+```
+
+## Configuration
+
+Add the following settings to your Django settings file:
+
+```python
+# Mailomat settings
+MAILOMAT_API_URL = 'http://mailomat-api:5000'  # Your Mailomat API URL
+MAILOMAT_API_TOKEN = 'your-api-token'  # Your Mailomat API token
+DEFAULT_FROM_EMAIL = 'noreply@example.com'  # Default sender email
+
+# Use the Mailomat email backend
+EMAIL_BACKEND = 'django_mailomat.backend.MailomatEmailBackend'
+```
+
+## Usage
+
+The backend can be used like any other Django email backend:
+
+```python
+from django.core.mail import send_mail
+
+send_mail(
+    'Subject',
+    'Message',
+    'from@example.com',
+    ['to@example.com'],
+    fail_silently=False,
+)
+```
+
+## Features
+
+- Supports both plain text and HTML email content
+- Handles email attachments
+- Includes API token authentication
+- Sanitizes email addresses
+- Configurable fail_silently option
+
+## Development
+
+1. Clone the repository
+2. Install development dependencies: `pip install -e ".[dev]"`
+3. Run tests: `pytest`
+
+## License
+
+MIT License 
