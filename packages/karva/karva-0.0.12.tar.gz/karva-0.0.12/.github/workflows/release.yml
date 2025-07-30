@@ -1,0 +1,61 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - v[0-9]*.[0-9]*.[0-9]*
+
+env:
+  PYTHON_VERSION: "3.13"
+
+jobs:
+  release_github:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: 3.11
+      - name: Install Dependencies
+        run: uv sync --all-extras
+      - name: Publish Latest Draft
+        run: |
+          if gh release list | grep Draft; then
+              old_version="$(gh release list | grep Draft | head -1 | cut -f1)"
+              new_version="${{ github.ref_name }}"
+              body=$(gh release view "$old_version" --json body -q ".body" | sed "s/\.\.\.$old_version/...$new_version/g")
+              gh release delete "$old_version"
+              gh release create "$new_version" --title "${{ github.ref_name}}" --notes "$body";
+          else
+              gh release create "$new_version" --title "${{ github.ref_name}}";
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish-docs:
+    runs-on: ubuntu-latest
+    name: Docs builder and publisher
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: 3.11
+      - name: Install Dependencies
+        run: uv sync --all-extras
+      - name: Build docs
+        run: make docs
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: site
+          publish_branch: gh-pages
+          keep_files: false
+          force_orphan: true
