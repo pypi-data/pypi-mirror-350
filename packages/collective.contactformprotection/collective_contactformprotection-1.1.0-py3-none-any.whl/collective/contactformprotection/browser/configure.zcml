@@ -1,0 +1,21 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    i18n_domain="collective.contactformprotection"
+    >
+
+  <browser:page
+      name="contact-info"
+      for="*"
+      class=".contactform.ContactForm"
+      permission="zope2.View"
+      layer="..interfaces.ICollectiveContactformprotectionLayer"
+      />
+
+  <adapter
+      factory=".contactform.CaptchaValidator"
+      provides="z3c.form.interfaces.IValidator"
+      />
+
+</configure>
