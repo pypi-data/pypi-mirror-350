@@ -1,0 +1,142 @@
+[build-system]
+requires = ["build", "setuptools-scm"]
+
+[project]
+dynamic = ["version"]
+name = "message_ix"
+description = "The MESSAGEix integrated assessment model framework"
+authors = [{ name = "IIASA Energy, Climate, and Environment (ECE) Program" }]
+maintainers = [
+  { name = "Paul Natsuo Kishimoto", email = "mail@paul.kishimoto.name" },
+  { name = "Fridolin Glatter", email = "glatter@iiasa.ac.at" },
+]
+license = "Apache-2.0"
+readme = "README.md"
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "Natural Language :: English",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: R",
+  "Topic :: Scientific/Engineering",
+  "Topic :: Scientific/Engineering :: Information Analysis",
+]
+requires-python = ">=3.9"
+dependencies = [
+  "click",
+  "ixmp >= 3.10.0",
+  "genno[pyam] >= 1.20",
+  "numpy",
+  "pandas >= 1.2",
+  "PyYAML",
+  "scipy",
+]
+
+[project.urls]
+Documentation = "https://docs.messageix.org"
+"Release notes" = "https://docs.messageix.org/en/stable/whatsnew.html"
+Repository = "https://github.com/iiasa/message_ix"
+"Issue tracker" = "https://github.com/iiasa/message_ix/issues"
+
+[project.optional-dependencies]
+docs = [
+  "genno >= 1.26",  # For sphinx extensions; see doc/conf.py
+  "GitPython",
+  "message_ix[report]",
+  "numpydoc",
+  "sphinx >= 4.0",
+  "sphinx_rtd_theme",
+  "sphinxcontrib-bibtex",
+]
+tutorial = ["jupyter", "matplotlib", "message_ix[report,sankey]"]
+report = ["ixmp[report]"]
+sankey = ["plotly"]
+tests = [
+  "ixmp[tests]",
+  "message_ix[docs,tutorial]",
+  "pint",
+  "pooch",
+  "pyam-iamc >= 0.6",
+  "pytest >= 5",
+  "pytest-cov",
+  "pytest-rerunfailures",
+  "pytest-xdist",
+]
+
+[project.scripts]
+message-ix = "message_ix.cli:main"
+
+[tool.coverage.report]
+exclude_also = [
+  # Imports only used by type checkers
+  "if TYPE_CHECKING:",
+  "if __name__ == '__main__':",
+]
+
+[tool.mypy]
+files = [
+  "doc",
+  "message_ix",
+]
+# TODO Remove this once it has become default with mypy 2.0:
+local_partial_types = true
+
+[[tool.mypy.overrides]]
+# Packages/modules for which no type hints are available.
+module = [
+  "pyam.*",
+  "scipy.*",
+  # Indirectly via ixmp; this should be a subset of the list in ixmp's pyproject.toml
+  "jpype",
+  "memory_profiler",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+# Disable faulthandler plugin on Windows to prevent spurious console noise
+addopts = """
+  --cov=message_ix --cov-report=
+  -m "not nightly and not rmessageix"
+  -p no:faulthandler"""
+# Parallel to .util.ixmp4.configure_logging_and_warnings(), prevent warnings
+# from appearing in the test output
+filterwarnings = [
+  "ignore:Accessing the 'model_fields' :DeprecationWarning:ixmp4.db.filters",
+  # NB The following don't work if a message regex is added
+  "ignore::pandas.errors.SettingWithCopyWarning:ixmp4.data.db.base",
+  "ignore::DeprecationWarning:sqlalchemy.sql.schema",
+]
+markers = [
+  "ixmp4: tests exclusive to IXMP4Backend.",
+  "jdbc: tests exclusive to JDBCBackend.",
+  "nightly: Slow-running nightly tests of particular scenarios.",
+  "rmessageix: test of the message_ix R interface.",
+  "tutorial: Tests of the tutorial Jupyter notebooks",
+]
+
+[tool.ruff]
+extend-include = ["*.ipynb"]
+
+[tool.ruff.lint]
+select = ["C9", "E", "F", "I", "W"]
+# FIXME the following exceed this limit
+# - .testing.make_austria(): 18
+# - .tests.test_feature_duration_time.model_generator(): 14
+# - .tools.add_year.add_year_set(): 14
+# - .tools.add_year.add_year(): 17
+# - .tools.add_year.interpolate_1d(): 19
+# - .tools.add_year.interpolate_2d(): 38
+mccabe.max-complexity = 13
+
+[tool.setuptools.packages]
+find = {}
+
+[tool.setuptools_scm]
