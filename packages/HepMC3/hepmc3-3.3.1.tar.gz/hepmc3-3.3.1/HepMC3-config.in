@@ -1,0 +1,123 @@
+#!/bin/bash
+#Adopted from
+#https://yoda.hepforge.org/trac/browser/bin/yoda-config.in
+#Docs from https://cmake.org/cmake/help/v3.2/command/configure_file.html
+## @configure_input@
+#The line below assures at least some relocation.
+if [ "$(uname)" == "Darwin" ]; then
+    # greadlink is only available through 'brew install coreutils'
+    if [ ! -z "$(command -v greadlink)" ]; then
+        PACKAGE_BIN_DIR=$(dirname $(greadlink -f $0))
+    else
+        PACKAGE_BIN_DIR=$(dirname $(readlink -f $0))
+    fi
+else
+PACKAGE_BIN_DIR=$(dirname $(readlink -f $0))
+fi
+PACKAGE_PREFIX_DIR=$(dirname ${PACKAGE_BIN_DIR})
+
+tmp=$(echo $* | grep -E -- '--\<help\>|-\<h\>')
+if test $# -eq 0 || test -n "$tmp"; then
+    echo "@PROJECT_NAME@-config: configuration tool for the @PROJECT_NAME@ library"
+    echo 
+    echo "Note: the features and portability of this script are limited. Projects"
+    echo "using CMake are encouraged to use HepMC3's CMake utilities instead."
+    echo 
+    echo "Usage: $( basename $0 ) [--help|-h] | "
+    echo "           [--{prefix,libdir,includedir,interfacesdir}] | "
+    echo "           [--{cxxflags,ldflags,libs}] | "
+    echo "           [--version]"
+    echo "Options:"
+    echo "  --help | -h   : show this help message"
+    echo
+    echo "  --prefix        : show the installation prefix"
+    echo "  --includedir    : show the path to the directory containing the @PROJECT_NAME@ headers"
+    echo "  --libdir        : show the path to the directory containing the @PROJECT_NAME@ libraries"
+    echo "  --interfacesdir : show the path to the directory containing the interfaces to @PROJECT_NAME@"
+    echo
+    echo "  --cflags|--cppflags : returns a '-I' string for insertion into CPPFLAGS or CXXFLAGS"
+    echo "  --ldflags|--libs    : returns a '-L/-l' string for insertion into LIBS or LIBADD"
+    echo "  --rootIO            : returns a '-L/-l' string for insertion into LIBS or LIBADD with rootIO support"
+    echo "  --protobufIO        : returns a '-L/-l' string for insertion into LIBS or LIBADD with protobufIO support"
+    echo "  --search            : returns a '-L/-l' string for insertion into LIBS or LIBADD with search support"
+    echo "  --static            : returns a string for insertion into LIBS or LIBADD"
+    echo
+    echo "  --features          : returns the list of enabled features in this HepMC3 build"
+    echo "  --version           : returns the @PROJECT_NAME@ release version number"
+    exit 0
+fi
+
+OUT=""
+
+tmp=$( echo "$*" | grep -E -- '--\<prefix\>')
+test -n "$tmp" && OUT="$OUT ${PACKAGE_PREFIX_DIR}"
+
+tmp=$( echo "$*" | grep -E -- '--\<includedir\>')
+test -n "$tmp" && OUT="$OUT @PACKAGE_CMAKE_INSTALL_INCLUDEDIR@"
+
+tmp=$( echo "$*" | grep -E -- '--\<libdir\>')
+test -n "$tmp" && OUT="$OUT @PACKAGE_CMAKE_INSTALL_LIBDIR@"
+
+tmp=$( echo "$*" | grep -E -- '--\<interfacesdir\>')
+test -n "$tmp" && OUT="$OUT @PACKAGE_INTERFACES_INSTALL_DIR@"
+
+tmp=$( echo "$*" | grep -E -- '--\<cflags|cppflags|cxxflags\>')
+test -n "$tmp" && OUT="$OUT -I@PACKAGE_CMAKE_INSTALL_INCLUDEDIR@"
+
+
+tmp=$( echo "$*" | grep -E -- '--\<static\>')
+if test -n "$tmp"; then
+
+    st=$( echo "@HEPMC3_FEATURES@" | grep -E -w -- 'lib_static')
+    if test -n "$st"; then
+        tmp=$( echo "$*" | grep -E -- '--\<ldflags|libs\>')
+        OUT="$OUT @PACKAGE_CMAKE_INSTALL_LIBDIR@/libHepMC3-static.a"
+    fi
+
+    st=$( echo "@HEPMC3_FEATURES@" | grep -E -w -- 'search_static')
+    if test -n "$st"; then
+        tmp=$( echo "$*" | grep -E -- '--\<search\>')
+        test -n "$tmp" && OUT="$OUT @PACKAGE_CMAKE_INSTALL_LIBDIR@/libHepMC3search-static.a"
+    fi
+
+    st=$( echo "@HEPMC3_FEATURES@" | grep -E -w -- 'protobufIO_static')
+    if test -n "$st"; then
+        tmp=$( echo "$*" | grep -E -- '--\<protobufIO\>')
+        test -n "$tmp" && OUT="$OUT @PACKAGE_CMAKE_INSTALL_LIBDIR@/libHepMC3protobufIO_static.a"
+    fi
+
+else
+
+    st=$( echo "@HEPMC3_FEATURES@" | grep -E -w -- 'lib')
+    if test -n "$st"; then
+        tmp=$( echo "$*" | grep -E -- '--\<ldflags|libs\>')
+        test -n "$tmp" && OUT="$OUT -L@PACKAGE_CMAKE_INSTALL_LIBDIR@ -lHepMC3"
+    fi
+
+    st=$( echo "@HEPMC3_FEATURES@" | grep -E -w -- 'search')
+    if test -n "$st"; then
+        tmp=$( echo "$*" | grep -E -- '--\<search\>')
+        test -n "$tmp" && OUT="$OUT -L@PACKAGE_CMAKE_INSTALL_LIBDIR@ -lHepMC3search"
+    fi
+
+    st=$( echo "@HEPMC3_FEATURES@" | grep -E -w -- 'protobufIO')
+    if test -n "$st"; then
+        tmp=$( echo "$*" | grep -E -- '--\<protobufIO\>')
+        test -n "$tmp" && OUT="$OUT -L@PACKAGE_CMAKE_INSTALL_LIBDIR@ -lHepMC3protobufIO"
+    fi
+
+    st=$( echo "@HEPMC3_FEATURES@" | grep -E -w -- 'rootIO')
+    if test -n "$st"; then
+        tmp=$( echo "$*" | grep -E -- '--\<rootIO\>')
+        test -n "$tmp" && OUT="$OUT -L@PACKAGE_HEPMC3_ROOTIO_INSTALL_LIBDIR@ -lHepMC3rootIO"
+    fi
+
+fi
+
+tmp=$( echo "$*" | grep -E -- '--\<features\>')
+test -n "$tmp" && OUT="$OUT @HEPMC3_FEATURES@"
+
+tmp=$( echo "$*" | grep -E -- '--\<version\>')
+test -n "$tmp" && echo @PROJECT_VERSION@ && exit 0
+
+echo $OUT
