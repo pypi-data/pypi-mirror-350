@@ -1,0 +1,258 @@
+name: Release to PyPI
+
+on:
+  push:
+    tags:
+      - v*.*.*
+
+jobs:
+  wheel-linux-x86_64:
+    name: Build Linux wheels (x86-64) for Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          python-version: ${{ matrix.python-version }}
+          channels: conda-forge
+          channel-priority: strict
+      - name: Install dependencies
+        shell: bash -el {0}
+        run: |
+          conda install -c conda-forge "hdf5=1.12.2=nompi*" rust maturin gxx_linux-64
+          pip install cibuildwheel
+      - name: Build wheels
+        shell: bash -el {0}
+        run: |
+          export HDF5_DIR=$CONDA_PREFIX
+          export CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER=$CONDA_PREFIX/bin/x86_64-conda-linux-gnu-gcc
+          export RUSTFLAGS="-C linker=$CONDA_PREFIX/bin/x86_64-conda-linux-gnu-gcc"
+          maturin build --release --target x86_64-unknown-linux-gnu
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wheels-linux-x86_64-py${{ matrix.python-version }}
+          path: target/wheels/*.whl
+
+  wheel-macos-x86_64:
+    name: Build MacOS wheels (x86-64) for Python ${{ matrix.python-version }}
+    runs-on: macOS-latest
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          python-version: ${{ matrix.python-version }}
+          channels: conda-forge
+          channel-priority: strict
+      - name: Install dependencies
+        shell: bash -el {0}
+        run: |
+          conda install -c conda-forge "hdf5=1.12.2=nompi*" rust maturin
+          pip install cibuildwheel
+      - name: Build wheels
+        shell: bash -el {0}
+        run: |
+          export HDF5_DIR=$CONDA_PREFIX
+          maturin build --release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wheels-macos-x86_64-py${{ matrix.python-version }}
+          path: target/wheels/*.whl
+
+  wheel-macos-aarch64:
+    name: Build MacOS wheels (Aarch64) for Python ${{ matrix.python-version }}
+    runs-on: macOS-latest
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          python-version: ${{ matrix.python-version }}
+          channels: conda-forge
+          channel-priority: strict
+      - name: Install dependencies
+        shell: bash -el {0}
+        run: |
+          conda install -c conda-forge "hdf5=1.12.2=nompi*" rust maturin
+          pip install cibuildwheel
+      - name: Build wheels
+        shell: bash -el {0}
+        run: |
+          export HDF5_DIR=$CONDA_PREFIX
+          maturin build --release --target aarch64-apple-darwin
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wheels-macos-aarch64-py${{ matrix.python-version }}
+          path: target/wheels/*.whl
+
+  sdist:
+    runs-on: ubuntu-latest
+    name: Build source distribution
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          python-version: "3.10"
+          channels: conda-forge
+          channel-priority: strict
+      - name: Install dependencies
+        shell: bash -el {0}
+        run: |
+          conda install -c conda-forge "hdf5=1.12.2=nompi*" rust maturin gxx_linux-64
+          pip install build
+      - name: Build source distribution
+        shell: bash -el {0}
+        run: |
+          export HDF5_DIR=$CONDA_PREFIX
+          export CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER=$CONDA_PREFIX/bin/x86_64-conda-linux-gnu-gcc
+          export RUSTFLAGS="-C linker=$CONDA_PREFIX/bin/x86_64-conda-linux-gnu-gcc"
+          maturin sdist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sdist
+          path: target/wheels/*.tar.gz
+
+  upload:
+    runs-on: ubuntu-latest
+    name: Upload to PyPI
+    needs:
+      - sdist
+      - wheel-linux-x86_64
+      - wheel-macos-aarch64
+      - wheel-macos-x86_64
+    permissions:
+      # IMPORTANT: this permission is mandatory for trusted publishing
+      id-token: write
+    steps:
+      - name: Download source distribution
+        uses: actions/download-artifact@v4
+        with:
+          name: sdist
+          path: dist/
+          merge-multiple: true
+      # Download Linux wheel distributions
+      - name: Download Linux wheel distributions (Python 3.9)
+        uses: actions/download-artifact@v4
+        with:
+          name: wheels-linux-x86_64-py3.9
+          path: dist/
+          merge-multiple: true
+
+      - name: Download Linux wheel distributions (Python 3.10)
+        uses: actions/download-artifact@v4
+        with:
+          name: wheels-linux-x86_64-py3.10
+          path: dist/
+          merge-multiple: true
+
+      - name: Download Linux wheel distributions (Python 3.11)
+        uses: actions/download-artifact@v4
+        with:
+          name: wheels-linux-x86_64-py3.11
+          path: dist/
+          merge-multiple: true
+
+      # Download MacOS x86_64 wheel distributions
+      - name: Download MacOS x86_64 wheel distributions (Python 3.9)
+        uses: actions/download-artifact@v4
+        with:
+          name: wheels-macos-x86_64-py3.9
+          path: dist/
+          merge-multiple: true
+
+      - name: Download MacOS x86_64 wheel distributions (Python 3.10)
+        uses: actions/download-artifact@v4
+        with:
+          name: wheels-macos-x86_64-py3.10
+          path: dist/
+          merge-multiple: true
+
+      - name: Download MacOS x86_64 wheel distributions (Python 3.11)
+        uses: actions/download-artifact@v4
+        with:
+          name: wheels-macos-x86_64-py3.11
+          path: dist/
+          merge-multiple: true
+
+      # Download MacOS aarch64 wheel distributions
+      - name: Download MacOS aarch64 wheel distributions (Python 3.9)
+        uses: actions/download-artifact@v4
+        with:
+          name: wheels-macos-aarch64-py3.9
+          path: dist/
+          merge-multiple: true
+
+      - name: Download MacOS aarch64 wheel distributions (Python 3.10)
+        uses: actions/download-artifact@v4
+        with:
+          name: wheels-macos-aarch64-py3.10
+          path: dist/
+          merge-multiple: true
+
+      - name: Download MacOS aarch64 wheel distributions (Python 3.11)
+        uses: actions/download-artifact@v4
+        with:
+          name: wheels-macos-aarch64-py3.11
+          path: dist/
+          merge-multiple: true
+
+      - name: Move wheel files to dist directory
+        run: |
+          # Find all wheel files in subdirectories and move them to dist/
+          find dist/ -name "*.whl" -type f -exec mv {} dist/ \;
+          # Remove empty directories
+          find dist/ -type d -empty -delete
+      - name: List files in dist directory
+        run: ls -la dist/
+      - name: Publish distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          skip-existing: true
+
+  verify-install:
+    runs-on: ubuntu-latest
+    name: Verify PyPI installation
+    needs: upload
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11']
+    steps:
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install from PyPI
+        run: |
+          # Wait a bit for the package to be available
+          sleep 120
+          # Try to install the package from PyPI with binary only
+          python -m pip install --only-binary=helixerlite helixerlite
+      - name: Verify installation
+        run: |
+          python -c "import helixerlite; print(f'Successfully installed helixerlite version {helixerlite.__version__}')"
+
+  release:
+    runs-on: ubuntu-latest
+    name: Create GitHub Release
+    needs: [upload, verify-install]
+    permissions: write-all
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          generate_release_notes: true

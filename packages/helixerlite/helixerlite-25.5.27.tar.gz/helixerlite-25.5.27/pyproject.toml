@@ -1,0 +1,82 @@
+[build-system]
+requires = ["maturin>=1,<2"]
+build-backend = "maturin"
+
+[project]
+name = "helixerlite"
+version = "25.5.27"
+description = "helixerlite: simplified genome annotation with Helixer"
+readme = {file = "README.md", content-type = "text/markdown"}
+authors = [
+    {name = "Jon Palmer", email = "nextgenusfs@gmail.com"}
+]
+requires-python = ">=3.9.0"
+dependencies = [
+    "h5py",
+    "pyfastx>=2.0.0",
+    "scikit-learn",
+    "tensorflow>=2.6.2",
+    "tensorflow-addons>=0.21.0",
+    "Keras<3.0.0",
+    "keras_layer_normalization",
+    "numpy",
+    "numcodecs",
+    "gfftk"
+]
+
+license = {file = "LICENSE"}
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: BSD License",
+    "Programming Language :: Python",
+    "Operating System :: Unix",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+keywords = ["bioinformatics", "genome", "annotation"]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "pytest-mock>=3.10.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/nextgenusfs/helixerlite"
+Repository = "https://github.com/nextgenusfs/helixerlite.git"
+
+[project.scripts]
+helixerlite = "helixerlite.__main__:main"
+
+[tool.maturin]
+features = ["pyo3/extension-module"]
+# Use bindings-crate to specify the Rust crate that provides Python bindings
+bindings-crate = "helixerlite"
+# Use module-name to specify the name of the Python module
+module-name = "helixerpost"
+# Use python-packages to include Python packages
+python-packages = ["helixerlite"]
+# Use python-source to specify the source directory for Python code
+python-source = "."
+# Use mixed-rustpython to tell maturin this is a mixed Rust/Python project
+mixed-rustpython = true
+
+[tool.maturin.build]
+include = [
+  "helixerlite/*.py",
+  "helixerlite/**/*.py",
+  "README.md",
+  "LICENSE",
+  "helixerlite/model_files/*"
+]
+exclude = [
+  "tests/*",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+addopts = "-v --cov=helixerlite"

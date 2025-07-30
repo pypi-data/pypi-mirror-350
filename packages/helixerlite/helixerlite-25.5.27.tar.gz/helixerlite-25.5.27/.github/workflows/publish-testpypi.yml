@@ -1,0 +1,115 @@
+name: Publish to TestPyPI
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: 'Build workflow run ID to get artifacts from'
+        required: true
+        type: string
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    name: Publish to TestPyPI
+    permissions:
+      # IMPORTANT: this permission is mandatory for trusted publishing
+      id-token: write
+    steps:
+      - name: Download source distribution
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          workflow: build.yml
+          run_id: ${{ github.event.inputs.run_id }}
+          name: sdist
+          path: dist/
+          check_artifacts: true
+          if_no_artifact_found: warn
+
+      - name: Download Linux wheel distributions (Python 3.9)
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          workflow: build.yml
+          run_id: ${{ github.event.inputs.run_id }}
+          name: wheels-linux-x86_64-py3.9
+          path: dist/
+
+      - name: Download Linux wheel distributions (Python 3.10)
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          workflow: build.yml
+          run_id: ${{ github.event.inputs.run_id }}
+          name: wheels-linux-x86_64-py3.10
+          path: dist/
+
+      - name: Download Linux wheel distributions (Python 3.11)
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          workflow: build.yml
+          run_id: ${{ github.event.inputs.run_id }}
+          name: wheels-linux-x86_64-py3.11
+          path: dist/
+
+      - name: Download MacOS wheel distributions (Python 3.9)
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          workflow: build.yml
+          run_id: ${{ github.event.inputs.run_id }}
+          name: wheels-macos-x86_64-py3.9
+          path: dist/
+
+      - name: Download MacOS wheel distributions (Python 3.10)
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          workflow: build.yml
+          run_id: ${{ github.event.inputs.run_id }}
+          name: wheels-macos-x86_64-py3.10
+          path: dist/
+
+      - name: Download MacOS wheel distributions (Python 3.11)
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          workflow: build.yml
+          run_id: ${{ github.event.inputs.run_id }}
+          name: wheels-macos-x86_64-py3.11
+          path: dist/
+
+      - name: Move wheel files to dist directory
+        run: |
+          # Find all wheel files in subdirectories and move them to dist/
+          find dist/ -name "*.whl" -type f -exec mv {} dist/ \;
+          # Remove empty directories
+          find dist/ -type d -empty -delete
+
+      - name: List files in dist directory
+        run: ls -la dist/
+
+      - name: Publish distributions to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          skip-existing: true
+
+  test-install:
+    needs: publish
+    runs-on: ubuntu-latest
+    name: Test installation from TestPyPI
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11']
+    steps:
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install from TestPyPI
+        run: |
+          # Wait a bit for the package to be available
+          sleep 60
+          # Try to install the package from TestPyPI
+          python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ helixerlite
+
+      - name: Verify installation
+        run: |
+          python -c "import helixerlite; print(f'Successfully installed helixerlite version {helixerlite.__version__}')"
