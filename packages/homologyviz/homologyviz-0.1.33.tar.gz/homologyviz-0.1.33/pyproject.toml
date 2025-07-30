@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "homologyviz"
+version = "0.1.33"
+authors = [
+    { name = "Ivan Munoz-Gutierrez", email = "ivan.munoz.gutierrez@gmail.com" },
+]
+maintainers = [
+    { name = "Ivan Munoz-Gutierrez", email = "ivan.munoz.gutierrez@gmail.com" },
+]
+description = "Create visual representations of BLASTn alignments"
+readme = "README.md"
+license = { text = "BSD-3-Clause" }
+keywords = [
+    "DNA alignments",
+    "BLASTn",
+    "Graphical BLASTn alignments",
+    "easyfig",
+]
+classifiers = [
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: BSD License",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Framework :: Dash",
+    "Environment :: Web Environment",
+]
+requires-python = ">=3.11"
+dependencies = [
+    "bezier",
+    "biopython",
+    "dash",
+    "dash_ag_grid",
+    "dash-bootstrap-components",
+    "dash-iconify",
+    "dash-mantine_components",
+    "kaleido",
+    "matplotlib",
+    "plotly",
+    "pandas",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "pytest-cov"]
+
+[project.urls]
+Repository = "https://github.com/ivanmugu/homologyviz"
+Homepage = "https://github.com/ivanmugu/homologyviz"
+
+[project.scripts]
+hviz = "homologyviz.app:main"
+homologyviz = "homologyviz.app:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov=homologyviz --cov-report=term-missing -v"
