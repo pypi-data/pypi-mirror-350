@@ -1,0 +1,56 @@
+name: Release Web
+
+on:
+  workflow_call:
+    secrets:
+      DEPLOY_PRIVATE:
+        required: true
+
+jobs:
+  release-web:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Prepare folder
+      run: |
+        mkdir -p ~/dist
+        mkdir -p ~/dist/user
+        mkdir -p ~/dist/envira
+        mv files ~/dist/files
+
+    - name: Download executable artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: executable
+        path: ~/dist/files
+
+    - name: Clean files
+      run: |
+        mv run.sh ~/dist/index.html
+        mv run_user.sh ~/dist/user/index.html
+        mv envira.sh ~/dist/envira/index.html
+        echo "boot.controlnet.space" > ~/dist/CNAME
+
+    - name: Init git and commit
+      env:
+        DEPLOY_PRIVATE: ${{ secrets.DEPLOY_PRIVATE }}
+      run: |
+        mkdir -p ~/.ssh/
+        echo "$DEPLOY_PRIVATE" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan github.com >> ~/.ssh/known_hosts
+        git config --global user.email "smczx@hotmail.com"
+        git config --global user.name "ControlNet"
+        cd ~/dist
+        git init
+        git add -A
+        git commit -m "update"
+        git remote add origin-ssh git@github.com:ControlNet/envira.git
+
+    - name: Push
+      run: |
+        git push origin-ssh HEAD:dist -f
+      working-directory: /home/runner/dist/
