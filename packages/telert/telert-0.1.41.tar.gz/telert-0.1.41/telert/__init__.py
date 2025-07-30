@@ -1,0 +1,41 @@
+__all__ = [
+    "__version__",
+    "telert",
+    "send",
+    "notify",
+    "configure",  # Legacy function for backward compatibility
+    "configure_telegram",
+    "configure_teams",
+    "configure_slack",
+    "configure_discord",
+    "configure_audio",
+    "configure_desktop",
+    "configure_pushover",
+    "configure_providers",
+    "get_config",
+    "is_configured",
+    "set_default_provider",
+    "set_default_providers",
+    "list_providers",
+]
+__version__ = "0.1.41"
+
+from telert.api import (
+    configure,
+    configure_audio,
+    configure_desktop,
+    configure_discord,
+    configure_providers,
+    configure_pushover,
+    configure_slack,
+    configure_teams,
+    configure_telegram,
+    get_config,
+    is_configured,
+    list_providers,
+    notify,
+    send,
+    set_default_provider,
+    set_default_providers,
+    telert,
+)
