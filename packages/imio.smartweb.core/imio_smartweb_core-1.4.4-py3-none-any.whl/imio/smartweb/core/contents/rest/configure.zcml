@@ -1,0 +1,17 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope">
+
+  <include package=".campaign" />
+  <include package=".directory" />
+  <include package=".events" />
+  <include package=".news" />
+  <include package=".search" />
+
+  <adapter
+      for="imio.smartweb.core.contents.IRestView
+           zope.publisher.interfaces.http.IHTTPRequest"
+      provides="zope.publisher.interfaces.IPublishTraverse"
+      factory=".traversal.RestViewTraversable"
+      />
+
+</configure>
