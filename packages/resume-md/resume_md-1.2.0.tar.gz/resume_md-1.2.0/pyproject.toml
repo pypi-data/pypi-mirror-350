@@ -1,0 +1,106 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "resume-md"
+version = "1.2.0"
+description = "Resume markdown to print ready HTML for email or web"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+    {name = "Sam Cullin", email = "sam@miplace.com"},
+]
+license = "MIT"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Text Processing :: Markup",
+    "Topic :: Office/Business",
+]
+keywords = ["resume", "cv", "markdown", "pdf", "print", "html", "tailwind", "generator", "web", "email", "ats"]
+dependencies = [
+    "importlib_resources>=1.4.0; python_version < '3.9'",
+]
+
+[project.optional-dependencies]
+dev = [
+    "autoflake>=2.3.1",
+    "black>=25.1.0",
+    "build>=1.2.2.post1",
+    "flake8>=7.2.0",
+    "isort>=6.0.1",
+    "pre-commit>=3.6.0",
+    "pytest>=8.3.5",
+    "python-semantic-release>=9.21.1",
+    "sigstore>=0.8.3",
+]
+test = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/SamCullin/resume-md"
+"Bug Tracker" = "https://github.com/SamCullin/resume-md/issues"
+"Source" = "https://github.com/SamCullin/resume-md"
+
+[project.scripts]
+resume-md = "resume_md.main:main"
+
+[tool.setuptools.packages.find]
+include = ["resume_md*"]
+
+[tool.setuptools.package-data]
+resume_md = ["template.html"]
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.black]
+line-length = 88
+target-version = ["py39", "py310", "py311", "py312"]
+
+[tool.flake8]
+max-line-length = 88
+extend-ignore = "E203,E501,W291,F541,F401,F841,W503"  # Allow black's formatting decisions
+exclude = [
+    ".git",
+    "__pycache__",
+    "build",
+    "dist",
+    ".venv",
+    ".direnv",
+]
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.semantic_release]
+version_source = "tag"
+version_variable = [
+    "pyproject.toml:version"
+]
+branch = "main"
+upload_to_pypi = false
+upload_to_release = true
+build_command = "pip install build && python -m build"
+github_token = "${GITHUB_TOKEN}"
+commit_author = "github-actions <actions@github.com>"
+repository = "SamCullin/resume-md"
+major_on_zero = false
+tag_format = "v{version}"
+changelog_file = "CHANGELOG.md"
+commit_version_number = true
+version_toml = ["pyproject.toml:project.version"]
+version_pattern = "version = \"$version\""
+changelog_sections = [
+    "feature", "fix", "breaking", "documentation", "performance", "refactor"
+]
+
