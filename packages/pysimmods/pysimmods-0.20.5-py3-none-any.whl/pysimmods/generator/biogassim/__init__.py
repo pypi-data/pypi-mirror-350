@@ -1,0 +1,1 @@
+from .biogas import BiogasPlant
