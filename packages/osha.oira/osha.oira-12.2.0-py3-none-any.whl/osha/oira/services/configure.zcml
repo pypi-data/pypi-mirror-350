@@ -1,0 +1,60 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    >
+
+  <plone:service
+      method="GET"
+      factory=".surveys.ToolVersionsGet"
+      for="euphorie.content.surveygroup.ISurveyGroup"
+      permission="zope2.View"
+      layer="osha.oira.interfaces.IOSHAContentSkinLayer"
+      name="@tool-versions"
+      />
+
+  <plone:service
+      method="GET"
+      factory=".sector.SearchWithVersionDescriptionGet"
+      for="euphorie.content.sector.ISector"
+      permission="zope2.View"
+      layer="osha.oira.interfaces.IOSHAContentSkinLayer"
+      name="@search-with-version-description"
+      />
+
+  <plone:service
+      method="GET"
+      factory=".training.TrainingService"
+      for="euphorie.content.survey.ISurvey"
+      permission="zope2.View"
+      layer="osha.oira.interfaces.IOSHAContentSkinLayer"
+      name="@training"
+      />
+
+  <plone:service
+      method="GET"
+      factory=".navigation.NavigationService"
+      for="*"
+      permission="zope2.View"
+      layer="osha.oira.interfaces.IOSHAContentSkinLayer"
+      name="@navtree"
+      />
+
+  <plone:service
+      method="GET"
+      factory=".country.CountryToolsService"
+      for="euphorie.content.country.ICountry"
+      permission="zope2.View"
+      layer="osha.oira.interfaces.IOSHAContentSkinLayer"
+      name="@country-tools"
+      />
+
+  <plone:service
+      method="GET"
+      factory=".survey_publication_count.SurveyPublicationCountService"
+      for="plone.app.layout.navigation.interfaces.INavigationRoot"
+      permission="cmf.ManagePortal"
+      layer="osha.oira.interfaces.IOSHAContentSkinLayer"
+      name="@survey-publication-count"
+      />
+
+</configure>
