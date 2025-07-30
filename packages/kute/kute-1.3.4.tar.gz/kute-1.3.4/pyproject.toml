@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kute"
+dynamic = ["version"]
+authors = [
+  { name="Martín Otero-Lema", email="martin.oterolema@usc.es" },
+  { name="Raúl Lois-Cuns", email="raul.lois.cuns@usc.es" },
+]
+dependencies = [
+  "MDAnalysis",
+  "numpy",
+  "scipy",
+  "h5py",
+  "packaging",
+  "pytest",
+]
+description = "green Kubo Uncertainty-based Transport Estimator"
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.optional-dependencies]
+reporters = [
+  "Openmm",
+]
+analysis = [
+  "dask",
+]
+
+[project.scripts]
+kute = "kute.__main__:main"
+
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.dynamic]
+version = {attr = "kute.__version__"}
+
+[tool.ruff]
+line-length = 88
