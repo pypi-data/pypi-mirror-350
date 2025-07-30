@@ -1,0 +1,98 @@
+Metadata-Version: 2.3
+Name: shraga-common
+Version: 0.2.5
+Summary: Common infrastructure for Shraga AI
+License: Apache-2.0
+Author: Itamar Syn-Hershko
+Author-email: itamar@bigdataboutique.com
+Requires-Python: >=3.11,<4.0
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Dist: beautifulsoup4 (>=4.13.3,<5.0.0)
+Requires-Dist: boto3 (>=1.37.10,<2.0.0)
+Requires-Dist: cohere (>=5.15.0,<6.0.0)
+Requires-Dist: colorlog (>=6.9.0,<7.0.0)
+Requires-Dist: elasticsearch (>=8.14.0,<9.0.0)
+Requires-Dist: faiss-cpu (>=1.8.0.post1,<2.0.0)
+Requires-Dist: fastapi (>=0.112.0,<0.113.0)
+Requires-Dist: geopandas (>=1.0.1,<2.0.0)
+Requires-Dist: googlemaps (>=4.10.0,<5.0.0)
+Requires-Dist: importlib (>=1.0.4,<2.0.0)
+Requires-Dist: jinja2 (>=3.1.6,<4.0.0)
+Requires-Dist: langchain (>=0.2.12,<0.3.0)
+Requires-Dist: langchain-core (>=0.2.29,<0.3.0)
+Requires-Dist: nanoid (>=2.0.0,<3.0.0)
+Requires-Dist: openai (==1.57.4)
+Requires-Dist: opensearch-py (>=2.6.0,<3.0.0)
+Requires-Dist: pandas (>=2.2.2,<3.0.0)
+Requires-Dist: pathlib (>=1.0.1,<2.0.0)
+Requires-Dist: pydantic (>=2.10.6,<3.0.0)
+Requires-Dist: pydash (>=8.0.3,<9.0.0)
+Requires-Dist: requests (>=2.32.2,<3.0.0)
+Requires-Dist: snowflake-connector-python (>=3.11.0,<4.0.0)
+Requires-Dist: typing-extensions (>=4.12.2,<5.0.0)
+Requires-Dist: user-agents (>=2.2.0,<3.0.0)
+Requires-Dist: uvicorn (>=0.30.5,<0.31.0)
+Requires-Dist: vertexai (>=1.60.0,<2.0.0)
+Description-Content-Type: text/markdown
+
+## Shraga
+
+The backend is based on FastAPI and frontend is based on React.
+
+## Backend setup:
+
+Requirements:
+
+1. Python3.11
+2. Pip
+3. Poetry
+
+Install poetry and add it to $PATH run
+
+```bash
+pipx install poetry
+```
+
+Once poetry is installed, install dependencies:
+
+```bash
+poetry install --no-root
+poetry run pre-commit install
+```
+
+To activate the virtualenv run the following:
+
+```bash
+poetry shell
+which python
+```
+
+
+## Running the app
+
+To run the app use:
+
+```bash
+SHRAGA_FLOWS_PATH=flows CONFIG_PATH=config.demo.yaml uvicorn main:app --reload
+
+cd frontend
+pnpm run dev
+
+```
+
+## demo flow
+
+Run demo flow without an LLM \ Elasticsearch \ Opensearch:
+
+1) use config.demo.yaml for settings
+2) To run the backend use:
+
+```bash
+SHRAGA_FLOWS_PATH=flows CONFIG_PATH=config.demo.yaml uvicorn main:app --reload
+```
+
+
