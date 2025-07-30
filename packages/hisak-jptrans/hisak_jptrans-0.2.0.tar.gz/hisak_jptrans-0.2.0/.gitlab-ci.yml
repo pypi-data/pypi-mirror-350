@@ -1,0 +1,106 @@
+image: python:3.13
+
+stages:
+- build
+- upload
+
+py39_build:
+  image: python:3.9-bullseye
+  stage: build
+  artifacts:
+    paths:
+      - dist/*
+    expire_in: 1 day
+  script:
+  - python -m pip install --upgrade pip wheel setuptools setuptools-scm build
+  - python -m build -n -v -sw
+
+py310_build:
+  image: python:3.10-bullseye
+  stage: build
+  artifacts:
+    paths:
+      - dist/*
+    expire_in: 1 day
+  script:
+  - python -m pip install --upgrade pip wheel setuptools setuptools-scm build
+  - python -m build -n -v -w
+
+py311_build:
+  image: python:3.11-bullseye
+  stage: build
+  artifacts:
+    paths:
+      - dist/*
+    expire_in: 1 day
+  script:
+  - python -m pip install --upgrade pip wheel setuptools setuptools-scm build
+  - python -m build -n -v -w
+
+py312_build:
+  image: python:3.12-bullseye
+  stage: build
+  artifacts:
+    paths:
+      - dist/*
+    expire_in: 1 day
+  script:
+  - python -m pip install --upgrade pip wheel setuptools setuptools-scm build
+  - python -m build -n -v -w
+
+py313_build:
+  image: python:3.13-bullseye
+  stage: build
+  artifacts:
+    paths:
+      - dist/*
+    expire_in: 1 day
+  script:
+  - python -m pip install --upgrade pip wheel setuptools setuptools-scm build
+  - python -m build -n -v -w
+
+testpypi_upload:
+  stage: upload
+  only:
+  - main
+  id_tokens:
+    PYPI_ID_TOKEN:
+      aud: testpypi
+  dependencies:
+  - py39_build
+  - py310_build
+  - py311_build
+  - py312_build
+  - py313_build
+  script:
+  - apt update && apt install -y jq patchelf
+  - python -m pip install twine id auditwheel
+  - python -m auditwheel repair dist/*.whl
+  - oidc_token=$(python -m id PYPI)
+  - resp=$(curl -X POST https://test.pypi.org/_/oidc/mint-token -d "{\"token\":\"${oidc_token}\"}")
+  - api_token=$(jq --raw-output '.token' <<< "${resp}")
+  - python -m twine upload -u __token__ -p "${api_token}" --repository testpypi dist/*.tar.gz wheelhouse/*.whl --verbose --skip-existing
+
+pypi_upload:
+  stage: upload
+  only:
+  - /^v.*$/
+  except:
+  - branches
+  id_tokens:
+    PYPI_ID_TOKEN:
+      aud: pypi
+  dependencies:
+  - py39_build
+  - py310_build
+  - py311_build
+  - py312_build
+  - py313_build
+  script:
+  - apt update && apt install -y jq patchelf
+  - python -m pip install twine id auditwheel
+  - python -m auditwheel repair dist/*.whl
+  - oidc_token=$(python -m id PYPI)
+  - resp=$(curl -X POST https://pypi.org/_/oidc/mint-token -d "{\"token\":\"${oidc_token}\"}")
+  - api_token=$(jq --raw-output '.token' <<< "${resp}")
+  - python -m twine upload -u __token__ -p "${api_token}" --repository pypi dist/*.tar.gz wheelhouse/*.whl --verbose
