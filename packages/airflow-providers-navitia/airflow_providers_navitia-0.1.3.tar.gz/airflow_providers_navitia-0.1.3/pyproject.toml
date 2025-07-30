@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "airflow-providers-navitia"
+authors = [
+    {name = "Jonathan Perron", email = "jonathan@perron.bzh"},
+]
+license = "MIT"
+description = "Navitia hook and operator for Apache Airflow"
+classifiers = [
+    "Framework :: Apache Airflow",
+    "Framework :: Apache Airflow :: Provider",
+]
+dynamic = ["version"]
+requires-python = ">=3.10"
+dependencies = [
+    "apache-airflow>=2.10",
+    "apache-airflow-providers-postgres>=6.2.0",
+    "python-navitia-client>1.1.5",
+]
+
+[project.urls]
+Source = "https://github.com/jonperron/airflow-provider-navitia"
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[project.entry-points.apache_airflow_provider]
+provider_info = "navitia_provider.__init__:get_provider_info"
+
+[tool.setuptools]
+include-package-data = false
+
+[tool.setuptools.dynamic]
+version = {attr = "navitia_provider.__version__"}
+
+[tool.setuptools.packages.find]
+exclude = ["*tests.*", "*tests"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+
+[tool.pylint.format]
+max-line-length = 120
+
+[tool.pylint."MESSAGES CONTROL"]
+disable = '''
+    missing-module-docstring,
+    missing-function-docstring,
+    import-error,
+    no-name-in-module,
+    broad-except,
+    keyword-arg-before-vararg,
+    raise-missing-from,
+    too-few-public-methods,
+    unused-argument,
+'''
