@@ -1,0 +1,116 @@
+[project]
+# case-insensitive
+name = "GJDutils"
+dynamic = ["version"]
+authors = [
+  { name="Greg Detre", email="greg@gregdetre.com" },
+]
+description = "A collection of useful utility functions (basics, data science/AI, web development, etc)"
+readme = "README.md"
+# because I use the | syntax for type Union
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Utilities",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+]
+keywords = ["utilities", "strings", "dates", "data science", "web development", "llm", "ai",]
+
+dependencies = [
+    "ipython",
+    "jinja2",
+    "python-dotenv",
+    "pydantic",
+    "typer",  # For CLI
+    "rich",   # For CLI output formatting
+]
+
+[project.scripts]
+gjdutils = "gjdutils.cli:app"
+gjdutils-export-envs = "gjdutils.scripts.install:install_export_envs"
+
+# if you add a new optional dependency group, remember to add it to the 'all' group below
+[project.optional-dependencies]
+audio_lang = [
+    "azure-cognitiveservices-speech",
+    "google-cloud-texttospeech",
+    "google-cloud-translate",
+    "elevenlabs>=2.1.0",
+    # for playing mp3
+    "playsound",
+    # for voice_speechrecognition Microphone
+    "pyaudio",
+    # for playing mp3
+    "pygame",
+    # for playing mp3
+    "python-vlc",
+    "SpeechRecognition",
+    "openai-whisper",  # for OpenAI Whisper speech recognition
+]
+dev = [
+    "black",
+    "build",
+    "flake8",
+    "pytest",
+    "rich",  # for console output formatting
+    "twine",
+    "typer",  # for CLI tools
+    "wheel",
+]
+dsci = [
+    "numpy",
+    "pandas",
+]
+dt = [
+    "humanize",
+    "pendulum",
+]
+html_web = [
+    "bs4",
+    "lxml",
+]
+llm = [
+    "anthropic",
+    # "llm", no longer using this
+    "openai",
+    "pillow", # for images
+]
+
+all_no_dev = [
+    "gjdutils[audio_lang]",
+    "gjdutils[dsci]",
+    "gjdutils[dt]",
+    "gjdutils[html_web]",
+    "gjdutils[llm]",
+]
+
+[project.urls]
+Homepage = "https://github.com/gregdetre/gjdutils"
+Repository = "https://github.com/gregdetre/gjdutils"
+# Issues = "https://github.com/gregdetre/gjdutils/issues"
+# Documentation
+# Changelog
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "src/gjdutils/__version__.py"
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+    "dist/",
+    "gjdutils/obsolete/",
+    "gjdutils/todo/",
+    "tests/fixme_*.py",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/gjdutils"]
+
+[tool.hatch.build.targets.wheel.shared-data]
+"src/gjdutils/scripts/export_envs.sh" = "bin/export_envs.sh"
