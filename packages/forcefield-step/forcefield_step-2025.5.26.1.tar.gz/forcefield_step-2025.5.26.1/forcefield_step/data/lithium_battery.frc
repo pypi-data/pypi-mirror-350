@@ -1,0 +1,125 @@
+!MolSSI forcefield 1
+
+#define cathode
+
+! Version  Ref                Function             Label
+!--------- ---    ------------------------------   ------
+2025.04.06   1    metadata                         oplsaa
+2023.04.03   1    atom_types                       cathode
+2023.04.03   1    equivalence                      cathode
+2023.04.03   1    buckingham                       cathode
+2023.04.03   1    charges                          cathode
+2023.04.03   1    templates                        cathode
+
+
+#metadata oplsaa
+
+!Version      Ref   Parameter       Value   Description
+!---------  -----  ------------  ---------  --------------------------------------
+2025.04.06      1   ff_form      buckingham  The functional form of the forcefield
+2025.04.06      1   charges      point       How charges should be handled
+
+
+#atom_types cathode
+
+> Atom type definitions for any variant of the lithium battery cathode forcefield
+
+! Version   Ref    Type       Mass     El  # conns           Comment
+!---------- ---  --------   ---------  --  ------- ---------------------------
+2023.04.02    1      Co3+   58.933194  Co      0    Cobalt 3+ cation
+2023.04.02    1       Li+    6.94      Li      0    Lithium cation
+2023.04.02    1       O2-   15.999      O      0    Oxygen 2- anion
+
+
+#equivalence cathode
+
+!                                        Equivalences
+!                         -------------------------------------------
+!Ver        Ref    Type     NonB     Bond    Angle   Torsion    OOP
+!--------- ----  -------- -------- -------- -------- -------- --------
+2023.04.03    1      Co3+     Co3+    --      --        --      --
+2023.04.03    1       Li+      Li+    --      --        --      --
+2023.04.03    1       O2-      O2-    --      --        --      --
+
+
+#buckingham cathode
+
+> E = Aij*exp(-r/Rhoij) - Cij/r^6
+
+@type A-Rho-C
+@units A eV
+@units rho Å
+@units C eV*Å^6
+
+! Version   Ref      I         J         A         Rho        C
+!---------  ----  --------  --------  --------  --------  --------
+2023.04.03     1      Co3+       O2-   1329.82   0.3087      0.0
+2023.04.03     1      Co3+         *      0.0    1.0         0.0
+2023.04.03     1       Li+       O2-    426.48   0.3         0.0
+2023.04.03     1       Li+         *      0.0    1.0         0.0
+2023.04.03     1       O2-       O2-  22764.3    0.1490     43.0
+
+
+#charges cathode
+
+! Version  Ref    I         Q
+!--------- ---  -------  -------
+2023.04.03   1     Co3+      3.0
+2023.04.03   1      Li+      1.0
+2023.04.03   1      O2-     -2.0
+
+! More specific templates must come after general ones.
+
+#templates cathode
+{
+    "Co3+": {
+        "2023.04.03": {
+            "smarts": [
+                "[Co:1]"
+            ],
+            "description": "Cobalt 3+ cation",
+            "overrides": []
+        }
+    },
+    "Li+": {
+        "2023.04.03": {
+            "smarts": [
+                "[Li:1]"
+            ],
+            "description": "Lithium cation",
+            "overrides": []
+        }
+    },
+    "O2-": {
+        "2023.04.03": {
+            "smarts": [
+                "[O:1]"
+            ],
+            "description": "Oxygen 2- anion",
+            "overrides": []
+        }
+    }
+}
+
+#reference 1
+@Author Paul Saxe
+@Date 2023-04-03
+
+Fisher, C. A. J.; Islam, M. S.; Moriwake, H.
+Atomic Level Investigations of Lithium Ion Battery Cathode Materials.
+J Phys Soc Jpn 2010, 79 (Suppl.A), 59–64.
+https://doi.org/10.1143/jpsjs.79sa.59.
+
+@article{10.1143/jpsjs.79sa.59, 
+year = {2010}, 
+title = {{Atomic Level Investigations of Lithium Ion Battery Cathode Materials}}, 
+author = {Fisher, Craig A. J. and Islam, M. Saiful and Moriwake, Hiroki}, 
+journal = {Journal of the Physical Society of Japan}, 
+issn = {0031-9015}, 
+doi = {10.1143/jpsjs.79sa.59}, 
+pages = {59--64}, 
+number = {Suppl.A}, 
+volume = {79}, 
+}
+
+#end
