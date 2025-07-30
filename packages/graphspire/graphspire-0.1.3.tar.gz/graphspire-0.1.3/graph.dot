@@ -1,0 +1,146 @@
+digraph Dependencies {
+compound=true;
+rankdir=LR;
+splines=false;
+bgcolor="#303446";
+node [fontname="Arial"];
+edge [color="#9399b2", penwidth=1.5, arrowhead=normal];
+subgraph cluster_fonts {
+label=<<font color="#5c6a72"><b>fonts</b></font>>;
+style=filled;
+color="#cdd6f4";
+penwidth=2;
+bgcolor="#eff1f5";
+margin=20;
+node [style=filled, fillcolor="#89b4fa", shape=box, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e", color="#4c4f69", penwidth=2];
+}
+subgraph cluster_nanobind {
+label=<<font color="#5c6a72"><b>nanobind</b></font>>;
+style=filled;
+color="#cdd6f4";
+penwidth=2;
+bgcolor="#eff1f5";
+margin=20;
+node [style=filled, fillcolor="#89b4fa", shape=box, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e", color="#4c4f69", penwidth=2];
+"nanobind_my_ext_cpp" [label="my_ext.cpp", shape=box, style=filled, fillcolor="#89b4fa", color="#4c4f69", penwidth=2, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e"];
+"nanobind_my_ext_cpp" -> "src_setup_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+}
+subgraph cluster_shaders {
+label=<<font color="#5c6a72"><b>shaders</b></font>>;
+style=filled;
+color="#cdd6f4";
+penwidth=2;
+bgcolor="#eff1f5";
+margin=20;
+node [style=filled, fillcolor="#89b4fa", shape=box, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e", color="#4c4f69", penwidth=2];
+}
+subgraph cluster_src {
+label=<<font color="#5c6a72"><b>src</b></font>>;
+style=filled;
+color="#cdd6f4";
+penwidth=2;
+bgcolor="#eff1f5";
+margin=20;
+node [style=filled, fillcolor="#89b4fa", shape=box, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e", color="#4c4f69", penwidth=2];
+"src_camera_cpp" [label="camera.cpp", shape=box, style=filled, fillcolor="#89b4fa", color="#4c4f69", penwidth=2, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e"];
+"src_camera_cpp" -> "src_camera_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_camera_hpp" [label="camera.hpp", shape=box, style=filled, fillcolor="#89b4fa", color="#4c4f69", penwidth=2, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e"];
+"src_constants_hpp" [label="constants.hpp", shape=box, style=filled, fillcolor="#89b4fa", color="#4c4f69", penwidth=2, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e"];
+"src_input_cpp" [label="input.cpp", shape=box, style=filled, fillcolor="#89b4fa", color="#4c4f69", penwidth=2, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e"];
+"src_input_cpp" -> "src_input_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_input_hpp" [label="input.hpp", shape=box, style=filled, fillcolor="#89b4fa", color="#4c4f69", penwidth=2, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e"];
+"src_input_hpp" -> "src_camera_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_input_hpp" -> "src_constants_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_main_cpp" [label="main.cpp", shape=box, style=filled, fillcolor="#89b4fa", color="#4c4f69", penwidth=2, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e"];
+"src_main_cpp" -> "src_setup_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_projection_cpp" [label="projection.cpp", shape=box, style=filled, fillcolor="#89b4fa", color="#4c4f69", penwidth=2, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e"];
+"src_projection_cpp" -> "src_projection_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_projection_cpp" -> "src_constants_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_projection_hpp" [label="projection.hpp", shape=box, style=filled, fillcolor="#89b4fa", color="#4c4f69", penwidth=2, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e"];
+"src_projection_hpp" -> "src_camera_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_projection_hpp" -> "src_shaderman_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_setup_cpp" [label="setup.cpp", shape=box, style=filled, fillcolor="#89b4fa", color="#4c4f69", penwidth=2, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e"];
+"src_setup_cpp" -> "src_setup_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_setup_hpp" [label="setup.hpp", shape=box, style=filled, fillcolor="#89b4fa", color="#4c4f69", penwidth=2, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e"];
+"src_setup_hpp" -> "src_window_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_setup_hpp" -> "src_input_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_setup_hpp" -> "src_shaderman_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_setup_hpp" -> "src_constants_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_setup_hpp" -> "src_projection_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_shaderman_cpp" [label="shaderman.cpp", shape=box, style=filled, fillcolor="#89b4fa", color="#4c4f69", penwidth=2, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e"];
+"src_shaderman_cpp" -> "src_shaderman_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_shaderman_hpp" [label="shaderman.hpp", shape=box, style=filled, fillcolor="#89b4fa", color="#4c4f69", penwidth=2, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e"];
+"src_window_cpp" [label="window.cpp", shape=box, style=filled, fillcolor="#89b4fa", color="#4c4f69", penwidth=2, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e"];
+"src_window_hpp" [label="window.hpp", shape=box, style=filled, fillcolor="#89b4fa", color="#4c4f69", penwidth=2, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e"];
+"src_window_hpp" -> "src_constants_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+subgraph cluster_src_editor {
+label=<<font color="#5c6a72"><b>editor</b></font>>;
+style=filled;
+color="#cdd6f4";
+penwidth=2;
+bgcolor="#eff1f5";
+margin=20;
+node [style=filled, fillcolor="#89b4fa", shape=box, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e", color="#4c4f69", penwidth=2];
+"src_editor_asset_browser_cpp" [label="asset_browser.cpp", shape=box, style=filled, fillcolor="#89b4fa", color="#4c4f69", penwidth=2, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e"];
+"src_editor_asset_browser_cpp" -> "src_editor_asset_browser_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_editor_asset_browser_hpp" [label="asset_browser.hpp", shape=box, style=filled, fillcolor="#89b4fa", color="#4c4f69", penwidth=2, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e"];
+"src_editor_asset_browser_hpp" -> "src_constants_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_editor_gizmo_cpp" [label="gizmo.cpp", shape=box, style=filled, fillcolor="#89b4fa", color="#4c4f69", penwidth=2, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e"];
+"src_editor_gizmo_cpp" -> "src_editor_gizmo_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_editor_gizmo_hpp" [label="gizmo.hpp", shape=box, style=filled, fillcolor="#89b4fa", color="#4c4f69", penwidth=2, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e"];
+"src_editor_gizmo_hpp" -> "src_constants_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_editor_gizmo_hpp" -> "src_camera_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_editor_gizmo_hpp" -> "src_projection_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_editor_gui_cpp" [label="gui.cpp", shape=box, style=filled, fillcolor="#89b4fa", color="#4c4f69", penwidth=2, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e"];
+"src_editor_gui_cpp" -> "src_editor_gui_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_editor_gui_hpp" [label="gui.hpp", shape=box, style=filled, fillcolor="#89b4fa", color="#4c4f69", penwidth=2, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e"];
+"src_editor_gui_hpp" -> "src_constants_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_editor_gui_hpp" -> "src_editor_gizmo_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_editor_inspector_cpp" [label="inspector.cpp", shape=box, style=filled, fillcolor="#89b4fa", color="#4c4f69", penwidth=2, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e"];
+"src_editor_inspector_cpp" -> "src_editor_inspector_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_editor_inspector_hpp" [label="inspector.hpp", shape=box, style=filled, fillcolor="#89b4fa", color="#4c4f69", penwidth=2, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e"];
+"src_editor_inspector_hpp" -> "src_constants_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_editor_object_creation_menu_cpp" [label="object_creation_menu.cpp", shape=box, style=filled, fillcolor="#89b4fa", color="#4c4f69", penwidth=2, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e"];
+"src_editor_object_creation_menu_cpp" -> "src_editor_object_creation_menu_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_editor_object_creation_menu_hpp" [label="object_creation_menu.hpp", shape=box, style=filled, fillcolor="#89b4fa", color="#4c4f69", penwidth=2, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e"];
+"src_editor_object_creation_menu_hpp" -> "src_constants_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+}
+subgraph cluster_src_primitives {
+label=<<font color="#5c6a72"><b>primitives</b></font>>;
+style=filled;
+color="#cdd6f4";
+penwidth=2;
+bgcolor="#eff1f5";
+margin=20;
+node [style=filled, fillcolor="#89b4fa", shape=box, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e", color="#4c4f69", penwidth=2];
+"src_primitives_cube_cpp" [label="cube.cpp", shape=box, style=filled, fillcolor="#89b4fa", color="#4c4f69", penwidth=2, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e"];
+"src_primitives_cube_cpp" -> "src_primitives_cube_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_primitives_cube_cpp" -> "src_primitives_vertices_data_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_primitives_cube_hpp" [label="cube.hpp", shape=box, style=filled, fillcolor="#89b4fa", color="#4c4f69", penwidth=2, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e"];
+"src_primitives_cube_hpp" -> "src_primitives_entity_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_primitives_cube_hpp" -> "src_shaderman_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_primitives_entity_cpp" [label="entity.cpp", shape=box, style=filled, fillcolor="#89b4fa", color="#4c4f69", penwidth=2, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e"];
+"src_primitives_entity_cpp" -> "src_primitives_entity_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_primitives_entity_hpp" [label="entity.hpp", shape=box, style=filled, fillcolor="#89b4fa", color="#4c4f69", penwidth=2, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e"];
+"src_primitives_uv_sphere_cpp" [label="uv_sphere.cpp", shape=box, style=filled, fillcolor="#89b4fa", color="#4c4f69", penwidth=2, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e"];
+"src_primitives_uv_sphere_cpp" -> "src_primitives_uv_sphere_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_primitives_uv_sphere_hpp" [label="uv_sphere.hpp", shape=box, style=filled, fillcolor="#89b4fa", color="#4c4f69", penwidth=2, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e"];
+"src_primitives_uv_sphere_hpp" -> "src_primitives_entity_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_primitives_uv_sphere_hpp" -> "src_shaderman_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_primitives_vertices_data_hpp" [label="vertices_data.hpp", shape=box, style=filled, fillcolor="#89b4fa", color="#4c4f69", penwidth=2, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e"];
+}
+subgraph cluster_src_utilities {
+label=<<font color="#5c6a72"><b>utilities</b></font>>;
+style=filled;
+color="#cdd6f4";
+penwidth=2;
+bgcolor="#eff1f5";
+margin=20;
+node [style=filled, fillcolor="#89b4fa", shape=box, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e", color="#4c4f69", penwidth=2];
+"src_utilities_fileloader_cpp" [label="fileloader.cpp", shape=box, style=filled, fillcolor="#89b4fa", color="#4c4f69", penwidth=2, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e"];
+"src_utilities_fileloader_cpp" -> "src_utilities_fileloader_hpp" [color="#9399b2", penwidth=1.5, arrowhead=normal, style=solid];
+"src_utilities_fileloader_hpp" [label="fileloader.hpp", shape=box, style=filled, fillcolor="#89b4fa", color="#4c4f69", penwidth=2, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e"];
+"src_utilities_stb_image_cpp" [label="stb_image.cpp", shape=box, style=filled, fillcolor="#89b4fa", color="#4c4f69", penwidth=2, fontname="JetBrainsMono Nerd Font Mono", fontcolor="#1e1e2e"];
+}
+}
+}
