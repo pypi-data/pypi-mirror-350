@@ -1,0 +1,17 @@
+from __future__ import annotations
+from .organization_role import MaleoIdentityOrganizationRoleRepositoryResultsTransfers
+from .organization import MaleoIdentityOrganizationRepositoryResultsTransfers
+from .user_organization_role import MaleoIdentityUserOrganizationRoleRepositoryResultsTransfers
+from .user_organization import MaleoIdentityUserOrganizationRepositoryResultsTransfers
+from .user_profile import MaleoIdentityUserProfileRepositoryResultsTransfers
+from .user_system_role import MaleoIdentityUserSystemRoleRepositoryResultsTransfers
+from .user import MaleoIdentityUserRepositoryResultsTransfers
+
+class MaleoIdentityRepositoryResultsTransfers:
+    OrganizationRole = MaleoIdentityOrganizationRoleRepositoryResultsTransfers
+    Organization = MaleoIdentityOrganizationRepositoryResultsTransfers
+    UserOrganizationRole = MaleoIdentityUserOrganizationRoleRepositoryResultsTransfers
+    UserOrganization = MaleoIdentityUserOrganizationRepositoryResultsTransfers
+    UserProfile = MaleoIdentityUserProfileRepositoryResultsTransfers
+    UserSystemRole = MaleoIdentityUserSystemRoleRepositoryResultsTransfers
+    User = MaleoIdentityUserRepositoryResultsTransfers
