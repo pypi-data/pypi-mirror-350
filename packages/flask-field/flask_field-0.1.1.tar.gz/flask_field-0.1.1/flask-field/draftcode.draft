@@ -1,0 +1,468 @@
+.../app.py
+
+from flask import Flask
+from auth.routes import auth_bp
+from dashboard.dashboard import dashboard_bp
+from auth.admin_controller import admin_bp
+from models import db, User
+from werkzeug.security import generate_password_hash
+
+def make_app():
+    application = Flask(__name__)
+    application.config.from_mapping(
+        SECRET_KEY='your_secret_key_here',
+        SQLALCHEMY_DATABASE_URI='mysql+pymysql://root:1234@localhost:3306/hotel',
+        SQLALCHEMY_TRACK_MODIFICATIONS=False
+    )
+
+    db.init_app(application)
+
+    for bp, prefix in ((auth_bp, None), (dashboard_bp, None), (admin_bp, '/admin')):
+        if prefix:
+            application.register_blueprint(bp, url_prefix=prefix)
+        else:
+            application.register_blueprint(bp)
+
+    with application.app_context():
+        db.create_all()
+        _ensure_admin()
+
+    return application
+
+def _ensure_admin():
+    admin_exists = User.query.filter_by(username='admin').first()
+    if admin_exists:
+        return
+    pw_hash = generate_password_hash('admin')
+    admin = User(username='admin', password_hash=pw_hash, role='admin')
+    db.session.add(admin)
+    db.session.commit()
+
+if __name__ == '__main__':
+    app = make_app()
+    app.run(debug=True)
+
+
+
+.../dashboard.py
+
+from flask import Blueprint, render_template, session, redirect, url_for
+from models import User
+
+dashboard_bp = Blueprint('dashboard', __name__, template_folder='templates', url_prefix='/dashboard')
+
+@dashboard_bp.get('/')
+def show_dashboard():
+    user_id = session.get('user_id')
+    if not user_id:
+        return redirect(url_for('auth.login'))
+
+    user = User.query.get(user_id)
+    template_name = 'admin_dashboard.html' if user.role == 'admin' else 'user_dashboard.html'
+    return render_template(template_name)
+
+
+
+.../routes.py
+
+from flask import Flask, Blueprint, render_template, session, redirect, url_for, request, flash
+from models import db, User
+from werkzeug.security import generate_password_hash
+from auth.admin_controller import admin_bp
+from forms import LoginForm, ChangePasswordForm
+from datetime import datetime, timedelta
+
+auth_bp = Blueprint('auth', __name__, template_folder='templates', url_prefix='/auth')
+
+dashboard_bp = Blueprint('dashboard', __name__, template_folder='templates', url_prefix='/dashboard')
+
+@auth_bp.route('/login', methods=['GET', 'POST'])
+def handle_login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user and user.is_blocked():
+            flash('you have been blocked. please contact the administrator.', 'danger')
+            return redirect(url_for('auth.handle_login'))
+        if user and user.check_password(form.password.data):
+            session['user_id'] = user.id
+            session['username'] = user.username
+            session['role'] = user.role
+            flash('you have successfully logged in.', 'success')
+            return redirect(url_for('dashboard.show_dashboard'))
+        if user:
+            user.failed_logins += 1
+            if user.failed_logins >= 3:
+                user.blocked_until = datetime.utcnow() + timedelta(hours=1)
+            db.session.commit()
+            message = 'you have been blocked for 1 hour.' if user.failed_logins >= 3 else 'invalid username or password. please try again.'
+            flash(message, 'danger')
+    return render_template('login.html', form=form)
+
+@auth_bp.route('/change-password', methods=['GET', 'POST'])
+def handle_change_password():
+    form = ChangePasswordForm()
+    if form.validate_on_submit():
+        user = User.query.get(session.get('user_id'))
+        if not user or not user.check_password(form.current_password.data):
+            flash('invalid current password.', 'danger')
+            return redirect(url_for('auth.handle_change_password'))
+        if form.new_password.data != form.confirm_password.data:
+            flash('new passwords do not match.', 'danger')
+            return redirect(url_for('auth.handle_change_password'))
+        user.set_password(form.new_password.data)
+        db.session.commit()
+        flash('password changed successfully.', 'success')
+        return redirect(url_for('dashboard.show_dashboard'))
+    return render_template('change_password.html', form=form)
+
+@dashboard_bp.get('/')
+def show_dashboard():
+    user_id = session.get('user_id')
+    if not user_id:
+        return redirect(url_for('auth.handle_login'))
+    user = User.query.get(user_id)
+    return render_template('admin_dashboard.html' if user.role == 'admin' else 'user_dashboard.html')
+
+def make_app():
+    application = Flask(__name__)
+    application.config.from_mapping(
+        SECRET_KEY='your_secret_key_here',
+        SQLALCHEMY_DATABASE_URI='mysql+pymysql://root:1234@localhost:3306/hotel',
+        SQLALCHEMY_TRACK_MODIFICATIONS=False
+    )
+    db.init_app(application)
+    for bp, prefix in ((auth_bp, None), (dashboard_bp, None), (admin_bp, '/admin')):
+        if prefix:
+            application.register_blueprint(bp, url_prefix=prefix)
+        else:
+            application.register_blueprint(bp)
+    with application.app_context():
+        db.create_all()
+        if not User.query.filter_by(username='admin').first():
+            admin = User(username='admin', password_hash=generate_password_hash('admin'), role='admin')
+            db.session.add(admin)
+            db.session.commit()
+    return application
+
+if __name__ == '__main__':
+    make_app().run(debug=True)
+
+
+.../admin_controller.py
+
+from flask import Flask, Blueprint, render_template, session, redirect, url_for, request, flash
+from models import db, User
+from werkzeug.security import generate_password_hash
+from forms import LoginForm, ChangePasswordForm, AdminUserForm
+from datetime import datetime, timedelta
+
+auth_bp = Blueprint('auth', __name__, template_folder='templates', url_prefix='/auth')
+
+@auth_bp.route('/login', methods=['GET', 'POST'])
+def handle_login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user and user.is_blocked():
+            flash('you have been blocked. please contact the administrator.', 'danger')
+            return redirect(url_for('auth.handle_login'))
+        if user and user.check_password(form.password.data):
+            session['user_id'] = user.id
+            session['username'] = user.username
+            session['role'] = user.role
+            flash('you have successfully logged in.', 'success')
+            return redirect(url_for('dashboard.show_dashboard'))
+        if user:
+            user.failed_logins += 1
+            if user.failed_logins >= 3:
+                user.blocked_until = datetime.utcnow() + timedelta(hours=1)
+            db.session.commit()
+            message = 'you have been blocked for 1 hour.' if user.failed_logins >= 3 else 'invalid username or password. please try again.'
+            flash(message, 'danger')
+    return render_template('login.html', form=form)
+
+@auth_bp.route('/change-password', methods=['GET', 'POST'])
+def handle_change_password():
+    form = ChangePasswordForm()
+    if form.validate_on_submit():
+        user = User.query.get(session.get('user_id'))
+        if not user or not user.check_password(form.current_password.data):
+            flash('invalid current password.', 'danger')
+            return redirect(url_for('auth.handle_change_password'))
+        if form.new_password.data != form.confirm_password.data:
+            flash('new passwords do not match.', 'danger')
+            return redirect(url_for('auth.handle_change_password'))
+        user.set_password(form.new_password.data)
+        db.session.commit()
+        flash('password changed successfully.', 'success')
+        return redirect(url_for('dashboard.show_dashboard'))
+    return render_template('change_password.html', form=form)
+
+
+dashboard_bp = Blueprint('dashboard', __name__, template_folder='templates', url_prefix='/dashboard')
+
+@dashboard_bp.get('/')
+def show_dashboard():
+    user_id = session.get('user_id')
+    if not user_id:
+        return redirect(url_for('auth.handle_login'))
+    user = User.query.get(user_id)
+    return render_template('admin_dashboard.html' if user.role == 'admin' else 'user_dashboard.html')
+
+admin_bp = Blueprint('admin', __name__, template_folder='templates')
+
+@admin_bp.get('/admin/users')
+def list_users():
+    users = User.query.all()
+    return render_template('admin_users.html', users=users)
+
+@admin_bp.route('/admin/add-user', methods=['GET', 'POST'])
+def add_user():
+    form = AdminUserForm()
+    if form.validate_on_submit():
+        new_user = User(
+            username=form.username.data,
+            password_hash=generate_password_hash(form.password.data),
+            role=form.role.data
+        )
+        db.session.add(new_user)
+        db.session.commit()
+        flash(f"user '{form.username.data}' added successfully.", 'success')
+        return redirect(url_for('admin.list_users'))
+    return render_template('add_user.html', form=form)
+
+@admin_bp.route('/admin/edit-user/<int:user_id>', methods=['GET', 'POST'])
+def edit_user(user_id):
+    user = User.query.get_or_404(user_id)
+    form = AdminUserForm(obj=user)
+    if form.validate_on_submit():
+        user.username = form.username.data
+        if form.password.data.strip():
+            user.set_password(form.password.data)
+        user.role = form.role.data
+        db.session.commit()
+        flash(f"user '{user.username}' updated successfully.", 'success')
+        return redirect(url_for('admin.list_users'))
+    return render_template('edit_user.html', form=form, user=user)
+
+@admin_bp.get('/admin/unblock-user/<int:user_id>')
+def unblock_user(user_id):
+    user = User.query.get_or_404(user_id)
+    user.blocked_until = None
+    db.session.commit()
+    flash(f"user '{user.username}' unblocked successfully.", 'success')
+    return redirect(url_for('admin.list_users'))
+
+
+def make_app():
+    app = Flask(__name__)
+    app.config.from_mapping(
+        SECRET_KEY='your_secret_key_here',
+        SQLALCHEMY_DATABASE_URI='mysql+pymysql://root:1234@localhost:3306/hotel',
+        SQLALCHEMY_TRACK_MODIFICATIONS=False
+    )
+    db.init_app(app)
+    for bp, prefix in ((auth_bp, None), (dashboard_bp, None), (admin_bp, '/admin')):
+        if prefix:
+            app.register_blueprint(bp, url_prefix=prefix)
+        else:
+            app.register_blueprint(bp)
+    with app.app_context():
+        db.create_all()
+        if not User.query.filter_by(username='admin').first():
+            admin_user = User(username='admin', password_hash=generate_password_hash('admin'), role='admin')
+            db.session.add(admin_user)
+            db.session.commit()
+    return app
+
+if __name__ == '__main__':
+    make_app().run(debug=True)
+
+
+
+.../models.py
+
+from flask import Flask, Blueprint, render_template, session, redirect, url_for, request, flash
+from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
+from forms import LoginForm, ChangePasswordForm, AdminUserForm
+from datetime import datetime, timedelta
+
+db = SQLAlchemy()
+
+class User(db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), unique=True, nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
+    role = db.Column(db.Enum('admin', 'user'), nullable=False, server_default='user')
+    failed_logins = db.Column(db.Integer, default=0)
+    blocked_until = db.Column(db.DateTime)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def verify_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+    @property
+    def is_blocked(self):
+        return bool(self.blocked_until and datetime.utcnow() < self.blocked_until)
+
+auth_bp = Blueprint('auth', __name__, template_folder='templates', url_prefix='/auth')
+
+@auth_bp.route('/login', methods=['GET', 'POST'])
+def handle_login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user and user.is_blocked:
+            flash('you have been blocked. please contact the administrator.', 'danger')
+            return redirect(url_for('auth.handle_login'))
+        if user and user.verify_password(form.password.data):
+            session['user_id'] = user.id
+            session['username'] = user.username
+            session['role'] = user.role
+            flash('you have successfully logged in.', 'success')
+            return redirect(url_for('dashboard.show_dashboard'))
+        if user:
+            user.failed_logins += 1
+            if user.failed_logins >= 3:
+                user.blocked_until = datetime.utcnow() + timedelta(hours=1)
+            db.session.commit()
+            message = 'you have been blocked for 1 hour.' if user.failed_logins >= 3 else 'invalid username or password. please try again.'
+            flash(message, 'danger')
+    return render_template('login.html', form=form)
+
+@auth_bp.route('/change-password', methods=['GET', 'POST'])
+def handle_change_password():
+    form = ChangePasswordForm()
+    if form.validate_on_submit():
+        user = User.query.get(session.get('user_id'))
+        if not user or not user.verify_password(form.current_password.data):
+            flash('invalid current password.', 'danger')
+            return redirect(url_for('auth.handle_change_password'))
+        if form.new_password.data != form.confirm_password.data:
+            flash('new passwords do not match.', 'danger')
+            return redirect(url_for('auth.handle_change_password'))
+        user.set_password(form.new_password.data)
+        db.session.commit()
+        flash('password changed successfully.', 'success')
+        return redirect(url_for('dashboard.show_dashboard'))
+    return render_template('change_password.html', form=form)
+
+
+dashboard_bp = Blueprint('dashboard', __name__, template_folder='templates', url_prefix='/dashboard')
+
+@dashboard_bp.get('/')
+def show_dashboard():
+    user_id = session.get('user_id')
+    if not user_id:
+        return redirect(url_for('auth.handle_login'))
+    user = User.query.get(user_id)
+    return render_template('admin_dashboard.html' if user.role == 'admin' else 'user_dashboard.html')
+
+admin_bp = Blueprint('admin', __name__, template_folder='templates')
+
+@admin_bp.get('/admin/users')
+def list_users():
+    users = User.query.all()
+    return render_template('admin_users.html', users=users)
+
+@admin_bp.route('/admin/add-user', methods=['GET', 'POST'])
+def add_user():
+    form = AdminUserForm()
+    if form.validate_on_submit():
+        user = User(
+            username=form.username.data,
+            password_hash=None,
+            role=form.role.data
+        )
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash(f"user '{form.username.data}' added successfully.", 'success')
+        return redirect(url_for('admin.list_users'))
+    return render_template('add_user.html', form=form)
+
+@admin_bp.route('/admin/edit-user/<int:user_id>', methods=['GET', 'POST'])
+def edit_user(user_id):
+    user = User.query.get_or_404(user_id)
+    form = AdminUserForm(obj=user)
+    if form.validate_on_submit():
+        user.username = form.username.data
+        if form.password.data.strip():
+            user.set_password(form.password.data)
+        user.role = form.role.data
+        db.session.commit()
+        flash(f"user '{user.username}' updated successfully.", 'success')
+        return redirect(url_for('admin.list_users'))
+    return render_template('edit_user.html', form=form, user=user)
+
+@admin_bp.get('/admin/unblock-user/<int:user_id>')
+def unblock_user(user_id):
+    user = User.query.get_or_404(user_id)
+    user.blocked_until = None
+    db.session.commit()
+    flash(f"user '{user.username}' unblocked successfully.", 'success')
+    return redirect(url_for('admin.list_users'))
+
+
+def make_app():
+    app = Flask(__name__)
+    app.config.from_mapping(
+        SECRET_KEY='your_secret_key_here',
+        SQLALCHEMY_DATABASE_URI='mysql+pymysql://root:1234@localhost:3306/hotel',
+        SQLALCHEMY_TRACK_MODIFICATIONS=False
+    )
+    db.init_app(app)
+    for bp, prefix in ((auth_bp, None), (dashboard_bp, None), (admin_bp, '/admin')):
+        if prefix:
+            app.register_blueprint(bp, url_prefix=prefix)
+        else:
+            app.register_blueprint(bp)
+    with app.app_context():
+        db.create_all()
+        if not User.query.filter_by(username='admin').first():
+            admin_user = User(username='admin', password_hash=None, role='admin')
+            admin_user.set_password('admin')
+            db.session.add(admin_user)
+            db.session.commit()
+    return app
+
+if __name__ == '__main__':
+    make_app().run(debug=True)
+
+
+.../forms.py
+
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, SubmitField, SelectField
+from wtforms.validators import InputRequired, Length, EqualTo, ValidationError
+from models import User
+
+class LoginForm(FlaskForm):
+    username = StringField('username', validators=[InputRequired()])
+    password = PasswordField('password', validators=[InputRequired()])
+    submit = SubmitField('log in')
+
+class ChangePasswordForm(FlaskForm):
+    current_password = PasswordField('current password', validators=[InputRequired()])
+    new_password = PasswordField('new password', validators=[InputRequired(), Length(min=6)])
+    confirm_password = PasswordField('confirm new password', validators=[InputRequired(), EqualTo('new_password', message='passwords do not match')])
+    submit = SubmitField('change password')
+
+class AdminUserForm(FlaskForm):
+    username = StringField('username', validators=[InputRequired(), Length(max=64)])
+    password = PasswordField('password (leave blank to keep unchanged)', validators=[])
+    role = SelectField('role', choices=[('admin', 'admin'), ('user', 'user')], coerce=str)
+    submit = SubmitField('save')
+
+    def validate_username(self, field):
+        existing = getattr(self, 'obj', None)
+        if existing and hasattr(existing, 'username') and field.data.lower() == existing.username.lower():
+            return
+        if User.query.filter(User.username.ilike(field.data)).first():
+            raise ValidationError('username already exists')

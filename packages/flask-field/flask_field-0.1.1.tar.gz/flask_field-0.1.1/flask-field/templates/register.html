@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="../static/styles/main.css"/>
+    <link rel="stylesheet" href="../static/styles/auth.css"/>
+</head>
+<body>
+    <a class="back" href="/"><= Назад</a>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    <div class="root">
+        <form class="auth" method="POST" action="{{ url_for('routes.register') }}">
+            {{ form.csrf_token }} 
+            <h1>Вход</h1>
+            {{ form.email(placeholder="Почта") }}
+            {{ form.username(placeholder="Логин") }}
+            {{ form.password(placeholder="Пароль") }}
+            {{ form.confirm_password(placeholder="Подтверждение пароля") }}
+            {{ form.submit(class="login-button", value="Зарегистрироваться") }}
+            Есть аккаунт? <a href="/login">Войти</a>
+        </form>
+    </div>
+</body>
+</html>
