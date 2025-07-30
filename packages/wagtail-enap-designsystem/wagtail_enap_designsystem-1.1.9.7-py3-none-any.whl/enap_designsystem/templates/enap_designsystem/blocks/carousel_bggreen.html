@@ -1,0 +1,396 @@
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load static %}
+
+{% block content %}
+
+<style>
+/* Estilização do Carrossel */
+.enap-carousel-container {
+    background-color: #02333A;
+    color: white;
+    padding: 60px 0;
+    position: relative;
+}
+
+.enap-carousel-inner {
+    overflow: hidden;
+    position: relative;
+}
+
+.enap-carousel-header {
+    margin-bottom: 40px;
+    max-width: 700px;
+}
+
+.enap-carousel-title {
+    font-size: 32px;
+    margin-bottom: 10px;
+    line-height: 120%;
+}
+
+.enap-carousel-subtitle {
+    font-size: 16px;
+    margin-top: 0;
+}
+
+.enap-carousel-content {
+    position: relative;
+    overflow: hidden;
+}
+
+.enap-carousel-wrapper {
+    display: flex;
+    transition: transform 0.4s ease;
+    width: 100%;
+}
+
+.enap-carousel-card {
+    flex: 0 0 25%;
+    width: 25%;
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+
+.enap-carousel-card-inner {
+    background-color: white;
+    border-radius: 20px;
+    overflow: hidden;
+    height: 100%;
+}
+
+.enap-carousel-card-content {
+    padding: 15px;
+}
+
+.enap-carousel-image {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 20px;
+}
+
+.enap-carousel-image-placeholder {
+    width: 100%;
+    height: 140px;
+    background-color: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+}
+
+.enap-carousel-text-container {
+    height: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.enap-carousel-card-title {
+    line-height: 120%;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 15px 0 10px;
+    color: #434A54;
+}
+
+.enap-carousel-card-description {
+    font-size: 0.95rem;
+    color: #434A54;
+    margin-bottom: 20px;
+}
+
+.enap-carousel-card-link {
+    color: #007D7A;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.enap-carousel-card-link:hover {
+    color: #005d5a;
+}
+
+.enap-carousel-card-link-icon {
+    margin-left: 5px;
+}
+
+.enap-carousel-prev-btn,
+.enap-carousel-next-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background-color: transparent;
+    border: none;
+    z-index: 10;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.enap-carousel-prev-btn {
+    left: 20px;
+}
+
+.enap-carousel-next-btn {
+    right: 20px;
+}
+
+.enap-carousel-btn-image {
+    width: 40px;
+    height: 40px;
+}
+
+.enap-carousel-indicators {
+    display: none;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.enap-carousel-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+.enap-carousel-indicator.active {
+    background-color: white;
+}
+
+.enap-carousel-indicator:not(.active) {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Estilização para cards de demonstração */
+.enap-carousel-demo-image {
+    width: 100%;
+    height: 200px;
+    background-color: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+}
+
+.enap-carousel-demo-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 15px 0 10px;
+    color: #333;
+}
+
+.enap-carousel-demo-description {
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+    color: #555;
+}
+
+.enap-carousel-demo-link {
+    color: #0B8457;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.enap-carousel-demo-link:hover {
+    color: #086b42;
+}
+</style>
+
+<div class="enap-carousel-container">
+    <div class="enap-carousel-inner container">
+        <!-- Cabeçalho do carrossel -->
+        <div class="enap-carousel-header">
+            <h2 class="enap-carousel-title">
+                {{ value.title|default:"Acervo para Servidores" }}
+            </h2>
+            <p class="enap-carousel-subtitle">{{ value.subtitle|default:"Comprometidos com a Transformação" }}</p>
+        </div>
+        
+        <!-- Container do carrossel com largura controlada -->
+        <div class="enap-carousel-content">
+            
+            <!-- Wrapper do carrossel -->
+            <div class="enap-carousel-wrapper">
+                {% if value.items %}
+                    {% for item in value.items %}
+                        <div class="enap-carousel-card">
+                            <div class="enap-carousel-card-inner">
+                                <div class="enap-carousel-card-content">
+                                    {% if item.image %}
+                                        {% image item.image fill-400x140 class="img-fluid rounded enap-carousel-image" %}
+                                    {% else %}
+                                        <div class="enap-carousel-image-placeholder">
+                                            <span>Imagem indisponível</span>
+                                        </div>
+                                    {% endif %}
+                                    <div class="enap-carousel-text-container">
+                                        <div>
+                                            <h3 class="enap-carousel-card-title">{{ item.title }}</h3>
+                                            <p class="enap-carousel-card-description">{{ item.description }}</p>
+                                        </div>
+                                        <a href="{{ item.link_url }}" class="enap-carousel-card-link">
+                                            {{ item.link_text }} <i class="fa-solid fa-circle-chevron-right enap-carousel-card-link-icon"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <!-- Cards de demonstração quando não há itens -->
+                    <div class="enap-carousel-card">
+                        <div class="enap-carousel-card-inner">
+                            <div class="enap-carousel-card-content">
+                                <div class="enap-carousel-image-placeholder">
+                                    <span>Imagem 1</span>
+                                </div>
+                                <h3 class="enap-carousel-demo-title">Introdução à gestão</h3>
+                                <p class="enap-carousel-demo-description">Apresenta os procedimentos essenciais para lidar com questões éticas.</p>
+                                <a href="#" class="enap-carousel-demo-link">
+                                    Acesse o curso <span class="enap-carousel-card-link-icon">→</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="enap-carousel-card">
+                        <div class="enap-carousel-card-inner">
+                            <div class="enap-carousel-card-content">
+                                <div class="enap-carousel-demo-image">
+                                    <span>Imagem 2</span>
+                                </div>
+                                <h3 class="enap-carousel-demo-title">Assédio moral</h3>
+                                <p class="enap-carousel-demo-description">Orienta servidores para identificação e prevenção de assédio.</p>
+                                <a href="#" class="enap-carousel-demo-link">
+                                    Acesse o curso <span class="enap-carousel-card-link-icon">→</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="enap-carousel-card">
+                        <div class="enap-carousel-card-inner">
+                            <div class="enap-carousel-card-content">
+                                <div class="enap-carousel-demo-image">
+                                    <span>Imagem 3</span>
+                                </div>
+                                <h3 class="enap-carousel-demo-title">Gestão de conflitos</h3>
+                                <p class="enap-carousel-demo-description">Capacita servidores para gerir conflitos eficazmente.</p>
+                                <a href="#" class="enap-carousel-demo-link">
+                                    Acesse o curso <span class="enap-carousel-card-link-icon">→</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="enap-carousel-card">
+                        <div class="enap-carousel-card-inner">
+                            <div class="enap-carousel-card-content">
+                                <div class="enap-carousel-demo-image">
+                                    <span>Imagem 4</span>
+                                </div>
+                                <h3 class="enap-carousel-demo-title">Times de alta performance</h3>
+                                <p class="enap-carousel-demo-description">Estimula habilidades gerenciais e trabalho em equipe.</p>
+                                <a href="#" class="enap-carousel-demo-link">
+                                    Saiba mais <span class="enap-carousel-card-link-icon">→</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        
+        <!-- Indicadores -->
+        <div class="enap-carousel-indicators">
+            {% if value.items %}
+                {% for item in value.items %}
+                    <span class="enap-carousel-indicator {% if forloop.first %}active{% endif %}" data-index="{{ forloop.counter0 }}"></span>
+                {% endfor %}
+            {% else %}
+                <span class="enap-carousel-indicator active" data-index="0"></span>
+                <span class="enap-carousel-indicator" data-index="1"></span>
+            {% endif %}
+        </div>
+    </div>
+    <!-- Botão Anterior -->
+    <button class="enap-carousel-prev-btn">
+        <img class="enap-carousel-btn-image" src="{% static 'enap_designsystem/icons/iconleft.svg' %}" alt="Passar pro lado esquerdo">
+    </button>
+
+    <!-- Botão Próximo -->
+    <button class="enap-carousel-next-btn">
+        <img class="enap-carousel-btn-image" src="{% static 'enap_designsystem/icons/iconrig.svg' %}" alt="Passar pro lado direito">
+    </button>
+</div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Inicializar cada carrossel independentemente
+        document.querySelectorAll('.enap-carousel-container').forEach(function(carouselContainer) {
+            // Elementos do carrossel específico
+            var wrapper = carouselContainer.querySelector('.enap-carousel-wrapper');
+            var prevBtn = carouselContainer.querySelector('.enap-carousel-prev-btn');
+            var nextBtn = carouselContainer.querySelector('.enap-carousel-next-btn');
+            var indicators = carouselContainer.querySelectorAll('.enap-carousel-indicator');
+            var cards = carouselContainer.querySelectorAll('.enap-carousel-card');
+            
+            // Configuração do carrossel
+            var currentIndex = 0;
+            var cardWidth = 25; // 25% de largura para cada card (4 cards por linha)
+            var totalSlides = Math.ceil(cards.length / 4);
+            
+            // Função para mover o carrossel
+            function moveCarousel(index) {
+                if (index < 0) {
+                    index = totalSlides - 1;
+                } else if (index >= totalSlides) {
+                    index = 0;
+                }
+                
+                currentIndex = index;
+                var translateValue = -currentIndex * (cardWidth * 4);
+                wrapper.style.transform = 'translateX(' + translateValue + '%)';
+                
+                // Atualizar indicadores
+                indicators.forEach(function(indicator, i) {
+                    if (i === currentIndex) {
+                        indicator.classList.add('active');
+                    } else {
+                        indicator.classList.remove('active');
+                    }
+                });
+            }
+            
+            // Adicionar eventos de clique aos botões
+            if (prevBtn) {
+                prevBtn.addEventListener('click', function() {
+                    moveCarousel(currentIndex - 1);
+                });
+            }
+            
+            if (nextBtn) {
+                nextBtn.addEventListener('click', function() {
+                    moveCarousel(currentIndex + 1);
+                });
+            }
+            
+            // Adicionar eventos de clique aos indicadores
+            indicators.forEach(function(indicator, i) {
+                indicator.addEventListener('click', function() {
+                    moveCarousel(i);
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}

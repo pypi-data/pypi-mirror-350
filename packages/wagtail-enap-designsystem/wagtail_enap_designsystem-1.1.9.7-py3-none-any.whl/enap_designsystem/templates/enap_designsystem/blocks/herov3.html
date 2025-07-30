@@ -1,0 +1,67 @@
+{% load wagtailimages_tags %}
+{% block content %}
+<style>
+    .hero {
+        background-color: {{ value.background_color }};
+    }
+    
+    .hero-title {
+        color: {{ value.primary_color }};
+    }
+    
+    .btn_hero-outline {
+        border: 2px solid {{ value.primary_color }};
+        color: {{ value.primary_color }};
+    }
+    
+    .btn-primary_hero {
+        background-color: {{ value.primary_color }};
+    }
+    
+    .play-button i {
+        color: {{ value.accent_color }};
+    }
+</style>
+
+<section class="hero">
+    <!-- Wave decorations -->
+    <svg class="wave-decoration wave-top-left" width="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <path fill="{{ value.accent_color }}" opacity="0.2" d="M45.5,-47.2C58.9,-33.5,69.8,-16.7,71.1,1.3C72.4,19.4,64.1,38.7,50.7,50.9C37.2,63,18.6,68,0.9,67.1C-16.8,66.2,-33.6,59.4,-45.9,47.2C-58.2,35,-66,17.5,-66.8,-0.8C-67.7,-19.1,-61.5,-38.1,-49.2,-51.8C-36.8,-65.4,-18.4,-73.6,-0.3,-73.3C17.8,-73,35.6,-64.2,45.5,-47.2Z" transform="translate(100 100)" />
+    </svg>
+    
+    <svg class="wave-decoration wave-top-right" width="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <path fill="{{ value.primary_color }}" opacity="0.2" d="M42.7,-62.9C56.3,-54.7,69.4,-43.5,74.8,-29.3C80.3,-15.2,78.1,1.9,72.5,17.4C66.9,32.8,57.8,46.7,45,56.4C32.1,66.1,16.1,71.7,0,71.7C-16,71.6,-32.1,65.9,-46.2,56C-60.3,46.1,-72.5,31.9,-78.8,14.5C-85,-2.9,-85.3,-23.5,-76.5,-38.2C-67.7,-52.9,-49.9,-61.7,-33.4,-68.8C-16.9,-75.9,-1.7,-81.2,13,-80.3C27.8,-79.4,55.6,-72.3,42.7,-62.9Z" transform="translate(100 100)" />
+    </svg>
+    
+    <div class="hero-container">
+        <div class="hero-content">
+            <h1 class="hero-title">{{ value.title }}</h1>
+            <p class="hero-subtitle">{{ value.subtitle }}</p>
+            
+            <div class="hero-buttons">
+                <a href="{{ value.primary_button_url }}" class="btn_hero btn-primary_hero">{{ value.primary_button_text }}</a>
+                <a href="{{ value.secondary_button_url }}" class="btn_hero btn_hero-outline">
+                    {{ value.secondary_button_text }}
+                    {% if value.show_play_icon %}
+                        <i class="fas fa-play"></i>
+                    {% endif %}
+                </a>
+            </div>
+        </div>
+        
+        <div class="hero-image">
+            {% image value.background_image width-1170 as hero_img %}
+            <img class="img-hero_img" src="{{ hero_img.url }}" alt="{{ hero_img.alt }}">
+            {% if value.show_play_button %}
+            <div class="play-button">
+                <i class="fas fa-play"></i>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <svg class="wave-decoration wave-bottom" viewBox="0 0 1440 100" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#ffffff" d="M0,64L60,69.3C120,75,240,85,360,80C480,75,600,53,720,48C840,43,960,53,1080,56C1200,59,1320,53,1380,50.7L1440,48L1440,100L1380,100C1320,100,1200,100,1080,100C960,100,840,100,720,100C600,100,480,100,360,100C240,100,120,100,60,100L0,100Z"></path>
+    </svg>
+</section>
+{% endblock %}
