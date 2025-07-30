@@ -1,0 +1,44 @@
+# .github/workflows/deployment.yml
+name: deployment
+
+on: 
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Build and test on Ubuntu
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+
+      - name: Install the project
+        run: |
+          uv sync --dev
+     
+      - name: Run tests
+        run: |
+          uv run pytest --cov
+
+      - name: Minimize uv cache
+        run: uv cache prune --ci
+
+  deploy:
+    name: Deploy to some other environment
+    needs: [test]
+    runs-on: ubuntu-24.04
