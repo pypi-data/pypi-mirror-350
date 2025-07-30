@@ -1,0 +1,102 @@
+Metadata-Version: 2.4
+Name: fullbore-cli
+Version: 0.1.3
+Summary: Full Bore CLI tool
+Author: Full Bore
+Author-email: Full Bore <ben@fullbore.com>
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: typer[all]
+Requires-Dist: geezer
+
+# fullbore-cli
+
+Full Bore CLI — a command-line tool to simplify internal infrastructure operations like server access and config management.
+
+---
+
+## Features
+
+- List available servers from a shared config file  
+- One-command SSH access to internal machines  
+- Easily customizable and extensible with new commands
+
+---
+
+## Installation
+
+```
+pip install fullbore-cli
+```
+
+Or from source:
+
+```
+git clone https://github.com/FullBoreStudios/fbcli.git
+cd fbcli
+pip install -e .
+```
+
+---
+
+## Usage
+
+List all configured servers:
+
+```
+fbcli list-servers
+```
+
+SSH into one:
+
+```
+fbcli ssh fb-web-1
+```
+
+You can also use the shortcut:
+
+```
+fb ssh fb-web-2
+```
+
+---
+
+## Configuration
+
+On first run, you'll be prompted for the location of your `config.fb` file.
+
+You can:
+- Press Enter to auto-create a default one at:
+  - `~/.fbcli/config.fb` (Linux/macOS)
+  - `C:\Users\yourname\.fbcli\config.fb` (Windows)
+
+- Or paste a full path like:
+  - Windows: `"C:\Users\you\Documents\config.fb"`
+  - macOS/Linux: `/Users/you/config.fb`
+
+The file should look like:
+
+```python
+servers = {
+    "fb-web-1": {"host": "192.168.1.112", "user": "fbadmin"},
+    "fb-rp": {"host": "192.168.1.186", "user": "fbadmin"},
+}
+```
+
+Your chosen path will be saved automatically for future runs.
+
+---
+
+## Dev Setup
+
+```
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e .
+```
+
+---
+
+## License
+
+MIT — fork, extend, or build your own CLI from this scaffold!
