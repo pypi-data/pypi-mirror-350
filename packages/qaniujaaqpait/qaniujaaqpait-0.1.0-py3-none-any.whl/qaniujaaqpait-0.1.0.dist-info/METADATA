@@ -1,0 +1,78 @@
+Metadata-Version: 2.4
+Name: qaniujaaqpait
+Version: 0.1.0
+Summary: Fast converter between Inuktitut Unicode syllabics and Latin script
+Author: Coleman Haley
+License: MIT
+Project-URL: Homepage, https://github.com/ColemanHaley/qaniujaaqpait
+Keywords: inuktitut,syllabics,converter
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+
+# `qaniujaaqpait`
+
+`qaniujaaqpait` is a converter between Inuktitut romanized transcription and Unified Canadian Aboriginal Syllabics (UCAS).  
+It provides easy-to-use functions for both directions of conversion.
+
+---
+
+## 🧩 Features
+
+- Convert romanized Inuktitut to syllabics (UCAS Unicode)
+- Convert syllabics to romanized Inuktitut
+- Based on ICI standard Qaniujaaqpait mapping
+- Handles edge cases such as `qqi`, `nngii`, and `lh`/`&`
+
+---
+
+## 🔧 Installation
+
+```bash
+pip install qaniujaaqpait
+```
+If installing from source:
+
+```bash
+git clone https://github.com/ColemanHaley/qaniujaaqpait.git
+cd qaniujaaqpait
+pip install .
+```
+
+## 🧪 Usage
+
+```python
+from qaniujaaqpait import syllabify, romanize
+
+text = "Qaniujaaqpait"
+syllabics = syllabify(text)
+print("Syllabics:", syllabics)  # ᖃᓂᐅᔮᖅᐸᐃᑦ 
+
+back = romanize(syllabics)
+print("Back to roman:", back)  # qaniujaaqpait
+```
+
+## 📦 API
+```python
+syllabify(text: str) -> str
+```
+Converts romanized Inuktitut text into Unicode syllabics.
+
+```python
+romanize(text: str) -> str
+```
+Converts syllabic Unicode text into romanized Inuktitut.
+
+## 🗂️ Structure
+`converter.py`: Core module with conversion logic.
+
+`setup.py`: build script.
+
+tests/: Unit tests.
+
+## 📝 License
+MIT License
+
+## 🧑‍💻 Author
+Maintained by Coleman Haley.
+Contributions welcome via GitHub pull requests!
+
