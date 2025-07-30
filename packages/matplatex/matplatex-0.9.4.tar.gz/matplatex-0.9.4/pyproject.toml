@@ -1,0 +1,59 @@
+[build-system]
+requires = ["hatchling>=1.26.1"]
+build-backend = "hatchling.build"
+
+[project]
+name = "matplatex"
+dynamic = ["version"]
+authors = [
+	{ name="Johannes Sørby Heines", email="j.s.heines@protonmail.ch" },
+]
+description = "A package to save matplotlib figures for easy inclusion in LaTeX."
+readme = "README.md"
+requires-python = ">=3.10"
+licence = "GPLv3+"
+classifiers = [
+	"Programming Language :: Python :: 3.10",
+	"License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+	"Operating System :: OS Independent",
+	"Development Status :: 4 - Beta",
+	"Intended Audience :: Science/Research",
+	"Topic :: Multimedia :: Graphics :: Graphics Conversion",
+	"Topic :: Scientific/Engineering :: Visualization",
+	"Topic :: Text Processing :: Markup :: LaTeX",
+]
+keywords = [
+	"LaTeX",
+	"pdf_tex",
+	"matplotlib",
+]
+dependencies = [
+	"matplotlib>=3.5",
+	"beartype",
+]
+
+[project.urls]
+GitHub = "https://github.com/johashei/matplatex"
+
+[tool.hatch.version]
+path = "src/matplatex/__about__.py"
+
+[tool.hatch.build.target.sdist]
+exclude = [
+	"/.github",
+	"/doc",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/matplatex"]
+
+[[tool.hatch.envs.hatch-text.matrix]]
+python = ['3.10', '3.11', '3.12', '3.13']
+
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
+]
+markers = [
+    "select_latex"
+]
