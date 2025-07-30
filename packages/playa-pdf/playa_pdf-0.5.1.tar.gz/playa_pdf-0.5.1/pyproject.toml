@@ -1,0 +1,112 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "playa-pdf"
+dynamic = ["version"]
+description = "Parallel and LazY Analyzer for PDFs"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.8"
+authors = [
+    { name = "David Huggins-Daines", email = "dhd@ecolingui.ca" },
+]
+keywords = [
+    "pdf parser",
+    "text mining",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Topic :: Text Processing",
+]
+
+[project.optional-dependencies]
+crypto = ["cryptography >= 36.0.0"]
+
+[project.urls]
+Homepage = "https://dhdaines.github.io/playa"
+
+[project.scripts]
+playa = "playa.cli:main"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "playa/_version.py"
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+  "/.github",
+  "/samples/contrib",
+  "/samples/3rdparty",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["playa"]
+
+[tool.hatch.envs.hatch-static-analysis]
+config-path = "none"  # Disable hatch's unreasonable ruff defaults
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.ruff]
+exclude = ["samples/3rdparty"] # why no leading slash?
+
+[tool.pytest.ini_options]
+testpaths = [ "tests" ]
+markers = [ "contrib", "thirdparty" ]
+
+[tool.hatch.envs.hatch-test]
+extra-dependencies = [ "cryptography", "pdfminer.six" ]
+
+[tool.hatch.envs.default]
+dependencies = [ "cryptography", "pytest", "pytest-xdist", "pdfminer.six" ]
+
+[tool.hatch.envs.default.scripts]
+bench = [
+    "python benchmarks/parser.py",
+    "python benchmarks/converter.py",
+    "python benchmarks/text.py",
+    "python benchmarks/objects.py",
+]
+
+[tool.hatch.envs.docs]
+dependencies = [
+    "mike",
+    "mkdocs-material",
+    "mkdocstrings[python]",
+    "mkdocs-include-markdown-plugin"
+]
+[tool.hatch.envs.docs.scripts]
+serve = "mkdocs serve"
+publish = "mike deploy --push --update-aliases $(playa --version) latest"
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+  "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:playa tests benchmarks}"
+
+[tool.hatch.envs.schema]
+extra-dependencies = [ "pydantic > 2" ]
+
+[tool.coverage.run]
+omit = [ "tests/*" ]
