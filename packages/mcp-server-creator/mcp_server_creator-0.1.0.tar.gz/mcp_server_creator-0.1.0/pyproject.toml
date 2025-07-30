@@ -1,0 +1,45 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mcp-server-creator"
+version = "0.1.0"  # You can update this as you release new versions
+description = "A powerful Model Context Protocol (MCP) server that creates other MCP servers! This meta-server provides tools for dynamically generating FastMCP server configurations and Python code."
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT License"} # Placeholder - The README says "This project follows the same license as FastMCP." You'll want to confirm FastMCP's license and use that, or choose one like MIT and add a LICENSE file.
+authors = [
+    {name = "GongRzhe", email = "gongrzhe@gmail.com"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta", # Or an appropriate status
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License", # Adjust if your license is different
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Code Generators",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Utilities"
+]
+dependencies = [
+    "fastmcp>=0.1.0"  #
+]
+keywords = ["mcp", "fastmcp", "server-generator", "code-generation", "developer-tools"]
+
+[project.urls]
+"Homepage" = "https://github.com/GongRzhe/MCP-Server-Creator"
+"Bug Tracker" = "https://github.com/GongRzhe/MCP-Server-Creator/issues"
+
+# Entry point for FastMCP to discover this server
+[project.entry-points."fastmcp.servers"]
+mcp-server-creator = "mcp_server_creator.mcp_server_creator:mcp"
+
+# Define the direct command-line script
+[project.scripts]
+mcp-server-creator = "mcp_server_creator.mcp_server_creator:main"
