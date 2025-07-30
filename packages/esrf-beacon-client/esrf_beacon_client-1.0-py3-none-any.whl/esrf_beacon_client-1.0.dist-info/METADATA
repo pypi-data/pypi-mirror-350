@@ -1,0 +1,59 @@
+Metadata-Version: 2.4
+Name: esrf-beacon-client
+Version: 1.0
+Summary: Client to access to Beacon services
+Author-email: BLISS team <bliss@esrf.fr>
+License-Expression: LGPL-3.0-or-later
+Classifier: Intended Audience :: Science/Research
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Provides-Extra: dev
+Requires-Dist: black; extra == "dev"
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: pytest-tcpclient; extra == "dev"
+Requires-Dist: pytest-asyncio; extra == "dev"
+Provides-Extra: ruamel
+Requires-Dist: ruamel.yaml; extra == "ruamel"
+
+Client to access to Beacon services.
+
+Actually it provides:
+
+- Synchronous sequencial client (`beaconclient.syncio.BeaconClient`)
+- Asynchronous sequencial client (`beaconclient.asyncio.BeaconClient`)
+- Sans I/O protocol (`beaconclient.protocol`) to create other clients
+- Config helper (`beaconclient.config.read-config`) to read ocnfig from file or beacon URIs.
+
+Notice that the BLISS project provides it's own beacon client supporting the whole
+API with a non-seqnencial implementation.
+
+## Sync client
+
+```python
+from beaconclient.syncio import BeaconClient
+
+client = BeaconClient()
+
+redis_address = client.get_redis_db()
+```
+
+## Async client
+
+```python
+from beaconclient.asyncio import BeaconClient
+
+client = BeaconClient()
+
+redis_address = await client.get_redis_db()
+```
+
+## Config
+
+```python
+from beaconclient.config import read_config
+
+content = read_config("beacon:///path/to/file.yml")
+
+content2 = read_config("file:///my_file.yml')
+```
