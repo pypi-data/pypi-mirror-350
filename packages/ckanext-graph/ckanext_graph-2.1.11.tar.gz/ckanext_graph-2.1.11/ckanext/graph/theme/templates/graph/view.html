@@ -1,0 +1,20 @@
+{% extends "dataviewer/base.html" %}
+
+{% block page %}
+
+    <div class="graph-page">
+        {% block graph_intro %}{% endblock %}
+
+        {% for graph in graphs %}
+            <div class="graph-container">
+                <h2>{{ graph['title'] }}</h2>
+                <div data-module="graph" data-module-data="{{ h.dump_json(graph['data']) }}"
+                        data-module-config="{{ h.dump_json(graph['options']) }}"
+                        class="graph-canvas-container"></div>
+            </div>
+        {% endfor %}
+    </div>
+    {% asset 'ckanext-graph/main-css' %}
+    {% asset 'ckanext-graph/main-js' %}
+
+{% endblock %}
