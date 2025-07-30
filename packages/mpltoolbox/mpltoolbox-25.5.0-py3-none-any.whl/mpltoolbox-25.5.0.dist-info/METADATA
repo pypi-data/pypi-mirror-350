@@ -1,0 +1,138 @@
+Metadata-Version: 2.4
+Name: mpltoolbox
+Version: 25.5.0
+Summary: Interactive tools for Matplotlib
+Author: Scipp contributors
+License: BSD 3-Clause License
+        
+        Copyright (c) 2025, Scipp contributors (https://github.com/scipp)
+        All rights reserved.
+        
+        Redistribution and use in source and binary forms, with or without
+        modification, are permitted provided that the following conditions are met:
+        
+        1. Redistributions of source code must retain the above copyright notice, this
+           list of conditions and the following disclaimer.
+        
+        2. Redistributions in binary form must reproduce the above copyright notice,
+           this list of conditions and the following disclaimer in the documentation
+           and/or other materials provided with the distribution.
+        
+        3. Neither the name of the copyright holder nor the names of its
+           contributors may be used to endorse or promote products derived from
+           this software without specific prior written permission.
+        
+        THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+        AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+        IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+        DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+        FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+        DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+        SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+        CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+        OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+        OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+        
+Project-URL: Bug Tracker, https://github.com/scipp/mpltoolbox/issues
+Project-URL: Documentation, https://scipp.github.io/mpltoolbox
+Project-URL: Source, https://github.com/scipp/mpltoolbox
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Natural Language :: English
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Scientific/Engineering
+Classifier: Typing :: Typed
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: matplotlib
+Provides-Extra: test
+Requires-Dist: pytest; extra == "test"
+Requires-Dist: ipympl; extra == "test"
+Dynamic: license-file
+
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
+[![PyPI badge](http://img.shields.io/pypi/v/mpltoolbox.svg)](https://pypi.python.org/pypi/mpltoolbox)
+[![Anaconda-Server Badge](https://anaconda.org/conda-forge/mpltoolbox/badges/version.svg)](https://anaconda.org/conda-forge/mpltoolbox)
+[![License: BSD 3-Clause](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](LICENSE)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/scipp/mpltoolbox/HEAD?labpath=docs%2Fdemo.ipynb)
+
+# Mpltoolbox
+
+## About
+
+Mpltoolbox aims to provide some basic tools (that other libraries such as bokeh or plotly support) for drawing points, lines, rectangles, polygons on Matplotlib figures.
+
+There are many interactive examples in the Matplotlib documentation pages,
+but the code snippets are often long and potentially not straightforward to maintain.
+
+With `mpltoolbox`, activating these tools should (hopefully) just be a one-liner.
+
+## Installation
+
+```sh
+python -m pip install mpltoolbox
+```
+
+## Examples
+
+```Py
+import matplotlib.pyplot as plt
+import mpltoolbox as tbx
+%matplotlib widget
+```
+
+### Points
+
+```Py
+fig, ax = plt.subplots()
+ax.set_xlim(0, 100)
+ax.set_ylim(0, 100)
+
+points = tbx.Points(ax=ax)
+```
+
+![points](https://mpltoolbox.readthedocs.io/en/latest/_images/points_4_0.png)
+
+
+### Lines
+
+```Py
+fig, ax = plt.subplots()
+ax.set_xlim(0, 100)
+ax.set_ylim(0, 100)
+
+lines = tbx.Lines(ax=ax, n=2)
+```
+
+![lines](https://mpltoolbox.readthedocs.io/en/latest/_images/lines_4_0.png)
+
+### Rectangles
+
+```Py
+fig, ax = plt.subplots()
+ax.set_xlim(0, 100)
+ax.set_ylim(0, 100)
+
+rectangles = tbx.Rectangles(ax=ax)
+```
+
+![rects](https://mpltoolbox.readthedocs.io/en/latest/_images/rectangles_4_0.png)
+
+### Ellipses
+
+```Py
+fig, ax = plt.subplots()
+ax.set_xlim(0, 100)
+ax.set_ylim(0, 100)
+
+ellipses = tbx.Ellipses(ax=ax)
+```
+
+![ellipses](https://mpltoolbox.readthedocs.io/en/latest/_images/ellipses_4_0.png)
