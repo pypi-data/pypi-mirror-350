@@ -1,0 +1,722 @@
+#: import file_lines ae.files.file_lines
+#: import write_file_text ae.files.write_file_text
+
+#: import normalize ae.paths.normalize
+#: import PATH_PLACEHOLDERS ae.paths.PATH_PLACEHOLDERS
+#: import path_name ae.paths.path_name
+
+#: import Window kivy.core.window.Window
+
+#: import USER_NAME_MAX_LEN ae.console.USER_NAME_MAX_LEN
+
+#: import COLOR_BLACK ae.gui.utils.COLOR_BLACK
+#: import COLOR_DARK_GREY ae.gui.utils.COLOR_DARK_GREY
+#: import COLOR_GREY ae.gui.utils.COLOR_GREY
+#: import COLOR_LIGHT_GREY ae.gui.utils.COLOR_LIGHT_GREY
+#: import COLOR_WHITE ae.gui.utils.COLOR_WHITE
+#: import anchor_points ae.gui.utils.anchor_points
+#: import brighten_color ae.gui.utils.brighten_color
+#: import complementary_color ae.gui.utils.complementary_color
+#: import darken_color ae.gui.utils.darken_color
+#: import flow_action ae.gui.utils.flow_action
+#: import flow_key ae.gui.utils.flow_key
+#: import flow_key_split ae.gui.utils.flow_key_split
+#: import flow_object ae.gui.utils.flow_object
+#: import help_id_tour_class ae.gui.utils.help_id_tour_class
+#: import id_of_flow ae.gui.utils.id_of_flow
+#: import id_of_flow_help ae.gui.utils.id_of_flow_help
+#: import id_of_state_help ae.gui.utils.id_of_state_help
+#: import id_of_tour_help ae.gui.utils.id_of_tour_help
+#: import relief_colors ae.gui.utils.relief_colors
+#: import replace_flow_action ae.gui.utils.replace_flow_action
+#: import update_tap_kwargs ae.gui.utils.update_tap_kwargs
+#: import widget_page_id ae.gui.utils.widget_page_id
+
+
+<ReliefBox@ReliefCanvas+BoxLayout>
+
+<HelpBehavior>
+    help_id: ''
+    # 'help_layout is not None' is needed because None is not allowed for boolean `help_lock` attribute/property
+    help_lock: app.help_layout is not None and app.displayed_help_id != self.help_id
+    help_vars: {}
+    canvas.after:
+        Color:
+            rgba:
+                app.main_app.help_ink[:3] + [app.main_app.help_ink[3] * 0.21 \
+                if self.help_lock and self.width and self.height else 0]
+        Ellipse:
+            pos: self.x + sp(9), self.y + sp(9)
+            size: self.width - sp(18), self.height - sp(18)
+        Color:
+            rgba:
+                app.main_app.help_ink[:3] + [app.main_app.help_ink[3] * 0.51 \
+                if self.help_lock and self.width and self.height else 0]
+        Line:
+            width: sp(3)
+            rounded_rectangle: self.x + sp(3), self.y + sp(3), self.width - sp(6), self.height - sp(6), sp(12)
+
+<TouchableBehavior>
+    canvas.after:
+        StencilPush
+        Rectangle:
+            pos: self.pos
+            size: self.size
+        StencilUse
+        Color:
+            rgba: app.main_app.flow_path_ink[:3] + [1.0 - self._touch_anim]
+        Ellipse:
+            pos:
+                round(self._touch_x - self.width * self._touch_anim / 2.01), \
+                round(self._touch_y - self.height * self._touch_anim / 2.01)
+            size: round(self.width * self._touch_anim), round(self.height * self._touch_anim)
+        StencilUnUse
+        Rectangle:
+            pos: self.pos
+            size: self.size
+        StencilPop
+
+<AppStateSlider>
+    help_id: id_of_state_help(self.app_state_name)
+    help_vars: {'app_state_name': self.app_state_name, 'state_value': self.value, 'self': self}
+    value: app.app_states.get(self.app_state_name, (self.min + self.max) / 2) if self.app_state_name else self.value
+    size_hint_y: None
+    height: app.button_height
+    cursor_size: app.button_height, app.button_height
+    padding: min(app.app_states['font_size'] * 2.4, sp(18))
+    value_track: True
+    value_track_color: app.font_color[:3] + [0.39]
+    canvas.before:
+        Color:
+            rgba: Window.clearcolor
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<ImageLabel>
+    source: themeLabelImage.source
+    color: app.font_color
+    font_size: app.app_states['font_size']
+    markup: True
+    size_hint_y: None
+    size_hint_min_x: self.height
+    height: app.button_height
+    canvas.before:
+        Color:
+            rgba: self.square_fill_ink
+        Rectangle:
+            pos: self.square_fill_pos or self.image_pos or self.pos
+            size: self.square_fill_size or self.image_size or self.size
+        Color:
+            rgba: self.ellipse_fill_ink
+        Ellipse:
+            pos: self.ellipse_fill_pos or self.image_pos or self.pos
+            size: self.ellipse_fill_size or self.image_size or self.size
+    Image:
+        id: themeLabelImage
+        source: root.source
+        fit_mode: 'fill'    # allow_stretch: True; keep_ratio: False;  is deprecated since Kivy 2.2.0
+        opacity: 0.69 if self.source else 0.0
+        pos:
+            (root.image_pos or root.pos)[0] + root.image_offset[0], \
+            (root.image_pos or root.pos)[1] + root.image_offset[1]
+        size: root.image_size or root.size
+
+<-BubbleContent>
+    opacity: 0.69 if self.disabled else 0.96
+    orientation: 'horizontal' if app.landscape else 'vertical'
+    canvas:
+        Color:
+            rgba: Window.clearcolor
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<-BubbleButton>
+    # redefine all BubbleButton canvas instructions inherited Kivy Button and Label widgets for FlowInput
+    color: app.font_color
+    font_size: app.app_states['font_size']
+    canvas:
+        Color:
+            rgba: Window.clearcolor
+        Rectangle:
+            pos: self.pos
+            size: self.size
+        Color:
+            rgba: app.font_color
+        Line:
+            width: sp(0.9)
+            rounded_rectangle: self.x, self.y, self.width, self.height, sp(9)
+        # redefine/customize Label&Button canvas to see/display text, and in black/dark color when light_theme is True
+        Color:
+            rgba: app.font_color
+        Rectangle:
+            texture: self.texture
+            size: self.texture_size
+            pos: int(self.center_x - self.texture_size[0] / 2.), int(self.center_y - self.texture_size[1] / 2.)
+
+<FlowInput>
+    help_id: id_of_flow_help(self.focus_flow_id)
+    help_vars: {'new_flow_id': self.focus_flow_id, 'self': self}
+    font_size: app.app_states['font_size']
+    multiline: False
+    write_tab: False
+    use_bubble: True
+    use_handles: True
+    relief_square_inner_colors: relief_colors((0.09, 0.09, 0.3), sunken=True)
+    relief_square_inner_lines: sp(3)
+
+<FlowButton>
+    help_id: id_of_flow_help(self.tap_flow_id)
+    help_vars: {'new_flow_id': self.tap_flow_id, 'self': self}
+    icon_name: ""
+    source:
+        app.main_app.img_file(self.icon_name or flow_key_split(self.tap_flow_id)[0], \
+        app.app_states['font_size'], app.app_states['light_theme'])
+
+<IconButton@FlowButton>
+    image_size: (round(app.app_states['font_size'] * 1.35), ) * 2
+    image_offset: (round(app.app_states['font_size'] * 0.12), ) * 2
+    ellipse_fill_size: self.image_size
+    ellipse_fill_pos: self.pos[0] + self.image_offset[0], self.pos[1] + self.image_offset[1]
+
+<OptionalButton@FlowButton>
+    visible: False
+    size_hint: None, None
+    size: self.height if self.visible else 0, app.button_height if self.visible else 0
+    disabled: not self.visible
+    opacity: 1.0 if self.visible else 0.0
+
+<FlowDropDown>
+    close_kwargs: {'flow_id': id_of_flow('')} if app.main_app.flow_path_action(path_index=-2) in ('', 'enter') else {}
+    auto_width: False
+    # width determined by ContainerChildrenAutoWidthBehavior, so no need for: width: min(Window.width - sp(96), sp(960))
+    canvas.before:
+        Color:
+            rgba: Window.clearcolor
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+    canvas.after:
+        Color:
+            rgba: app.font_color
+        Line:
+            width: sp(1.8)
+            rounded_rectangle: self.x, self.y, self.width, self.height, sp(9)
+
+<FlowPopup>
+    container: container
+    orientation: 'vertical'
+    query_data_maps: query_box.child_data_maps
+    _max_width: Window.width - (root.side_spacing if app.landscape else 0)
+    _max_height: Window.height - (0 if app.landscape else root.side_spacing)
+    size_hint: None, None
+    size:
+        min(max(title_bar.optimal_width or 90, body_box.optimal_width or 120), self._max_width), \
+        min(title_bar.height + root.separator_height + (body_box.optimal_height or 189), self._max_height)
+    close_kwargs: {'flow_id': id_of_flow('')} if app.main_app.flow_path_action(path_index=-2) in ('', 'enter') else {}
+    canvas:
+        Color:
+            rgba: root.overlay_color[:3] + [root.overlay_color[3] * self._anim_alpha]
+        Rectangle:
+            size:
+                Window.width if self.is_modal else 0, \
+                Window.height - app.main_app.help_activator.height if self.is_modal else 0
+        Rectangle:
+            pos: app.main_app.help_activator.right, app.main_app.help_activator.y
+            size:
+                Window.width - app.main_app.help_activator.width if self.is_modal else 0, \
+                app.main_app.help_activator.height
+        Color:
+            rgba: root.background_color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    PopupTitleBar:
+        id: title_bar
+        tap_flow_id: id_of_flow('close', 'popup')   # only for icon_name, closed via on_press: root.close()
+        text: root.title
+        text_size: None, app.button_height
+        halign: 'center'
+        padding: sp(12), sp(6)
+        image_size: self.height * 1.95, self.height
+        image_pos:
+            min(self.right - self.image_size[0] * 0.102, Window.width - self.image_size[0]), \
+            min(self.top - self.image_size[1] * 0.102, Window.height - self.image_size[1])
+        ellipse_fill_ink: app.main_app.cancel_ink
+        relief_pos_size: (*self.image_pos, *self.image_size)
+        relief_ellipse_inner_colors: relief_colors()
+        relief_ellipse_inner_lines: round(self.height / 3.6)
+        optimal_width:
+            app.main_app.text_size_guess(root.title)[0] + self.image_size[0] / 2.1 + self.padding[0] * 2.1
+        size_hint_y: None
+        height: app.main_app.font_size * 1.8 + self.padding[1] * 2.1 if root.title else 0
+        on_press: root.close()
+    Widget:
+        size_hint_y: None
+        height: root.separator_height
+        canvas:
+            Color:
+                rgba: root.separator_color
+            Rectangle:
+                pos: self.pos
+                size: self.size
+    StackLayout:
+        id: body_box
+        optimal_width:
+            max(title_bar.optimal_width or 333,
+            (container.optimal_width or 336) + (query_box.optimal_width or 0) if app.landscape else \
+            max(container.optimal_width or 339, query_box.optimal_width or 0))
+        optimal_height:
+            max(container.optimal_height or 363, query_box.optimal_height or 0) if app.landscape else \
+            (container.optimal_height or 369) + (query_box.optimal_height or 0)
+        size_hint: None, None
+        size:
+            min(self.optimal_width, root._max_width), \
+            min(self.optimal_height, root._max_height - title_bar.height - root.separator_height)
+        EmbeddingScrollView:
+            id: container
+            always_overscroll: False        # workaround to kivy scrollview bug (viewport kept at bottom)
+            bar_width: sp(9)
+            bar_color: app.font_color
+            bar_inactive_color: app.font_color[:3] + [0.69]
+            optimal_width: root.optimal_content_width
+            optimal_height: root.optimal_content_height
+            size_hint:
+                container.optimal_width / (container.optimal_width + query_box.optimal_width) \
+                if app.landscape and (container.optimal_width or query_box.optimal_width) else 1.0, \
+                container.optimal_height / (container.optimal_height + query_box.optimal_height) \
+                if not app.landscape and (container.optimal_height or query_box.optimal_height) else 1.0
+        PopupQueryBox:
+            id: query_box
+            orientation: 'bt-rl'
+            child_data_maps: root.query_data_maps
+            optimal_width:
+                max(max(wid.size_hint_min_x or 0, app.main_app.text_size_guess(wid.text)[0]) if hasattr(wid, 'text') \
+                else ((wid.size_hint_min_x or 333) + (wid.size_hint_max_x or root._max_width)) / 2 \
+                for wid in self.children) \
+                if self.children else 0
+            size_hint_x:
+                query_box.optimal_width / (container.optimal_width + query_box.optimal_width) \
+                if app.landscape and (container.optimal_width or query_box.optimal_width) else \
+                1.0 if self.children else 0.0
+            optimal_height:
+                sum(((wid.size_hint_min_y or app.button_height) + (wid.size_hint_max_y or app.button_height)) / 2
+                for wid in self.children)
+            size_hint_y:
+                query_box.optimal_height / (container.optimal_height + query_box.optimal_height) \
+                if not app.landscape and (container.optimal_height or query_box.optimal_height) else \
+                1.0 if self.children else 0.0
+
+<FlowSelector>
+    tap_flow_id: id_of_flow('close', 'flow_popup')  # or id_of_flow('close', 'popup') to show standard close help text
+    close_kwargs: {'flow_id': id_of_flow('')} if app.main_app.flow_path_action(path_index=-2) in ('', 'enter') else {}
+    size_hint_x: None
+    icon_name: 'close_popup'
+    ellipse_fill_ink: app.main_app.cancel_ink[:3] + [self._anim_alpha]
+    relief_ellipse_inner_colors: relief_colors(app.main_app.cancel_ink)
+    relief_ellipse_inner_lines: round(self.height / 6.9)
+    relief_ellipse_inner_offset: sp(3.9)
+    canvas:
+        Color:
+            rgba: self.overlay_color[:3] + [self.overlay_color[-1] * self._anim_alpha]
+        Rectangle:
+            size: (Window.width, app.main_app.help_activator.y) if self.is_modal else (0, 0)
+        Rectangle:
+            pos: app.main_app.help_activator.right, app.main_app.help_activator.y
+            size:
+                (Window.width - app.main_app.help_activator.right, app.main_app.help_activator.height) \
+                if self.is_modal else (0, 0)
+
+<FlowToggler>
+    tap_flow_id: ''
+    help_id: id_of_flow_help(self.tap_flow_id)
+    help_vars: {'new_flow_id': self.tap_flow_id, 'self': self}
+    icon_name: ""
+    source:
+        app.main_app.img_file(self.icon_name or flow_key_split(self.tap_flow_id)[0], \
+        app.app_states['font_size'], app.app_states['light_theme'])
+
+<HelpToggler>
+    icon_name:
+        app.help_layout and 'help_icon' or \
+        app.tour_layout and 'app_tour' or \
+        'app_icon' in app.main_app.image_files and 'app_icon' or \
+        ''
+    size_hint_x: None
+    width: self.height
+    source: app.main_app.img_file(self.icon_name, app.app_states['font_size'], app.app_states['light_theme'])
+    color: app.main_app.cancel_ink if app.help_layout or app.tour_layout else app.main_app.info_ink
+    relief_square_inner_colors:
+        relief_colors(complementary_color(self.color[:3]) + [1 if app.help_layout or app.tour_layout else 0])
+    relief_square_inner_lines: self.height * 0.39 * (0.999 - self.ani_value * 0.3)
+
+<HelpMenu>
+    item_angles: -12, -45
+    HelpButton:
+        label_text: _("help")
+        icon_name: 'help_icon'
+        on_press: root.close(), app.main_app.help_layout_activation()
+    HelpButton:
+        label_text: _("tour")
+        icon_name: 'app_tour'
+        on_press: root.close(); app.main_app.start_app_tour()
+
+<HelpButton@FlowButton>
+    label_text: ""
+    size: self.texture_size
+    image_size: self.size[1], self.height
+    # text: " " * 9 + self.label_text + " " * 3
+    text: app.main_app.width_spaces(self.size[1] + sp(24)) + self.label_text + app.main_app.width_spaces(sp(24))
+    canvas.before:
+        Color:
+            rgba: Window.clearcolor
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [15, 15, 15, 15]
+        Color:
+            rgba: app.main_app.info_ink
+        RoundedRectangle:
+            pos: self.pos[0] + self.size[1], self.pos[1]
+            size: self.size[0] - self.size[1], self.size[1]
+            radius: [3, 15, 15, 3]
+
+<ConfirmationShowPopup>
+    guessed_text_size: app.main_app.text_size_guess(root.message)
+    optimal_content_width: max(inputPrompt.texture_size[0], self.guessed_text_size[0])
+    optimal_content_height: 3.9 * messageContainer.padding[1] + self.guessed_text_size[1] + app.button_height
+    query_data_maps:
+        [{'kwargs': {
+        'tap_flow_id': root.confirm_flow_id, \
+        'tap_kwargs': update_tap_kwargs(root.confirm_kwargs, popups_to_close=(root, )), \
+        'text': root.confirm_text, \
+        'relief_square_inner_colors': relief_colors(), \
+        'relief_square_inner_lines': sp(12), \
+        'relief_ellipse_inner_offset': -3, \
+        }}]
+    BoxLayout:
+        id: messageContainer
+        orientation: 'vertical'
+        padding: sp(12)
+        ImageLabel:
+            id: inputPrompt
+            text: root.message
+            text_size: min(root._max_width, root.optimal_content_width), None
+            size_hint: None, None
+            size: self.texture_size
+
+<InputShowPopup>
+    guessed_text_size: app.main_app.text_size_guess(root.message)
+    optimal_content_width: max(inputPrompt.texture_size[0], self.guessed_text_size[0])
+    optimal_content_height:
+        2.1 * inputContainer.padding[1] \
+        + max(inputPrompt.texture_size[1], self.guessed_text_size[1]) \
+        + app.button_height
+    query_data_maps:
+        [{'kwargs': {
+        'tap_flow_id': id_of_flow('', root.confirm_flow_id, inputField.text), \
+        'tap_kwargs': update_tap_kwargs(root.confirm_kwargs, popups_to_close=(root, )), \
+        'text': root.confirm_text, \
+        'relief_square_inner_colors': relief_colors(), \
+        'relief_square_inner_lines': sp(9), \
+        'relief_ellipse_inner_offset': -1, \
+        }}]
+    BoxLayout:
+        id: inputContainer
+        orientation: 'vertical'
+        padding: sp(9)
+        ImageLabel:
+            id: inputPrompt
+            text: root.message
+            text_size: min(root._max_width, root.optimal_content_width), None
+            size_hint: None, None
+            size: self.texture_size
+        FlowInput:
+            id: inputField
+            text: root.input_default
+            focus: True
+
+<MessageShowPopup>
+    title: "error"              # _("error") overwrites title value specified as kwarg in self.__init__()
+    guessed_text_size: app.main_app.text_size_guess(root.message)
+    optimal_content_width: max(msg_txt_box.texture_size[0], self.guessed_text_size[0])
+    optimal_content_height: max(msg_txt_box.texture_size[1], self.guessed_text_size[1])
+    ImageLabel:
+        id: msg_txt_box
+        text: root.message
+        text_size: min(root._max_width, root.optimal_content_width), None
+        size_hint: None, None
+        size: self.texture_size
+        Button:     # invisible button to close popup on message text click
+            pos: msg_txt_box.pos
+            size: msg_txt_box.size
+            background_color: 0, 0, 0, 0
+            on_release: root.close()
+
+<PopupTitleBar@SimpleAutoTickerBehavior+FlowButton>
+
+<ShortenedButton@FlowButton>
+    size_hint_x: None
+    padding: sp(3), sp(3)
+    halign: 'center'
+    valign: 'middle'
+    text_size: self.width - 2 * self.padding[0], None
+    shorten: True
+    shorten_from: 'right'
+
+<Tooltip>
+    always_overscroll: False        # workaround to kivy scrollview bug (viewport kept at bottom)
+    ani_value: 0.999
+    bar_width: 0 if root.tap_thru else sp(9)
+    bar_color: app.font_color[:3] + [app.font_color[3] * 0.69 * root.ani_value]
+    bar_inactive_color: app.font_color[:3] + [app.font_color[3] * 0.39 * root.ani_value]
+    scroll_type: ['bars', 'content']
+    size_hint: None, None
+    size: min(help_label.width + root.bar_width, Window.width), min(help_label.height + root.bar_width, Window.height)
+    has_tour:
+        getattr(root.targeted_widget, 'help_id', False) and help_id_tour_class(root.targeted_widget.help_id) or False
+    tour_start_size: (app.main_app.font_size * 1.29, ) * 2 if root.has_tour else (0, 0)
+    tour_start_pos: root.x + root.width - root.tour_start_size[0] - sp(1), root.y + sp(1)
+    canvas.before:
+        Color:
+            rgba: Window.clearcolor[:3] + [root.ani_value if root.tap_thru else Window.clearcolor[3]]
+        RoundedRectangle:
+            pos: root.pos
+            size: root.size
+    canvas.after:
+        Color:
+            rgba:
+                (root.ani_value, app.font_color[1], 0.54, 0.33 + root.ani_value * 0.6) if root.tap_thru else \
+                (0.3, app.font_color[1], 0.96, 0.99)
+        Line:
+            width: sp(3)
+            rounded_rectangle: root.x + sp(1), root.y + sp(1), root.width - sp(2), root.height - sp(2), sp(12)
+        Triangle:
+            points: anchor_points(app.main_app.font_size, root.anchor_spe)
+        Rectangle:
+            source: app.main_app.img_file('help_circled')
+            pos: root.tour_start_pos or (0, 0)
+            size: root.tour_start_size or (0, 0)
+        Color:
+            rgba: Window.clearcolor[:3] + [0.48 + root.ani_value / 2.01]
+        Line:
+            width: sp(1)
+            rounded_rectangle: root.x + sp(1), root.y + sp(1), root.width - sp(2), root.height - sp(2), sp(12)
+        Line:
+            width: sp(1.5)
+            points: anchor_points(app.main_app.font_size, root.anchor_spe)
+    Label:
+        id: help_label
+        text: root.tip_text
+        color: (app.font_color[:3] + [root.ani_value]) if root.tap_thru else app.font_color
+        background_color: (Window.clearcolor[:3] + [root.ani_value]) if root.tap_thru else Window.clearcolor
+        font_size: app.main_app.font_size * 0.81
+        markup: True
+        padding: sp(12), sp(9)
+        size_hint: None, None
+        size: self.texture_size[0] + self.padding[0], self.texture_size[1] + self.padding[1]
+
+<TourOverlay>
+    explained_placeholder: explained_placeholder
+    font_height: app.main_app.font_size * 0.9
+    label_height: root.font_height * 1.5
+    _hem: round(min(self.width, self.height) / 18.6) if root.title_text or root.page_text else 0.0
+    title_text: ""
+    title_size: app.main_app.text_size_guess(root.title_text, font_size=title_lbl.font_size, padding=2 * (root._hem, ))
+    page_text: ""
+    page_size: app.main_app.text_size_guess(root.page_text, font_size=page_lbl.font_size, padding=2 * (root._hem, ))
+    tip_text: tooltip.tip_text
+    next_text: _('next')
+    prev_text: _('back')
+    pos: 0.0, 0.0
+    size: Window.size
+    navigation_pos_hint_y: 0.45
+    canvas.before:
+        Color:
+            rgba: Window.clearcolor[:3] + [root.fade_out_app]
+        Rectangle:
+            pos: root.pos
+            size: root.width, root.explained_pos[1]
+        Rectangle:
+            pos: root.x, root.explained_pos[1]
+            size: root.explained_pos[0], root.explained_size[1]
+        Rectangle:
+            pos: root.explained_pos[0] + root.explained_size[0], root.explained_pos[1]
+            size: root.width - self.pos[0], root.explained_size[1]
+        Rectangle:
+            pos: root.x, root.explained_pos[1] + root.explained_size[1]
+            size: root.width, root.height - self.pos[1]
+    Widget:
+        id: explained_placeholder
+        size_hint: None, None
+    Tooltip:
+        id: tooltip
+        targeted_widget: root.explained_widget
+        tip_text: root.tip_text
+        opacity: 1.0 if root.tip_text else 0.0
+    TourPageTexts:
+        id: tour_page_texts
+        padding: root._hem
+        relief_square_inner_lines: root._hem
+        relief_square_outer_colors: relief_colors(Window.clearcolor) if root.fade_out_app else ()
+        height:
+            (2.01 * self.padding[0] if title_lbl.height or page_lbl.height else 0) + \
+            (max(title_lbl.height, page_lbl.height) if app.landscape else title_lbl.height + page_lbl.height)
+        pos_hint: {'x': 0.0, 'y': root.navigation_pos_hint_y}
+        Label:
+            id: title_lbl
+            padding: 2 * (root._hem, )
+            size_hint:
+                0.003 if not self.text or root.title_size[0] == 0 else \
+                (0.99 / (0.99 + root.page_size[0] / root.title_size[0])) if app.landscape else \
+                0.99, None
+            text_size: self.width - root._hem, None
+            halign: 'center'
+            height: max(self.texture_size[1], page_lbl.texture_size[1] if app.landscape else 0)
+            color: app.font_color
+            font_size: root.font_height * 1.5
+            markup: True
+            text: root.title_text
+            canvas.before:
+                Color:
+                    rgba: 0, 0.99, 0, 0.369
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+        Label:
+            id: page_lbl
+            padding: 2 * (root._hem, )
+            size_hint:
+                0.003 if not self.text or root.page_size[0] == 0 else \
+                (0.99 / (0.99 + root.title_size[0] / root.page_size[0])) if app.landscape else \
+                0.99, None
+            text_size: self.width - root._hem, None
+            halign: 'left'
+            height: max(title_lbl.texture_size[1] if app.landscape else 0, self.texture_size[1])
+            color: app.font_color
+            font_size: root.font_height * 0.9
+            markup: True
+            text: root.page_text
+            canvas.before:
+                Color:
+                    rgba: 0, 0.69, 0.99, 0.369
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+    SwitchPageButton:
+        id: prev_but
+        disabled: root.navigation_disabled or not root.prev_text
+        pos_hint: {'x': 0.06, 'top': root.navigation_pos_hint_y}
+        size: self.texture_size[0] * 2.1, root.label_height
+        font_size: root.font_height
+        text: root.prev_text
+        on_release: root.prev_page()
+    StopTourButton:
+        id: stop_but
+        size: 2 * (root.label_height * (1.32 if root.prev_text or root.next_text else 1.29), )
+        pos_hint:
+            {'center_x': 0.5, 'y': tour_page_texts.top / Window.height} \
+            if tour_page_texts.height and tour_page_texts.top + self.height < Window.height else \
+            {'center_x': 0.5, 'top': root.navigation_pos_hint_y}
+        on_release: root.stop_tour()
+    SwitchPageButton:
+        id: next_but
+        disabled: root.navigation_disabled or not root.next_text
+        pos_hint: {'right': 0.939, 'top': root.navigation_pos_hint_y}
+        size: self.texture_size[0] * 2.1, root.label_height
+        font_size: root.font_height
+        text: root.next_text
+        on_release: root.next_page()
+    Image:
+        id: tap_pointer
+        source: app.main_app.img_file('tap_pointer')
+        fit_mode: 'contain'     # allow_stretch: True got deprecated since Kivy 2.2.0
+        opacity: 0.0
+        pos: -999, -999
+        size_hint: None, None
+        size: 2 * (root.label_height * 1.89, )
+    Label:
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+        font_size: root.label_height
+        color: app.font_color[:3] + [0.48 if app.main_app.debug else 0.0]
+        text:
+            "wid=" + str(root.explained_widget.__class__.__name__) + \
+            " " + widget_page_id(root.explained_widget) + chr(10) + \
+            "...=" + str(list(map(round, root.explained_pos))) + \
+            " " + str(list(map(round, root.explained_size))) + chr(10) + \
+            "pos_hint_y=" + str(root.navigation_pos_hint_y) + chr(10) + \
+            "tour=" + str(root.tour_instance.__class__.__name__) + chr(10) + \
+            "page-id" + str(root.tour_instance.page_idx if root.tour_instance else "?") + "=" + \
+            str(root.tour_instance.page_ids[root.tour_instance.page_idx] if root.tour_instance else "???") + chr(10) + \
+            "title=" + root.title_text + chr(10) + \
+            "page=" + root.page_text[:27] + chr(10) + \
+            "tip=" + root.tip_text[:27] + chr(10) \
+            or root.explained_widget or root.explained_size or root.explained_pos or root.tour_instance
+
+<TourPageTexts@ReliefCanvas+ShadersMixin+BoxLayout>
+    orientation: 'horizontal' if app.landscape else 'vertical'
+    size_hint_y: None
+    relief_square_outer_lines: int(max(self.y, Window.height - self.top) * 0.69)
+    relief_square_inner_colors: relief_colors()
+    relief_square_inner_offset: -1
+    canvas.before:
+        Color:
+            rgba: 0.99, 0, 0, 0.369
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<StopTourButton@ButtonBehavior+ReliefCanvas+Image>
+    size_hint: None, None
+    source: app.main_app.img_file(id_of_flow('close', 'popup'))
+    button_ink: 0.999, 0.0, 0.0, 0.999
+    relief_ellipse_inner_colors: relief_colors(self.button_ink)
+    relief_ellipse_inner_lines: round(self.height / 6.9)
+    relief_ellipse_inner_offset: round(self.height / 12.9)
+    canvas.before:
+        Color:
+            rgba: self.button_ink
+        Ellipse:
+            pos: self.pos
+            size: self.size
+
+<SwitchPageButton@ButtonBehavior+ShadersMixin+ReliefCanvas+Label>
+    opacity: 1.0 if self.text else 0.0
+    color: app.font_color
+    size_hint: None, None
+    relief_ellipse_inner_colors: relief_colors(app.font_color)
+    relief_ellipse_inner_lines: round(self.height / 9.6)
+    relief_ellipse_inner_offset: -1
+    canvas.before:
+        Color:
+            rgba: Window.clearcolor[:3] + [0.999 if self.text else 0.0]
+        Ellipse:
+            pos: self.pos
+            size: self.size
+
+<UserNameEditorPopup@FlowPopup>
+    title: _("create new user account")
+    optimal_content_height: 2.1 * input_box.padding[0] + (1.2 if app.landscape else 2.1) * app.button_height
+    query_data_maps:
+        [{'kwargs': {
+        'tap_flow_id': id_of_flow('register', 'user', user_name_input.text), \
+        'tap_kwargs': dict(popups_to_close=(root, )), \
+        'text': _("add user"), \
+        'relief_square_inner_colors': relief_colors(), \
+        'relief_square_inner_lines': sp(12), \
+        'relief_ellipse_inner_offset': -1, \
+        }}]
+    BoxLayout:
+        id: input_box
+        orientation: 'horizontal' if app.landscape else 'vertical'
+        padding: sp(9)
+        ImageLabel:
+            size_hint_max_x: (USER_NAME_MAX_LEN + 3) * app.main_app.text_size_guess('X')[0]
+            text: _("user name")
+        FlowInput:
+            id: user_name_input
+            size_hint_max_x: (USER_NAME_MAX_LEN + 3) * app.main_app.text_size_guess('X')[0]
+            size_hint_y: None
+            height: app.main_app.font_size * 1.8
+            focus: True
