@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+dynamic = ["version", "readme"]
+name = "gpkit-models"
+description = "Library of exponential cone compatible sizing models"
+authors = [
+    { name = "Warren Hoburg", email = "whoburg@alum.mit.edu" }
+]
+license = { file = "LICENSE" }
+requires-python = ">=3.8"
+dependencies = [
+    "adce>=1.3.3.2",
+    "gpkit-core>=0.1.0",
+    "pandas>=2.0.0",
+]
+
+[project.optional-dependencies]
+lint = [
+    "isort>=5.12.0",
+    "black>=24.1.0",
+    "pylint>=3.0.0",
+    "flake8>=7.0.0",
+]
+test = [
+    "pytest>=7.0.0",
+]
+
+[project.urls]
+Homepage = "https://www.github.com/beautifulmachines/gpkit-models"
+
+[tool.setuptools]
+packages = { find = {} }
+package-data = { "gpkitmodels" = [
+    "GP/aircraft/wing/*.csv",
+    "GP/aircraft/fuselage/fuselage_profile_drag/*.csv",
+    "GP/aircraft/engine/*.csv",
+    "GP/aircraft/motor/*.csv",
+    "GP/aircraft/prop/*.csv",
+    "SP/aircraft/prop/*.csv",
+    "GP/aircraft/engine/DF70/*.csv",
+    "GP/aircraft/tail/*.csv"
+]}
+
+[tool.setuptools.dynamic]
+version = { attr = "gpkitmodels.__version__" }
+readme = { file = ["README.md"], content-type = "text/markdown" }
