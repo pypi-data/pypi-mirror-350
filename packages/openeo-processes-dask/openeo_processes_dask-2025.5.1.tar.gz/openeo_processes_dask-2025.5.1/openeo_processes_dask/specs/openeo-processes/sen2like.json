@@ -1,0 +1,69 @@
+{
+    "id": "sen2like",
+    "summary": "Run the Sen2like processor ",
+    "description": "The Sen2like processor generates Sentinel-2-like harmonised or fused surface reflectances with higher periodicity by integrating additional compatible optical mission sensors. The source code is available at https://github.com/senbox-org/sen2like.",
+    "categories": [
+        "cubes"
+    ],
+    "experimental": true,
+    "parameters": [
+        {
+            "name": "data",
+            "description": "The datacube for which to generate L2F & L2H level data.",
+            "schema": {
+                "type": "object",
+                "subtype": "datacube"
+            }
+        },
+        {
+            "description": "Per default the target_product is set to 'L2F' to generate the fused sen2like product. Set to 'L2H' to generate the harmonised product.",
+            "name": "target_product",
+            "optional": true,
+            "default": "L2F",
+            "schema": {
+                "type": "string"
+            }
+        },
+        {
+            "description": "The Cloud coverage parameter (percentage) to filter MGRS image tile contaminates with strong cloud coverage. ",
+            "name": "cloud_cover",
+            "optional": true,
+            "default": 50,
+            "schema": {
+                "type": [
+                    "number",
+                    "null"
+                ]
+            }
+        },
+        {
+            "description": "Sen2like produces outputs following the Sentinel 2 .SAFE convention. To enable the download for these, set this to True. The results will then include .zip files with the .SAFE folders inside. ",
+            "name": "export_original_files",
+            "optional": true,
+            "default": false,
+            "schema": {
+                "type": "boolean"
+            }
+        }
+    ],
+    "returns": {
+        "description": "Sen2like enriched data cube for further processing. For further openEO processing on the sen2like datacube, the datacube is loaded in the Equi7 coordinate reference system, with the spatio-temporal extent of the initially requested data. The resolution is based on the highest resolution of the requested bands, where bands with lower resolution are resampled to the higher resolution respectively. ",
+        "schema": {
+            "type": "object",
+            "subtype": "datacube"
+        }
+    },
+    
+    "links": [
+        {
+            "href": "https://openeo.org/documentation/1.0/datacubes.html",
+            "rel": "about",
+            "title": "Data Cubes explained in the openEO documentation"
+        },
+        {
+            "rel": "about",
+            "href": "https://github.com/senbox-org/sen2like",
+            "title": "Source code for the sen2like processor"
+        }
+    ]
+}
