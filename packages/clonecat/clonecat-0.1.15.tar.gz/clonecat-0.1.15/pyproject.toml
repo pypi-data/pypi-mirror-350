@@ -1,0 +1,77 @@
+[project]
+name = "clonecat"
+dynamic = ["version"]
+description = "CloneCat is a Python framework that helps you create perfect clones of your objects along with all their relationships."
+readme = "README.md"
+authors = [
+    { name = "Patrick" }
+]
+requires-python = ">=3.9"
+dependencies = []
+keywords = ["clone", "copy", "deepcopy", "relations", "instances", "sqlalchemy", "dataclasses", "pydantic", "django"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Utilities",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "black>=22.0",
+    "isort>=5.0",
+    "flake8>=5.0",
+    "mypy>=1.0",
+    "pre-commit>=3.0",
+    "bump2version>=1.0",
+    "safety>=2.0",
+    "bandit>=1.7",
+    "sqlalchemy>=2.0.41",
+     "pytest>=8.3.5",
+]
+
+[project.urls]
+Homepage = "https://github.com/FlyingBird95/clonecat"
+Documentation = "https://github.com/FlyingBird95/clonecat#readme"
+Repository = "https://github.com/FlyingBird95/clonecat.git"
+"Bug Tracker" = "https://github.com/FlyingBird95/clonecat/issues"
+
+[tool.hatch.version]
+path = "clonecat/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["clonecat"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "--cov=clonecat --cov-report=term-missing"
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
