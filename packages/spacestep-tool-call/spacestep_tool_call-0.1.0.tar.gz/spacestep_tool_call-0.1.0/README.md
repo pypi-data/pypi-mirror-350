@@ -1,0 +1,186 @@
+# SpaceStep Tool Call
+
+AI-powered call center automation and appointment scheduling library. Designed specifically for use with AI-based voice agents.
+
+## Features
+
+- Call management (transfer, end call)
+- Time slot availability checking
+- Appointment booking
+- Date and time utilities
+
+## Installation
+
+```bash
+# Installation from local directory
+pip install -e ./spacestep_tool_call
+
+# Or installation from PyPI (when published)
+# pip install spacestep-tool-call
+```
+
+## Basic Usage
+
+```python
+import asyncio
+from spacestep_tool_call import book_appointment, get_available_time_slots
+
+# Check available time slots
+async def check_slots():
+    dates = ["2023-06-01", "2023-06-02", "2023-06-03"]
+    slots = await get_available_time_slots(dates)
+    print(slots)
+
+# Book an appointment
+async def make_booking():
+    result = await book_appointment(
+        name="John Smith",
+        email="smith@example.com",
+        phone_number="+12345678901",
+        selected_time_slot="2023-06-01, 14:00 - 14:30"
+    )
+    print(result)
+
+asyncio.run(check_slots())
+asyncio.run(make_booking())
+```
+
+## Integration with Existing AI Voice Agent
+
+### Method 1: Direct Import Replacement (Minimal Changes)
+
+This method allows you to use the library with minimal changes to existing code, simply by changing imports.
+
+```python
+# Before:
+from voice_agent.agent_zero.MainAgent.tools import (
+    transfer_call, get_available_time_slots, book_appointment, 
+    get_weekday, end_call, FUNCTION_CALLING_TOOLS
+)
+
+# After:
+from spacestep_tool_call import (
+    transfer_call, get_available_time_slots, book_appointment, 
+    get_weekday, end_call, FUNCTION_CALLING_TOOLS
+)
+
+# The rest of the code remains unchanged
+```
+
+### Method 2: Adapter for Voice Agent
+
+This method uses an adapter that preserves the old interaction interface:
+
+```python
+# voice_agent/agent_zero/MainAgent/tools.py
+
+from spacestep_tool_call import (
+    transfer_call as lib_transfer_call,
+    get_available_time_slots as lib_get_available_time_slots,
+    book_appointment as lib_book_appointment,
+    get_weekday as lib_get_weekday,
+    end_call as lib_end_call,
+    FUNCTION_CALLING_TOOLS
+)
+
+# For full compatibility, we maintain the same function signatures
+async def transfer_call():
+    return await lib_transfer_call()
+
+async def get_weekday(date: str):
+    return await lib_get_weekday(date)
+
+async def end_call():
+    return await lib_end_call()
+
+async def get_available_time_slots(dates):
+    # Use environment variable as in the original code
+    return await lib_get_available_time_slots(dates)
+
+async def book_appointment(name, email, phone_number, selected_time_slot):
+    # Use environment variable as in the original code
+    return await lib_book_appointment(name, email, phone_number, selected_time_slot)
+
+# FUNCTION_CALLING_TOOLS is already imported from the library above
+```
+
+### Method 3: Direct Integration into Voice Agent
+
+For maximum flexibility, you can directly integrate the library into the voice agent's code:
+
+```python
+# voice_agent/agent_zero/MainAgent/agent.py
+from spacestep_tool_call import (
+    get_available_time_slots, book_appointment, 
+    transfer_call, end_call, get_weekday, FUNCTION_CALLING_TOOLS
+)
+
+class VoiceAgent:
+    def __init__(self):
+        # Agent initialization
+        self.tools = FUNCTION_CALLING_TOOLS
+        
+    async def handle_call(self, query):
+        # Call handling logic
+        # ...
+        
+        if "schedule appointment" in query:
+            dates = ["2023-06-01", "2023-06-02", "2023-06-03"]
+            available_slots = await get_available_time_slots(dates)
+            # Further logic...
+            
+        elif "book slot" in query:
+            result = await book_appointment(
+                name="Client Name",
+                email="client@example.com",
+                phone_number=query.get("phone", ""),
+                selected_time_slot=query.get("slot", "")
+            )
+            # Process result...
+            
+        elif "transfer" in query:
+            await transfer_call()
+            
+        elif "goodbye" in query:
+            await end_call()
+```
+
+## Configuring Webhook URLs
+
+The library supports two methods for configuring webhooks:
+
+1. Through environment variables (as in the original code):
+
+```python
+import os
+
+# Set environment variables
+os.environ["TOOL_CHECK_SLOT_AVAILABILITY_WEBHOOK_URL"] = "https://example.com/check-availability"
+os.environ["TOOL_BOOKING_WEBHOOK_URL"] = "https://example.com/book-appointment"
+
+# Now functions will use these URLs
+slots = await get_available_time_slots(dates)
+```
+
+2. By directly passing URLs to functions:
+
+```python
+# Direct URL passing
+slots = await get_available_time_slots(
+    dates=["2023-06-01", "2023-06-02"],
+    webhook_url="https://example.com/check-availability"
+)
+
+# Direct URL passing for booking
+result = await book_appointment(
+    name="Client",
+    email="client@example.com",
+    phone_number="+1234567890",
+    selected_time_slot="2023-06-01, 14:00 - 14:30",
+    webhook_url="https://example.com/book-appointment"
+)
+```
+
+## License
+
+MIT 
