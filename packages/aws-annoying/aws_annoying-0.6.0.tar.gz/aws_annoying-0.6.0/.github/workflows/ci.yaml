@@ -1,0 +1,107 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions: read-all
+
+env:
+  UV_FROZEN: 1
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: latest
+          enable-cache: true
+
+      - name: Install deps
+        run: uv sync --all-extras
+
+      - uses: pre-commit/action@v3.0.1
+        env:
+          SKIP: pytest
+
+      - uses: pre-commit-ci/lite-action@v1.1.0
+        if: always()
+
+  test:
+    name: Test (${{ matrix.os }}, Python ${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+      id-token: write
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: latest
+          enable-cache: true
+
+      - name: Set Python version
+        run: uv python pin "${{ matrix.python-version }}"
+
+      - name: Install deps
+        run: uv sync --all-extras
+
+      - name: Run tests (Ubuntu)
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: |
+          sudo apt-get remove --yes session-manager-plugin
+          uv run pytest
+
+      - name: Run tests (macOS)
+        if: ${{ matrix.os == 'macos-latest' }}
+        run: |
+          brew uninstall session-manager-plugin
+          uv run pytest -m 'not docker'
+
+      - name: Run tests (Windows)
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: |
+          Invoke-WebRequest `
+            -Uri "https://raw.githubusercontent.com/aws/session-manager-plugin/refs/heads/mainline/Tools/src/update/windows/uninstall.bat" `
+            -OutFile "uninstall.bat"
+
+          Start-Process "cmd.exe" -ArgumentList "/c uninstall.bat" -Wait
+          uv run pytest -m 'not docker'
+
+      - name: Upload test results to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          use_oidc: true
+          fail_ci_if_error: false
+          report_type: test_results
+          files: junit.xml
+          flags: >-
+            ${{ matrix.os }}
+            python-${{ matrix.python-version }}
+
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v5
+        with:
+          use_oidc: true
+          fail_ci_if_error: false
+          files: coverage.xml
+          flags: >-
+            ${{ matrix.os }}
+            python-${{ matrix.python-version }}
